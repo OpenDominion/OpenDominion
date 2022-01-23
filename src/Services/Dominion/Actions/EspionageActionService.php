@@ -315,7 +315,7 @@ class EspionageActionService
         }
 
         // Surreal Perception
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
             $this->notificationService
                 ->queueNotification('received_spy_op', [
                     'sourceDominionId' => $dominion->id,
@@ -456,7 +456,7 @@ class EspionageActionService
 
         // Surreal Perception
         $sourceDominionId = null;
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
             $sourceDominionId = $dominion->id;
         }
 
@@ -486,7 +486,7 @@ class EspionageActionService
         string $resource,
         array $constraints
     ): int {
-        if ($this->spellCalculator->isSpellActive($target, 'fools_gold')) {
+        if ($target->getSpellPerkValue('fools_gold')) {
             if ($resource === 'platinum') {
                 return 0;
             }
@@ -704,7 +704,7 @@ class EspionageActionService
 
         // Surreal Perception
         $sourceDominionId = null;
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
             $sourceDominionId = $dominion->id;
         }
 

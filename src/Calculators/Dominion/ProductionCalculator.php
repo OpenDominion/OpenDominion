@@ -81,18 +81,13 @@ class ProductionCalculator
 
         // Values
         $peasantTax = 2.7;
-        $spellAlchemistFlameAlchemyBonus = 15;
         $platinumPerAlchemy = 45;
 
         // Peasant Tax
         $platinum += ($this->populationCalculator->getPopulationEmployed($dominion) * $peasantTax);
 
-        // Spell: Alchemist Flame
-        if ($this->spellCalculator->isSpellActive($dominion, 'alchemist_flame')) {
-            $platinumPerAlchemy += $spellAlchemistFlameAlchemyBonus;
-        }
-
         // Building: Alchemy
+        $platinumPerAlchemy += $dominion->getSpellPerkValue('platinum_production_raw');
         $platinum += ($dominion->building_alchemy * $platinumPerAlchemy);
 
         return $platinum;
@@ -117,8 +112,7 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $spellMidasTouch = 10;
+        // Values
         $guardTax = 2;
         $maxInfamyBonus = 7.5;
 
@@ -136,8 +130,8 @@ class ProductionCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('platinum_production');
         $guardTax += $dominion->getWonderPerkValue('guard_tax');
 
-        // Spell: Midas Touch
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'midas_touch', $spellMidasTouch);
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('platinum_production');
 
         // Improvement: Science
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
@@ -212,11 +206,6 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $spellGaiasBlessing = 20;
-        $spellGaiasWatch = 10;
-        $spellInsectSwarm = 15;
-
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('food_production');
 
@@ -226,14 +215,8 @@ class ProductionCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('food_production');
 
-        // Spell: Gaia's Blessing or Gaia's Watch
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
-            'gaias_blessing' => $spellGaiasBlessing,
-            'gaias_watch' => $spellGaiasWatch,
-        ]);
-
-        // Spell: Insect Swarm
-        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'insect_swarm', $spellInsectSwarm);
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('food_production');
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
@@ -389,8 +372,7 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $spellGaiasBlessing = 10;
+        // Values
         $maxInfamyBonus = 3;
 
         // Infamy
@@ -405,8 +387,8 @@ class ProductionCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('lumber_production');
 
-        // Spell: Gaia's Blessing
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'gaias_blessing', $spellGaiasBlessing);
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('lumber_production');
 
         return $multiplier;
     }
@@ -423,7 +405,7 @@ class ProductionCalculator
     {
         $decay = 0;
 
-        // Values (percentages)
+        // Values
         $lumberDecay = 1;
 
         // Techs
@@ -534,7 +516,7 @@ class ProductionCalculator
     {
         $decay = 0;
 
-        // Values (percentages)
+        // Values
         $manaDecay = 2;
 
         // Techs
@@ -612,10 +594,7 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $spellMinersSight = 20;
-        $spellMiningStrength = 10;
-        $spellEarthquake = 5;
+        // Values
         $maxInfamyBonus = 3;
 
         // Infamy
@@ -630,16 +609,8 @@ class ProductionCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('ore_production');
 
-        // Spell: Miner's Sight or Mining Strength
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
-            'miners_sight' => $spellMinersSight,
-            'mining_strength' => $spellMiningStrength,
-        ]);
-
-        // Spell: Earthquake - Miner's Sight protects from ore portion
-        if (!$this->spellCalculator->isSpellActive($dominion, 'miners_sight')) {
-            $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
-        }
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('ore_production');
 
         return $multiplier;
     }
@@ -695,8 +666,7 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $spellEarthquake = 5;
+        // Values
         $maxInfamyBonus = 3;
 
         // Infamy
@@ -711,8 +681,8 @@ class ProductionCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('gem_production');
 
-        // Spell: Earthquake
-        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('gem_production');
 
         return $multiplier;
     }
@@ -838,14 +808,11 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $spellGreatFlood = 25;
-
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('boat_production');
 
-        // Spell: Great Flood
-        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'great_flood', $spellGreatFlood);
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('boat_production');
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25;

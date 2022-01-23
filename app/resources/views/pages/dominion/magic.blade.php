@@ -17,36 +17,38 @@
                             @csrf
 
                             <div class="box-body">
-                                @foreach ($spellHelper->getSelfSpells($selectedDominion->race)->chunk(2) as $spells)
+                                @foreach ($spellHelper->getSpells($selectedDominion->race, 'self')->chunk(2) as $spells)
                                     <div class="row">
                                         @foreach ($spells as $spell)
                                             <div class="col-xs-6 col-sm-6 col-md-12 col-lg-6 text-center">
                                                 @php
-                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell['key']);
-                                                    $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell['key']);
-                                                    $isActive = $spellCalculator->isSpellActive($selectedDominion, $spell['key']);
+                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell);
+                                                    $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
+                                                    $isActive = $selectedDominion->spells->contains($spell);
                                                     $buttonStyle = ($isActive ? 'btn-success' : 'btn-primary');
                                                 @endphp
                                                 <div class="form-group">
-                                                    <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours ? 'disabled' : null }}>
-                                                        {{ $spell['name'] }}
+                                                    <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours ? 'disabled' : null }}>
+                                                        {{ $spell->name }}
                                                     </button>
-                                                    <p style="margin: 5px 0;">{{ $spell['description'] }}</p>
+                                                    <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                     <p>
                                                         <small>
+                                                            @if ($canCast)
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                            @else
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                            @endif
                                                             @if ($isActive)
-                                                                ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hours remaining)<br/>
+                                                                ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell) }} hours remaining)<br/>
+                                                            @else
+                                                                Lasts {{ $spell->duration }} hours<br/>
                                                             @endif
                                                             @if ($cooldownHours)
                                                                 (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>
                                                             @endif
-                                                            @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
-                                                            @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
-                                                            @endif
-                                                            @if (isset($spell['races']))
-                                                                <br/>Racial
+                                                            @if (!empty($spell->races))
+                                                                Racial<br/>
                                                             @endif
                                                         </small>
                                                     </p>
@@ -112,23 +114,23 @@
                                         </div>
                                     </div>
 
-                                    @foreach ($spellHelper->getInfoOpSpells()->chunk(4) as $spells)
+                                    @foreach ($spellHelper->getSpells($selectedDominion->race, 'info')->chunk(4) as $spells)
                                         <div class="row">
                                             @foreach ($spells as $spell)
                                                 @php
-                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell['key']);
+                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
-                                                        <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
-                                                            {{ $spell['name'] }}
+                                                        <button type="submit" name="spell" value="{{ $spell->key }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
+                                                            {{ $spell->name }}
                                                         </button>
-                                                        <p>{{ $spell['description'] }}</p>
+                                                        <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                         <small>
                                                             @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                             @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                             @endif
                                                         </small>
                                                     </div>
@@ -143,27 +145,27 @@
                                         </div>
                                     </div>
 
-                                    @foreach ($spellHelper->getBlackOpSpells()->chunk(4) as $spells)
+                                    @foreach ($spellHelper->getSpells($selectedDominion->race, 'hostile')->chunk(4) as $spells)
                                         <div class="row">
                                             @foreach ($spells as $spell)
                                                 @php
-                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell['key']);
+                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
                                                         <button type="submit"
                                                                 name="spell"
-                                                                value="{{ $spell['key'] }}"
+                                                                value="{{ $spell->key }}"
                                                                 class="btn btn-primary btn-block"
-                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 6) ? 'disabled' : null }}>
-                                                            {{ $spell['name'] }}
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $spell->name }}
                                                         </button>
-                                                        <p>{{ $spell['description'] }}</p>
+                                                        <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                         <small>
                                                             @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                             @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                             @endif
                                                         </small>
                                                     </div>
@@ -178,27 +180,27 @@
                                         </div>
                                     </div>
 
-                                    @foreach ($spellHelper->getWarSpells()->chunk(4) as $spells)
+                                    @foreach ($spellHelper->getSpells($selectedDominion->race, 'war')->chunk(4) as $spells)
                                         <div class="row">
                                             @foreach ($spells as $spell)
                                                 @php
-                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell['key']);
+                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
                                                         <button type="submit"
                                                                 name="spell"
-                                                                value="{{ $spell['key'] }}"
+                                                                value="{{ $spell->key }}"
                                                                 class="btn btn-primary btn-block war-spell disabled"
-                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 6) ? 'disabled' : null }}>
-                                                            {{ $spell['name'] }}
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $spell->name }}
                                                         </button>
-                                                        <p>{{ $spell['description'] }}</p>
+                                                        <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                         <small>
                                                             @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                             @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                             @endif
                                                         </small>
                                                     </div>

@@ -5,10 +5,12 @@ namespace OpenDominion\Factories;
 use DB;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Spell;
 use OpenDominion\Models\User;
 
 class DominionFactory
@@ -146,9 +148,7 @@ class DominionFactory
             ->delete();
 
         // Reset Spells
-        DB::table('active_spells')
-            ->where('dominion_id', $dominion->id)
-            ->delete();
+        DominionSpell::where('dominion_id', $dominion->id)->delete();
 
         // Reset Techs
         DB::table('dominion_techs')
@@ -203,15 +203,15 @@ class DominionFactory
 
             // Cast spells
             foreach ($quickStartData->spells as $spellKey) {
-                DB::table('active_spells')
-                    ->insert([
-                        'dominion_id' => $dominion->id,
-                        'spell' => $spellKey,
-                        'duration' => 12,
-                        'cast_by_dominion_id' => $dominion->id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+                $spell = Spell::where('key', $spellKey)->first();
+                DominionSpell::insert([
+                    'dominion_id' => $dominion->id,
+                    'spell_id' => $spell->id,
+                    'duration' => 12,
+                    'cast_by_dominion_id' => $dominion->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             }
 
             // Queue incoming resources
@@ -640,25 +640,25 @@ class DominionFactory
         }
 
         // Cast spells
-        DB::table('active_spells')
-            ->insert([
-                'dominion_id' => $dominion->id,
-                'spell' => 'ares_call',
-                'duration' => 12,
-                'cast_by_dominion_id' => $dominion->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $spell = Spell::where('key', 'ares_call')->first();
+        DominionSpell::insert([
+            'dominion_id' => $dominion->id,
+            'spell_id' => $spell->id,
+            'duration' => 12,
+            'cast_by_dominion_id' => $dominion->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        DB::table('active_spells')
-            ->insert([
-                'dominion_id' => $dominion->id,
-                'spell' => 'midas_touch',
-                'duration' => 12,
-                'cast_by_dominion_id' => $dominion->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $spell = Spell::where('key', 'midas_touch')->first();
+        DominionSpell::insert([
+            'dominion_id' => $dominion->id,
+            'spell_id' => $spell->id,
+            'duration' => 12,
+            'cast_by_dominion_id' => $dominion->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return $dominion;
     }

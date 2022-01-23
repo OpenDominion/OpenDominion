@@ -270,6 +270,18 @@ class Dominion extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
+    public function spells()
+    {
+        return $this->hasManyThrough(
+            Spell::class,
+            DominionSpell::class,
+            'dominion_id',
+            'id',
+            'id',
+            'spell_id'
+        );
+    }
+
     public function techs()
     {
         return $this->hasManyThrough(
@@ -285,11 +297,6 @@ class Dominion extends AbstractModel
     public function queues()
     {
         return $this->hasMany(Dominion\Queue::class);
-    }
-
-    public function spells()
-    {
-        return $this->hasMany(Dominion\Spell::class);
     }
 
     public function user()
@@ -488,6 +495,57 @@ class Dominion extends AbstractModel
         }
 
         return $bonus;
+    }
+
+    public function getSpellPerks() {
+        return $this->spells->flatMap(
+            function ($spell) {
+                return $spell->perks->map(
+                    function ($perk) use ($spell) {
+                        $perk->self = ($spell->category == 'self');
+                        return $perk;
+                    }
+                );
+            }
+        );
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getSpellPerkValue(string $key): float
+    {
+        $perks = $this->getSpellPerks()->groupBy('key');
+        if (isset($perks[$key])) {
+            if ($perks[$key]->count() == 1) {
+                return $perks[$key]->first()->pivot->value;
+            }
+            $selfSpells = $perks[$key]->where('self', true);
+            $selfPerkValue = (float)$selfSpells->max('pivot.value');
+            if ($selfPerkValue < 0) {
+                $selfPerkValue = (float)$selfSpells->min('pivot.value');
+            }
+            $hostileSpells = $perks[$key]->where('self', false);
+            $hostilePerkValue = (float)$hostileSpells->max('pivot.value');
+            if (isset($selfSpells["enemy_{$key}_damage"])) {
+                $damageReduction = (float)$hostileSpells->min('pivot.value');
+            }
+            if ($hostilePerkValue < 0) {
+                $hostilePerkValue = (float)$hostileSpells->min('pivot.value');
+            }
+            return $selfPerkValue + $hostilePerkValue;
+        }
+        return 0;
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getSpellPerkMultiplier(string $key): float
+    {
+        return ($this->getSpellPerkValue($key) / 100);
     }
 
     protected function getTechPerks() {

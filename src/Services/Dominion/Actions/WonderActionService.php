@@ -15,6 +15,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
+use OpenDominion\Models\Spell;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
@@ -172,8 +173,8 @@ class WonderActionService
                 throw new GameException('Your wizards to not have enough strength to cast Cyclone');
             }
 
-            $spellInfo = $this->spellHelper->getSpellInfo('cyclone');
-            $manaCost = $this->spellCalculator->getManaCost($dominion, 'cyclone');
+            $spell = Spell::where('key', 'cyclone')->first();
+            $manaCost = $this->spellCalculator->getManaCost($dominion, $spell);
 
             if ($dominion->resource_mana < $manaCost) {
                 throw new GameException('You do not have enough mana to cast Cyclone');
@@ -209,7 +210,7 @@ class WonderActionService
             // You need at least some positive WPA to cast black ops
             if ($selfWpa === 0.0) {
                 // Don't reduce mana by throwing an exception here
-                throw new GameException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
+                throw new GameException("Your wizard force is too weak to cast {$spell->name}. Please train more wizards.");
             }
 
             $this->checkGuardApplications($dominion);
@@ -561,43 +562,6 @@ class WonderActionService
                 ['resource_boats' => $boatsByReturnHourGroup],
                 $hours
             );
-        }
-    }
-
-    /**
-     * Handles research point generation for attacker.
-     *
-     * @param RoundWonder $wonder
-     * @param Dominion $dominion
-     * @param array $units
-     */
-    protected function handleResearchPoints(RoundWonder $wonder, Dominion $dominion, array $units): void
-    {
-        $mindSwellActive = $this->spellCalculator->getActiveSpells($dominion)->firstWhere('spell', 'mindswell');
-        if ($mindSwellActive !== null) {
-            $offenseSent = $this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units) * $this->militaryCalculator->getMoraleMultiplier($dominion);
-            $researchPointsGained = $this->wonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);
-
-            if ($researchPointsGained > 0) {
-                $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
-
-                $this->queueService->queueResources(
-                    'invasion',
-                    $dominion,
-                    ['resource_tech' => $researchPointsGained],
-                    $slowestTroopsReturnHours
-                );
-
-                $this->attackResult['attacker']['researchPoints'] = $researchPointsGained;
-
-                // Remove spell after use
-                DB::table('active_spells')
-                    ->where([
-                        'dominion_id' => $dominion->id,
-                        'spell' => 'mindswell',
-                    ])
-                    ->delete();
-            }
         }
     }
 

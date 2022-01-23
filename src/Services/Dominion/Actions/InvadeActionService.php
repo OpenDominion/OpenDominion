@@ -647,7 +647,7 @@ class InvadeActionService
         $defensiveUnitsLost = [];
 
         // Draftees
-        if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
+        if ($dominion->getSpellPerkValue('ignore_draftees')) {
             $drafteesLost = 0;
         } else {
             $finalCasualtiesPercentage = min(
@@ -767,16 +767,16 @@ class InvadeActionService
             $landGained = ($landConquered + $landGenerated);
 
             // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan)
-            if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'verdant_bloom')) {
+            if ($dominion->getSpellPerkValue('auto_rezone_to_forest') || $dominion->getSpellPerkValue('auto_rezone_to_water')) {
                 // todo: needs a more generic solution later
-                if ($this->spellCalculator->isSpellActive($dominion, 'verdant_bloom')) {
+                if ($dominion->getSpellPerkValue('auto_rezone_to_forest')) {
                     $eventName = 'landVerdantBloom';
                     $landRezoneType = 'forest';
-                    $landRezonePercentage = 35;
+                    $landRezonePercentage = $dominion->getSpellPerkValue('auto_rezone_to_forest');
                 } else {
                     $eventName = 'landErosion';
                     $landRezoneType = 'water';
-                    $landRezonePercentage = 20;
+                    $landRezonePercentage = $dominion->getSpellPerkValue('auto_rezone_to_water');
                 }
 
                 $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
@@ -861,10 +861,6 @@ class InvadeActionService
         array $units,
         array $survivingUnits
     ): array {
-        $spellAscendanceConversionPercentage = 8;
-        $spellFeralHungerConversionRate = 15;
-        $spellParasiticHungerMultiplier = 20;
-
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         $landRatio = min(1, $this->invasionResult['result']['range'] / 100);
         $convertedUnits = array_fill(1, 4, 0);
@@ -878,14 +874,14 @@ class InvadeActionService
         }
 
         $conversionMultiplier = 1;
-        $conversionMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHungerMultiplier);
+        $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversion_rate');
 
         $unitsWithConversionPerk = $dominion->race->units->filter(function ($unit) use ($dominion, $units) {
             if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
                 return false;
             }
 
-            if ($unit->slot == 3 && $this->spellCalculator->isSpellActive($dominion, 'feral_hunger')) {
+            if ($unit->slot == 3 && $dominion->getSpellPerkValue('convert_werewolves')) {
                 return true;
             }
 
@@ -893,9 +889,9 @@ class InvadeActionService
         });
 
         $unitConversionRates = $unitsWithConversionPerk->map(function ($unit) use ($dominion, $units, $spellFeralHungerConversionRate) {
-            if ($unit->slot == 3 && $this->spellCalculator->isSpellActive($dominion, 'feral_hunger')) {
+            if ($unit->slot == 3 && $dominion->getSpellPerkValue('convert_werewolves')) {
                 $unitSlot = 3;
-                $conversionRate = 1 / $spellFeralHungerConversionRate;
+                $conversionRate = 1 / $dominion->getSpellPerkValue('convert_werewolves');
             } else {
                 $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
                 $unitSlot = (int)$perkValue[0];
@@ -926,8 +922,8 @@ class InvadeActionService
         }
 
         // Special case for Ascendance
-        if (isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance') && $this->invasionResult['result']['range'] >= 75) {
-            $ascendedUnits = floor($survivingUnits[1] * $spellAscendanceConversionPercentage / 100);
+        if (isset($survivingUnits[1]) && $dominion->getSpellPerkValue('upgrade_swordsmen') && $this->invasionResult['result']['range'] >= 75) {
+            $ascendedUnits = floor($survivingUnits[1] * $dominion->getSpellPerkValue('upgrade_swordsmen') / 100);
             $convertedUnits[1] -= $ascendedUnits;
             $convertedUnits[4] += $ascendedUnits;
         }
@@ -1066,10 +1062,10 @@ class InvadeActionService
         }
 
         // Plague from Parasitic Hunger
-        if ($this->spellCalculator->isSpellActive($dominion, 'parasitic_hunger')) {
+        if ($dominion->getSpellPerkValue('spreads_plague')) {
             $this->invasionService->applySpell($dominion, $target, 'plague', 8);
         }
-        if ($this->spellCalculator->isSpellActive($target, 'parasitic_hunger')) {
+        if ($target->getSpellPerkValue('spreads_plague')) {
             $this->invasionService->applySpell($target, $dominion, 'plague', 8);
         }
     }
@@ -1241,7 +1237,7 @@ class InvadeActionService
         $dpMultiplierReduction = $this->militaryCalculator->getTempleReduction($dominion);
 
         $ignoreDraftees = false;
-        if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
+        if ($dominion->getSpellPerkValue('ignore_draftees')) {
             $ignoreDraftees = true;
         }
 

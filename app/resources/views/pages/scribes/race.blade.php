@@ -27,13 +27,13 @@
                             {{-- Racial Spell --}}
                             <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell</h4>
                             @php
-                                $racialSpell = $spellHelper->getRacialSelfSpell($race);
+                                $racialSpells = $spellHelper->getSpells($race, 'self')->where('races', '!=', []);
                             @endphp
-                            <p>
-                                @if ($racialSpell)
-                                    <strong>{{ $racialSpell['name'] }}</strong>: {{ $racialSpell['description'] }}
-                                @endif
-                            </p>
+                            @foreach ($racialSpells as $spell)
+                                <p>
+                                    <strong>{{ $spell->name }}</strong>: {{ $spellHelper->getSpellDescription($spell) }}
+                                </p>
+                            @endforeach
                         </div>
                     </div>
                 </div>

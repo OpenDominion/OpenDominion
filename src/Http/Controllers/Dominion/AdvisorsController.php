@@ -82,7 +82,7 @@ class AdvisorsController extends AbstractDominionController
             ],
             (object)[
                 'type' => 'revelation',
-                'data' => $this->spellCalculator->getActiveSpells($dominion)
+                'data' => $this->infoMapper->mapSpells($dominion)
             ],
             (object)[
                 'type' => 'castle_spy',

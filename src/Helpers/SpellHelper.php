@@ -4,467 +4,193 @@ namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Spell;
+use OpenDominion\Models\SpellPerkType;
 
 class SpellHelper
 {
-    public function getSpellInfo(string $spellKey): array
+    /**
+     * Returns spell by key its key.
+     *
+     * @param string $key
+     * @return Spell
+     */
+    public function getSpellByKey(string $key): Spell
     {
-        return $this->getSpells()->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->first();
+        return Spell::firstWhere('key', $key);
     }
 
-    public function isSelfSpell(string $spellKey, Race $race): bool
+    /**
+     * Returns available spells by race and category.
+     *
+     * @param string|string[] $perks
+     * @param Race|null $race
+     * @return Collection
+     */
+    public function getSpells(Race $race = null, string $category = null): Collection
     {
-        return $this->getSelfSpells($race)->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->isNotEmpty();
+        $spells = Spell::with('perks')->active()->get();
+        if ($race !== null) {
+            $spells = $spells->filter(function ($spell) use ($race) {
+                if (empty($spell->races) || in_array($race->key, $spell->races)) {
+                    return true;
+                }
+                return false;
+            });
+        }
+        if ($category !== null) {
+            $spells = $spells->where('category', $category);
+        }
+        return $spells->keyBy('key');
     }
 
-    public function isRacialSelfSpell(string $spellKey, Race $race): bool
+    /**
+     * Returns spells with matching perk type(s). Optionally show only racial spells.
+     *
+     * @param string|string[] $perks
+     * @param Race|null $race
+     * @return Collection
+     */
+    public function getSpellsWithPerk($perks, Race $race = null): Collection
     {
-        return $this->getRacialSelfSpells($race)->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->isNotEmpty();
-    }
-
-    public function isOffensiveSpell(string $spellKey): bool
-    {
-        return $this->getOffensiveSpells()->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->isNotEmpty();
-    }
-
-    public function isInfoOpSpell(string $spellKey): bool
-    {
-        return $this->getInfoOpSpells()->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->isNotEmpty();
-    }
-
-    public function isHostileSpell(string $spellKey): bool
-    {
-        return $this->getHostileSpells()->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->isNotEmpty();
-    }
-
-    public function isBlackOpSpell(string $spellKey): bool
-    {
-        return $this->getBlackOpSpells()->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->isNotEmpty();
-    }
-
-    public function isWarSpell(string $spellKey): bool
-    {
-        return $this->getWarSpells()->filter(function ($spell) use ($spellKey) {
-            return ($spell['key'] === $spellKey);
-        })->isNotEmpty();
-    }
-
-    public function getSpells(Race $race = null): Collection
-    {
-        return $this->getSelfSpells($race)
-            ->merge($this->getRacialSelfSpells())
-            ->merge($this->getOffensiveSpells());
-    }
-
-    public function getSelfSpells(?Race $race): Collection
-    {
-        $spells = collect(array_filter([
-            [
-                'name' => 'Gaia\'s Watch',
-                'description' => '+10% food production',
-                'key' => 'gaias_watch',
-                'mana_cost' => 2,
-                'duration' => 12,
-            ],
-            [
-                'name' => 'Ares\' Call',
-                'description' => '+10% defensive power',
-                'key' => 'ares_call',
-                'mana_cost' => 2.5,
-                'duration' => 12,
-            ],
-            [
-                'name' => 'Midas Touch',
-                'description' => '+10% platinum production',
-                'key' => 'midas_touch',
-                'mana_cost' => 2.5,
-                'duration' => 12,
-            ],
-            [
-                'name' => 'Mining Strength',
-                'description' => '+10% ore production',
-                'key' => 'mining_strength',
-                'mana_cost' => 2,
-                'duration' => 12,
-            ],
-            [
-                'name' => 'Harmony',
-                'description' => '+50% population growth',
-                'key' => 'harmony',
-                'mana_cost' => 2.5,
-                'duration' => 12,
-            ],
-            [
-                'name' => 'Fool\'s Gold',
-                'description' => 'Platinum theft protection for 10 hours, 20 hour recharge',
-                'key' => 'fools_gold',
-                'mana_cost' => 5,
-                'duration' => 10,
-                'cooldown' => 20,
-            ],
-            [
-                'name' => 'Surreal Perception',
-                'description' => 'Reveals the dominion casting offensive spells or committing spy ops against you for 12 hours',
-                'key' => 'surreal_perception',
-                'mana_cost' => 3,
-                'duration' => 12,
-            ],
-            [
-                'name' => 'Energy Mirror',
-                'description' => '20% chance to reflect incoming offensive spells for 12 hours',
-                'key' => 'energy_mirror',
-                'mana_cost' => 4,
-                'duration' => 12,
-            ]
-        ]));
-
-        if($race !== null){
-            $racialSpell = $this->getRacialSelfSpell($race);
-            $spells->push($racialSpell);
+        if (!is_array($perks)) {
+            $perks = [$perks];
         }
 
+        $spells = SpellPerkType::with('spells')
+            ->whereIn('key', $perks)
+            ->get()
+            ->flatMap(function ($perkType) {
+                return $perkType->spells;
+            });
+
+        if ($race !== null) {
+            return $spells->filter(function ($spell) use ($race) {
+                if (in_array($race->key, $spell->races)) {
+                    return true;
+                }
+                return false;
+            });
+        }
         return $spells;
     }
 
-    public function getRacialSelfSpell(Race $race) {
-        $raceName = $race->name;
-        return $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
-            return $spell['races']->contains($raceName);
-        })->first();
-    }
-
-    public function getRacialSelfSpells(): Collection
+    public function isSelfSpell(Spell $spell): bool
     {
-        return collect([
-            [
-                'name' => 'Crusade',
-                'description' => '+5% offensive power and allows you to kill Spirit/Undead',
-                'key' => 'crusade',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Human', 'Nomad (Legacy)']),
-            ],
-            [
-                'name' => 'Favorable Terrain',
-                'description' => '+1% offensive power for every 1% barren land (max +10%)',
-                'key' => 'favorable_terrain',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Nomad']),
-            ],
-            [
-                'name' => 'Miner\'s Sight',
-                'description' => '+20% ore production (not cumulative with Mining Strength) and protection from Earthquake',
-                'key' => 'miners_sight',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Dwarf', 'Gnome']),
-            ],
-            [
-                'name' => 'Killing Rage',
-                'description' => '+10% offensive power',
-                'key' => 'killing_rage',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Goblin']),
-            ],
-            [
-                'name' => 'Alchemist Flame',
-                'description' => '+15 alchemy platinum production',
-                'key' => 'alchemist_flame',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Firewalker']),
-            ],
-            [
-                'name' => 'Erosion',
-                'description' => '20% of captured land re-zoned into water',
-                'key' => 'erosion',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Lizardfolk', 'Merfolk']),
-            ],
-            [
-                'name' => 'Blizzard',
-                'description' => '+15% defensive power (not cumulative with Ares Call)',
-                'key' => 'blizzard',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Icekin']),
-            ],
-            [
-                'name' => 'Mechanical Genius',
-                'description' => '30% reduction of re-zoning costs',
-                'key' => 'mechanical_genius',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect([]),
-            ],
-            [
-                'name' => 'Bloodrage',
-                'description' => '+10% offensive power, +10% offensive casualties',
-                'key' => 'bloodrage',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Orc']),
-            ],
-            [
-                'name' => 'Unholy Ghost',
-                'description' => 'Enemy draftees do not participate in battle',
-                'key' => 'unholy_ghost',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Spirit', 'Dark Elf (Legacy)']),
-            ],
-            [
-                'name' => 'Defensive Frenzy',
-                'description' => '+20% defensive power (not cumulative with Ares Call)',
-                'key' => 'defensive_frenzy',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Halfling']),
-            ],
-            [
-                'name' => 'Howling',
-                'description' => '+10% offensive power, +10% defensive power (not cumulative with Ares Call)',
-                'key' => 'howling',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Kobold']),
-            ],
-            [
-                'name' => 'Verdant Bloom',
-                'description' => '35% of captured land re-zoned into forest',
-                'key' => 'verdant_bloom',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Sylvan']),
-            ],
-            [
-                'name' => 'Warsong',
-                'description' => '+10% offensive power',
-                'key' => 'warsong',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect([]),
-            ],
-            [
-                'name' => 'Regeneration',
-                'description' => '-25% combat losses',
-                'key' => 'regeneration',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Troll']),
-            ],
-            [
-                'name' => 'Parasitic Hunger',
-                'description' => '+20% conversion rate and afflicts your enemies with Plague',
-                'key' => 'parasitic_hunger',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Undead', 'Spirit (Legacy)']),
-            ],
-            [
-                'name' => 'Feral Hunger',
-                'description' => 'Werewolves convert enemy peasants into Werewolves (up to one for every 15 sent on attack)',
-                'key' => 'feral_hunger',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Lycanthrope']),
-            ],
-            [
-                'name' => 'Ascendance',
-                'description' => '8% of surviving Swordsmen return from battle as Spellblades',
-                'key' => 'ascendance',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Dark Elf']),
-            ],
-            [
-                'name' => 'Gaia\'s Blessing',
-                'description' => '+20% food production (not cumulative with Gaia\'s Watch), +10% lumber production',
-                'key' => 'gaias_blessing',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Wood Elf']),
-            ],
-            [
-                'name' => 'Nightfall',
-                'description' => '+5% offensive power',
-                'key' => 'nightfall',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Nox']),
-            ],
-        ]);
+        return $spell->category == 'self';
     }
 
-    public function getOffensiveSpells(): Collection
+    public function isRacialSelfSpell(Spell $spell): bool
     {
-        return $this->getInfoOpSpells()
-            ->merge($this->getBlackOpSpells())
-            ->merge($this->getWarSpells())
-            ->merge($this->getWonderSpells());
+        return $spell->category == 'self' && !empty($spell->races);
     }
 
-    public function getInfoOpSpells(): Collection
+    public function isOffensiveSpell(Spell $spell): bool
     {
-        return collect([
-            [
-                'name' => 'Clear Sight',
-                'description' => 'Reveal status screen',
-                'key' => 'clear_sight',
-                'mana_cost' => 0.5,
-            ],
-            [
-                'name' => 'Vision',
-                'description' => 'Reveal tech and heroes',
-                'key' => 'vision',
-                'mana_cost' => 0.5,
-            ],
-            [
-                'name' => 'Revelation',
-                'description' => 'Reveal active spells',
-                'key' => 'revelation',
-                'mana_cost' => 1,
-            ],
-//            [
-//                'name' => 'Clairvoyance',
-//                'description' => 'Reveal realm town crier',
-//                'key' => 'clairvoyance',
-//                'mana_cost' => 1.2,
-//            ],
-//            [
-//                'name' => 'Disclosure',
-//                'description' => 'Reveal wonder',
-//                'key' => 'disclosure',
-//                'mana_cost' => 1.2,
-//            ],
-        ]);
+        return $spell->category !== 'self';
     }
 
-    public function getHostileSpells(): Collection
+    public function isInfoOpSpell(Spell $spell): bool
     {
-        return $this->getBlackOpSpells()
-            ->merge($this->getWarSpells());
+        return $spell->category == 'info';
     }
 
-    public function getBlackOpSpells(): Collection
+    public function isHostileSpell(Spell $spell): bool
     {
-        return collect([
-            [
-                'name' => 'Plague',
-                'description' => '-50% population growth',
-                'key' => 'plague',
-                'mana_cost' => 3,
-                'duration' => 8,
-            ],
-            [
-                'name' => 'Insect Swarm',
-                'description' => '-15% food production',
-                'key' => 'insect_swarm',
-                'mana_cost' => 3,
-                'duration' => 8,
-            ],
-            [
-                'name' => 'Great Flood',
-                'description' => '-25% boat production',
-                'key' => 'great_flood',
-                'mana_cost' => 3,
-                'duration' => 8,
-            ],
-            [
-                'name' => 'Earthquake',
-                'description' => '-5% ore/gem production',
-                'key' => 'earthquake',
-                'mana_cost' => 3,
-                'duration' => 8,
-            ],
-        ]);
+        return !in_array($spell->category, ['info', 'self']);
     }
 
-    public function getWarSpells(): Collection
+    public function isBlackOpSpell(Spell $spell): bool
     {
-        return collect([
-            [
-                'name' => 'Disband Spies',
-                'description' => 'Turns spies into draftees',
-                'key' => 'disband_spies',
-                'mana_cost' => 4.3,
-                'decreases' => ['military_spies'],
-                'increases' => ['military_draftees'],
-                'percentage' => 1.5,
-            ],
-            [
-                'name' => 'Fireball',
-                'description' => 'Kills peasants and destroys crops',
-                'key' => 'fireball',
-                'mana_cost' => 3.3,
-                'decreases' => ['peasants', 'resource_food'],
-                'percentage' => 2.65,
-            ],
-            [
-                'name' => 'Lightning Bolt',
-                'description' => 'Destroys resources invested in castle',
-                'key' => 'lightning_bolt',
-                'mana_cost' => 3.5,
-                'decreases' => [
-                    'improvement_science',
-                    'improvement_keep',
-                    'improvement_forges',
-                    'improvement_walls',
-                ],
-                'percentage' => 0.41,
-            ],
-        ]);
+        return $spell->category == 'hostile';
     }
 
-    public function getRacialWarSpell(Race $race) {
-        $raceName = $race->name;
-        return $this->getRacialWarSpells()->filter(function ($spell) use ($raceName) {
-            return $spell['races']->contains($raceName);
-        })->first();
-    }
-
-    public function getRacialWarSpells(): Collection
+    public function isWarSpell(Spell $spell): bool
     {
-        return collect([
-            [
-                'name' => 'Inferno',
-                'description' => 'Kills peasants and destroys lumber',
-                'key' => 'inferno',
-                'mana_cost' => 3.5,
-                'decreases' => ['peasants', 'resource_lumber'],
-                'percentage' => 2.75,
-                'races' => collect(['Firewalker']),
-            ],
-        ]);
+        return $spell->category == 'war';
     }
 
-    public function getWonderSpells(): Collection
+    public function getSpellPerkStrings()
     {
-        return collect([
-            [
-                'name' => 'Cyclone',
-                'description' => 'Deals damage to a wonder',
-                'key' => 'cyclone',
-                'mana_cost' => 3,
-                'icon_class' => 'ra ra-tornado',
-            ],
-        ]);
+        return [
+            // Military related
+            'defense' => '%+d%% defensive power',
+            'offense' => '%+d%% offensive power',
+            'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+d%%)',
+            'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
+            'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
+            'conversion_rate' => '%+d%% conversion rate',
+            'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
+            'kills_immortal' => 'Can kill spirits and the undead',
+            'ignore_draftees' => 'Enemy draftees do not participate in battle',
+            'spreads_plague' => 'afflicts your enemies with Plague',
+            'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades',
+
+
+            // Casualties related
+            'fewer_casualties' => '%+d%% fewer casualties',
+            'fewer_casualties_offense' => '%+d%% fewer casualties on offense',
+
+            // Info ops
+            'clear_sight' => 'Reveal status screen',
+            'revelation' => 'Reveal active spells',
+            'vision' => 'Reveal technology',
+
+            // Logistics
+            'population_growth' => '%+d%% population growth',
+            'rezone_cost' => '%+d%% rezoning platinum cost',
+
+            // Resource related
+            'boat_production' => '%+d%% boat production',
+            'food_production' => '%+d%% food production',
+            'gem_production' => '%+d%% gem production',
+            'lumber_production' => '%+d%% lumber production',
+            'ore_production' => '%+d%% ore production',
+            'platinum_production' => '%+d%% platinum production',
+            'platinum_production_raw' => '%+d alchemy platinum production',
+
+            // Wizard related
+            'energy_mirror' => '20%% chance to reflect incoming offensive spells',
+            'fools_gold' => 'Platinum theft protection',
+            'surreal_perception' => 'Reveals the dominion casting offensive spells or committing spy ops against you',
+            'convert_military_spies_to_military_draftees' => 'Turns %.2f%% of spies into draftees',
+            'destroy_peasants' => 'Kills %.2f%% peasants',
+            'destroy_resource_food' => 'Destroys %.2f%% crops',
+            'destroy_improvement_science' => 'Destroys %.2f%% science',
+            'destroy_improvement_keep' => 'Destroys %.2f%% keep',
+            'destroy_improvement_forges' => 'Destroys %.2f%% forges',
+            'destroy_improvement_walls' => 'Destroys %.2f%% walls',
+            'enemy_earthquake_damage' => 'Ore production immune to Earthquake',
+            'wonder_damage' => 'Deals damage to wonders',
+        ];
+    }
+
+    public function getSpellDescription(Spell $spell, string $separator = ', '): string
+    {
+        $perkTypeStrings = $this->getSpellPerkStrings();
+
+        $perkStrings = [];
+        foreach ($spell->perks as $perk) {
+            if (isset($perkTypeStrings[$perk->key])) {
+                $perkValue = (float)$perk->pivot->value;
+                $perkStrings[] = vsprintf($perkTypeStrings[$perk->key], $perkValue);
+            }
+        }
+
+        if ($spell->cooldown) {
+            $perkStrings[] = "{$spell->cooldown} hour recharge";
+        }
+
+        return implode($separator, $perkStrings);
+    }
+
+    public function getSpellRaces(Spell $spell, string $separator = ', '): string
+    {
+        $raceStrings = [];
+        foreach ($spell->races as $race) {
+            $raceStrings[] = ucwords(str_replace('-', ' ', str_replace('-rework', ' ', $race)));
+        }
+
+        return implode($separator, $raceStrings);
     }
 }

@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
@@ -46,6 +47,9 @@ class InfoMapper
     /** @var QueueService */
     protected $queueService;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     public function __construct()
     {
         $this->buildingCalculator = app(BuildingCalculator::class);
@@ -58,6 +62,7 @@ class InfoMapper
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->queueService = app(QueueService::class);
+        $this->spellCalculator = app(SpellCalculator::class);
     }
 
     public function mapStatus(Dominion $dominion, bool $isOp = true): array
@@ -158,9 +163,35 @@ class InfoMapper
         return $data;
     }
 
-    public function mapTechs(Dominion $dominion): array
+    public function mapSpells(Dominion $dominion): array
     {
-        return $dominion->techs->pluck('name', 'key')->all();
+        $data = [];
+
+        foreach ($this->spellCalculator->getActiveSpells($dominion) as $activeSpell) {
+            $spellData = $activeSpell->toArray();
+            $spellData['spell'] = $activeSpell->spell->key;
+            $spellData['cast_by_dominion_name'] = $activeSpell->castByDominion->name;
+            $spellData['cast_by_dominion_realm_number'] = $activeSpell->castByDominion->realm->number;
+            $data[] = $spellData;
+        }
+
+        return $data;
+    }
+
+    public function mapImprovements(Dominion $dominion): array
+    {
+        $data = [];
+
+        foreach ($this->improvementHelper->getImprovementTypes() as $type) {
+            array_set($data, "{$type}.points", $dominion->{'improvement_' . $type});
+            array_set(
+                $data,
+                "{$type}.rating",
+                $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type)
+            );
+        }
+
+        return $data;
     }
 
     public function mapMilitary(Dominion $dominion, bool $isOp = true): array
@@ -221,22 +252,6 @@ class InfoMapper
 
             array_set($data, "units.training.{$unitType}.{$row->hours}", $row->amount);
         });
-
-        return $data;
-    }
-
-    public function mapImprovements(Dominion $dominion): array
-    {
-        $data = [];
-
-        foreach ($this->improvementHelper->getImprovementTypes() as $type) {
-            array_set($data, "{$type}.points", $dominion->{'improvement_' . $type});
-            array_set(
-                $data,
-                "{$type}.rating",
-                $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type)
-            );
-        }
 
         return $data;
     }
@@ -333,6 +348,11 @@ class InfoMapper
         });
 
         return $data;
+    }
+
+    public function mapTechs(Dominion $dominion): array
+    {
+        return $dominion->techs->pluck('name', 'key')->all();
     }
 
     public function mapResources(Dominion $dominion): array

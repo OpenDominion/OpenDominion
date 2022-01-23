@@ -9,6 +9,9 @@ use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RacePerk;
 use OpenDominion\Models\RacePerkType;
+use OpenDominion\Models\Spell;
+use OpenDominion\Models\SpellPerk;
+use OpenDominion\Models\SpellPerkType;
 use OpenDominion\Models\Tech;
 use OpenDominion\Models\TechPerk;
 use OpenDominion\Models\TechPerkType;
@@ -51,6 +54,7 @@ class DataSyncCommand extends Command implements CommandInterface
     {
         DB::transaction(function () {
             $this->syncRaces();
+            $this->syncSpells();
             $this->syncTechs();
             $this->syncWonders();
         });
@@ -192,6 +196,76 @@ class DataSyncCommand extends Command implements CommandInterface
 
                 $unit->perks()->sync($unitPerksToSync);
             }
+        }
+    }
+
+    /**
+     * Syncs spell and perk data from .yml file to the database.
+     */
+    protected function syncSpells()
+    {
+        $fileContents = $this->filesystem->get(base_path('app/data/spells.yml'));
+
+        $data = Yaml::parse($fileContents, Yaml::PARSE_OBJECT_FOR_MAP);
+
+        foreach ($data as $spellKey => $spellData) {
+            // Spell
+            $spell = Spell::firstOrNew(['key' => $spellKey])
+                ->fill([
+                    'name' => $spellData->name,
+                    'category' => $spellData->category,
+                    'cost_mana' => $spellData->cost_mana,
+                    'cost_strength' => $spellData->cost_strength,
+                    'duration' => object_get($spellData, 'duration', 0),
+                    'cooldown' => object_get($spellData, 'cooldown', 0),
+                    'races' => object_get($spellData, 'races', []),
+                    'active' => object_get($spellData, 'active', true),
+                ]);
+
+            if (!$spell->exists) {
+                $this->info("Adding spell {$spellData->name}");
+            } else {
+                $this->info("Processing spell {$spellData->name}");
+
+                $newValues = $spell->getDirty();
+
+                foreach ($newValues as $key => $newValue) {
+                    $originalValue = $spell->getOriginal($key);
+                    if (gettype($originalValue) == 'array') {
+                        $originalValue = implode(', ', $originalValue);
+                    }
+                    if ($originalValue != $newValue) {
+                        $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    }
+                }
+            }
+
+            $spell->save();
+            $spell->refresh();
+
+            // Spell Perks
+            $spellPerksToSync = [];
+
+            foreach (object_get($spellData, 'perks', []) as $perk => $value) {
+                $value = (float)$value;
+
+                $spellPerkType = SpellPerkType::firstOrCreate(['key' => $perk]);
+
+                $spellPerksToSync[$spellPerkType->id] = ['value' => $value];
+
+                $spellPerk = SpellPerk::query()
+                    ->where('spell_id', $spell->id)
+                    ->where('spell_perk_type_id', $spellPerkType->id)
+                    ->first();
+
+                if ($spellPerk === null) {
+                    $this->info("[Add Spell Perk] {$perk}: {$value}");
+                } elseif ($spellPerk->value != $value) {
+                    $this->info("[Change Spell Perk] {$perk}: {$spellPerk->value} -> {$value}");
+                }
+            }
+
+            $spell->perks()->sync($spellPerksToSync);
         }
     }
 

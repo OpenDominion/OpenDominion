@@ -44,13 +44,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($spellHelper->getSelfSpells(null)->sortBy('name') as $operation)
+                            @foreach($spellHelper->getSpells(null, 'self')->where('races', [])->sortBy('name') as $spell)
                                 <tr>
-                                    <td>{{ $operation['name'] }}</td>
+                                    <td>{{ $spell->name }}</td>
                                     <td>&nbsp;</td>
-                                    <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
-                                    <td>{{ $operation['description'] }}</td>
+                                    <td>{{ $spell->cost_mana }}x</td>
+                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
+                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -79,13 +79,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($spellHelper->getInfoOpSpells(null)->sortBy('name') as $operation)
+                            @foreach($spellHelper->getSpells(null, 'info')->sortBy('name') as $spell)
                                 <tr>
-                                    <td>{{ $operation['name'] }}</td>
+                                    <td>{{ $spell->name }}</td>
                                     <td></td>
-                                    <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
-                                    <td>{{ $operation['description'] }}</td>
+                                    <td>{{ $spell->cost_mana }}x</td>
+                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
+                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -114,22 +114,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($spellHelper->getHostileSpells(null)->sortBy('name') as $operation)
+                            @foreach($spellHelper->getSpells(null, 'hostile')->sortBy('name') as $spell)
                                 <tr>
-                                    <td>{{ $operation['name'] }}</td>
+                                    <td>{{ $spell->name }}</td>
                                     <td></td>
-                                    <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
-                                    <td>{{ $operation['description'] }}</td>
+                                    <td>{{ $spell->cost_mana }}x</td>
+                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
+                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
                                 </tr>
                             @endforeach
-                            @foreach($spellHelper->getWonderSpells(null)->sortBy('name') as $operation)
+                            @foreach($spellHelper->getSpells(null, 'wonder')->sortBy('name') as $spell)
                                 <tr>
-                                    <td>{{ $operation['name'] }}</td>
+                                    <td>{{ $spell->name }}</td>
                                     <td></td>
-                                    <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
-                                    <td>{{ $operation['description'] }}</td>
+                                    <td>{{ $spell->cost_mana }}x</td>
+                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
+                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -158,13 +158,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($spellHelper->getRacialSelfSpells(null)->sortBy('name') as $operation)
+                            @foreach($spellHelper->getSpells(null)->where('races', '!=', [])->sortBy('name') as $spell)
                                 <tr>
-                                    <td>{{ $operation['name'] }}</td>
-                                    <td>{{$operation['races']->implode(', ')}}</td>
-                                    <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
-                                    <td>{{ $operation['description'] }}</td>
+                                    <td>{{ $spell->name }}</td>
+                                    <td>{{ $spellHelper->getSpellRaces($spell) }}</td>
+                                    <td>{{ $spell->cost_mana }}x</td>
+                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
+                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -166,27 +166,4 @@ class WonderCalculator
             (static::PRESTIGE_CONTRIBUTION_MULTIPLIER / static::PRESTIGE_CONTRIBUTION_MAX)
         ));
     }
-
-    /**
-    * Calculates research point gain for a dominion
-    *
-    * @param RoundWonder $wonder
-    * @param Dominion $dominion
-    * @param float $offenseSent
-    * @return float
-    */
-    public function getTechGainForDominion(RoundWonder $wonder, Dominion $dominion, float $offenseSent): float
-    {
-        $offenseRequired = $wonder->power * min(15, $dominion->round->daysInRound()) / 100;
-        if ($offenseSent < $offenseRequired) {
-            return 0;
-        }
-
-        $landCalculator = app(LandCalculator::class);
-        $totalLand = $landCalculator->getTotalLand($dominion);
-
-        $techGain = min(static::TECH_MAX_REWARD * static::TECH_MIN_SIZE / $totalLand, static::TECH_MAX_REWARD);
-
-        return $techGain;
-    }
 }

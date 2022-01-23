@@ -1,0 +1,364 @@
+clear_sight:
+  name: Clear Sight
+  category: info
+  cost_mana: 0.5
+  cost_strength: 2
+  perks:
+    clear_sight: 1
+vision:
+  name: Vision
+  category: info
+  cost_mana: 0.5
+  cost_strength: 2
+  perks:
+    vision: 1
+revelation:
+  name: Revelation
+  category: info
+  cost_mana: 1
+  cost_strength: 2
+  perks:
+    revelation: 1
+plague:
+  name: Plague
+  category: hostile
+  cost_mana: 3
+  cost_strength: 5
+  duration: 8
+  perks:
+    population_growth: -50
+insect_swarm:
+  name: Insect Swarm
+  category: hostile
+  cost_mana: 3
+  cost_strength: 5
+  duration: 8
+  perks:
+    food_production: -15
+great_flood:
+  name: Great Flood
+  category: hostile
+  cost_mana: 3
+  cost_strength: 5
+  duration: 8
+  perks:
+    boat_production: -50
+earthquake:
+  name: Earthquake
+  category: hostile
+  cost_mana: 3
+  cost_strength: 5
+  duration: 8
+  perks:
+    gem_production: -5
+    ore_production: -5
+disband_spies:
+  name: Disband Spies
+  category: war
+  cost_mana: 4.3
+  cost_strength: 5
+  perks:
+    convert_military_spies_to_military_draftees: 1.5
+fireball:
+  name: Fireball
+  category: war
+  cost_mana: 3.3
+  cost_strength: 5
+  perks:
+    destroy_peasants: 2.65
+    destroy_resource_food: 2.65
+lightning_bolt:
+  name: Lightning Bolt
+  category: war
+  cost_mana: 3.5
+  cost_strength: 5
+  perks:
+    destroy_improvement_science: 0.4
+    destroy_improvement_keep: 0.4
+    destroy_improvement_forges: 0.4
+    destroy_improvement_walls: 0.4
+cyclone:
+  name: Cyclone
+  category: wonder
+  cost_mana: 3
+  cost_strength: 5
+  perks:
+    wonder_damage: 3
+gaias_watch:
+  name: Gaia's Watch
+  category: self
+  cost_mana: 2
+  cost_strength: 5
+  duration: 12
+  perks:
+    food_production: 10
+ares_call:
+  name: Ares' Call
+  category: self
+  cost_mana: 2.5
+  cost_strength: 5
+  duration: 12
+  perks:
+    defense: 10
+midas_touch:
+  name: Midas Touch
+  category: self
+  cost_mana: 2.5
+  cost_strength: 5
+  duration: 12
+  perks:
+    platinum_production: 10
+mining_strength:
+  name: Mining Strength
+  category: self
+  cost_mana: 2
+  cost_strength: 5
+  duration: 12
+  perks:
+    ore_production: 10
+harmony:
+  name: Harmony
+  category: self
+  cost_mana: 2.5
+  cost_strength: 5
+  duration: 12
+  perks:
+    population_growth: 50
+fools_gold:
+  name: Fool's Gold
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 10
+  cooldown: 20
+  perks:
+    fools_gold: 1
+surreal_perception:
+  name: Surreal Perception
+  category: self
+  cost_mana: 3
+  cost_strength: 5
+  duration: 12
+  perks:
+    surreal_perception: 1
+energy_mirror:
+  name: Energy Mirror
+  category: self
+  cost_mana: 4
+  cost_strength: 5
+  duration: 12
+  perks:
+    energy_mirror: 1
+crusade:
+  name: Crusade
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - human
+    - nomad
+  perks:
+    offense: 5
+    kills_immortal: 1
+favorable_terrain:
+  name: Favorable Terrain
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - nomad-rework
+  perks:
+    offense_from_barren_land: 1
+miners_sight:
+  name: Miner's Sight
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - dwarf
+    - gnome
+  perks:
+    ore_production: 20
+    enemy_earthquake_damage: -100
+killing_rage:
+  name: Killing Rage
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - goblin
+  perks:
+    offense: 10
+alchemist_flame:
+  name: Alchemist Flame
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - firewalker
+  perks:
+    platinum_production_raw: 15
+erosion:
+  name: Erosion
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - lizardfolk
+    - merfolk
+  perks:
+    auto_rezone_water: 20
+blizzard:
+  name: Blizzard
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - icekin
+  perks:
+    defense: 15
+mechanical_genius:
+  name: Mechanical Genius
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - gnome
+  perks:
+    rezone_cost: 30
+  active: false
+bloodrage:
+  name: Bloodrage
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - orc
+  perks:
+    offense: 10
+    fewer_casualties_offense: -10
+unholy_ghost:
+  name: Unholy Ghost
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - dark-elf
+    - spirit-rework
+  perks:
+    ignore_draftees: 1
+defensive_frenzy:
+  name: Defensive Frenzy
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - halfling
+  perks:
+    defense: 20
+howling:
+  name: Howling
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - kobold
+  perks:
+    offense: 10
+    defense: 10
+verdant_bloom:
+  name: Verdant Bloom
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - sylvan
+  perks:
+    auto_rezone_forest: 35
+warsong:
+  name: Warsong
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - sylvan
+  perks:
+    offense: 10
+  active: false
+regeneration:
+  name: Regeneration
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - troll
+  perks:
+    fewer_casualties: 25
+parasitic_hunger:
+  name: Parasitic Hunger
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - spirit
+    - undead
+  perks:
+    conversion_rate: 20
+    spreads_plague: 1
+feral_hunger:
+  name: Feral Hunger
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - lycanthrope
+  perks:
+    convert_werewolves: 15
+ascendance:
+  name: Ascendance
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - dark-elf-rework
+  perks:
+    upgrade_swordsmen: 8
+gaias_blessing:
+  name: Gaia's Blessing
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - wood-elf
+  perks:
+    food_production: 20
+    lumber_production: 10
+nightfall:
+  name: Nightfall
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - nox
+  perks:
+    offense: 5

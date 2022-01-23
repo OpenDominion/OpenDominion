@@ -113,18 +113,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($infoOp->data as $spell)
+                                @foreach ($infoOp->data as $activeSpell)
                                     @php
-                                        $spellInfo = $spellHelper->getSpellInfo($spell['spell']);
-                                        $castByDominion = OpenDominion\Models\Dominion::with('realm')->findOrFail($spell['cast_by_dominion_id']);
+                                        $spell = $spellHelper->getSpellByKey($activeSpell['spell']);
                                     @endphp
                                     <tr>
-                                        <td>{{ $spellInfo['name'] }}</td>
-                                        <td>{{ $spellInfo['description'] }}</td>
-                                        <td class="text-center">{{ $spell['duration'] }}</td>
+                                        <td>{{ $spell->name }}</td>
+                                        <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                        <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                         <td class="text-center">
-                                            @if ($castByDominion->id == $dominion->id || $castByDominion->realm_id == $selectedDominion->realm_id)
-                                                <a href="{{ route('dominion.realm', $castByDominion->realm->number) }}">{{ $castByDominion->name }} (#{{ $castByDominion->realm->number }})</a>
+                                            @if ($activeSpell['cast_by_dominion_id'] == $dominion->id || $activeSpell['cast_by_dominion_realm_number'] == $selectedDominion->realm->number)
+                                                <a href="{{ route('dominion.realm', $activeSpell['cast_by_dominion_realm_number']) }}">{{ $activeSpell['cast_by_dominion_name'] }} (#{{ $activeSpell['cast_by_dominion_realm_number'] }})</a>
                                             @else
                                                 <em>Unknown</em>
                                             @endif

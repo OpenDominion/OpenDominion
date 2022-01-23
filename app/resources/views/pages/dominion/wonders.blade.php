@@ -103,21 +103,20 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-3 col-lg-2">
-                                    @foreach ($spellHelper->getWonderSpells() as $spell)
+                                    @foreach ($spellHelper->getSpells(null, 'wonder') as $spell)
                                         <div class="text-center" style="margin-top: 25px;">
                                             <button type="submit"
                                                     name="action"
-                                                    value="{{ $spell['key'] }}"
+                                                    value="{{ $spell->key }}"
                                                     class="btn btn-primary"
                                                     {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
-                                                <i class="{{ $spell['icon_class'] }}"></i>
-                                                {{ $spell['name'] }}
+                                                {{ $spell->name }}
                                             </button>
                                             <div class="small text-center">
-                                                @if ($spellCalculator->canCast($selectedDominion, $spell['key']))
-                                                    Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                @if ($spellCalculator->canCast($selectedDominion, $spell))
+                                                    Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                 @else
-                                                    Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                    Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                 @endif
                                             </div>
                                         </div>

@@ -260,13 +260,13 @@ class TickService
                 ]);
 
             // Update spells
-            DB::table('active_spells')
-                ->join('dominions', 'active_spells.dominion_id', '=', 'dominions.id')
+            DB::table('dominion_spells')
+                ->join('dominions', 'dominion_spells.dominion_id', '=', 'dominions.id')
                 ->where($where)
                 ->where('duration', '>', 0)
                 ->update([
                     'duration' => DB::raw('`duration` - 1'),
-                    'active_spells.updated_at' => $this->now,
+                    'dominion_spells.updated_at' => $this->now,
                 ]);
 
             // Update queues
@@ -444,11 +444,11 @@ class TickService
 
                     if ($key == 'expiring_spells') {
                         // Queued Spells
-                        foreach (json_decode($value) as $spell) {
-                            DB::table('active_spells')
+                        foreach (json_decode($value) as $spell_id) {
+                            DB::table('dominion_spells')
                                 ->updateOrInsert([
                                     'dominion_id' => $dominion->id,
-                                    'spell' => $spell
+                                    'spell_id' => $spell_id
                                 ], [
                                     'duration' => 0,
                                     'cast_by_dominion_id' => $dominion->id,
@@ -512,11 +512,11 @@ class TickService
                 }
 
                 if ($action->event == 'cast spell' && isset($action->delta['queue']['active_spells'])) {
-                    foreach ($action->delta['queue']['active_spells'] as $spellKey => $duration) {
+                    foreach ($action->delta['queue']['active_spells'] as $spell_id => $duration) {
                         // Update spells that were refreshed early
-                        DB::table('active_spells')
+                        DB::table('dominion_spells')
                             ->where('dominion_id', $dominion->id)
-                            ->where('spell', $spellKey)
+                            ->where('spell_id', $spell_id)
                             ->update([
                                 'duration' => $duration - 1,
                                 'updated_at' => $this->now,
@@ -539,7 +539,7 @@ class TickService
             }
 
             // Update spells
-            DB::table('active_spells')
+            DB::table('dominion_spells')
                 ->where('dominion_id', $dominion->id)
                 ->update([
                     'duration' => DB::raw('`duration` + 1'),
@@ -547,7 +547,7 @@ class TickService
                 ]);
 
             // Delete spells
-            DB::table('active_spells')
+            DB::table('dominion_spells')
                 ->where('dominion_id', $dominion->id)
                 ->where('duration', '>=', 12)
                 ->delete();
@@ -640,7 +640,7 @@ class TickService
 
     protected function cleanupActiveSpells(Dominion $dominion)
     {
-        $finished = DB::table('active_spells')
+        $finished = DB::table('dominion_spells')
             ->where('dominion_id', $dominion->id)
             ->where('duration', '<=', 0)
             ->get();
@@ -650,9 +650,9 @@ class TickService
 
         foreach ($finished as $row) {
             if ($row->cast_by_dominion_id == $dominion->id) {
-                $beneficialSpells[] = $row->spell;
+                $beneficialSpells[] = $row->spell_id;
             } else {
-                $harmfulSpells[] = $row->spell;
+                $harmfulSpells[] = $row->spell_id;
             }
         }
 
@@ -664,7 +664,7 @@ class TickService
             $this->notificationService->queueNotification('harmful_magic_dissipated', $harmfulSpells);
         }
 
-        DB::table('active_spells')
+        DB::table('dominion_spells')
             ->where('dominion_id', $dominion->id)
             ->where('duration', '<=', 0)
             ->delete();
@@ -858,10 +858,10 @@ class TickService
         }
 
         // Expiring spells
-        $tick->expiring_spells = DB::table('active_spells')
+        $tick->expiring_spells = DB::table('dominion_spells')
             ->where('dominion_id', $dominion->id)
             ->where('duration', '<=', 1)
-            ->pluck('spell');
+            ->pluck('spell_id');
 
         $tick->save();
 
