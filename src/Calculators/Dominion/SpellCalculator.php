@@ -145,7 +145,7 @@ class SpellCalculator
      */
     public function isSpellActive(Dominion $dominion, string $spellKey): bool
     {
-        return $dominion->spells->contains($spellKey);
+        return $dominion->spells->pluck('key')->contains($spellKey);
     }
 
     /**

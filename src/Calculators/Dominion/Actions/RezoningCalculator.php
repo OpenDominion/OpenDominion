@@ -93,7 +93,7 @@ class RezoningCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('rezone_cost');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplicer('rezone_cost');
+        $multiplier += $dominion->getSpellPerkMultiplier('rezone_cost');
 
         return $multiplier;
     }
