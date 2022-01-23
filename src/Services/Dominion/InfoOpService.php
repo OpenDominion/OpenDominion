@@ -145,7 +145,7 @@ class InfoOpService
 
     public function getMaxInfoOps(): int
     {
-        return $this->spellHelper->getSpells(null, 'info')->count() + 
+        return $this->spellHelper->getSpells(null, 'info')->count() +
             $this->espionageHelper->getInfoGatheringOperations()->count();
     }
 }

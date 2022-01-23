@@ -126,7 +126,6 @@ class SpellHelper
             'spreads_plague' => 'afflicts your enemies with Plague',
             'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades',
 
-
             // Casualties related
             'fewer_casualties' => '%+d%% fewer casualties',
             'fewer_casualties_offense' => '%+d%% fewer casualties on offense',

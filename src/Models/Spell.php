@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Builder;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\SpellPerkType[] $perks
  */
-
 class Spell extends AbstractModel
 {
     protected $table = 'spells';
