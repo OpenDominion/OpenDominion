@@ -110,9 +110,6 @@ class InvadeActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
-    /** @var SpellCalculator */
-    protected $spellCalculator;
-
     // todo: use InvasionRequest class with op, dp, mods etc etc. Since now it's
     // a bit hacky with getting new data between $dominion/$target->save()s
 
@@ -152,7 +149,6 @@ class InvadeActionService
      * @param ProtectionService $protectionService
      * @param QueueService $queueService
      * @param RangeCalculator $rangeCalculator
-     * @param SpellCalculator $spellCalculator
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
@@ -164,8 +160,7 @@ class InvadeActionService
         NotificationService $notificationService,
         ProtectionService $protectionService,
         QueueService $queueService,
-        RangeCalculator $rangeCalculator,
-        SpellCalculator $spellCalculator
+        RangeCalculator $rangeCalculator
     )
     {
         $this->buildingCalculator = $buildingCalculator;
@@ -178,7 +173,6 @@ class InvadeActionService
         $this->protectionService = $protectionService;
         $this->queueService = $queueService;
         $this->rangeCalculator = $rangeCalculator;
-        $this->spellCalculator = $spellCalculator;
     }
 
     /**
@@ -888,7 +882,7 @@ class InvadeActionService
             return $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
         });
 
-        $unitConversionRates = $unitsWithConversionPerk->map(function ($unit) use ($dominion, $units, $spellFeralHungerConversionRate) {
+        $unitConversionRates = $unitsWithConversionPerk->map(function ($unit) use ($dominion, $units) {
             if ($unit->slot == 3 && $dominion->getSpellPerkValue('convert_werewolves')) {
                 $unitSlot = 3;
                 $conversionRate = 1 / $dominion->getSpellPerkValue('convert_werewolves');
