@@ -21,6 +21,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
@@ -221,7 +222,8 @@ class AIService
     }
 
     public function castSpells(Dominion $dominion, array $config) {
-        foreach ($config['spells'] as $spell) {
+        foreach ($config['spells'] as $spellKey) {
+            $spell = Spell::firstWhere('key', $spellKey);
             $spellDuration = $this->spellCalculator->getSpellDuration($dominion, $spell);
             if ($spellDuration == null || $spellDuration < 4) {
                 $this->spellActionService->castSpell($dominion, $spell);
