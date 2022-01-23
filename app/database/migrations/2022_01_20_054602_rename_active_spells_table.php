@@ -1,5 +1,6 @@
 <?php
 
+use Artisan;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,8 @@ class RenameActiveSpellsTable extends Migration
      */
     public function up()
     {
+        Artisan::call('game:data:sync');
+
         Schema::table('active_spells', function (Blueprint $table) {
             $table->unsignedInteger('spell_id')->after('spell');
 
