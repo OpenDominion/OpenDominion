@@ -223,8 +223,8 @@ class MilitaryCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $opPerGryphonNest = 1.6;
-        $gryphonNestMaxOp = 32;
+        $opPerGryphonNest = 1.75;
+        $gryphonNestMaxOp = 35;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['gryphon_nest_percent'])) {
@@ -476,8 +476,8 @@ class MilitaryCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $dpPerGuardTower = 1.6;
-        $guardTowerMaxDp = 32;
+        $dpPerGuardTower = 1.75;
+        $guardTowerMaxDp = 35;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['guard_tower_percent'])) {
@@ -575,8 +575,8 @@ class MilitaryCalculator
     public function getTempleReduction(Dominion $dominion): float
     {
         // Values (percentages)
-        $dpReductionPerTemple = 1.35;
-        $templeMaxDpReduction = 22.5;
+        $dpReductionPerTemple = 1.5;
+        $templeMaxDpReduction = 25;
         $dpMultiplierReduction = 0;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
