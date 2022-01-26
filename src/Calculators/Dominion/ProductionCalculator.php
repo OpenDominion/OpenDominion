@@ -141,7 +141,7 @@ class ProductionCalculator
             $multiplier -= ($guardTax / 100);
         }
 
-        return min(1.5, $multiplier);
+        return $multiplier;
     }
 
     //</editor-fold>
