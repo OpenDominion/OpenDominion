@@ -68,6 +68,18 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label for="skin" class="col-sm-3 control-label">Realm Advisors</label>
+                                <div class="col-sm-9">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="realmadvisors" {{ $user->getSetting('realmadvisors') === false ? null : 'checked' }} />
+                                            Allow realmmates to view your advisors.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                             {{-- Discord --}}
                             @if ($discordHelper->getClientId())
                                 <div class="form-group">

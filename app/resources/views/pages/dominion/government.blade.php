@@ -86,10 +86,12 @@
                                         <tr>
                                             <th>Dominion</th>
                                             <th>Voted for</th>
-                                            <th>Can See Advisors</th>
+                                            <th>Player</th>
+                                            <th>Advisors</th>
                                         </tr>
                                         @php
-                                            $realmAdvisors = $selectedDominion->getSetting("realmadvisors");
+                                            $dominionAdvisors = $selectedDominion->getSetting("realmadvisors");
+                                            $realmAdvisors = $selectedDominion->user->getSetting("realmadvisors");
                                             $packAdvisors = $selectedDominion->user->getSetting("packadvisors");
                                         @endphp
                                         @foreach ($dominions as $dominion)
@@ -107,15 +109,22 @@
                                                     <td>N/A</td>
                                                 @endif
                                                 <td>
+                                                    @if ($dominion->user_id && $selectedDominion->inRealmAndSharesAdvisors($dominion))
+                                                        {{ $dominion->user->display_name }}
+                                                    @endif
+                                                </td>
+                                                <td>
                                                     @if ($dominion->user_id !== null && $dominion->id !== $selectedDominion->id)
-                                                        @if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
+                                                        @if ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === true)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
-                                                        @elseif ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === false)
+                                                        @elseif ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === false)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
                                                         @elseif ($packAdvisors !== false && $selectedDominion->pack_id !== null && $selectedDominion->pack_id == $dominion->pack_id)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
-                                                        @else
+                                                        @elseif ($realmAdvisors === false)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
+                                                        @else
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
                                                         @endif
                                                     @endif
                                                 </td>
@@ -127,7 +136,7 @@
                                     <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                Save
+                                                Update
                                             </button>
                                         </div>
                                     </div>

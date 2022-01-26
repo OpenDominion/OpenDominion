@@ -643,16 +643,21 @@ class Dominion extends AbstractModel
             return false;
         }
 
-        $realmAdvisors = $target->getSetting('realmadvisors');
+        $dominionAdvisors = $target->getSetting('realmadvisors');
 
         // Realm Advisor is explicitly enabled
-        if ($realmAdvisors && array_key_exists($this->id, $realmAdvisors) && $realmAdvisors[$this->id] === true) {
+        if ($dominionAdvisors && array_key_exists($this->id, $dominionAdvisors) && $dominionAdvisors[$this->id] === true) {
             return true;
         }
 
         // Realm Advisor is explicity disabled
-        if ($realmAdvisors && array_key_exists($this->id, $realmAdvisors) && $realmAdvisors[$this->id] === false) {
+        if ($dominionAdvisors && array_key_exists($this->id, $dominionAdvisors) && $dominionAdvisors[$this->id] === false) {
             return false;
+        }
+
+        // Realm Advisor is enabled
+        if ($target->user != null && $target->user->getSetting('realmadvisors') !== false) {
+            return true;
         }
 
         // Pack Advisor is enabled
@@ -660,6 +665,6 @@ class Dominion extends AbstractModel
             return true;
         }
 
-        return false;
+        return true;
     }
 }

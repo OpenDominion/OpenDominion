@@ -206,18 +206,16 @@ class GovernmentController extends AbstractDominionController
 
     public function postAdvisors(Request $request)
     {
-        $newValues = $request->input('realmadvisors');
+        $newValues = $request->input('realmadvisors') ?? [];
         $selectedDominion = $this->getSelectedDominion();
         $settings = ($selectedDominion->settings ?? []);
         $settings['realmadvisors'] = [];
 
-        if ($newValues) {
-            foreach ($selectedDominion->realm->dominions as $dominion) {
-                if (!in_array($dominion->id, $newValues)) {
-                    $settings['realmadvisors'][$dominion->id] = false;
-                } else {
-                    $settings['realmadvisors'][$dominion->id] = true;
-                }
+        foreach ($selectedDominion->realm->dominions as $dominion) {
+            if (!in_array($dominion->id, $newValues)) {
+                $settings['realmadvisors'][$dominion->id] = false;
+            } else {
+                $settings['realmadvisors'][$dominion->id] = true;
             }
         }
 

@@ -88,6 +88,11 @@ class SettingsController extends AbstractController
         } else {
             $settings['packadvisors'] = false;
         }
+        if (isset($data['realmadvisors'])) {
+            $settings['realmadvisors'] = true;
+        } else {
+            $settings['realmadvisors'] = false;
+        }
         $user->settings = $settings;
 
         $user->save();
