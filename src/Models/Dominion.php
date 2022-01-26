@@ -655,13 +655,18 @@ class Dominion extends AbstractModel
             return false;
         }
 
-        // Realm Advisor is enabled
-        if ($target->user != null && $target->user->getSetting('realmadvisors') !== false) {
+        // Pack Advisor is enabled
+        if ($target->user != null && $target->user->getSetting('packadvisors') !== false && ($this->pack_id != null && $this->pack_id == $target->pack_id)) {
             return true;
         }
 
-        // Pack Advisor is enabled
-        if ($target->user != null && $target->user->getSetting('packadvisors') !== false && ($this->pack_id != null && $this->pack_id == $target->pack_id)) {
+        // Late starters disabled by default
+        if ($target->created_at > $target->round->realmAssignmentDate()) {
+            return false;
+        }
+
+        // Realm Advisor is enabled
+        if ($target->user != null && $target->user->getSetting('realmadvisors') !== false) {
             return true;
         }
 

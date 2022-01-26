@@ -121,6 +121,8 @@
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
                                                         @elseif ($packAdvisors !== false && $selectedDominion->pack_id !== null && $selectedDominion->pack_id == $dominion->pack_id)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
+                                                        @elseif ($dominion->created_at > $dominion->round->realmAssignmentDate())
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
                                                         @elseif ($realmAdvisors === false)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
                                                         @else
