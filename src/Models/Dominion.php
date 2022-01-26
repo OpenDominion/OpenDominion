@@ -661,7 +661,7 @@ class Dominion extends AbstractModel
         }
 
         // Late starters disabled by default
-        if ($target->created_at > $target->round->realmAssignmentDate()) {
+        if ($this->created_at > $this->round->realmAssignmentDate()) {
             return false;
         }
 
