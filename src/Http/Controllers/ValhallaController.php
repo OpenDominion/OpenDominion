@@ -106,7 +106,7 @@ class ValhallaController extends AbstractController
             case 'stat-total-lumber-stolen': $data = $this->getDominionsByRanking($round, 'lumber-thieves'); break;
             case 'stat-total-mana-stolen': $data = $this->getDominionsByRanking($round, 'mana-thieves'); break;
             case 'stat-total-ore-stolen': $data = $this->getDominionsByRanking($round, 'ore-thieves'); break;
-            case 'stat-total-gems-stolen': $data = $this->getDominionsByRanking($round, 'gems-thieves'); break;
+            case 'stat-total-gems-stolen': $data = $this->getDominionsByRanking($round, 'gem-thieves'); break;
             case 'stat-top-saboteurs': $data = $this->getDominionsByRanking($round, 'saboteurs'); break;
             case 'stat-top-magical-assassins': $data = $this->getDominionsByRanking($round, 'magical-assassins'); break;
             case 'stat-top-military-assassins': $data = $this->getDominionsByRanking($round, 'military-assassins'); break;
@@ -500,7 +500,7 @@ class ValhallaController extends AbstractController
                     'player' => $player,
                     'race' => $ranking->race_name,
                     'realm' => $ranking->realm_number,
-                    'value' => $ranking->value,
+                    'value' => number_format($ranking->value),
                 ];
             })
             ->take(100)
