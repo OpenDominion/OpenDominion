@@ -10,11 +10,20 @@
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="ra ra-angel-wings"></i> Valhalla</h3>
+            <div class="pull-right">
+                <form method="GET" action="{{ route('valhalla.user.search') }}" class="form-inline" style="white-space: nowrap;">
+                    <div class="form-group form-group-sm">
+                        <input type="text" class="form-control form-control-sm" name="query" placeholder="Username" />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                </form>
+            </div>
         </div>
-        <div class="box-body table-responsive no-padding">
+        <div class="box-body table-responsive">
             <div class="row">
                 @foreach ($leagues as $league)
                     <div class="col-md-12 col-lg-6">
+                        <h4>{{ $league->description }}</h4>
                         <table class="table table-striped">
                             <colgroup>
                                 <col width="50">
@@ -22,11 +31,6 @@
                                 <col width="250">
                             </colgroup>
                             <thead>
-                                <tr>
-                                    <th colspan="3">
-                                        <h4>{{ $league->description }}</h4>
-                                    </th>
-                                </tr>
                                 <tr>
                                     <th class="text-center">Round</th>
                                     <th>Name</th>

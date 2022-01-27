@@ -251,6 +251,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 // Scribes
 
 $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Router $router) {
+
     $router->get('/')->uses('ScribesController@getOverview')->name('overview');
     $router->get('races')->uses('ScribesController@getRaces')->name('races');
     $router->get('construction')->uses('ScribesController@getConstruction')->name('construction');
@@ -259,6 +260,7 @@ $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Rou
     $router->get('tech')->uses('ScribesController@getTechs')->name('techs');
     $router->get('wonders')->uses('ScribesController@getWonders')->name('wonders');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
+
 });
 
 // Valhalla
@@ -268,6 +270,7 @@ $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], static function (R
     $router->get('/')->uses('ValhallaController@getIndex')->name('index');
     $router->get('round/{round}')->uses('ValhallaController@getRound')->name('round');
     $router->get('round/{round}/{type}')->uses('ValhallaController@getRoundType')->name('round.type');
+    $router->get('user/search')->uses('ValhallaController@getUserSearch')->name('user.search');
     $router->get('user/{user}')->uses('ValhallaController@getUser')->name('user');
 
 });
@@ -319,6 +322,7 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->post('dominions/{dominion}/lock', 'Staff\Moderator\DominionController@lockDominion')->name('dominion.lock');
         $router->post('dominions/{dominion}/unlock', 'Staff\Moderator\DominionController@unlockDominion')->name('dominion.unlock');
         $router->resource('dominions', 'Staff\Moderator\DominionController');
+
     });
 
     // todo
