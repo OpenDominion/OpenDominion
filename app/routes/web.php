@@ -268,6 +268,8 @@ $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Rou
 $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], static function (Router $router) {
 
     $router->get('/')->uses('ValhallaController@getIndex')->name('index');
+    $router->get('league/{league}')->uses('ValhallaController@getLeague')->name('league');
+    $router->get('league/{league}/{type}')->uses('ValhallaController@getLeagueType')->name('league.type');
     $router->get('round/{round}')->uses('ValhallaController@getRound')->name('round');
     $router->get('round/{round}/{type}')->uses('ValhallaController@getRoundType')->name('round.type');
     $router->get('user/search')->uses('ValhallaController@getUserSearch')->name('user.search');

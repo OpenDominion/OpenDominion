@@ -203,6 +203,62 @@ class ValhallaController extends AbstractController
         ]);
     }
 
+    public function getLeague(RoundLeague $league)
+    {
+        $rankingsHelper = app(RankingsHelper::class);
+
+        return view('pages.valhalla.league', [
+            'league' => $league,
+            'rankingsHelper' => $rankingsHelper,
+        ]);
+    }
+
+    public function getLeagueType(RoundLeague $league, string $type)
+    {
+        $rankingsHelper = app(RankingsHelper::class);
+
+        $rankings = $rankingsHelper->getRankings();
+        if (!isset($rankings[$type])) {
+            return redirect()->back()->withErrors(["Valhalla type '{$type}' not supported"]);
+        }
+
+        $rounds = $league->rounds()
+            ->where('end_date', '<', now())
+            ->get();
+
+        $standings = DailyRanking::with(['dominion.user'])
+            ->whereIn('round_id', $rounds->pluck('id'))
+            ->where('key', $type)
+            ->get()
+            ->filter(function ($dailyRanking) {
+                return $dailyRanking->dominion->user_id !== null;
+            })
+            ->map(function ($dailyRanking) {
+                return [
+                    'value' => $dailyRanking->value,
+                    'user_id' => $dailyRanking->dominion->user_id,
+                    'display_name' => $dailyRanking->dominion->user->display_name,
+                ];
+            })
+            ->groupBy('user_id')
+            ->map(function ($userRankings) {
+                $firstRanking = $userRankings->first();
+                return [
+                    'value' => $userRankings->sum('value'),
+                    'user_id' => $firstRanking['user_id'],
+                    'display_name' => $firstRanking['display_name'],
+                ];
+            })
+            ->sortByDesc('value');
+
+        return view('pages.valhalla.league-type', [
+            'league' => $league,
+            'ranking' => $rankings[$type],
+            'standings' => $standings,
+            'rankingsHelper' => $rankingsHelper,
+        ]);
+    }
+
     /**
      * @param Round $round
      * @return Response|null

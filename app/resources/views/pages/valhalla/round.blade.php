@@ -11,7 +11,7 @@
                     <b>Round information</b>
                 </div>
             </div>
-            <div class="row row">
+            <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-4 text-center">
                     <table class="table">
