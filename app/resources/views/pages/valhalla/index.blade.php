@@ -23,7 +23,14 @@
             <div class="row">
                 @foreach ($leagues as $league)
                     <div class="col-md-12 col-lg-6">
-                        <h4>{{ $league->description }}</h4>
+                        <h4>
+                            {{ $league->description }} - 
+                            <small>
+                                <a href="{{ route('valhalla.league', $league->id) }}">
+                                    lifetime standings
+                                </a>
+                            </small>
+                        </h4>
                         <table class="table table-striped">
                             <colgroup>
                                 <col width="50">
