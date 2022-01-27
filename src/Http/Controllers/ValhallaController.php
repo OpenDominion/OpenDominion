@@ -2,9 +2,11 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Models\DailyRanking;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
@@ -156,24 +158,50 @@ class ValhallaController extends AbstractController
     {
         $landCalculator = app(LandCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
+        $rankingsHelper = app(RankingsHelper::class);
 
         $dominions = $user->dominions()
-            ->with(['queues', 'realm', 'race.units.perks'])
+            ->with(['queues', 'race.units.perks', 'realm', 'round.league'])
             ->orderByDesc('round_id')
             ->get()
             ->filter(function (Dominion $dominion) {
                 if ($dominion->round->end_date < now()) return $dominion;
             });
 
+        $leagues = RoundLeague::with('rounds')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $dailyRankings = DailyRanking::with('round')
+            ->whereIn('dominion_id', $dominions->pluck('id'))
+            ->get()
+            ->groupBy('round.round_league_id');
+
         return view('pages.valhalla.user', [
             'player' => $user,
             'dominions' => $dominions,
+            'leagues' => $leagues,
+            'dailyRankings' => $dailyRankings,
             'landCalculator' => $landCalculator,
             'networthCalculator' => $networthCalculator,
+            'rankingsHelper' => $rankingsHelper,
         ]);
     }
 
-    // todo: search user
+    public function getUserSearch(Request $request)
+    {
+        $search = trim($request->query('query'));
+
+        $users = User::where('display_name', 'LIKE', "%{$search}%")
+            ->orderBy('id')
+            ->take(50)
+            ->get();
+
+        return view('pages.valhalla.user-search', [
+            'search' => $search,
+            'users' => $users,
+        ]);
+    }
 
     /**
      * @param Round $round

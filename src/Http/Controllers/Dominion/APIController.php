@@ -129,7 +129,7 @@ class APIController extends AbstractDominionController
 
         // Check for target information
         $target = null;
-        $landRatio = null;
+        $landRatio = 1;
         if (isset($calc['target_race'])) {
             $target = new Dominion(['race_id' => $calc['target_race']]);
         }
