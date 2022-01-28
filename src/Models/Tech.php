@@ -32,12 +32,10 @@ class Tech extends AbstractModel
     {
         return $this->belongsToMany(
             TechPerkType::class,
-            'tech_perks',
-            'tech_id',
-            'tech_perk_type_id'
+            TechPerk::class
         )
-            ->withTimestamps()
-            ->withPivot('value');
+        ->withPivot('value')
+        ->withTimestamps();
     }
 
     public function getPerkValue(string $key)

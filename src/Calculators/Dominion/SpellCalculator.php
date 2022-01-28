@@ -161,11 +161,6 @@ class SpellCalculator
             return null;
         }
 
-        $dominionSpell = DominionSpell::where([
-            'dominion_id' => $dominion->id,
-            'spell_id' => $spell->id
-        ])->first();
-
-        return $dominionSpell->duration;
+        return $dominion->spells->find($spell->id)->duration;
     }
 }

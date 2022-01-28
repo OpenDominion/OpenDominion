@@ -248,30 +248,27 @@ class SpellActionService
         // Wonders
         $duration += $dominion->getWonderPerkValue('spell_duration');
 
-        $activeSpell = $dominion->spells->where('key', $spell->key)->first();
+        $activeSpell = $dominion->spells->find($spell->id);
 
         if ($activeSpell !== null) {
-            if ((int)$activeSpell->duration == $duration) {
+            if ((int)$activeSpell->pivot->duration == $duration) {
                 throw new GameException("Your wizards refused to recast {$spell->name}, since it is already at maximum duration.");
             }
-            $activeSpell->update([
-                'duration' => $duration,
-                'updated_at' => now(),
-            ]);
+
+            $activeSpell->pivot->duration = $duration;
+            $activeSpell->pivot->save();
         } else {
             DominionSpell::insert([
                 'dominion_id' => $dominion->id,
                 'spell_id' => $spell->id,
                 'duration' => $duration,
                 'cast_by_dominion_id' => $dominion->id,
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
 
         return [
             'success' => true,
-            'duration' => $activeSpell !== null ? $activeSpell->duration : $spell->duration,
+            'duration' => $duration,
             'message' => sprintf(
                 'Your wizards cast the spell successfully, and it will continue to affect your dominion for the next %s hours.',
                 $duration
@@ -414,7 +411,7 @@ class SpellActionService
         }
 
         if ($target->user_id == null) {
-            throw new GameException('You cannot perform black ops on bots');
+            //throw new GameException('You cannot perform black ops on bots');
         }
 
         if ($this->spellHelper->isWarSpell($spell)) {
@@ -494,29 +491,21 @@ class SpellActionService
                 $duration += $target->getTechPerkValue('enemy_spell_duration');
             }
 
-            if ($target->spells->contains($spell)) {
-                $activeSpell = $target->spells->where('key', $spell->key)->first();
+            $activeSpell = $target->spells->find($spell->id);
 
-                if ($activeSpell === null) {
-                    throw new LogicException("Active spell '{$spell->key}' for dominion id {$target->id} not found");
-                }
-
-                $activeSpell->update([
-                    'duration' => $duration,
-                    'cast_by_dominion_id' => $dominion->id,
-                    'updated_at' => now(),
-                ]);
-                $durationAdded = max(0, $activeSpell->duration - $duration);
+            if ($activeSpell !== null) {
+                $durationAdded = max(0, $duration - $activeSpell->pivot->duration);
+                $activeSpell->pivot->duration += $durationAdded;
+                $activeSpell->pivot->cast_by_dominion_id = $dominion->id;
+                $activeSpell->pivot->save();
             } else {
+                $durationAdded = $duration;
                 DominionSpell::insert([
                     'dominion_id' => $target->id,
                     'spell_id' => $spell->id,
                     'duration' => $duration,
                     'cast_by_dominion_id' => $dominion->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
                 ]);
-                $durationAdded = $duration;
             }
 
             // Update statistics
@@ -549,8 +538,8 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, but it was reflected and it will now affect your dominion for the next %s hours.',
-                        $duration
+                        'Your wizards cast the spell successfully, but it was reflected and it will now affect your dominion for an additional %s hours.',
+                        $durationAdded
                     ),
                     'alert-type' => 'danger'
                 ];
@@ -558,8 +547,8 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, and it will continue to affect your target for the next %s hours.',
-                        $duration
+                        'Your wizards cast the spell successfully, and it will continue to affect your target for an additional %s hours.',
+                        $durationAdded
                     )
                 ];
             }

@@ -48,10 +48,10 @@ class WonderCalculator
      */
     public function getNewPower(RoundWonder $wonder, Realm $realm): float
     {
-        $day = $wonder->round->daysInRound() + 2;
+        $day = $wonder->round->daysInRound();
 
         if ($wonder->realm_id !== null) {
-            $maxPower = min(42500 * $day, 2 * $wonder->power);
+            $maxPower = min(37500 * $day, 2 * $wonder->power);
             $damageContribution = $this->getDamageDealtByRealm($wonder, $realm) / $wonder->power;
             $newPower = floor($maxPower * $damageContribution);
             return max(static::MIN_SPAWN_POWER, round($newPower, -4));

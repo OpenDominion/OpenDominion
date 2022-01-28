@@ -272,26 +272,21 @@ class Dominion extends AbstractModel
 
     public function spells()
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Spell::class,
-            DominionSpell::class,
-            'dominion_id',
-            'id',
-            'id',
-            'spell_id'
-        );
+            DominionSpell::class
+        )
+        ->withPivot('duration', 'cast_by_dominion_id')
+        ->withTimestamps();
     }
 
     public function techs()
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Tech::class,
-            DominionTech::class,
-            'dominion_id',
-            'id',
-            'id',
-            'tech_id'
-        );
+            DominionTech::class
+        )
+        ->withTimestamps();
     }
 
     public function queues()

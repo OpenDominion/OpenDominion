@@ -17,11 +17,9 @@ class SpellPerkType extends AbstractModel
     {
         return $this->belongsToMany(
             Spell::class,
-            'spell_perks',
-            'spell_perk_type_id',
-            'spell_id'
+            SpelPerk::class,
         )
-            ->withPivot('value')
-            ->withTimestamps();
+        ->withPivot('value')
+        ->withTimestamps();
     }
 }
