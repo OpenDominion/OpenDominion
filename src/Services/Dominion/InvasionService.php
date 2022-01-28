@@ -119,14 +119,14 @@ class InvasionService
     }
 
     /**
-     * Check if an invasion passes the 33%-rule.
+     * Check if an invasion passes the 40%-rule.
      *
      * @param Dominion $dominion
      * @param Dominion $target
      * @param array $units
      * @return bool
      */
-    public function passes33PercentRule(Dominion $dominion, ?Dominion $target, array $units): bool
+    public function passes40PercentRule(Dominion $dominion, ?Dominion $target, array $units): bool
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
@@ -146,7 +146,7 @@ class InvasionService
 
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
 
-        return ($newHomeForcesDP >= $totalDP * (1/3));
+        return ($newHomeForcesDP >= $totalDP * 0.40);
     }
 
     /**

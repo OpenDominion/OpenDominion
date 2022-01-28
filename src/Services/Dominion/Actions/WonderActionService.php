@@ -340,8 +340,8 @@ class WonderActionService
                 throw new GameException('You do not have enough morale to attack a wonder');
             }
 
-            if (!$this->invasionService->passes33PercentRule($dominion, null, $units)) {
-                throw new GameException('You need to leave more DP units at home (33% rule)');
+            if (!$this->invasionService->passes40PercentRule($dominion, null, $units)) {
+                throw new GameException('You need to leave more DP units at home (40% rule)');
             }
 
             if (!$this->invasionService->passes54RatioRule($dominion, null, null, $units, true)) {
