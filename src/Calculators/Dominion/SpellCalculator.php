@@ -161,6 +161,6 @@ class SpellCalculator
             return null;
         }
 
-        return $dominion->spells->find($spell->id)->duration;
+        return $dominion->spells->find($spell->id)->pivot->duration;
     }
 }
