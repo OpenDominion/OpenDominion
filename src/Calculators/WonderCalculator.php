@@ -40,12 +40,6 @@ class WonderCalculator
     protected const MAX_SPAWN_POWER = 500000;
 
     /**
-     * @var float Constraints for RP gain formula
-     */
-    protected const TECH_MAX_REWARD = 2500;
-    protected const TECH_MIN_SIZE = 590;
-
-    /**
      * Returns the wonder's power when being rebuilt.
      *
      * @param RoundWonder $wonder

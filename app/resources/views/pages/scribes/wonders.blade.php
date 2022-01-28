@@ -43,7 +43,7 @@
                             <tr>
                                 <th colspan="3">Tier 1</th>
                             </tr>
-                            @php $wonders = $wonderHelper->getWonders()->where('power', 250000); @endphp
+                            @php $wonders = $wonderHelper->getWonders()->where('power', 150000); @endphp
                             @foreach($wonders as $wonder)
                                 <tr>
                                     <td>{{ $wonder->name }}</td>
@@ -54,7 +54,7 @@
                             <tr>
                                 <th colspan="3">Tier 2</th>
                             </tr>
-                            @php $wonders = $wonderHelper->getWonders()->where('power', 150000); @endphp
+                            @php $wonders = $wonderHelper->getWonders()->where('power', 75000); @endphp
                             @foreach($wonders as $wonder)
                                 <tr>
                                     <td>{{ $wonder->name }}</td>
