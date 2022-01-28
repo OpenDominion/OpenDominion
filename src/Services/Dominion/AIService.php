@@ -332,7 +332,8 @@ class AIService
             if ($command['unit'] == 'spies') {
                 // Train spies
                 $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
-                if ($spyRatio < $command['amount']) {
+                $targetRatio = min(35, $dominion->round->daysInRound()) * $command['amount'];
+                if ($spyRatio < $targetRatio) {
                     $incomingSpies = $this->queueService->getTrainingQueueTotalByResource($dominion, 'military_spies');
                     if ($incomingSpies == 0) {
                         $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
@@ -342,7 +343,8 @@ class AIService
             } elseif ($command['unit'] == 'wizards') {
                 // Train wizards
                 $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
-                if ($wizardRatio < $command['amount']) {
+                $targetRatio = min(35, $dominion->round->daysInRound()) * $command['amount'];
+                if ($wizardRatio < $targetRatio) {
                     $incomingWizards = $this->queueService->getTrainingQueueTotalByResource($dominion, 'military_spies');
                     if ($incomingWizards == 0) {
                         $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];

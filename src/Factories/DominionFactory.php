@@ -700,7 +700,11 @@ class DominionFactory
 
         // Ore Mines
         if (!in_array($race->name, $racesWithoutOre)) {
-            $startingBuildings['building_ore_mine'] += 20;
+            if (in_array($race->name, ['Gnome', 'Icekin'])) {
+                $startingBuildings['building_ore_mine'] += min(100, $landAvailable);
+            } else {
+                $startingBuildings['building_ore_mine'] += 20;
+            }
             $landAvailable -= $startingBuildings['building_ore_mine'];
         }
 
