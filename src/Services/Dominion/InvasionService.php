@@ -119,6 +119,22 @@ class InvasionService
     }
 
     /**
+     * Check if an invasion passes the 10%-rule.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @return bool
+     */
+    public function passes10PercentRule(Dominion $dominion, Dominion $target, array $units): bool
+    {
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
+        $defendingForceDP = $this->militaryCalculator->getDefensivePower($target);
+
+        return ($attackingForceOP > $defendingForceDP / rand(9, 11));
+    }
+
+    /**
      * Check if an invasion passes the 40%-rule.
      *
      * @param Dominion $dominion
