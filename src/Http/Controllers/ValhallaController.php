@@ -229,6 +229,7 @@ class ValhallaController extends AbstractController
         $standings = DailyRanking::with(['dominion.user'])
             ->whereIn('round_id', $rounds->pluck('id'))
             ->where('key', $type)
+            ->where('value', '>', 0)
             ->get()
             ->filter(function ($dailyRanking) {
                 return $dailyRanking->dominion->user_id !== null;
