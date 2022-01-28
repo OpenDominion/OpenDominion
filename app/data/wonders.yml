@@ -77,6 +77,7 @@ high_clerics_tower:
   perks:
     kills_immortal: 1
   power: 75000
+  active: false
 ivory_tower:
   name: Ivory Tower
   perks:
@@ -116,6 +117,7 @@ onyx_mausoleum:
   perks:
     enemy_casualties_offense: 25
   power: 75000
+  active: false
 monument_of_protection:
   name: Monument of Protection
   perks:
@@ -135,7 +137,7 @@ golden_throne:
 school_of_war:
   name: School of War
   perks:
-    barracks_housing: 5
+    barracks_housing: 2
   power: 150000
   active: false
 horn_of_plenty:
