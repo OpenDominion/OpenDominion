@@ -226,6 +226,11 @@ class WonderActionService
             // Techs
             $damageDealt *= (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
 
+            // Double damage if neutral wonder
+            if ($this->attackResult['wonder']['neutral']) {
+                $damageDealt *= 2;
+            }
+
             // Cap at % of wonder max power
             $damageDealt = round(min($damageDealt, $wonder->power * $damageCap));
             $dominion->stat_cyclone_damage += $damageDealt;
