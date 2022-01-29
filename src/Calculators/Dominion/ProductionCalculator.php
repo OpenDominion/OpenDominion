@@ -117,7 +117,7 @@ class ProductionCalculator
         $maxInfamyBonus = 7.5;
 
         // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
@@ -376,7 +376,7 @@ class ProductionCalculator
         $maxInfamyBonus = 3;
 
         // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('lumber_production');
@@ -598,7 +598,7 @@ class ProductionCalculator
         $maxInfamyBonus = 3;
 
         // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('ore_production');
@@ -670,7 +670,7 @@ class ProductionCalculator
         $maxInfamyBonus = 3;
 
         // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
@@ -821,18 +821,23 @@ class ProductionCalculator
     }
 
     /**
-     * Returns the base infamy bonus.
+     * Returns the infamy bonus multiplier for a dominion.
      *
-     * @param int $infamy
+     * @param Dominion $dominion
      * @return float
      */
-    public function getInfamyBonus(int $infamy): float
+    public function getInfamyBonus(Dominion $dominion): float
     {
-        if ($infamy == 0) {
+        if ($dominion->infamy == 0) {
             return 0;
         }
 
-        return (1 + error_function(0.00452 * ($infamy - 385))) / 2;
+        $multiplier = (1 + error_function(0.00452 * ($dominion->infamy - 385))) / 2;
+        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+            $multiplier *= 2;
+        }
+
+        return $multiplier;
     }
 
     //</editor-fold>
