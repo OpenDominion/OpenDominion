@@ -29,8 +29,10 @@ class HistoryService
     public const EVENT_ACTION_INVADED = 'invaded';
     public const EVENT_ACTION_JOIN_ROYAL_GUARD = 'join royal guard';
     public const EVENT_ACTION_JOIN_ELITE_GUARD = 'join elite guard';
+    public const EVENT_ACTION_JOIN_BLACK_GUARD = 'join black guard';
     public const EVENT_ACTION_LEAVE_ROYAL_GUARD = 'leave royal guard';
     public const EVENT_ACTION_LEAVE_ELITE_GUARD = 'leave elite guard';
+    public const EVENT_ACTION_LEAVE_BLACK_GUARD = 'leave black guard';
     public const EVENT_ACTION_PROTECTION_ADVANCE_TICK = 'advance tick';
     public const EVENT_ACTION_RESTART = 'restart';
     public const EVENT_ACTION_WONDER_ATTACKED = 'wonder attacked';
@@ -172,6 +174,7 @@ class HistoryService
                 'wonders_last_seen',
                 'royal_guard_active_at',
                 'elite_guard_active_at',
+                'black_guard_active_at',
                 'last_tick_at',
                 'locked_at',
                 'abandoned_at',

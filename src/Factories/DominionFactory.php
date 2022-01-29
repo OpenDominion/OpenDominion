@@ -433,6 +433,7 @@ class DominionFactory
             'highest_land_achieved' => 250,
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
+            'black_guard_active_at' => null,
             'protection_ticks_remaining' => 72,
         ];
     }

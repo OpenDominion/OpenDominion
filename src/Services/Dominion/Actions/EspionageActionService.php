@@ -21,6 +21,7 @@ use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -39,6 +40,9 @@ class EspionageActionService
 
     /** @var GovernmentService */
     protected $governmentService;
+
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -87,6 +91,7 @@ class EspionageActionService
         $this->buildingHelper = app(BuildingHelper::class);
         $this->espionageHelper = app(EspionageHelper::class);
         $this->governmentService = app(GovernmentService::class);
+        $this->guardMembershipService = app(GuardMembershipService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
         $this->infoMapper = app(InfoMapper::class);
@@ -548,7 +553,9 @@ class EspionageActionService
 
         if ($this->espionageHelper->isWarOperation($operationKey)) {
             $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
-            if (!$warDeclared && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
+            $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
+            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+            if (!$warDeclared && !$recentlyInvaded && !$blackGuard) {
                 throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
             }
         }

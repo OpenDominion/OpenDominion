@@ -54,6 +54,17 @@ class GuardMembershipService
     }
 
     /**
+     * Returns the Dominion's black guard join time.
+     *
+     * @param Dominion $dominion
+     * @return Carbon
+     */
+    protected function getBlackGuardJoinDate(Dominion $dominion): Carbon
+    {
+        return Carbon::parse($dominion->black_guard_active_at);
+    }
+
+    /**
      * Returns the Dominion's royal guard application status.
      *
      * @param Dominion $dominion
@@ -82,6 +93,25 @@ class GuardMembershipService
     {
         if ($dominion->elite_guard_active_at !== null) {
             $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
+
+            if ($modifiedJoinDate > now()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the Dominion's black guard application status.
+     *
+     * @param Dominion $dominion
+     * @return bool
+     */
+    public function isBlackGuardApplicant(Dominion $dominion): bool
+    {
+        if ($dominion->black_guard_active_at !== null) {
+            $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
 
             if ($modifiedJoinDate > now()) {
                 return true;
@@ -141,6 +171,25 @@ class GuardMembershipService
     }
 
     /**
+     * Returns the Dominion's black guard membership status.
+     *
+     * @param Dominion $dominion
+     * @return bool
+     */
+    public function isBlackGuardMember(Dominion $dominion): bool
+    {
+        if ($dominion->black_guard_active_at !== null) {
+            $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
+
+            if ($modifiedJoinDate <= now()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the number of hours remaining before Dominion joins the royal guard.
      *
      * @param Dominion $dominion
@@ -158,7 +207,7 @@ class GuardMembershipService
     }
 
     /**
-     * Returns the number of hours remaining before Dominion joins the royal guard.
+     * Returns the number of hours remaining before Dominion joins the elite guard.
      *
      * @param Dominion $dominion
      * @return int
@@ -170,6 +219,23 @@ class GuardMembershipService
         }
 
         $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
+
+        return $modifiedJoinDate->diffInHours(now()->startOfHour());
+    }
+
+    /**
+     * Returns the number of hours remaining before Dominion joins the black guard.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getHoursBeforeBlackGuardMember(Dominion $dominion): int
+    {
+        if (!$this->isBlackGuardApplicant($dominion)) {
+            return 0;
+        }
+
+        $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
 
         return $modifiedJoinDate->diffInHours(now()->startOfHour());
     }
@@ -219,6 +285,28 @@ class GuardMembershipService
     }
 
     /**
+     * Returns the number of hours remaining before Dominion can leave the black guard.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getHoursBeforeLeaveBlackGuard(Dominion $dominion): int
+    {
+        if (!$this->isBlackGuardMember($dominion)) {
+            return 0;
+        }
+
+        $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
+        $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
+
+        if ($leaveDate > now()->startOfHour()) {
+            return $leaveDate->diffInHours(now()->startOfHour());
+        }
+
+        return 0;
+    }
+
+    /**
      * Sets the Dominion's royal guard join time.
      *
      * @param Dominion $dominion
@@ -243,6 +331,18 @@ class GuardMembershipService
     }
 
     /**
+     * Sets the Dominion's black guard join time.
+     *
+     * @param Dominion $dominion
+     * @return void
+     */
+    public function joinBlackGuard(Dominion $dominion): void
+    {
+        $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_BLACK_GUARD]);
+    }
+
+    /**
      * Removes the Dominion's royal guard join time.
      *
      * @param Dominion $dominion
@@ -264,5 +364,17 @@ class GuardMembershipService
     {
         $dominion->elite_guard_active_at = null;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_ELITE_GUARD]);
+    }
+
+    /**
+     * Removes the Dominion's black guard join time.
+     *
+     * @param Dominion $dominion
+     * @return void
+     */
+    public function leaveBlackGuard(Dominion $dominion): void
+    {
+        $dominion->black_guard_active_at = null;
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_BLACK_GUARD]);
     }
 }

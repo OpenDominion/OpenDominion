@@ -207,8 +207,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/realm')->uses('Dominion\GovernmentController@postRealm')->name('government.realm');
             $router->post('government/royal-guard/join')->uses('Dominion\GovernmentController@postJoinRoyalGuard')->name('government.royal-guard.join');
             $router->post('government/elite-guard/join')->uses('Dominion\GovernmentController@postJoinEliteGuard')->name('government.elite-guard.join');
+            $router->post('government/black-guard/join')->uses('Dominion\GovernmentController@postJoinBlackGuard')->name('government.black-guard.join');
             $router->post('government/royal-guard/leave')->uses('Dominion\GovernmentController@postLeaveRoyalGuard')->name('government.royal-guard.leave');
             $router->post('government/elite-guard/leave')->uses('Dominion\GovernmentController@postLeaveEliteGuard')->name('government.elite-guard.leave');
+            $router->post('government/black-guard/leave')->uses('Dominion\GovernmentController@postLeaveBlackGuard')->name('government.black-guard.leave');
             $router->post('government/war/declare')->uses('Dominion\GovernmentController@postDeclareWar')->name('government.war.declare');
             $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
             $router->post('government/advisors')->uses('Dominion\GovernmentController@postAdvisors')->name('government.advisors');

@@ -119,6 +119,9 @@
                                                     @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
                                                         <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                                     @endif
+                                                    @if ($guardMembershipService->isBlackGuardMember($dominion))
+                                                        <i class="ra ra-fire-shield ra-lg text-black" title="Black Guard"></i>
+                                                    @endif
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                                     @if ($dominion->locked_at !== null)
                                                         <span class="label label-danger">Locked</span>

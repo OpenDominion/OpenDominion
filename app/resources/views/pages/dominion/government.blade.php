@@ -388,7 +388,7 @@
                                 <li>Exploration platinum cost increased by 25%.</li>
                             </ul>
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)
-                                <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveEliteGuard ? 'disabled' : null }}>
                                         @if ($isEliteGuardMember)
@@ -399,10 +399,39 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('dominion.government.elite-guard.join') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.elite-guard.join') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
                                         Request to Join Elite Guard
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                        <div class="col-sm-6 text-center">
+                            <h4 class="text-black">
+                                <i class="ra ra-fire-shield" title="Black Guard"></i>
+                                The Black Guard
+                            </h4>
+                            <ul class="text-left" style="padding: 0 30px;">
+                                <li>Enables war operations between members.</li>
+                                <li>Infamy production bonuses are doubled.</li>
+                            </ul>
+                            @if ($isBlackGuardApplicant || $isBlackGuardMember)
+                                <form action="{{ route('dominion.government.black-guard.leave') }}" method="post" role="form">
+                                    @csrf
+                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
+                                        @if ($isBlackGuardMember)
+                                            Leave Black Guard
+                                        @else
+                                            Cancel Application
+                                        @endif
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('dominion.government.black-guard.join') }}" method="post" role="form">
+                                    @csrf
+                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
+                                        Request to Join Black Guard
                                     </button>
                                 </form>
                             @endif
@@ -424,13 +453,11 @@
 
                     @if ($isEliteGuardMember)
                         <p>You are a member of the Emperor's <span class="text-yellow"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
-
                         @if ($hoursBeforeLeaveEliteGuard)
                             <p>You cannot leave for {{ $hoursBeforeLeaveEliteGuard }} hours.</p>
                         @endif
                     @elseif ($isRoyalGuardMember)
                         <p>You are a member of the Emperor's <span class="text-green"><i class="ra ra-heavy-shield" title="Royal Guard"></i> Royal Guard</span>.</p>
-
                         @if ($hoursBeforeLeaveRoyalGuard)
                             <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveRoyalGuard }} hours.</p>
                         @endif
@@ -444,6 +471,15 @@
 
                     @if ($isRoyalGuardApplicant)
                         <p>You will become a member of the Emperor's Royal Guard in {{ $hoursBeforeRoyalGuardMember }} hours.</p>
+                    @endif
+
+                    @if ($isBlackGuardMember)
+                        <p>You are a member of the <span class="text-yellow"><i class="ra ra-heavy-shield" title="Black Guard"></i>Black Guard</span>.</p>
+                        @if ($hoursBeforeLeaveBlackGuard)
+                            <p>You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
+                        @endif
+                    @elseif ($isBlackGuardApplicant)
+                        <p>You will become a member of the Black Guard in {{ $hoursBeforeBlackGuardMember }} hours.</p>
                     @endif
                 </div>
             </div>

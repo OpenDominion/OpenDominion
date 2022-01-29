@@ -22,6 +22,7 @@ use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -34,6 +35,9 @@ class SpellActionService
 
     /** @var GovernmentService */
     protected $governmentService;
+
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -80,6 +84,7 @@ class SpellActionService
     public function __construct()
     {
         $this->governmentService = app(GovernmentService::class);
+        $this->guardMembershipService = app(GuardMembershipService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->infoMapper = app(InfoMapper::class);
         $this->landCalculator = app(LandCalculator::class);
@@ -411,12 +416,14 @@ class SpellActionService
         }
 
         if ($target->user_id == null) {
-            //throw new GameException('You cannot perform black ops on bots');
+            throw new GameException('You cannot perform black ops on bots');
         }
 
         if ($this->spellHelper->isWarSpell($spell)) {
             $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
-            if (!$warDeclared && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
+            $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
+            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+            if (!$warDeclared && !$recentlyInvaded && !$blackGuard) {
                 throw new GameException("You cannot cast {$spell->name} outside of war.");
             }
         }
