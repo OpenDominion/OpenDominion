@@ -39,7 +39,7 @@ units:
   - name: Spellblade
     cost:
       platinum: 1225
-      ore: 75
+      ore: 50
       gems: 10
     power:
       offense: 6.5

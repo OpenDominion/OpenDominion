@@ -23,7 +23,7 @@ units:
   - name: Fiend
     cost:
       platinum: 325
-      mana: 12
+      mana: 8
     power:
       offense: 0
       defense: 3
@@ -38,7 +38,7 @@ units:
       defense_from_land: swamp,12,3 # land type, ratio%, max
   - name: Lich
     cost:
-      platinum: 950
+      platinum: 970
       mana: 0
     power:
       offense: 5
