@@ -419,10 +419,11 @@ class SpellActionService
             throw new GameException('You cannot perform black ops on bots');
         }
 
+        $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
+        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
+        $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
+        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
         if ($this->spellHelper->isWarSpell($spell)) {
-            $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
-            $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
-            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
             if (!$warDeclared && !$recentlyInvaded && !$blackGuard) {
                 throw new GameException("You cannot cast {$spell->name} outside of war.");
             }
@@ -492,8 +493,14 @@ class SpellActionService
         }
 
         if ($spell->duration > 0) {
-            // Cast spell with duration
+            // Cast spell with duration (increased during war)
             $duration = $spell->duration;
+            if ($warDeclared || $blackGuard) {
+                $duration *= 1.5;
+            } elseif ($mutualWarDeclared) {
+                $duration *= 2;
+            }
+
             if ($target->getTechPerkValue('enemy_spell_duration') !== 0) {
                 $duration += $target->getTechPerkValue('enemy_spell_duration');
             }
@@ -661,7 +668,7 @@ class SpellActionService
                 $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
 
                 // Mutual War
-                if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
+                if ($mutualWarDeclared) {
                     $infamyGain = round(1.2 * $infamyGain);
                     $resilienceGain = round(0.5 * $resilienceGain);
                 }
