@@ -124,7 +124,7 @@ class SpellHelper
             'kills_immortal' => 'Can kill spirits and the undead',
             'ignore_draftees' => 'Enemy draftees do not participate in battle',
             'spreads_plague' => 'afflicts your enemies with Plague',
-            'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades (75%+ range only)',
+            'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades (75%%+ range only)',
 
             // Casualties related
             'fewer_casualties' => '%+d%% fewer casualties',
