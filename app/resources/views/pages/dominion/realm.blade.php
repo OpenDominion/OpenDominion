@@ -15,7 +15,7 @@
                         <colgroup>
                             <col width="50">
                             <col>
-                            @if ($isOwnRealm || $dominion->round->hasEnded())
+                            @if ($isOwnRealm || $round->hasEnded())
                                 <col width="150">
                             @endif
                             <col width="100">
@@ -26,7 +26,7 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
-                                @if ($isOwnRealm || $dominion->round->hasEnded())
+                                @if ($isOwnRealm || $round->hasEnded())
                                     <th class="text-center">Player</th>
                                 @endif
                                 <th class="text-center">Race</th>
@@ -43,7 +43,7 @@
                                 @if ($dominion === null)
                                     <tr>
                                         <td>&nbsp;</td>
-                                        @if ($isOwnRealm || $dominion->round->hasEnded())
+                                        @if ($isOwnRealm || $round->hasEnded())
                                             <td colspan="5"><i>Vacant</i></td>
                                         @else
                                             <td colspan="4"><i>Vacant</i></td>
@@ -88,7 +88,7 @@
                                             @if ($dominion->user == null)
                                                 <span class="label label-info">Bot</span>
                                             @else
-                                                @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
+                                                @if ($isOwnRealm && $round->isActive() && $dominion->user->isOnline())
                                                     <span class="label label-success">Online</span>
                                                 @endif
                                             @endif
@@ -99,7 +99,7 @@
                                                 <span class="label label-warning">Abandoned</span>
                                             @endif
                                         </td>
-                                        @if ($dominion->user_id !== null && ($dominion->round->hasEnded() ||  ($isOwnRealm && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))))
+                                        @if ($dominion->user_id !== null && ($round->hasEnded() ||  ($isOwnRealm && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))))
                                             <td class="text-center"><a href="{{ route('valhalla.user', $dominion->user_id) }}">{{ $dominion->user->display_name }}</a></td>
                                         @else
                                             <td class="text-center"></td>
