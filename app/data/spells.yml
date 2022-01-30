@@ -170,7 +170,7 @@ favorable_terrain:
   races:
     - nomad-rework
   perks:
-    offense_from_barren_land: 1
+    offense_from_barren_land: 10
 miners_sight:
   name: Miner's Sight
   category: self
