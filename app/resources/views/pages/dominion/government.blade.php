@@ -430,7 +430,7 @@
                             @else
                                 <form action="{{ route('dominion.government.black-guard.join') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Request to Join Black Guard
                                     </button>
                                 </form>
