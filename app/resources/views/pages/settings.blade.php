@@ -72,6 +72,12 @@
                                         </label>
                                     </div>
                                     <p class="help-block">Shared advisors can still be enabled/disabled per dominion on the government page, these settings only determine the default values (does not apply to late starters).</p>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="shareusername" {{ $user->getSetting('shareusername') === false ? null : 'checked' }} />
+                                            Share display name alongside advisors.
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 

@@ -663,10 +663,29 @@ class Dominion extends AbstractModel
         }
 
         // Realm Advisor is enabled
-        if ($target->user != null && $target->user->getSetting('realmadvisors') !== false) {
+        if ($target->user !== null && $target->user->getSetting('realmadvisors') !== false) {
             return true;
         }
 
-        return true;
+        return false;
+    }
+
+    public function sharesUsername(?Dominion $target): bool
+    {
+        if ($target->user_id == null) {
+            return false;
+        }
+
+        // Always shared with packmates
+        if ($target->pack_id !== null && $target->pack_id == $this->pack_id) {
+            return true;
+        }
+
+        // Shared display name is enabled
+        if ($target->user->getSetting('sharesusername') !== false) {
+            return true;
+        }
+
+        return false;
     }
 }

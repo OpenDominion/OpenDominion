@@ -93,6 +93,11 @@ class SettingsController extends AbstractController
         } else {
             $settings['realmadvisors'] = false;
         }
+        if (isset($data['shareusername'])) {
+            $settings['shareusername'] = true;
+        } else {
+            $settings['shareusername'] = false;
+        }
         $user->settings = $settings;
 
         $user->save();

@@ -10,7 +10,7 @@
             <div class="box-body table-responsive">
                 <div class="row">
                     @foreach ($leagues as $league)
-                        <div class="col-md-12 col-lg-6">
+                        <div class="col-md-12">
                             <h4>{{ $league->description }}</h4>
                             <table class="table table-striped">
                                 <thead>
