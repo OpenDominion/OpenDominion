@@ -92,6 +92,35 @@ class GuardMembershipActionService
     }
 
     /**
+     * Starts black guard application for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
+     * @throws GameException
+     */
+    public function joinBlackGuard(Dominion $dominion): array
+    {
+        $this->guardLockedDominion($dominion);
+
+        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+            throw new GameException('You are already a member of the Black Guard.');
+        }
+
+        if ($this->guardMembershipService->isBlackGuardApplicant($dominion)) {
+            throw new GameException('You have already applied to join the Black Guard.');
+        }
+
+        $this->guardMembershipService->joinBlackGuard($dominion);
+
+        return [
+            'message' => sprintf(
+                'You have applied to join the Black Guard.'
+            ),
+            'data' => []
+        ];
+    }
+
+    /**
      * Leaves the royal guard or cancels an application for a Dominion.
      *
      * @param Dominion $dominion
@@ -158,6 +187,39 @@ class GuardMembershipActionService
         }
 
         $this->guardMembershipService->leaveEliteGuard($dominion);
+
+        return [
+            'message' => $message,
+            'data' => []
+        ];
+    }
+
+    /**
+     * Leaves the black guard or cancels an application for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
+     * @throws GameException
+     */
+    public function leaveBlackGuard(Dominion $dominion): array
+    {
+        $this->guardLockedDominion($dominion);
+
+        if ($this->guardMembershipService->getHoursBeforeLeaveBlackGuard($dominion)) {
+            throw new GameException('You cannot leave the Black Guard for 48 hours after joining.');
+        }
+
+        if (!$this->guardMembershipService->isBlackGuardApplicant($dominion) && !$this->guardMembershipService->isEliteGuardMember($dominion)) {
+            throw new GameException('You are not a member of the Black Guard.');
+        }
+
+        if ($this->guardMembershipService->isBlackGuardApplicant($dominion)) {
+            $message = 'You have canceled your Black Guard application.';
+        } else {
+            $message = 'You have left the Black Guard.';
+        }
+
+        $this->guardMembershipService->leaveBlackGuard($dominion);
 
         return [
             'message' => $message,
