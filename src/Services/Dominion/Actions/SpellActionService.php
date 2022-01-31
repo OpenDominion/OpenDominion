@@ -625,11 +625,11 @@ class SpellActionService
 
                 // Damage reduction from Masonries
                 if (strpos($attr, 'improvement_') === 0) {
-                    $masonryLightningBoltReduction = 1;
-                    $masonryLightningBoltReductionMax = 10;
+                    $wizardGuildLightningBoltReduction = 10;
+                    $wizardGuildLightningBoltReductionMax = 80;
                     $damageMultiplier = min(
-                        (($target->building_masonry / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
-                        ($masonryLightningBoltReductionMax / 100)
+                        (($target->building_wizard_guild / $this->landCalculator->getTotalLand($target)) * $wizardGuildLightningBoltReduction),
+                        ($wizardGuildLightningBoltReductionMax / 100)
                     );
                     $damageReductionMultiplier += $damageMultiplier;
                 }
