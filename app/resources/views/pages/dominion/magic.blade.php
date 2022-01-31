@@ -8,61 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="row">
 
-                <div class="col-md-4">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
-                        </div>
-                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            @csrf
-
-                            <div class="box-body">
-                                @foreach ($spellHelper->getSpells($selectedDominion->race, 'self')->chunk(2) as $spells)
-                                    <div class="row">
-                                        @foreach ($spells as $spell)
-                                            <div class="col-xs-6 col-sm-6 col-md-12 col-lg-6 text-center">
-                                                @php
-                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell);
-                                                    $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
-                                                    $isActive = $selectedDominion->spells->contains($spell);
-                                                    $buttonStyle = ($isActive ? 'btn-success' : 'btn-primary');
-                                                @endphp
-                                                <div class="form-group">
-                                                    <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours ? 'disabled' : null }}>
-                                                        {{ $spell->name }}
-                                                    </button>
-                                                    <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
-                                                    <p>
-                                                        <small>
-                                                            @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
-                                                            @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
-                                                            @endif
-                                                            @if ($isActive)
-                                                                ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell) }} hours remaining)<br/>
-                                                            @else
-                                                                Lasts {{ $spell->duration }} hours<br/>
-                                                            @endif
-                                                            @if ($cooldownHours)
-                                                                (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>
-                                                            @endif
-                                                            @if (!empty($spell->races))
-                                                                Racial<br/>
-                                                            @endif
-                                                        </small>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endforeach
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
@@ -216,6 +162,60 @@
                             </form>
                         @endif
 
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
+                        </div>
+                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                            @csrf
+
+                            <div class="box-body">
+                                @foreach ($spellHelper->getSpells($selectedDominion->race, 'self')->chunk(4) as $spells)
+                                    <div class="row">
+                                        @foreach ($spells as $spell)
+                                            <div class="col-xs-6 col-md-3 text-center">
+                                                @php
+                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell);
+                                                    $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
+                                                    $isActive = $selectedDominion->spells->contains($spell);
+                                                    $buttonStyle = ($isActive ? 'btn-success' : 'btn-primary');
+                                                @endphp
+                                                <div class="form-group">
+                                                    <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours ? 'disabled' : null }}>
+                                                        {{ $spell->name }}
+                                                    </button>
+                                                    <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
+                                                    <p>
+                                                        <small>
+                                                            @if ($canCast)
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                            @else
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                            @endif
+                                                            @if ($isActive)
+                                                                ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell) }} hours remaining)<br/>
+                                                            @else
+                                                                Lasts {{ $spell->duration }} hours<br/>
+                                                            @endif
+                                                            @if ($cooldownHours)
+                                                                (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>
+                                                            @endif
+                                                            @if (!empty($spell->races))
+                                                                Racial<br/>
+                                                            @endif
+                                                        </small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
+                            </div>
+                        </form>
                     </div>
                 </div>
 

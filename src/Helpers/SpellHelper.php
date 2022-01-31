@@ -151,7 +151,7 @@ class SpellHelper
             // Wizard related
             'energy_mirror' => '20%% chance to reflect incoming offensive spells',
             'fools_gold' => 'Platinum theft protection',
-            'surreal_perception' => 'Reveals the dominion casting offensive spells or committing spy ops against you',
+            'surreal_perception' => 'Reveals the dominion casting spells or committing spy ops against you',
             'convert_military_spies_to_military_draftees' => 'Turns %.2f%% of enemy spies into draftees',
             'convert_military_spies_to_self_military_unit3' => 'Converts %.2f%% of enemy spies into Progeny',
             'destroy_peasants' => 'Kills %.2f%% peasants',

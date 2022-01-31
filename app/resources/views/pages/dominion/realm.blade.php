@@ -54,7 +54,7 @@
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($dominion->isMonarch())
-                                                <i class="ra ra-queen-crown ra-lg text-red"></i>
+                                                <i class="ra ra-queen-crown ra-lg text-red" title="Monarch"></i>
                                             @endif
 
                                             @if ($protectionService->isUnderProtection($dominion))
