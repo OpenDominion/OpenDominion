@@ -246,7 +246,7 @@ class InvadeActionService
                 throw new GameException('You do not have enough morale to invade others');
             }
 
-            if (!$this->invasionService->passes10PercentRule($dominion, $target, $units)) {
+            if (!$this->invasionService->passes50PercentRule($dominion, $target, $units)) {
                 throw new GameException('Your forces are severely outmatched and refuse to fight');
             }
 

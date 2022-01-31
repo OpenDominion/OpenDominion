@@ -3,6 +3,56 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Protection now ends at the start of Day 1 (OOP = round start)
+  - Realms assigned 48 hours prior to round start
+  - War/Guards enabled Day 3
+  - Black ops enabled Day 4
+- Spell system rebuilt
+- Advisors are now shared by default when assigned to a realm
+  - Dominions that join after realm assignment will not get access
+- Platinum production bonuses no longer capped at 50%
+- Bot DP increased at lower land sizes
+- Bot spy/wizard ratios are now randomized and slowly increase until Day 35
+- 33% Rule increased to 40% (must keep 40% of your total defense home when invading)
+- Invasions that would be overwhelmed by 50-80% (randomized) or more will fail
+- Wonder HP reduced to 150k/75k (from 250k/150k)
+- Cyclone deals double damage against neutral wonders
+- High Clerics Tower and Onyx Mausoleum removed
+- School of War returns (+2 barracks housing)
+- Maximum prestige gain from rebuilding another realm's wonder reduced by 25 (from 100)
+- Tech cost changed to 3600 + 0.65xLAND + 100xTECHS (from 9500 + 100xTECHS)
+- Platinum bonus research points reduced to 250 (from 750)
+- Research points gained on invasion reduced to 500 (from 1000)
+- School: research points produced changed to SCHOOLS x (1 - SCHOOLS/LAND) down to a minimum of 0.5 per school at 50% owned (from 25 per 1% owned up to a maximum of 750), research points gained on invasion removed (from 125 per 1% owned up to a maximum of 2500)
+- Smithy: maximum cost reduction reduced to 30% at 15% owned (from 36% at 18% owned)
+- Masonry: lightning bolt protection removed (was 1% per 1% owned up to a maximum of 10%)
+- Wizard Guild: lightning bolt protection added, 8% per 1% owned up to a maximum of 80% at 10% owned
+- Gryphon Nest: OP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
+- Guard Tower: DP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
+- Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.7% owned (from 1.35x per 1% owned, max 22.5% at 16.7% owned)
+- Dark Elf Spellblade: -25p (from 1250p), -25r (from 75r)
+- Human Knight: -25p (from 1025p)
+- Nox Fiend: -4m (from 12m)
+- Nox Lich: +20p (from 950p)
+- Spirit Phantom Knight: -50p (from 1050p)
+- Spirit Spectral Warrior: -50p (from 1200p)
+- Undead Skeleton: renamed Dire Bat, no longer needs boats
+- Undead: new spell Necromantic Ritual kills 1% of target's spies and converts them into Progeny after 12 hours (added to invasion queue)
+
+### Added
+- Black Guard
+  - Enables war-only black ops between members
+  - Production bonuses from Infamy are doubled
+  - 12 hour delay to join and leave, cannot leave for 48 hours after joining, black ops without war reset leave timer
+- Ability to search users in Valhalla
+- Aggregated league stats per user in Valhalla
+- Lifetime standings per league in Valhalla
+- Setting to opt out of auto-sharing realm advisors
+- Setting to opt out of sharing username alongside advisors
+
+### Fixed
+- Gnome and Icekin bots spawn with more ore mines
 
 ## [1.7.2] - 2022-01-16
 ### Added

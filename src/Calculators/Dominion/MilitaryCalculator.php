@@ -1228,7 +1228,7 @@ class MilitaryCalculator
             ->get();
 
         $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
-            return $event->data['result']['success'];
+            return $event->data['result']['success'] && $event->data['result']['range'] >= 75;
         });
 
         return $invasionEvents->where('target.user_id', $target->user_id)->count();
