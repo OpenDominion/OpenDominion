@@ -716,15 +716,14 @@ class ProductionCalculator
         $tech = 0;
 
         // Values
-        $techPerSchoolPercentage = 2500;
         $schoolPercentageCap = 30;
 
         // Building: School
         $schoolPercentage = min(
-            $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
-            $schoolPercentageCap / 100
+            $schoolPercentageCap / 100,
+            $dominion->building_school / $this->landCalculator->getTotalLand($dominion)
         );
-        $tech += min($this->landCalculator->getTotalLand($dominion), $techPerSchoolPercentage * $schoolPercentage);
+        $tech += $dominion->building_school * (1 - $schoolPercentage);
 
         // Wonders
         $tech += $dominion->getWonderPerkValue('tech_production_raw');

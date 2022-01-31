@@ -28,7 +28,7 @@ class DailyBonusesActionService
         }
 
         $platinumGained = $dominion->peasants * 4;
-        $researchPointsGained = 750;
+        $researchPointsGained = 250;
 
         $dominion->resource_platinum += $platinumGained;
         $dominion->resource_tech += $researchPointsGained;
