@@ -644,7 +644,17 @@ class SpellActionService
 
                 $target->{$attr} -= $damage;
                 if ($convertAttr !== null) {
-                    $target->{$convertAttr} += $damage;
+                    if (Str::startsWith($convertAttr, 'self')) {
+                        $convertAttr = str_replace('self_', '', $convertAttr);
+                        $this->queueService->queueResources(
+                            'invasion',
+                            $dominion,
+                            [$convertAttr => $damage],
+                            12
+                        );
+                    } else {
+                        $target->{$convertAttr} += $damage;
+                    }
                 }
 
                 $totalDamage += $damage;

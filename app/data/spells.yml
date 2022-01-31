@@ -362,3 +362,12 @@ nightfall:
     - nox
   perks:
     offense: 5
+necromantic_ritual:
+  name: Necromantic Ritual
+  category: war
+  cost_mana: 4
+  cost_strength: 5
+  races:
+    - undead
+  perks:
+    convert_military_spies_to_self_military_unit3: 1

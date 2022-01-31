@@ -153,6 +153,7 @@ class SpellHelper
             'fools_gold' => 'Platinum theft protection',
             'surreal_perception' => 'Reveals the dominion casting offensive spells or committing spy ops against you',
             'convert_military_spies_to_military_draftees' => 'Turns %.2f%% of spies into draftees',
+            'convert_military_spies_to_self_military_unit3' => 'Converts %.2f%% of spies into Progeny',
             'destroy_peasants' => 'Kills %.2f%% peasants',
             'destroy_resource_food' => 'Destroys %.2f%% crops',
             'destroy_improvement_science' => 'Destroys %.2f%% science',

@@ -14,7 +14,7 @@ perks:
   mana_production: 10
   immortal_wizards: 1
 units:
-  - name: Skeleton
+  - name: Dire Bat
     cost:
       platinum: 225
       ore: 0
@@ -23,6 +23,7 @@ units:
       defense: 0
     perks:
       immortal: 1
+    need_boat: false
   - name: Ghoul
     cost:
       platinum: 225
