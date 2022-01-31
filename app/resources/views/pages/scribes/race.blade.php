@@ -25,9 +25,9 @@
                         </div>
                         <div class="col-md-12 col-md-9">
                             {{-- Racial Spell --}}
-                            <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell</h4>
+                            <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell(s)</h4>
                             @php
-                                $racialSpells = $spellHelper->getSpells($race, 'self')->where('races', '!=', []);
+                                $racialSpells = $spellHelper->getSpells($race)->where('races', '!=', []);
                             @endphp
                             @foreach ($racialSpells as $spell)
                                 <p>
