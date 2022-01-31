@@ -416,7 +416,14 @@
                                 <li>Enables war operations between members.</li>
                                 <li>Infamy production bonuses are doubled.</li>
                             </ul>
-                            @if ($isBlackGuardApplicant || $isBlackGuardMember)
+                            @if ($isLeavingBlackGuard)
+                                <form action="{{ route('dominion.government.black-guard.cancel') }}" method="post" role="form">
+                                    @csrf
+                                    <button type="submit" name="land" class="btn btn-warning btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
+                                        Remain in Black Guard
+                                    </button>
+                                </form>
+                            @elseif ($isBlackGuardApplicant || $isBlackGuardMember)
                                 <form action="{{ route('dominion.government.black-guard.leave') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
@@ -474,9 +481,12 @@
                     @endif
 
                     @if ($isBlackGuardMember)
-                        <p>You are a member of the <span class="text-yellow"><i class="ra ra-heavy-shield" title="Black Guard"></i>Black Guard</span>.</p>
+                        <p>You are a member of the <span class="text-black"><i class="ra ra-fire-shield" title="Black Guard"></i>Black Guard</span>.</p>
                         @if ($hoursBeforeLeaveBlackGuard)
-                            <p>You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
+                            <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
+                        @endif
+                        @if ($isLeavingBlackGuard)
+                            <p>You will leave the Black Guard in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
                         @endif
                     @elseif ($isBlackGuardApplicant)
                         <p>You will become a member of the Black Guard in {{ $hoursBeforeBlackGuardMember }} hours.</p>

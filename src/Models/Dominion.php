@@ -91,6 +91,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property \Illuminate\Support\Carbon|null $royal_guard_active_at
  * @property \Illuminate\Support\Carbon|null $elite_guard_active_at
  * @property \Illuminate\Support\Carbon|null $black_guard_active_at
+ * @property \Illuminate\Support\Carbon|null $black_guard_inactive_at
  * @property \Illuminate\Support\Carbon|null $last_tick_at
  * @property \Illuminate\Support\Carbon|null $locked_at
  * @property \Illuminate\Support\Carbon|null $abandoned_at
@@ -191,6 +192,7 @@ class Dominion extends AbstractModel
         'royal_guard_active_at' => 'datetime',
         'elite_guard_active_at' => 'datetime',
         'black_guard_active_at' => 'datetime',
+        'black_guard_inactive_at' => 'datetime',
         'last_tick_at' => 'datetime',
         'locked_at' => 'datetime',
         'abandoned_at' => 'datetime',

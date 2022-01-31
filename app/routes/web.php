@@ -211,6 +211,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/royal-guard/leave')->uses('Dominion\GovernmentController@postLeaveRoyalGuard')->name('government.royal-guard.leave');
             $router->post('government/elite-guard/leave')->uses('Dominion\GovernmentController@postLeaveEliteGuard')->name('government.elite-guard.leave');
             $router->post('government/black-guard/leave')->uses('Dominion\GovernmentController@postLeaveBlackGuard')->name('government.black-guard.leave');
+            $router->post('government/black-guard/cancel')->uses('Dominion\GovernmentController@postCancelLeaveBlackGuard')->name('government.black-guard.cancel');
             $router->post('government/war/declare')->uses('Dominion\GovernmentController@postDeclareWar')->name('government.war.declare');
             $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
             $router->post('government/advisors')->uses('Dominion\GovernmentController@postAdvisors')->name('government.advisors');

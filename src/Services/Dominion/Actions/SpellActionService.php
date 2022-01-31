@@ -424,8 +424,12 @@ class SpellActionService
         $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
         if ($this->spellHelper->isWarSpell($spell)) {
-            if (!$warDeclared && !$recentlyInvaded && !$blackGuard) {
-                throw new GameException("You cannot cast {$spell->name} outside of war.");
+            if (!$warDeclared && !$recentlyInvaded) {
+                if ($blackGuard) {
+                    $this->guardMembershipService->checkLeaveApplication($dominion);
+                } else {
+                    throw new GameException("You cannot cast {$spell->name} outside of war.");
+                }
             }
         }
 

@@ -555,8 +555,12 @@ class EspionageActionService
             $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
             $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
             $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
-            if (!$warDeclared && !$recentlyInvaded && !$blackGuard) {
-                throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
+            if (!$warDeclared && !$recentlyInvaded) {
+                if ($blackGuard) {
+                    $this->guardMembershipService->checkLeaveApplication($dominion);
+                } else {
+                    throw new GameException("You cannot cast {$operationInfo['name']} outside of war.");
+                }
             }
         }
 

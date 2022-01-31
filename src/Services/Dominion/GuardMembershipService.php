@@ -9,8 +9,12 @@ class GuardMembershipService
 {
     // todo: use these constants in views/messages
     public const GUARD_HOURS_AFTER_ROUND_START = 24 * 3;
-    public const GUARD_JOIN_WAIT_IN_HOURS = 24;
+    public const GUARD_JOIN_DELAY_IN_HOURS = 24;
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
+
+    public const BLACK_GUARD_JOIN_DELAY_IN_HOURS = 12;
+    public const BLACK_GUARD_LEAVE_WAIT_IN_HOURS = 48;
+    public const BLACK_GUARD_LEAVE_DELAY_IN_HOURS = 12;
 
     public const ROYAL_GUARD_RANGE = 0.6;
     public const ELITE_GUARD_RANGE = 0.75;
@@ -32,39 +36,6 @@ class GuardMembershipService
     }
 
     /**
-     * Returns the Dominion's royal guard join time.
-     *
-     * @param Dominion $dominion
-     * @return Carbon
-     */
-    protected function getRoyalGuardJoinDate(Dominion $dominion): Carbon
-    {
-        return Carbon::parse($dominion->royal_guard_active_at);
-    }
-
-    /**
-     * Returns the Dominion's elite guard join time.
-     *
-     * @param Dominion $dominion
-     * @return Carbon
-     */
-    protected function getEliteGuardJoinDate(Dominion $dominion): Carbon
-    {
-        return Carbon::parse($dominion->elite_guard_active_at);
-    }
-
-    /**
-     * Returns the Dominion's black guard join time.
-     *
-     * @param Dominion $dominion
-     * @return Carbon
-     */
-    protected function getBlackGuardJoinDate(Dominion $dominion): Carbon
-    {
-        return Carbon::parse($dominion->black_guard_active_at);
-    }
-
-    /**
      * Returns the Dominion's royal guard application status.
      *
      * @param Dominion $dominion
@@ -72,12 +43,8 @@ class GuardMembershipService
      */
     public function isRoyalGuardApplicant(Dominion $dominion): bool
     {
-        if ($dominion->royal_guard_active_at !== null) {
-            $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
-
-            if ($modifiedJoinDate > now()) {
-                return true;
-            }
+        if ($dominion->royal_guard_active_at !== null && $dominion->royal_guard_active_at > now()) {
+            return true;
         }
 
         return false;
@@ -91,12 +58,8 @@ class GuardMembershipService
      */
     public function isEliteGuardApplicant(Dominion $dominion): bool
     {
-        if ($dominion->elite_guard_active_at !== null) {
-            $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
-
-            if ($modifiedJoinDate > now()) {
-                return true;
-            }
+        if ($dominion->elite_guard_active_at !== null && $dominion->elite_guard_active_at > now()) {
+            return true;
         }
 
         return false;
@@ -110,12 +73,23 @@ class GuardMembershipService
      */
     public function isBlackGuardApplicant(Dominion $dominion): bool
     {
-        if ($dominion->black_guard_active_at !== null) {
-            $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
+        if ($dominion->black_guard_active_at !== null && $dominion->black_guard_active_at > now()) {
+            return true;
+        }
 
-            if ($modifiedJoinDate > now()) {
-                return true;
-            }
+        return false;
+    }
+
+    /**
+     * Returns the Dominion's black guard leave status.
+     *
+     * @param Dominion $dominion
+     * @return bool
+     */
+    public function isLeavingBlackGuard(Dominion $dominion): bool
+    {
+        if ($dominion->black_guard_inactive_at !== null && $dominion->black_guard_inactive_at > now()) {
+            return true;
         }
 
         return false;
@@ -129,12 +103,8 @@ class GuardMembershipService
      */
     public function isGuardMember(Dominion $dominion): bool
     {
-        if ($dominion->royal_guard_active_at !== null) {
-            $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
-
-            if ($modifiedJoinDate <= now()) {
-                return true;
-            }
+        if ($dominion->royal_guard_active_at !== null && $dominion->royal_guard_active_at <= now()) {
+            return true;
         }
 
         return false;
@@ -159,12 +129,8 @@ class GuardMembershipService
      */
     public function isEliteGuardMember(Dominion $dominion): bool
     {
-        if ($dominion->elite_guard_active_at !== null) {
-            $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
-
-            if ($modifiedJoinDate <= now()) {
-                return true;
-            }
+        if ($dominion->elite_guard_active_at !== null && $dominion->elite_guard_active_at <= now()) {
+            return true;
         }
 
         return false;
@@ -179,10 +145,14 @@ class GuardMembershipService
     public function isBlackGuardMember(Dominion $dominion): bool
     {
         if ($dominion->black_guard_active_at !== null) {
-            $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
-
-            if ($modifiedJoinDate <= now()) {
-                return true;
+            if ($dominion->black_guard_inactive_at == null) {
+                if ($dominion->black_guard_active_at <= now()) {
+                    return true;
+                }
+            } else {
+                if ($dominion->black_guard_inactive_at > now()) {
+                    return true;
+                }
             }
         }
 
@@ -197,13 +167,11 @@ class GuardMembershipService
      */
     public function getHoursBeforeRoyalGuardMember(Dominion $dominion): int
     {
-        if (!$this->isRoyalGuardApplicant($dominion)) {
+        if ($dominion->royal_guard_active_at == null || !$this->isRoyalGuardApplicant($dominion)) {
             return 0;
         }
 
-        $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
-
-        return $modifiedJoinDate->diffInHours(now()->startOfHour());
+        return $dominion->royal_guard_active_at->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -214,13 +182,11 @@ class GuardMembershipService
      */
     public function getHoursBeforeEliteGuardMember(Dominion $dominion): int
     {
-        if (!$this->isEliteGuardApplicant($dominion)) {
+        if ($dominion->elite_guard_active_at == null || !$this->isEliteGuardApplicant($dominion)) {
             return 0;
         }
 
-        $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
-
-        return $modifiedJoinDate->diffInHours(now()->startOfHour());
+        return $dominion->elite_guard_active_at->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -235,9 +201,9 @@ class GuardMembershipService
             return 0;
         }
 
-        $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
+        $dominion->black_guard_active_at = $this->black_guard_active_at($dominion);
 
-        return $modifiedJoinDate->diffInHours(now()->startOfHour());
+        return $dominion->black_guard_active_at->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -248,12 +214,11 @@ class GuardMembershipService
      */
     public function getHoursBeforeLeaveRoyalGuard(Dominion $dominion): int
     {
-        if (!$this->isRoyalGuardMember($dominion)) {
+        if ($dominion->royal_guard_active_at == null || !$this->isRoyalGuardMember($dominion)) {
             return 0;
         }
 
-        $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
-        $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
+        $leaveDate = $dominion->royal_guard_active_at->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
             return $leaveDate->diffInHours(now()->startOfHour());
@@ -270,12 +235,11 @@ class GuardMembershipService
      */
     public function getHoursBeforeLeaveEliteGuard(Dominion $dominion): int
     {
-        if (!$this->isEliteGuardMember($dominion)) {
+        if ($dominion->elite_guard_active_at == null || !$this->isEliteGuardMember($dominion)) {
             return 0;
         }
 
-        $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
-        $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
+        $leaveDate = $dominion->elite_guard_active_at->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
             return $leaveDate->diffInHours(now()->startOfHour());
@@ -292,12 +256,32 @@ class GuardMembershipService
      */
     public function getHoursBeforeLeaveBlackGuard(Dominion $dominion): int
     {
-        if (!$this->isBlackGuardMember($dominion)) {
+        if ($dominion->black_guard_active_at == null || !$this->isBlackGuardMember($dominion)) {
             return 0;
         }
 
-        $modifiedJoinDate = $this->getBlackGuardJoinDate($dominion);
-        $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
+        $leaveDate = $dominion->black_guard_active_at->addHours(self::BLACK_GUARD_LEAVE_WAIT_IN_HOURS);
+
+        if ($leaveDate > now()->startOfHour()) {
+            return $leaveDate->diffInHours(now()->startOfHour());
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns the number of hours remaining before Dominion leaving the black guard.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getHoursBeforeLeavingBlackGuard(Dominion $dominion): int
+    {
+        if ($dominion->black_guard_inactive_at == null || !$this->isBlackGuardMember($dominion)) {
+            return 0;
+        }
+
+        $leaveDate = $dominion->black_guard_inactive_at;
 
         if ($leaveDate > now()->startOfHour()) {
             return $leaveDate->diffInHours(now()->startOfHour());
@@ -314,7 +298,7 @@ class GuardMembershipService
      */
     public function joinRoyalGuard(Dominion $dominion): void
     {
-        $dominion->royal_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
+        $dominion->royal_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_DELAY_IN_HOURS);
         $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ROYAL_GUARD]);
     }
 
@@ -326,7 +310,7 @@ class GuardMembershipService
      */
     public function joinEliteGuard(Dominion $dominion): void
     {
-        $dominion->elite_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
+        $dominion->elite_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_DELAY_IN_HOURS);
         $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ELITE_GUARD]);
     }
 
@@ -338,7 +322,8 @@ class GuardMembershipService
      */
     public function joinBlackGuard(Dominion $dominion): void
     {
-        $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
+        $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::BLACK_GUARD_JOIN_DELAY_IN_HOURS);
+        $dominion->black_guard_inactive_at = null;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_BLACK_GUARD]);
     }
 
@@ -374,7 +359,32 @@ class GuardMembershipService
      */
     public function leaveBlackGuard(Dominion $dominion): void
     {
-        $dominion->black_guard_active_at = null;
+        $dominion->black_guard_inactive_at = now()->startOfHour()->addHours(self::BLACK_GUARD_LEAVE_DELAY_IN_HOURS);
         $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_BLACK_GUARD]);
+    }
+
+    /**
+     * Removes the Dominion's black guard leave time.
+     *
+     * @param Dominion $dominion
+     * @return void
+     */
+    public function cancelLeaveBlackGuard(Dominion $dominion): void
+    {
+        $dominion->black_guard_inactive_at = null;
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_CANCEL_LEAVE_BLACK_GUARD]);
+    }
+
+    /**
+     * Resets the Dominion's black guard leave time.
+     *
+     * @param Dominion $dominion
+     * @return void
+     */
+    public function checkLeaveApplication(Dominion $dominion): void
+    {
+        if ($this->isLeavingBlackGuard($dominion)) {
+            $this->leaveBlackGuard($dominion);
+        }
     }
 }

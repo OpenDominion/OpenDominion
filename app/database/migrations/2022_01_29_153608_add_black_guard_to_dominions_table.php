@@ -17,6 +17,9 @@ class AddBlackGuardToDominionsTable extends Migration
             $table->timestamp('black_guard_active_at')
                 ->nullable()
                 ->after('elite_guard_active_at');
+            $table->timestamp('black_guard_inactive_at')
+                ->nullable()
+                ->after('black_guard_active_at');
         });
     }
 
@@ -28,7 +31,7 @@ class AddBlackGuardToDominionsTable extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->dropColumn('black_guard_active_at');
+            $table->dropColumn(['black_guard_active_at', 'black_guard_inactive_at']);
         });
     }
 }

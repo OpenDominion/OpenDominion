@@ -209,20 +209,43 @@ class GuardMembershipActionService
             throw new GameException('You cannot leave the Black Guard for 48 hours after joining.');
         }
 
-        if (!$this->guardMembershipService->isBlackGuardApplicant($dominion) && !$this->guardMembershipService->isEliteGuardMember($dominion)) {
+        if (!$this->guardMembershipService->isBlackGuardApplicant($dominion) && !$this->guardMembershipService->isBlackGuardMember($dominion)) {
             throw new GameException('You are not a member of the Black Guard.');
         }
 
         if ($this->guardMembershipService->isBlackGuardApplicant($dominion)) {
             $message = 'You have canceled your Black Guard application.';
         } else {
-            $message = 'You have left the Black Guard.';
+            $message = 'You will leave the Black Guard in 12 hours.';
         }
 
         $this->guardMembershipService->leaveBlackGuard($dominion);
 
         return [
             'message' => $message,
+            'data' => []
+        ];
+    }
+
+    /**
+     * Cancels leaving the black guard for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
+     * @throws GameException
+     */
+    public function cancelLeaveBlackGuard(Dominion $dominion): array
+    {
+        $this->guardLockedDominion($dominion);
+
+        if (!$this->guardMembershipService->isLeavingBlackGuard($dominion)) {
+            throw new GameException('You are not leaving the Black Guard.');
+        }
+
+        $this->guardMembershipService->cancelLeaveBlackGuard($dominion);
+
+        return [
+            'message' => 'You will remain in the Black Guard.',
             'data' => []
         ];
     }

@@ -47,6 +47,7 @@ class GovernmentController extends AbstractDominionController
             'isRoyalGuardApplicant' => $guardMembershipService->isRoyalGuardApplicant($dominion),
             'isEliteGuardApplicant' => $guardMembershipService->isEliteGuardApplicant($dominion),
             'isBlackGuardApplicant' => $guardMembershipService->isBlackGuardApplicant($dominion),
+            'isLeavingBlackGuard' => $guardMembershipService->isLeavingBlackGuard($dominion),
             'isRoyalGuardMember' => $guardMembershipService->isRoyalGuardMember($dominion),
             'isEliteGuardMember' => $guardMembershipService->isEliteGuardMember($dominion),
             'isBlackGuardMember' => $guardMembershipService->isBlackGuardMember($dominion),
@@ -57,6 +58,7 @@ class GovernmentController extends AbstractDominionController
             'hoursBeforeLeaveRoyalGuard' => $guardMembershipService->getHoursBeforeLeaveRoyalGuard($dominion),
             'hoursBeforeLeaveEliteGuard' => $guardMembershipService->getHoursBeforeLeaveEliteGuard($dominion),
             'hoursBeforeLeaveBlackGuard' => $guardMembershipService->getHoursBeforeLeaveBlackGuard($dominion),
+            'hoursBeforeLeavingBlackGuard' => $guardMembershipService->getHoursBeforeLeavingBlackGuard($dominion),
             'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
@@ -195,6 +197,24 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->leaveBlackGuard($dominion);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', $result['message']);
+        return redirect()->route('dominion.government');
+    }
+
+    public function postCancelLeaveBlackGuard(GuardMembershipActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $guardActionService = app(GuardMembershipActionService::class);
+
+        try {
+            $result = $guardActionService->cancelLeaveBlackGuard($dominion);
         } catch (GameException $e) {
             return redirect()
                 ->back()
