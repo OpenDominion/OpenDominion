@@ -281,9 +281,10 @@ class MilitaryCalculator
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             $offenseSpells = $this->spellHelper->getSpellsWithPerk('offense');
 
-            foreach ($offenseSpells as $spell) {
+            foreach ($offenseSpells->sortByDesc('pivot.value') as $spell) {
                 if (isset($dominion->calc[$spell->key])) {
                     $multiplier += ($spell->getPerkValue('offense') / 100);
+                    break;
                 }
             }
 
@@ -530,9 +531,10 @@ class MilitaryCalculator
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             $defenseSpells = $this->spellHelper->getSpellsWithPerk('defense');
 
-            foreach ($defenseSpells as $spell) {
+            foreach ($defenseSpells->sortByDesc('pivot.value') as $spell) {
                 if (isset($dominion->calc[$spell->key])) {
                     $multiplier += ($spell->getPerkValue('defense') / 100);
+                    break;
                 }
             }
         } else {

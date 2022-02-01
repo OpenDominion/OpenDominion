@@ -137,7 +137,7 @@ class APIController extends AbstractDominionController
             if (isset($calc['land']) && $calc['land'] > 0) {
                 $land = $calc['land'];
             } else {
-                $land = 1;
+                $land = 250;
             }
             $landRatio = $calc['target_land'] / $land;
         }

@@ -59,6 +59,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Gnome and Icekin bots spawn with more ore mines
+- Offense calculator now defaults to max land ratio (Gnome)
 - Invasions below 75% no longer count toward future prestige penalties
 
 ## [1.7.2] - 2022-01-16
