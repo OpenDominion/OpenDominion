@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Platinum production bonuses no longer capped at 50%
 - Bot DP increased at lower land sizes
 - Bot spy/wizard ratios are now randomized and slowly increase until Day 35
+- Bots will join elite guard randomly between 2000 and 3000 acres
 - 33% Rule increased to 40% (must keep 40% of your total defense home when invading)
 - Invasions that would be overwhelmed by 50-80% (randomized) or more will fail
 - Wonder HP reduced to 150k/75k (from 250k/150k)

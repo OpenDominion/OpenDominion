@@ -219,6 +219,12 @@ class AIService
         } catch (GameException $e) {
             // Where gates stand for ever shut, till the world is mended.
         }
+
+        // Elite Guard
+        if (isset($config['elite_guard_land']) && $config['elite_guard_land'] >= $this->$totalLand) {
+            $dominion->elite_guard_active_at = now();
+            $dominion->save();
+        }
     }
 
     public function castSpells(Dominion $dominion, array $config) {

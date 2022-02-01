@@ -29,6 +29,7 @@ class AIHelper
 
         $config['active_chance'] = mt_rand(25, 40) / 100;
         $config['max_land'] = mt_rand(250, 3500);
+        $config['elite_guard_land'] = mt_rand(2000, 3000);
 
         $investOreRaces = ['Dwarf', 'Gnome', 'Icekin'];
         if (in_array($race->name, $investOreRaces)) {
