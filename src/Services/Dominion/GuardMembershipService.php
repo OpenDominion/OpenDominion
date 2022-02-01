@@ -201,8 +201,6 @@ class GuardMembershipService
             return 0;
         }
 
-        $dominion->black_guard_active_at = $this->black_guard_active_at($dominion);
-
         return $dominion->black_guard_active_at->diffInHours(now()->startOfHour());
     }
 
