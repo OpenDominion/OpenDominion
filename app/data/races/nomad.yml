@@ -30,7 +30,7 @@ units:
   - name: Blademaster
     cost:
       platinum: 1000
-      ore: 40
+      ore: 25
     power:
       offense: 2
       defense: 5
@@ -39,7 +39,7 @@ units:
   - name: Horse Archer
     cost:
       platinum: 1150
-      ore: 80
+      ore: 40
     power:
       offense: 6
       defense: 3
