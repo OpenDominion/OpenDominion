@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.7% owned (from 1.35x per 1% owned, max 22.5% at 16.7% owned)
 - Dark Elf Spellblade: -25p (from 1250p), -25r (from 75r)
 - Human Knight: -25p (from 1025p)
+- Nomad Blademaster: -15r (from 40r)
+- Nomad Horse Archer: -40r (from 80r)
 - Nox Fiend: -4m (from 12m)
 - Nox Lich: +20p (from 950p)
 - Spirit Phantom Knight: -50p (from 1050p)
@@ -47,6 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Guard: Shadow League
   - Enables war-only black ops between members
   - Production bonuses from Infamy are doubled
+  - Only visible to other members
   - 12 hour delay to join and leave, cannot leave for 48 hours after joining, black ops without war reset leave timer
 - Ability to search users in Valhalla
 - Aggregated league stats per user in Valhalla
