@@ -409,8 +409,8 @@
                         </div>
                         <div class="col-sm-6 text-center">
                             <h4 class="text-black">
-                                <i class="ra ra-fire-shield" title="Black Guard"></i>
-                                The Black Guard
+                                <i class="ra ra-fire-shield" title="Shadow League"></i>
+                                The Shadow League
                             </h4>
                             <ul class="text-left" style="padding: 0 30px;">
                                 <li>Enables war operations between members.</li>
@@ -420,7 +420,7 @@
                                 <form action="{{ route('dominion.government.black-guard.cancel') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-warning btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
-                                        Remain in Black Guard
+                                        Remain in Shadow League
                                     </button>
                                 </form>
                             @elseif ($isBlackGuardApplicant || $isBlackGuardMember)
@@ -428,7 +428,7 @@
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
                                         @if ($isBlackGuardMember)
-                                            Leave Black Guard
+                                            Leave Shadow League
                                         @else
                                             Cancel Application
                                         @endif
@@ -438,7 +438,7 @@
                                 <form action="{{ route('dominion.government.black-guard.join') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
-                                        Request to Join Black Guard
+                                        Request to Join Shadow League
                                     </button>
                                 </form>
                             @endif
@@ -481,15 +481,15 @@
                     @endif
 
                     @if ($isBlackGuardMember)
-                        <p>You are a member of the <span class="text-black"><i class="ra ra-fire-shield" title="Black Guard"></i>Black Guard</span>.</p>
+                        <p>You are a member of the <span class="text-black"><i class="ra ra-fire-shield" title="Shadow League"></i>Shadow League</span>.</p>
                         @if ($hoursBeforeLeaveBlackGuard)
                             <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
                         @endif
                         @if ($isLeavingBlackGuard)
-                            <p>You will leave the Black Guard in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
+                            <p>You will leave the Shadow League in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
                         @endif
                     @elseif ($isBlackGuardApplicant)
-                        <p>You will become a member of the Black Guard in {{ $hoursBeforeBlackGuardMember }} hours.</p>
+                        <p>You will become a member of the Shadow League in {{ $hoursBeforeBlackGuardMember }} hours.</p>
                     @endif
                 </div>
             </div>

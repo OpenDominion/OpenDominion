@@ -68,7 +68,7 @@
                                             @endif
 
                                             @if ($guardMembershipService->isBlackGuardMember($dominion) && ($guardMembershipService->isBlackGuardMember($selectedDominion) || $dominion->realm_id == $selectedDominion->realm_id))
-                                                <i class="ra ra-fire-shield ra-lg text-black" title="Black Guard"></i>
+                                                <i class="ra ra-fire-shield ra-lg text-black" title="Shadow League"></i>
                                             @endif
 
                                             @if ($dominion->id === $selectedDominion->id)

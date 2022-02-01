@@ -44,7 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Undead: new spell Necromantic Ritual kills 1% of target's wizards and converts them into Progeny after 12 hours (added to invasion queue)
 
 ### Added
-- Black Guard
+- New Guard: Shadow League
   - Enables war-only black ops between members
   - Production bonuses from Infamy are doubled
   - 12 hour delay to join and leave, cannot leave for 48 hours after joining, black ops without war reset leave timer
