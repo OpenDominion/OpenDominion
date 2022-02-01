@@ -53,17 +53,17 @@ class InvadeActionService
     /**
      * @var float Used to cap prestige gain formula
      */
-    protected const PRESTIGE_CAP = 60;
+    protected const PRESTIGE_CAP = 65;
 
     /**
      * @var int Land ratio multiplier for prestige when invading successfully
      */
-    protected const PRESTIGE_RANGE_MULTIPLIER = 100;
+    protected const PRESTIGE_RANGE_MULTIPLIER = 115;
 
     /**
      * @var int Base prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_BASE = -40;
+    protected const PRESTIGE_CHANGE_BASE = -50;
 
     /**
      * @var float Base prestige % change for both parties when invading
@@ -406,7 +406,7 @@ class InvadeActionService
             $attackerPrestigeChange = min(
                 static::PRESTIGE_RANGE_MULTIPLIER * ($range / 100) + static::PRESTIGE_CHANGE_BASE, // Gained through invading
                 static::PRESTIGE_CAP // But capped at 100%
-            ) + ($this->landCalculator->getTotalLand($target) / 250); // Bonus for land size of target
+            ) + ($this->landCalculator->getTotalLand($target) / 200); // Bonus for land size of target
 
             $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
             $prestigeLossPercentage = min(
