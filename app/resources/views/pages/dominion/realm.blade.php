@@ -67,7 +67,7 @@
                                                 <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                             @endif
 
-                                            @if ($guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion))
+                                            @if ($guardMembershipService->isBlackGuardMember($dominion) && ($guardMembershipService->isBlackGuardMember($selectedDominion) || $dominion->realm_id == $selectedDominion->realm_id))
                                                 <i class="ra ra-fire-shield ra-lg text-black" title="Black Guard"></i>
                                             @endif
 
