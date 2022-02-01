@@ -47,7 +47,7 @@ ancient_library:
 halls_of_knowledge:
   name: Halls of Knowledge
   perks:
-    tech_production_raw: 100
+    tech_production_raw: 60
   power: 75000
 great_oracle:
   name: Great Oracle

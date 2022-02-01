@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wonder HP reduced to 150k/75k (from 250k/150k)
 - Cyclone deals double damage against neutral wonders
 - High Clerics Tower and Onyx Mausoleum removed
+- Halls of Knowledge now produces 60 RP/hr (from 100)
 - School of War returns (+2 barracks housing)
 - Maximum prestige gain from rebuilding another realm's wonder reduced by 25 (from 100)
 - Prestige gain formula changed to 115xLandRatio - 50 + TargetLand/200 (from 100xLandRatio - 40 + TargetLand/250)

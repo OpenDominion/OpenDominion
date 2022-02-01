@@ -147,9 +147,15 @@
                                                         <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                         <small>
                                                             @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
                                                             @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                            @endif
+                                                            @if ($spell->duration)
+                                                                Lasts {{ $spell->duration }} hours<br/>
+                                                            @endif
+                                                            @if (!empty($spell->races))
+                                                                Racial<br/>
                                                             @endif
                                                         </small>
                                                     </div>
