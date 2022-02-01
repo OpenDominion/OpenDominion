@@ -44,7 +44,7 @@
                                                         data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}"
                                                         data-war="{{ $governmentService->isAtWar($selectedDominion->realm, $dominion->realm) ? 1 : 0 }}"
                                                         data-revenge="{{ in_array($dominion->id, $recentlyInvadedByDominionIds) ? 1 : 0 }}"
-                                                        data-guard="{{ $guardMembershipService->isBlackGuardMember($dominion) ? 1 : 0 }}"
+                                                        data-guard="{{ $guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion) ? 1 : 0 }}"
                                                     >
                                                     {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                 </option>
