@@ -21,13 +21,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - High Clerics Tower and Onyx Mausoleum removed
 - School of War returns (+2 barracks housing)
 - Maximum prestige gain from rebuilding another realm's wonder reduced by 25 (from 100)
-- Tech cost changed to 3600 + 0.65xLAND + 100xTECHS (from 9500 + 100xTECHS)
+- Prestige gain formula changed to 115xLandRatio - 50 + TargetLand/200 (from 100xLandRatio - 40 + TargetLand/250)
+- Tech cost changed to 3600 + 0.65xLand + 100xTechs (from 9500 + 100xTechs)
 - Platinum bonus research points reduced to 250 (from 750)
 - Research points gained on invasion reduced to 500 (from 1000)
+- Research production penalty from invasion replaced with flat 500 loss from queue when invaded
 - School: research points produced changed to SCHOOLS x (1 - SCHOOLS/LAND) down to a minimum of 0.5 per school at 50% owned (from 25 per 1% owned up to a maximum of 750), research points gained on invasion removed (from 125 per 1% owned up to a maximum of 2500)
 - Smithy: maximum cost reduction reduced to 30% at 15% owned (from 36% at 18% owned)
 - Masonry: lightning bolt protection removed (was 1% per 1% owned up to a maximum of 10%)
-- Wizard Guild: lightning bolt protection added, 8% per 1% owned up to a maximum of 80% at 10% owned
+- Wizard Guild: lightning bolt protection added, 6% per 1% owned up to a maximum of 60% at 10% owned
 - Gryphon Nest: OP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
 - Guard Tower: DP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
 - Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.7% owned (from 1.35x per 1% owned, max 22.5% at 16.7% owned)

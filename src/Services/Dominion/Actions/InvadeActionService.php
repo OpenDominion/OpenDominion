@@ -952,10 +952,6 @@ class InvadeActionService
         if ($isInvasionSuccessful) {
             $baseResearchPointsGained = 500;
 
-            // Recent invasion penalty
-            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
-            $schoolPenalty = (1 - min(0.75, max(0, $recentlyInvadedCount - 2) * 0.15));
-
             $range = $this->invasionResult['result']['range'];
             if ($range < 60) {
                 $researchPointsGained = 0;
@@ -963,7 +959,8 @@ class InvadeActionService
                 $researchPointsGained = $baseResearchPointsGained / 2;
             } else {
                 $researchPointsGained = $baseResearchPointsGained;
-                // 0.65 * $this->landCalculator->getTotalLand($dominion)
+                $this->queueService->dequeueResource('invasion', $target, 'resource_tech', $researchPointsGained);
+                $this->invasionResult['defender']['researchPoints'] = -$researchPointsGained;
             }
 
             $multiplier = 1;
