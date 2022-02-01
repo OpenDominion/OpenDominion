@@ -408,7 +408,7 @@
                             @endif
                         </div>
                         <div class="col-sm-6 text-center">
-                            <h4 class="text-black">
+                            <h4 class="text-purple">
                                 <i class="ra ra-fire-shield" title="Shadow League"></i>
                                 The Shadow League
                             </h4>
@@ -481,7 +481,7 @@
                     @endif
 
                     @if ($isBlackGuardMember)
-                        <p>You are a member of the <span class="text-black"><i class="ra ra-fire-shield" title="Shadow League"></i>Shadow League</span>.</p>
+                        <p>You are a member of the <span class="text-purple"><i class="ra ra-fire-shield" title="Shadow League"></i>Shadow League</span>.</p>
                         @if ($hoursBeforeLeaveBlackGuard)
                             <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
                         @endif

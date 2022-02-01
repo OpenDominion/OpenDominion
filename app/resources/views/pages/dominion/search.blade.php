@@ -120,7 +120,7 @@
                                                         <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                                     @endif
                                                     @if ($guardMembershipService->isBlackGuardMember($dominion) && ($guardMembershipService->isBlackGuardMember($selectedDominion) || $dominion->realm_id == $selectedDominion->realm_id))
-                                                        <i class="ra ra-fire-shield ra-lg text-black" title="Shadow League"></i>
+                                                        <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League"></i>
                                                     @endif
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                                     @if ($dominion->locked_at !== null)
