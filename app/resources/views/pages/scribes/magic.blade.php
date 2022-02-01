@@ -23,154 +23,43 @@
             <h3 class="box-title">Spells</h3>
         </div>
         <div class="box-body table-responsive">
-            <div class="row">
-                <div class="col-md-12">
-                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Self</h4>
-                    <table class="table table-striped" style="margin-bottom: 0">
-                        <colgroup>
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col>
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>Cost multiplier</th>
-                                <th>Duration (hours)</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($spellHelper->getSpells(null, 'self')->where('races', [])->sortBy('name') as $spell)
+            @foreach ($spellHelper->getSpells()->groupBy('category') as $category => $categorySpells)
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">{{ $spellHelper->getCategoryString($category) }}</h4>
+                        <table class="table table-striped" style="margin-bottom: 0">
+                            <colgroup>
+                                <col width="125px">
+                                <col width="125px">
+                                <col width="125px">
+                                <col width="125px">
+                                <col>
+                            </colgroup>
+                            <thead>
                                 <tr>
-                                    <td>{{ $spell->name }}</td>
-                                    <td>&nbsp;</td>
-                                    <td>{{ $spell->cost_mana }}x</td>
-                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                    <th></th>
+                                    <th>Race(s)</th>
+                                    <th>Cost multiplier</th>
+                                    <th>Duration (hours)</th>
+                                    <th>Description</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <p>&nbsp;</p>
+                            </thead>
+                            <tbody>
+                                @foreach ($categorySpells->sortBy(['racial', 'name']) as $spell)
+                                    <tr>
+                                        <td>{{ $spell->name }}</td>
+                                        <td>{{ $spellHelper->getSpellRaces($spell) ? $spellHelper->getSpellRaces($spell) : '--' }}</td>
+                                        <td>{{ $spell->cost_mana }}x</td>
+                                        <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
+                                        <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <p>&nbsp;</p>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Information gathering</h4>
-                    <table class="table table-striped" style="margin-bottom: 0">
-                        <colgroup>
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col>
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>Cost multiplier</th>
-                                <th>Duration (hours)</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($spellHelper->getSpells(null, 'info')->sortBy('name') as $spell)
-                                <tr>
-                                    <td>{{ $spell->name }}</td>
-                                    <td></td>
-                                    <td>{{ $spell->cost_mana }}x</td>
-                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <p>&nbsp;</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Black Ops</h4>
-                    <table class="table table-striped" style="margin-bottom: 0">
-                        <colgroup>
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col>
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>Cost multiplier</th>
-                                <th>Duration (hours)</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($spellHelper->getSpells(null, 'hostile')->sortBy('name') as $spell)
-                                <tr>
-                                    <td>{{ $spell->name }}</td>
-                                    <td></td>
-                                    <td>{{ $spell->cost_mana }}x</td>
-                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
-                                </tr>
-                            @endforeach
-                            @foreach($spellHelper->getSpells(null, 'wonder')->sortBy('name') as $spell)
-                                <tr>
-                                    <td>{{ $spell->name }}</td>
-                                    <td></td>
-                                    <td>{{ $spell->cost_mana }}x</td>
-                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <p>&nbsp;</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial</h4>
-                    <table class="table table-striped" style="margin-bottom: 0">
-                        <colgroup>
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col width="125px">
-                            <col>
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Race(s)</th>
-                                <th>Cost multiplier</th>
-                                <th>Duration (hours)</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($spellHelper->getSpells(null)->where('races', '!=', [])->sortBy('name') as $spell)
-                                <tr>
-                                    <td>{{ $spell->name }}</td>
-                                    <td>{{ $spellHelper->getSpellRaces($spell) }}</td>
-                                    <td>{{ $spell->cost_mana }}x</td>
-                                    <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 @endsection

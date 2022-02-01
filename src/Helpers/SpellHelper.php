@@ -29,7 +29,13 @@ class SpellHelper
      */
     public function getSpells(Race $race = null, string $category = null): Collection
     {
-        $spells = Spell::with('perks')->active()->get();
+        $spells = Spell::with('perks')
+            ->active()
+            ->get()
+            ->map(function ($spell) {
+                $spell->racial = ($spell->races !== []);
+                return $spell;
+            });
         if ($race !== null) {
             $spells = $spells->filter(function ($spell) use ($race) {
                 if (empty($spell->races) || in_array($race->key, $spell->races)) {
@@ -198,14 +204,19 @@ class SpellHelper
         return implode($separator, $raceStrings);
     }
 
-    public function getSpellType(Spell $spell) {
+    public function getCategoryString(string $category) {
         $categories = [
-            'info' => 'Info',
+            'info' => 'Information',
             'self' => 'Self',
             'hostile' => 'Offensive',
             'war' => 'War',
+            'wonder' => 'Wonder',
         ];
 
-        return $categories[$spell->category];
+        return $categories[$category];
+    }
+
+    public function getSpellType(Spell $spell) {
+        return $this->getCategoryString($spell->category);
     }
 }

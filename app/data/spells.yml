@@ -157,7 +157,6 @@ crusade:
   duration: 12
   races:
     - human
-    - nomad
   perks:
     offense: 5
     kills_immortal: 1
@@ -253,7 +252,6 @@ unholy_ghost:
   cost_strength: 5
   duration: 12
   races:
-    - dark-elf
     - spirit-rework
   perks:
     ignore_draftees: 1
@@ -316,7 +314,6 @@ parasitic_hunger:
   cost_strength: 5
   duration: 12
   races:
-    - spirit
     - undead
   perks:
     conversion_rate: 20
