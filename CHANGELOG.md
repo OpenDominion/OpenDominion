@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Bots will join elite guard randomly between 2000 and 3000 acres
 - 33% Rule increased to 40% (must keep 40% of your total defense home when invading)
 - Invasions that would be overwhelmed by 50-80% (randomized) or more will fail
+- Black op spells with duration changed to 6 hours, +3 in war, +6 in mutual war
 - Wonder HP reduced to 150k/75k (from 250k/150k)
 - Cyclone deals double damage against neutral wonders
 - High Clerics Tower and Onyx Mausoleum removed
@@ -34,12 +35,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Gryphon Nest: OP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
 - Guard Tower: DP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
 - Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.7% owned (from 1.35x per 1% owned, max 22.5% at 16.7% owned)
-- Dark Elf Spellblade: -25p (from 1250p), -25r (from 75r)
+- Dark Elf Spellblade: -50p (from 1250p), -25r (from 75r)
 - Human Knight: -25p (from 1025p)
 - Nomad Blademaster: -15r (from 40r)
 - Nomad Horse Archer: -40r (from 80r)
 - Nox Fiend: -4m (from 12m)
 - Nox Lich: +20p (from 950p)
+- Nox: new spell Miasma target's wizard power reduced by 5% and mana decay increased by 50% for 6 hours
 - Spirit Phantom Knight: -50p (from 1050p)
 - Spirit Spectral Warrior: -50p (from 1200p)
 - Undead Skeleton: renamed Dire Bat, no longer needs boats

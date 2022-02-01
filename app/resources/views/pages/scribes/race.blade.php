@@ -25,15 +25,26 @@
                         </div>
                         <div class="col-md-12 col-md-9">
                             {{-- Racial Spell --}}
-                            <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell(s)</h4>
+                            <h4>Racial Spell(s)</h4>
                             @php
                                 $racialSpells = $spellHelper->getSpells($race)->where('races', '!=', []);
                             @endphp
-                            @foreach ($racialSpells as $spell)
-                                <p>
-                                    <strong>{{ $spell->name }}</strong>: {{ $spellHelper->getSpellDescription($spell) }}
-                                </p>
-                            @endforeach
+                            <table class="table">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Duration</th>
+                                </tr>
+                                @foreach ($racialSpells as $spell)
+                                    <tr>
+                                        <td>{{ $spell->name }}</td>
+                                        <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                        <td>{{ $spellHelper->getSpellType($spell) }}</td>
+                                        <td>{{ $spell->duration ? $spell->duration.' hours' : '--' }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
                         </div>
                     </div>
                 </div>

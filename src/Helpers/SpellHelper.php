@@ -153,7 +153,7 @@ class SpellHelper
             'fools_gold' => 'Platinum theft protection',
             'surreal_perception' => 'Reveals the dominion casting spells or committing spy ops against you',
             'convert_military_spies_to_military_draftees' => 'Turns %.2f%% of enemy spies into draftees',
-            'convert_military_spies_to_self_military_unit3' => 'Converts %.2f%% of enemy wizards into Progeny',
+            'convert_military_wizards_to_self_military_unit3' => 'Converts %.2f%% of enemy wizards into Progeny',
             'destroy_peasants' => 'Kills %.2f%% peasants',
             'destroy_resource_food' => 'Destroys %.2f%% crops',
             'destroy_improvement_science' => 'Destroys %.2f%% science',
@@ -161,6 +161,10 @@ class SpellHelper
             'destroy_improvement_forges' => 'Destroys %.2f%% forges',
             'destroy_improvement_walls' => 'Destroys %.2f%% walls',
             'enemy_earthquake_damage' => 'Ore production immune to Earthquake',
+            'food_decay' => '%+d%% food decay',
+            'lumber_decay' => '%+d%% lumber rot',
+            'mana_decay' => '%+d%% mana drain',
+            'wizard_strength' => '%+d%% wizard power',
             'wonder_damage' => 'Deals damage to wonders',
         ];
     }
@@ -192,5 +196,16 @@ class SpellHelper
         }
 
         return implode($separator, $raceStrings);
+    }
+
+    public function getSpellType(Spell $spell) {
+        $categories = [
+            'info' => 'Info',
+            'self' => 'Self',
+            'hostile' => 'Offensive',
+            'war' => 'War',
+        ];
+
+        return $categories[$spell->category];
     }
 }

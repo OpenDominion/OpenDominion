@@ -292,17 +292,18 @@ class ProductionCalculator
      */
     public function getFoodDecay(Dominion $dominion): float
     {
-        $decay = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $foodDecay = 1;
 
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('food_decay');
+
         // Techs
-        $foodDecay *= (1 + $dominion->getTechPerkMultiplier('food_decay'));
+        $multiplier += $dominion->getTechPerkMultiplier('food_decay');
 
-        $decay += ($dominion->resource_food * ($foodDecay / 100));
-
-        return $decay;
+        return $dominion->resource_food * ($foodDecay * $multiplier / 100);
     }
 
     /**
@@ -403,17 +404,18 @@ class ProductionCalculator
      */
     public function getLumberDecay(Dominion $dominion): float
     {
-        $decay = 0;
+        $multiplier = 1;
 
         // Values
         $lumberDecay = 1;
 
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('lumber_decay');
+
         // Techs
-        $lumberDecay *= (1 + $dominion->getTechPerkMultiplier('lumber_decay'));
+        $multiplier += $dominion->getTechPerkMultiplier('lumber_decay');
 
-        $decay += ($dominion->resource_lumber * ($lumberDecay / 100));
-
-        return $decay;
+        return $dominion->resource_lumber * ($lumberDecay * $multiplier / 100);
     }
 
     /**
@@ -514,17 +516,18 @@ class ProductionCalculator
      */
     public function getManaDecay(Dominion $dominion): float
     {
-        $decay = 0;
+        $multiplier = 1;
 
         // Values
         $manaDecay = 2;
 
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('mana_decay');
+
         // Techs
-        $manaDecay *= (1 + $dominion->getTechPerkMultiplier('mana_decay'));
+        $multiplier += $dominion->getTechPerkMultiplier('mana_decay');
 
-        $decay += ($dominion->resource_mana * ($manaDecay / 100));
-
-        return $decay;
+        return $dominion->resource_mana * ($manaDecay * $multiplier / 100);
     }
 
     /**

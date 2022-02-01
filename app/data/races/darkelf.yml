@@ -38,7 +38,7 @@ units:
       counts_as_wizard_defense: 0.25
   - name: Spellblade
     cost:
-      platinum: 1225
+      platinum: 1200
       ore: 50
       gems: 10
     power:

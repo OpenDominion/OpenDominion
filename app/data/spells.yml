@@ -362,10 +362,21 @@ nightfall:
     - nox
   perks:
     offense: 5
+miasma:
+  name: Miasma
+  category: war
+  cost_mana: 3
+  cost_strength: 5
+  duration: 6
+  races:
+    - nox
+  perks:
+    wizard_strength: -5
+    mana_decay: 50
 necromantic_ritual:
   name: Necromantic Ritual
   category: war
-  cost_mana: 4
+  cost_mana: 4.5
   cost_strength: 5
   races:
     - undead
