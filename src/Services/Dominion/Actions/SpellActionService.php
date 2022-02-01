@@ -642,6 +642,11 @@ class SpellActionService
                     $resilienceDamageReductionMultiplier
                 );
 
+                // Immortal Wizards
+                if ($attr == 'military_wizards' && $target->race->getPerkValue('immortal_wizards') != 0) {
+                    $damage = 0;
+                }
+
                 $target->{$attr} -= $damage;
                 if ($convertAttr !== null) {
                     if (Str::startsWith($convertAttr, 'self')) {

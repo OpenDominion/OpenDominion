@@ -5,6 +5,8 @@ namespace OpenDominion\Services\Dominion;
 use DB;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\QueueService;
 
 class InvasionService
@@ -262,37 +264,24 @@ class InvasionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
-     * @param string $spellKey
+     * @param Spell $spell
      * @param int $duration
      */
-    public function applySpell(Dominion $dominion, Dominion $target, $spellKey, $duration)
+    public function applySpell(Dominion $dominion, Dominion $target, Spell $spell, $duration)
     {
-        $where = [
-            'dominion_id' => $target->id,
-            'spell' => $spellKey,
-        ];
-
-        $activeSpell = DB::table('active_spells')
-            ->where($where)
-            ->first();
+        $activeSpell = $target->spells->find($spell->id);
 
         if ($activeSpell !== null) {
-            DB::table('active_spells')
-                ->where($where)
-                ->update([
-                    'duration' => $duration,
-                    'updated_at' => now(),
-                ]);
+            $activeSpell->pivot->duration = $duration;
+            $activeSpell->pivot->cast_by_dominion_id = $dominion->id;
+            $activeSpell->pivot->save();
         } else {
-            DB::table('active_spells')
-                ->insert([
-                    'dominion_id' => $target->id,
-                    'spell' => $spellKey,
-                    'duration' => $duration,
-                    'cast_by_dominion_id' => $dominion->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            DominionSpell::insert([
+                'dominion_id' => $target->id,
+                'spell_id' => $spell->id,
+                'duration' => $duration,
+                'cast_by_dominion_id' => $dominion->id,
+            ]);
         }
     }
 }

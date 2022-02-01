@@ -8,10 +8,10 @@ use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
-use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
+use OpenDominion\Models\Spell;
 use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -1053,11 +1053,12 @@ class InvadeActionService
         }
 
         // Plague from Parasitic Hunger
+        $spell = Spell::active()->firstWhere('key', 'plague');
         if ($dominion->getSpellPerkValue('spreads_plague')) {
-            $this->invasionService->applySpell($dominion, $target, 'plague', 8);
+            $this->invasionService->applySpell($dominion, $target, $spell, 9);
         }
         if ($target->getSpellPerkValue('spreads_plague')) {
-            $this->invasionService->applySpell($target, $dominion, 'plague', 8);
+            $this->invasionService->applySpell($target, $dominion, $spell, 9);
         }
     }
 

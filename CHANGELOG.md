@@ -38,7 +38,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit Phantom Knight: -50p (from 1050p)
 - Spirit Spectral Warrior: -50p (from 1200p)
 - Undead Skeleton: renamed Dire Bat, no longer needs boats
-- Undead: new spell Necromantic Ritual kills 1% of target's spies and converts them into Progeny after 12 hours (added to invasion queue)
+- Undead: new spell Necromantic Ritual kills 1% of target's wizards and converts them into Progeny after 12 hours (added to invasion queue)
 
 ### Added
 - Black Guard
@@ -53,6 +53,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Gnome and Icekin bots spawn with more ore mines
+- Invasions below 75% no longer count toward future prestige penalties
 
 ## [1.7.2] - 2022-01-16
 ### Added

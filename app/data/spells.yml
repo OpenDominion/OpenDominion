@@ -370,4 +370,4 @@ necromantic_ritual:
   races:
     - undead
   perks:
-    convert_military_spies_to_self_military_unit3: 1
+    convert_military_wizards_to_self_military_unit3: 1
