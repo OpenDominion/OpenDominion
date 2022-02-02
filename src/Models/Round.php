@@ -191,7 +191,7 @@ class Round extends AbstractModel
      */
     public function timeUntilRealmAssignment()
     {
-        return now()->longAbsoluteDiffForHumans($this->realmAssignmentDate());
+        return now()->longAbsoluteDiffForHumans($this->realmAssignmentDate(), 2);
     }
 
     /**
@@ -284,7 +284,7 @@ class Round extends AbstractModel
      */
     public function timeUntilStart()
     {
-        return now()->longAbsoluteDiffForHumans($this->start_date);
+        return now()->longAbsoluteDiffForHumans($this->start_date, 2);
     }
 
     /**
