@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.8.0] - 2022-02-01
 ### Changed
 - Protection now ends at the start of Day 1 (OOP = round start)
   - Realms assigned 48 hours prior to round start
@@ -33,9 +35,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Smithy: maximum cost reduction reduced to 30% at 15% owned (from 36% at 18% owned)
 - Masonry: lightning bolt protection removed (was 1% per 1% owned up to a maximum of 10%)
 - Wizard Guild: lightning bolt protection added, 6% per 1% owned up to a maximum of 60% at 10% owned
-- Gryphon Nest: OP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
-- Guard Tower: DP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 30% at 20% owned)
-- Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.7% owned (from 1.35x per 1% owned, max 22.5% at 16.7% owned)
+- Gryphon Nest: OP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 32% at 20% owned)
+- Guard Tower: DP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 32% at 20% owned)
+- Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.7% owned (from 1.35x per 1% owned, max 25% at 18.5% owned)
 - Dark Elf Spellblade: -50p (from 1250p), -25r (from 75r)
 - Human Knight: -25p (from 1025p)
 - Nomad Blademaster: -15r (from 40r)
@@ -307,7 +309,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Rankings advisor now links to overall rankings pages
 - Improved dominion history logs
 - Guard Tower / Gryphon Nest: OP/DP bonus reduced to 1.6x per 1% owned up to a maximum of 32% at 20% owned (from 1.75x per 1%, max 35% at 20% owned)
-- Temples: DP reduction reduced to 1.35x per 1% owned up to a maximum of 22.5% at 16.7% owned (from 1.5x per 1% owned, max 25% at 16.7% owned)
+- Temples: DP reduction reduced to 1.35x per 1% owned up to a maximum of 25% at 18.5% owned (from 1.5x per 1% owned, max 25% at 16.7% owned)
 - Factories: Construction cost reduction now capped at 60% at 15% owned (from 75% at 18.75%), rezone cost reduction increased to 4x per 1% owned up to a maximum of 60% at 15% owned (from 3x per 1%, max 75% at 25% owned)
 - Wizard Guilds: No longer excludes Dark Elf from wizard power bonus
 - Orc: Savage +25o (from 0o)
@@ -1596,7 +1598,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.7.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.0...HEAD
+[1.8.0]: https://github.com/OpenDominion/OpenDominion/compare/1.7.2...1.8.0
+[1.7.2]: https://github.com/OpenDominion/OpenDominion/compare/1.7.1...1.7.2
 [1.7.1]: https://github.com/OpenDominion/OpenDominion/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/OpenDominion/OpenDominion/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/OpenDominion/OpenDominion/compare/1.5.0...1.6.0
