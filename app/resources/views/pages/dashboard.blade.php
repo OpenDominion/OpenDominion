@@ -168,9 +168,9 @@
                                         <td class="text-center">
                                             @if ($round->hasEnded())
                                                 <abbr title="Ended at {{ $round->end_date }}">Ended</abbr>
-                                            @elseif ($round->protectionEndDate() > now())
-                                                <abbr title="Commences in {{ $round->timeUntilCommencement() }}">
-                                                    Commences in {{ $round->timeUntilCommencement() }}
+                                            @elseif ($round->start_date > now())
+                                                <abbr title="Starts in {{ $round->timeUntilStart() }}">
+                                                    Starts in {{ $round->timeUntilStart() }}
                                                 </abbr>
                                             @else
                                                 <abbr title="Ending at {{ $round->end_date }}">

@@ -103,21 +103,20 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-3 col-lg-2">
-                                    @foreach ($spellHelper->getWonderSpells() as $spell)
+                                    @foreach ($spellHelper->getSpells(null, 'wonder') as $spell)
                                         <div class="text-center" style="margin-top: 25px;">
                                             <button type="submit"
                                                     name="action"
-                                                    value="{{ $spell['key'] }}"
+                                                    value="{{ $spell->key }}"
                                                     class="btn btn-primary"
                                                     {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
-                                                <i class="{{ $spell['icon_class'] }}"></i>
-                                                {{ $spell['name'] }}
+                                                {{ $spell->name }}
                                             </button>
                                             <div class="small text-center">
-                                                @if ($spellCalculator->canCast($selectedDominion, $spell['key']))
-                                                    Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                @if ($spellCalculator->canCast($selectedDominion, $spell))
+                                                    Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                 @else
-                                                    Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                    Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -309,7 +308,7 @@
                                                     <i class="fa fa-question-circle"
                                                         data-toggle="tooltip"
                                                         data-placement="top"
-                                                        title="You must leave at least 33% of your total DP at home. (33% rule)"></i>
+                                                        title="You must leave at least 40% of your total DP at home. (40% rule)"></i>
                                                 </td>
                                                 <td id="home-forces-min-dp" data-amount="0">0</td>
                                             </tr>
@@ -332,7 +331,7 @@
                 </div>
                 <div class="box-body">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
-                    <p>The first wave of wonders will appear at the start of the round. An additional wonder will appear every 48 hours starting on Day 6. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
+                    <p>The first wave of wonders will appear at the start of the round. An additional wonder will appear every 48 hours starting on Day 3. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
                     <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>3.5% casualties</b> (including immortal units). Each dominion that attacks a wonder controlled by another realm is awarded prestige if they destroy and rebuild it in their realm.</p>
                     @if ($selectedDominion->morale < 100)
                         <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
@@ -481,7 +480,7 @@
                     homeForcesBoatsElement.removeClass('text-danger');
                 }
 
-                // Check 33% rule
+                // Check 40% rule
                 var minDefenseRule = parseFloat(homeForcesDPElement.data('amount')) < parseFloat(homeForcesMinDPElement.data('amount'));
                 if (minDefenseRule) {
                     homeForcesDPElement.addClass('text-danger');

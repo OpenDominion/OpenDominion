@@ -25,9 +25,9 @@ class RealmFinderService
     protected const MAX_PACKED_PLAYERS_PER_REALM = 8;
 
     /**
-     * @var int Number of hours after round start to begin realm assignment
+     * @var int Number of hours before round start to begin realm assignment
      */
-    public const ASSIGNMENT_HOURS_AFTER_START = 24;
+    public const ASSIGNMENT_HOURS_BEFORE_START = 48;
 
     /**
      * @var int Minimum number of realms to create
@@ -47,7 +47,7 @@ class RealmFinderService
      */
     public function findRealm(Round $round, Race $race, User $user, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
-        if (now() < $round->start_date || now()->diffInHours($round->start_date) < static::ASSIGNMENT_HOURS_AFTER_START) {
+        if (now() < $round->start_date->subHours(static::ASSIGNMENT_HOURS_BEFORE_START)) {
             return $round->realms()->where('number', 0)->first();
         }
 

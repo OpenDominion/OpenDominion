@@ -202,18 +202,18 @@
 
                                 <div class="form-group row">
                                     @php
-                                        $racialSpell = $spellHelper->getRacialSelfSpell($race);
+                                        $racialSpell = $spellHelper->getSpellsWithPerk('defense', $race)->first();
                                     @endphp
                                     <div class="col-xs-3 text-right">
-                                        @if (in_array($racialSpell['key'], ['blizzard', 'defensive_frenzy', 'howling']))
-                                            {{ $racialSpell['name'] }}
+                                        @if ($racialSpell)
+                                            {{ $racialSpell->name }}
                                         @endif
                                     </div>
                                     <div class="col-xs-3 text-left">
-                                        @if (in_array($racialSpell['key'], ['blizzard', 'defensive_frenzy', 'howling']))
+                                        @if ($racialSpell)
                                             <input type="checkbox"
                                                     step="any"
-                                                    name="calc[{{ $racialSpell['key'] }}]"
+                                                    name="calc[{{ $racialSpell->key }}]"
                                                     checked
                                                     disabled />
                                         @endif
@@ -533,23 +533,23 @@
 
                                 <div class="form-group row">
                                     @php
-                                        $racialSpell = $spellHelper->getRacialSelfSpell($race);
+                                        $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land'], $race)->first();
                                     @endphp
                                     <div class="col-xs-3 text-right">
-                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'favorable_terrain', 'howling', 'killing_rage', 'nightfall']))
-                                            {{ $racialSpell['name'] }}
+                                        @if ($racialSpell)
+                                            {{ $racialSpell->name }}
                                         @endif
                                     </div>
                                     <div class="col-xs-3 text-left">
-                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'favorable_terrain', 'howling', 'killing_rage', 'nightfall']))
+                                        @if ($racialSpell)
                                             <input type="checkbox"
                                                     step="any"
-                                                    name="calc[{{ $racialSpell['key'] }}]"
+                                                    name="calc[{{ $racialSpell->key }}]"
                                                     checked
                                                     disabled />
                                         @endif
                                     </div>
-                                    @if ($racialSpell['key'] == 'favorable_terrain')
+                                    @if ($race->key == 'nomad-rework')
                                         <div class="col-xs-3 text-right">
                                             Barren Land %
                                         </div>

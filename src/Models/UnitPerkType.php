@@ -21,10 +21,9 @@ class UnitPerkType extends AbstractModel
     {
         return $this->belongsToMany(
             Unit::class,
-            'unit_perks',
-            'unit_perk_type_id',
-            'unit_id'
+            UnitPerk::class,
         )
-            ->withTimestamps();
+        ->withPivot('value')
+        ->withTimestamps();
     }
 }

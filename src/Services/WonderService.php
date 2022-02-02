@@ -20,8 +20,8 @@ class WonderService
      */
     public function getStartingWonders(Round $round)
     {
-        $tier1 = Wonder::active()->where('power', 250000)->get();
-        $tier2 = Wonder::active()->where('power', 150000)->get();
+        $tier1 = Wonder::active()->where('power', 150000)->get();
+        $tier2 = Wonder::active()->where('power', 75000)->get();
 
         $wonderOptions = $tier1->random(3)->keyBy('key');
         if ($wonderOptions->has('halls_of_knowledge')) {
@@ -47,15 +47,15 @@ class WonderService
         $existingWonders = RoundWonder::with('wonder')->where('round_id', $round->id)->get()->keyBy('wonder.key');
 
         // Limit to three Tier 1
-        if ($existingWonders->where('wonder.power', 250000)->count() >= 3) {
-            $wonders = $wonders->where('power', 150000);
+        if ($existingWonders->where('wonder.power', 150000)->count() >= 3) {
+            $wonders = $wonders->where('power', 75000);
         }
 
         if ($existingWonders->count() >= $round->realms()->count() * self::MAX_WONDERS_PER_REALM) {
             return collect();
         }
 
-        if ($round->daysInRound() > 12) {
+        if ($round->daysInRound() > 9) {
             $wonders->forget('halls_of_knowledge');
         }
 
@@ -103,6 +103,7 @@ class WonderService
                 'target_id' => $wonder->id,
                 'type' => 'wonder_spawned',
                 'data' => ['power' => $wonder->power],
+                'created_at' => now()->startOfHour()
             ]);
         }
     }

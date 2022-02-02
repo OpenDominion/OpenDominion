@@ -21,6 +21,7 @@ use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -39,6 +40,9 @@ class EspionageActionService
 
     /** @var GovernmentService */
     protected $governmentService;
+
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -87,6 +91,7 @@ class EspionageActionService
         $this->buildingHelper = app(BuildingHelper::class);
         $this->espionageHelper = app(EspionageHelper::class);
         $this->governmentService = app(GovernmentService::class);
+        $this->guardMembershipService = app(GuardMembershipService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
         $this->infoMapper = app(InfoMapper::class);
@@ -102,8 +107,8 @@ class EspionageActionService
         $this->spellCalculator = app(SpellCalculator::class);
     }
 
-    public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 6;
-    public const THEFT_HOURS_AFTER_ROUND_START = 24 * 6;
+    public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 3;
+    public const THEFT_HOURS_AFTER_ROUND_START = 24 * 3;
 
     /**
      * Performs a espionage operation for $dominion, aimed at $target dominion.
@@ -145,7 +150,7 @@ class EspionageActionService
 
         if ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
             if (now()->diffInHours($dominion->round->start_date) < self::THEFT_HOURS_AFTER_ROUND_START) {
-                throw new GameException('You cannot perform resource theft for the first six days of the round');
+                throw new GameException('You cannot perform resource theft for the first three days of the round');
             }
             if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
                 throw new GameException('You cannot perform resource theft on targets smaller than yourself');
@@ -155,7 +160,7 @@ class EspionageActionService
             }
         } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
             if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
-                throw new GameException('You cannot perform black ops for the first six days of the round');
+                throw new GameException('You cannot perform black ops for the first three days of the round');
             }
             if ($target->user_id == null) {
                 throw new GameException('You cannot perform black ops on bots');
@@ -315,7 +320,7 @@ class EspionageActionService
         }
 
         // Surreal Perception
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
             $this->notificationService
                 ->queueNotification('received_spy_op', [
                     'sourceDominionId' => $dominion->id,
@@ -456,7 +461,7 @@ class EspionageActionService
 
         // Surreal Perception
         $sourceDominionId = null;
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
             $sourceDominionId = $dominion->id;
         }
 
@@ -486,7 +491,7 @@ class EspionageActionService
         string $resource,
         array $constraints
     ): int {
-        if ($this->spellCalculator->isSpellActive($target, 'fools_gold')) {
+        if ($target->getSpellPerkValue('fools_gold')) {
             if ($resource === 'platinum') {
                 return 0;
             }
@@ -548,8 +553,14 @@ class EspionageActionService
 
         if ($this->espionageHelper->isWarOperation($operationKey)) {
             $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
-            if (!$warDeclared && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
-                throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
+            $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
+            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+            if (!$warDeclared && !$recentlyInvaded) {
+                if ($blackGuard) {
+                    $this->guardMembershipService->checkLeaveApplication($dominion);
+                } else {
+                    throw new GameException("You cannot cast {$operationInfo['name']} outside of war.");
+                }
             }
         }
 
@@ -704,7 +715,7 @@ class EspionageActionService
 
         // Surreal Perception
         $sourceDominionId = null;
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
             $sourceDominionId = $dominion->id;
         }
 

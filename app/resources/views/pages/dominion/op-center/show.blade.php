@@ -41,11 +41,7 @@
 
     if($latestRevelation != null) {
         $infoOps['revelation'] = [];
-        $infoOps['revelation']['spells'] = [];
-
-        foreach ($latestRevelation->data as $spell) {
-            $infoOps['revelation']['spells'][] = ['spell' => $spell['spell'], 'duration' => $spell['duration']];
-        }
+        $infoOps['revelation']['spells'] = $latestRevelation->data;
         $infoOps['revelation']['created_at'] = isset($latestRevelation->created_at) ? $latestRevelation->created_at : $now;
     }
 
@@ -74,6 +70,7 @@
         $infoOps['vision']['created_at'] = isset($latestVision->created_at) ? $latestVision->created_at : $now;
     }
 
+    $infoSpells = $spellHelper->getSpells($dominion->race, 'info');
 
 @endphp
 
@@ -142,7 +139,7 @@
                                 @csrf
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="spell" value="clear_sight">
-                                <button type="submit" class="btn btn-sm btn-primary">Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clear_sight')) }} mana)</button>
+                                <button type="submit" class="btn btn-sm btn-primary">Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('clear_sight'))) }} mana)</button>
                             </form>
                         </div>
                         <div class="clearfix"></div>
@@ -255,18 +252,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($latestRevelation->data as $spell)
+                            @foreach ($latestRevelation->data as $activeSpell)
                                 @php
-                                    $spellInfo = $spellHelper->getSpellInfo($spell['spell']);
-                                    $castByDominion = OpenDominion\Models\Dominion::with('realm')->findOrFail($spell['cast_by_dominion_id']);
+                                    $spell = $spellHelper->getSpellByKey($activeSpell['spell']);
                                 @endphp
                                 <tr>
-                                    <td>{{ $spellInfo['name'] }}</td>
-                                    <td>{{ $spellInfo['description'] }}</td>
-                                    <td class="text-center">{{ $spell['duration'] }}</td>
+                                    <td>{{ $spell->name }}</td>
+                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                    <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                     <td class="text-center">
-                                        @if ($castByDominion->id == $dominion->id || $castByDominion->realm_id == $selectedDominion->realm_id)
-                                            <a href="{{ route('dominion.realm', $castByDominion->realm->number) }}">{{ $castByDominion->name }} (#{{ $castByDominion->realm->number }})</a>
+                                        @if ($activeSpell['cast_by_dominion_id'] == $dominion->id || $activeSpell['cast_by_dominion_realm_number'] == $selectedDominion->realm->number)
+                                            <a href="{{ route('dominion.realm', $activeSpell['cast_by_dominion_realm_number']) }}">{{ $activeSpell['cast_by_dominion_name'] }} (#{{ $activeSpell['cast_by_dominion_realm_number'] }})</a>
                                         @else
                                             <em>Unknown</em>
                                         @endif
@@ -298,7 +294,7 @@
                                 @csrf
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="spell" value="revelation">
-                                <button type="submit" class="btn btn-sm btn-primary">Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'revelation')) }} mana)</button>
+                                <button type="submit" class="btn btn-sm btn-primary">Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('revelation'))) }} mana)</button>
                             </form>
                         </div>
                         <div class="clearfix"></div>
@@ -611,7 +607,7 @@
                                 @csrf
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="spell" value="vision">
-                                <button type="submit" class="btn btn-sm btn-primary">Vision ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'vision')) }} mana)</button>
+                                <button type="submit" class="btn btn-sm btn-primary">Vision ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('vision'))) }} mana)</button>
                             </form>
                         </div>
                         <div class="clearfix"></div>

@@ -36,7 +36,7 @@ class GuardMembershipActionService
         $this->guardLockedDominion($dominion);
 
         if (!$this->guardMembershipService->canJoinGuards($dominion)) {
-            throw new GameException('You cannot join the Emperor\'s Royal Guard for the first five days of the round.');
+            throw new GameException('You cannot join the Emperor\'s Royal Guard for the first two days of the round.');
         }
 
         if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
@@ -86,6 +86,35 @@ class GuardMembershipActionService
         return [
             'message' => sprintf(
                 'You have applied to join the Emperor\'s Elite Guard.'
+            ),
+            'data' => []
+        ];
+    }
+
+    /**
+     * Starts black guard application for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
+     * @throws GameException
+     */
+    public function joinBlackGuard(Dominion $dominion): array
+    {
+        $this->guardLockedDominion($dominion);
+
+        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+            throw new GameException('You are already a member of the Shadow League.');
+        }
+
+        if ($this->guardMembershipService->isBlackGuardApplicant($dominion)) {
+            throw new GameException('You have already applied to join the Shadow League.');
+        }
+
+        $this->guardMembershipService->joinBlackGuard($dominion);
+
+        return [
+            'message' => sprintf(
+                'You have applied to join the Shadow League.'
             ),
             'data' => []
         ];
@@ -161,6 +190,62 @@ class GuardMembershipActionService
 
         return [
             'message' => $message,
+            'data' => []
+        ];
+    }
+
+    /**
+     * Leaves the black guard or cancels an application for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
+     * @throws GameException
+     */
+    public function leaveBlackGuard(Dominion $dominion): array
+    {
+        $this->guardLockedDominion($dominion);
+
+        if ($this->guardMembershipService->getHoursBeforeLeaveBlackGuard($dominion)) {
+            throw new GameException('You cannot leave the Shadow League for 48 hours after joining.');
+        }
+
+        if (!$this->guardMembershipService->isBlackGuardApplicant($dominion) && !$this->guardMembershipService->isBlackGuardMember($dominion)) {
+            throw new GameException('You are not a member of the Shadow League.');
+        }
+
+        if ($this->guardMembershipService->isBlackGuardApplicant($dominion)) {
+            $message = 'You have canceled your Shadow League application.';
+        } else {
+            $message = 'You will leave the Shadow League in 12 hours.';
+        }
+
+        $this->guardMembershipService->leaveBlackGuard($dominion);
+
+        return [
+            'message' => $message,
+            'data' => []
+        ];
+    }
+
+    /**
+     * Cancels leaving the black guard for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
+     * @throws GameException
+     */
+    public function cancelLeaveBlackGuard(Dominion $dominion): array
+    {
+        $this->guardLockedDominion($dominion);
+
+        if (!$this->guardMembershipService->isLeavingBlackGuard($dominion)) {
+            throw new GameException('You are not leaving the Shadow League.');
+        }
+
+        $this->guardMembershipService->cancelLeaveBlackGuard($dominion);
+
+        return [
+            'message' => 'You will remain in the Shadow League.',
             'data' => []
         ];
     }

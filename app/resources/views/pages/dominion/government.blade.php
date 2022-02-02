@@ -86,10 +86,12 @@
                                         <tr>
                                             <th>Dominion</th>
                                             <th>Voted for</th>
-                                            <th>Can See Advisors</th>
+                                            <th>Player</th>
+                                            <th>Advisors</th>
                                         </tr>
                                         @php
-                                            $realmAdvisors = $selectedDominion->getSetting("realmadvisors");
+                                            $dominionAdvisors = $selectedDominion->getSetting("realmadvisors");
+                                            $realmAdvisors = $selectedDominion->user->getSetting("realmadvisors");
                                             $packAdvisors = $selectedDominion->user->getSetting("packadvisors");
                                         @endphp
                                         @foreach ($dominions as $dominion)
@@ -107,15 +109,24 @@
                                                     <td>N/A</td>
                                                 @endif
                                                 <td>
+                                                    @if ($dominion->user_id && $selectedDominion->inRealmAndSharesAdvisors($dominion))
+                                                        {{ $dominion->user->display_name }}
+                                                    @endif
+                                                </td>
+                                                <td>
                                                     @if ($dominion->user_id !== null && $dominion->id !== $selectedDominion->id)
-                                                        @if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
+                                                        @if ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === true)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
-                                                        @elseif ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === false)
+                                                        @elseif ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === false)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
                                                         @elseif ($packAdvisors !== false && $selectedDominion->pack_id !== null && $selectedDominion->pack_id == $dominion->pack_id)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
-                                                        @else
+                                                        @elseif ($dominion->created_at > $dominion->round->realmAssignmentDate())
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
+                                                        @elseif ($realmAdvisors === false)
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
+                                                        @else
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
                                                         @endif
                                                     @endif
                                                 </td>
@@ -127,7 +138,7 @@
                                     <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                Save
+                                                Update
                                             </button>
                                         </div>
                                     </div>
@@ -258,7 +269,7 @@
                                                 <div class="form-group">
                                                     <select name="realm_number" id="realm_number" class="form-control" required style="width: 100%" data-placeholder="Select a realm" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                         <option></option>
-                                                        @if ($protectionService->getProtectionEndDate($selectedDominion) <= now())
+                                                        @if ($selectedDominion->round->start_date <= now())
                                                             @foreach ($realms as $realm)
                                                                 @if ($realm->id != $selectedDominion->realm->id)
                                                                     <option value="{{ $realm->number }}">
@@ -316,7 +327,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 6th day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
+                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 3rd day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
                     <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
                     <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, +20% infamy, and -50% resilience.</p>
                 </div>
@@ -334,7 +345,7 @@
                     <div class="row">
                         @if (!$canJoinGuards)
                             <div class="col-sm-12 text-center">
-                                <p class="text-red">You cannot join the Emperor's Royal Guard for the first five days of the round.</p>
+                                <p class="text-red">You cannot join the Emperor's Royal Guard for the first two days of the round.</p>
                             </div>
                         @endif
                         <div class="col-sm-6 text-center">
@@ -377,7 +388,7 @@
                                 <li>Exploration platinum cost increased by 25%.</li>
                             </ul>
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)
-                                <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveEliteGuard ? 'disabled' : null }}>
                                         @if ($isEliteGuardMember)
@@ -388,10 +399,46 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('dominion.government.elite-guard.join') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.elite-guard.join') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
                                         Request to Join Elite Guard
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                        <div class="col-sm-6 text-center">
+                            <h4 class="text-purple">
+                                <i class="ra ra-fire-shield" title="Shadow League"></i>
+                                The Shadow League
+                            </h4>
+                            <ul class="text-left" style="padding: 0 30px;">
+                                <li>Enables war operations between members.</li>
+                                <li>Infamy production bonuses are doubled.</li>
+                            </ul>
+                            @if ($isLeavingBlackGuard)
+                                <form action="{{ route('dominion.government.black-guard.cancel') }}" method="post" role="form">
+                                    @csrf
+                                    <button type="submit" name="land" class="btn btn-warning btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
+                                        Remain in Shadow League
+                                    </button>
+                                </form>
+                            @elseif ($isBlackGuardApplicant || $isBlackGuardMember)
+                                <form action="{{ route('dominion.government.black-guard.leave') }}" method="post" role="form">
+                                    @csrf
+                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
+                                        @if ($isBlackGuardMember)
+                                            Leave Shadow League
+                                        @else
+                                            Cancel Application
+                                        @endif
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('dominion.government.black-guard.join') }}" method="post" role="form">
+                                    @csrf
+                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
+                                        Request to Join Shadow League
                                     </button>
                                 </form>
                             @endif
@@ -409,17 +456,15 @@
                 <div class="box-body">
                     <p>Joining a guard will reduce the range other dominions can perform hostile interactions against you. In turn, you also can not perform hostile interactions against wonders or dominions outside of your guard range.</p>
                     <p>Upon requesting to join a guard it takes 24 hours for your request to be accepted. If you perform any hostile operations against dominions outside of that guard range, your application is reset back to 24 hours.</p>
-                    <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 6th day of the round.</p>
+                    <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 3rd day of the round.</p>
 
                     @if ($isEliteGuardMember)
                         <p>You are a member of the Emperor's <span class="text-yellow"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
-
                         @if ($hoursBeforeLeaveEliteGuard)
                             <p>You cannot leave for {{ $hoursBeforeLeaveEliteGuard }} hours.</p>
                         @endif
                     @elseif ($isRoyalGuardMember)
                         <p>You are a member of the Emperor's <span class="text-green"><i class="ra ra-heavy-shield" title="Royal Guard"></i> Royal Guard</span>.</p>
-
                         @if ($hoursBeforeLeaveRoyalGuard)
                             <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveRoyalGuard }} hours.</p>
                         @endif
@@ -433,6 +478,18 @@
 
                     @if ($isRoyalGuardApplicant)
                         <p>You will become a member of the Emperor's Royal Guard in {{ $hoursBeforeRoyalGuardMember }} hours.</p>
+                    @endif
+
+                    @if ($isBlackGuardMember)
+                        <p>You are a member of the <span class="text-purple"><i class="ra ra-fire-shield" title="Shadow League"></i>Shadow League</span>.</p>
+                        @if ($hoursBeforeLeaveBlackGuard)
+                            <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
+                        @endif
+                        @if ($isLeavingBlackGuard)
+                            <p>You will leave the Shadow League in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
+                        @endif
+                    @elseif ($isBlackGuardApplicant)
+                        <p>You will become a member of the Shadow League in {{ $hoursBeforeBlackGuardMember }} hours.</p>
                     @endif
                 </div>
             </div>

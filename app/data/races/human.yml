@@ -28,7 +28,7 @@ units:
       defense: 3
   - name: Knight
     cost:
-      platinum: 1025
+      platinum: 1000
       ore: 75
     power:
       offense: 2

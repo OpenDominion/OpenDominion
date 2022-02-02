@@ -90,6 +90,8 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property \Illuminate\Support\Carbon|null $wonders_last_seen
  * @property \Illuminate\Support\Carbon|null $royal_guard_active_at
  * @property \Illuminate\Support\Carbon|null $elite_guard_active_at
+ * @property \Illuminate\Support\Carbon|null $black_guard_active_at
+ * @property \Illuminate\Support\Carbon|null $black_guard_inactive_at
  * @property \Illuminate\Support\Carbon|null $last_tick_at
  * @property \Illuminate\Support\Carbon|null $locked_at
  * @property \Illuminate\Support\Carbon|null $abandoned_at
@@ -189,6 +191,8 @@ class Dominion extends AbstractModel
         'wonders_last_seen' => 'datetime',
         'royal_guard_active_at' => 'datetime',
         'elite_guard_active_at' => 'datetime',
+        'black_guard_active_at' => 'datetime',
+        'black_guard_inactive_at' => 'datetime',
         'last_tick_at' => 'datetime',
         'locked_at' => 'datetime',
         'abandoned_at' => 'datetime',
@@ -270,26 +274,28 @@ class Dominion extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
+    public function spells()
+    {
+        return $this->belongsToMany(
+            Spell::class,
+            DominionSpell::class
+        )
+        ->withPivot('duration', 'cast_by_dominion_id')
+        ->withTimestamps();
+    }
+
     public function techs()
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Tech::class,
-            DominionTech::class,
-            'dominion_id',
-            'id',
-            'id',
-            'tech_id'
-        );
+            DominionTech::class
+        )
+        ->withTimestamps();
     }
 
     public function queues()
     {
         return $this->hasMany(Dominion\Queue::class);
-    }
-
-    public function spells()
-    {
-        return $this->hasMany(Dominion\Spell::class);
     }
 
     public function user()
@@ -490,6 +496,57 @@ class Dominion extends AbstractModel
         return $bonus;
     }
 
+    public function getSpellPerks() {
+        return $this->spells->flatMap(
+            function ($spell) {
+                return $spell->perks->map(
+                    function ($perk) use ($spell) {
+                        $perk->self = ($spell->category == 'self');
+                        return $perk;
+                    }
+                );
+            }
+        );
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getSpellPerkValue(string $key): float
+    {
+        $perks = $this->getSpellPerks()->groupBy('key');
+        if (isset($perks[$key])) {
+            if ($perks[$key]->count() == 1) {
+                return $perks[$key]->first()->pivot->value;
+            }
+            $selfSpells = $perks[$key]->where('self', true);
+            $selfPerkValue = (float)$selfSpells->max('pivot.value');
+            if ($selfPerkValue < 0) {
+                $selfPerkValue = (float)$selfSpells->min('pivot.value');
+            }
+            $hostileSpells = $perks[$key]->where('self', false);
+            $hostilePerkValue = (float)$hostileSpells->max('pivot.value');
+            if (isset($selfSpells["enemy_{$key}_damage"])) {
+                $damageReduction = (float)$hostileSpells->min('pivot.value');
+            }
+            if ($hostilePerkValue < 0) {
+                $hostilePerkValue = (float)$hostileSpells->min('pivot.value');
+            }
+            return $selfPerkValue + $hostilePerkValue;
+        }
+        return 0;
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getSpellPerkMultiplier(string $key): float
+    {
+        return ($this->getSpellPerkValue($key) / 100);
+    }
+
     protected function getTechPerks() {
         return $this->techs->flatMap(
             function ($tech) {
@@ -585,20 +642,49 @@ class Dominion extends AbstractModel
             return false;
         }
 
-        $realmAdvisors = $target->getSetting('realmadvisors');
+        $dominionAdvisors = $target->getSetting('realmadvisors');
 
         // Realm Advisor is explicitly enabled
-        if ($realmAdvisors && array_key_exists($this->id, $realmAdvisors) && $realmAdvisors[$this->id] === true) {
+        if ($dominionAdvisors && array_key_exists($this->id, $dominionAdvisors) && $dominionAdvisors[$this->id] === true) {
             return true;
         }
 
         // Realm Advisor is explicity disabled
-        if ($realmAdvisors && array_key_exists($this->id, $realmAdvisors) && $realmAdvisors[$this->id] === false) {
+        if ($dominionAdvisors && array_key_exists($this->id, $dominionAdvisors) && $dominionAdvisors[$this->id] === false) {
             return false;
         }
 
         // Pack Advisor is enabled
         if ($target->user != null && $target->user->getSetting('packadvisors') !== false && ($this->pack_id != null && $this->pack_id == $target->pack_id)) {
+            return true;
+        }
+
+        // Late starters disabled by default
+        if ($this->created_at > $this->round->realmAssignmentDate()) {
+            return false;
+        }
+
+        // Realm Advisor is enabled
+        if ($target->user !== null && $target->user->getSetting('realmadvisors') !== false) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function sharesUsername(?Dominion $target): bool
+    {
+        if ($target->user_id == null) {
+            return false;
+        }
+
+        // Always shared with packmates
+        if ($target->pack_id !== null && $target->pack_id == $this->pack_id) {
+            return true;
+        }
+
+        // Shared display name is enabled
+        if ($target->user->getSetting('sharesusername') !== false) {
             return true;
         }
 

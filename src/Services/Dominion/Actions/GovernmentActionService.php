@@ -36,7 +36,7 @@ class GovernmentActionService
         $this->notificationService = $notificationService;
     }
 
-    public const WAR_HOURS_AFTER_ROUND_START = 24 * 5;
+    public const WAR_HOURS_AFTER_ROUND_START = 24 * 3;
 
     /**
      * Casts a Dominion's vote for monarch.
@@ -149,7 +149,7 @@ class GovernmentActionService
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::WAR_HOURS_AFTER_ROUND_START) {
-            throw new GameException('You cannot declare war for the first five days of the round.');
+            throw new GameException('You cannot declare war for the first two days of the round.');
         }
 
         $war = RealmWar::create([

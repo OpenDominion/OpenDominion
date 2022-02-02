@@ -163,4 +163,25 @@ class EspionageHelper
             ],
         ]);
     }
+
+    public function getRacialWarOperation(Race $race) {
+        $raceName = $race->name;
+        return $this->getRacialWarOperations()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
+    }
+
+    public function getRacialWarOperations(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Assassinate Archmages',
+                'description' => 'Kills archmages',
+                'key' => 'assassinate_archmages',
+                'decreases' => ['military_archmages'],
+                'percentage' => 1,
+                'races' => collect(['Spirit']),
+            ],
+        ]);
+    }
 }

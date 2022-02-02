@@ -5,6 +5,7 @@ namespace OpenDominion\Helpers;
 use LogicException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\Spell;
 use OpenDominion\Models\Wonder;
 
 class NotificationHelper
@@ -606,7 +607,7 @@ class NotificationHelper
 
                 return sprintf(
                     'Our wizards have repelled a %s spell attempt by %s (#%s)%s',
-                    $this->spellHelper->getSpellInfo($data['spellKey'])['name'],
+                    $data['spellName'],
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $lastPart
@@ -617,7 +618,7 @@ class NotificationHelper
 
                 return sprintf(
                     'The energy mirror protecting our dominion has reflected a %s spell back at the caster.',
-                    $this->spellHelper->getSpellInfo($data['spellKey'])['name'],
+                    $data['spellName']
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':

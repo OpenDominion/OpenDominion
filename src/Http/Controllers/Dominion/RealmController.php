@@ -42,15 +42,13 @@ class RealmController extends AbstractDominionController
         }
 
         $isOwnRealm = ($realmNumber === (int)$dominion->realm->number);
-        $protectionEndDate = $protectionService->getProtectionEndDate($dominion);
 
-        if ($protectionEndDate > now() && !$isOwnRealm) {
-            $request->session()->flash('alert-warning', 'You cannot view other realms before the round commences.');
+        if ($round->start_date > now() && !$isOwnRealm) {
+            $request->session()->flash('alert-warning', 'You cannot view other realms before the round begins.');
             return redirect()->route('dominion.realm', (int)$dominion->realm->number);
         }
 
-        // Eager load some relational data to save on SQL queries down the road in NetworthCalculator and
-        // ProtectionService
+        // Eager load some relational data to save on SQL queries down the road in NetworthCalculator
         $with = [
             'dominions.queues',
             'dominions.race',

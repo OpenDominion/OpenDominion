@@ -9,7 +9,7 @@ class AIHelper
 {
     public function getDefenseForNonPlayer(Round $round, int $totalLand)
     {
-        $day = $round->daysInRound();
+        $day = $round->daysInRound() + 3;
         $hours = $round->hoursInDay();
         $fractionalDay = $day + ($hours / 24);
 
@@ -18,7 +18,7 @@ class AIHelper
         // Approximate land size at max growth rate
         $expectedLandSize = (0.063 * $fractionalDay**3) - (4.8 * $fractionalDay**2) + (181 * $fractionalDay) - 116;
         // Scale by expected land size
-        $defenseRequired = $topOffense * 0.95 * (($expectedLandSize / $totalLand) ** -1.5);
+        $defenseRequired = $topOffense * 0.95 * (($expectedLandSize / $totalLand) ** -1.25);
 
         return $defenseRequired;
     }
@@ -28,7 +28,8 @@ class AIHelper
         $config = $this->getDefaultInstructions();
 
         $config['active_chance'] = mt_rand(25, 40) / 100;
-        $config['max_land'] = mt_rand(400, 4800);
+        $config['max_land'] = mt_rand(250, 3500);
+        $config['elite_guard_land'] = mt_rand(2000, 3000);
 
         $investOreRaces = ['Dwarf', 'Gnome', 'Icekin'];
         if (in_array($race->name, $investOreRaces)) {
@@ -165,7 +166,7 @@ class AIHelper
                 [
                     'land_type' => 'plain',
                     'building' => 'farm',
-                    'amount' => 0.06
+                    'amount' => 0.065
                 ],
                 [
                     'land_type' => 'swamp',
@@ -185,11 +186,11 @@ class AIHelper
                 ],
                 [
                     'unit' => 'spies',
-                    'amount' => 0.05
+                    'amount' => mt_rand(10, 25) / 1000
                 ],
                 [
                     'unit' => 'wizards',
-                    'amount' => 0.05
+                    'amount' => mt_rand(10, 25) / 1000
                 ]
             ]
         ];

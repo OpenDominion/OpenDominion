@@ -76,7 +76,6 @@ class RezoningCalculator
         // Values (percentages)
         $factoryReduction = 4;
         $factoryReductionMax = 60;
-        $spellMechanicalGeniusReduction = 30;
 
         // Factories
         $multiplier -= min(
@@ -93,13 +92,8 @@ class RezoningCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('rezone_cost');
 
-        // Racial Spell
-        $mechanicalGeniusReduction = $this->spellCalculator->getActiveSpellMultiplierBonus(
-            $dominion,
-            'mechanical_genius',
-            $spellMechanicalGeniusReduction
-        );
-        $multiplier += $mechanicalGeniusReduction;
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('rezone_cost');
 
         return $multiplier;
     }

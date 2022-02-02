@@ -96,7 +96,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
 
     public function testLateStartingResources()
     {
-        $this->realm->round->start_date = now()->subDays(5);
+        $this->realm->round->start_date = now()->subDays(2);
         $this->realm->round->save();
 
         $dominion = $this->dominionFactory->create(

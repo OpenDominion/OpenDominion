@@ -292,9 +292,7 @@ class PopulationCalculator
 
         $multiplier = 1;
 
-        // Values (percentages)
-        $spellHarmony = 50;
-        $spellPlague = 50;
+        // Values
         $templeBonus = 6;
 
         // Racial Bonus
@@ -303,11 +301,8 @@ class PopulationCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('population_growth');
 
-        // Spell: Harmony
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'harmony', $spellHarmony);
-
-        // Spell: Plague
-        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'plague', $spellPlague);
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('population_growth');
 
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);

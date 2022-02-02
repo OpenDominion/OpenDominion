@@ -77,6 +77,7 @@ class SelectorService
                 'realm.wonders',
                 'realm.wonders.perks',
                 'spells',
+                'spells.perks',
                 'techs',
                 'techs.perks',
             ])->findOrFail($dominionId);

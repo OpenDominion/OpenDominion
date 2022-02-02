@@ -21,6 +21,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
@@ -196,7 +197,7 @@ class AIService
 
         // Explore
         try {
-            if ($dominion->round->daysInRound() > 4 || ($dominion->round->daysInRound() == 4 && $dominion->round->hoursInDay() >= 3)) {
+            if ($dominion->round->daysInRound() > 1 || ($dominion->round->daysInRound() == 1 && $dominion->round->hoursInDay() >= 3)) {
                 if ($incomingLand < 90 && $totalLand < $config['max_land']) {
                     $this->exploreLand($dominion->refresh(), $config, $totalLand);
                 }
@@ -218,10 +219,17 @@ class AIService
         } catch (GameException $e) {
             // Where gates stand for ever shut, till the world is mended.
         }
+
+        // Elite Guard
+        if (isset($config['elite_guard_land']) && $config['elite_guard_land'] >= $this->$totalLand) {
+            $dominion->elite_guard_active_at = now();
+            $dominion->save();
+        }
     }
 
     public function castSpells(Dominion $dominion, array $config) {
-        foreach ($config['spells'] as $spell) {
+        foreach ($config['spells'] as $spellKey) {
+            $spell = Spell::firstWhere('key', $spellKey);
             $spellDuration = $this->spellCalculator->getSpellDuration($dominion, $spell);
             if ($spellDuration == null || $spellDuration < 4) {
                 $this->spellActionService->castSpell($dominion, $spell);
@@ -330,7 +338,8 @@ class AIService
             if ($command['unit'] == 'spies') {
                 // Train spies
                 $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
-                if ($spyRatio < $command['amount']) {
+                $targetRatio = min(35, $dominion->round->daysInRound()) * $command['amount'];
+                if ($spyRatio < $targetRatio) {
                     $incomingSpies = $this->queueService->getTrainingQueueTotalByResource($dominion, 'military_spies');
                     if ($incomingSpies == 0) {
                         $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
@@ -340,7 +349,8 @@ class AIService
             } elseif ($command['unit'] == 'wizards') {
                 // Train wizards
                 $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
-                if ($wizardRatio < $command['amount']) {
+                $targetRatio = min(35, $dominion->round->daysInRound()) * $command['amount'];
+                if ($wizardRatio < $targetRatio) {
                     $incomingWizards = $this->queueService->getTrainingQueueTotalByResource($dominion, 'military_spies');
                     if ($incomingWizards == 0) {
                         $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];

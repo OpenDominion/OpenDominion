@@ -10,9 +10,6 @@ use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
-use OpenDominion\Models\Council;
-use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Forum;
 use OpenDominion\Models\MessageBoard;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
@@ -91,7 +88,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum('posts_count');
             $view->with('forumUnreadCount', $forumUnreadCount);
 
-            $activeSpells = DB::table('active_spells')
+            $activeSpells = DB::table('dominion_spells')
                 ->where('dominion_id', $selectedDominion->id)
                 ->where('duration', '>', 0)
                 ->get([

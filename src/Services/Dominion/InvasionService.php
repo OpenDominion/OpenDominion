@@ -5,6 +5,8 @@ namespace OpenDominion\Services\Dominion;
 use DB;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\QueueService;
 
 class InvasionService
@@ -119,14 +121,30 @@ class InvasionService
     }
 
     /**
-     * Check if an invasion passes the 33%-rule.
+     * Check if an invasion passes the 50%-rule.
      *
      * @param Dominion $dominion
      * @param Dominion $target
      * @param array $units
      * @return bool
      */
-    public function passes33PercentRule(Dominion $dominion, ?Dominion $target, array $units): bool
+    public function passes50PercentRule(Dominion $dominion, Dominion $target, array $units): bool
+    {
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
+        $defendingForceDP = $this->militaryCalculator->getDefensivePower($target);
+
+        return ($attackingForceOP > $defendingForceDP / rand(20, 50));
+    }
+
+    /**
+     * Check if an invasion passes the 40%-rule.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @return bool
+     */
+    public function passes40PercentRule(Dominion $dominion, ?Dominion $target, array $units): bool
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
@@ -146,7 +164,7 @@ class InvasionService
 
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
 
-        return ($newHomeForcesDP >= $totalDP * (1/3));
+        return ($newHomeForcesDP >= $totalDP * 0.40);
     }
 
     /**
@@ -246,37 +264,24 @@ class InvasionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
-     * @param string $spellKey
+     * @param Spell $spell
      * @param int $duration
      */
-    public function applySpell(Dominion $dominion, Dominion $target, $spellKey, $duration)
+    public function applySpell(Dominion $dominion, Dominion $target, Spell $spell, $duration)
     {
-        $where = [
-            'dominion_id' => $target->id,
-            'spell' => $spellKey,
-        ];
-
-        $activeSpell = DB::table('active_spells')
-            ->where($where)
-            ->first();
+        $activeSpell = $target->spells->find($spell->id);
 
         if ($activeSpell !== null) {
-            DB::table('active_spells')
-                ->where($where)
-                ->update([
-                    'duration' => $duration,
-                    'updated_at' => now(),
-                ]);
+            $activeSpell->pivot->duration = $duration;
+            $activeSpell->pivot->cast_by_dominion_id = $dominion->id;
+            $activeSpell->pivot->save();
         } else {
-            DB::table('active_spells')
-                ->insert([
-                    'dominion_id' => $target->id,
-                    'spell' => $spellKey,
-                    'duration' => $duration,
-                    'cast_by_dominion_id' => $dominion->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            DominionSpell::insert([
+                'dominion_id' => $target->id,
+                'spell_id' => $spell->id,
+                'duration' => $duration,
+                'cast_by_dominion_id' => $dominion->id,
+            ]);
         }
     }
 }

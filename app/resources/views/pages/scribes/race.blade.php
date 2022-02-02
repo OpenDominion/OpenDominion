@@ -16,28 +16,41 @@
                     </em>
 
                     <div class="row">
-                        <div class="col-md-12 col-md-3">
-                            {{-- Home land --}}
-                            <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Home land</h4>
-                            <p>
-                                {!! $landHelper->getLandTypeIconHtml($race->home_land_type) !!} {{ ucfirst($race->home_land_type) }}
-                            </p>
-                        </div>
-                        <div class="col-md-12 col-md-9">
-                            {{-- Racial Spell --}}
-                            <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell</h4>
+                        <div class="col-md-12">
+                            {{-- Racial Spells --}}
                             @php
-                                $racialSpell = $spellHelper->getRacialSelfSpell($race);
+                                $racialSpells = $spellHelper->getSpells($race)->where('races', '!=', []);
                             @endphp
-                            <p>
-                                @if ($racialSpell)
-                                    <strong>{{ $racialSpell['name'] }}</strong>: {{ $racialSpell['description'] }}
-                                @endif
-                            </p>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Racial Spell</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($racialSpells as $spell)
+                                        <tr>
+                                            <td>{{ $spell->name }}</td>
+                                            <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                            <td>{{ $spellHelper->getSpellType($spell) }}</td>
+                                            <td>{{ $spell->duration ? $spell->duration.' hours' : '--' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-12 col-md-3">
+                    {{-- Home land --}}
+                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Home land</h4>
+                    <p>
+                        {!! $landHelper->getLandTypeIconHtml($race->home_land_type) !!} {{ ucfirst($race->home_land_type) }}
+                    </p>
+                    {{-- Racial Perks --}}
                     <table class="table table-striped">
                         <colgroup>
                             <col>

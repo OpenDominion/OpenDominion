@@ -57,12 +57,25 @@
 
                             {{-- Advisors --}}
                             <div class="form-group">
-                                <label for="skin" class="col-sm-3 control-label">Pack Advisors</label>
+                                <label for="skin" class="col-sm-3 control-label">Shared Advisors</label>
                                 <div class="col-sm-9">
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="packadvisors" {{ $user->getSetting('packadvisors') === false ? null : 'checked' }} />
-                                            Allow packmates to view your advisors.
+                                            Allow <b>packmates</b> to view your advisors.
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="realmadvisors" {{ $user->getSetting('realmadvisors') === false ? null : 'checked' }} />
+                                            Allow <b>realmmates</b> to view your advisors.
+                                        </label>
+                                    </div>
+                                    <p class="help-block">Shared advisors can still be enabled/disabled per dominion on the government page, these settings only determine the default values (does not apply to late starters).</p>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="shareusername" {{ $user->getSetting('shareusername') === false ? null : 'checked' }} />
+                                            Share display name alongside advisors.
                                         </label>
                                     </div>
                                 </div>

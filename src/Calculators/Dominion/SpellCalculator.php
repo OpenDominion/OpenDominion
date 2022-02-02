@@ -7,8 +7,9 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
+use OpenDominion\Models\Spell;
 
-// todo: rename params $spell to $spellKey for clarity. Also use $spellInfo for just info. Spell instances should be $spell
 class SpellCalculator
 {
     /** @var LandCalculator */
@@ -36,29 +37,28 @@ class SpellCalculator
      * @param string $spell
      * @return int
      */
-    public function getManaCost(Dominion $dominion, string $spell): int
+    public function getManaCost(Dominion $dominion, Spell $spell): int
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spell);
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $spellCostMultiplier = 1;
 
         // Techs
         $spellCostMultiplier += $dominion->getTechPerkMultiplier('spell_cost');
-        if ($this->spellHelper->isSelfSpell($spell, $dominion->race)) {
+        if ($this->spellHelper->isSelfSpell($spell)) {
             $spellCostMultiplier += $dominion->getTechPerkMultiplier('self_spell_cost');
         }
-        if ($this->spellHelper->isRacialSelfSpell($spell, $dominion->race)) {
+        if ($this->spellHelper->isRacialSelfSpell($spell)) {
             $spellCostMultiplier += $dominion->getTechPerkMultiplier('racial_spell_cost');
         }
-        if ($spell == 'fools_gold' && $dominion->getTechPerkMultiplier('fools_gold_cost') !== 0) {
+        if ($spell->key == 'fools_gold' && $dominion->getTechPerkMultiplier('fools_gold_cost') !== 0) {
             $spellCostMultiplier += $dominion->getTechPerkMultiplier('fools_gold_cost');
         }
 
         // Wonders
         $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
 
-        return round($spellInfo['mana_cost'] * $totalLand * $spellCostMultiplier);
+        return round($spell->cost_mana * $totalLand * $spellCostMultiplier);
     }
 
     /**
@@ -70,13 +70,9 @@ class SpellCalculator
      * @param string $spell
      * @return bool
      */
-    public function canCast(Dominion $dominion, string $spell): bool
+    public function canCast(Dominion $dominion, Spell $spell): bool
     {
-        $wizardStrengthCost = 5;
-
-        if ($this->spellHelper->isInfoOpSpell($spell)) {
-            $wizardStrengthCost = 2;
-        }
+        $wizardStrengthCost = $spell->cost_strength;
 
         return (
             ($dominion->resource_mana >= $this->getManaCost($dominion, $spell)) &&
@@ -91,7 +87,7 @@ class SpellCalculator
      * @param string $spell
      * @return bool
      */
-    public function isOnCooldown(Dominion $dominion, string $spell): bool
+    public function isOnCooldown(Dominion $dominion, Spell $spell): bool
     {
         if ($this->getSpellCooldown($dominion, $spell) > 0) {
             return true;
@@ -106,22 +102,21 @@ class SpellCalculator
      * @param string $spell
      * @return bool
      */
-    public function getSpellCooldown(Dominion $dominion, string $spell): int
+    public function getSpellCooldown(Dominion $dominion, Spell $spell): int
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spell);
 
-        if (isset($spellInfo['cooldown'])) {
+        if ($spell->cooldown > 0) {
             $spellLastCast = DB::table('dominion_history')
                 ->where('dominion_id', $dominion->id)
                 ->where('event', 'cast spell')
-                ->where('delta', 'like', "%{$spell}%")
+                ->where('delta', 'like', "%{$spell->key}%")
                 ->orderby('created_at', 'desc')
                 ->take(1)
                 ->first();
             if ($spellLastCast) {
                 $hoursSinceCast = now()->startOfHour()->diffInHours(Carbon::parse($spellLastCast->created_at)->startOfHour());
-                if ($hoursSinceCast < $spellInfo['cooldown']) {
-                    return $spellInfo['cooldown'] - $hoursSinceCast;
+                if ($hoursSinceCast < $spell->cooldown) {
+                    return $spell->cooldown - $hoursSinceCast;
                 }
             }
         }
@@ -130,80 +125,42 @@ class SpellCalculator
     }
 
     /**
-     * Returns a list of spells currently affecting $dominion.
+     * Returns whether a particular spell is affecting $dominion right now.
      *
      * @param Dominion $dominion
-     * @param bool $forceRefresh
-     * @return Collection
+     * @param Spell $spell
+     * @return bool
      */
     public function getActiveSpells(Dominion $dominion): Collection
     {
-        return $dominion->spells
-            ->where('duration', '>', 0)
-            ->sortByDesc('duration')
-            ->sortBy('created_at');
+        return DominionSpell::where('dominion_id', $dominion->id)->get();
     }
 
     /**
      * Returns whether a particular spell is affecting $dominion right now.
      *
      * @param Dominion $dominion
-     * @param string $spell
+     * @param string $spellKey
      * @return bool
      */
-    public function isSpellActive(Dominion $dominion, string $spell): bool
+    public function isSpellActive(Dominion $dominion, string $spellKey): bool
     {
-        return $this->getActiveSpells($dominion)->contains(function ($value) use ($spell) {
-            return ($value->spell === $spell);
-        });
+        return $dominion->spells->pluck('key')->contains($spellKey);
     }
 
     /**
      * Returns the remaining duration (in ticks) of a spell affecting $dominion.
      *
-     * @todo Rename to getSpellRemainingDuration for clarity
      * @param Dominion $dominion
-     * @param string $spell
+     * @param Spell $spell
      * @return int|null
      */
-    public function getSpellDuration(Dominion $dominion, string $spell): ?int
+    public function getSpellDuration(Dominion $dominion, Spell $spell): ?int
     {
-        if (!$this->isSpellActive($dominion, $spell)) {
+        if (!$dominion->spells->contains($spell)) {
             return null;
         }
 
-        $spell = $this->getActiveSpells($dominion)->filter(function ($value) use ($spell) {
-            return ($value->spell === $spell);
-        })->first();
-
-        return $spell->duration;
-    }
-
-    /**
-     * Returns the multiplier bonus when one or more spells are active for a
-     * Dominion.
-     *
-     * Returns the first active spell it finds. Multiple active spells do not
-     * stack.
-     *
-     * @param Dominion $dominion
-     * @param string|array $spell
-     * @param float|null $bonusPercentage
-     * @return float
-     */
-    public function getActiveSpellMultiplierBonus(Dominion $dominion, $spell, float $bonusPercentage = null): float
-    {
-        if (!is_array($spell)) {
-            $spell = [$spell => $bonusPercentage];
-        }
-
-        // todo: check this foreach
-        foreach ($spell as $spellName => $bonusPercentage) {
-            if ($this->isSpellActive($dominion, $spellName)) {
-                return ($bonusPercentage / 100);
-            }
-        }
-
-        return 0;
+        return $dominion->spells->find($spell->id)->pivot->duration;
     }
 }

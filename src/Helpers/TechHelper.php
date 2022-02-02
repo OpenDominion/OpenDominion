@@ -57,19 +57,6 @@ class TechHelper
             'fools_gold_cost' => '%s%% Fool\'s Gold mana cost',
             'improved_fools_gold' => '%s Fool\'s Gold protects ore/lumber',
 
-            // Wizard related
-            'enemy_disband_spies_damage' => '%s%% enemy disband spies damage',
-            'enemy_fireball_damage' => '%s%% enemy fireball damage',
-            'enemy_lightning_bolt_damage' => '%s%% enemy lightning bolt damage',
-            'enemy_spell_duration' => '%s black op spell duration',
-            'spell_cost' => '%s%% cost of spells',
-            'self_spell_cost' => '%s%% cost of self spells',
-            'racial_spell_cost' => '%s%% cost of racial spells',
-            'wizard_cost' => '%s%% cost of wizards',
-            'wizard_strength' => '%s%% wizard power',
-            'wizard_strength_recovery' => '%s wizard strength per hour',
-            'wonder_damage' => '%s%% wonder damage',
-
             // Resource related
             'food_consumption' => '%s%% food consumption',
             'food_production' => '%s%% food production',
@@ -86,6 +73,19 @@ class TechHelper
             'food_decay' => '%s%% food decay',
             'lumber_decay' => '%s%% lumber rot',
             'mana_decay' => '%s%% mana drain',
+
+            // Wizard related
+            'enemy_disband_spies_damage' => '%s%% enemy disband spies damage',
+            'enemy_fireball_damage' => '%s%% enemy fireball damage',
+            'enemy_lightning_bolt_damage' => '%s%% enemy lightning bolt damage',
+            'enemy_spell_duration' => '%s black op spell duration',
+            'spell_cost' => '%s%% cost of spells',
+            'self_spell_cost' => '%s%% cost of self spells',
+            'racial_spell_cost' => '%s%% cost of racial spells',
+            'wizard_cost' => '%s%% cost of wizards',
+            'wizard_strength' => '%s%% wizard power',
+            'wizard_strength_recovery' => '%s wizard strength per hour',
+            'wonder_damage' => '%s%% wonder damage',
         ];
     }
 

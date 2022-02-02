@@ -17,7 +17,7 @@ class WonderCalculator
     /**
      * @var float Maximum potential gain from scaling damage contribution
      */
-    protected const PRESTIGE_CONTRIBUTION_MULTIPLIER = 75;
+    protected const PRESTIGE_CONTRIBUTION_MULTIPLIER = 50;
 
     /**
      * @var float Minimum damage threshold for prestige gain
@@ -40,12 +40,6 @@ class WonderCalculator
     protected const MAX_SPAWN_POWER = 500000;
 
     /**
-     * @var float Constraints for RP gain formula
-     */
-    protected const TECH_MAX_REWARD = 2500;
-    protected const TECH_MIN_SIZE = 590;
-
-    /**
      * Returns the wonder's power when being rebuilt.
      *
      * @param RoundWonder $wonder
@@ -54,10 +48,10 @@ class WonderCalculator
      */
     public function getNewPower(RoundWonder $wonder, Realm $realm): float
     {
-        $day = $wonder->round->daysInRound() - 1;
+        $day = $wonder->round->daysInRound();
 
         if ($wonder->realm_id !== null) {
-            $maxPower = min(42500 * $day, 2 * $wonder->power);
+            $maxPower = min(37500 * $day, 2 * $wonder->power);
             $damageContribution = $this->getDamageDealtByRealm($wonder, $realm) / $wonder->power;
             $newPower = floor($maxPower * $damageContribution);
             return max(static::MIN_SPAWN_POWER, round($newPower, -4));
@@ -165,28 +159,5 @@ class WonderCalculator
             min($damageContribution, static::PRESTIGE_CONTRIBUTION_MAX) *
             (static::PRESTIGE_CONTRIBUTION_MULTIPLIER / static::PRESTIGE_CONTRIBUTION_MAX)
         ));
-    }
-
-    /**
-    * Calculates research point gain for a dominion
-    *
-    * @param RoundWonder $wonder
-    * @param Dominion $dominion
-    * @param float $offenseSent
-    * @return float
-    */
-    public function getTechGainForDominion(RoundWonder $wonder, Dominion $dominion, float $offenseSent): float
-    {
-        $offenseRequired = $wonder->power * min(15, $dominion->round->daysInRound() - 3) / 100;
-        if ($offenseSent < $offenseRequired) {
-            return 0;
-        }
-
-        $landCalculator = app(LandCalculator::class);
-        $totalLand = $landCalculator->getTotalLand($dominion);
-
-        $techGain = min(static::TECH_MAX_REWARD * static::TECH_MIN_SIZE / $totalLand, static::TECH_MAX_REWARD);
-
-        return $techGain;
     }
 }

@@ -42,7 +42,10 @@
                                                         data-race="{{ $dominion->race->name }}"
                                                         data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                         data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}"
-                                                        data-war="{{ ($governmentService->isAtWar($selectedDominion->realm, $dominion->realm) || in_array($dominion->id, $recentlyInvadedByDominionIds)) ? 1 : 0 }}">
+                                                        data-war="{{ $governmentService->isAtWar($selectedDominion->realm, $dominion->realm) ? 1 : 0 }}"
+                                                        data-revenge="{{ in_array($dominion->id, $recentlyInvadedByDominionIds) ? 1 : 0 }}"
+                                                        data-guard="{{ $guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion) ? 1 : 0 }}"
+                                                    >
                                                     {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                 </option>
                                             @endforeach
@@ -87,7 +90,7 @@
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
                                                         class="btn btn-primary btn-block"
-                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 6) ? 'disabled' : null }}>
+                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>
@@ -112,7 +115,7 @@
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
                                                         class="btn btn-primary btn-block"
-                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 6) ? 'disabled' : null }}>
+                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>
@@ -137,7 +140,7 @@
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
                                                         class="btn btn-primary btn-block war-op disabled"
-                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 6) ? 'disabled' : null }}>
+                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>
@@ -161,7 +164,7 @@
                 <div class="box-body">
                     <p>Here you can perform espionage operations on hostile dominions to gain important information for you and your realmies.</p>
                     <p>Any obtained data after successfully performing an information gathering operation gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
-                    <p>Theft can only be performed on dominions greater than your size. Theft and black ops cannot be performed until the 7th day of the round.</p>
+                    <p>Theft can only be performed on dominions greater than your size. Theft and black ops cannot be performed until the 4th day of the round.</p>
                     <p>Performing espionage operations spends some spy strength, but it regenerates a bit every hour. You may only perform espionage operations above 30% strength.</p>
                     <p>You have {{ floor($selectedDominion->spy_strength) }}% spy strength.</p>
                 </div>
@@ -188,7 +191,9 @@
             });
             $('#target_dominion').change(function(e) {
                 var warStatus = $(this).find(":selected").data('war');
-                if (warStatus == 1) {
+                var revengeStatus = $(this).find(":selected").data('revenge');
+                var guardStatus = $(this).find(":selected").data('guard');
+                if (warStatus == 1 || revengeStatus == 1 || guardStatus == 1) {
                     $('.war-op').removeClass('disabled');
                 } else {
                     $('.war-op').addClass('disabled');
@@ -208,6 +213,8 @@
             const land = state.element.dataset.land;
             const percentage = state.element.dataset.percentage;
             const war = state.element.dataset.war;
+            const revenge = state.element.dataset.revenge;
+            const guard = state.element.dataset.guard;
             let difficultyClass;
 
             if (percentage >= 133) {
@@ -222,7 +229,11 @@
 
             warStatus = '';
             if (war == 1) {
-                warStatus = '<div class="pull-left">&nbsp;<span class="text-red">WAR</span></div>';
+                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">WAR</span></div>';
+            } else if (guard == 1) {
+                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">BLACK GUARD</span></div>';
+            } else if (revenge == 1) {
+                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">REVENGE</span></div>';
             }
 
             return $(`

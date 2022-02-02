@@ -327,7 +327,7 @@ class MiscController extends AbstractDominionController
                 $protectionService = app(ProtectionService::class);
 
                 if (!$protectionService->canLeaveProtection($dominion)) {
-                    throw new GameException('You cannot leave protection during the fourth day of the round.');
+                    throw new GameException('You cannot leave protection during the first day of the round.');
                 }
 
                 // Queues for next tick
@@ -357,7 +357,7 @@ class MiscController extends AbstractDominionController
                     throw new GameException('You cannot leave protection at this size with defense less than 5x your land total.');
                 }
 
-                if ($dominion->round->daysInRound() > 4) {
+                if ($dominion->round->daysInRound() > 1) {
                     $aiHelper = app(AIHelper::class);
                     $botDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand));
                     if ($defensivePower < $botDefense) {

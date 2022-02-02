@@ -5,10 +5,12 @@ namespace OpenDominion\Factories;
 use DB;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Spell;
 use OpenDominion\Models\User;
 
 class DominionFactory
@@ -146,9 +148,7 @@ class DominionFactory
             ->delete();
 
         // Reset Spells
-        DB::table('active_spells')
-            ->where('dominion_id', $dominion->id)
-            ->delete();
+        DominionSpell::where('dominion_id', $dominion->id)->delete();
 
         // Reset Techs
         DB::table('dominion_techs')
@@ -203,15 +203,15 @@ class DominionFactory
 
             // Cast spells
             foreach ($quickStartData->spells as $spellKey) {
-                DB::table('active_spells')
-                    ->insert([
-                        'dominion_id' => $dominion->id,
-                        'spell' => $spellKey,
-                        'duration' => 12,
-                        'cast_by_dominion_id' => $dominion->id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+                $spell = Spell::where('key', $spellKey)->first();
+                DominionSpell::insert([
+                    'dominion_id' => $dominion->id,
+                    'spell_id' => $spell->id,
+                    'duration' => 12,
+                    'cast_by_dominion_id' => $dominion->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             }
 
             // Queue incoming resources
@@ -226,7 +226,7 @@ class DominionFactory
             }
 
             // Late start defense
-            if ($dominion->round->daysInRound() > 4) {
+            if ($dominion->round->daysInRound() > 1) {
                 $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
                 $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
                 $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
@@ -433,6 +433,7 @@ class DominionFactory
             'highest_land_achieved' => 250,
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
+            'black_guard_active_at' => null,
             'protection_ticks_remaining' => 72,
         ];
     }
@@ -448,9 +449,9 @@ class DominionFactory
         $days = 0;
         if ($round->hasStarted()) {
             $daysLate = now()->diffInDays($round->start_date);
-            if ($daysLate >= 5) {
-                // Additional resources are not added until the fifth day of the round
-                $days = $daysLate;
+            if ($daysLate >= 2) {
+                // Additional resources are not added until the 2nd day of the round
+                $days = $daysLate + 3;
             }
         }
 
@@ -640,25 +641,25 @@ class DominionFactory
         }
 
         // Cast spells
-        DB::table('active_spells')
-            ->insert([
-                'dominion_id' => $dominion->id,
-                'spell' => 'ares_call',
-                'duration' => 12,
-                'cast_by_dominion_id' => $dominion->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $spell = Spell::where('key', 'ares_call')->first();
+        DominionSpell::insert([
+            'dominion_id' => $dominion->id,
+            'spell_id' => $spell->id,
+            'duration' => 12,
+            'cast_by_dominion_id' => $dominion->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        DB::table('active_spells')
-            ->insert([
-                'dominion_id' => $dominion->id,
-                'spell' => 'midas_touch',
-                'duration' => 12,
-                'cast_by_dominion_id' => $dominion->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $spell = Spell::where('key', 'midas_touch')->first();
+        DominionSpell::insert([
+            'dominion_id' => $dominion->id,
+            'spell_id' => $spell->id,
+            'duration' => 12,
+            'cast_by_dominion_id' => $dominion->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return $dominion;
     }
@@ -700,7 +701,11 @@ class DominionFactory
 
         // Ore Mines
         if (!in_array($race->name, $racesWithoutOre)) {
-            $startingBuildings['building_ore_mine'] += 20;
+            if (in_array($race->name, ['Gnome', 'Icekin'])) {
+                $startingBuildings['building_ore_mine'] += min(100, $landAvailable);
+            } else {
+                $startingBuildings['building_ore_mine'] += 20;
+            }
             $landAvailable -= $startingBuildings['building_ore_mine'];
         }
 

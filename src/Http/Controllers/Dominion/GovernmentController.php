@@ -46,13 +46,19 @@ class GovernmentController extends AbstractDominionController
             'canJoinGuards' => $guardMembershipService->canJoinGuards($dominion),
             'isRoyalGuardApplicant' => $guardMembershipService->isRoyalGuardApplicant($dominion),
             'isEliteGuardApplicant' => $guardMembershipService->isEliteGuardApplicant($dominion),
+            'isBlackGuardApplicant' => $guardMembershipService->isBlackGuardApplicant($dominion),
+            'isLeavingBlackGuard' => $guardMembershipService->isLeavingBlackGuard($dominion),
             'isRoyalGuardMember' => $guardMembershipService->isRoyalGuardMember($dominion),
             'isEliteGuardMember' => $guardMembershipService->isEliteGuardMember($dominion),
+            'isBlackGuardMember' => $guardMembershipService->isBlackGuardMember($dominion),
             'isGuardMember' => $guardMembershipService->isGuardMember($dominion),
             'hoursBeforeRoyalGuardMember' => $guardMembershipService->getHoursBeforeRoyalGuardMember($dominion),
             'hoursBeforeEliteGuardMember' => $guardMembershipService->getHoursBeforeEliteGuardMember($dominion),
+            'hoursBeforeBlackGuardMember' => $guardMembershipService->getHoursBeforeBlackGuardMember($dominion),
             'hoursBeforeLeaveRoyalGuard' => $guardMembershipService->getHoursBeforeLeaveRoyalGuard($dominion),
             'hoursBeforeLeaveEliteGuard' => $guardMembershipService->getHoursBeforeLeaveEliteGuard($dominion),
+            'hoursBeforeLeaveBlackGuard' => $guardMembershipService->getHoursBeforeLeaveBlackGuard($dominion),
+            'hoursBeforeLeavingBlackGuard' => $guardMembershipService->getHoursBeforeLeavingBlackGuard($dominion),
             'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
@@ -148,6 +154,24 @@ class GovernmentController extends AbstractDominionController
         return redirect()->route('dominion.government');
     }
 
+    public function postJoinBlackGuard(GuardMembershipActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $guardActionService = app(GuardMembershipActionService::class);
+
+        try {
+            $result = $guardActionService->joinBlackGuard($dominion);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', $result['message']);
+        return redirect()->route('dominion.government');
+    }
+
     public function postLeaveEliteGuard(GuardMembershipActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
@@ -155,6 +179,42 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->leaveEliteGuard($dominion);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', $result['message']);
+        return redirect()->route('dominion.government');
+    }
+
+    public function postLeaveBlackGuard(GuardMembershipActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $guardActionService = app(GuardMembershipActionService::class);
+
+        try {
+            $result = $guardActionService->leaveBlackGuard($dominion);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', $result['message']);
+        return redirect()->route('dominion.government');
+    }
+
+    public function postCancelLeaveBlackGuard(GuardMembershipActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $guardActionService = app(GuardMembershipActionService::class);
+
+        try {
+            $result = $guardActionService->cancelLeaveBlackGuard($dominion);
         } catch (GameException $e) {
             return redirect()
                 ->back()
@@ -206,18 +266,16 @@ class GovernmentController extends AbstractDominionController
 
     public function postAdvisors(Request $request)
     {
-        $newValues = $request->input('realmadvisors');
+        $newValues = $request->input('realmadvisors') ?? [];
         $selectedDominion = $this->getSelectedDominion();
         $settings = ($selectedDominion->settings ?? []);
         $settings['realmadvisors'] = [];
 
-        if ($newValues) {
-            foreach ($selectedDominion->realm->dominions as $dominion) {
-                if (!in_array($dominion->id, $newValues)) {
-                    $settings['realmadvisors'][$dominion->id] = false;
-                } else {
-                    $settings['realmadvisors'][$dominion->id] = true;
-                }
+        foreach ($selectedDominion->realm->dominions as $dominion) {
+            if (!in_array($dominion->id, $newValues)) {
+                $settings['realmadvisors'][$dominion->id] = false;
+            } else {
+                $settings['realmadvisors'][$dominion->id] = true;
             }
         }
 

@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use DB;
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
@@ -49,8 +50,8 @@ class MilitaryCalculator
     /** @var QueueService */
     protected $queueService;
 
-    /** @var SpellCalculator */
-    protected $spellCalculator;
+    /** @var SpellHelper */
+    protected $spellHelper;
 
     /** @var bool */
     protected $forTick = false;
@@ -63,7 +64,7 @@ class MilitaryCalculator
      * @param LandCalculator $landCalculator
      * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
-     * @param SpellCalculator $spellCalculator
+     * @param SpellHelper $spellHelper
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
@@ -72,7 +73,7 @@ class MilitaryCalculator
         LandCalculator $landCalculator,
         PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
-        SpellCalculator $spellCalculator
+        SpellHelper $spellHelper
     )
     {
         $this->buildingCalculator = $buildingCalculator;
@@ -81,7 +82,7 @@ class MilitaryCalculator
         $this->landCalculator = $landCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
-        $this->spellCalculator = $spellCalculator;
+        $this->spellHelper = $spellHelper;
     }
 
     /**
@@ -222,8 +223,8 @@ class MilitaryCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $opPerGryphonNest = 1.6;
-        $gryphonNestMaxOp = 32;
+        $opPerGryphonNest = 1.75;
+        $gryphonNestMaxOp = 35;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['gryphon_nest_percent'])) {
@@ -274,38 +275,17 @@ class MilitaryCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $spellBloodrage = 10;
-        $spellCrusade = 5;
         $spellFavorableTerrain = 1;
         $spellFavorableTerrainCap = 10;
-        $spellHowling = 10;
-        $spellKillingRage = 10;
-        $spellNightfall = 5;
-        $spellWarsong = 10;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
-            if (isset($dominion->calc['bloodrage'])) {
-                $multiplier += ($spellBloodrage / 100);
-            }
+            $offenseSpells = $this->spellHelper->getSpellsWithPerk('offense');
 
-            if (isset($dominion->calc['crusade'])) {
-                $multiplier += ($spellCrusade / 100);
-            }
-
-            if (isset($dominion->calc['howling'])) {
-                $multiplier += ($spellHowling / 100);
-            }
-
-            if (isset($dominion->calc['killing_rage'])) {
-                $multiplier += ($spellKillingRage / 100);
-            }
-
-            if (isset($dominion->calc['nightfall'])) {
-                $multiplier += ($spellNightfall / 100);
-            }
-
-            if (isset($dominion->calc['warsong'])) {
-                $multiplier += ($spellWarsong / 100);
+            foreach ($offenseSpells->sortByDesc('pivot.value') as $spell) {
+                if (isset($dominion->calc[$spell->key])) {
+                    $multiplier += ($spell->getPerkValue('offense') / 100);
+                    break;
+                }
             }
 
             if (isset($dominion->calc['favorable_terrain'])) {
@@ -315,16 +295,9 @@ class MilitaryCalculator
                 );
             }
         } else {
-            $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
-                'bloodrage' => $spellBloodrage,
-                'crusade' => $spellCrusade,
-                'howling' => $spellHowling,
-                'killing_rage' => $spellKillingRage,
-                'nightfall' => $spellNightfall,
-                'warsong' => $spellWarsong,
-            ]);
+            $multiplier += $dominion->getSpellPerkMultiplier('offense');
 
-            if ($this->spellCalculator->isSpellActive($dominion, 'favorable_terrain')) {
+            if ($dominion->getSpellPerkValue('favorable_terrain')) {
                 $multiplier += min(
                     ($spellFavorableTerrain * $this->landCalculator->getTotalBarrenLand($dominion) / $this->landCalculator->getTotalLand($dominion)),
                     ($spellFavorableTerrainCap / 100)
@@ -504,8 +477,8 @@ class MilitaryCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $dpPerGuardTower = 1.6;
-        $guardTowerMaxDp = 32;
+        $dpPerGuardTower = 1.75;
+        $guardTowerMaxDp = 35;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['guard_tower_percent'])) {
@@ -555,45 +528,18 @@ class MilitaryCalculator
     {
         $multiplier = 0;
 
-        // Values (percentages)
-        $spellAresCall = 10;
-        $spellBlizzard = 15;
-        $spellFrenzy = 20;
-        $spellHowling = 10;
-
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
-            if (isset($dominion->calc['howling'])) {
-                $multiplier += ($spellHowling / 100);
-            }
+            $defenseSpells = $this->spellHelper->getSpellsWithPerk('defense');
 
-            if (isset($dominion->calc['blizzard'])) {
-                $multiplier += ($spellBlizzard / 100);
-            }
-
-            if (isset($dominion->calc['defensive_frenzy'])) {
-                $multiplier += ($spellFrenzy / 100);
-            }
-
-            if (!isset($dominion->calc['howling']) && !isset($dominion->calc['blizzard']) && !isset($dominion->calc['defensive_frenzy']) && isset($dominion->calc['ares_call'])) {
-                $multiplier += ($spellAresCall / 100);
+            foreach ($defenseSpells->sortByDesc('pivot.value') as $spell) {
+                if (isset($dominion->calc[$spell->key])) {
+                    $multiplier += ($spell->getPerkValue('defense') / 100);
+                    break;
+                }
             }
         } else {
-            // Spell: Howling (+10%)
-            $multiplierFromHowling = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'howling', $spellHowling);
-            $multiplier += $multiplierFromHowling;
-
-            // Spell: Blizzard (+15%)
-            $multiplierFromBlizzard = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'blizzard', $spellBlizzard);
-            $multiplier += $multiplierFromBlizzard;
-
-            // Spell: Frenzy (Halfling) (+20%)
-            $multiplierFromFrenzy = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'defensive_frenzy', $spellFrenzy);
-            $multiplier += $multiplierFromFrenzy;
-
-            // Spell: Ares' Call (+10%)
-            if ($multiplierFromHowling == 0 && $multiplierFromBlizzard == 0 && $multiplierFromFrenzy == 0) {
-                $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
-            }
+            // Spells
+            $multiplier += $dominion->getSpellPerkMultiplier('defense');
         }
 
         return $multiplier;
@@ -631,8 +577,8 @@ class MilitaryCalculator
     public function getTempleReduction(Dominion $dominion): float
     {
         // Values (percentages)
-        $dpReductionPerTemple = 1.35;
-        $templeMaxDpReduction = 22.5;
+        $dpReductionPerTemple = 1.5;
+        $templeMaxDpReduction = 25;
         $dpMultiplierReduction = 0;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -1065,6 +1011,9 @@ class MilitaryCalculator
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
 
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('wizard_strength');
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('wizard_strength');
 
@@ -1284,7 +1233,7 @@ class MilitaryCalculator
             ->get();
 
         $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
-            return $event->data['result']['success'];
+            return $event->data['result']['success'] && $event->data['result']['range'] >= 75;
         });
 
         return $invasionEvents->where('target.user_id', $target->user_id)->count();

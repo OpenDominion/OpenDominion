@@ -274,7 +274,7 @@
                                                     <i class="fa fa-question-circle"
                                                        data-toggle="tooltip"
                                                        data-placement="top"
-                                                       title="You must leave at least 33% of your total DP at home. (33% rule)"></i>
+                                                       title="You must leave at least 40% of your total DP at home. (40% rule)"></i>
                                                 </td>
                                                 <td id="home-forces-min-dp" data-amount="0">0</td>
                                             </tr>
@@ -473,7 +473,7 @@
                     homeForcesBoatsElement.removeClass('text-danger');
                 }
 
-                // Check 33% rule
+                // Check 40% rule
                 var minDefenseRule = parseFloat(homeForcesDPElement.data('amount')) < parseFloat(homeForcesMinDPElement.data('amount'));
                 if (minDefenseRule) {
                     homeForcesDPElement.addClass('text-danger');

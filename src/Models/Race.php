@@ -31,12 +31,10 @@ class Race extends AbstractModel
     {
         return $this->belongsToMany(
             RacePerkType::class,
-            'race_perks',
-            'race_id',
-            'race_perk_type_id'
+            RacePerk::class
         )
-            ->withTimestamps()
-            ->withPivot('value');
+        ->withPivot('value')
+        ->withTimestamps();
     }
 
     public function units()

@@ -13,9 +13,6 @@ class CasualtiesCalculator
     /** @var PopulationCalculator */
     private $populationCalculator;
 
-    /** @var SpellCalculator */
-    private $spellCalculator;
-
     /** @var UnitHelper */
     protected $unitHelper;
 
@@ -24,14 +21,12 @@ class CasualtiesCalculator
      *
      * @param LandCalculator $landCalculator
      * @param PopulationCalculator $populationCalculator
-     * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(LandCalculator $landCalculator, PopulationCalculator $populationCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
+    public function __construct(LandCalculator $landCalculator, PopulationCalculator $populationCalculator, UnitHelper $unitHelper)
     {
         $this->landCalculator = $landCalculator;
         $this->populationCalculator = $populationCalculator;
-        $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
     }
 
@@ -192,12 +187,9 @@ class CasualtiesCalculator
                 // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
                 // additional race-based checks in here for any new units. So always assume we're running SPUD at the
                 // moment
-                $multiplier = 0;
 
-                $attackerHasCrusadeActive = ($this->spellCalculator->isSpellActive($attacker, 'crusade'));
-                if ($attackerHasCrusadeActive) {
-                    $multiplier = 1;
-                }
+                // Spells
+                $multiplier = $attacker->getSpellPerkValue('kills_immortal');
             }
 
             if ($multiplier == 0) {
@@ -299,16 +291,12 @@ class CasualtiesCalculator
     {
         $multiplier = 0;
 
-        // Values (percentages)
-        $spellBloodrage = 10;
-        $spellRegeneration = 25;
-
         // Shrines
         $multiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
 
         // Spells
-        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'bloodrage', $spellBloodrage);
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties');
+        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties_offense');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties');
@@ -330,11 +318,9 @@ class CasualtiesCalculator
     {
         $multiplier = 0;
 
-        // Values (percentages)
-        $spellRegeneration = 25;
-
         // Spells
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties');
+        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties_defense');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties');

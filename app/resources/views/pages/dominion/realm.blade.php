@@ -15,8 +15,8 @@
                         <colgroup>
                             <col width="50">
                             <col>
-                            @if ($isOwnRealm && $selectedDominion->pack !== null)
-                                <col width="200">
+                            @if ($isOwnRealm || $round->hasEnded())
+                                <col width="150">
                             @endif
                             <col width="100">
                             <col width="100">
@@ -26,7 +26,7 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
-                                @if ($isOwnRealm)
+                                @if ($isOwnRealm || $round->hasEnded())
                                     <th class="text-center">Player</th>
                                 @endif
                                 <th class="text-center">Race</th>
@@ -43,7 +43,7 @@
                                 @if ($dominion === null)
                                     <tr>
                                         <td>&nbsp;</td>
-                                        @if ($isOwnRealm)
+                                        @if ($isOwnRealm || $round->hasEnded())
                                             <td colspan="5"><i>Vacant</i></td>
                                         @else
                                             <td colspan="4"><i>Vacant</i></td>
@@ -54,7 +54,7 @@
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($dominion->isMonarch())
-                                                <i class="ra ra-queen-crown ra-lg text-red"></i>
+                                                <i class="ra ra-queen-crown ra-lg text-red" title="Monarch"></i>
                                             @endif
 
                                             @if ($protectionService->isUnderProtection($dominion))
@@ -65,6 +65,10 @@
                                                 <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
                                             @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
                                                 <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
+                                            @endif
+
+                                            @if ($guardMembershipService->isBlackGuardMember($dominion) && ($guardMembershipService->isBlackGuardMember($selectedDominion) || $dominion->realm_id == $selectedDominion->realm_id))
+                                                <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League"></i>
                                             @endif
 
                                             @if ($dominion->id === $selectedDominion->id)
@@ -84,7 +88,7 @@
                                             @if ($dominion->user == null)
                                                 <span class="label label-info">Bot</span>
                                             @else
-                                                @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
+                                                @if ($isOwnRealm && $round->isActive() && $dominion->user->isOnline())
                                                     <span class="label label-success">Online</span>
                                                 @endif
                                             @endif
@@ -95,12 +99,10 @@
                                                 <span class="label label-warning">Abandoned</span>
                                             @endif
                                         </td>
-                                        @if ($isOwnRealm)
-                                            @if (($dominion->round->hasEnded() && $dominion->user_id != null) || ($dominion->pack !== null && $selectedDominion->pack !== null && $dominion->pack->id === $selectedDominion->pack->id) || $selectedDominion->inRealmAndSharesAdvisors($dominion))
-                                                <td class="text-center"><a href="{{ route('valhalla.user', $dominion->user_id) }}">{{ $dominion->user->display_name }}</a></td>
-                                            @else
-                                                <td class="text-center"></td>
-                                            @endif
+                                        @if ($dominion->user_id !== null && ($round->hasEnded() ||  ($isOwnRealm && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))))
+                                            <td class="text-center"><a href="{{ route('valhalla.user', $dominion->user_id) }}">{{ $dominion->user->display_name }}</a></td>
+                                        @else
+                                            <td class="text-center"></td>
                                         @endif
                                         <td class="text-center">
                                             {{ $dominion->race->name }}

@@ -113,8 +113,13 @@ class InfoOpService
     public function getInfoOpName(InfoOp $infoOp): string
     {
         if ($infoOp->type == 'clairvoyance') return 'Clairvoyance';
+
+        $spell = $this->spellHelper->getSpells(null, 'info')->get($infoOp->type);
+        if ($spell !== null) {
+            return $spell->name;
+        }
+
         return $this->espionageHelper->getInfoGatheringOperations()
-            ->merge($this->spellHelper->getInfoOpSpells())
             ->filter(function ($op) use ($infoOp) {
                 return ($op['key'] === $infoOp->type);
             })
@@ -140,8 +145,7 @@ class InfoOpService
 
     public function getMaxInfoOps(): int
     {
-        return $this->espionageHelper->getInfoGatheringOperations()
-            ->merge($this->spellHelper->getInfoOpSpells())
-            ->count();// - 1; // refactor: Removes Clairvoyance from count
+        return $this->spellHelper->getSpells(null, 'info')->count() +
+            $this->espionageHelper->getInfoGatheringOperations()->count();
     }
 }

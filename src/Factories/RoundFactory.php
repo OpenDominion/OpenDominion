@@ -6,11 +6,12 @@ use Carbon\Carbon;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundLeague;
+use OpenDominion\Services\WonderService;
 
 class RoundFactory
 {
     // todo: move to config somewhere?
-    private const ROUND_DURATION_IN_DAYS = 50;
+    private const ROUND_DURATION_IN_DAYS = 47;
 
     /**
      * Creates and returns a new Round in a RoundLeague.
@@ -77,6 +78,13 @@ class RoundFactory
             'number' => 0,
             'name' => 'The Graveyard'
         ]);
+
+        // Spawn Starting Wonders
+        $wonderService = app(WonderService::class);
+        $startingWonders = $wonderService->getStartingWonders($round);
+        foreach ($startingWonders as $wonder) {
+            $wonderService->createWonder($round, $wonder);
+        }
 
         return $round;
     }
