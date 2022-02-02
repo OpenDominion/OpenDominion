@@ -122,6 +122,18 @@
                                         <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
                                         <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                         <td class="text-center">
+                                            @php
+                                                if (!isset($activeSpell['cast_by_dominion_name'])) {
+                                                    if ($activeSpell['cast_by_dominion_id'] == $dominion->id) {
+                                                        $activeSpell['cast_by_dominion_name'] = $dominion->name;
+                                                        $activeSpell['cast_by_dominion_realm_number'] = $dominion->realm->number;
+                                                    } else {
+                                                        $castByDominion = OpenDominion\Models\Dominion::with('realm')->findOrFail($activeSpell['cast_by_dominion_id']);
+                                                        $activeSpell['cast_by_dominion_name'] = $castByDominion->name;
+                                                        $activeSpell['cast_by_dominion_realm_number'] = $castByDominion->realm->number;
+                                                    }
+                                                }
+                                            @endphp
                                             @if ($activeSpell['cast_by_dominion_id'] == $dominion->id || $activeSpell['cast_by_dominion_realm_number'] == $selectedDominion->realm->number)
                                                 <a href="{{ route('dominion.realm', $activeSpell['cast_by_dominion_realm_number']) }}">{{ $activeSpell['cast_by_dominion_name'] }} (#{{ $activeSpell['cast_by_dominion_realm_number'] }})</a>
                                             @else
