@@ -395,20 +395,6 @@
                                         <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
                                         <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
-
-                                    <div class="pull-right">
-                                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                                            @csrf
-                                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                                            <input type="hidden" name="spell" value="vision">
-                                            <button type="submit" class="btn btn-sm btn-primary">Vision ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'vision')) }} mana)</button>
-                                        </form>
-                                    </div>
-                                    <div class="clearfix"></div>
-
-                                    <div class="text-center">
-                                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'vision']) }}">View Archives</a>
-                                    </div>
                                 @endslot
                             @endcomponent
                         </div>

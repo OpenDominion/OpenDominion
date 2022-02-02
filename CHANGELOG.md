@@ -31,7 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Platinum bonus research points reduced to 250 (from 750)
 - Research points gained on invasion reduced to 500 (from 1000)
 - Research production penalty from invasion replaced with flat 500 loss from queue when invaded
-- School: research points produced changed to SCHOOLS x (1 - SCHOOLS/LAND) down to a minimum of 0.5 per school at 50% owned (from 25 per 1% owned up to a maximum of 750), research points gained on invasion removed (from 125 per 1% owned up to a maximum of 2500)
+- School: research points produced changed to SCHOOLS x (1 - SCHOOLS/LAND) down to a minimum of 0.5 per school at a maximum of 50% owned (from 25 per 1% owned up to a maximum of 750), research points gained on invasion removed (from 125 per 1% owned up to a maximum of 2500)
 - Smithy: maximum cost reduction reduced to 30% at 15% owned (from 36% at 18% owned)
 - Masonry: lightning bolt protection removed (was 1% per 1% owned up to a maximum of 10%)
 - Wizard Guild: lightning bolt protection added, 6% per 1% owned up to a maximum of 60% at 10% owned
