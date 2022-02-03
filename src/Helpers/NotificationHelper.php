@@ -572,7 +572,7 @@ class NotificationHelper
                         break;
 
                     case 'miasma':
-                        $resultString = 'A miasma of despair has come over our dominion, weakening our wizards and increasing mana drain.';
+                        $resultString = 'A miasma of despair has come over our lands, weakening our wizards and increasing mana drain.';
                         break;
 
                     case 'disband_spies':
