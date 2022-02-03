@@ -462,6 +462,7 @@ class SpellActionService
                     ->queueNotification('repelled_hostile_spell', [
                         'sourceDominionId' => $dominion->id,
                         'spellKey' => $spell->key,
+                        'spellName' => $spell->name,
                         'unitsKilled' => $unitsKilledString,
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
@@ -541,6 +542,7 @@ class SpellActionService
                 ->queueNotification('received_hostile_spell', [
                     'sourceDominionId' => $sourceDominionId,
                     'spellKey' => $spell->key,
+                    'spellName' => $spell->name,
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 
@@ -550,6 +552,7 @@ class SpellActionService
                     ->queueNotification('reflected_hostile_spell', [
                         'sourceDominionId' => $target->id,
                         'spellKey' => $spell->key,
+                        'spellName' => $spell->name,
                     ])
                     ->sendNotifications($dominion, 'irregular_dominion');
 
@@ -721,6 +724,7 @@ class SpellActionService
                 ->queueNotification('received_hostile_spell', [
                     'sourceDominionId' => $sourceDominionId,
                     'spellKey' => $spell->key,
+                    'spellName' => $spell->name,
                     'damageString' => $damageString,
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
@@ -731,6 +735,7 @@ class SpellActionService
                     ->queueNotification('reflected_hostile_spell', [
                         'sourceDominionId' => $target->id,
                         'spellKey' => $spell->key,
+                        'spellName' => $spell->name,
                     ])
                     ->sendNotifications($dominion, 'irregular_dominion');
 
