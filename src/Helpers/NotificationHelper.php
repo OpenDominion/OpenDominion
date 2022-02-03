@@ -571,6 +571,10 @@ class NotificationHelper
                         $resultString = 'An earthquake has damaged our mines, slowing production.';
                         break;
 
+                    case 'miasma':
+                        $resultString = 'A miasma of despair has come over our dominion, weakening our wizards and increasing mana drain.';
+                        break;
+
                     case 'disband_spies':
                         $resultString = "{$data['damageString']} have mysteriously deserted their posts.";
                         break;
@@ -581,6 +585,10 @@ class NotificationHelper
 
                     case 'lightning_bolt':
                         $resultString = "A great lightning bolt crashed into our castle, destroying {$data['damageString']}.";
+                        break;
+
+                    case 'necromantic_ritual':
+                        $resultString = "{$data['damageString']} died in their sleep, but arose from the dead and departed our lands.";
                         break;
 
                     default:
