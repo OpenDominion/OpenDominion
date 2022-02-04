@@ -88,7 +88,7 @@
                                             @if ($dominion->user == null)
                                                 <span class="label label-info">Bot</span>
                                             @else
-                                                @if ($isOwnRealm && $round->isActive() && $dominion->user->isOnline())
+                                                @if ($isOwnRealm && $round->hasAssignedRealms() && !$round->hasEnded() && $dominion->user->isOnline())
                                                     <span class="label label-success">Online</span>
                                                 @endif
                                             @endif
