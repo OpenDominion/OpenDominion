@@ -652,7 +652,7 @@ class SpellActionService
 
                 $target->{$attr} -= $damage;
                 if ($convertAttr !== null) {
-                    if (Str::startsWith($convertAttr, 'self')) {
+                    if (Str::startsWith($convertAttr, 'self') && !$spellReflected) {
                         $convertAttr = str_replace('self_', '', $convertAttr);
                         $this->queueService->queueResources(
                             'invasion',
