@@ -602,7 +602,7 @@ class DominionFactory
             // 15% spawn with 15-20% more DP
             $accuracy = 1.1 + (mt_rand(50, 100) / 1000);
         }
-        $defense = 120 * exp(0.0058 * $landSize) * $accuracy;
+        $defense = 113 * exp(0.0058 * $landSize) * $accuracy;
         $defense -= ($dominion->military_draftees * $defenseMod);
         $dominion->military_unit2 = (int) ($defense / $defenseMod / $specPower * $specRatio);
         $dominion->military_unit3 = (int) ($defense / $defenseMod / $elitePower * (1 - $specRatio));
