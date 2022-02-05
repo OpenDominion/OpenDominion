@@ -120,10 +120,14 @@ class SelectorService
 
         if ($activeDominions->count() == 0) {
             // Rounds that haven't started yet
-            $activeDominions = $user->dominions()
-                ->join('rounds', 'rounds.id', '=', 'dominions.round_id')
-                ->where('rounds.start_date', '>', now())
-                ->get();
+            $activeDominions = Dominion::with('round')
+                ->where('user_id', $user->id)
+                ->get()
+                ->filter(function ($dominion) {
+                    if ($dominion->round->start_date > now()) {
+                        return $dominion;
+                    }
+                });
         }
 
         if ($activeDominions->count() == 0) {
