@@ -118,8 +118,15 @@ class SelectorService
         /** @var Collection $activeDominions */
         $activeDominions = $user->dominions()->active()->get();
 
-        if ($activeDominions->count() !== 1) {
-            // todo: try select dominion which is about to start?
+        if ($activeDominions->count() == 0) {
+            // Rounds that haven't started yet
+            $activeDominions = $user->dominions()
+                ->join('rounds', 'rounds.id', '=', 'dominions.round_id')
+                ->where('rounds.start_date', '>', now())
+                ->get();
+        }
+
+        if ($activeDominions->count() == 0) {
             return null;
         }
 
