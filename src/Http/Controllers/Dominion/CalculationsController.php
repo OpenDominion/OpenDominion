@@ -84,11 +84,8 @@ class CalculationsController extends AbstractDominionController
                     ->where('latest', true)
                     ->get()
                     ->filter(function ($infoOp) {
-                        if ($infoOp->type == 'barracks_spy') {
-                            $hourTaken = $infoOp->created_at->startOfHour();
-                            if ($hourTaken->diffInHours(now()) > 11) {
-                                return false;
-                            }
+                        if ($infoOp->type == 'barracks_spy' && $infoOp->isInvalid()) {
+                            return false;
                         }
                         return true;
                     })
