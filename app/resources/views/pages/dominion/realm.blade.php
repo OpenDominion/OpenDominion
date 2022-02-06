@@ -99,10 +99,12 @@
                                                 <span class="label label-warning">Abandoned</span>
                                             @endif
                                         </td>
-                                        @if ($dominion->user_id !== null && ($round->hasEnded() ||  ($isOwnRealm && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))))
-                                            <td class="text-center"><a href="{{ route('valhalla.user', $dominion->user_id) }}">{{ $dominion->user->display_name }}</a></td>
-                                        @else
-                                            <td class="text-center"></td>
+                                        @if ($isOwnRealm || $round->hasEnded())
+                                            @if ($dominion->user_id !== null && ($round->hasEnded() ||  ($isOwnRealm && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))))
+                                                <td class="text-center"><a href="{{ route('valhalla.user', $dominion->user_id) }}">{{ $dominion->user->display_name }}</a></td>
+                                            @else
+                                                <td class="text-center"></td>
+                                            @endif
                                         @endif
                                         <td class="text-center">
                                             {{ $dominion->race->name }}
