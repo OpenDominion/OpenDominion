@@ -144,9 +144,8 @@ class TickService
                     }
                     $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
                     if ($dominion) {
-                        // Tick ahead a few times
+                        // Tick ahead
                         $this->precalculateTick($dominion);
-                        $this->performTick($round, $dominion);
                         $this->performTick($round, $dominion);
                     } else {
                         $failCount++;

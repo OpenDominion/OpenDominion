@@ -623,9 +623,10 @@ class DominionFactory
         $additionalDefense = (2 * $landSize) + mt_rand(400, 600);
         $incSpecs = (int) ($additionalDefense / $defenseMod / $specPower * $specRatio);
         $incElites = (int) ($additionalDefense / $defenseMod / $elitePower * (1 - $specRatio));
-        $hours = array_rand(range(4, 12), mt_rand(2, 5));
-        foreach ($hours as $key => $hour) {
-            if ($key === array_key_last($hours)) {
+        $hourRange = collect(range(4, 12));
+        $hours = $hourRange->random(mt_rand(2, 5));
+        foreach ($hours as $hour) {
+            if ($hour == $hours->last()) {
                 $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour);
             } else {
                 if ($incElites > 0 && random_chance(0.5)) {
