@@ -35,11 +35,6 @@ class InfoOp extends AbstractModel
         'creating' => InfoOpCreatingEvent::class,
     ];
 
-    public function sourceRealm()
-    {
-//        return $this->belongsTo(Realm::class);
-    }
-
     public function sourceDominion()
     {
         return $this->belongsTo(Dominion::class, 'source_dominion_id');
@@ -55,23 +50,13 @@ class InfoOp extends AbstractModel
         return $this->belongsTo(Realm::class, 'target_realm_id');
     }
 
-//    public function scopeNotInvalid(Builder $query): Builder
-//    {
-//        return $query->where('created_at', '>=', now()->parse('-12 hours')->toDateTimeString());
-//    }
-//
-//    public function scopeTargetDominion(Builder $query, Dominion $target): Builder
-//    {
-//        return $query->where('target_dominion_id', $target->id);
-//    }
-
     public function isStale(): bool
     {
-        return ($this->created_at < carbon()->minute(0)->second(0));
+        return ($this->created_at < now()->startOfHour());
     }
 
     public function isInvalid(): bool
     {
-        return ($this->created_at < new Carbon('-12 hours'));
+        return ($this->created_at < now()->subHours(12)->startOfHour());
     }
 }
