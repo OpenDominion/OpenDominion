@@ -42,18 +42,6 @@ class DominionTest extends AbstractBrowserKitTestCase
             ->seePageIs('/dominion/status');
     }
 
-    public function testNoDominionGetsAutoSelectedIfUserHasMultipleActiveDominions()
-    {
-        $user = $this->createAndImpersonateUser();
-        $round = $this->createRound();
-        $dominion = $this->createDominion($user, $round);
-        $round2 = $this->createRound();
-        $dominion2 = $this->createDominion($user, $round2);
-
-        $this->visit('/dominion/status')
-            ->seePageIs('/dashboard');
-    }
-
     public function testUserCanSeeStatusPage()
     {
         $user = $this->createAndImpersonateUser();
