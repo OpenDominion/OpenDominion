@@ -765,16 +765,16 @@ class InvadeActionService
             $landGained = ($landConquered + $landGenerated);
 
             // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan)
-            if ($dominion->getSpellPerkValue('auto_rezone_to_forest') || $dominion->getSpellPerkValue('auto_rezone_to_water')) {
+            if ($dominion->getSpellPerkValue('auto_rezone_forest') || $dominion->getSpellPerkValue('auto_rezone_water')) {
                 // todo: needs a more generic solution later
-                if ($dominion->getSpellPerkValue('auto_rezone_to_forest')) {
+                if ($dominion->getSpellPerkValue('auto_rezone_forest')) {
                     $eventName = 'landVerdantBloom';
                     $landRezoneType = 'forest';
-                    $landRezonePercentage = $dominion->getSpellPerkValue('auto_rezone_to_forest');
+                    $landRezonePercentage = $dominion->getSpellPerkValue('auto_rezone_forest');
                 } else {
                     $eventName = 'landErosion';
                     $landRezoneType = 'water';
-                    $landRezonePercentage = $dominion->getSpellPerkValue('auto_rezone_to_water');
+                    $landRezonePercentage = $dominion->getSpellPerkValue('auto_rezone_water');
                 }
 
                 $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
