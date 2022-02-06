@@ -297,7 +297,7 @@ class MilitaryCalculator
         } else {
             $multiplier += $dominion->getSpellPerkMultiplier('offense');
 
-            if ($dominion->getSpellPerkValue('favorable_terrain')) {
+            if ($dominion->getSpellPerkValue('offense_from_barren_land')) {
                 $multiplier += min(
                     ($spellFavorableTerrain * $this->landCalculator->getTotalBarrenLand($dominion) / $this->landCalculator->getTotalLand($dominion)),
                     ($spellFavorableTerrainCap / 100)
