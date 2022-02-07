@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Bot defense reduced by ~6% at spawn
 
 ### Added
-- Status of info ops now shown on calculating an out-of-realm dominion
+- Status of info ops now shown when calculating an out-of-realm dominion
 - Calculator results now show current land total
 
 ### Fixed
