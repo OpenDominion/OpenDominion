@@ -343,12 +343,14 @@
                 </div>
                 <div class="box-body table-responsive">
                     <table class="table">
-                        <tbody>
-                            @if ($targetDominion !== null)
+                        @if ($targetDominion !== null)
+                            <thead>
                                 <tr class="target-dominion-dp">
-                                    <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
+                                    <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
                                 </tr>
-                            @endif
+                            </thead>
+                        @endif
+                        <tbody>
                             <tr style="font-weight: bold;">
                                 <td>Total Defense:</td>
                                 <td id="dp">--</td>
@@ -361,10 +363,115 @@
                                 <td>Raw Defense:</td>
                                 <td id="dp-raw">--</td>
                             </tr>
+                            @if ($targetDominion !== null)
+                                <tr class="target-dominion-dp">
+                                    <td>Current Land:</td>
+                                    <td>{{ $landCalculator->getTotalLand($targetDominion) }}</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            @if ($targetDominion !== null)
+                <div class="box target-dominion-dp">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Info Ops</h3>
+                    </div>
+                    <div class="box-body table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Clear Sight:</td>
+                                    <td>
+                                        @if ($targetInfoOps->has('clear_sight'))
+                                            @if ($targetInfoOps['clear_sight']->isInvalid())
+                                                <span class="label label-danger">Invalid</span>
+                                            @elseif ($targetInfoOps['clear_sight']->isStale())
+                                                <span class="label label-warning">Stale</span>
+                                            @else
+                                                <span class="label label-success">Current</span>
+                                            @endif
+                                        @else
+                                            <span class="label label-danger">Missing</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Barracks Spy:</td>
+                                    <td>
+                                        @if ($targetInfoOps->has('barracks_spy'))
+                                            @if ($targetInfoOps['barracks_spy']->isInvalid())
+                                                <span class="label label-danger">Invalid</span>
+                                            @elseif ($targetInfoOps['barracks_spy']->isStale())
+                                                <span class="label label-warning">Stale</span>
+                                            @else
+                                                <span class="label label-success">Current</span>
+                                            @endif
+                                        @else
+                                            <span class="label label-danger">Missing</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Castle Spy:</td>
+                                    <td>
+                                        @if ($targetInfoOps->has('castle_spy'))
+                                            @if ($targetInfoOps['castle_spy']->isInvalid())
+                                                <span class="label label-danger">Invalid</span>
+                                            @elseif ($targetInfoOps['castle_spy']->isStale())
+                                                <span class="label label-warning">Stale</span>
+                                            @else
+                                                <span class="label label-success">Current</span>
+                                            @endif
+                                        @else
+                                            <span class="label label-danger">Missing</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Survey Dominion:</td>
+                                    <td>
+                                        @if ($targetInfoOps->has('survey_dominion'))
+                                            @if ($targetInfoOps['survey_dominion']->isInvalid())
+                                                <span class="label label-danger">Invalid</span>
+                                            @elseif ($targetInfoOps['survey_dominion']->isStale())
+                                                <span class="label label-warning">Stale</span>
+                                            @else
+                                                <span class="label label-success">Current</span>
+                                            @endif
+                                        @else
+                                            <span class="label label-danger">Missing</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Land Spy:</td>
+                                    <td>
+                                        @if ($targetInfoOps->has('land_spy'))
+                                            @if ($targetInfoOps['land_spy']->isInvalid())
+                                                <span class="label label-danger">Invalid</span>
+                                            @elseif ($targetInfoOps['land_spy']->isStale())
+                                                <span class="label label-warning">Stale</span>
+                                            @else
+                                                <span class="label label-success">Current</span>
+                                            @endif
+                                        @else
+                                            <span class="label label-danger">Missing</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -724,12 +831,14 @@
                 </div>
                 <div class="box-body table-responsive">
                     <table class="table">
-                        <tbody>
-                            @if ($targetDominion !== null)
+                        @if ($targetDominion !== null)
+                            <thead>
                                 <tr class="target-dominion-op">
                                     <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
                                 </tr>
-                            @endif
+                            </thead>
+                        @endif
+                        <tbody>
                             <tr style="font-weight: bold;">
                                 <td>Total Offense:</td>
                                 <td id="op">--</td>
@@ -742,6 +851,12 @@
                                 <td>Raw Offense:</td>
                                 <td id="op-raw">--</td>
                             </tr>
+                            @if ($targetDominion !== null)
+                                <tr class="target-dominion-op">
+                                    <td>Current Land:</td>
+                                    <td>{{ $landCalculator->getTotalLand($targetDominion) }}</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
