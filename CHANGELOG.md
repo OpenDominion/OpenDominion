@@ -4,6 +4,24 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.8.1] - 2022-02-07
+### Changed
+- Time until round start now shows both days and hours remaining
+- Bot defense reduced by ~6% at spawn
+
+### Added
+- Status of info ops now shown on calculating an out-of-realm dominion
+- Calculator results now show current land total
+
+### Fixed
+- Revelation/Vision archives no longer throw 500
+- Missing notification descriptions for new spells
+- Issues with shared advisors
+- Issues with bot AI
+- Bots will no longer complete any military training prior to round start
+- Auto-select dominion for a round that hasn't started yet
+- Favorable Terrain, Erosion, Verdant Bloom now working correctly
+
 ## [1.8.0] - 2022-02-01
 ### Changed
 - Protection now ends at the start of Day 1 (OOP = round start)
@@ -1598,7 +1616,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.1...HEAD
+[1.8.1]: https://github.com/OpenDominion/OpenDominion/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/OpenDominion/OpenDominion/compare/1.7.2...1.8.0
 [1.7.2]: https://github.com/OpenDominion/OpenDominion/compare/1.7.1...1.7.2
 [1.7.1]: https://github.com/OpenDominion/OpenDominion/compare/1.7.0...1.7.1
