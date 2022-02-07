@@ -221,7 +221,7 @@ class AIService
         }
 
         // Elite Guard
-        if (isset($config['elite_guard_land']) && $config['elite_guard_land'] >= $totalLand) {
+        if (isset($config['elite_guard_land']) && $config['elite_guard_land'] < $totalLand) {
             $dominion->elite_guard_active_at = now();
             $dominion->save();
         }
