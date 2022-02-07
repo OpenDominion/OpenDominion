@@ -221,7 +221,7 @@ class AIService
         }
 
         // Elite Guard
-        if (isset($config['elite_guard_land']) && $config['elite_guard_land'] >= $this->$totalLand) {
+        if (isset($config['elite_guard_land']) && $config['elite_guard_land'] >= $totalLand) {
             $dominion->elite_guard_active_at = now();
             $dominion->save();
         }
@@ -232,7 +232,7 @@ class AIService
             $spell = Spell::firstWhere('key', $spellKey);
             $spellDuration = $this->spellCalculator->getSpellDuration($dominion, $spell);
             if ($spellDuration == null || $spellDuration < 4) {
-                $this->spellActionService->castSpell($dominion, $spell);
+                $this->spellActionService->castSpell($dominion, $spellKey);
             }
         }
     }
