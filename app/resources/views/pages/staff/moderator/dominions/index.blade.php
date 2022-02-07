@@ -15,7 +15,7 @@
             </select>
         </div>
         <div class="box-body table-responsive">
-            @if ($round->start_date->addHours(72) < now())
+            @if ($round->start_date < now())
                 <table class="table table-hover" id="dominions-table">
                     <colgroup>
                         <col width="50">
