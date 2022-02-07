@@ -374,7 +374,7 @@
                 </div>
             </div>
 
-            @if ($targetDominion !== null && $selectedDominion->inRealmAndSharesAdvisors($targetDominion))
+            @if ($targetDominion !== null && $selectedDominion->realm_id !== $targetDominion->realm_id)
                 <div class="box target-dominion-dp">
                     <div class="box-header with-border">
                         <h3 class="box-title">Info Ops</h3>
