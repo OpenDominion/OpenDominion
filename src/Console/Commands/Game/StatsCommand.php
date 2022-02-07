@@ -54,17 +54,21 @@ class StatsCommand extends Command implements CommandInterface
                     return $item->count();
                 })
                 ->sortKeys();
-            $averageLandByRace = $dominions->where('user_id', '!=', null)
+            $landStandings = $dominions->where('user_id', '!=', null)
                 ->map(function ($item, $key) {
-                    $item['land'] = $item->land_plain + $item->land_hill + $item->land_cavern + $item->land_forest + $item->land_water + $item->land_swamp + $item->land_mountain;
+                    $item['total_land'] = $item->land_plain + $item->land_hill + $item->land_cavern + $item->land_forest + $item->land_water + $item->land_swamp + $item->land_mountain;
                     return $item;
                 })
-                ->groupBy('race.name')
-                ->map(function ($item, $key) {
-                    return (int) round($item->avg('land'));
-                })
-                ->sortKeys();
-            $averageLandOutput = print_r($averageLandByRace->all(), true);
+                ->sortByDesc('total_land')
+                ->take(10)
+                ->pluck('name', 'total_land');
+            $topLandOutput = '';
+            $currentRank = 1;
+            foreach ($landStandings as $land => $name) {
+                $topLandOutput .= "{$currentRank}. {$name} - {$land}";
+                $topLandOutput .= "\n";
+                $currentRank++;
+            }
 
             // Get daily game events
             $events = GameEvent::with(['source', 'target'])
@@ -151,14 +155,14 @@ Largest hit: {$largestHit}
                     $this->info('Failed to POST stats to webhook.');
                 }
                 $response = $client->post($webhook, ['form_params' => [
-                    'content' => "Average Land By Race\n{$averageLandOutput}"
+                    'content' => "Top 10 Largest Dominions\n{$topLandOutput}"
                 ]]);
                 if ($response->getStatusCode() != 204) {
                     $this->info('Failed to POST charts to webhook.');
                 }
             } else {
                 $this->info($output);
-                $this->info($averageLandOutput);
+                $this->info($topLandOutput);
             }
         }
     }
