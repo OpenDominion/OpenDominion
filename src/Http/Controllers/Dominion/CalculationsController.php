@@ -44,7 +44,7 @@ class CalculationsController extends AbstractDominionController
         if ($targetDominionId !== null) {
             $dominion = $this->getSelectedDominion();
             $targetDominion = Dominion::find($targetDominionId);
-            if($dominion->inRealmAndSharesAdvisors($targetDominion)) {
+            if ($dominion->inRealmAndSharesAdvisors($targetDominion)) {
                 $targetInfoOps = collect([
                     (object)[
                         'type' => 'clear_sight',
