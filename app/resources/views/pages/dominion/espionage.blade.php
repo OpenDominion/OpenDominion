@@ -231,7 +231,7 @@
             if (war == 1) {
                 warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">WAR</span></div>';
             } else if (guard == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">BLACK GUARD</span></div>';
+                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">SHADOW LEAGUE</span></div>';
             } else if (revenge == 1) {
                 warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">REVENGE</span></div>';
             }
