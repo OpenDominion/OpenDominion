@@ -360,7 +360,7 @@
                             @if ($isRoyalGuardApplicant || $isGuardMember)
                                 <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember || $hoursBeforeLeaveRoyalGuard ? 'disabled' : null }}>
+                                    <button type="submit" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember || $hoursBeforeLeaveRoyalGuard ? 'disabled' : null }}>
                                         @if ($isGuardMember)
                                             Leave Royal Guard
                                         @else
@@ -371,7 +371,7 @@
                             @else
                                 <form action="{{ route('dominion.government.royal-guard.join') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
+                                    <button type="submit" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Request to Join Royal Guard
                                     </button>
                                 </form>
@@ -390,7 +390,7 @@
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)
                                 <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveEliteGuard ? 'disabled' : null }}>
+                                    <button type="submit" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveEliteGuard ? 'disabled' : null }}>
                                         @if ($isEliteGuardMember)
                                             Leave Elite Guard
                                         @else
@@ -401,7 +401,7 @@
                             @else
                                 <form action="{{ route('dominion.government.elite-guard.join') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
+                                    <button type="submit" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
                                         Request to Join Elite Guard
                                     </button>
                                 </form>
@@ -419,14 +419,14 @@
                             @if ($isLeavingBlackGuard)
                                 <form action="{{ route('dominion.government.black-guard.cancel') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-warning btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
+                                    <button type="submit" class="btn btn-warning btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Remain in Shadow League
                                     </button>
                                 </form>
                             @elseif ($isBlackGuardApplicant || $isBlackGuardMember)
                                 <form action="{{ route('dominion.government.black-guard.leave') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
+                                    <button type="submit" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
                                         @if ($isBlackGuardMember)
                                             Leave Shadow League
                                         @else
@@ -437,7 +437,7 @@
                             @else
                                 <form action="{{ route('dominion.government.black-guard.join') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
+                                    <button type="submit" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Request to Join Shadow League
                                     </button>
                                 </form>

@@ -357,7 +357,11 @@ class GuardMembershipService
      */
     public function leaveBlackGuard(Dominion $dominion): void
     {
-        $dominion->black_guard_inactive_at = now()->startOfHour()->addHours(self::BLACK_GUARD_LEAVE_DELAY_IN_HOURS);
+        if ($dominion->black_guard_active_at > now()) {
+            $dominion->black_guard_active_at = null;
+        } else {
+            $dominion->black_guard_inactive_at = now()->startOfHour()->addHours(self::BLACK_GUARD_LEAVE_DELAY_IN_HOURS);
+        }
         $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_BLACK_GUARD]);
     }
 
