@@ -8,7 +8,7 @@ use OpenDominion\Models\Dominion;
 class GuardMembershipService
 {
     // todo: use these constants in views/messages
-    public const GUARD_HOURS_AFTER_ROUND_START = 24 * 3;
+    public const GUARD_HOURS_AFTER_ROUND_START = 24 * 2;
     public const GUARD_JOIN_DELAY_IN_HOURS = 24;
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
 
