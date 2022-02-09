@@ -133,11 +133,19 @@ class HistoryService
 
                 case 'float':
                 case 'double':
-                    return ((float)$value - (float)$oldAttributes->get($key));
+                    $delta = (float)$value - (float)$oldAttributes->get($key);
+                    if ($delta === 0.0) {
+                        return null;
+                    }
+                    return $delta;
                     break;
 
                 case 'integer':
-                    return ((int)$value - (int)$oldAttributes->get($key));
+                    $delta = (int)$value - (int)$oldAttributes->get($key);
+                    if ($delta === 0) {
+                        return null;
+                    }
+                    return $delta;
                     break;
 
                 default:
