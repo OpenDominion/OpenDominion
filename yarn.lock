@@ -782,9 +782,12 @@
     select2 "^4.0.3"
     slimscroll "^0.9.1"
 
-"@opendominion/rpg-awesome@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.npmjs.org/@opendominion/rpg-awesome/-/rpg-awesome-0.0.9.tgz"
+"@opendominion/rpg-awesome@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.10.tgz#23dd7ec5a664aa9473535be30ada5eb05458352b"
+  integrity sha512-7irWygDq9QHVctUsQDucdu1BVIgPoP2AFc2M+5XhUu4p0eHgN9yB/VpEgeqbOQMG3Ni+1dfFehQMl25kAIfK3g==
+  dependencies:
+    grunt-sass "^3.1.0"
 
 "@types/babel__core@^7.1.12":
   version "7.1.14"
@@ -3069,6 +3072,11 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/growly/-/growly-1.3.0.tgz"
 
+grunt-sass@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/grunt-sass/-/grunt-sass-3.1.0.tgz#a5936cc2a80ec08092d9f31c101dc307d1e4f71c"
+  integrity sha512-90s27H7FoCDcA8C8+R0GwC+ntYD3lG6S/jqcavWm3bn9RiJTmSfOvfbFa1PXx4NbBWuiGQMLfQTj/JvvqT5w6A==
+
 handle-thing@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/handle-thing/-/handle-thing-2.0.1.tgz"
@@ -3750,8 +3758,9 @@ jsonfile@^6.0.1:
   version "6.1.0"
   resolved "https://registry.npmjs.org/jsonfile/-/jsonfile-6.1.0.tgz"
   dependencies:
-    graceful-fs "^4.1.6"
     universalify "^2.0.0"
+  optionalDependencies:
+    graceful-fs "^4.1.6"
 
 jsonify@~0.0.0:
   version "0.0.0"
@@ -6257,6 +6266,11 @@ yargs@^16.1.0:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
+
+yarn@^1.22.17:
+  version "1.22.17"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.17.tgz#bf910747d22497b573131f7341c0e1d15c74036c"
+  integrity sha512-H0p241BXaH0UN9IeH//RT82tl5PfNraVpSpEoW+ET7lmopNC61eZ+A+IDvU8FM6Go5vx162SncDL8J1ZjRBriQ==
 
 yocto-queue@^0.1.0:
   version "0.1.0"
