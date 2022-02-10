@@ -782,9 +782,12 @@
     select2 "^4.0.3"
     slimscroll "^0.9.1"
 
-"@opendominion/rpg-awesome@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.npmjs.org/@opendominion/rpg-awesome/-/rpg-awesome-0.0.9.tgz"
+"@opendominion/rpg-awesome@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.10.tgz#23dd7ec5a664aa9473535be30ada5eb05458352b"
+  integrity sha512-7irWygDq9QHVctUsQDucdu1BVIgPoP2AFc2M+5XhUu4p0eHgN9yB/VpEgeqbOQMG3Ni+1dfFehQMl25kAIfK3g==
+  dependencies:
+    grunt-sass "^3.1.0"
 
 "@types/babel__core@^7.1.12":
   version "7.1.14"
@@ -1621,8 +1624,8 @@ cache-base@^1.0.1:
     unset-value "^1.0.0"
 
 cached-path-relative@^1.0.0, cached-path-relative@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/cached-path-relative/-/cached-path-relative-1.0.2.tgz"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/cached-path-relative/-/cached-path-relative-1.1.0.tgz#865576dfef39c0d6a7defde794d078f5308e3ef3"
 
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
@@ -2916,8 +2919,8 @@ flot@^0.8.3:
   resolved "https://registry.npmjs.org/flot/-/flot-0.8.3.tgz"
 
 follow-redirects@^1.0.0, follow-redirects@^1.14.0:
-  version "1.14.4"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.4.tgz#838fdf48a8bbdd79e52ee51fb1c94e3ed98b9379"
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
 
 font-awesome@^4.7, font-awesome@^4.7.0:
   version "4.7.0"
@@ -3068,6 +3071,11 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0,
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/growly/-/growly-1.3.0.tgz"
+
+grunt-sass@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/grunt-sass/-/grunt-sass-3.1.0.tgz#a5936cc2a80ec08092d9f31c101dc307d1e4f71c"
+  integrity sha512-90s27H7FoCDcA8C8+R0GwC+ntYD3lG6S/jqcavWm3bn9RiJTmSfOvfbFa1PXx4NbBWuiGQMLfQTj/JvvqT5w6A==
 
 handle-thing@^2.0.0:
   version "2.0.1"
@@ -3750,8 +3758,9 @@ jsonfile@^6.0.1:
   version "6.1.0"
   resolved "https://registry.npmjs.org/jsonfile/-/jsonfile-6.1.0.tgz"
   dependencies:
-    graceful-fs "^4.1.6"
     universalify "^2.0.0"
+  optionalDependencies:
+    graceful-fs "^4.1.6"
 
 jsonify@~0.0.0:
   version "0.0.0"
@@ -4161,8 +4170,8 @@ nan@^2.12.1:
   resolved "https://registry.npmjs.org/nan/-/nan-2.14.2.tgz"
 
 nanoid@^3.1.23:
-  version "3.1.23"
-  resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.1.23.tgz"
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.2.0.tgz#62667522da6673971cca916a6d3eff3f415ff80c"
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -6257,6 +6266,11 @@ yargs@^16.1.0:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
+
+yarn@^1.22.17:
+  version "1.22.17"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.17.tgz#bf910747d22497b573131f7341c0e1d15c74036c"
+  integrity sha512-H0p241BXaH0UN9IeH//RT82tl5PfNraVpSpEoW+ET7lmopNC61eZ+A+IDvU8FM6Go5vx162SncDL8J1ZjRBriQ==
 
 yocto-queue@^0.1.0:
   version "0.1.0"
