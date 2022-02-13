@@ -281,6 +281,7 @@ class Dominion extends AbstractModel
             DominionSpell::class
         )
         ->withPivot('duration', 'cast_by_dominion_id')
+        ->wherePivot('duration', '>', 0)
         ->withTimestamps();
     }
 

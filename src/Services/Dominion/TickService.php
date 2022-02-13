@@ -262,7 +262,6 @@ class TickService
             DB::table('dominion_spells')
                 ->join('dominions', 'dominion_spells.dominion_id', '=', 'dominions.id')
                 ->where($where)
-                ->where('duration', '>', 0)
                 ->update([
                     'duration' => DB::raw('`duration` - 1'),
                     'dominion_spells.updated_at' => $this->now,
