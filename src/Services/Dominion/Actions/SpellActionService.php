@@ -253,15 +253,18 @@ class SpellActionService
         // Wonders
         $duration += $dominion->getWonderPerkValue('spell_duration');
 
-        $activeSpell = $dominion->spells->find($spell->id);
+        $where = [
+            'dominion_id' => $dominion->id,
+            'spell_id' => $spell->id,
+        ];
+        $activeSpell = DominionSpell::firstWhere($where);
 
         if ($activeSpell !== null) {
-            if ((int)$activeSpell->pivot->duration == $duration) {
+            if ((int)$activeSpell->duration == $duration) {
                 throw new GameException("Your wizards refused to recast {$spell->name}, since it is already at maximum duration.");
             }
 
-            $activeSpell->pivot->duration = $duration;
-            $activeSpell->pivot->save();
+            $activeSpell->where($where)->update(['duration' => $duration]);
         } else {
             DominionSpell::insert([
                 'dominion_id' => $dominion->id,
