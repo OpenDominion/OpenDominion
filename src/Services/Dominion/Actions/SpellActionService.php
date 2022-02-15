@@ -604,7 +604,7 @@ class SpellActionService
                 } else {
                     throw new GameException("Unrecognized perk {$perk->key}.");
                 }
-                $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
+                $baseDamage = $perk->pivot->value / 100;
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
                 // Fireball damage reduction from Forest Havens
