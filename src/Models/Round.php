@@ -264,7 +264,7 @@ class Round extends AbstractModel
             return false;
         }
 
-        return now()->diffInHours($this->offensive_actions_prohibited_at) <= 18;
+        return $this->end_date->diffInHours($this->offensive_actions_prohibited_at) <= 18;
     }
 
     /**
