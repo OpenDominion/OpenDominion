@@ -625,7 +625,7 @@ class Dominion extends AbstractModel
         return array_get($this->settings, $key);
     }
 
-    public function inRealmAndSharesAdvisors(?Dominion $target): bool
+    public function inRealmAndSharesAdvisors(Dominion $target): bool
     {
         if ($target == null) {
             return false;
@@ -673,10 +673,14 @@ class Dominion extends AbstractModel
         return false;
     }
 
-    public function sharesUsername(?Dominion $target): bool
+    public function sharesUsername(Dominion $target): bool
     {
         if ($target->user_id == null) {
             return false;
+        }
+
+        if ($this->id == $target->id) {
+            return true;
         }
 
         // Always shared with packmates
@@ -685,7 +689,7 @@ class Dominion extends AbstractModel
         }
 
         // Shared display name is enabled
-        if ($target->user->getSetting('sharesusername') !== false) {
+        if ($target->user->getSetting('shareusername') !== false) {
             return true;
         }
 
