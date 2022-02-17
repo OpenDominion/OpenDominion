@@ -834,7 +834,7 @@
                         @if ($targetDominion !== null)
                             <thead>
                                 <tr class="target-dominion-op">
-                                    <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
+                                    <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
                                 </tr>
                             </thead>
                         @endif
