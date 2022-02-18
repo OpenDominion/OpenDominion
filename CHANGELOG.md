@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Infamy bonuses increased to a maximum of 10% and 4% (from 7.5% and 3%)
 - Assassinate draftees and duration spells now award infamy during war (modified by hours applied out of max duration)
 - Minimum tech cost slightly reduced to 3900 at 461a (from 4000 at 615a)
+- RP gain on attack increased to 750 (from 500)
+- RP gain from daily platinum bonus increased to 350 (from 250)
 
 ## [1.8.1] - 2022-02-07
 ### Changed

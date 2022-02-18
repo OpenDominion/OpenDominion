@@ -950,7 +950,7 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $baseResearchPointsGained = 500;
+            $baseResearchPointsGained = 750;
 
             $range = $this->invasionResult['result']['range'];
             if ($range < 60) {
