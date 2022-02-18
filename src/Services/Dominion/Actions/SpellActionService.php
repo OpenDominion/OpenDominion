@@ -543,7 +543,7 @@ class SpellActionService
             $damageDealtString = '';
             $warRewardsString = '';
             if (!$spellReflected && $durationAdded > 0 && (
-                $this->spellHelper->isWarSpell($spell) || 
+                $this->spellHelper->isWarSpell($spell) ||
                 ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
             )) {
                 $modifier = min(1, $durationAdded / 9);
@@ -676,12 +676,17 @@ class SpellActionService
 
                 $target->{$attr} -= $damage;
                 if ($convertAttr !== null) {
-                    if (Str::startsWith($convertAttr, 'self') && !$spellReflected) {
+                    if (Str::startsWith($convertAttr, 'self_') && !$spellReflected) {
                         $convertAttr = str_replace('self_', '', $convertAttr);
+                        $converted = $damage;
+                        if (Str::startsWith($convertAttr, 'military_')) {
+                            // Military Conversions
+                            $converted = round($damage * 0.05);
+                        }
                         $this->queueService->queueResources(
                             'invasion',
                             $dominion,
-                            [$convertAttr => $damage],
+                            [$convertAttr => $converted],
                             12
                         );
                     } else {
@@ -709,7 +714,7 @@ class SpellActionService
 
             $warRewardsString = '';
             if (!$spellReflected && $totalDamage > 0 && (
-                $this->spellHelper->isWarSpell($spell) || 
+                $this->spellHelper->isWarSpell($spell) ||
                 ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
             )) {
                 $results = $this->handleWarResults($dominion, $target);

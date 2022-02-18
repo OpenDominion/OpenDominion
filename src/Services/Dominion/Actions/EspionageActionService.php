@@ -689,7 +689,7 @@ class EspionageActionService
 
         $warRewardsString = '';
         if ($totalDamage > 0 && (
-            $this->espionageHelper->isWarOperation($operationKey) || 
+            $this->espionageHelper->isWarOperation($operationKey) ||
             ($this->espionageHelper->isBlackOperation($operationKey) && ($warDeclared || $blackGuard))
         )) {
             $results = $this->handleWarResults($dominion, $target);
