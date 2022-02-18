@@ -7,18 +7,20 @@
             <div class="box box-primary">
                 <div class="box-body table-responsive no-padding">
                     <ul class="nav">
-                            <li><a href="#game-overview">Game Overview</a></li>
-                            <li><a href="#status">Status</a></li>
-                            <li><a href="#advisors">Advisors</a></li>
-                            <li><a href="#daily-bonus">Daily Bonus</a></li>
-                            <li><a href="#explore">Explore</a></li>
-                            <li><a href="#construct">Construct</a></li>
-                            <li><a href="#rezone">Rezone</a></li>
-                            <li><a href="#improvements">Improvements</a></li>
-                            <li><a href="#national-bank">National Bank</a></li>
-                            <li><a href="#technology">Technology</a></li>
-                            <li><a href="#military">Military</a></li>
-                            <li><a href="#government">Government</a></li>
+                        <li><a href="#game-overview">Game Overview</a></li>
+                        <li><a href="#status">Status</a></li>
+                        <li><a href="#advisors">Advisors</a></li>
+                        <li><a href="#daily-bonus">Daily Bonus</a></li>
+                        <li><a href="#explore">Explore</a></li>
+                        <li><a href="#construct">Construct</a></li>
+                        <li><a href="#rezone">Rezone</a></li>
+                        <li><a href="#improvements">Improvements</a></li>
+                        <li><a href="#national-bank">National Bank</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#military">Military</a></li>
+                        <li><a href="#government">Government</a></li>
+                        <li><a href="#black-ops">Black Ops</a></li>
+                        <li><a href="#shadow-league">Shadow League</a></li>
                     </ul>
                 </div>
             </div>
@@ -117,6 +119,18 @@
                         <p>This is where you can cast your vote for the Monarch of your realm. The Monarch has a few special powers: they can set the Realm Name and Message of the Day (the message that appears on the Status screen); they can declare War on other realms using this tab, and they can delete posts in the in-game Council. To cast your vote, select the Dominion you want to vote for from the dropdown menu and click on 'Vote'.</p>
                         <p>You can also share your advisors with others in your realm here. You do so by checking the box in the 'Advisors' column. If you do that, those who you have shared the information can also see everything you can see in your 'Advisors' tab.</p>
                         <p>This is also where you can apply for the Emperor's Royal Guard. Members of the Royal Guard must pay 2% of their platinum production per hour, in exchange for some protection. As a member, you cannot take any action against Dominions that are less than 60 % of your land size or greater than 166 % of your land size, nor can Dominions outside that range take any action against you. You can also not attack any wonders, either with your Military or with the Cyclone spell. Once you are in the Royal Guard, you can apply for the Elite Guard, which has even stricter range limitations: you will only be able to take actions against Dominions within 75 % to 133 % of your land size. The Elite Guard imposes an additional 25 % cost increase on exploration. Both guards take 24 hours to join, and once you have joined, you cannot leave for 48 hours. During the application process, doing any hostile actions against a Dominion that is not inside the range of the guard you are joining will reset your application, as will attacking a Wonder. It is prohibited to join the Guard until the start of Day 3.</p>
+                    </div>
+                    <div id="black-ops">
+                        <h4 class="text-center">Black Ops</h4>
+                        <p>Black ops are spells and espionage operations that deal damage to other dominions. A subset of black ops, require you to be at war with the target to perform them. Successful war operations award you with one temporary stat that decays back toward zero each hour (Infamy) and one permanent stat (Mastery). Your target also gains a temporary stat (Resilience). These are explained below.</p>
+                        <p>Infamy is a value between 0 and 1000 that boosts your resource production (platinum, gems, lumber, and ore). The bonus scales up faster the more Infamy you have and maxes out at 10% for platinum and 4% for other resources. Infamy is awarded based on the relative spy/wizard power ratio between you and your target with a bonus for targets at least 75% of your size.</p>
+                        <p>Mastery is a measure of your black ops prowess over the course of the entire round and is split between Spy and Wizard. It is gained at a rate equal to 10% of your infamy gains plus a bonus based on your target's mastery level (you take 1 mastery from your target if their mastery is within 100 points of yours and 1 more if your target has more mastery than you). No mastery is gained when you have 500+ more than your target. Your total mastery sets a minimum value for your Infamy total (every 100 raises the minimum by 50). If you have 500 combined Mastery, your Infamy cannot decay below 250, making it easier to keep your bonus maxed if you commit to black ops throughout the round. Whoever has the highest Mastery at the end of the round is the de facto black ops champion.</p>
+                        <p>Resilience is a value between 0 and 1000 that reduces black ops damage taken (also split between Spy and Wizard), adding diminishing returns for having multiple dominions focus the same target for an extended period of time. It scales similarly to Infamy so that you get more damage reduction per point when it is higher. Failed ops also reward a small amount of resilience to the target, rewarding them for attempting to defend themselves. It currently takes 125 hours for resilience to fully decay from its max of 1000.</p>
+                    </div>
+                    <div id="shadow-league">
+                        <h4 class="text-center">Shadow League</h4>
+                        <p>The Shadow League is similar to the Royal and Elite Guards in that it requires a 24 hour application period and a minimum of 48 hours of membership, but is entirely independent. Joining the Shadow League allows you to target and be targeted by other members with war operations (assuming they meet other range restrictions). It also treats non-war black ops between members as if they were war operations (awarding Infamy/Mastery/Resilience). If you choose to leave the Shadow League, it requires a 12 hour waiting period, which is reset if you use war operations against members whom you are not also at war with.</p>
+                        <p>In addition to the ability to use war operations on each other, casualties suffered due to failures between members are halved. Other perks are 1% strength used for info ops (normally 2%) on all targets and production bonuses from Infamy are doubled.</p>
                     </div>
                 </div>
             </div>
