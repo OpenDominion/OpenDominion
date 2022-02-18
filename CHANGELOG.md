@@ -3,6 +3,12 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Shadow League application requires 24 hours (up from 12)
+- Shadow League membership is now visible to everyone
+- Info ops for Shadow League members now use only 1% strength
+- Infamy bonuses increased to a maximum of 10% and 4% (from 7.5% and 3%)
+- Assassinate draftees and duration spells now award infamy during war (modified by hours applied out of max duration)
 
 ## [1.8.1] - 2022-02-07
 ### Changed

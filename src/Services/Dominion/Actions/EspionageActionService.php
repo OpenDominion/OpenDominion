@@ -180,6 +180,9 @@ class EspionageActionService
         DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
                 $spyStrengthLost = 2;
+                if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+                    $spyStrengthLost = 1;
+                }
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;

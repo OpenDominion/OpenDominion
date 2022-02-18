@@ -169,10 +169,15 @@ class SpellActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $manaCost, $spell, &$result, $target) {
+            $wizardStrengthLost = $spell->cost_strength;
+
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
             } elseif ($this->spellHelper->isInfoOpSpell($spell)) {
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
+                if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+                    $wizardStrengthLost = 1;
+                }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
                 $result = $this->castHostileSpell($dominion, $spell, $target);
                 $dominion->resetAbandonment();
@@ -181,7 +186,7 @@ class SpellActionService
             }
 
             $dominion->resource_mana -= $manaCost;
-            $dominion->wizard_strength -= $spell->cost_strength;
+            $dominion->wizard_strength -= $wizardStrengthLost;
 
             if (!$this->spellHelper->isSelfSpell($spell)) {
                 if ($result['success']) {

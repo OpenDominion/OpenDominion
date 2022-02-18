@@ -415,6 +415,7 @@
                             <ul class="text-left" style="padding: 0 30px;">
                                 <li>Enables war operations between members.</li>
                                 <li>Infamy production bonuses are doubled.</li>
+                                <li>Info op strength costs are halved.</li>
                             </ul>
                             @if ($isLeavingBlackGuard)
                                 <form action="{{ route('dominion.government.black-guard.cancel') }}" method="post" role="form">

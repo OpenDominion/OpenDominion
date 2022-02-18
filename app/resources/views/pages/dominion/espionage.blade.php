@@ -165,7 +165,7 @@
                     <p>Here you can perform espionage operations on hostile dominions to gain important information for you and your realmies.</p>
                     <p>Any obtained data after successfully performing an information gathering operation gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
                     <p>Theft can only be performed on dominions greater than your size. Theft and black ops cannot be performed until the 4th day of the round.</p>
-                    <p>Performing espionage operations spends some spy strength, but it regenerates a bit every hour. You may only perform espionage operations above 30% strength.</p>
+                    <p>Performing espionage operations spends some spy strength (2% for info, otherwise 5%), but it regenerates 4% every hour. You may only perform espionage operations at or above 30% strength.</p>
                     <p>You have {{ floor($selectedDominion->spy_strength) }}% spy strength.</p>
                 </div>
             </div>

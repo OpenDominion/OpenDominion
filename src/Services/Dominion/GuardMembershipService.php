@@ -12,7 +12,6 @@ class GuardMembershipService
     public const GUARD_JOIN_DELAY_IN_HOURS = 24;
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
 
-    public const BLACK_GUARD_JOIN_DELAY_IN_HOURS = 12;
     public const BLACK_GUARD_LEAVE_WAIT_IN_HOURS = 48;
     public const BLACK_GUARD_LEAVE_DELAY_IN_HOURS = 12;
 
@@ -320,7 +319,7 @@ class GuardMembershipService
      */
     public function joinBlackGuard(Dominion $dominion): void
     {
-        $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::BLACK_GUARD_JOIN_DELAY_IN_HOURS);
+        $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_DELAY_IN_HOURS);
         $dominion->black_guard_inactive_at = null;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_BLACK_GUARD]);
     }
