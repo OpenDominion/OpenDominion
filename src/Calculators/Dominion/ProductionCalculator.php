@@ -114,7 +114,7 @@ class ProductionCalculator
 
         // Values
         $guardTax = 2;
-        $maxInfamyBonus = 7.5;
+        $maxInfamyBonus = 10;
 
         // Infamy
         $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
@@ -374,7 +374,7 @@ class ProductionCalculator
         $multiplier = 1;
 
         // Values
-        $maxInfamyBonus = 3;
+        $maxInfamyBonus = 4;
 
         // Infamy
         $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
@@ -598,7 +598,7 @@ class ProductionCalculator
         $multiplier = 1;
 
         // Values
-        $maxInfamyBonus = 3;
+        $maxInfamyBonus = 4;
 
         // Infamy
         $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
@@ -670,7 +670,7 @@ class ProductionCalculator
         $multiplier = 1;
 
         // Values
-        $maxInfamyBonus = 3;
+        $maxInfamyBonus = 4;
 
         // Infamy
         $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
