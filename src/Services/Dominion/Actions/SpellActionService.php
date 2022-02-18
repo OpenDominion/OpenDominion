@@ -892,6 +892,12 @@ class SpellActionService
         $wizardsKilledPercentage = $this->opsCalculator->getWizardLosses($dominion, $target, $type);
         $archmagesKilledPercentage = $this->opsCalculator->getArchmageLosses($dominion, $target, $type);
 
+        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+        if ($blackGuard) {
+            $wizardsKilledPercentage *= 0.5;
+            $archmagesKilledPercentage *= 0.5;
+        }
+
         $unitsKilled = [];
         $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
         $archmagesKilled = (int)floor($dominion->military_archmages * $archmagesKilledPercentage);

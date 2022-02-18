@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Shadow League application requires 24 hours (up from 12)
 - Shadow League membership is now visible to everyone
 - Info ops for Shadow League members now use only 1% strength
+- Losses for failed ops between Shadow League members are halved
 - Infamy bonuses increased to a maximum of 10% and 4% (from 7.5% and 3%)
 - Assassinate draftees and duration spells now award infamy during war (modified by hours applied out of max duration)
 - Minimum tech cost slightly reduced to 3900 at 461a (from 4000 at 615a)

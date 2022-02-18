@@ -737,6 +737,11 @@ class EspionageActionService
     {
         $spiesKilledPercentage = $this->opsCalculator->getSpyLosses($dominion, $target, $type);
 
+        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+        if ($blackGuard) {
+            $spiesKilledPercentage *= 0.5;
+        }
+
         $unitsKilled = [];
         $spiesKilled = (int)floor($dominion->military_spies * $spiesKilledPercentage);
         if ($type == 'info') {
