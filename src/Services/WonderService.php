@@ -46,6 +46,20 @@ class WonderService
         $wonders = Wonder::active()->get()->keyBy('key');
         $existingWonders = RoundWonder::with('wonder')->where('round_id', $round->id)->get()->keyBy('wonder.key');
 
+        // Remove most frequent wonders
+        $roundIds = $round->league->rounds->pluck('id');
+        $frequentWonders = RoundWonder::with('wonder')
+            ->whereIn('round_id', $roundIds)
+            ->get()
+            ->where('wonder.active', true)
+            ->countBy('wonder.key')
+            ->sortDesc()
+            ->take(5)
+            ->keys();
+        foreach ($frequentWonders as $wonderKey) {
+            $wonders->forget($wonderKey);
+        }
+
         // Limit to three Tier 1
         if ($existingWonders->where('wonder.power', Wonder::TIER_ONE_POWER)->count() >= 3) {
             $wonders = $wonders->where('power', Wonder::TIER_TWO_POWER);
