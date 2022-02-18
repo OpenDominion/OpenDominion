@@ -51,6 +51,11 @@ class CasualtiesCalculator
             return 1;
         }
 
+        // Wonders
+        if ($target->getWonderPerkValue('max_casualties_offense')) {
+            return $multiplier;
+        }
+
         // Then check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
         // casualties will then always be 0 anyway
 
@@ -175,6 +180,11 @@ class CasualtiesCalculator
     public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot, ?array $units): float
     {
         $multiplier = 1;
+
+        // Wonders
+        if ($attacker->getWonderPerkValue('max_casualties_defense')) {
+            return $multiplier;
+        }
 
         // First check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
         // casualties will then always be 0 anyway

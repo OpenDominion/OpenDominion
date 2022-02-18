@@ -26,7 +26,7 @@ great_market:
 gnomish_mining_machine:
   name: Gnomish Mining Machine
   perks:
-    ore_production: 15
+    ore_production: 20
   power: 150000
 guild_of_shadows:
   name: Guild of Shadows
@@ -37,7 +37,7 @@ guild_of_shadows:
 hanging_gardens:
   name: Hanging Gardens
   perks:
-    food_production: 20
+    food_production: 25
   power: 75000
 ancient_library:
   name: Ancient Library
@@ -58,7 +58,7 @@ great_oracle:
 fountain_of_youth:
   name: Fountain of Youth
   perks:
-    max_population: 2.5
+    max_population: 3
   power: 150000
 city_of_gold:
   name: City of Gold
@@ -69,15 +69,16 @@ city_of_gold:
 ruby_monolith:
   name: Ruby Monolith
   perks:
-    fewer_casualties_offense: 7.5
-    fewer_casualties_defense: 7.5
+    fewer_casualties_offense: 10
+    fewer_casualties_defense: 10
   power: 150000
 high_clerics_tower:
   name: High Cleric's Tower
   perks:
     kills_immortal: 1
+    max_casualties_offense: 1
+    max_casualties_defense: 1
   power: 75000
-  active: false
 ivory_tower:
   name: Ivory Tower
   perks:
@@ -132,12 +133,12 @@ wizard_academy:
 golden_throne:
   name: Golden Throne
   perks:
-    prestige_gains: 15
+    prestige_gains: 25
   power: 150000
 school_of_war:
   name: School of War
   perks:
-    barracks_housing: 2
+    barracks_housing: 3
   power: 150000
 horn_of_plenty:
   name: Horn of Plenty

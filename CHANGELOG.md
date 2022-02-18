@@ -12,6 +12,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Minimum tech cost slightly reduced to 3900 at 461a (from 4000 at 615a)
 - RP gain on attack increased to 750 (from 500)
 - RP gain from daily platinum bonus increased to 350 (from 250)
+- Wonder buffs:
+  - Fountain of Youth: max population to 3% (from 2.5%)
+  - Golden Throne: prestige gains increased to 25% (from 15%)
+  - Gnomish Mining Machine: ore production to 20% (from 15%)
+  - Hanging Gardens: food production to 25% (from 20%)
+  - High Cleric's Tower: ignore ALL casualty reductions (from immortality only)
+  - Ruby Monolith: casualty reduction increased to 10% (from 7.5%)
+  - School of War: barracks housing increased to +3 (from +2)
 
 ## [1.8.1] - 2022-02-07
 ### Changed
