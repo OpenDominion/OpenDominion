@@ -551,10 +551,10 @@ class EspionageActionService
 
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
+        $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
+        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
         if ($this->espionageHelper->isWarOperation($operationKey)) {
-            $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
             $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
-            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
             if (!$warDeclared && !$recentlyInvaded) {
                 if ($blackGuard) {
                     $this->guardMembershipService->checkLeaveApplication($dominion);
@@ -685,31 +685,14 @@ class EspionageActionService
         }
 
         $warRewardsString = '';
-        if ($this->espionageHelper->isWarOperation($operationKey) && $totalDamage > 0) {
-            // Infamy and Resilience Gains
-            $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'spy');
-            $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'spy');
-
-            // Mutual War
-            if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
-                $infamyGain = round(1.2 * $infamyGain);
-                $resilienceGain = round(0.5 * $resilienceGain);
-            }
-
-            $dominion->infamy += $infamyGain;
-            $target->spy_resilience += $resilienceGain;
-
-            // Mastery Gains
-            $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'spy');
-            $dominion->spy_mastery += $masteryGain;
-
-            // Mastery Loss
-            $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'spy'), $target->spy_mastery);
-            $target->spy_mastery -= $masteryLoss;
-
-            $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} spy mastery.";
-            if ($masteryLoss > 0) {
-                $damageDealt[] = "{$masteryLoss} spy mastery";
+        if ($totalDamage > 0 && (
+            $this->espionageHelper->isWarOperation($operationKey) || 
+            ($this->espionageHelper->isBlackOperation($operationKey) && ($warDeclared || $blackGuard))
+        )) {
+            $results = $this->handleWarResults($dominion, $target);
+            $warRewardsString = $results['warRewards'];
+            if ($results['damageDealt'] !== '') {
+                $damageDealt[] = $results['damageDealt'];
             }
         }
 
@@ -789,5 +772,50 @@ class EspionageActionService
         $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
         return [$unitsKilled, $unitsKilledString];
+    }
+
+        /**
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param float $modifier
+     * @return array
+     * @throws Exception
+     */
+    protected function handleWarResults(Dominion $dominion, Dominion $target, float $modifier = 1): array
+    {
+        $damageDealtString = '';
+        $warRewardsString = '';
+
+        // Infamy and Resilience Gains
+        $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
+        $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
+
+        // Mutual War
+        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
+        if ($mutualWarDeclared) {
+            $infamyGain = round(1.2 * $infamyGain);
+            $resilienceGain = round(0.5 * $resilienceGain);
+        }
+
+        $dominion->infamy += $infamyGain;
+        $target->spy_resilience += $resilienceGain;
+
+        // Mastery Gains
+        $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'spy', $modifier);
+        $dominion->spy_mastery += $masteryGain;
+
+        // Mastery Loss
+        $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'spy'), $target->spy_mastery);
+        $target->spy_mastery -= $masteryLoss;
+
+        $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} spy mastery.";
+        if ($masteryLoss > 0) {
+            $damageDealtString = "{$masteryLoss} spy mastery";
+        }
+
+        return [
+            'damageDealt' => $damageDealtString,
+            'warRewards' => $warRewardsString,
+        ];
     }
 }

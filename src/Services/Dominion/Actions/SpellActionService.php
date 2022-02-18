@@ -424,9 +424,9 @@ class SpellActionService
 
         $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
         $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
-        $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
         if ($this->spellHelper->isWarSpell($spell)) {
+            $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
             if (!$warDeclared && !$recentlyInvaded) {
                 if ($blackGuard) {
                     $this->guardMembershipService->checkLeaveApplication($dominion);
@@ -535,6 +535,20 @@ class SpellActionService
                 $dominion->{"stat_{$spell->key}_hours"} += $durationAdded;
             }
 
+            $damageDealtString = '';
+            $warRewardsString = '';
+            if (!$spellReflected && $durationAdded > 0 && (
+                $this->spellHelper->isWarSpell($spell) || 
+                ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
+            )) {
+                $modifier = min(1, $durationAdded / 9);
+                $results = $this->handleWarResults($dominion, $target, $durationAdded / 9);
+                $warRewardsString = $results['warRewards'];
+                if ($results['damageDealt'] !== '') {
+                    $damageDealtString = "Your target lost {$results['damageDealt']}.";
+                }
+            }
+
             // Surreal Perception
             $sourceDominionId = null;
             if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
@@ -571,8 +585,10 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, and it will continue to affect your target for an additional %s hours.',
-                        $durationAdded
+                        'Your wizards cast the spell successfully, and it will continue to affect your target for an additional %s hours. %s %s',
+                        $durationAdded,
+                        $damageDealtString,
+                        $warRewardsString
                     )
                 ];
             }
@@ -687,31 +703,14 @@ class SpellActionService
             }
 
             $warRewardsString = '';
-            if ($this->spellHelper->isWarSpell($spell) && !$spellReflected && $totalDamage > 0) {
-                // Infamy and Resilience Gains
-                $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard');
-                $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
-
-                // Mutual War
-                if ($mutualWarDeclared) {
-                    $infamyGain = round(1.2 * $infamyGain);
-                    $resilienceGain = round(0.5 * $resilienceGain);
-                }
-
-                $dominion->infamy += $infamyGain;
-                $target->wizard_resilience += $resilienceGain;
-
-                // Mastery Gains
-                $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard');
-                $dominion->wizard_mastery += $masteryGain;
-
-                // Mastery Loss
-                $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'wizard'), $target->wizard_mastery);
-                $target->wizard_mastery -= $masteryLoss;
-
-                $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
-                if ($masteryLoss > 0) {
-                    $damageDealt[] = "{$masteryLoss} wizard mastery";
+            if (!$spellReflected && $totalDamage > 0 && (
+                $this->spellHelper->isWarSpell($spell) || 
+                ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
+            )) {
+                $results = $this->handleWarResults($dominion, $target);
+                $warRewardsString = $results['warRewards'];
+                if ($results['damageDealt'] !== '') {
+                    $damageDealt[] = $results['damageDealt'];
                 }
             }
 
@@ -931,5 +930,50 @@ class SpellActionService
         $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
         return [$unitsKilled, $unitsKilledString];
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param float $modifier
+     * @return array
+     * @throws Exception
+     */
+    protected function handleWarResults(Dominion $dominion, Dominion $target, float $modifier = 1): array
+    {
+        $damageDealtString = '';
+        $warRewardsString = '';
+
+        // Infamy and Resilience Gains
+        $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
+        $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
+
+        // Mutual War
+        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
+        if ($mutualWarDeclared) {
+            $infamyGain = round(1.2 * $infamyGain);
+            $resilienceGain = round(0.5 * $resilienceGain);
+        }
+
+        $dominion->infamy += $infamyGain;
+        $target->wizard_resilience += $resilienceGain;
+
+        // Mastery Gains
+        $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);
+        $dominion->wizard_mastery += $masteryGain;
+
+        // Mastery Loss
+        $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'wizard'), $target->wizard_mastery);
+        $target->wizard_mastery -= $masteryLoss;
+
+        $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
+        if ($masteryLoss > 0) {
+            $damageDealtString = "{$masteryLoss} wizard mastery";
+        }
+
+        return [
+            'damageDealt' => $damageDealtString,
+            'warRewards' => $warRewardsString,
+        ];
     }
 }

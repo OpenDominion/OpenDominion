@@ -198,9 +198,10 @@ class OpsCalculator
      * @param Dominion $dominion
      * @param Dominion $target
      * @param string $type
+     * @param float $modifier
      * @return int
      */
-    public function getInfamyGain(Dominion $dominion, Dominion $target, string $type): int
+    public function getInfamyGain(Dominion $dominion, Dominion $target, string $type, float $modifier = 1): int
     {
         $infamy = 5;
         if ($type == 'spy') {
@@ -229,7 +230,7 @@ class OpsCalculator
             $infamy += 10;
         }
 
-        return $infamy;
+        return round($infamy * $modifier);
     }
 
     /**
@@ -320,9 +321,10 @@ class OpsCalculator
      * @param Dominion $dominion
      * @param Dominion $target
      * @param string $type
+     * @param float $modifier
      * @return int
      */
-    public function getMasteryGain(Dominion $dominion, Dominion $target, string $type): int
+    public function getMasteryGain(Dominion $dominion, Dominion $target, string $type, float $modifier = 1): int
     {
         if ($type == 'spy') {
             $selfMastery = $dominion->spy_mastery;
@@ -334,7 +336,7 @@ class OpsCalculator
             return 0;
         }
 
-        $mastery = round($this->getInfamyGain($dominion, $target, $type) / 10);
+        $mastery = round($this->getInfamyGain($dominion, $target, $type, $modifier) / 10);
         $masteryDifference = $selfMastery - $targetMastery;
 
         if ($masteryDifference > 500) {
