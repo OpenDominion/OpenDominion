@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Minimum tech cost slightly reduced to 3900 at 461a (from 4000 at 615a)
 - RP gain on attack increased to 750 (from 500)
 - RP gain from daily platinum bonus increased to 350 (from 250)
+- Minimum wonder health when rebuilt from neutral increased to 250k for Tier 1 and 200k for Tier 2 (from 150k)
 - Wonder buffs:
   - Fountain of Youth: max population to 3% (from 2.5%)
   - Golden Throne: prestige gains increased to 25% (from 15%)

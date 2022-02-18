@@ -57,7 +57,12 @@ class WonderCalculator
             return max(static::MIN_SPAWN_POWER, round($newPower, -4));
         }
 
-        return min(static::MAX_SPAWN_POWER, 25000 * $day);
+        $dailyPower = 25000;
+        if ($wonder->wonder->power == Wonder::TIER_ONE_POWER) {
+            $dailyPower = 20000;
+        }
+
+        return $dailyPower * max(10, $day);
     }
 
     /**

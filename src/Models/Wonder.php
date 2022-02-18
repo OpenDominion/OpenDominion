@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Wonder extends AbstractModel
 {
+    public const TIER_ONE_POWER = 150000;
+    public const TIER_TWO_POWER = 75000;
+
     protected $table = 'wonders';
 
     protected $casts = [
@@ -29,6 +32,16 @@ class Wonder extends AbstractModel
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
+    }
+
+    public function scopeTierOne(Builder $query): Builder
+    {
+        return $query->where('power', static::TIER_ONE_POWER);
+    }
+
+    public function scopeTierTwo(Builder $query): Builder
+    {
+        return $query->where('power', static::TIER_TWO_POWER);
     }
 
     public function perks()
