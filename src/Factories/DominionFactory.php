@@ -78,8 +78,8 @@ class DominionFactory
             'resource_mana' => $startingAttributes['resource_mana'],
             'resource_ore' => $startingAttributes['resource_ore'],
             'resource_gems' => $startingAttributes['resource_gems'],
-            'resource_tech' => 0,
-            'resource_boats' => 0,
+            'resource_tech' => $startingAttributes['resource_tech'],
+            'resource_boats' => $startingAttributes['resource_boats'],
 
             'improvement_science' => 0,
             'improvement_keep' => 0,

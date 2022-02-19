@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.8.2] - 2022-02-19
 ### Changed
 - Shadow League application requires 24 hours (up from 12)
 - Shadow League membership is now visible to everyone
@@ -23,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - High Cleric's Tower: ignore ALL casualty reductions (from immortality only)
   - Ruby Monolith: casualty reduction increased to 10% (from 7.5%)
   - School of War: barracks housing increased to +3 (from +2)
+- Quick Starts have been updated
 
 ## [1.8.1] - 2022-02-07
 ### Changed
@@ -1636,7 +1639,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.2...HEAD
+[1.8.2]: https://github.com/OpenDominion/OpenDominion/compare/1.8.1...1.8.2
 [1.8.1]: https://github.com/OpenDominion/OpenDominion/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/OpenDominion/OpenDominion/compare/1.7.2...1.8.0
 [1.7.2]: https://github.com/OpenDominion/OpenDominion/compare/1.7.1...1.7.2
