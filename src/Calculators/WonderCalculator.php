@@ -6,6 +6,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
+use OpenDominion\Models\Wonder;
 
 class WonderCalculator
 {
@@ -50,19 +51,24 @@ class WonderCalculator
     {
         $day = $wonder->round->daysInRound();
 
-        if ($wonder->realm_id !== null) {
-            $maxPower = min(37500 * $day, 2 * $wonder->power);
-            $damageContribution = $this->getDamageDealtByRealm($wonder, $realm) / $wonder->power;
-            $newPower = floor($maxPower * $damageContribution);
-            return max(static::MIN_SPAWN_POWER, round($newPower, -4));
+        if ($wonder->realm == null || $wonder->realm_id == null) {
+            // Built from or returning to neutral
+            $dailyPower = 25000;
+            if ($wonder->wonder->power == Wonder::TIER_ONE_POWER) {
+                $dailyPower = 20000;
+            }
+            $newPower = $dailyPower * max(10, $day);
+            if ($wonder->realm_id == null) {
+                $newPower = min(static::MAX_SPAWN_POWER, $newPower);
+            }
+            return $newPower;
         }
 
-        $dailyPower = 25000;
-        if ($wonder->wonder->power == Wonder::TIER_ONE_POWER) {
-            $dailyPower = 20000;
-        }
-
-        return $dailyPower * max(10, $day);
+        $maxPower = min(37500 * $day, 2 * $wonder->power);
+        $damageByRealm = min($this->getDamageDealtByRealm($wonder, $realm), $wonder->power);
+        $damageContribution =  $damageByRealm / $wonder->power;
+        $newPower = floor($maxPower * $damageContribution);
+        return max(static::MIN_SPAWN_POWER, round($newPower, -4));
     }
 
     /**
