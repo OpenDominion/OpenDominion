@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Golden Throne: prestige gains increased to 25% (from 15%)
   - Gnomish Mining Machine: ore production to 20% (from 15%)
   - Hanging Gardens: food production to 25% (from 20%)
-  - High Cleric's Tower: ignore ALL casualty reductions (from immortality only)
+  - High Cleric's Tower: ignore ALL casualty reductions (was immortality only)
   - Ruby Monolith: casualty reduction increased to 10% (from 7.5%)
   - School of War: barracks housing increased to +3 (from +2)
 - Quick Starts have been updated

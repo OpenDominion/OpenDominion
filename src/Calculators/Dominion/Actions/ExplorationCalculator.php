@@ -53,7 +53,7 @@ class ExplorationCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('explore_platinum_cost');
 
         // Elite Guard Tax
-        if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
+        if ($this->guardMembershipService->isEliteGuardMember($dominion) && $dominion->user_id !== null) {
             $multiplier += 0.25;
         }
 
