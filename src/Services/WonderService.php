@@ -20,10 +20,26 @@ class WonderService
      */
     public function getStartingWonders(Round $round)
     {
-        $tier1 = Wonder::active()->tierOne()->get();
-        $tier2 = Wonder::active()->tierTwo()->get();
+        $tier1 = Wonder::active()->tierOne()->get()->keyBy('key');
+        $tier2 = Wonder::active()->tierTwo()->get()->keyBy('key');
 
-        $wonderOptions = $tier1->random(3)->keyBy('key');
+        // TODO: De-duplicate later
+        // Remove most frequent wonders
+        $roundIds = $round->league->rounds->pluck('id');
+        $frequentWonders = RoundWonder::with('wonder')
+            ->whereIn('round_id', $roundIds)
+            ->get()
+            ->where('wonder.active', true)
+            ->countBy('wonder.key')
+            ->sortDesc()
+            ->take(5)
+            ->keys();
+        foreach ($frequentWonders as $wonderKey) {
+            $tier1->forget($wonderKey);
+            $tier2->forget($wonderKey);
+        }
+
+        $wonderOptions = $tier1->random(3);
         if ($wonderOptions->has('halls_of_knowledge')) {
             $wonderOptions->forget('ancient_library');
         }
@@ -46,6 +62,7 @@ class WonderService
         $wonders = Wonder::active()->get()->keyBy('key');
         $existingWonders = RoundWonder::with('wonder')->where('round_id', $round->id)->get()->keyBy('wonder.key');
 
+        // TODO: De-duplicate later
         // Remove most frequent wonders
         $roundIds = $round->league->rounds->pluck('id');
         $frequentWonders = RoundWonder::with('wonder')
