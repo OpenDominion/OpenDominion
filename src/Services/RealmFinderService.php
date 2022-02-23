@@ -109,7 +109,7 @@ class RealmFinderService
                 })->toArray())
             ];
         });
-        if ($user->rating < $realmRatings->avg('rating')) {
+        if ($user->rating > $realmRatings->avg('rating')) {
             $realm = $realmRatings->sortBy('rating')->first();
         } else {
             $realm = $realmRatings->sortByDesc('rating')->first();
@@ -193,6 +193,8 @@ class RealmFinderService
             } else {
                 $smallPackCount++;
             }
+            // Update rating
+            Pack::where('id', $packId)->update(['rating' => $pack['rating']]);
         }
         $realmCount = max(ceil(($largePackCount / 2) + ($smallPackCount / 4)), static::ASSIGNMENT_MIN_REALM_COUNT);
         $packsToMerge = $largePackCount + $smallPackCount - (2 * $realmCount);
@@ -343,6 +345,8 @@ class RealmFinderService
                 ]);
                 $notificationService->sendNotifications($dominion, 'irregular_dominion');
             }
+            $realm->rating = $this->calculateRating($realmies['players']);
+            $realm->save();
         }
     }
 }
