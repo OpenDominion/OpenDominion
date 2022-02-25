@@ -109,7 +109,7 @@
                                                     <td>N/A</td>
                                                 @endif
                                                 <td>
-                                                    @if ($dominion->user_id && $selectedDominion->inRealmAndSharesAdvisors($dominion))
+                                                    @if ($dominion->user_id !== null && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))
                                                         {{ $dominion->user->display_name }}
                                                     @endif
                                                 </td>
