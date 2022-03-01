@@ -48,6 +48,21 @@ class AIHelper
             $config['spells'][] = 'ares_call';
         }
 
+        $racesWithManaUnits = ['Nox', 'Spirit'];
+        if (in_array($race->name, $racesWithManaUnits)) {
+            $config['build'][] = [
+                'land_type' => 'swamp',
+                'building' => 'tower',
+                'amount' => 0.09
+            ];
+        } else {
+            $config['build'][] = [
+                'land_type' => 'swamp',
+                'building' => 'tower',
+                'amount' => 0.05
+            ];
+        }
+
         $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead'];
         if (!in_array($race->name, $racesWithoutOre)) {
             $config['build'][] = [
@@ -166,12 +181,7 @@ class AIHelper
                 [
                     'land_type' => 'plain',
                     'building' => 'farm',
-                    'amount' => 0.065
-                ],
-                [
-                    'land_type' => 'swamp',
-                    'building' => 'tower',
-                    'amount' => 0.05
+                    'amount' => 0.07
                 ],
                 [
                     'land_type' => 'forest',
