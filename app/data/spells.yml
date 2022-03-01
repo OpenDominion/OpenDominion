@@ -42,7 +42,7 @@ great_flood:
   cost_strength: 5
   duration: 6
   perks:
-    boat_production: -50
+    boat_production: -25
 earthquake:
   name: Earthquake
   category: hostile
