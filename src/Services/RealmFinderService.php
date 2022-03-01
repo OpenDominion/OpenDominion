@@ -32,7 +32,7 @@ class RealmFinderService
     /**
      * @var int Minimum number of realms to create
      */
-    public const ASSIGNMENT_MIN_REALM_COUNT = 15;
+    public const ASSIGNMENT_MIN_REALM_COUNT = 8;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.
@@ -242,7 +242,7 @@ class RealmFinderService
                 'rating' => $this->calculateRating($players)
             ];
         }
-        /*
+
         // TODO: This should be done prior to merging packs together!
         if (count($realms) < static::ASSIGNMENT_MIN_REALM_COUNT) {
             foreach (range(1, static::ASSIGNMENT_MIN_REALM_COUNT - count($realms)) as $realmKey) {
@@ -252,7 +252,7 @@ class RealmFinderService
                 ];
             }
         }
-        */
+
 
         // Separate solo players
         $soloPlayers = [];
@@ -268,7 +268,7 @@ class RealmFinderService
         $medianRealmRating = collect($realms)->median('rating');
         $averageSoloPlayerRating = $soloPlayers->avg('rating');
         foreach ($realms as $key => $realm) {
-            if (count($realms[$key]['players']) < static::MAX_PACKED_PLAYERS_PER_REALM && $soloPlayers->count() > 0) {
+            while (count($realms[$key]['players']) < static::MAX_PACKED_PLAYERS_PER_REALM && $soloPlayers->count() > 0) {
                 $randomPlayer = null;
                 if ($realm['rating'] > $medianRealmRating) {
                     $belowAveragePlayers = $soloPlayers->where('rating', '<', $averageSoloPlayerRating);
