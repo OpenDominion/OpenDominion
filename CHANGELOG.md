@@ -4,6 +4,16 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+### Fixed
+- Realms with 6 packed players or less will now be properly balanced during realm assignment
+- Increase farms/towers for some NPDs
+- Can no longer apply for guards prior to round start
+- Hide username on government page when sharing disabled
+- Inactive spells removed from calculators (Warsong)
+- Great Flood was mistakenly set to 50% instead of 25%
+- Shadow League membership now visible on search page
+- Snare damage and Spy/Wizard strength now display to 4 significant digits
+
 ## [1.8.2] - 2022-02-19
 ### Changed
 - Shadow League application requires 24 hours (up from 12)
