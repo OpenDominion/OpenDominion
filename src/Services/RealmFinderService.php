@@ -253,7 +253,6 @@ class RealmFinderService
             }
         }
 
-
         // Separate solo players
         $soloPlayers = [];
         foreach ($allPlayers->where('pack_id', null) as $player) {
