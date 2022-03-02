@@ -4,6 +4,7 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.8.3] - 2022-03-02
 ### Fixed
 - Realms with 6 packed players or less will now be properly balanced during realm assignment
 - Increase farms/towers for some NPDs
@@ -1649,7 +1650,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.3...HEAD
+[1.8.3]: https://github.com/OpenDominion/OpenDominion/compare/1.8.2...1.8.3
 [1.8.2]: https://github.com/OpenDominion/OpenDominion/compare/1.8.1...1.8.2
 [1.8.1]: https://github.com/OpenDominion/OpenDominion/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/OpenDominion/OpenDominion/compare/1.7.2...1.8.0
