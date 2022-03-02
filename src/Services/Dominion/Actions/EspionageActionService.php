@@ -663,16 +663,18 @@ class EspionageActionService
                     if ($damage > $target->{$attr}) {
                         $damage = max(0, $target->{$attr});
                     }
+                    $actualDamage = $damage;
                     $target->{$attr} -= $damage;
                     $damage = floor($target->{$attr} + $damage) - floor($target->{$attr});
                 } else {
                     // Rounded up for all other damage types
                     $damage = ceil($damage);
                     $target->{$attr} -= $damage;
+                    $actualDamage = $damage;
                 }
 
-                $totalDamage += $damage;
-                $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
+                $totalDamage += $actualDamage;
+                $damageDealt[] = sprintf('%.4g %s', $actualDamage, dominion_attr_display($attr, $actualDamage));
 
                 // Update statistics
                 if (isset($dominion->{"stat_{$operationInfo['key']}_damage"})) {
