@@ -528,11 +528,15 @@ class Dominion extends AbstractModel
             }
             $hostileSpells = $perks[$key]->where('self', false);
             $hostilePerkValue = (float)$hostileSpells->max('pivot.value');
-            if (isset($selfSpells["enemy_{$key}_damage"])) {
-                $damageReduction = (float)$hostileSpells->min('pivot.value');
-            }
             if ($hostilePerkValue < 0) {
                 $hostilePerkValue = (float)$hostileSpells->min('pivot.value');
+            }
+            foreach ($hostileSpells as $hostileSpell) {
+                $spellKey = Spell::find($hostileSpell->pivot->spell_id)->key;
+                if (isset($perks["enemy_{$spellKey}_damage"])) {
+                    $damageReduction = (float)$perks["enemy_{$spellKey}_damage"]->min('pivot.value');
+                    $hostilePerkValue *= (1 + $damageReduction / 100);
+                }
             }
             return $selfPerkValue + $hostilePerkValue;
         }
