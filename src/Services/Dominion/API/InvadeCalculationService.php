@@ -133,7 +133,7 @@ class InvadeCalculationService
             $this->calculationResult['op_multiplier'] = (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
         }
 
-        $this->calculationResult['away_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
+        $this->calculationResult['away_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
         if (!isset($calc['wonder'])) {
             $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
         } else {
