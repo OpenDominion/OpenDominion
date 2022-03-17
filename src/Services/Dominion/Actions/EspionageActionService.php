@@ -797,8 +797,8 @@ class EspionageActionService
         $warRewardsString = '';
 
         // Infamy and Resilience Gains
-        $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
-        $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
+        $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'spy', $modifier);
+        $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'spy');
 
         // Mutual War
         $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
