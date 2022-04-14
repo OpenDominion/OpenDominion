@@ -83,6 +83,7 @@
                         @endif
                     </a>
                 </li>
+                <li class="{{ Route::is('dominion.heroes') ? 'active' : null }}"><a href="{{ route('dominion.heroes') }}"><i class="ra ra-knight-helmet ra-fw"></i> <span>Heroes</span></a></li>
 
                 <li class="header">OPERATIONS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
