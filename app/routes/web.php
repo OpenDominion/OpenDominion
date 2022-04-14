@@ -107,7 +107,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('realm/advisors/{target}/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('realm.advisors.rankings');
             $router->get('realm/advisors/{target}/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('realm.advisors.statistics');
 
-            // Daily
+            // Daily Bonus
             $router->get('bonuses')->uses('Dominion\DailyBonusesController@getBonuses')->name('bonuses');
             $router->post('bonuses/platinum')->uses('Dominion\DailyBonusesController@postBonusesPlatinum')->name('bonuses.platinum');
             $router->post('bonuses/land')->uses('Dominion\DailyBonusesController@postBonusesLand')->name('bonuses.land');
@@ -138,6 +138,11 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Techs
             $router->get('techs')->uses('Dominion\TechController@getTechs')->name('techs');
             $router->post('techs')->uses('Dominion\TechController@postTechs');
+
+            // Heroes
+            $router->get('heroes')->uses('Dominion\HeroController@getHeroes')->name('heroes');
+            $router->post('heroes')->uses('Dominion\HeroController@postHeroes');
+            $router->post('heroes/create')->uses('Dominion\HeroController@postCreateHero')->name('heroes.create');
 
             // Wonders
             $router->get('wonders')->uses('Dominion\WonderController@getWonders')->name('wonders');

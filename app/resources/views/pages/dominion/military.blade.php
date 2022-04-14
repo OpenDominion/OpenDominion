@@ -126,9 +126,9 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Draft Rate</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
-                    <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
-                        @csrf
+                <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
+                    @csrf
+                    <div class="box-body table-responsive no-padding">
                         <table class="table" style="margin-bottom: 0px;">
                             <colgroup>
                                 <col width="50%">
