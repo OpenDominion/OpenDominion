@@ -3,6 +3,15 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Base prestige gain slightly increased
+- Bot DP reduced at lower land sizes
+- Discounted land will again be awarded when buildings are lost to invasion
+- Infamy now increases mana production at the same rate as gems/lumber/ore
+- Magic snare now does a minimum of 1% damage after resilience (from 1.5% before resilience)
+- Smithy: maximum cost reduction increased to 36% at 18% owned (from 30% at 15% owned)
+- Halls of Knowledge: now generates 15 research points per hour and increases school production by 10% (from 60 RP per hour)
+- Halfling: Master Thief changed to .2 spy on defense (from .333) effectively .25 with racial bonus
 
 ## [1.8.3] - 2022-03-02
 ### Fixed
@@ -13,7 +22,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Inactive spells removed from calculators (Warsong)
 - Great Flood was mistakenly set to 50% instead of 25%
 - Shadow League membership now visible on search page
-- Snare damage and Spy/Wizard strength now display to 4 significant digits
 
 ## [1.8.2] - 2022-02-19
 ### Changed

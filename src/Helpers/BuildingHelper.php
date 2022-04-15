@@ -126,7 +126,7 @@ class BuildingHelper
             'home' => 'Houses 30 people.',
             'alchemy' => 'Produces 45 platinum per hour.',
             'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of a bushel of food per hour.',
-            'smithy' => 'Reduces specialist and elite military unit training costs.<br><br>Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.',
+            'smithy' => 'Reduces specialist and elite military unit training costs (except Gnome ore costs).<br><br>Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.',
             'masonry' => 'Increases castle bonuses by 2.75% per 1% owned.',
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Increases offensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
