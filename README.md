@@ -19,7 +19,7 @@
 
 OpenDominion is a free and open-source clone of Dominion, an online text-based and persistent browser-based (PBBG) fantasy war game. OpenDominion is written in PHP on the [Laravel](https://laravel.com) framework.
 
-The original Dominion, now defunct, was a game from Kamikaze Games which ran from about 2000 to 2012 until [stopping indefinitely](https://dominion.opendominion.net/GameOver.htm).
+The original Dominion, now defunct, was a game from Kamikaze Games which ran from about 2000 to 2012 until [stopping indefinitely](http://dominion.opendominion.net/GameOver.htm).
 
 Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
@@ -88,7 +88,7 @@ Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
 
 - [Play](https://www.opendominion.net)
   - The game is no longer in beta. Feel free to register and participate!
-  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.opendominion.net/scribes.html) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
+  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](http://dominion.opendominion.net/scribes.html) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
   - Do note that not every functionality has been implemented yet in OpenDominion.
 - [Test](https://test.opendominion.net)
   - The test server is publicly available for in-game simming and often used for small scale feature betas.
@@ -130,4 +130,4 @@ All rights belong to their respective owners.
 
 ## Notes
 
-<a name="notes-1">1</a>: Taken from the original [Dominion](https://dominion.opendominion.net/) website.
+<a name="notes-1">1</a>: Taken from the original [Dominion](http://dominion.opendominion.net/) website.
