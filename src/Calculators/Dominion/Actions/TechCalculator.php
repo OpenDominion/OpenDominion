@@ -15,7 +15,7 @@ class TechCalculator
      */
     public function getTechCost(Dominion $dominion): int
     {
-        $techCost = 3600 + (0.65 * $dominion->highest_land_achieved) + (100 * $dominion->techs->count());
+        $techCost = 3600 + (0.65 * $dominion->highest_land_achieved) + (150 * $dominion->techs->count());
         return max(3900, round($techCost));
     }
 

@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Base prestige gain slightly increased
 - Bot DP reduced at lower land sizes
+- Tech cost now increased by 150 for each unlock (from 100)
 - Discounted land will again be awarded when buildings are lost to invasion
 - Infamy now increases mana production at the same rate as gems/lumber/ore
 - Magic snare now does a minimum of 1% damage after resilience (from 1.5% before resilience)
