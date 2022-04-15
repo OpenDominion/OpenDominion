@@ -491,6 +491,12 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
+        // Values
+        $maxInfamyBonus = 4;
+
+        // Infamy
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
+
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('mana_production');
 
