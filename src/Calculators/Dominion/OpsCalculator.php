@@ -214,14 +214,14 @@ class OpsCalculator
             return 0;
         }
 
-        $relativeRatio = ($targetRatio / $selfRatio);
-        if ($relativeRatio >= 0.7 && $relativeRatio < 0.9) {
+        $successRate = $this->blackOperationSuccessChance($selfRatio, $targetRatio);
+        if ($successRate < 0.7 && $successRate >= 0.6) {
             $infamy += 15;
-        } elseif ($relativeRatio >= 0.9 && $relativeRatio < 1.1) {
+        } elseif ($successRate < 0.6 && $successRate >= 0.5) {
             $infamy += 30;
-        } elseif ($relativeRatio >= 1.1 && $relativeRatio < 1.3) {
+        } elseif ($successRate < 0.5 && $successRate >= 0.4) {
             $infamy += 40;
-        } elseif ($relativeRatio >= 1.3) {
+        } elseif ($successRate < 0.4) {
             $infamy += 50;
         }
 

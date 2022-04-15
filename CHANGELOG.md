@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Tech cost now increased by 150 for each unlock (from 100)
 - Discounted land will again be awarded when buildings are lost to invasion
 - Infamy now increases mana production at the same rate as gems/lumber/ore
+- Infamy gain now based on chance of success instead of relative ratio
 - Magic snare now does a minimum of 1% damage after resilience (from 1.5% before resilience)
 - Smithy: maximum cost reduction increased to 36% at 18% owned (from 30% at 15% owned)
 - Halls of Knowledge: now generates 15 research points per hour and increases school production by 10% (from 60 RP per hour)
