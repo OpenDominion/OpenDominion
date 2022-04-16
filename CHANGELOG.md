@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Base prestige gain slightly increased
 - Bot DP reduced at lower land sizes
+- Prestige penalty for hitting bots reduced to 5% each (from 10% each) after the 4th
 - Tech cost now increased by 150 for each unlock (from 100)
 - Discounted land will again be awarded when buildings are lost to invasion
 - Infamy now increases mana production at the same rate as gems/lumber/ore
@@ -13,7 +14,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Magic snare now does a minimum of 1% damage after resilience (from 1.5% before resilience)
 - Smithy: maximum cost reduction increased to 36% at 18% owned (from 30% at 15% owned)
 - Halls of Knowledge: now generates 15 research points per hour and increases school production by 10% (from 60 RP per hour)
+- Goblin: Wolf Rider -25p (from 1300p)
+- Gnome: Juggernaut +50p (from 725p)
 - Halfling: Master Thief changed to .2 spy on defense (from .333) effectively .25 with racial bonus
+- Halfling: Staff Master casualty reduction reduced to 30% (from 40%)
+- Human: Cavalry -50p (from 1250p)
 
 ## [1.8.3] - 2022-03-02
 ### Fixed

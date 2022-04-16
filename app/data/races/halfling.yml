@@ -45,4 +45,4 @@ units:
       offense: 5
       defense: 3
     perks:
-      fewer_casualties: 40
+      fewer_casualties: 30
