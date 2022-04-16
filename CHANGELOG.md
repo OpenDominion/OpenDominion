@@ -16,9 +16,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Halls of Knowledge: now generates 15 research points per hour and increases school production by 10% (from 60 RP per hour)
 - Goblin: Wolf Rider -25p (from 1300p)
 - Gnome: Juggernaut +50p (from 725p)
-- Halfling: Master Thief changed to .2 spy on defense (from .333) effectively .25 with racial bonus
+- Halfling: Master Thief changed to .25 spy on defense (from .333) effectively .3125 with racial bonus
 - Halfling: Staff Master casualty reduction reduced to 30% (from 40%)
 - Human: Cavalry -50p (from 1250p)
+- Lizardfolk: Chameleon changed to .25 spy on offense (from .2) effectively .275 with racial bonus
+
+### Fixed
+- Infamy and Resilience now properly cap at 1000
 
 ## [1.8.3] - 2022-03-02
 ### Fixed

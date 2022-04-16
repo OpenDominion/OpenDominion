@@ -230,7 +230,13 @@ class OpsCalculator
             $infamy += 10;
         }
 
-        return round($infamy * $modifier);
+        $infamyGain = round($infamy * $modifier);
+
+        if ($dominion->infamy + $infamyGain > 1000) {
+            return 1000 - $dominion->infamy;
+        }
+
+        return $infamyGain;
     }
 
     /**
@@ -265,8 +271,14 @@ class OpsCalculator
     {
         if ($type == 'spy') {
             $resilience = static::SPY_RESILIENCE_GAIN;
+            if ($dominion->spy_resilience + $resilience > 1000) {
+                return 1000 - $dominion->spy_resilience;
+            }
         } elseif ($type == 'wizard') {
             $resilience = static::WIZARD_RESILIENCE_GAIN;
+            if ($dominion->wizard_resilience + $resilience > 1000) {
+                return 1000 - $dominion->wizard_resilience;
+            }
         } else {
             return 0;
         }
