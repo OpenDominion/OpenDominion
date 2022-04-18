@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Infamy gain now based on chance of success instead of relative ratio
 - Spies and wizards lost due to failed black ops when targeting players with much higher ratios have been capped around 2 SPA/WPA (info ops already capped when over 0.6 SPA)
 - Magic snare now does a minimum of 1% damage after resilience (from 1.5% before resilience)
+- Wizard strength refresh rate increased by 1% if you would remain under 30% the following tick
 - Smithy: maximum cost reduction increased to 36% at 18% owned (from 30% at 15% owned)
 - Halls of Knowledge: now generates 15 research points per hour and increases school production by 10% (from 60 RP per hour)
 - Goblin: Wolf Rider -25p (from 1300p)
