@@ -971,7 +971,7 @@ class SpellActionService
 
         // Infamy and Resilience Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
-        $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
+        $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
 
         // Mutual War
         $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
