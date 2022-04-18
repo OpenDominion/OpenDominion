@@ -4,6 +4,7 @@ namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class OpsCalculator
 {
@@ -32,12 +33,14 @@ class OpsCalculator
      */
     public function __construct(
         GovernmentService $governmentService,
+        GuardMembershipService $guardMembershipService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         RangeCalculator $rangeCalculator
     )
     {
         $this->governmentService = $governmentService;
+        $this->guardMembershipService = $guardMembershipService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->rangeCalculator = $rangeCalculator;
@@ -248,6 +251,10 @@ class OpsCalculator
     public function getInfamyDecay(Dominion $dominion): int
     {
         $decay = static::INFAMY_DECAY_BASE;
+
+        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+            $decay -= 5;
+        }
 
         // TODO: Placeholder for tech perk
 

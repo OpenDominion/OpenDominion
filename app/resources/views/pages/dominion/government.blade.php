@@ -416,6 +416,7 @@
                                 <li>Enables war operations between members.</li>
                                 <li>Losses for failed ops between members are halved.</li>
                                 <li>Infamy production bonuses are doubled.</li>
+                                <li>Hourly infamy decay is reduced by 25%.</li>
                                 <li>Info op strength costs are halved.</li>
                             </ul>
                             @if ($isLeavingBlackGuard)
