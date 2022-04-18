@@ -736,18 +736,27 @@ class EspionageActionService
     protected function handleLosses(Dominion $dominion, Dominion $target, string $type): array
     {
         $spiesKilledPercentage = $this->opsCalculator->getSpyLosses($dominion, $target, $type);
+        // Cap losses by land size
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        if ($type == 'info') {
+            $spiesKilledCap = $totalLand * 0.006;
+            $unitsKilledCap = $totalLand * 0.003;
+        } else {
+            $spiesKilledCap = $totalLand * 0.02;
+            $unitsKilledCap = $totalLand * 0.01;
+        }
 
+        $spiesKilledModifier = 1;
+        // Losses halved in Black Guard
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
         if ($blackGuard) {
-            $spiesKilledPercentage *= 0.5;
+            $spiesKilledModifier = 0.5;
         }
 
         $unitsKilled = [];
         $spiesKilled = (int)floor($dominion->military_spies * $spiesKilledPercentage);
-        if ($type == 'info') {
-            // Cap spy losses for info ops
-            $spiesKilled = min($spiesKilled, $this->landCalculator->getTotalLand($dominion) * 0.006);
-        }
+        $spiesKilled = round(min($spiesKilled, $spiesKilledCap) * $spiesKilledModifier);
+
         if ($spiesKilled > 0) {
             $unitsKilled['spies'] = $spiesKilled;
             $dominion->military_spies -= $spiesKilled;
@@ -757,10 +766,7 @@ class EspionageActionService
             if ($unit->getPerkValue('counts_as_spy_offense')) {
                 $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * $spiesKilledPercentage;
                 $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
-                if ($type == 'info') {
-                    // Cap spy losses for info ops
-                    $unitKilled = min($unitKilled, $this->landCalculator->getTotalLand($dominion) * 0.003);
-                }
+                $unitKilled = round(min($unitKilled, $unitsKilledCap) * $spiesKilledModifier);
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
@@ -782,7 +788,7 @@ class EspionageActionService
         return [$unitsKilled, $unitsKilledString];
     }
 
-        /**
+    /**
      * @param Dominion $dominion
      * @param Dominion $target
      * @param float $modifier
