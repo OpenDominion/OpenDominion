@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Maximum pack size increased to 5 (from 4)
 - Packs with fewer than 5 players may select two of each race
+- Time between realm assignment and round start increased to 72 hours (from 48)
 - Base prestige gain slightly increased
 - Bot DP reduced at lower land sizes
 - Prestige penalty for hitting bots reduced to 5% each (from 10% each) after the 4th
