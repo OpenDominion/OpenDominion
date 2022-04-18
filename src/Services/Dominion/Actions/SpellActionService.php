@@ -913,7 +913,7 @@ class SpellActionService
         $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
         $wizardsKilled = round(min($wizardsKilled, $wizardsKilledCap) * $wizardsKilledModifier);
         $archmagesKilled = (int)floor($dominion->military_archmages * $archmagesKilledPercentage);
-        $archmagesKilled = round(min($archmagesKilled, $wizardsKilledCap) * $wizardsKilledModifier);
+        $archmagesKilled = round(min($archmagesKilled, $archmagesKilledCap) * $wizardsKilledModifier);
 
         // Check for immortal wizards
         if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
@@ -935,7 +935,7 @@ class SpellActionService
             if ($unit->getPerkValue('counts_as_wizard_offense')) {
                 $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * $wizardsKilledPercentage;
                 $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
-                $unitKilled = round(min($unitKilled, $wizardsKilledCap) * $wizardsKilledModifier);
+                $unitKilled = round(min($unitKilled, $unitsKilledCap) * $wizardsKilledModifier);
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
