@@ -253,7 +253,7 @@ class OpsCalculator
         $decay = static::INFAMY_DECAY_BASE;
 
         if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-            $decay -= 5;
+            $decay += 5;
         }
 
         // TODO: Placeholder for tech perk
