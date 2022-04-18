@@ -20,7 +20,7 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--hours= : Adjust the start time by +/-HOURS, allowing for more fine-tuning}
                              {--league=standard : Round league to use}
                              {--realm-size=8 : Maximum number of dominions in one realm}
-                             {--pack-size=4 : Maximum number of players in a pack}
+                             {--pack-size=5 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
                              {--mixedAlignment=true : Allows for mixed alignments}
                              {--discordEnabled=false : Triggers creation of Discord guild for round}';
