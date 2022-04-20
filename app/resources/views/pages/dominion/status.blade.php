@@ -24,7 +24,7 @@
                     </div>
                     <div class="box-body">
                         <p>New to the game or just want to get straight to the action?</p>
-                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Skip Protection</a></p>
+                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Select Your Build</a></p>
                         <p><a href="https://wiki.opendominion.net/wiki/My_First_Round" target="_blank">New Player Guide</a></p>
                     </div>
                 </div>

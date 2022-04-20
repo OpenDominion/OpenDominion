@@ -37,7 +37,7 @@
                                 <div class="radio race_option" data-race="{{ $quickstart['race'] }}" style="display: none;">
                                     <label>
                                         <input type="radio" name="start_option" value="{{ $quickstart['filename'] }}" />
-                                        Quick Start - {{ ucwords($quickstart['type']) }} ({{ $quickstart['size']}} acres)
+                                        Quick Start - {{ ucwords($quickstart['type']) }} - {{ ucwords($quickstart['variant']) }} ({{ $quickstart['size']}} acres)
                                     </label>
                                 </div>
                             @endforeach
