@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Prestige loss now visible in friendly battle reports
 - Last online tooltip for players who share advisors
 - Button links to targeted actions from ops center
+- Additional channels for realm Discord servers
 
 ### Fixed
 - Infamy and Resilience now properly cap at 1000
