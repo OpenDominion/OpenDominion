@@ -123,7 +123,7 @@
                 <div class="box-body">
                     <p>Here you can train your draftees into stronger military units. Until your draft rate is met, 1% of your peasants will join your military each hour.</p>
                     <p>Training specialist units take <b>9 hours</b> to process, while training your other units take <b>12 hours</b>.</p>
-                    <p><a href="{{ route('dominion.military.release') }}" class="btn btn-warning">Release Troops</a></p>
+                    <p><a href="{{ route('dominion.military.release') }}" class="btn btn-danger">Release Troops</a></p>
                 </div>
             </div>
 
