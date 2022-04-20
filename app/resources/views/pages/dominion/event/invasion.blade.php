@@ -16,6 +16,11 @@
         if ($event->source->id != $selectedDominion->id) {
             $sourceName = sprintf("%s (#%s)", $event->source->name, $event->source->realm->number);
         }
+
+        $targetName = 'You';
+        if ($event->target->id != $selectedDominion->id) {
+            $targetName = sprintf("%s (#%s)", $event->target->name, $event->target->realm->number);
+        }
     @endphp
     <div class="row">
         <div class="col-sm-12 col-md-8 col-md-offset-2">
@@ -219,7 +224,7 @@
                                 </p>
                             @endif
 
-                            {{-- Only show additional information if we are in the attacker's realm --}}
+                            {{-- Additional information to show if we are in the attacker's realm --}}
                             @if ($event->source->realm_id === $selectedDominion->realm_id)
                                 @if (isset($event->data['attacker']['prestigeChange']))
                                     @php
@@ -260,6 +265,24 @@
                                     <p class="text-center text-green">
                                         {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $event->source->race) }}
                                     </p>
+                                @endif
+                            @endif
+
+                            {{-- Additional information to show if we are in the defender's realm --}}
+                            @if ($event->target->realm_id === $selectedDominion->realm_id)
+                                @if (isset($event->data['defender']['prestigeChange']))
+                                    @php
+                                        $prestigeChange = $event->data['defender']['prestigeChange'];
+                                    @endphp
+                                    @if ($prestigeChange < 0)
+                                        <p class="text-center text-red">
+                                            {{ $targetName }} lost <b>{{ number_format(-$prestigeChange) }}</b> prestige.
+                                        </p>
+                                    @elseif ($prestigeChange > 0)
+                                        <p class="text-center text-green">
+                                            {{ $targetName }} gained <b>{{ number_format($prestigeChange) }}</b> prestige.
+                                        </p>
+                                    @endif
                                 @endif
                             @endif
                         </div>
