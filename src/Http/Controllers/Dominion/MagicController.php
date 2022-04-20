@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
@@ -19,8 +20,10 @@ use OpenDominion\Services\Dominion\ProtectionService;
 
 class MagicController extends AbstractDominionController
 {
-    public function getMagic()
+    public function getMagic(Request $request)
     {
+        $targetDominion = $request->input('dominion');
+
         return view('pages.dominion.magic', [
             'governmentService' => app(GovernmentService::class),
             'guardMembershipService' => app(GuardMembershipService::class),
@@ -30,6 +33,7 @@ class MagicController extends AbstractDominionController
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
+            'targetDominion' => $targetDominion,
         ]);
     }
 

@@ -273,6 +273,9 @@
                     $('.war-spell').addClass('disabled');
                 }
             });
+            @if ($targetDominion)
+                $('#target_dominion').val('{{ $targetDominion }}').trigger('change.select2').trigger('change');
+            @endif
             @if (session('target_dominion'))
                 $('#target_dominion').val('{{ session('target_dominion') }}').trigger('change.select2').trigger('change');
             @endif
