@@ -91,6 +91,7 @@
             $('.release-max').click(function(e) {
                 var drafteeInput = $('input[name=release\\[draftees\\]]');
                 var maxAmount = drafteeInput.attr('max');
+
                 drafteeInput.val(maxAmount);
             });
         })(jQuery);

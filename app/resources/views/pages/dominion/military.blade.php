@@ -21,7 +21,7 @@
                                 <col width="10%">
                                 <col width="20%">
                                 <col width="15%">
-                                <col width="10%">
+                                <col width="15%">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -91,7 +91,12 @@
                                             {{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}
                                         </td>
                                         <td class="text-center">
-                                            <input type="number" name="train[military_{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <div class="input-group">
+                                                <input type="number" name="train[military_{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $trainingCalculator->getMaxTrainable($selectedDominion)[$unitType] }}" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary train-max" data-type="military_{{ $unitType }}" type="button">Max</button>
+                                                </span>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -212,3 +217,19 @@
 
     </div>
 @endsection
+
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('.train-max').click(function(e) {
+                var troopType = $(this).data('type');
+                var troopInput = $('input[name=train\\['+troopType+'\\]]');
+                var maxAmount = troopInput.attr('max');
+
+                $('input[name^=train]').val('');
+                troopInput.val(maxAmount);
+            });
+        })(jQuery);
+    </script>
+@endpush

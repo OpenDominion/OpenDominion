@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lizardfolk: Chameleon changed to .25 spy on offense (from .2) effectively .275 with racial bonus
 
 ### Added
+- Max button for training troops
 - Max button for releasing draftees
 - Prestige loss now visible in friendly battle reports
 - Last online tooltip for players who share advisors
