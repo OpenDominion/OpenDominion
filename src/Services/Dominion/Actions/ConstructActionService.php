@@ -72,7 +72,7 @@ class ConstructActionService
         $maxAfford = $this->constructionCalculator->getMaxAfford($dominion);
 
         if ($totalBuildingsToConstruct > $maxAfford) {
-            throw new GameException("You do not have enough platinum and/or lumber to construct {$totalBuildingsToConstruct} buildings.");
+            throw new GameException("You do not have enough platinum and/or lumber to construct {$totalBuildingsToConstruct} buildings");
         }
 
         $buildingsByLandType = [];
@@ -100,7 +100,7 @@ class ConstructActionService
 
         foreach ($buildingsByLandType as $landType => $amount) {
             if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)) {
-                throw new GameException("You do not have enough barren land to construct {$totalBuildingsToConstruct} buildings.");
+                throw new GameException("You do not have enough barren {$landType} to construct {$amount} buildings");
             }
         }
 
