@@ -43,7 +43,7 @@
                             <p>If you have not completed your protection prior to this time, you will be unable to leave for an additional 24 hours.</p>
                         @endif
                         <p>No production occurs until you have left protection.</p>
-                        <p>Made a mistake? You can <a href="{{ route('dominion.misc.restart') }}">restart or rename</a> your dominion while under protection.</p>
+                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-warning">Restart or Rename</a></p>
                     </div>
                 </div>
             @else

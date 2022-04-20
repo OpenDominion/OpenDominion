@@ -69,7 +69,7 @@
                         <p>Additionally, {{ $selectedDominion->discounted_land }} acres from invasion can be built at reduced cost of {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion) / 2) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion) / 2) }} lumber.</p>
                     @endif
                     <p>You can afford to construct <b>{{ number_format($constructionCalculator->getMaxAfford($selectedDominion)) }} {{ str_plural('building', $constructionCalculator->getMaxAfford($selectedDominion)) }}</b> at that rate.</p>
-                    <p>You may also <a href="{{ route('dominion.destroy') }}">destroy buildings</a> if you wish.</p>
+                    <p><a href="{{ route('dominion.destroy') }}" class="btn btn-warning">Destroy Buildings</a></p>
                 </div>
             </div>
         </div>
