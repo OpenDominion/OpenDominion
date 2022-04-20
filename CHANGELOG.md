@@ -27,8 +27,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Human: Cavalry -50p (from 1250p)
 - Lizardfolk: Chameleon changed to .25 spy on offense (from .2) effectively .275 with racial bonus
 
+### Added
+- Max button for releasing draftees
+- Prestige loss now visible in friendly battle reports
+- Last online tooltip for players who share advisors
+
 ### Fixed
 - Infamy and Resilience now properly cap at 1000
+- Made some sidebar links more visible as buttons
 
 ## [1.8.3] - 2022-03-02
 ### Fixed
