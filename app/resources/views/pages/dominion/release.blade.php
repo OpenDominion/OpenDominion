@@ -17,7 +17,7 @@
                             <colgroup>
                                 <col>
                                 <col width="10%">
-                                <col width="10%">
+                                <col width="15%">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -36,7 +36,12 @@
                                     </td>
                                     <td class="text-center">{{ number_format($selectedDominion->military_draftees) }}</td>
                                     <td class="text-center">
-                                        <input type="number" name="release[draftees]" class="form-control text-center" placeholder="0" min="0" max="{{ $selectedDominion->military_draftees }}" value="{{ old('release.draftees') }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                        <div class="input-group">
+                                            <input type="number" name="release[draftees]" class="form-control text-center" placeholder="0" min="0" max="{{ $selectedDominion->military_draftees }}" value="{{ old('release.draftees') }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-danger release-max" type="button">Max</button>
+                                            </span>
+                                        </div>
                                     </td>
                                 </tr>
                                 @foreach ($unitHelper->getUnitTypes() as $unitType)
@@ -79,3 +84,16 @@
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('.release-max').click(function(e) {
+                var drafteeInput = $('input[name=release\\[draftees\\]]');
+                var maxAmount = drafteeInput.attr('max');
+
+                drafteeInput.val(maxAmount);
+            });
+        })(jQuery);
+    </script>
+@endpush

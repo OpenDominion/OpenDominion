@@ -783,7 +783,8 @@ class DominionFactory
                 'filename' => $filename,
                 'race' => $parts[0],
                 'type' => $parts[1],
-                'size' => $parts[2]
+                'size' => $parts[2],
+                'variant' => isset($parts[3]) ? $parts[3] : 'base'
             ];
         })->all();
     }

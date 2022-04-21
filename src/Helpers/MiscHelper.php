@@ -26,7 +26,7 @@ class MiscHelper
             'networth' => 'Used to determine power of a dominion.<br>Buildings, land, and units give networth.',
             'prestige' => 'Gained via invasion.<br>Every point of prestige increases offensive power, maximum population, and food production by 0.01%.',
             'morale' => 'Morale below 100% gives a defensive penalty.<br>Morale is lowered by exploring and invading.',
-            'infamy' => 'Gained via war operations.<br>Increases platinum, gem, lumber, and ore production. Decays over time.',
+            'infamy' => 'Gained via war operations.<br>Increases platinum, gem, lumber, mana, and ore production. Decays over time.',
             'spy_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery adds 50 to your minimum infamy.',
             'wizard_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery adds 50 to your minimum infamy.',
             'spy_resilience' => 'Gained by victims of war operations.<br>Reduces damage taken from spy ops.',

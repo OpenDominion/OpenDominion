@@ -53,9 +53,9 @@ class WonderCalculator
 
         if ($wonder->realm == null || $wonder->realm_id == null) {
             // Built from or returning to neutral
-            $dailyPower = 25000;
+            $dailyPower = 20000;
             if ($wonder->wonder->power == Wonder::TIER_ONE_POWER) {
-                $dailyPower = 20000;
+                $dailyPower = 25000;
             }
             $newPower = $dailyPower * max(10, $day);
             if ($wonder->realm_id == null) {

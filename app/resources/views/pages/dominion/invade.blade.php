@@ -369,6 +369,10 @@
                 templateSelection: select2Template,
             });
 
+            @if ($targetDominion)
+                $('#target_dominion').val('{{ $targetDominion }}').trigger('change.select2').trigger('change');
+            @endif
+
             @if (!$protectionService->isUnderProtection($selectedDominion))
                 updateUnitStats();
             @endif

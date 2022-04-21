@@ -51,14 +51,14 @@
                                     <td class="text-center">
                                         <input name="remove[{{ $landType }}]" type="number"
                                                class="form-control text-center" placeholder="0" min="0"
-                                               max="{{ $amount }}"
+                                               data-max="{{ $amount }}"
                                                value="{{ old('remove.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </td>
                                     <td class="text-center">{{ ucfirst($landType) }}</td>
                                     <td class="text-center">
                                         <input name="add[{{ $landType }}]" type="number"
                                                class="form-control text-center" placeholder="0" min="0"
-                                               max="{{ $rezoningCalculator->getMaxAfford($selectedDominion) }}"
+                                               data-max="{{ $rezoningCalculator->getMaxAfford($selectedDominion) }}"
                                                value="{{ old('add.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </td>
                                 </tr>

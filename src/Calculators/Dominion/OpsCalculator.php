@@ -4,6 +4,7 @@ namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class OpsCalculator
 {
@@ -32,12 +33,14 @@ class OpsCalculator
      */
     public function __construct(
         GovernmentService $governmentService,
+        GuardMembershipService $guardMembershipService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         RangeCalculator $rangeCalculator
     )
     {
         $this->governmentService = $governmentService;
+        $this->guardMembershipService = $guardMembershipService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->rangeCalculator = $rangeCalculator;
@@ -214,14 +217,14 @@ class OpsCalculator
             return 0;
         }
 
-        $relativeRatio = ($targetRatio / $selfRatio);
-        if ($relativeRatio >= 0.7 && $relativeRatio < 0.9) {
+        $successRate = $this->blackOperationSuccessChance($selfRatio, $targetRatio);
+        if ($successRate < 0.7 && $successRate >= 0.6) {
             $infamy += 15;
-        } elseif ($relativeRatio >= 0.9 && $relativeRatio < 1.1) {
+        } elseif ($successRate < 0.6 && $successRate >= 0.5) {
             $infamy += 30;
-        } elseif ($relativeRatio >= 1.1 && $relativeRatio < 1.3) {
+        } elseif ($successRate < 0.5 && $successRate >= 0.4) {
             $infamy += 40;
-        } elseif ($relativeRatio >= 1.3) {
+        } elseif ($successRate < 0.4) {
             $infamy += 50;
         }
 
@@ -230,7 +233,13 @@ class OpsCalculator
             $infamy += 10;
         }
 
-        return round($infamy * $modifier);
+        $infamyGain = round($infamy * $modifier);
+
+        if ($dominion->infamy + $infamyGain > 1000) {
+            return 1000 - $dominion->infamy;
+        }
+
+        return $infamyGain;
     }
 
     /**
@@ -242,6 +251,10 @@ class OpsCalculator
     public function getInfamyDecay(Dominion $dominion): int
     {
         $decay = static::INFAMY_DECAY_BASE;
+
+        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+            $decay += 5;
+        }
 
         // TODO: Placeholder for tech perk
 
@@ -265,8 +278,14 @@ class OpsCalculator
     {
         if ($type == 'spy') {
             $resilience = static::SPY_RESILIENCE_GAIN;
+            if ($dominion->spy_resilience + $resilience > 1000) {
+                return 1000 - $dominion->spy_resilience;
+            }
         } elseif ($type == 'wizard') {
             $resilience = static::WIZARD_RESILIENCE_GAIN;
+            if ($dominion->wizard_resilience + $resilience > 1000) {
+                return 1000 - $dominion->wizard_resilience;
+            }
         } else {
             return 0;
         }

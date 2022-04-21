@@ -896,16 +896,24 @@ class SpellActionService
     {
         $wizardsKilledPercentage = $this->opsCalculator->getWizardLosses($dominion, $target, $type);
         $archmagesKilledPercentage = $this->opsCalculator->getArchmageLosses($dominion, $target, $type);
+        // Cap losses by land size
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        $wizardsKilledCap = $totalLand * 0.02;
+        $archmagesKilledCap = $totalLand * 0.002;
+        $unitsKilledCap = $totalLand * 0.01;
 
+        $wizardsKilledModifier = 1;
+        // Losses halved in Black Guard
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
         if ($blackGuard) {
-            $wizardsKilledPercentage *= 0.5;
-            $archmagesKilledPercentage *= 0.5;
+            $wizardsKilledModifier = 0.5;
         }
 
         $unitsKilled = [];
         $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
+        $wizardsKilled = round(min($wizardsKilled, $wizardsKilledCap) * $wizardsKilledModifier);
         $archmagesKilled = (int)floor($dominion->military_archmages * $archmagesKilledPercentage);
+        $archmagesKilled = round(min($archmagesKilled, $archmagesKilledCap) * $wizardsKilledModifier);
 
         // Check for immortal wizards
         if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
@@ -927,6 +935,7 @@ class SpellActionService
             if ($unit->getPerkValue('counts_as_wizard_offense')) {
                 $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * $wizardsKilledPercentage;
                 $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                $unitKilled = round(min($unitKilled, $unitsKilledCap) * $wizardsKilledModifier);
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
@@ -962,7 +971,7 @@ class SpellActionService
 
         // Infamy and Resilience Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
-        $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
+        $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
 
         // Mutual War
         $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);

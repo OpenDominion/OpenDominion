@@ -160,7 +160,7 @@ class TrainingCalculator
 
         // Values (percentages)
         $smithiesReduction = 2;
-        $smithiesReductionMax = 30;
+        $smithiesReductionMax = 36;
 
         // Smithies
         $multiplier -= min(

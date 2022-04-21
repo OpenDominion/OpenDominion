@@ -3,7 +3,44 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Maximum pack size increased to 5 (from 4)
+- Packs with fewer than 5 players may select two of each race
+- Time between realm assignment and round start increased to 72 hours (from 48)
+- Base prestige gain slightly increased
+- Bot DP reduced at lower land sizes
+- Prestige penalty for hitting bots reduced to 5% each (from 10% each) after the 4th
+- Tech cost now increased by 150 for each unlock (from 100)
+- Discounted land will again be awarded when buildings are lost to invasion
+- Infamy now increases mana production at the same rate as gems/lumber/ore
+- Infamy gain now based on chance of success instead of relative ratio
+- Hourly infamy decay reduced by 25% while in the Shadow League
+- Spies and wizards lost due to failed black ops when targeting players with much higher ratios have been capped around 2 SPA/WPA (info ops already capped when over 0.6 SPA)
+- Magic snare now does a minimum of 1% damage after resilience (from 1.5% before resilience)
+- Wizard strength refresh rate increased by 1% if you would remain under 30% the following tick
+- Smithy: maximum cost reduction increased to 36% at 18% owned (from 30% at 15% owned)
+- Halls of Knowledge: now generates 15 research points per hour and increases school production by 10% (from 60 RP per hour)
+- Goblin: Wolf Rider -25p (from 1300p)
+- Gnome: Juggernaut +50p (from 725p)
+- Halfling: Master Thief changed to .25 spy on defense (from .333) effectively .3125 with racial bonus
+- Halfling: Staff Master casualty reduction reduced to 30% (from 40%)
+- Human: Cavalry -50p (from 1250p)
+- Lizardfolk: Chameleon changed to .25 spy on offense (from .2) effectively .275 with racial bonus
 
+### Added
+- Quick Start builds for teching and improvements
+- Max button for training troops
+- Max button for releasing draftees
+- Prestige loss now visible in friendly battle reports
+- Last online tooltip for players who share advisors
+- Button links to targeted actions from ops center
+- Additional channels for realm Discord servers
+
+### Fixed
+- Infamy and Resilience now properly cap at 1000
+- Made some sidebar links more visible as buttons
+
+## [1.8.3] - 2022-03-02
 ### Fixed
 - Realms with 6 packed players or less will now be properly balanced during realm assignment
 - Increase farms/towers for some NPDs
@@ -12,7 +49,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Inactive spells removed from calculators (Warsong)
 - Great Flood was mistakenly set to 50% instead of 25%
 - Shadow League membership now visible on search page
-- Snare damage and Spy/Wizard strength now display to 4 significant digits
 
 ## [1.8.2] - 2022-02-19
 ### Changed
@@ -1649,7 +1685,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.8.3...HEAD
+[1.8.3]: https://github.com/OpenDominion/OpenDominion/compare/1.8.2...1.8.3
 [1.8.2]: https://github.com/OpenDominion/OpenDominion/compare/1.8.1...1.8.2
 [1.8.1]: https://github.com/OpenDominion/OpenDominion/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/OpenDominion/OpenDominion/compare/1.7.2...1.8.0

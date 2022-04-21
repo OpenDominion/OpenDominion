@@ -18,7 +18,7 @@ class AIHelper
         // Approximate land size at max growth rate
         $expectedLandSize = (0.063 * $fractionalDay**3) - (4.8 * $fractionalDay**2) + (181 * $fractionalDay) - 116;
         // Scale by expected land size
-        $defenseRequired = $topOffense * 0.95 * (($expectedLandSize / $totalLand) ** -1.25);
+        $defenseRequired = $topOffense * 0.95 * (($expectedLandSize / $totalLand) ** -1.375);
 
         return $defenseRequired;
     }
