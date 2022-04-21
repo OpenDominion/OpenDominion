@@ -59,14 +59,14 @@
 
                                                 @if (!$dominion->round->hasStarted())
                                                     <span class="label label-warning">Starting soon</span>
+                                                @elseif (!$dominion->round->hasEnded())
+                                                    <span class="label label-info">In Progress</span>
                                                 @endif
 
                                                 @if ($dominion->locked_at !== null)
                                                     <span class="label label-danger">Locked</span>
                                                 @elseif ($dominion->isAbandoned())
                                                     <span class="label label-warning">Abandoned</span>
-                                                @elseif (!$dominion->round->hasEnded())
-                                                    <span class="label label-info">In Progress</span>
                                                 @endif
 
                                                 <span class="label label-success">Selected</span>
@@ -77,14 +77,14 @@
 
                                                     @if (!$dominion->round->hasStarted())
                                                         <span class="label label-warning">Starting soon</span>
+                                                    @elseif (!$dominion->round->hasEnded())
+                                                        <span class="label label-info">In Progress</span>
                                                     @endif
 
                                                     @if ($dominion->locked_at !== null)
                                                         <span class="label label-danger">Locked</span>
                                                     @elseif ($dominion->isAbandoned())
                                                         <span class="label label-warning">Abandoned</span>
-                                                    @elseif (!$dominion->round->hasEnded())
-                                                        <span class="label label-info">In Progress</span>
                                                     @endif
                                                 </form>
                                             @endif
