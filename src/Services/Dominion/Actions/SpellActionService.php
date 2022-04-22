@@ -263,12 +263,13 @@ class SpellActionService
             'spell_id' => $spell->id,
         ];
         $activeSpell = DominionSpell::firstWhere($where);
+        $activeSpellDuration = $duration;
 
         if ($activeSpell !== null) {
             if ((int)$activeSpell->duration == $duration) {
                 throw new GameException("Your wizards refused to recast {$spell->name}, since it is already at maximum duration.");
             }
-
+            $activeSpellDuration = $activeSpell->duration;
             $activeSpell->where($where)->update(['duration' => $duration]);
         } else {
             DominionSpell::insert([
@@ -281,7 +282,7 @@ class SpellActionService
 
         return [
             'success' => true,
-            'duration' => $duration,
+            'duration' => $activeSpellDuration,
             'message' => sprintf(
                 'Your wizards cast the spell successfully, and it will continue to affect your dominion for the next %s hours.',
                 $duration
