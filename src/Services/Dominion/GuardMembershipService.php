@@ -27,7 +27,7 @@ class GuardMembershipService
     public function canJoinGuards(Dominion $dominion): bool
     {
         /** @noinspection IfReturnReturnSimplificationInspection */
-        if ($dominion->round->isActive() && now()->diffInHours($dominion->round->start_date) < self::GUARD_HOURS_AFTER_ROUND_START) {
+        if ($dominion->round->hasStarted() && now()->diffInHours($dominion->round->start_date) < self::GUARD_HOURS_AFTER_ROUND_START) {
             return false;
         }
 
