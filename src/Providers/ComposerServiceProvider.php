@@ -56,7 +56,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             /** @var Dominion $selectedDominion */
             $selectedDominion = $selectorService->getUserSelectedDominion();
 
-            $councilLastRead = $selectedDominion->council_last_read ?? $selectedDominion->round->start_date;
+            $councilLastRead = $selectedDominion->council_last_read ?? $selectedDominion->round->created_at;
             $councilUnreadCount = $selectedDominion->realm->councilThreads()
                 ->where('last_activity', '>', $councilLastRead)
                 ->withCount(['posts' => function ($query) use ($councilLastRead) {
@@ -72,7 +72,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum('posts_count');
             $view->with('councilUnreadCount', $councilUnreadCount);
 
-            $forumLastRead = $selectedDominion->forum_last_read ?? $selectedDominion->round->start_date;
+            $forumLastRead = $selectedDominion->forum_last_read ?? $selectedDominion->round->created_at;
             $forumUnreadCount = $selectedDominion->round->forumThreads()
                 ->where('last_activity', '>', $forumLastRead)
                 ->withCount(['posts' => function ($query) use ($forumLastRead) {
@@ -122,14 +122,14 @@ class ComposerServiceProvider extends AbstractServiceProvider
 
             $unseenWonders = DB::table('round_wonders')
                 ->where('round_id', $selectedDominion->round_id)
-                ->where('created_at', '>', $selectedDominion->wonders_last_seen ?? $selectedDominion->round->start_date)
+                ->where('created_at', '>', $selectedDominion->wonders_last_seen ?? $selectedDominion->round->created_at)
                 ->count();
 
             $view->with('unseenWonders', $unseenWonders);
 
             $unseenGameEvents = DB::table('game_events')
                 ->where('round_id', $selectedDominion->round_id)
-                ->where('created_at', '>', $selectedDominion->town_crier_last_seen ?? $selectedDominion->round->start_date)
+                ->where('created_at', '>', $selectedDominion->town_crier_last_seen ?? $selectedDominion->round->created_at)
                 ->count();
 
             $view->with('unseenGameEvents', $unseenGameEvents);
