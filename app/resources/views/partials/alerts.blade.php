@@ -24,7 +24,7 @@
 
     @if (!$selectedDominion->round->hasAssignedRealms())
         <div class="alert alert-warning">
-            <p><i class="fa fa-warning"></i> The round has not yet started, but you can simulate your protection in advance. Realms will be assigned in {{ $selectedDominion->round->timeUntilRealmAssignment() }}, after which you will remain under protection for an additional 48 hours.</p>
+            <p><i class="fa fa-warning"></i> The round has not yet started, but you can simulate your protection in advance. Realms will be assigned in {{ $selectedDominion->round->timeUntilRealmAssignment() }}, after which you will remain under protection for an additional 72 hours.</p>
         </div>
     @endif
 @endif
