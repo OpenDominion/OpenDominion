@@ -37,7 +37,7 @@
                     </div>
                     <div class="box-body">
                         @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
-                        <p>You can obtain technical advancements by reaching appropriate levels of research points. The base cost of each advancement is 3600 + 0.65x highest land achieved and increases by 100 after each unlock (min 3900). Most advancements require unlocking another before you can select them.</p>
+                        <p>You can obtain technical advancements by reaching appropriate levels of research points. The base cost of each advancement is 3600 + 0.65x highest land achieved and increases by 150 after each unlock (min 3900). Most advancements require unlocking another before you can select them.</p>
                         <p><a href="{{ route('scribes.techs') }}?{{ implode('&', array_map(function($key) { return str_replace('tech_', '', $key); }, $unlockedTechs)) }}">View as Interactive Tree</a> in the Scribes.</p>
                         <p>If you pick a tech that has the same bonus as another tech, you will receive the total bonus from both.</p>
                         <p>You have unlocked <b>{{ $selectedDominion->techs->count() }} techs</b>.</p>

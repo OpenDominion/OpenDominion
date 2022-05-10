@@ -101,7 +101,15 @@
                                         </td>
                                         @if ($isOwnRealm || $round->hasEnded())
                                             @if ($dominion->user_id !== null && ($round->hasEnded() ||  ($isOwnRealm && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))))
-                                                <td class="text-center"><a href="{{ route('valhalla.user', $dominion->user_id) }}">{{ $dominion->user->display_name }}</a></td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('valhalla.user', $dominion->user_id) }}"
+                                                        @if ($isOwnRealm && !$round->hasEnded())
+                                                            title="Last online {{ now()->longAbsoluteDiffForHumans($dominion->user->last_online, 2) }} ago" data-toggle="tooltip" data-placement="right"
+                                                        @endif
+                                                    >
+                                                        {{ $dominion->user->display_name }}
+                                                    </a>
+                                                </td>
                                             @else
                                                 <td class="text-center"></td>
                                             @endif

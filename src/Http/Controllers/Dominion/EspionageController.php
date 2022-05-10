@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\EspionageCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -19,8 +20,10 @@ use OpenDominion\Services\Dominion\ProtectionService;
 
 class EspionageController extends AbstractDominionController
 {
-    public function getEspionage()
+    public function getEspionage(Request $request)
     {
+        $targetDominion = $request->input('dominion');
+
         return view('pages.dominion.espionage', [
             'espionageCalculator' => app(EspionageCalculator::class),
             'espionageHelper' => app(EspionageHelper::class),
@@ -30,6 +33,7 @@ class EspionageController extends AbstractDominionController
             'militaryCalculator' => app(MilitaryCalculator::class),
             'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class),
+            'targetDominion' => $targetDominion,
         ]);
     }
 

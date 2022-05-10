@@ -974,7 +974,7 @@ class MilitaryCalculator
     {
         $wizards = $dominion->military_wizards + ($dominion->military_archmages * 2);
 
-        // Add units which count as (partial) spies (Dark Elf Adept)
+        // Add units which count as (partial) wizards (Dark Elf Adept)
         foreach ($dominion->race->units as $unit) {
             if ($type === 'offense' && $unit->getPerkValue('counts_as_wizard_offense')) {
                 $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_offense'));
@@ -1047,6 +1047,11 @@ class MilitaryCalculator
 
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
+
+        // Bonus when snared
+        if (floor($dominion->wizard_strength) + $regen < 29) {
+            $regen += 1;
+        }
 
         return $regen;
     }

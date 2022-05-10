@@ -211,9 +211,25 @@
                                 </tbody>
                             </table>
 
-                            <div class="text-center">
-                                <a href="#recent-invasions">View Recent Invasions</a>
-                            </div>
+                            @if(!$inRealm)
+                                <div class="text-center">
+                                    <a href="{{ route('dominion.invade') }}?dominion={{ $dominion->id }}"
+                                        class="btn btn-danger" style="font-size: 20px; padding: 3px 6px 0px;"
+                                        title="Invade" data-toggle="tooltip">
+                                        <i class="ra ra-crossed-swords"></i>
+                                    </a>
+                                    <a href="{{ route('dominion.magic') }}?dominion={{ $dominion->id }}"
+                                        class="btn btn-warning" style="font-size: 20px; padding: 3px 6px 0px;"
+                                        title="Magic" data-toggle="tooltip">
+                                        <i class="ra ra-fairy-wand"></i>
+                                    </a>
+                                    <a href="{{ route('dominion.espionage') }}?dominion={{ $dominion->id }}"
+                                        class="btn btn-warning" style="font-size: 20px; padding: 3px 6px 0px;"
+                                        title="Espionage" data-toggle="tooltip">
+                                        <i class="fa fa-user-secret"></i>
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

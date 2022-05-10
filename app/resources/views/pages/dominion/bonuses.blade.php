@@ -77,7 +77,7 @@
                 </div>
             </div>
 
-            @if ($selectedDominion->protection_ticks_remaining > 0)
+            @if ($selectedDominion->protection_ticks_remaining > 0 || !$selectedDominion->round->hasStarted())
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="fa fa-history"></i> Protection History</h3>

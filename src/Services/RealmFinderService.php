@@ -22,12 +22,12 @@ class RealmFinderService
     /**
      * @var int Maximum number of players allowed in packs in a single realm
      */
-    protected const MAX_PACKED_PLAYERS_PER_REALM = 8;
+    protected const MAX_PACKED_PLAYERS_PER_REALM = 10;
 
     /**
      * @var int Number of hours before round start to begin realm assignment
      */
-    public const ASSIGNMENT_HOURS_BEFORE_START = 48;
+    public const ASSIGNMENT_HOURS_BEFORE_START = 72;
 
     /**
      * @var int Minimum number of realms to create
@@ -181,13 +181,13 @@ class RealmFinderService
             $packs[$player['pack_id']]['rating'] = $this->calculateRating($packs[$player['pack_id']]['players']);
         }
 
-        // Merge 2-packs into 4-packs
+        // Merge 2/3-packs into 4/5/6-packs (not final)
         $packsMerged = [];
         $largePackCount = 0;
         $smallPackCount = 0;
         foreach ($packs as $packId => $pack) {
             // Calculate realm count
-            if ($pack['size'] > 2) {
+            if ($pack['size'] > 3) {
                 $largePackCount++;
                 $packsMerged[$packId] = $pack;
             } else {
@@ -199,7 +199,7 @@ class RealmFinderService
         $realmCount = max(ceil(($largePackCount / 2) + ($smallPackCount / 4)), static::ASSIGNMENT_MIN_REALM_COUNT);
         $packsToMerge = $largePackCount + $smallPackCount - (2 * $realmCount);
         $currentPackSize = 0;
-        foreach (collect($packs)->where('size', '<=', 2)->shuffle() as $packId => $pack) {
+        foreach (collect($packs)->where('size', '<=', 3)->shuffle() as $packId => $pack) {
             if ($packsToMerge > 0) {
                 if ($currentPackSize == 0) {
                     $currentPack = $packId;
@@ -209,7 +209,7 @@ class RealmFinderService
                 }
                 $packsMerged[$currentPack]['rating'] = $this->calculateRating($packsMerged[$currentPack]['players']);
                 $currentPackSize += $pack['size'];
-                if ($currentPackSize > 2) {
+                if ($currentPackSize > 3) {
                     $currentPackSize = 0;
                     $packsToMerge--;
                 }

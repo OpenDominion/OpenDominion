@@ -327,7 +327,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 3rd day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
+                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 4th day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
                     <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
                     <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, +20% infamy, and -50% resilience.</p>
                 </div>
@@ -416,6 +416,7 @@
                                 <li>Enables war operations between members.</li>
                                 <li>Losses for failed ops between members are halved.</li>
                                 <li>Infamy production bonuses are doubled.</li>
+                                <li>Hourly infamy decay is reduced by 25%.</li>
                                 <li>Info op strength costs are halved.</li>
                             </ul>
                             @if ($isLeavingBlackGuard)

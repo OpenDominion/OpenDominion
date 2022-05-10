@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
@@ -15,8 +16,10 @@ use OpenDominion\Services\Dominion\ProtectionService;
 
 class InvasionController extends AbstractDominionController
 {
-    public function getInvade()
+    public function getInvade(Request $request)
     {
+        $targetDominion = $request->input('dominion');
+
         return view('pages.dominion.invade', [
             'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
@@ -24,6 +27,7 @@ class InvasionController extends AbstractDominionController
             'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'unitHelper' => app(UnitHelper::class),
+            'targetDominion' => $targetDominion,
         ]);
     }
 

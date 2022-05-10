@@ -23,6 +23,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\WonderService;
@@ -510,15 +511,18 @@ class TickService
                 }
 
                 if ($action->event == 'cast spell' && isset($action->delta['queue']['active_spells'])) {
-                    foreach ($action->delta['queue']['active_spells'] as $spell_id => $duration) {
-                        // Update spells that were refreshed early
-                        DB::table('dominion_spells')
-                            ->where('dominion_id', $dominion->id)
-                            ->where('spell_id', $spell_id)
-                            ->update([
-                                'duration' => $duration - 1,
-                                'updated_at' => $this->now,
-                            ]);
+                    foreach ($action->delta['queue']['active_spells'] as $key => $duration) {
+                        $spell = Spell::firstWhere('key', $key);
+                        if ($spell) {
+                            // Update spells that were refreshed early
+                            DB::table('dominion_spells')
+                                ->where('dominion_id', $dominion->id)
+                                ->where('spell_id', $spell->id)
+                                ->update([
+                                    'duration' => $duration - 1,
+                                    'updated_at' => $this->now,
+                                ]);
+                        }
                     }
                 }
 

@@ -58,7 +58,7 @@ class InvadeActionService
     /**
      * @var int Land ratio multiplier for prestige when invading successfully
      */
-    protected const PRESTIGE_RANGE_MULTIPLIER = 115;
+    protected const PRESTIGE_RANGE_MULTIPLIER = 120;
 
     /**
      * @var int Base prestige when invading successfully
@@ -406,7 +406,7 @@ class InvadeActionService
             $attackerPrestigeChange = min(
                 static::PRESTIGE_RANGE_MULTIPLIER * ($range / 100) + static::PRESTIGE_CHANGE_BASE, // Gained through invading
                 static::PRESTIGE_CAP // But capped at 100%
-            ) + ($this->landCalculator->getTotalLand($target) / 200); // Bonus for land size of target
+            ) + ($this->landCalculator->getTotalLand($target) / 250); // Bonus for land size of target
 
             $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
             $prestigeLossPercentage = min(
@@ -437,7 +437,7 @@ class InvadeActionService
             $habitualHits = $this->militaryCalculator->getHabitualInvasionCount($dominion, $target);
             if ($target->user_id == null) {
                 // Penalty for bots
-                $penalty = 0.10;
+                $penalty = 0.05;
                 $penaltyHits = max(0, $habitualHits - 3);
             } else {
                 // Penalty for human players
@@ -741,6 +741,9 @@ class InvadeActionService
 
             // Remove land
             $target->{"land_$landType"} -= $landLost;
+
+            // Add discounted land for buildings destroyed
+            $target->discounted_land += $buildingsToDestroy;
 
             // Destroy buildings
             foreach ($buildingsLostForLandType as $buildingType => $buildingsLost) {
