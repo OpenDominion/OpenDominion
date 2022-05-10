@@ -57,7 +57,7 @@ class ManualEmailCommand extends Command implements CommandInterface
             if (!$shouldSendGenericNotification) {
                 $this->info("Skipping user {$user->display_name} because of notification settings");
             } else {
-                $this->info("Mailing user {$user->display_name}");
+                $this->info("Mailing user {$user->id}");
 
                 $user->notify(new ManualEmailNotification(
                     $subject,
