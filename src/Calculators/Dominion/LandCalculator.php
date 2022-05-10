@@ -146,14 +146,13 @@ class LandCalculator
     public function getLandLostByLandType(Dominion $dominion, float $landLossRatio): array
     {
         $targetLand = $this->getTotalLand($dominion);
-        $totalLandToLose = (int)floor($targetLand * $landLossRatio);
+        $totalLandToLose = (int)round($targetLand * $landLossRatio);
         $barrenLandByLandType = $this->getBarrenLandByLandType($dominion);
         $landPerType = $this->getLandByLandType($dominion);
 
         arsort($landPerType);
 
         $landLeftToLose = $totalLandToLose;
-//        $totalLandLost = 0;
         $landLostByLandType = [];
 
         foreach ($landPerType as $landType => $totalLandForType) {
@@ -173,7 +172,6 @@ class LandCalculator
                 $totalLandTypeLoss = $landLeftToLose;
             }
 
-//            $totalLandLost += $totalLandTypeLoss;
             $barrenLandForLandType = $barrenLandByLandType[$landType];
 
             if ($barrenLandForLandType <= $totalLandTypeLoss) {
