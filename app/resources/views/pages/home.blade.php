@@ -94,7 +94,7 @@
                             <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
                         </div>
                         <div class="box-body text-center">
-                            <p>Pack registration is currently closed.</p>
+                            <p>Individual registration is still open!</p>
                             <p>The round will start in {{ $currentRound->timeUntilStart() }} ({{ $currentRound->start_date }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
                         </div>
                     @else
