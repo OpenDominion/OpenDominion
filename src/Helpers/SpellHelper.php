@@ -23,8 +23,8 @@ class SpellHelper
     /**
      * Returns available spells by race and category.
      *
-     * @param string|string[] $perks
      * @param Race|null $race
+     * @param string|null $category
      * @return Collection
      */
     public function getSpells(Race $race = null, string $category = null): Collection

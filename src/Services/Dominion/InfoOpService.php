@@ -17,6 +17,9 @@ class InfoOpService
     /** @var SpellHelper */
     protected $spellHelper;
 
+    /** @var Collection **/
+    protected $infoSpells;
+
     /**
      * InfoOpService constructor.
      *
@@ -27,6 +30,7 @@ class InfoOpService
     {
         $this->espionageHelper = $espionageHelper;
         $this->spellHelper = $spellHelper;
+        $this->infoSpells = $this->spellHelper->getSpells(null, 'info');
     }
 
     public function hasInfoOps(Realm $sourceRealm, Dominion $targetDominion): bool
@@ -114,7 +118,7 @@ class InfoOpService
     {
         if ($infoOp->type == 'clairvoyance') return 'Clairvoyance';
 
-        $spell = $this->spellHelper->getSpells(null, 'info')->get($infoOp->type);
+        $spell = $this->infoSpells->get($infoOp->type);
         if ($spell !== null) {
             return $spell->name;
         }
@@ -145,7 +149,7 @@ class InfoOpService
 
     public function getMaxInfoOps(): int
     {
-        return $this->spellHelper->getSpells(null, 'info')->count() +
+        return $this->infoSpells->count() +
             $this->espionageHelper->getInfoGatheringOperations()->count();
     }
 }
