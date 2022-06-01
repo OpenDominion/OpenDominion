@@ -48,7 +48,7 @@ class ConstructionCalculator
         $totalLand = $this->landCalculator->getTotalLand($dominion);
         if ($dominion->stat_total_land_lost >= $dominion->stat_total_land_conquered) {
             $conqueredLand = 0;
-            $exploredLand = $totalLand - 250 + $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
+            $exploredLand = $totalLand - 250 + max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
         } else {
             $conqueredLand = $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
             $exploredLand = $totalLand - 250 - $conqueredLand;
@@ -126,7 +126,7 @@ class ConstructionCalculator
         $totalLand = $this->landCalculator->getTotalLand($dominion);
         if ($dominion->stat_total_land_lost >= $dominion->stat_total_land_conquered) {
             $conqueredLand = 0;
-            $exploredLand = $totalLand - 250 + $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
+            $exploredLand = $totalLand - 250 + max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
         } else {
             $conqueredLand = $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
             $exploredLand = $totalLand - 250 - $conqueredLand;
