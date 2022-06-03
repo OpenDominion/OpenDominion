@@ -230,7 +230,7 @@
                                                     placeholder="0"
                                                     min="0"
                                                     disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 6) : 50 }}" />
                                         </div>
                                     @endforeach
                                     @foreach ($landFieldsRequired as $land)
@@ -245,7 +245,7 @@
                                                     placeholder="0"
                                                     min="0"
                                                     disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 2) : 60 }}" />
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 6) : 60 }}" />
                                         </div>
                                     @endforeach
                                     @if ($prestigeRequired)
@@ -304,7 +304,7 @@
                                             min="0"
                                             max="16.67" />
                                     <span class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary load-temples" data-temples="{{ round($selectedDominion->building_temple / $landCalculator->getTotalLand($selectedDominion) * 100, 2) }}" type="button">Load</button>
+                                        <button class="btn btn-sm btn-primary load-temples" data-temples="{{ round($selectedDominion->building_temple / $landCalculator->getTotalLand($selectedDominion) * 100, 6) }}" type="button">Load</button>
                                     </span>
                                 </div>
                             </div>
@@ -319,7 +319,7 @@
                                         placeholder="0"
                                         min="0"
                                         max="20"
-                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.guard_tower") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.guard_tower") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 6) : null }}" />
                             </div>
                         </div>
 
@@ -667,7 +667,7 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "barren_land") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "barren_land") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 6) : 50 }}" />
                                         </div>
                                     @endif
                                     @foreach ($buildingFieldsRequired as $building)
@@ -682,7 +682,7 @@
                                                     placeholder="0"
                                                     min="0"
                                                     disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 6) : 50 }}" />
                                         </div>
                                     @endforeach
                                     @foreach ($landFieldsRequired as $land)
@@ -697,7 +697,7 @@
                                                     placeholder="0"
                                                     min="0"
                                                     disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 2) : null }}" />
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 6) : null }}" />
                                         </div>
                                     @endforeach
                                     @if ($wizardRatioRequired)
@@ -807,7 +807,7 @@
                                         placeholder="0"
                                         min="0"
                                         max="20"
-                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.gryphon_nest") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.gryphon_nest") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 6) : null }}" />
                             </div>
                         </div>
 
