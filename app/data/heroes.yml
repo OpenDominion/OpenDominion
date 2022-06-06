@@ -1,0 +1,5 @@
+iron_dagger:
+  name: Iron Dagger
+  level: 2
+  perks:
+    assassinate_draftees_damage: 25
