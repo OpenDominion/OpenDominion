@@ -435,15 +435,8 @@ class InvadeActionService
 
             // Penalty for habitual invasions
             $habitualHits = $this->militaryCalculator->getHabitualInvasionCount($dominion, $target);
-            if ($target->user_id == null) {
-                // Penalty for bots
-                $penalty = 0.05;
-                $penaltyHits = max(0, $habitualHits - 3);
-            } else {
-                // Penalty for human players
-                $penalty = 0.10;
-                $penaltyHits = max(0, $habitualHits - 1);
-            }
+            $penalty = 0.10;
+            $penaltyHits = max(0, $habitualHits - 1);
             $this->invasionResult['attacker']['habitualInvasion'] = $penaltyHits > 0;
             $attackerPrestigeChange *= max(0.50, (1 - $penalty * $penaltyHits));
 
