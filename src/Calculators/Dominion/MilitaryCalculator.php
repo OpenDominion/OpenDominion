@@ -25,7 +25,7 @@ class MilitaryCalculator
     /**
      * @var float Land loss multiplier compared to DC formula
      */
-    protected const LAND_LOSS_MULTIPLIER = 0.80;
+    protected const LAND_LOSS_MULTIPLIER = 0.75;
 
     /**
      * @var float Amount of generated land relative to land lost
