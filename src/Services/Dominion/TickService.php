@@ -128,10 +128,26 @@ class TickService
             // Number of NPDs to spawn (half the number of real players)
             $npdCount = round($round->dominions()->count() * 0.5);
             for ($cnt=0; $cnt<$npdCount; $cnt++) {
+                // Select race
                 if ($realm->alignment != 'neutral') {
                     $race = $races->where('alignment', $realm->alignment)->random();
                 } else {
                     $race = $races->random();
+                }
+                // Calculate size
+                if ($cnt < $npdCount * 0.8) {
+                    // 80% of NPDs between 400 and 525
+                    // Standard distribution centered on 487.5 (650a EG)
+                    //   with a standard deviation of 37.5 (600a EG - 700a EG)
+                    // Outliers set to exactly 525 (~10-15% of all NPDs)
+                    $landSize = (int) random_distribution(487.5, 37.5);
+                    if ($landSize < 400 || $landSize > 525) {
+                        $landSize = 525;
+                    }
+                } else {
+                    // Remaining 20% of NPDs between 526-600
+                    // These spawn with increased defense
+                    $landSize = mt_rand(526, 600);
                 }
                 $dominion = null;
                 $failCount = 0;
@@ -143,7 +159,7 @@ class TickService
                         $rulerName = $dominionName;
                         $dominionName = $swap;
                     }
-                    $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                    $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName, $landSize);
                     if ($dominion) {
                         // Tick ahead
                         $this->precalculateTick($dominion);

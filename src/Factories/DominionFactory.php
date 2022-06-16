@@ -486,23 +486,10 @@ class DominionFactory
         Realm $realm,
         Race $race,
         string $rulerName,
-        string $dominionName
+        string $dominionName,
+        int $landSize
     ): ?Dominion {
         $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
-
-        // Calculate size/defense
-        if (random_chance(0.50)) {
-            // 50% 451-525 acres
-            $landSize = mt_rand(451, 525);
-        } else {
-            if (random_chance(0.60)) {
-                // 30% 526-600 acres
-                $landSize = mt_rand(525, 600);
-            } else {
-                // 20% 400-450 acres
-                $landSize = mt_rand(400, 450);
-            }
-        }
 
         // Generate random starting build
         $startingAttributes = $this->getStartingAttributes();
@@ -602,7 +589,11 @@ class DominionFactory
             // 15% spawn with 15-20% more DP
             $accuracy = 1.1 + (mt_rand(50, 100) / 1000);
         }
-        $defense = 113 * exp(0.0058 * $landSize) * $accuracy;
+        if ($landSize > 525) {
+            $defense = 710 * exp(0.003 * $landSize) * $accuracy;
+        } else {
+            $defense = 45.8 * exp(0.0075 * $landSize) * $accuracy;
+        }
         $defense -= ($dominion->military_draftees * $defenseMod);
         $dominion->military_unit2 = (int) ($defense / $defenseMod / $specPower * $specRatio);
         $dominion->military_unit3 = (int) ($defense / $defenseMod / $elitePower * (1 - $specRatio));
@@ -620,7 +611,7 @@ class DominionFactory
 
         // Add incoming units
         $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
-        $additionalDefense = (2 * $landSize) + mt_rand(400, 600);
+        $additionalDefense = (2 * $landSize) + mt_rand(200, 500);
         $incSpecs = (int) ($additionalDefense / $defenseMod / $specPower * $specRatio);
         $incElites = (int) ($additionalDefense / $defenseMod / $elitePower * (1 - $specRatio));
         $hourRange = collect(range(4, 12));
