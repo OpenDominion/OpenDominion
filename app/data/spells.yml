@@ -127,7 +127,7 @@ harmony:
 fools_gold:
   name: Fool's Gold
   category: self
-  cost_mana: 5
+  cost_mana: 1
   cost_strength: 5
   duration: 10
   cooldown: 20
