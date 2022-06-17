@@ -3,6 +3,13 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Land lost on invasion reduced to 75% of classic (from 80%), ratio land generated to land lost remains at 1:1
+- Bots have had their OOP defense decreased below 525 acres and greatly increased above 525 acres
+- Repeatedly invading bots no longer incurs a prestige penalty
+- Fool's Gold cost reduced to 1x Land (from 5x Land)
+- Human: Crusade changed to +10% offense (from +5%)
+- Lizardfolk Lizardman: -35p (from 1085p)
 
 ## [1.9.0] - 2022-04-20
 ### Changed
@@ -22,12 +29,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wizard strength refresh rate increased by 1% if you would remain under 30% the following tick
 - Smithy: maximum cost reduction increased to 36% at 18% owned (from 30% at 15% owned)
 - Halls of Knowledge: now generates 15 research points per hour and increases school production by 10% (from 60 RP per hour)
-- Goblin: Wolf Rider -25p (from 1300p)
-- Gnome: Juggernaut +50p (from 725p)
-- Halfling: Master Thief changed to .25 spy on defense (from .333) effectively .3125 with racial bonus
-- Halfling: Staff Master casualty reduction reduced to 30% (from 40%)
-- Human: Cavalry -50p (from 1250p)
-- Lizardfolk: Chameleon changed to .25 spy on offense (from .2) effectively .275 with racial bonus
+- Goblin Wolf Rider: -25p (from 1300p)
+- Gnome Juggernaut: +50p (from 725p)
+- Halfling Master Thief: changed to .25 spy on defense (from .333) effectively .3125 with racial bonus
+- Halfling Staff Master: casualty reduction reduced to 30% (from 40%)
+- Human Cavalry: -50p (from 1250p)
+- Lizardfolk Chameleon: changed to .25 spy on offense (from .2) effectively .275 with racial bonus
 
 ### Added
 - Quick Start builds for teching and improvements

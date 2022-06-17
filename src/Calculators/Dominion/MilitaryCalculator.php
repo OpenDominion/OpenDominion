@@ -1220,7 +1220,7 @@ class MilitaryCalculator
     }
 
     /**
-     * Returns count of attacks by a Dominion against a specific target or bots.
+     * Returns count of attacks by a Dominion against a specific target.
      *
      * @param Dominion $dominion
      * @param Dominion $target
@@ -1233,6 +1233,7 @@ class MilitaryCalculator
             ->where([
                 'source_type' => Dominion::class,
                 'source_id' => $dominion->id,
+                'target_id' => $target->id,
                 'type' => 'invasion',
             ])
             ->get();
@@ -1241,7 +1242,7 @@ class MilitaryCalculator
             return $event->data['result']['success'] && $event->data['result']['range'] >= 75;
         });
 
-        return $invasionEvents->where('target.user_id', $target->user_id)->count();
+        return $invasionEvents->count();
     }
 
     /**
