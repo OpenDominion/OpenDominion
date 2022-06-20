@@ -266,7 +266,7 @@ class SpellActionService
         $activeSpellDuration = $duration;
 
         if ($activeSpell !== null) {
-            if ((int)$activeSpell->duration == $duration) {
+            if ((int)$activeSpell->duration >= $duration) {
                 throw new GameException("Your wizards refused to recast {$spell->name}, since it is already at maximum duration.");
             }
             $activeSpellDuration = $activeSpell->duration;
