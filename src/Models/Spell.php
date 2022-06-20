@@ -43,6 +43,11 @@ class Spell extends AbstractModel
         ->withTimestamps();
     }
 
+    public function hasPerk(string $key)
+    {
+        return $this->perks->keyBy('key')->has($key);
+    }
+
     public function getPerkValue(string $key)
     {
         $perks = $this->perks->filter(static function (SpellPerkType $spellPerkType) use ($key) {

@@ -47,7 +47,7 @@ class SpellHelper
         if ($category !== null) {
             $spells = $spells->where('category', $category);
         }
-        return $spells->keyBy('key');
+        return $spells->keyBy('key')->sortBy('races');
     }
 
     /**
@@ -161,6 +161,7 @@ class SpellHelper
             'energy_mirror' => '20%% chance to reflect incoming offensive spells',
             'fools_gold' => 'Platinum theft protection',
             'surreal_perception' => 'Reveals the dominion casting spells or committing spy ops against you',
+            'self_spell_potency' => 'Increases the mana cost and duration of your next non-cooldown self spell by %d%%',
             'convert_military_spies_to_military_draftees' => 'Turns %g%% of enemy spies into draftees',
             'convert_peasants_to_self_military_unit3' => 'Kills %g%% of enemy peasants, converting 5%% into Progeny',
             'destroy_peasants' => 'Kills %g%% peasants',

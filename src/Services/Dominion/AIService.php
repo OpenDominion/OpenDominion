@@ -230,7 +230,7 @@ class AIService
     public function castSpells(Dominion $dominion, array $config) {
         foreach ($config['spells'] as $spellKey) {
             $spell = Spell::firstWhere('key', $spellKey);
-            $spellDuration = $this->spellCalculator->getSpellDuration($dominion, $spell);
+            $spellDuration = $this->spellCalculator->getSpellDurationRemaining($dominion, $spell);
             if ($spellDuration == null || $spellDuration < 4) {
                 $this->spellActionService->castSpell($dominion, $spellKey);
             }

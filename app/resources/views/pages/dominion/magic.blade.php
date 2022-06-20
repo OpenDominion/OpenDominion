@@ -191,7 +191,7 @@
                                                     $buttonStyle = ($isActive ? 'btn-success' : 'btn-primary');
                                                 @endphp
                                                 <div class="form-group">
-                                                    <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours ? 'disabled' : null }}>
+                                                    <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours || ($selectedDominion->protection_ticks_remaining && $spell->hasPerk('invalid_protection')) ? 'disabled' : null }}>
                                                         {{ $spell->name }}
                                                     </button>
                                                     <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
@@ -203,9 +203,9 @@
                                                                 Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
                                                             @endif
                                                             @if ($isActive)
-                                                                ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell) }} hours remaining)<br/>
+                                                                ({{ $spellCalculator->getSpellDurationRemaining($selectedDominion, $spell) }} hours remaining)<br/>
                                                             @else
-                                                                Lasts {{ $spell->duration }} hours<br/>
+                                                                Lasts {{ $spellCalculator->getSpellDuration($selectedDominion, $spell) }} hours<br/>
                                                             @endif
                                                             @if ($cooldownHours)
                                                                 (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>

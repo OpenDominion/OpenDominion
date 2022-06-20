@@ -140,6 +140,10 @@ class SpellActionService
             throw new GameException("You can only cast {$spell->name} every {$spell->cooldown} hours");
         }
 
+        if ($this->protectionService->isUnderProtection($dominion) && $spell->hasPerk('invalid_protection')) {
+            throw new GameException('You cannot cast this spell while under protection');
+        }
+
         if ($this->spellHelper->isOffensiveSpell($spell)) {
             if ($target === null) {
                 throw new GameException("You must select a target when casting offensive spell {$spell->name}");
@@ -183,6 +187,16 @@ class SpellActionService
                 $dominion->resetAbandonment();
             } else {
                 throw new LogicException("Unknown type for spell {$spell->key}");
+            }
+
+            // Amplify Magic
+            if ($this->spellCalculator->isSpellActive($dominion, 'amplify_magic')) {
+                if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {
+                    $activeSpell = $dominion->spells->where('key', 'amplify_magic')->first();
+                    if ($activeSpell) {
+                        $activeSpell->pivot->delete();
+                    }
+                }
             }
 
             $dominion->resource_mana -= $manaCost;
@@ -253,7 +267,7 @@ class SpellActionService
      */
     protected function castSelfSpell(Dominion $dominion, Spell $spell): array
     {
-        $duration = $spell->duration;
+        $duration = $this->spellCalculator->getSpellDuration($dominion, $spell);
 
         // Wonders
         $duration += $dominion->getWonderPerkValue('spell_duration');
@@ -266,7 +280,7 @@ class SpellActionService
         $activeSpellDuration = $duration;
 
         if ($activeSpell !== null) {
-            if ((int)$activeSpell->duration >= $duration) {
+            if ((int)$activeSpell->duration >= $duration || $spell->hasPerk('self_spell_potency')) {
                 throw new GameException("Your wizards refused to recast {$spell->name}, since it is already at maximum duration.");
             }
             $activeSpellDuration = $activeSpell->duration;

@@ -133,6 +133,7 @@ fools_gold:
   cooldown: 20
   perks:
     fools_gold: 1
+    invalid_protection: 1
 surreal_perception:
   name: Surreal Perception
   category: self
@@ -149,6 +150,15 @@ energy_mirror:
   duration: 12
   perks:
     energy_mirror: 1
+amplify_magic:
+  name: Amplify Magic
+  category: self
+  cost_mana: 3
+  cost_strength: 5
+  duration: 1
+  perks:
+    self_spell_potency: 150
+    invalid_protection: 1
 crusade:
   name: Crusade
   category: self

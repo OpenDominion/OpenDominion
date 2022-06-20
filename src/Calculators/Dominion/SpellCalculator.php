@@ -58,7 +58,16 @@ class SpellCalculator
         // Wonders
         $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
 
-        return round($spell->cost_mana * $totalLand * $spellCostMultiplier);
+        $manaCost = round($spell->cost_mana * $totalLand * $spellCostMultiplier);
+
+        // Amplify Magic
+        if ($this->isSpellActive($dominion, 'amplify_magic')) {
+            if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {
+                $manaCost = round($manaCost * $dominion->getSpellPerkValue('self_spell_potency') / 100);
+            }
+        }
+
+        return $manaCost;
     }
 
     /**
@@ -155,12 +164,33 @@ class SpellCalculator
      * @param Spell $spell
      * @return int|null
      */
-    public function getSpellDuration(Dominion $dominion, Spell $spell): ?int
+    public function getSpellDurationRemaining(Dominion $dominion, Spell $spell): ?int
     {
         if (!$dominion->spells->contains($spell)) {
             return null;
         }
 
         return $dominion->spells->find($spell->id)->pivot->duration;
+    }
+
+    /**
+     * Returns the duration (in ticks) of a spell for a $dominion.
+     *
+     * @param Dominion $dominion
+     * @param Spell $spell
+     * @return int|null
+     */
+    public function getSpellDuration(Dominion $dominion, Spell $spell): ?int
+    {
+        $duration = $spell->duration;
+
+        // Amplify Magic
+        if ($this->isSpellActive($dominion, 'amplify_magic')) {
+            if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {
+                $duration = round($duration * $dominion->getSpellPerkValue('self_spell_potency') / 100);
+            }
+        }
+
+        return $duration;
     }
 }
