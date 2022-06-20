@@ -39,6 +39,7 @@ units:
       offense: 3
       defense: 5
     perks:
+      fewer_casualties_offense: 50
       fewer_casualties_defense: 50
     need_boat: false
   - name: Spectral Warrior

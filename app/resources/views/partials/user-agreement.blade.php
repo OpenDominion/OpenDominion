@@ -66,7 +66,7 @@
                 </ol>
             </li>
             <li>You must at all times refrain from using excessive profanity or abusive, offensive language. Banter and smack talk are allowed; just keep it mostly civil.</li>
-            <li>You must not use any scripts, bots, automation software, hacks or other means to perform in-game actions with your dominion at any time.</li>
+            <li>You must not use any scripts, bots, automation software, hacks or other means to perform in-game actions with your dominion at any time. You must not use any IP obfuscating tools or software for the purposes of evading detection while violating any other rule.</li>
             <li>
                 You must not exploit any bugs in the game.
                 <ol style="list-style: lower-roman;">
