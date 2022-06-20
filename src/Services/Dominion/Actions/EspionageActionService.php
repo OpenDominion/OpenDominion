@@ -811,6 +811,9 @@ class EspionageActionService
             $resilienceGain = round(0.5 * $resilienceGain);
         }
 
+        if ($dominion->infamy + $infamyGain > 1000) {
+            $infamyGain = max(0, 1000 - $dominion->infamy);
+        }
         $dominion->infamy += $infamyGain;
         $target->spy_resilience += $resilienceGain;
 
