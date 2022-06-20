@@ -6,10 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Land lost on invasion reduced to 75% of classic (from 80%), ratio land generated to land lost remains at 1:1
 - Bots have had their OOP defense decreased below 525 acres and greatly increased above 525 acres
+- Minimum defense changed to 10x Land - 3200 (from 3x Land)
 - Repeatedly invading bots no longer incurs a prestige penalty
+- Tech cost changed to 2.5x Land + 150x Techs, min 3750 (from 3600 + 0.65x Land + 150x Techs, min 3900)
 - Fool's Gold cost reduced to 1x Land (from 5x Land)
+- Gnome Juggernaut: -50p (from 775p)
 - Human: Crusade changed to +10% offense (from +5%)
 - Lizardfolk Lizardman: -35p (from 1085p)
+- Lycanthrope Werewolf: offensive casualty reduction removed (was -25%)
+
+### Fixed
+- Mastery can now be gained while Infamy is capped
 
 ## [1.9.0] - 2022-04-20
 ### Changed
@@ -122,8 +129,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Halls of Knowledge now produces 60 RP/hr (from 100)
 - School of War returns (+2 barracks housing)
 - Maximum prestige gain from rebuilding another realm's wonder reduced by 25 (from 100)
-- Prestige gain formula changed to 115xLandRatio - 50 + TargetLand/200 (from 100xLandRatio - 40 + TargetLand/250)
-- Tech cost changed to 3600 + 0.65xLand + 100xTechs (from 9500 + 100xTechs)
+- Prestige gain formula changed to 115x LandRatio - 50 + TargetLand/200 (from 100x LandRatio - 40 + TargetLand/250)
+- Tech cost changed to 3600 + 0.65x Land + 100x Techs (from 9500 + 100x Techs)
 - Platinum bonus research points reduced to 250 (from 750)
 - Research points gained on invasion reduced to 500 (from 1000)
 - Research production penalty from invasion replaced with flat 500 loss from queue when invaded
