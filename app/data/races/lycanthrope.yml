@@ -36,7 +36,6 @@ units:
       offense: 3
       defense: 4
     perks:
-      fewer_casualties_offense: 25
       fewer_casualties_defense: 50
   - name: Garou
     cost:
