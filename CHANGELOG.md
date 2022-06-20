@@ -4,11 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Changed
-- Land lost on invasion reduced to 75% of classic (from 80%), ratio land generated to land lost remains at 1:1
 - Bots have had their OOP defense decreased below 525 acres and greatly increased above 525 acres
 - Minimum defense changed to 10x Land - 3200 (from 3x Land)
 - Repeatedly invading bots no longer incurs a prestige penalty
 - Tech cost changed to 2.5x Land + 150x Techs, min 3750 (from 3600 + 0.65x Land + 150x Techs, min 3900)
+- Land lost on invasion reduced to 75% of classic (from 80%), ratio land generated to land lost remains at 1:1
+- Discounted construction from invasion now scales up by 2% per day after day 25 (max 70%)
 - Fool's Gold cost reduced to 1x Land (from 5x Land)
 - Gnome Juggernaut: -50p (from 775p)
 - Human: Crusade changed to +10% offense (from +5%)

@@ -27,10 +27,21 @@ class ConstructionCalculator
     }
 
     /**
-     * Returns the Dominion's construction platinum cost (per building).
+     * Returns the Dominion's discounted construction cost.
      *
      * @param Dominion $dominion
      * @return float
+     */
+    public function getDiscountedLandMultiplier(Dominion $dominion): float
+    {
+        return clamp(0.02 * $dominion->round->daysInRound(), 0.50, 0.70);
+    }
+
+    /**
+     * Returns the Dominion's construction platinum cost (per building).
+     *
+     * @param Dominion $dominion
+     * @return int
      */
     public function getPlatinumCost(Dominion $dominion): int
     {
@@ -98,7 +109,8 @@ class ConstructionCalculator
         // Check for discounted acres after invasion
         $discountedAcres = min($dominion->discounted_land, $acres);
         if ($discountedAcres > 0) {
-            $totalPlatinumCost -= (int)ceil(($platinumCost * $discountedAcres) / 2);
+            $discountedLandMultiplier = $this->getDiscountedLandMultiplier($dominion);
+            $totalPlatinumCost -= (int)ceil($platinumCost * $discountedAcres * $discountedLandMultiplier);
         }
 
         return $totalPlatinumCost;
@@ -169,7 +181,8 @@ class ConstructionCalculator
         // Check for discounted acres after invasion
         $discountedAcres = min($dominion->discounted_land, $acres);
         if ($discountedAcres > 0) {
-            $totalLumberCost -= (int)ceil(($lumberCost * $discountedAcres) / 2);
+            $discountedLandMultiplier = $this->getDiscountedLandMultiplier($dominion);
+            $totalLumberCost -= (int)ceil($lumberCost * $discountedAcres * $discountedLandMultiplier);
         }
 
         return $totalLumberCost;
@@ -184,6 +197,7 @@ class ConstructionCalculator
     public function getMaxAfford(Dominion $dominion): int
     {
         $discountedBuildings = 0;
+        $discountedLandMultiplier = $this->getDiscountedLandMultiplier($dominion);
         $platinumToSpend = $dominion->resource_platinum;
         $lumberToSpend = $dominion->resource_lumber;
         $barrenLand = $this->landCalculator->getTotalBarrenLand($dominion);
@@ -192,8 +206,8 @@ class ConstructionCalculator
 
         // Check for discounted acres after invasion
         if ($dominion->discounted_land > 0) {
-            $maxFromDiscountedPlatinum = (int)floor($platinumToSpend / ($platinumCost / 2));
-            $maxFromDiscountedLumber = (int)floor($lumberToSpend / ($lumberCost / 2));
+            $maxFromDiscountedPlatinum = (int)floor($platinumToSpend / ($platinumCost * $discountedLandMultiplier));
+            $maxFromDiscountedLumber = (int)floor($lumberToSpend / ($lumberCost * $discountedLandMultiplier));
             // Set the number of afforded discounted buildings
             $discountedBuildings = min(
                 $maxFromDiscountedPlatinum,
@@ -202,8 +216,8 @@ class ConstructionCalculator
                 $barrenLand
             );
             // Subtract discounted building cost from available resources
-            $platinumToSpend -= (int)ceil(($platinumCost * $discountedBuildings) / 2);
-            $lumberToSpend -= (int)ceil(($lumberCost * $discountedBuildings) / 2);
+            $platinumToSpend -= (int)ceil($platinumCost * $discountedBuildings * $discountedLandMultiplier);
+            $lumberToSpend -= (int)ceil($lumberCost * $discountedBuildings * $discountedLandMultiplier);
         }
 
         return $discountedBuildings + min(
