@@ -38,7 +38,7 @@ units:
       offense: 5
       defense: 2
     perks:
-      reduce_combat_losses: 1
+      offense_from_building: shrine,10,1 # building type, ratio%, max
   - name: Smasher
     type: hybrid_elite
     cost:

@@ -751,7 +751,7 @@ class ProductionCalculator
      */
     public function getTechProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = 2;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('tech_production');
