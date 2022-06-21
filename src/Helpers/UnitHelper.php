@@ -167,6 +167,7 @@ class UnitHelper
             'ore_production' => 'Each unit produces %s units of ore per hour.',
             'plunder_platinum' => 'Each unit plunders %s platinum on attack (max 1 hour of target\'s raw production).',
             'plunder_gems' => 'Each unit plunders %s gems on attack (max 1 hour of target\'s raw production).',
+            'plunder_mana' => 'Each unit plunders %s mana on attack (max 1 hour of target\'s raw production).',
             'sink_boats_defense' => 'Sinks boats when defending.',
             'sink_boats_offense' => 'Sinks boats when attacking.',
 

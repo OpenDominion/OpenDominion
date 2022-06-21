@@ -258,7 +258,11 @@
                                 @endif
                                 @if (isset($event->data['attacker']['plunder']))
                                     <p class="text-center text-green">
-                                        {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems.
+                                        @if (isset($event->data['attacker']['plunder']['mana']))
+                                            {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['mana']) }} mana.
+                                        @else
+                                            {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems.
+                                        @endif
                                     </p>
                                 @endif
                                 @if (isset($event->data['attacker']['conversion']))

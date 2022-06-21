@@ -12,6 +12,7 @@ class ResourceHelper
             'boats' => 'Boats',
             'platinum' => 'Platinum',
             'gems' => 'Gems',
+            'mana' => 'Mana',
         ];
     }
 }

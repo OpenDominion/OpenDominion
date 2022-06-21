@@ -1001,6 +1001,7 @@ class InvadeActionService
         $unitsSentPerSlot = [];
         $plunderPlatinum = 0;
         $plunderGems = 0;
+        $plunderMana = 0;
 
         // todo: inefficient to do run this code per slot. needs refactoring
         foreach ($dominion->race->units as $unit) {
@@ -1020,16 +1021,18 @@ class InvadeActionService
         }
 
         // We have a unit with plunder!
-        if ($plunderPlatinum > 0 || $plunderGems > 0) {
+        if ($plunderPlatinum > 0 || $plunderGems > 0 || $plunderMana > 0) {
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
             $plunderPlatinum = min($plunderPlatinum, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
             $plunderGems = min($plunderGems, (int)floor($productionCalculator->getGemProductionRaw($target)));
+            $plunderMana = min($plunderMana, (int)floor($productionCalculator->getManaProductionRaw($target)));
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
                     'platinum' => $plunderPlatinum,
                     'gems' => $plunderGems,
+                    'mana' => $plunderMana,
                 ];
             }
 
@@ -1040,6 +1043,7 @@ class InvadeActionService
                 [
                     'resource_platinum' => $plunderPlatinum,
                     'resource_gems' => $plunderGems,
+                    'resource_mana' => $plunderMana,
                 ],
                 $slowestTroopsReturnHours
             );
