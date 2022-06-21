@@ -307,6 +307,7 @@ class CasualtiesCalculator
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties');
         $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties_offense');
+        $multiplier -= $dominion->getSpellPerkMultiplier('increased_casualties_offense');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties');

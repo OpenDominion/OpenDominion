@@ -11,11 +11,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Land lost on invasion reduced to 75% of classic (from 80%), ratio of land generated to land lost remains at 1:1
 - Discounted construction from invasion now scales up by 2% per day after day 25 (max 70%)
 - Fool's Gold cost reduced to 1x Land (from 5x Land)
-- New Spell: Amplify Magic - increased the mana cost and duration of your next non-cooldown self spell by 150%
+- New Spell: Amplify Magic - increases the mana cost and duration of your next non-cooldown self spell by 150%
+- Dark Elf Adept: -50p (from 1200p)
+- Dark Elf Spellblade: now plunders mana
 - Gnome Juggernaut: -50p (from 775p)
 - Human: Crusade changed to +10% offense (from +5%)
 - Lizardfolk Lizardman: -35p (from 1085p)
 - Lycanthrope Werewolf: offensive casualty reduction removed (was -25%)
+- Orc Bonebreaker: +1 DP (from 2)
 
 ### Fixed
 - Mastery can now be gained while Infamy is capped

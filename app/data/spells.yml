@@ -254,7 +254,7 @@ bloodrage:
     - orc
   perks:
     offense: 10
-    fewer_casualties_offense: -10
+    increased_casualties_offense: 10
 unholy_ghost:
   name: Unholy Ghost
   category: self

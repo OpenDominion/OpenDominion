@@ -138,6 +138,7 @@ class SpellHelper
             // Casualties related
             'fewer_casualties' => '%+d%% fewer casualties',
             'fewer_casualties_offense' => '%+d%% fewer casualties on offense',
+            'increased_casualties_offense' => '%+d%% increased casualties on offense',
 
             // Info ops
             'clear_sight' => 'Reveal status screen',
