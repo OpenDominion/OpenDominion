@@ -42,7 +42,7 @@ units:
       defense_from_land: mountain,20,2 # land type, ratio%, max
   - name: Juggernaut
     cost:
-      platinum: 725
+      platinum: 750
       ore: 550
     power:
       offense: 6
