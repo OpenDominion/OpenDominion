@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.30.0] - 2022-06-20
 ### Changed
 - Bots have had their OOP defense decreased below 525 acres and greatly increased above 525 acres
 - Minimum defense changed to 10x Land - 3200 (from 3x Land)
@@ -1707,7 +1709,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.9.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.30.0...HEAD
+[1.30.0]: https://github.com/OpenDominion/OpenDominion/compare/1.9.0...1.30.0
 [1.9.0]: https://github.com/OpenDominion/OpenDominion/compare/1.8.3...1.9.0
 [1.8.3]: https://github.com/OpenDominion/OpenDominion/compare/1.8.2...1.8.3
 [1.8.2]: https://github.com/OpenDominion/OpenDominion/compare/1.8.1...1.8.2
