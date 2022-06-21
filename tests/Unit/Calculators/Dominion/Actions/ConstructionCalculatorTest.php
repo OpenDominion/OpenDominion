@@ -8,12 +8,16 @@ use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Dominion */
     protected $dominionMock;
+
+    /** @var Round */
+    protected $roundMock;
 
     /** @var Mock|BuildingCalculator */
     protected $buildingCalculator;
@@ -29,6 +33,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->dominionMock = m::mock(Dominion::class);
+        $this->roundMock = m::mock(Round::class);
 
         $this->sut = m::mock(ConstructionCalculator::class, [
             $this->buildingCalculator = m::mock(BuildingCalculator::class),
@@ -95,11 +100,14 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         int $stat_total_land_conquered,
         int $stat_total_land_lost
     ) {
+        $this->roundMock->shouldReceive('daysInRound')->andReturn(3)->byDefault();
+
         $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn($platinum)->byDefault();
         $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn($lumber)->byDefault();
         $this->dominionMock->shouldReceive('getAttribute')->with('discounted_land')->andReturn($discountedLand)->byDefault();
         $this->dominionMock->shouldReceive('getAttribute')->with('stat_total_land_conquered')->andReturn($stat_total_land_conquered)->byDefault();
         $this->dominionMock->shouldReceive('getAttribute')->with('stat_total_land_lost')->andReturn($stat_total_land_lost)->byDefault();
+        $this->dominionMock->shouldReceive('getAttribute')->with('round')->andReturn($this->roundMock)->byDefault();
 
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalBuildings)->byDefault();
 
