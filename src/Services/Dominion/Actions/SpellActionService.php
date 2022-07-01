@@ -280,7 +280,7 @@ class SpellActionService
         $activeSpellDuration = $duration;
 
         if ($activeSpell !== null) {
-            if ((int)$activeSpell->duration >= $duration || $spell->hasPerk('self_spell_potency')) {
+            if ((int)$activeSpell->duration >= $duration || $spell->key == 'amplify_magic') {
                 throw new GameException("Your wizards refused to recast {$spell->name}, since it is already at maximum duration.");
             }
             $activeSpellDuration = $activeSpell->duration;

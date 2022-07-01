@@ -153,11 +153,12 @@ energy_mirror:
 amplify_magic:
   name: Amplify Magic
   category: self
-  cost_mana: 2.5
+  cost_mana: 0.5
   cost_strength: 5
-  duration: 1
+  duration: 6
   perks:
-    self_spell_potency: 150
+    self_spell_cost: 200
+    self_spell_duration: 150
     invalid_protection: 1
 crusade:
   name: Crusade
