@@ -1286,6 +1286,6 @@ class MilitaryCalculator
             $landSize = $this->landCalculator->getTotalLand($dominion);
         }
 
-        return max(0, 10 * $landSize - 3200);
+        return max(750, 10 * $landSize - 3200);
     }
 }
