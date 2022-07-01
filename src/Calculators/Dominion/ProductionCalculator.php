@@ -723,6 +723,7 @@ class ProductionCalculator
     public function getTechProductionRaw(Dominion $dominion): float
     {
         $tech = 0;
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         // Values
         $schoolPercentageCap = 50;
@@ -730,9 +731,9 @@ class ProductionCalculator
         // Building: School
         $schoolPercentage = min(
             $schoolPercentageCap / 100,
-            $dominion->building_school / $this->landCalculator->getTotalLand($dominion)
+            $dominion->building_school / $totalLand
         );
-        $tech += $dominion->building_school * (1 - $schoolPercentage);
+        $tech += min($dominion->building_school, floor($totalLand / 2)) * (1 - $schoolPercentage);
 
         // Wonders
         $tech += $dominion->getWonderPerkValue('tech_production_raw');
