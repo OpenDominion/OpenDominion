@@ -1018,6 +1018,9 @@ class InvadeActionService
             if ($unit->getPerkValue('plunder_gems') != 0) {
                 $plunderGems += $units[$slot] * (int)$unit->getPerkValue('plunder_gems');
             }
+            if ($unit->getPerkValue('plunder_mana') != 0) {
+                $plunderMana += $units[$slot] * (int)$unit->getPerkValue('plunder_mana');
+            }
         }
 
         // We have a unit with plunder!
