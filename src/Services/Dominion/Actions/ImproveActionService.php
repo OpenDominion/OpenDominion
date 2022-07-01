@@ -43,7 +43,7 @@ class ImproveActionService
                 throw new GameException('Investment aborted due to bad input.');
             }
 
-            $multiplier = 2;
+            $multiplier = 1;
 
             // Racial bonus multiplier
             $multiplier += $dominion->race->getPerkMultiplier('invest_bonus');
