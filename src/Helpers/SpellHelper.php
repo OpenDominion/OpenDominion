@@ -125,7 +125,7 @@ class SpellHelper
             // Military related
             'defense' => '%+d%% defensive power',
             'offense' => '%+d%% offensive power',
-            'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+d%%)',
+            'offense_from_barren_land' => '+1%% offensive power for every 0.75%% barren land (max %+d%%)',
             'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
             'conversion_rate' => '%+d%% conversion rate',

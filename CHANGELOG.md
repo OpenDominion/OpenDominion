@@ -4,6 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.30.1] - 2022-07-02
+### Changed
+- Minimum defense cannot go below 750
+- School production capped at 50% of current land
+- Nomad: Favorable Terrain changed to 1% offense per 0.75% barren, max 10% at 15% barren (from 1% per 1% barren, max 10% at 10% barren)
+- Spirit Phantom Knight: removed -50% casualties on offense
+
 ## [1.30.0] - 2022-06-20
 ### Changed
 - Bots have had their OOP defense decreased below 525 acres and greatly increased above 525 acres
@@ -21,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lizardfolk Lizardman: -35p (from 1085p)
 - Lycanthrope Werewolf: offensive casualty reduction removed (was -25%)
 - Orc Bonebreaker: +1 DP (from 2)
+- Spirit Phantom Knight: added -50% casualties on offense (was -50% on defense only)
 
 ### Fixed
 - Mastery can now be gained while Infamy is capped

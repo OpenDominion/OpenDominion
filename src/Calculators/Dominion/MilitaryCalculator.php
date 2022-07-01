@@ -275,7 +275,7 @@ class MilitaryCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $spellFavorableTerrain = 1;
+        $spellFavorableTerrain = 0.75;
         $spellFavorableTerrainCap = 10;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
