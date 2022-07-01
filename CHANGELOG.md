@@ -21,7 +21,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lizardfolk Lizardman: -35p (from 1085p)
 - Lycanthrope Werewolf: offensive casualty reduction removed (was -25%)
 - Orc Bonebreaker: +1 DP (from 2)
-- Spirit Phantom Knight: added -50% casualties on offense (was -50% on defense only)
 
 ### Fixed
 - Mastery can now be gained while Infamy is capped
