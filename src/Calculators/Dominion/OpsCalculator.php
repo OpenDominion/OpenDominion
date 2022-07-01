@@ -22,8 +22,8 @@ class OpsCalculator
     /**
      * @var float Base amount of resilience gained per op
      */
-    protected const SPY_RESILIENCE_GAIN = 8;
-    protected const WIZARD_RESILIENCE_GAIN = 11;
+    protected const SPY_RESILIENCE_GAIN = 10;
+    protected const WIZARD_RESILIENCE_GAIN = 12;
 
     /**
      * OpsCalculator constructor.
@@ -331,7 +331,7 @@ class OpsCalculator
             return 0;
         }
 
-        return (1 + error_function(0.00226 * ($resilience - 770))) / 2;
+        return (1 + error_function(0.0019 * ($resilience - 700))) / 2;
     }
 
     /**
