@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Resilience now reduces the effectiveness of hostile duration spells (Plague/Swarm/etc)
 - Amplify Magic now increases mana cost by 200% and duration by 150% (from 150% for both)
 - Firewalker Salamander: casualty reduction reduced to 40% (from 50%)
+- Icekin FrostMage: +50p (from 900p)
 - Nomad: Favorable Terrain changed to 0.75% offense per 1% barren, max 10% at 15% barren (from 1% per 1% barren, max 10% at 10% barren)
 - Spirit Phantom Knight: removed -50% casualties on offense
 
