@@ -294,6 +294,12 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>Growth Rate:</td>
+                                <td>
+                                    {{ number_format($populationCalculator->getPopulationBirthMultiplier($target) * 100) }}%
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Military:</td>
                                 <td>
                                     {{ number_format($populationCalculator->getPopulationMilitary($target)) }}

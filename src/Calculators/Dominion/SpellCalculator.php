@@ -5,6 +5,7 @@ namespace OpenDominion\Calculators\Dominion;
 use DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
@@ -192,5 +193,43 @@ class SpellCalculator
         }
 
         return $duration;
+    }
+
+    /**
+     * Calculates the final value of a spell perk for a $dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $key
+     * @return float
+     */
+    public function resolveSpellPerk(Dominion $dominion, string $key): float
+    {
+        $damageMultiplier = 1;
+        $selfPerkValue = $dominion->getSpellPerkValue($key, false);
+        $hostilePerkValue = $dominion->getSpellPerkValue($key, true);
+
+        if ($hostilePerkValue) {
+            // Resilience
+            $damageMultiplier = (1 - $this->getResilienceDamageMultiplier($dominion->wizard_resilience));
+            // Damage reductions from self spells
+            $protectionPerk = $dominion->getSpellPerkValue("{$key}_damage");
+            if ($protectionPerk) {
+                $damageMultiplier += ($protectionPerk / 100);
+            }
+        }
+
+        return ($selfPerkValue + ($hostilePerkValue * max(0, $damageMultiplier))) / 100;
+    }
+
+    /**
+     * Calculate damage reduction from resilience.
+     *
+     * @param float $resilience
+     * @return float
+     */
+    public function getResilienceDamageMultiplier(float $resilience): float
+    {
+        $opsCalculator = app(OpsCalculator::class);
+        return $opsCalculator->getResilienceBonus($resilience);
     }
 }

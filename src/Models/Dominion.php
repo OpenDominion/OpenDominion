@@ -512,34 +512,22 @@ class Dominion extends AbstractModel
 
     /**
      * @param string $key
+     * @param bool $hostile
      * @return float
      */
-    public function getSpellPerkValue(string $key): float
+    public function getSpellPerkValue(string $key, bool $hostile = false): float
     {
-        $perks = $this->getSpellPerks()->groupBy('key');
+        $perks = $this->getSpellPerks()->where('self', !$hostile)->groupBy('key');
         if (isset($perks[$key])) {
             if ($perks[$key]->count() == 1) {
                 return $perks[$key]->first()->pivot->value;
             }
-            $selfSpells = $perks[$key]->where('self', true);
-            $selfPerkValue = (float)$selfSpells->max('pivot.value');
-            if ($selfPerkValue < 0) {
-                $selfPerkValue = (float)$selfSpells->min('pivot.value');
+            // Spell perks do not stack
+            $perkValue = (float)$perks[$key]->max('pivot.value');
+            if ($perkValue < 0) {
+                $perkValue = (float)$perks[$key]->min('pivot.value');
             }
-            $hostileSpells = $perks[$key]->where('self', false);
-            $hostilePerkValue = (float)$hostileSpells->max('pivot.value');
-            if ($hostilePerkValue < 0) {
-                $hostilePerkValue = (float)$hostileSpells->min('pivot.value');
-            }
-            foreach ($hostileSpells as $hostileSpell) {
-                $spellKey = Spell::find($hostileSpell->pivot->spell_id);
-                $spellKey = $spellKey->key;
-                if (isset($perks["enemy_{$spellKey}_damage"])) {
-                    $damageReduction = (float)$perks["enemy_{$spellKey}_damage"]->min('pivot.value');
-                    $hostilePerkValue *= (1 + $damageReduction / 100);
-                }
-            }
-            return $selfPerkValue + $hostilePerkValue;
+            return $perkValue;
         }
         return 0;
     }

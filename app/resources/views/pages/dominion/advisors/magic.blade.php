@@ -42,7 +42,12 @@
                             @foreach ($spellCalculator->getActiveSpells($target) as $activeSpell)
                                 <tr>
                                     <td>{{ $activeSpell->spell->name }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($activeSpell->spell) }}</td>
+                                    <td>
+                                        {{ $spellHelper->getSpellDescription($activeSpell->spell) }}
+                                        @if ($spellHelper->isHostileSpell($activeSpell->spell) && $spellCalculator->getResilienceDamageMultiplier($target->wizard_resilience) < 1)
+                                            <small class="text-muted">(-{{ number_format($spellCalculator->getResilienceDamageMultiplier($target->wizard_resilience) * 100, 2) }}% effective)</small>
+                                        @endif
+                                    </td>
                                     <td class="text-center">{{ $activeSpell->duration }}</td>
                                     <td class="text-center">
                                         @if ($activeSpell->cast_by_dominion_id == $target->id || $target->getSpellPerkValue('surreal_perception'))

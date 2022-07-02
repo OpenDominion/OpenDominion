@@ -172,7 +172,7 @@ class SpellHelper
             'destroy_improvement_keep' => 'Destroys %g%% keep',
             'destroy_improvement_forges' => 'Destroys %g%% forges',
             'destroy_improvement_walls' => 'Destroys %g%% walls',
-            'enemy_earthquake_damage' => 'Ore production immune to Earthquake',
+            'hostile_ore_production' => 'Ore production immune to Earthquake',
             'food_decay' => '%+d%% food decay',
             'lumber_decay' => '%+d%% lumber rot',
             'mana_decay' => '%+d%% mana drain',

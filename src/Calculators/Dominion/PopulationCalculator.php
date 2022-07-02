@@ -302,7 +302,7 @@ class PopulationCalculator
         $multiplier += $dominion->getTechPerkMultiplier('population_growth');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('population_growth');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'population_growth');
 
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);

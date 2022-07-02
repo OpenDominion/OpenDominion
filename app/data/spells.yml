@@ -192,7 +192,7 @@ miners_sight:
     - gnome
   perks:
     ore_production: 20
-    enemy_earthquake_damage: -100
+    ore_production_damage: -100
 killing_rage:
   name: Killing Rage
   category: self
