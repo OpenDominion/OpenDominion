@@ -233,13 +233,7 @@ class OpsCalculator
             $infamy += 10;
         }
 
-        $infamyGain = round($infamy * $modifier);
-
-        if ($dominion->infamy + $infamyGain > 1000) {
-            return 1000 - $dominion->infamy;
-        }
-
-        return $infamyGain;
+        return round($infamy * $modifier);
     }
 
     /**

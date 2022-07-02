@@ -129,7 +129,7 @@ class EspionageHelper
         return collect([
             [
                 'name' => 'Assassinate Draftees',
-                'description' => 'Kills untrained draftees',
+                'description' => 'Kills 3.5% untrained draftees',
                 'key' => 'assassinate_draftees',
                 'decreases' => ['military_draftees'],
                 'percentage' => 3.5,
@@ -142,21 +142,21 @@ class EspionageHelper
         return collect([
             [
                 'name' => 'Assassinate Wizards',
-                'description' => 'Kills wizards',
+                'description' => 'Kills 2% wizards',
                 'key' => 'assassinate_wizards',
                 'decreases' => ['military_wizards'],
                 'percentage' => 2,
             ],
             [
                 'name' => 'Magic Snare',
-                'description' => 'Reduces wizard strength',
+                'description' => 'Reduces wizard strength by 3.5% of current (min 1.5)',
                 'key' => 'magic_snare',
                 'decreases' => ['wizard_strength'],
                 'percentage' => 3.5,
             ],
             [
                 'name' => 'Sabotage Boats',
-                'description' => 'Destroys boats',
+                'description' => 'Destroys 2.4% boats',
                 'key' => 'sabotage_boats',
                 'decreases' => ['resource_boats'],
                 'percentage' => 2.4,
@@ -176,7 +176,7 @@ class EspionageHelper
         return collect([
             [
                 'name' => 'Assassinate Archmages',
-                'description' => 'Kills archmages',
+                'description' => 'Kills 1% archmages',
                 'key' => 'assassinate_archmages',
                 'decreases' => ['military_archmages'],
                 'percentage' => 1,
