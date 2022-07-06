@@ -188,32 +188,12 @@ class DiscordService
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'OpenDominion Realm Chat - Round ' . $round->number,
-                'channels' => [
-                    [
-                        'name' => 'Text Channels',
-                        'type' => 4
-                    ],
-                    [
-                        'name' => 'Voice Channels',
-                        'type' => 4
-                    ]
-                ]
+                'name' => 'OpenDominion Realm Chat - Round ' . $round->number
             ]
         ]);
 
         $result = json_decode($createGuildResponse->getBody()->getContents(), true);
         $round->discord_guild_id = $result['id'];
-
-        $getChannelsResponse = $client->get(DiscordHelper::BASE_URL . '/guilds/' . $round->discord_guild_id . '/channels', [
-            'verify' => false,
-            'headers' => ['authorization' => "Bot $botToken"]
-        ]);
-
-        $result = json_decode($getChannelsResponse->getBody()->getContents(), true);
-        $round->discord_text_category_channel_id = $result[0]['id'];
-        $round->discord_voice_category_channel_id = $result[1]['id'];
-
         $round->save();
 
         $disablePermissionsResponse = $client->patch(DiscordHelper::BASE_URL . '/guilds/' . $round->discord_guild_id . '/roles/' . $round->discord_guild_id, [
@@ -263,6 +243,24 @@ class DiscordService
         $result = json_decode($createRoleResponse->getBody()->getContents(), true);
         $realm->discord_role_id = $result['id'];
 
+        $createRealmCategoryResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
+            'verify' => false,
+            'headers' => ['authorization' => "Bot $botToken"],
+            'json' => [
+                'name' => 'Realm ' . $realm->number,
+                'type' => 4,
+                'permission_overwrites' => [
+                    [
+                        'id' => $realm->discord_role_id,
+                        'type' => 0,
+                        'allow' => $this->discordHelper->getPermissionsBitwise()
+                    ]
+                ]
+            ]
+        ]);
+        $result = json_decode($createRealmCategoryResponse->getBody()->getContents(), true);
+        $realm->discord_category_id = $result['id'];
+
         $channelList = [
             ['name' => 'general', 'description' => 'General discussion for Realm'],
             ['name' => 'top-op',  'description' => 'Tracking top OP for Realm'],
@@ -275,7 +273,7 @@ class DiscordService
                 'verify' => false,
                 'headers' => ['authorization' => "Bot $botToken"],
                 'json' => [
-                    'name' => 'realm-' . $realm->number . '-' . $channel['name'],
+                    'name' => $channel['name'],
                     'type' => 0,
                     'topic' => $channel['description'] . ' ' . $realm->number,
                     'permission_overwrites' => [
@@ -285,7 +283,7 @@ class DiscordService
                             'allow' => $this->discordHelper->getPermissionsBitwise()
                         ]
                     ],
-                    'parent_id' => $realm->round->discord_text_category_channel_id
+                    'parent_id' => $realm->discord_category_id
                 ]
             ]);
             $result = json_decode($createTextChannelResponse->getBody()->getContents(), true);
@@ -295,7 +293,7 @@ class DiscordService
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'realm-' . $realm->number,
+                'name' => 'Voice Chat',
                 'type' => 2,
                 'topic' => 'Voice channel for Realm ' . $realm->number,
                 'permission_overwrites' => [
@@ -305,10 +303,9 @@ class DiscordService
                         'allow' => $this->discordHelper->getPermissionsBitwise()
                     ]
                 ],
-                'parent_id' => $realm->round->discord_voice_category_channel_id
+                'parent_id' => $realm->discord_category_id
             ]
         ]);
-
         $result = json_decode($createVoiceChannelResponse->getBody()->getContents(), true);
 
         $realm->save();
