@@ -753,11 +753,8 @@ class EspionageActionService
         }
 
         $spiesKilledModifier = 1;
-        // Losses halved in Black Guard
+        // Losses re-queued in Black Guard
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
-        if ($blackGuard) {
-            $spiesKilledModifier = 0.5;
-        }
 
         $unitsKilled = [];
         $spiesKilled = (int)floor($dominion->military_spies * $spiesKilledPercentage);
@@ -766,6 +763,9 @@ class EspionageActionService
         if ($spiesKilled > 0) {
             $unitsKilled['spies'] = $spiesKilled;
             $dominion->military_spies -= $spiesKilled;
+            if ($blackGuard && $spiesKilled > 1) {
+                $this->queueService->queueResources('training', $dominion, ['military_spies' => floor(0.75 * $spiesKilled)]);
+            }
         }
 
         foreach ($dominion->race->units as $unit) {
@@ -776,6 +776,9 @@ class EspionageActionService
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                    if ($blackGuard && $unitKilled > 1) {
+                        $this->queueService->queueResources('training', $dominion, ["military_unit{$unit->slot}" => floor(0.75 * $unitKilled)]);
+                    }
                 }
             }
         }

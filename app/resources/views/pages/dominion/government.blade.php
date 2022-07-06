@@ -414,8 +414,7 @@
                             </h4>
                             <ul class="text-left" style="padding: 0 30px;">
                                 <li>Enables war operations between members.</li>
-                                <li>Losses for failed ops between members are halved.</li>
-                                <li>Infamy production bonuses are doubled.</li>
+                                <li>75% of casualties suffered due to failed operations between members are automatically re-trained.</li>
                                 <li>Hourly infamy decay is reduced by 25%.</li>
                                 <li>Info op strength costs are halved.</li>
                             </ul>

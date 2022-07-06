@@ -130,7 +130,7 @@
                     <div id="shadow-league">
                         <h4 class="text-center">Shadow League</h4>
                         <p>The Shadow League is similar to the Royal and Elite Guards in that it requires a 24 hour application period and a minimum of 48 hours of membership, but is entirely independent. Joining the Shadow League allows you to target and be targeted by other members with war operations (assuming they meet other range restrictions). It also treats non-war black ops between members as if they were war operations (awarding Infamy/Mastery/Resilience). If you choose to leave the Shadow League, it requires a 12 hour waiting period, which is reset if you use war operations against members whom you are not also at war with.</p>
-                        <p>In addition to the ability to use war operations on each other, casualties suffered due to failures between members are halved. Other perks are 1% strength used for info ops (normally 2%) on all targets, production bonuses from Infamy are doubled, and hourly Infamy decay is reduced by 25%.</p>
+                        <p>In addition to the ability to use war operations on each other, 75% of casualties suffered due to failed operations between members are automatically re-trained. Other perks are 1% strength used for info ops (normally 2%) on all targets and hourly Infamy decay is reduced by 25%.</p>
                     </div>
                 </div>
             </div>

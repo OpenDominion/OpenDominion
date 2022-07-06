@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Resilience now reduces the effectiveness of hostile duration spells (Plague/Swarm/etc)
 - Magic Snare minimum damage increased to 1.5% before resilience (from 1% after resilience)
 - Lightning Bolt, Disband Spies, and Assassinate Wizards damage will now scale slightly based on day of the round
+- Shadow League: double infamy bonus removed, a portion of spy/wizard losses from failed operations will now be placed into the training queue instead of destroyed
 - Amplify Magic now increases mana cost by 200% and duration by 150% (from 150% for both)
 - Firewalker Salamander: casualty reduction reduced to 40% (from 50%)
 - Icekin FrostMage: +50p (from 900p)

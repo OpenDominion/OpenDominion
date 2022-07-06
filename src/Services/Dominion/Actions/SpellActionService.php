@@ -921,11 +921,8 @@ class SpellActionService
         $unitsKilledCap = $totalLand * 0.01;
 
         $wizardsKilledModifier = 1;
-        // Losses halved in Black Guard
+        // Losses re-queued in Black Guard
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
-        if ($blackGuard) {
-            $wizardsKilledModifier = 0.5;
-        }
 
         $unitsKilled = [];
         $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
@@ -942,11 +939,17 @@ class SpellActionService
         if ($wizardsKilled > 0) {
             $unitsKilled['wizards'] = $wizardsKilled;
             $dominion->military_wizards -= $wizardsKilled;
+            if ($blackGuard && $wizardsKilled > 1) {
+                $this->queueService->queueResources('training', $dominion, ['military_wizards' => floor(0.75 * $wizardsKilled)]);
+            }
         }
 
         if ($archmagesKilled > 0) {
             $unitsKilled['archmages'] = $archmagesKilled;
             $dominion->military_archmages -= $archmagesKilled;
+            if ($blackGuard && $archmagesKilled > 1) {
+                $this->queueService->queueResources('training', $dominion, ['military_archmages' => floor(0.75 * $archmagesKilled)]);
+            }
         }
 
         foreach ($dominion->race->units as $unit) {
@@ -957,6 +960,9 @@ class SpellActionService
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                    if ($blackGuard && $unitKilled > 1) {
+                        $this->queueService->queueResources('training', $dominion, ["military_unit{$unit->slot}" => floor(0.75 * $unitKilled)]);
+                    }
                 }
             }
         }
