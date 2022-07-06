@@ -218,7 +218,7 @@
                                                     <i class="fa fa-question-circle"
                                                        data-toggle="tooltip"
                                                        data-placement="top"
-                                                       title="The minimum defense for a dominion is 3x their land size."></i>
+                                                       title="The minimum defense for a dominion is 10x their land size minus 3200."></i>
                                                 </td>
                                                 <td id="target-min-dp" data-amount="0">0</td>
                                             </tr>

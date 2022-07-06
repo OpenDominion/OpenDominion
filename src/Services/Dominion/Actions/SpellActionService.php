@@ -637,6 +637,8 @@ class SpellActionService
                 } elseif (Str::startsWith($perk->key, 'convert_')) {
                     $components = Str::of($perk->key)->replace('convert_', '')->explode('_to_');
                     list($attr, $convertAttr) = $components;
+                } elseif ($perk->key == 'scale_by_day') {
+                    continue;
                 } else {
                     throw new GameException("Unrecognized perk {$perk->key}.");
                 }
