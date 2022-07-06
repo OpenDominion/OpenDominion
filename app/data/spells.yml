@@ -59,6 +59,7 @@ disband_spies:
   cost_strength: 5
   perks:
     convert_military_spies_to_military_draftees: 1.5
+    scale_by_day: 1
 fireball:
   name: Fireball
   category: war
@@ -77,6 +78,7 @@ lightning_bolt:
     destroy_improvement_keep: 0.4
     destroy_improvement_forges: 0.4
     destroy_improvement_walls: 0.4
+    scale_by_day: 1
 cyclone:
   name: Cyclone
   category: wonder

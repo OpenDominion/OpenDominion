@@ -146,6 +146,7 @@ class EspionageHelper
                 'key' => 'assassinate_wizards',
                 'decreases' => ['military_wizards'],
                 'percentage' => 2,
+                'scale_by_day' => true,
             ],
             [
                 'name' => 'Magic Snare',

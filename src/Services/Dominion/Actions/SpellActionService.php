@@ -641,6 +641,9 @@ class SpellActionService
                     throw new GameException("Unrecognized perk {$perk->key}.");
                 }
                 $baseDamage = $perk->pivot->value / 100;
+                if ($spell->getPerkValue('scale_by_day') == 1) {
+                    $baseDamage *= (1.625 - 0.025 * clamp($dominion->round->daysInRound(), 10, 40));
+                }
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
                 // Fireball damage reduction from Forest Havens
