@@ -8,7 +8,7 @@
             "resource_food": 50000,
             "resource_lumber": 20000,
             "resource_mana": 8500,
-Error 2042
+            "resource_ore": 72000,
             "resource_gems": 9000,
             "resource_tech": 1050,
             "resource_boats": 0,
@@ -49,7 +49,7 @@ Error 2042
             "stat_total_food_production": 50000,
             "stat_total_lumber_production": 20000,
             "stat_total_mana_production": 8500,
-Error 2042
+            "stat_total_ore_production": 72000,
             "stat_total_gem_production": 9000,
             "stat_total_tech_production": 0,
             "stat_total_boat_production": 0,
@@ -73,7 +73,7 @@ Error 2042
             "resource_food": 50000,
             "resource_lumber": 29000,
             "resource_mana": 10000,
-Error 2042
+            "resource_ore": 100800,
             "resource_gems": 18000,
             "resource_tech": 1050,
             "resource_boats": 0,
@@ -114,7 +114,7 @@ Error 2042
             "stat_total_food_production": 50000,
             "stat_total_lumber_production": 29000,
             "stat_total_mana_production": 10000,
-Error 2042
+            "stat_total_ore_production": 100800,
             "stat_total_gem_production": 18000,
             "stat_total_tech_production": 0,
             "stat_total_boat_production": 0,
