@@ -34,7 +34,7 @@ class ConstructionCalculator
      */
     public function getDiscountedLandMultiplier(Dominion $dominion): float
     {
-        return clamp(0.02 * $dominion->round->daysInRound(), 0.50, 0.70);
+        return clamp(1 - (0.02 * $dominion->round->daysInRound()), 0.30, 0.50);
     }
 
     /**
@@ -110,7 +110,7 @@ class ConstructionCalculator
         $discountedAcres = min($dominion->discounted_land, $acres);
         if ($discountedAcres > 0) {
             $discountedLandMultiplier = $this->getDiscountedLandMultiplier($dominion);
-            $totalPlatinumCost -= (int)ceil($platinumCost * $discountedAcres * $discountedLandMultiplier);
+            $totalPlatinumCost -= (int)ceil($platinumCost * $discountedAcres * (1 - $discountedLandMultiplier));
         }
 
         return $totalPlatinumCost;
@@ -182,7 +182,7 @@ class ConstructionCalculator
         $discountedAcres = min($dominion->discounted_land, $acres);
         if ($discountedAcres > 0) {
             $discountedLandMultiplier = $this->getDiscountedLandMultiplier($dominion);
-            $totalLumberCost -= (int)ceil($lumberCost * $discountedAcres * $discountedLandMultiplier);
+            $totalLumberCost -= (int)ceil($lumberCost * $discountedAcres * (1 - $discountedLandMultiplier));
         }
 
         return $totalLumberCost;
