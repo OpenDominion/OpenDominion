@@ -225,4 +225,15 @@ class SpellHelper
     public function getSpellType(Spell $spell) {
         return $this->getCategoryString($spell->category);
     }
+
+    public function obfuscateInfoOps(array $infoOps) {
+        if (isset($infoOps['revelation'])) {
+            foreach ($infoOps['revelation']['spells'] as $key => $spell) {
+                $infoOps['revelation']['spells'][$key]['cast_by_dominion_id'] = null;
+                $infoOps['revelation']['spells'][$key]['cast_by_dominion_name'] = null;
+                $infoOps['revelation']['spells'][$key]['cast_by_dominion_realm_number'] = null;
+            }
+        }
+        return $infoOps;
+    }
 }

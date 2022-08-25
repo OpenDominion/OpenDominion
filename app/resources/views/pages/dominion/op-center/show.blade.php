@@ -180,7 +180,7 @@
                                     <a class="btn btn-primary" onclick="copyJson('ops_json')">
                                         <i class="fa fa-copy"></i> Copy ops
                                     </a>
-                                    <textarea class="hidden" name="ops_json" id="ops_json">{{ json_encode($infoOps, JSON_PRETTY_PRINT) }}</textarea>
+                                    <textarea class="hidden" name="ops_json" id="ops_json">{{ json_encode($spellHelper->obfuscateInfoOps($infoOps), JSON_PRETTY_PRINT) }}</textarea>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -289,7 +289,7 @@
                                                 }
                                             }
                                         @endphp
-                                        @if ($activeSpell['cast_by_dominion_id'] == $dominion->id || $activeSpell['cast_by_dominion_realm_number'] == $selectedDominion->realm->number)
+                                        @if ($activeSpell['cast_by_dominion_id'] == $dominion->id || $activeSpell['cast_by_dominion_realm_number'] == $selectedDominion->realm->number || ($dominion->realm_id == $selectedDominion->realm_id && $dominion->getSpellPerkValue('surreal_perception')))
                                             <a href="{{ route('dominion.realm', $activeSpell['cast_by_dominion_realm_number']) }}">{{ $activeSpell['cast_by_dominion_name'] }} (#{{ $activeSpell['cast_by_dominion_realm_number'] }})</a>
                                         @else
                                             <em>Unknown</em>
