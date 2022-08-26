@@ -523,10 +523,10 @@ class SpellActionService
         if ($spell->duration > 0) {
             // Cast spell with duration (increased during war)
             $duration = $spell->duration;
-            if ($warDeclared || $blackGuard) {
-                $duration *= 1.5;
-            } elseif ($mutualWarDeclared) {
+            if ($mutualWarDeclared) {
                 $duration *= 2;
+            } elseif ($warDeclared || $blackGuard) {
+                $duration *= 1.5;
             }
 
             if ($target->getTechPerkValue('enemy_spell_duration') !== 0) {
@@ -637,6 +637,8 @@ class SpellActionService
                 } elseif (Str::startsWith($perk->key, 'convert_')) {
                     $components = Str::of($perk->key)->replace('convert_', '')->explode('_to_');
                     list($attr, $convertAttr) = $components;
+                } elseif ($perk->key == 'scale_by_day') {
+                    continue;
                 } else {
                     throw new GameException("Unrecognized perk {$perk->key}.");
                 }

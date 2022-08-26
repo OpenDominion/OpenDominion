@@ -836,12 +836,7 @@ class ProductionCalculator
             return 0;
         }
 
-        $multiplier = (1 + error_function(0.00452 * ($dominion->infamy - 385))) / 2;
-        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-            $multiplier *= 2;
-        }
-
-        return $multiplier;
+        return (1 + error_function(0.00452 * ($dominion->infamy - 385))) / 2;
     }
 
     //</editor-fold>
