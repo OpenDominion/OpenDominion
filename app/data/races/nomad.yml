@@ -22,7 +22,7 @@ units:
       faster_return: 3
   - name: Crossbowman
     cost:
-      platinum: 275
+      platinum: 300
       ore: 15
     power:
       offense: 0
