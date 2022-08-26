@@ -4,6 +4,18 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+### Changed
+- Cyclone cost reduced to 2x (from 3x)
+- Trick of the Light tech now protects mana instead of decreasing mana cost
+- Firewalker Phoenix: no longer dies to icekin
+- Human Crusade: no longer kills immortal units
+
+### Fixed
+- Copy Ops no longer shows spell caster
+- Dominions in protection or abandoned can no longer access op center
+- Dominions in the Graveyard will be assigned a new realm when they perform an action
+- New realms will no longer be created for packs who join late
+
 ## [1.30.1] - 2022-07-02
 ### Changed
 - Minimum defense cannot go below 750
