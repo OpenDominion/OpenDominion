@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Cyclone cost reduced to 2x (from 3x)
 - Trick of the Light tech now protects mana instead of decreasing mana cost
 - Firewalker Phoenix: no longer dies to icekin
+- Goblin: Gem investment bonus increased to 20% (from 15%)
 - Human: Crusade no longer kills immortal units
 - Nomad Crossbowman: +25p (from 275p)
 - Nomad: Favorable Terrain changed to 1% offense per 1% barren, max 10% at 10% barren (from 1% per 1.5% barren, max 10% at 15% barren)
