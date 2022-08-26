@@ -172,7 +172,6 @@ crusade:
     - human
   perks:
     offense: 10
-    kills_immortal: 1
 favorable_terrain:
   name: Favorable Terrain
   category: self
