@@ -18,6 +18,7 @@ use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\InfoOpService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\GameEventService;
 
 class OpCenterController extends AbstractDominionController
@@ -27,9 +28,10 @@ class OpCenterController extends AbstractDominionController
      */
     private $gameEventService;
 
-    public function __construct(GameEventService $gameEventService)
+    public function __construct(GameEventService $gameEventService, ProtectionService $protectionService)
     {
         $this->gameEventService = $gameEventService;
+        $this->protectionService = $protectionService;
     }
 
     public function getIndex()
@@ -38,6 +40,14 @@ class OpCenterController extends AbstractDominionController
 
         if ($dominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
+        if ($dominion->isAbandoned()) {
+            return redirect()->back()->withErrors(['Abandoned dominions are not allowed access to the op center.']);
+        }
+
+        if ($this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted()) {
+            return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
         }
 
         $latestInfoOps = $dominion->realm->infoOps()
@@ -77,6 +87,14 @@ class OpCenterController extends AbstractDominionController
 
         if ($selectedDominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
+        if ($dominion->isAbandoned()) {
+            return redirect()->back()->withErrors(['Abandoned dominions are not allowed access to the op center.']);
+        }
+
+        if ($this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted()) {
+            return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
         }
 
         if ($selectedDominion->id == $dominion->id) {
@@ -125,6 +143,14 @@ class OpCenterController extends AbstractDominionController
 
         if ($selectedDominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
+        if ($dominion->isAbandoned()) {
+            return redirect()->back()->withErrors(['Abandoned dominions are not allowed access to the op center.']);
+        }
+
+        if ($this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted()) {
+            return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
         }
 
         if ($selectedDominion->id == $dominion->id) {
