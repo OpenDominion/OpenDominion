@@ -82,7 +82,7 @@ lightning_bolt:
 cyclone:
   name: Cyclone
   category: wonder
-  cost_mana: 3
+  cost_mana: 2
   cost_strength: 5
   perks:
     wonder_damage: 3
