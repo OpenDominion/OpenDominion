@@ -19,6 +19,13 @@ trait DominionGuardsTrait
         if ($dominion->isLocked()) {
             throw new GameException("Dominion {$dominion->name} is locked");
         }
+
+        // Reassign active doms from Graveyard
+        if ($dominion->realm->number == 0 && $dominion->round->isActive()) {
+            $realmFinderService = app(\OpenDominion\Services\RealmFinderService::class);
+            $newRealm = $realmFinderService->findRealm($dominion->round, $dominion->race, $dominion->user);
+            $dominion->update(['realm_id' => $newRealm->id]);
+        }
     }
 
     /**
