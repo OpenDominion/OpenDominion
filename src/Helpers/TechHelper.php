@@ -55,7 +55,7 @@ class TechHelper
             'theft_gains' => '%s%% resources gained from theft',
             'theft_losses' => '%s%% resources lost to theft',
             'fools_gold_cost' => '%s%% Fool\'s Gold mana cost',
-            'improved_fools_gold' => '%s Fool\'s Gold protects ore/lumber',
+            'improved_fools_gold' => 'Fool\'s Gold now protects ore/lumber/mana',
 
             // Resource related
             'food_consumption' => '%s%% food consumption',

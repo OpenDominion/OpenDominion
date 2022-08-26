@@ -238,7 +238,6 @@ tech_4_7:
 tech_6_7:
   name: Trick of the Light
   perks:
-    fools_gold_cost: -20
     improved_fools_gold: 1
   requires:
     - tech_5_5
