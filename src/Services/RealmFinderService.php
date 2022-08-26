@@ -66,6 +66,10 @@ class RealmFinderService
             ->filter(static function ($realm) use ($round, $slotsNeeded, $forPack) {
                 // Check pack status
                 if ($forPack) {
+                    // Don't create realms after assignment
+                    if ($round->hasAssignedRealms()) {
+                        return true;
+                    }
                     if (static::MAX_PACKS_PER_REALM !== null) {
                         // Reached maximum number of packs
                         if ($realm->packs->count() >= static::MAX_PACKS_PER_REALM) {
