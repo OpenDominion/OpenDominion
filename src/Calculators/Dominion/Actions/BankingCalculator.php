@@ -7,6 +7,25 @@ use OpenDominion\Models\Dominion;
 class BankingCalculator
 {
     /**
+     * Returns the exchange rate bonus for a Dominion
+     * 
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getExchangeBonus(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('exchange_bonus');
+
+        // Wonder
+        $multiplier += $dominion->getWonderPerkMultiplier('exchange_bonus');
+
+        return $multiplier;
+    }
+
+    /**
      * Returns resources and prices for exchanging.
      *
      * @param Dominion $dominion

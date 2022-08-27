@@ -3,6 +3,7 @@
 @section('page-header', 'National Bank')
 
 @section('content')
+    @php($exchangeBonus = $bankingCalculator->getExchangeBonus($selectedDominion))
     @php($resources = $bankingCalculator->getResources($selectedDominion))
 
     <div class="row">
@@ -25,7 +26,6 @@
                                                 @if (!$resource['sell'])
                                                     @continue
                                                 @endif
-
                                                 <option value="{{ $field }}">{{ $resource['label'] }}</option>
                                             @endforeach
                                         </select>
@@ -37,7 +37,6 @@
                                                 @if (!$resource['buy'])
                                                     @continue
                                                 @endif
-
                                                 <option value="{{ $field }}">{{ $resource['label'] }}</option>
                                             @endforeach
                                         </select>
@@ -56,7 +55,7 @@
                                                placeholder="0"
                                                min="0"
                                                max="{{ reset($resources)['max'] }}"
-                                                {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                               {{ $selectedDominion->isLocked() ? 'disabled' : null }}> 
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label for="amountSlider">Amount</label>
@@ -96,6 +95,9 @@
                     <p>The National Bank allows you to exchange resources with the empire. Exchanging resources processes <b>instantly</b>.</p>
                     <p>Platinum, lumber and ore trade 2 for 1.<br>Gems trade 1:2 platinum, lumber or ore.<br>Food sells for 4 platinum, lumber or ore, or 1 gem.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_lumber) }} lumber, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->resource_gems) }} {{ str_plural('gem', $selectedDominion->resource_gems) }}.</p>
+                    @if ($exchangeBonus > 1)
+                        <p>Your exchange rate bonus is {{ number_format(($exchangeBonus - 1) * 100) }}%.</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -131,7 +133,7 @@
                     sourceAmount = Math.min(parseInt(amountElement.val() || 0), _.get(sourceResourceType, 'max')),
                     targetOption = targetElement.find(':selected'),
                     targetResourceType = _.get(resources, targetOption.val()),
-                    targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy']) * {{ 1 + $selectedDominion->getWonderPerkMultiplier('exchange_bonus') }} || 0);
+                    targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }}) || 0);
                 if (sourceAmount == 0) {
                     sourceAmount = '';
                 }

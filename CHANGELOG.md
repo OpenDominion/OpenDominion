@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit: Maximum population bonus removed (was 2.5%)
 
 ### Fixed
+- National Bank page will now correctly display Banker's Friend tech
 - Copy Ops no longer shows spell caster
 - Dominions in protection or abandoned can no longer access op center
 - Dominions in the Graveyard will be assigned a new realm when they perform an action

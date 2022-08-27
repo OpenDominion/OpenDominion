@@ -64,15 +64,9 @@ class BankActionService
             ));
         }
 
-        $multiplier = 1;
+        $exchangeMultiplier = $this->bankingCalculator = getExchangeBonus($dominion);
 
-        // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('exchange_bonus');
-
-        // Wonder
-        $multiplier += $dominion->getWonderPerkMultiplier('exchange_bonus');
-
-        $targetAmount = floor($amount * $sourceResource['sell'] * $targetResource['buy'] * $multiplier);
+        $targetAmount = floor($amount * $sourceResource['sell'] * $targetResource['buy'] * $exchangeMultiplier);
 
         $dominion->{$source} -= $amount;
         $dominion->{$target} += $targetAmount;
