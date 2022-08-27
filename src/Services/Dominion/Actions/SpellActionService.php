@@ -475,11 +475,6 @@ class SpellActionService
             if (!random_chance($successRate)) {
                 list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
-                // Resilience gain for failure
-                if ($this->spellHelper->isWarSpell($spell)) {
-                    $target->wizard_resilience += 2;
-                }
-
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
                     ->queueNotification('repelled_hostile_spell', [
@@ -616,7 +611,7 @@ class SpellActionService
             // Cast spell instantly
             $damageDealt = [];
             $totalDamage = 0;
-            $baseDamageReductionMultiplier = 0;
+            $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($dominion, 'wizard');;
 
             // Towers
             $baseDamageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers');
@@ -626,9 +621,6 @@ class SpellActionService
 
             // Wonders
             $baseDamageReductionMultiplier -= $target->getWonderPerkMultiplier('enemy_spell_damage');
-
-            // Resilience
-            $resilienceDamageReductionMultiplier = (1 - $this->opsCalculator->getResilienceBonus($target->wizard_resilience));
 
             foreach ($spell->perks as $perk) {
                 if (Str::startsWith($perk->key, 'destroy_')) {
@@ -681,12 +673,11 @@ class SpellActionService
                     $damageReductionMultiplier += $damageMultiplier;
                 }
 
-                // Cap damage reduction at 80%, then apply resilience
+                // Cap damage reduction at 80%
                 $damage = ceil(
                     $target->{$attr} *
                     $baseDamage *
-                    (1 - min(0.8, $damageReductionMultiplier)) *
-                    $resilienceDamageReductionMultiplier
+                    (1 - min(0.8, $damageReductionMultiplier))
                 );
 
                 // Immortal Wizards

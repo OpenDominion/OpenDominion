@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 
 ### Changed
+- Resilience no longer reduces damage from black ops
+- Spy/Wizard ratio now reduces damage from black ops by [RATIO/2]% (max 50% at 1.0)
+- Spy Resilience now increases wizard strength recovery by [RESIL/250]% (max of 4% at 1000)
+- Wizard Resilience now increases minimum peasant change to [RESIL/250]% of maximum peasants (max 4% of peasants at 1000)
+- Fireball damage increased to 2.75% (from 2.65%)
+- Sabotage damage increased to 2.5% (from 2.4%)
 - Reinstated prestige penalty for invasions against bots (-5% per hit after the 4th, max -50%)
 - Cyclone cost reduced to 2x (from 3x)
 - Trick of the Light tech now protects mana instead of decreasing mana cost
@@ -13,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Human: Crusade no longer kills immortal units
 - Nomad Crossbowman: +25p (from 275p)
 - Nomad: Favorable Terrain changed to 1% offense per 1% barren, max 10% at 10% barren (from 1% per 1.5% barren, max 10% at 15% barren)
+- Spirit: Maximum population bonus removed (was 2.5%)
 
 ### Fixed
 - Copy Ops no longer shows spell caster

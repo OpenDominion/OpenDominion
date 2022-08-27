@@ -175,7 +175,7 @@
                         {{ number_format(array_get($data, 'spy_resilience', 0)) }}
                         @if (array_get($data, 'spy_resilience', 0) > 0)
                             <small class="text-muted">
-                                ({{ number_format($opsCalculator->getResilienceBonus(array_get($data, 'spy_resilience', 0)) * 100, 2) }}%)
+                                ({{ number_format(array_get($data, 'spy_resilience', 0) / 250, 2) }}%)
                             </small>
                         @endif
                     </td>
@@ -190,7 +190,7 @@
                         {{ number_format(array_get($data, 'wizard_resilience', 0)) }}
                         @if (array_get($data, 'wizard_resilience', 0) > 0)
                             <small class="text-muted">
-                                ({{ number_format($opsCalculator->getResilienceBonus(array_get($data, 'wizard_resilience', 0)) * 100, 2) }}%)
+                                ({{ number_format(array_get($data, 'wizard_resilience', 0) / 250, 2) }}%)
                             </small>
                         @endif
                     </td>

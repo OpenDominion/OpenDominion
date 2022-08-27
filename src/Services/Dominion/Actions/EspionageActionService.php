@@ -585,11 +585,6 @@ class EspionageActionService
             if (!random_chance($successRate)) {
                 list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
-                // Resilience gain for failure
-                if ($this->espionageHelper->isWarOperation($operationKey)) {
-                    $target->spy_resilience += 2;
-                }
-
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
                         'sourceDominionId' => $dominion->id,
@@ -621,7 +616,7 @@ class EspionageActionService
 
         $damageDealt = [];
         $totalDamage = 0;
-        $baseDamageReductionMultiplier = 0;
+        $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($dominion, 'spy');
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
         if (isset($operationInfo['scale_by_day']) && $operationInfo['scale_by_day'] == 1) {
             $baseDamage *= (1.625 - 0.025 * clamp($dominion->round->daysInRound(), 10, 40));
@@ -639,20 +634,17 @@ class EspionageActionService
             $baseDamageReductionMultiplier -= $wonderDamagePerk;
         }
 
-        // Resilience
-        $resilienceDamageReductionMultiplier = (1 - $this->opsCalculator->getResilienceBonus($target->spy_resilience));
-
-        // Cap damage reduction at 80% before applying resilience
+        // Cap damage reduction at 80%
         $baseDamage *= (1 - min(0.8, $baseDamageReductionMultiplier));
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
-                $damage = $target->{$attr} * $baseDamage * $resilienceDamageReductionMultiplier;
+                $damage = $target->{$attr} * $baseDamage;
 
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damage = max($target->{$attr} - $boatsProtected, 0) * $baseDamage * $resilienceDamageReductionMultiplier;
+                    $damage = max($target->{$attr} - $boatsProtected, 0) * $baseDamage;
                 }
 
                 // Check for immortal wizards
@@ -661,15 +653,14 @@ class EspionageActionService
                 }
 
                 if ($attr == 'wizard_strength') {
-                    // Min damage for Magic Snare
-                    $damage = max(1.5, $target->{$attr} * $baseDamage) * $resilienceDamageReductionMultiplier;
-
+                    // Flat damage for Magic Snare
+                    $damage = $baseDamage;
                     if ($damage > $target->{$attr}) {
                         $damage = max(0, $target->{$attr});
                     }
                     $actualDamage = $damage;
                     $target->{$attr} -= $damage;
-                    $damage = floor($target->{$attr} + $damage) - floor($target->{$attr});
+                    $damage = floor($target->{$attr}) - floor($target->{$attr} - $damage);
                 } else {
                     // Rounded up for all other damage types
                     $damage = ceil($damage);
@@ -688,7 +679,7 @@ class EspionageActionService
         }
         if (isset($operationInfo['increases'])) {
             foreach ($operationInfo['increases'] as $attr) {
-                $damage = round($target->{$attr} * $baseDamage * $resilienceDamageReductionMultiplier);
+                $damage = round($target->{$attr} * $baseDamage);
                 $target->{$attr} += $damage;
             }
         }

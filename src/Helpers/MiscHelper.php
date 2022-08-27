@@ -29,8 +29,8 @@ class MiscHelper
             'infamy' => 'Gained via war operations.<br>Increases platinum, gem, lumber, mana, and ore production. Decays over time.',
             'spy_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery adds 50 to your minimum infamy.',
             'wizard_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery adds 50 to your minimum infamy.',
-            'spy_resilience' => 'Gained by victims of war operations.<br>Reduces damage taken from spy ops.',
-            'wizard_resilience' => 'Gained by victims of war operations.<br>Reduces damage taken from wizard ops.',
+            'spy_resilience' => 'Gained by victims of war operations.<br>Increases wizard strength recovery while under 30%.',
+            'wizard_resilience' => 'Gained by victims of war operations.<br>Increases minimum peasant growth.',
             'wpa' => 'Raw Wizard Ratio.<br>Used to calculate offense of Ice Elementals.',
         ];
 

@@ -23,7 +23,7 @@ class OpsCalculator
      * @var float Base amount of resilience gained per op
      */
     protected const SPY_RESILIENCE_GAIN = 10;
-    protected const WIZARD_RESILIENCE_GAIN = 12;
+    protected const WIZARD_RESILIENCE_GAIN = 10;
 
     /**
      * OpsCalculator constructor.
@@ -55,9 +55,8 @@ class OpsCalculator
      */
     public function infoOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        $relativeRatio = $selfRatio / $targetRatio;
-        $successRate = 0.8 ** (2 / (($relativeRatio * 1.4) ** 1.2));
-        return clamp($successRate, 0.01, 0.99);
+        $relativeRatio = clamp($selfRatio / $targetRatio, 0.1, 5);
+        return 0.8 ** (2 / (($relativeRatio * 1.4) ** 1.2));
     }
 
     /**
@@ -69,9 +68,8 @@ class OpsCalculator
      */
     public function theftOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        $relativeRatio = $selfRatio / $targetRatio;
-        $successRate = 0.6 ** (2 / (($relativeRatio * 1.2) ** 1.2));
-        return clamp($successRate, 0.01, 0.99);
+        $relativeRatio = clamp($selfRatio / $targetRatio, 0.25, 10);
+        return 0.6 ** (2 / (($relativeRatio * 1.2) ** 1.2));
     }
 
     /**
@@ -83,10 +81,8 @@ class OpsCalculator
      */
     public function blackOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        $relativeRatio = $selfRatio / $targetRatio;
-        $successRate = (1 / (1 + exp(($relativeRatio ** -0.6) - $relativeRatio))) + (0.008 * $relativeRatio) + 0.07;
-        $successRate *= (1 - (0.25 * sqrt($targetRatio)));
-        return clamp($successRate, 0.01, 0.95);
+        $relativeRatio = clamp($selfRatio / $targetRatio, 0.01, 2.5);
+        return (-0.15 * $relativeRatio**2) + (0.75 * $relativeRatio) + 0.05;
     }
 
     /**
@@ -314,18 +310,27 @@ class OpsCalculator
     }
 
     /**
-     * Returns the damage reduction from resilience.
+     * Returns the damage reduction from defensive ratio.
      *
-     * @param int $resilience
+     * @param Dominion $dominion
+     * @param string $type
      * @return float
      */
-    public function getResilienceBonus(int $resilience): float
+    public function getDamageReduction(Dominion $dominion, string $type): float
     {
-        if ($resilience == 0) {
+        $ratio = 0;
+
+        if ($type == 'spy') {
+            $ratio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
+        } elseif ($type == 'wizard') {
+            $ratio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
+        }
+
+        if ($ratio == 0) {
             return 0;
         }
 
-        return (1 + error_function(0.0019 * ($resilience - 700))) / 2;
+        return min(1, $ratio) / 2;
     }
 
     /**

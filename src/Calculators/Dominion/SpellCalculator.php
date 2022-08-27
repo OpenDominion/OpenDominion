@@ -209,8 +209,6 @@ class SpellCalculator
         $hostilePerkValue = $dominion->getSpellPerkValue($key, true);
 
         if ($hostilePerkValue) {
-            // Resilience
-            $damageMultiplier = (1 - $this->getResilienceDamageMultiplier($dominion->wizard_resilience));
             // Damage reductions from self spells
             $protectionPerk = $dominion->getSpellPerkValue("{$key}_damage");
             if ($protectionPerk) {
@@ -219,17 +217,5 @@ class SpellCalculator
         }
 
         return ($selfPerkValue + ($hostilePerkValue * max(0, $damageMultiplier))) / 100;
-    }
-
-    /**
-     * Calculate damage reduction from resilience.
-     *
-     * @param float $resilience
-     * @return float
-     */
-    public function getResilienceDamageMultiplier(float $resilience): float
-    {
-        $opsCalculator = app(OpsCalculator::class);
-        return $opsCalculator->getResilienceBonus($resilience);
     }
 }

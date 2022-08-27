@@ -9,7 +9,6 @@ explorer_difficulty: 2
 converter_difficulty: 3
 home_land_type: swamp
 perks:
-  max_population: 2.5
   food_consumption: -90
   mana_production: 15
   immortal_wizards: 1

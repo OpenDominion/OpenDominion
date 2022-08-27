@@ -160,7 +160,7 @@ class EspionageHelper
                 'description' => 'Destroys 2.4% boats',
                 'key' => 'sabotage_boats',
                 'decreases' => ['resource_boats'],
-                'percentage' => 2.4,
+                'percentage' => 2.5,
             ],
         ]);
     }
