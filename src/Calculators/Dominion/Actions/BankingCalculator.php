@@ -8,7 +8,7 @@ class BankingCalculator
 {
     /**
      * Returns the exchange rate bonus for a Dominion
-     * 
+     *
      * @param Dominion $dominion
      * @return float
      */
