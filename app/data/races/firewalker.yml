@@ -40,7 +40,7 @@ units:
       immortal: 1
   - name: Salamander
     cost:
-      platinum: 925
+      platinum: 950
       ore: 0
     power:
       offense: 5
