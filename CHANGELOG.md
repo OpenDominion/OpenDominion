@@ -14,8 +14,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Reinstated prestige penalty for invasions against bots (-5% per hit after the 4th, max -50%)
 - Cyclone cost reduced to 2x (from 3x)
 - Trick of the Light tech now protects mana instead of decreasing mana cost
-- Firewalker Phoenix: no longer dies to icekin
+- Dark Elf Spellblade: +0.5 DP (from 2)
+- Dark Elf Swordsman: +35p (from 425p)
+- Firewalker Phoenix: no longer dies to Icekin
+- Firewalker Salamander: +25p (from 925p)
 - Goblin: Gem investment bonus increased to 20% (from 15%)
+- Goblin Wolf Rider: -30r (from 130r)
 - Human: Crusade no longer kills immortal units
 - Nomad Crossbowman: +25p (from 275p)
 - Nomad: Favorable Terrain changed to 1% offense per 1% barren, max 10% at 10% barren (from 1% per 1.5% barren, max 10% at 15% barren)
