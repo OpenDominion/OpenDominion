@@ -106,11 +106,14 @@
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
-                                    <col width="50%">
+                                    <col width="25%">
+                                    <col width="25%">
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Black Ops</th>
+                                        <th>Black Ops</th>
+                                        <td>Offense</td>
+                                        <td>Defense</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,11 +122,17 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_assassinate_draftees_damage) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_assassinate_draftees_damage_received) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Wizards Assassinated:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_assassinate_wizards_damage) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_assassinate_wizards_damage_received) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -131,11 +140,17 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_magic_snare_damage) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_magic_snare_damage_received) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Boats Sunk:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_sabotage_boats_damage) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_sabotage_boats_damage_received) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -279,11 +294,14 @@
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
-                                    <col width="50%">
+                                    <col width="25%">
+                                    <col width="25%">
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Black Ops</th>
+                                        <th>Black Ops</th>
+                                        <td>Offense</td>
+                                        <td>Defense</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -292,11 +310,17 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_disband_spies_damage) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_disband_spies_damage_received) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Fireball Damage:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_fireball_damage) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_fireball_damage_received) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -304,11 +328,8 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_lightning_bolt_damage) }}</strong>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cyclone Damage:</td>
                                         <td>
-                                            <strong>{{ number_format($target->stat_cyclone_damage) }}</strong>
+                                            <strong>{{ number_format($target->stat_lightning_bolt_damage_received) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -316,11 +337,17 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_earthquake_hours) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_earthquake_hours_received) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Great Flood Hours:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_great_flood_hours) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_great_flood_hours_received) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -328,11 +355,26 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_insect_swarm_hours) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_insect_swarm_hours_received) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Plague Hours:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_plague_hours) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_plague_hours_received) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cyclone Damage:</td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_cyclone_damage) }}</strong>
+                                        </td>
+                                        <td>
+                                            --
                                         </td>
                                     </tr>
                                 </tbody>
@@ -342,16 +384,22 @@
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
-                                    <col width="50%">
+                                    <col width="25%">
+                                    <col width="25%">
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Energy Mirror</th>
+                                        <th>Energy Mirror</th>
+                                        <td>Offense</td>
+                                        <td>Defense</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Spells Reflected:</td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_spells_deflected) }}</strong>
+                                        </td>
                                         <td>
                                             <strong>{{ number_format($target->stat_spells_reflected) }}</strong>
                                         </td>

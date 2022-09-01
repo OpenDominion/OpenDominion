@@ -674,6 +674,7 @@ class EspionageActionService
                 // Update statistics
                 if (isset($dominion->{"stat_{$operationInfo['key']}_damage"})) {
                     $dominion->{"stat_{$operationInfo['key']}_damage"} += $damage;
+                    $target->{"stat_{$operationInfo['key']}_damage_received"} += $damage;
                 }
             }
         }
