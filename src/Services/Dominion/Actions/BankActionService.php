@@ -64,7 +64,7 @@ class BankActionService
             ));
         }
 
-        $exchangeMultiplier = $this->bankingCalculator = getExchangeBonus($dominion);
+        $exchangeMultiplier = $this->bankingCalculator->getExchangeBonus($dominion);
 
         $targetAmount = floor($amount * $sourceResource['sell'] * $targetResource['buy'] * $exchangeMultiplier);
 

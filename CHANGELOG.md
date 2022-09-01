@@ -11,9 +11,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wizard Resilience now increases minimum peasant change to [RESIL/250]% of maximum peasants (max 4% of peasants at 1000)
 - Fireball damage increased to 2.75% (from 2.65%)
 - Sabotage damage increased to 2.5% (from 2.4%)
-- Reinstated prestige penalty for invasions against bots (-5% per hit after the 4th, max -50%)
 - Cyclone cost reduced to 2x (from 3x)
 - Trick of the Light tech now protects mana instead of decreasing mana cost
+- Reinstated prestige penalty for invasions against bots (-5% per hit after the 4th, max -50%)
 - Dark Elf Spellblade: +0.5 DP (from 2)
 - Dark Elf Swordsman: +35p (from 425p)
 - Firewalker Phoenix: no longer dies to Icekin
