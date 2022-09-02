@@ -634,6 +634,17 @@ class EspionageActionService
             $baseDamageReductionMultiplier -= $wonderDamagePerk;
         }
 
+        // Assassinate Wizards damage reduction from Forest Havens
+        if ($operationKey == 'assassinate_wizards') {
+            $forestHavenAssassinateWizardReduction = 10;
+            $forestHavenAssassinateWizardReductionMax = 50;
+            $damageMultiplier = min(
+                (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenAssassinateWizardReduction),
+                ($forestHavenAssassinateWizardReductionMax / 100)
+            );
+            $baseDamageReductionMultiplier += $damageMultiplier;
+        }
+
         // Cap damage reduction at 80%
         $baseDamage *= (1 - min(0.8, $baseDamageReductionMultiplier));
 

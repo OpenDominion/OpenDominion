@@ -11,9 +11,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wizard Resilience now increases minimum peasant change to [RESIL/250]% of maximum peasants (max 4% of peasants at 1000)
 - Fireball damage increased to 2.75% (from 2.65%)
 - Sabotage damage increased to 2.5% (from 2.4%)
+- Wizard Guilds renamed to Guilds, loses mana production / castle protection, gains spy bonuses
+  - Spy and Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 1% at 10% owned.
+  - Spy, Wizard, and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.
+  - Losses on failed black ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.
+- Forest Havens lose spy bonuses
+  - Produces 25 lumber per hour.
+  - Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned.
+  - Disband Spies and Assassinate Wizards damage reduced by 10% per 1% owned, up to a maximum of 50% at 5% owned.
 - Cyclone cost reduced to 2x (from 3x)
-- Castle improvements destroyed by Lightning Bolt can now be 'repaired' (investment is doubled)
 - Trick of the Light tech now protects mana instead of decreasing mana cost
+- Castle improvements destroyed by Lightning Bolt can now be 'repaired' (investment is doubled)
+- Towers castle improvement renamed Spires
 - Reinstated prestige penalty for invasions against bots (-5% per hit after the 4th, max -50%)
 - Dark Elf Spellblade: +0.5 DP (from 2)
 - Dark Elf Swordsman: +35p (from 425p)

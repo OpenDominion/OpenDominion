@@ -185,13 +185,13 @@ class TrainingCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $forestHavenReduction = 3.5;
-        $forestHavenReductionMax = 35;
+        $guildReduction = 3.5;
+        $guildReductionMax = 35;
 
-        // Forest Havens
+        // Guilds
         $multiplier -= min(
-            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenReduction),
-            ($forestHavenReductionMax / 100)
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildReduction),
+            ($guildReductionMax / 100)
         );
 
         // Techs
@@ -211,13 +211,13 @@ class TrainingCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $wizardGuildReduction = 3.5;
-        $wizardGuildReductionMax = 35;
+        $guildReduction = 3.5;
+        $guildReductionMax = 35;
 
-        // Wizard Guilds
+        // Guilds
         $multiplier -= min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildReduction),
-            ($wizardGuildReductionMax / 100)
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildReduction),
+            ($guildReductionMax / 100)
         );
 
         // Techs

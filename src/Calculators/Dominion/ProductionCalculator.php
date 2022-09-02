@@ -461,8 +461,7 @@ class ProductionCalculator
         $manaPerWizardGuild = 15;
         $manaPerTower = 25;
 
-        // Buildings
-        $mana += ($dominion->building_wizard_guild * $manaPerWizardGuild);
+        // Building: Tower
         $mana += ($dominion->building_tower * $manaPerTower);
 
         // Techs

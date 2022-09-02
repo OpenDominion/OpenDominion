@@ -655,22 +655,11 @@ class SpellActionService
 
                 // Disband Spies damage reduction from Forest Havens
                 if ($attr == 'military_spies') {
-                    $forestHavenSpyCasualtyReduction = 2.5;
-                    $forestHavenSpyCasualtyReductionMax = 25;
+                    $forestHavenDisbandSpyReduction = 10;
+                    $forestHavenDisbandSpyReductionMax = 50;
                     $damageMultiplier = min(
-                        (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
-                        ($forestHavenSpyCasualtyReductionMax / 100)
-                    );
-                    $damageReductionMultiplier += $damageMultiplier;
-                }
-
-                // Damage reduction from Masonries
-                if (strpos($attr, 'improvement_') === 0) {
-                    $wizardGuildLightningBoltReduction = 6;
-                    $wizardGuildLightningBoltReductionMax = 60;
-                    $damageMultiplier = min(
-                        (($target->building_wizard_guild / $this->landCalculator->getTotalLand($target)) * $wizardGuildLightningBoltReduction),
-                        ($wizardGuildLightningBoltReductionMax / 100)
+                        (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenDisbandSpyReduction),
+                        ($forestHavenDisbandSpyReductionMax / 100)
                     );
                     $damageReductionMultiplier += $damageMultiplier;
                 }

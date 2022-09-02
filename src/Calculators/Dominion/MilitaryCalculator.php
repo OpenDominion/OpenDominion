@@ -906,16 +906,6 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $forestHavenBonus = 2;
-        $forestHavenBonusMax = 20;
-
-        // Forest Havens
-        $multiplier += min(
-            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenBonus),
-            ($forestHavenBonusMax / 100)
-        );
-
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
 
@@ -938,13 +928,13 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // Forest Havens
-        $spyStrengthPerForestHaven = 0.1;
-        $spyStrengthPerForestHavenMax = 2;
+        // Guilds
+        $spyStrengthPerguild = 0.1;
+        $spyStrengthPerguildMax = 1;
 
         $regen += min(
-            ($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerForestHaven),
-            $spyStrengthPerForestHavenMax
+            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerguild),
+            $spyStrengthPerguildMax
         );
 
         // Techs
@@ -998,16 +988,6 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $wizardGuildBonus = 2;
-        $wizardGuildBonusMax = 20;
-
-        // Wizard Guilds
-        $multiplier += min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
-            ($wizardGuildBonusMax / 100)
-        );
-
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
 
@@ -1036,13 +1016,13 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // Wizard Guilds
-        $wizardStrengthPerWizardGuild = 0.1;
-        $wizardStrengthPerWizardGuildMax = 2;
+        // Guilds
+        $wizardStrengthPerguild = 0.1;
+        $wizardStrengthPerguildMax = 1;
 
         $regen += min(
-            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild),
-            $wizardStrengthPerWizardGuildMax
+            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerguild),
+            $wizardStrengthPerguildMax
         );
 
         // Techs
