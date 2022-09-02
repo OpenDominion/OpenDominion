@@ -16,6 +16,13 @@ class ImprovementHelper
         ];
     }
 
+    public function getImprovementName(string $improvementType): string
+    {
+        // Rename 'Towers' to 'Spires'
+        $improvementType = str_replace('towers', 'spires', $improvementType);
+        return ucwords(str_replace('_', ' ', $improvementType));
+    }
+
     public function getImprovementRatingString(string $improvementType): string
     {
         $ratingStrings = [
@@ -32,13 +39,15 @@ class ImprovementHelper
 
     public function getImprovementHelpString(string $improvementType): string
     {
+        $improvementName = $this->getImprovementName($improvementType);
+
         $helpStrings = [
-            'science' => 'Improvements to science increase your platinum production.<br><br>Max +20% base science.',
-            'keep' => 'Improvements to your keep increase your maximum population.<br><br>Max +30% base keep.',
-            'towers' => 'Improvements to your towers increase your wizard power, mana production, and reduce damage from harmful spells.<br><br>Max +60% base towers.',
-            'forges' => 'Improvements to your forges increase your offensive power.<br><br>Max +30% base forges.',
-            'walls' => 'Improvements to your walls increase your defensive power.<br><br>Max +30% base walls.',
-            'harbor' => 'Improvements to your harbor improve your food production, boat production, and boat protection.<br><br>Max +60% base harbor.',
+            'science' => "Improvements to {$improvementName} increase your platinum production.<br><br>Max +20% base {$improvementName}.",
+            'keep' => "Improvements to your {$improvementName} increase your maximum population.<br><br>Max +30% base {$improvementName}.",
+            'towers' => "Improvements to your {$improvementName} increase your wizard power, mana production, and reduce damage from harmful spells.<br><br>Max +60% base {$improvementName}.",
+            'forges' => "Improvements to your {$improvementName} increase your offensive power.<br><br>Max +30% base {$improvementName}.",
+            'walls' => "Improvements to your {$improvementName} increase your defensive power.<br><br>Max +30% base {$improvementName}.",
+            'harbor' => "Improvements to your {$improvementName} improve your food production, boat production, and boat protection.<br><br>Max +60% base {$improvementName}.",
         ];
 
         return $helpStrings[$improvementType] ?: null;

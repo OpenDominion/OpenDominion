@@ -81,7 +81,7 @@
                         <ul>
                             <li>Science	    - Increases platinum production up to a maximum of +20% production.</li>
                             <li>Keep		- Increases population maximum up to +30% maximum population.</li>
-                            <li>Towers		- Increases wizard power, mana production and reduces spell damage taken up to a maximum of 60% each.</li>
+                            <li>Spires		- Increases wizard power, mana production and reduces spell damage taken up to a maximum of 60% each.</li>
                             <li>Forges 	    - Increases offensive military power by up to +30%.</li>
                             <li>Walls		- Increases defensive military power by up to +30%.</li>
                             <li>Harbor		- Increases food production from all sources and boat production and protection from docks by up to +60%.</li>

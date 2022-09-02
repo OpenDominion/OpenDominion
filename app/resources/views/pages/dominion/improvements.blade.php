@@ -31,7 +31,7 @@
                                 @foreach ($improvementHelper->getImprovementTypes() as $improvementType)
                                     <tr>
                                         <td>
-                                            {{ ucfirst($improvementType) }}
+                                            {{ $improvementHelper->getImprovementName($improvementType) }}
                                             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
                                         </td>
                                         <td>
