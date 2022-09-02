@@ -42,7 +42,7 @@
                             @foreach($buildingTypeWithLandType as $buildingType => $landType)
                                 <tr>
                                     <td>
-                                        {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                                        {{ $buildingHelper->getBuildingName($buildingType) }}
                                         {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                                     </td>
                                     <td>

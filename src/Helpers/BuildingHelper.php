@@ -31,6 +31,13 @@ class BuildingHelper
         ];
     }
 
+    public function getBuildingName(string $buildingType): string
+    {
+        // Rename 'Wizard Guild' to 'Guild'
+        $buildingType = str_replace('wizard', '', $buildingType);
+        return ucwords(str_replace('_', ' ', $buildingType));
+    }
+
     public function getBuildingTypesByRace(Race $race = null): array
     {
         $return = [
@@ -131,12 +138,12 @@ class BuildingHelper
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Increases offensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',
-            'wizard_guild' => 'Produces 15 mana per hour.<br><br>Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned.<br>Wizard power increased by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Wizard and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.<br/>Losses on failed black ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.<br>Lightning Bolt damage reduced by 6% per 1% owned, up to a maximum of 60% at 10% owned.',
+            'wizard_guild' => 'Produces 15 mana per hour.<br><br>Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned.<br>Wizard power increased by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Wizard and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.<br>Losses on failed black ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.<br>Lightning Bolt damage reduced by 6% per 1% owned, up to a maximum of 60% at 10% owned.',
             'temple' => 'Increases population growth and reduces defensive bonuses of dominions you invade.<br><br>Population growth increased by 6% per 1% owned.<br>Defensive bonuses reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.67% owned.',
             'diamond_mine' => 'Produces 15 gems per hour.',
             'school' => 'Produces (1 - (Schools / Total Land)) research points per hour (minimum of 0.5). Limited to 50% of your total land.',
             'lumberyard' => 'Produces 50 lumber per hour.',
-            'forest_haven' => 'Produces 25 lumber per hour.<br><br>Spy Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned.<br>Spy power increased by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Spy training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.<br/>Disband spies damage and losses on failed spy ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.<br>Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned.',
+            'forest_haven' => 'Produces 25 lumber per hour.<br><br>Spy Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned.<br>Spy power increased by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Spy training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.<br>Disband spies damage and losses on failed spy ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.<br>Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned.',
             'factory' => 'Reduces construction and land rezoning costs.<br><br>Construction costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.<br>Rezoning costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.',
             'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'shrine' => 'Reduces offensive casualties.<br><br>Casualties reduced by 5% per 1% owned, up to a maximum of 80% at 16% owned.', // todo: hero level gain and hero bonuses

@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\InvadeActionRequest;
 use OpenDominion\Models\Dominion;
@@ -21,6 +22,7 @@ class InvasionController extends AbstractDominionController
         $targetDominion = $request->input('dominion');
 
         return view('pages.dominion.invade', [
+            'buildingHelper' => app(BuildingHelper::class),
             'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),

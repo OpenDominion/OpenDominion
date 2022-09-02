@@ -150,7 +150,7 @@
                                     @foreach ($offenseVsBuildingTypes as $buildingType)
                                         <tr>
                                             <td colspan="3" class="text-right">
-                                                <b>Enter target {{ ucwords(str_replace('_', ' ', $buildingType)) }} percentage:</b>
+                                                <b>Enter target {{ $buildingHelper->getBuildingName($buildingType) }} percentage:</b>
                                             </td>
                                             <td>
                                                 <input type="number"

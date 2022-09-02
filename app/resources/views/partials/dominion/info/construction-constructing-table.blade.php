@@ -34,7 +34,7 @@
         @endphp
         @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
             <tr>
-                <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
+                <td>{{ $buildingHelper->getBuildingName($buildingType) }}</td>
                 @for ($i = 1; $i <= 12; $i++)
                     @php
                         $amount = array_get($data, "constructing.{$buildingType}.{$i}", 0);

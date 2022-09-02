@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
@@ -98,6 +99,7 @@ class CalculationsController extends AbstractDominionController
             'targetDominion' => $targetDominion,
             'targetInfoOps' => $targetInfoOps,
             'races' => Race::with(['units', 'units.perks'])->where('playable', true)->orderBy('name')->get(),
+            'buildingHelper' => app(BuildingHelper::class),
             'raceHelper' => app(RaceHelper::class),
             'spellHelper' => app(SpellHelper::class),
             'unitHelper' => app(UnitHelper::class),

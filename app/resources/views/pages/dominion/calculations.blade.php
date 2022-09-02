@@ -220,7 +220,7 @@
                                     </div>
                                     @foreach ($buildingFieldsRequired as $building)
                                         <div class="col-xs-3 text-right">
-                                            {{ ucwords(dominion_attr_display("building_{$building}")) }} %
+                                            {{ $buildingHelper->getBuildingName($building) }} %
                                         </div>
                                         <div class="col-xs-3 text-left">
                                             <input type="number"
@@ -672,7 +672,7 @@
                                     @endif
                                     @foreach ($buildingFieldsRequired as $building)
                                         <div class="col-xs-3 text-right">
-                                            {{ ucwords(dominion_attr_display("building_{$building}")) }} %
+                                            {{ $buildingHelper->getBuildingName($building) }} %
                                         </div>
                                         <div class="col-xs-3 text-left">
                                             <input type="number"
@@ -716,7 +716,7 @@
                                     @endif
                                     @foreach ($targetBuildingFieldsRequired as $building)
                                         <div class="col-xs-3 text-right">
-                                            Target {{ ucwords(dominion_attr_display("building_{$building}")) }} %
+                                            Target {{ $buildingHelper->getBuildingName($building) }} %
                                         </div>
                                         <div class="col-xs-3 text-left">
                                             <input type="number"

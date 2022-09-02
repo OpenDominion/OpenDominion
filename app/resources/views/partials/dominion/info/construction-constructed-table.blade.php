@@ -35,7 +35,7 @@
             <tr>
                 <td>
                     <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
-                        {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                        {{ $buildingHelper->getBuildingName($buildingType) }}
                     </span>
                     {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                 </td>
