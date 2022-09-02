@@ -28,7 +28,7 @@ class AddDamageTakenStatsToDominionsTable extends Migration
             $table->unsignedInteger('stat_spells_deflected')->after('stat_spells_reflected')->default(0);
         });
 
-        $dominionStats = array();
+        $dominionStats = [];
         $statisticsToPopulate = [
             'stat_assassinate_draftees_damage',
             'stat_assassinate_wizards_damage',
@@ -46,8 +46,8 @@ class AddDamageTakenStatsToDominionsTable extends Migration
 
         foreach ($statisticsToPopulate as $statisticName) {
             $newStat = "{$statisticName}_received";
-            if ($statisticName == "stat_spells_reflected") {
-                $newStat = "stat_spells_deflected";
+            if ($statisticName == 'stat_spells_reflected') {
+                $newStat = 'stat_spells_deflected';
             }
             $eventHistory = DB::table('dominion_history')->where('delta', 'like', "%{$statisticName}%")->get();
             foreach ($eventHistory as $event) {
