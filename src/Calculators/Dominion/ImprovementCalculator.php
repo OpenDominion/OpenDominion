@@ -96,7 +96,7 @@ class ImprovementCalculator
 
     /**
      * Returns the improvement total for a dominion.
-     * 
+     *
      * @param Dominion $dominion
      * @return int
      */
@@ -104,17 +104,17 @@ class ImprovementCalculator
     {
         return (
             $dominion->improvement_science +
-            $dominion->improvement_keep + 
-            $dominion->improvement_towers + 
-            $dominion->improvement_forges + 
-            $dominion->improvement_walls + 
+            $dominion->improvement_keep +
+            $dominion->improvement_towers +
+            $dominion->improvement_forges +
+            $dominion->improvement_walls +
             $dominion->improvement_harbor
         );
     }
 
     /**
      * Returns the difference between improvement total and highest improvements for a dominion.
-     * 
+     *
      * @param Dominion $dominion
      * @return int
      */
