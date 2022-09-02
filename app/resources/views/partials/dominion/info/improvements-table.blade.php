@@ -29,14 +29,10 @@
             </tr>
         @endforeach
         <tr>
-            <td>
-                Total
-            </td>
-            <td>
-
-            </td>
-            <td>
-                
+            <td>Total</td>
+            <td></td>
+            <td class="text-center">
+                {{ number_format(array_sum(array_column($data, 'points'))) }}
             </td>
     </tbody>
 </table>
