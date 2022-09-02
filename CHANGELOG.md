@@ -4,7 +4,11 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+### Added
+- Black ops damage taken is now visible in the statistics advisor
+
 ### Changed
+- Towers castle improvement renamed Spires
 - Resilience no longer reduces damage from black ops
 - Spy/Wizard ratio now reduces damage from black ops by [RATIO/2]% (max 50% at 1.0)
 - Spy Resilience now increases wizard strength recovery by [RESIL/250]% (max of 4% at 1000)
@@ -22,7 +26,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Cyclone cost reduced to 2x (from 3x)
 - Trick of the Light tech now protects mana instead of decreasing mana cost
 - Castle improvements destroyed by Lightning Bolt can now be 'repaired' (investment is doubled)
-- Towers castle improvement renamed Spires
 - Reinstated prestige penalty for invasions against bots (-5% per hit after the 4th, max -50%)
 - Dark Elf Spellblade: +0.5 DP (from 2)
 - Dark Elf Swordsman: +35p (from 425p)
