@@ -549,7 +549,7 @@ class SpellActionService
             // Update statistics
             if (isset($dominion->{"stat_{$spell->key}_hours"})) {
                 $dominion->{"stat_{$spell->key}_hours"} += $durationAdded;
-                $target->{"stat_{$spell->key}_hours_recieved"} += $durationAdded;
+                $target->{"stat_{$spell->key}_hours_received"} += $durationAdded;
             }
 
             $damageDealtString = '';
@@ -704,7 +704,7 @@ class SpellActionService
                     // Only count peasants killed by fireball
                     if (!($spell->key == 'fireball' && $attr == 'resource_food')) {
                         $dominion->{"stat_{$spell->key}_damage"} += $damage;
-                        $target->{"stat_{$spell->key}_damage_recieved"} += $damage;
+                        $target->{"stat_{$spell->key}_damage_received"} += $damage;
                     }
                 }
             }
