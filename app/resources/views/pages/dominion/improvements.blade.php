@@ -52,6 +52,14 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                <tr>
+                                    <td>Total</td>
+                                    <td></td>
+                                    <td class="text-center">
+                                        {{ number_format($improvementCalculator->getImprovementTotal($selectedDominion)) }}
+                                    </td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -86,6 +94,9 @@
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_lumber) }} lumber, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->resource_gems) }} {{ str_plural('gem', $selectedDominion->resource_gems) }}.</p>
                     @if ($selectedDominion->building_masonry > 0)
                         <p>Masonries are increasing your castle improvements by {{ number_format(($improvementCalculator->getImprovementMultiplier($selectedDominion) - 1) * 100, 2) }}%</p>
+                    @endif
+                    @if ($improvementCalculator->getRepairableImprovements($selectedDominion) > 0)
+                        <p>You can repair up to {{ $improvementCalculator->getRepairableImprovements($selectedDominion) }} points in your castle (investment is doubled).</p>
                     @endif
                 </div>
             </div>

@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -32,6 +33,8 @@ class ImproveActionService
             throw new GameException("You do not have enough {$resource} to invest.");
         }
 
+        $improvementCalculator = app(ImprovementCalculator::class);
+        $repairableImprovements = $improvementCalculator->getRepairableImprovements($dominion);
         $worth = $this->getImprovementWorth();
 
         foreach ($data as $improvementType => $amount) {
@@ -56,10 +59,19 @@ class ImproveActionService
             $multiplier += $dominion->getWonderPerkMultiplier('invest_bonus');
 
             $points = floor($amount * $worth[$resource] * $multiplier);
+            if ($repairableImprovements > 0) {
+                $points = min($points * 2, $points + $repairableImprovements);
+                $repairableImprovements -= $points;
+            }
+
             $dominion->{"improvement_{$improvementType}"} += $points;
             $result[$improvementType] = $points;
         }
 
+        $totalImprovements = $improvementCalculator->getImprovementTotal($dominion);
+        if ($totalImprovements > $dominion->highest_improvement_total) {
+            $dominion->highest_improvement_total = $totalImprovements;
+        }
         $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
         $dominion->{'stat_total_' . $resource . '_spent_investment'} += $totalResourcesToInvest;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);

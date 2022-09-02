@@ -28,5 +28,15 @@
                 <td class="text-center">{{ number_format(array_get($data, "{$improvementType}.points")) }}</td>
             </tr>
         @endforeach
+        <tr>
+            <td>
+                Total
+            </td>
+            <td>
+
+            </td>
+            <td>
+                
+            </td>
     </tbody>
 </table>

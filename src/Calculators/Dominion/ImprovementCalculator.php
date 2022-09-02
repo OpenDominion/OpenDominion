@@ -93,4 +93,37 @@ class ImprovementCalculator
 
         return ($coefficients[$improvementType] ?: null);
     }
+
+    /**
+     * Returns the improvement total for a dominion.
+     * 
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementTotal(Dominion $dominion): int
+    {
+        return (
+            $dominion->improvement_science +
+            $dominion->improvement_keep + 
+            $dominion->improvement_towers + 
+            $dominion->improvement_forges + 
+            $dominion->improvement_walls + 
+            $dominion->improvement_harbor
+        );
+    }
+
+    /**
+     * Returns the difference between improvement total and highest improvements for a dominion.
+     * 
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getRepairableImprovements(Dominion $dominion): int
+    {
+        $totalImprovements = $this->getImprovementTotal($dominion);
+        if ($totalImprovements < $dominion->highest_improvement_total) {
+            return ($dominion->highest_improvement_total - $totalImprovements);
+        }
+        return 0;
+    }
 }
