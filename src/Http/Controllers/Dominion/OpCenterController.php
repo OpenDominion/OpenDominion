@@ -42,10 +42,6 @@ class OpCenterController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
         }
 
-        if ($dominion->isAbandoned()) {
-            return redirect()->back()->withErrors(['Abandoned dominions are not allowed access to the op center.']);
-        }
-
         if ($this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted()) {
             return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
         }
@@ -89,11 +85,7 @@ class OpCenterController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
         }
 
-        if ($dominion->isAbandoned()) {
-            return redirect()->back()->withErrors(['Abandoned dominions are not allowed access to the op center.']);
-        }
-
-        if ($this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted()) {
+        if ($this->protectionService->isUnderProtection($selectedDominion) && $selectedDominion->round->hasStarted()) {
             return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
         }
 
@@ -145,11 +137,7 @@ class OpCenterController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
         }
 
-        if ($dominion->isAbandoned()) {
-            return redirect()->back()->withErrors(['Abandoned dominions are not allowed access to the op center.']);
-        }
-
-        if ($this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted()) {
+        if ($this->protectionService->isUnderProtection($selectedDominion) && $selectedDominion->round->hasStarted()) {
             return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
         }
 
