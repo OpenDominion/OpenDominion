@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wizard Resilience now increases minimum peasant change to [RESIL/250]% of maximum peasants (max 4% of peasants at 1000)
 - Fireball damage increased to 2.75% (from 2.65%)
 - Sabotage damage increased to 2.5% (from 2.4%)
+- Magic Snare damage changed to 2% (from 3.5% of current strength)
 - Wizard Guilds renamed to Guilds, loses mana production / castle protection, gains spy bonuses
   - Spy and Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 1% at 10% owned.
   - Spy, Wizard, and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.
