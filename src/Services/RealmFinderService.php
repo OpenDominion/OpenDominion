@@ -27,7 +27,7 @@ class RealmFinderService
     /**
      * @var int Number of hours before round start to begin realm assignment
      */
-    public const ASSIGNMENT_HOURS_BEFORE_START = 72;
+    public const ASSIGNMENT_HOURS_BEFORE_START = 96;
 
     /**
      * @var int Minimum number of realms to create
