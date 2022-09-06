@@ -154,7 +154,10 @@ class RealmFinderService
         }
 
         // Fetch all registered dominions
-        $registeredDominions = $round->activeDominions()->where('user_id', '!=', null)->get();
+        $registeredDominions = $round->activeDominions()
+            ->where('user_id', '!=', null)
+            ->where('realms.number', 0)
+            ->get();
 
         // Collect data for all dominions
         $allPlayers = collect();
