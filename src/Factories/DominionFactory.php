@@ -431,6 +431,7 @@ class DominionFactory
 
             'discounted_land' => 0,
             'highest_land_achieved' => 250,
+            'highest_improvement_total' => 0,
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
             'black_guard_active_at' => null,
