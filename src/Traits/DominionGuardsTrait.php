@@ -21,7 +21,7 @@ trait DominionGuardsTrait
         }
 
         // Reassign active doms from Graveyard
-        if ($dominion->realm->number == 0 && $dominion->round->isActive()) {
+        if ($dominion->user_id !== null && $dominion->realm->number == 0 && $dominion->round->isActive()) {
             $realmFinderService = app(\OpenDominion\Services\RealmFinderService::class);
             $newRealm = $realmFinderService->findRealm($dominion->round, $dominion->race, $dominion->user);
             $dominion->update([
