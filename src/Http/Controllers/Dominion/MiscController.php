@@ -342,19 +342,16 @@ class MiscController extends AbstractDominionController
                 }
 
                 $totalLand = $landCalculator->getTotalLand($dominion);
-                $defensivePower = $militaryCalculator->getDefensivePower($dominion);
+                $defensivePower = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, false, true);
+                $minDefense = $militaryCalculator->getMinimumDefense($dominion);
 
                 foreach ($incomingQueue as $row) {
                     // Reset current resources
                     $dominion->{$row->resource} -= $row->amount;
                 }
 
-                if ($totalLand < 600 && $defensivePower < $totalLand * 3) {
-                    throw new GameException('You cannot leave protection at this size with defense less than 3x your land total.');
-                }
-
-                if ($totalLand >= 600 && $defensivePower < $totalLand * 5) {
-                    throw new GameException('You cannot leave protection at this size with defense less than 5x your land total.');
+                if ($defensivePower < $minDefense) {
+                    throw new GameException('You cannot leave protection with less than the minimum defense.');
                 }
 
                 if ($dominion->round->daysInRound() > 1) {
