@@ -1213,7 +1213,6 @@ class MilitaryCalculator
             ->where([
                 'source_type' => Dominion::class,
                 'source_id' => $dominion->id,
-                'target_id' => $target->id,
                 'type' => 'invasion',
             ])
             ->get();
@@ -1222,7 +1221,7 @@ class MilitaryCalculator
             return $event->data['result']['success'] && $event->data['result']['range'] >= 75;
         });
 
-        return $invasionEvents->count();
+        return $invasionEvents->where('target.user_id', $target->user_id)->count();
     }
 
     /**
