@@ -616,7 +616,7 @@ class EspionageActionService
 
         $damageDealt = [];
         $totalDamage = 0;
-        $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($dominion, 'spy');
+        $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'spy');
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
         if (isset($operationInfo['scale_by_day']) && $operationInfo['scale_by_day'] == 1) {
             $baseDamage *= (1.625 - 0.025 * clamp($dominion->round->daysInRound(), 10, 40));
