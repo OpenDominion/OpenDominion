@@ -665,7 +665,7 @@ class EspionageActionService
 
                 if ($attr == 'wizard_strength') {
                     // Flat damage for Magic Snare
-                    $damage = $baseDamage;
+                    $damage = $baseDamage * 100;
                     if ($damage > $target->{$attr}) {
                         $damage = max(0, $target->{$attr});
                     }
