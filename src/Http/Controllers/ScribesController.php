@@ -2,8 +2,10 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
@@ -83,6 +85,14 @@ class ScribesController extends AbstractController
     {
         return view('pages.scribes.techs', [
             'techHelper' => app(TechHelper::class)
+        ]);
+    }
+
+    public function getHeroes()
+    {
+        return view('pages.scribes.heroes', [
+            'heroCalculator' => app(HeroCalculator::class),
+            'heroHelper' => app(HeroHelper::class)
         ]);
     }
 

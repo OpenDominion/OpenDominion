@@ -266,6 +266,7 @@ $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Rou
     $router->get('espionage')->uses('ScribesController@getEspionage')->name('espionage');
     $router->get('magic')->uses('ScribesController@getMagic')->name('magic');
     $router->get('tech')->uses('ScribesController@getTechs')->name('techs');
+    $router->get('heroes')->uses('ScribesController@getHeroes')->name('heroes');
     $router->get('wonders')->uses('ScribesController@getWonders')->name('wonders');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
 

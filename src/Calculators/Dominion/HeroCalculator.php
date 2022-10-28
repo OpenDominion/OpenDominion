@@ -80,11 +80,24 @@ class HeroCalculator
     public function getTradeBonus(Hero $hero, string $perkType): float
     {
         $level = $this->getHeroLevel($hero);
-        $coefficient = $this->getTradeCoefficient($perkType);
 
+        return $this->calculateTradeBonus($perkType, $level);
+    }
+
+    /**
+     * Calculates a level trade bonus.
+     *
+     * @param Hero $hero
+     * @param string $perkType
+     * @return float
+     */
+    public function calculateTradeBonus(string $perkType, int $level)
+    {
         if ($level == 0) {
             return 0;
         }
+
+        $coefficient = $this->getTradeCoefficient($perkType);
 
         return $coefficient * exp($level / 4);
     }
