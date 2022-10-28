@@ -37,7 +37,6 @@
                     <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
                         {{ $buildingHelper->getBuildingName($buildingType) }}
                     </span>
-                    {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                 </td>
                 <td class="text-center">{{ number_format($amount) }}</td>
                 <td class="text-left"><small>({{ number_format((($amount / $totalLand) * 100), 2) }}%)</small></td>

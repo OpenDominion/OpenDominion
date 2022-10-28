@@ -32,7 +32,6 @@
                         <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
                             {{ $buildingHelper->getBuildingName($buildingType) }}
                         </span>
-                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                     </td>
                     <td class="text-center">
                         {{ $selectedDominion->{'building_' . $buildingType} }}

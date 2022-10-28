@@ -4,6 +4,18 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+### Added
+- Heroes: create a hero for your dominion
+  - Select a class which determines the hero's passive bonus
+  - Gains experience by attacking and performing info/black ops
+  - Level up and increase your hero bonus
+
+### Changed
+- Shrines:
+  - Moved to home land type
+  - Hero experience gain increased by 2% per 1% owned, up to a maximum of 40% at 20% owned.
+  - Hero bonus increased by 2% per 1% owned, up to a maximum of 40% at 20% owned.
+
 ## [1.31.0] - 2022-09-02
 ### Added
 - Black ops damage taken is now visible in the statistics advisor

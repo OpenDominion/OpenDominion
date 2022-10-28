@@ -43,7 +43,6 @@
                                 <tr>
                                     <td>
                                         {{ $buildingHelper->getBuildingName($buildingType) }}
-                                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                                     </td>
                                     <td>
                                         @if($landType !== NULL)

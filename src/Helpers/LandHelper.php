@@ -42,11 +42,11 @@ class LandHelper
             'forest_haven' => 'forest',
             'factory' => 'hill',
             'guard_tower' => 'hill',
-            'shrine' => 'hill',
             'barracks' => 'hill',
             'dock' => 'water',
         ];
 
+        $return = (['shrine' => $race->home_land_type] + $return);
         $return = (['home' => $race->home_land_type] + $return);
 
         return $return;
