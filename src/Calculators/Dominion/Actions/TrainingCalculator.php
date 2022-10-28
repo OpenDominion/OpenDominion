@@ -2,12 +2,16 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 
 class TrainingCalculator
 {
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -16,14 +20,12 @@ class TrainingCalculator
 
     /**
      * TrainingCalculator constructor.
-     *
-     * @param LandCalculator $landCalculator
-     * @param UnitHelper $unitHelper
      */
-    public function __construct(LandCalculator $landCalculator, UnitHelper $unitHelper)
+    public function __construct()
     {
-        $this->landCalculator = $landCalculator;
-        $this->unitHelper = $unitHelper;
+        $this->heroCalculator = app(HeroCalculator::class);
+        $this->landCalculator = app(LandCalculator::class);
+        $this->unitHelper = app(UnitHelper::class);
     }
 
     /**
@@ -170,6 +172,9 @@ class TrainingCalculator
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('military_cost');
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'military_cost');
 
         return $multiplier;
     }

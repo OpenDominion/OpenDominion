@@ -249,6 +249,11 @@ class Dominion extends AbstractModel
         return $this->hasMany(Dominion\History::class);
     }
 
+    public function hero()
+    {
+        return $this->hasOne(Hero::class);
+    }
+
     public function heroes()
     {
         return $this->hasMany(Hero::class);

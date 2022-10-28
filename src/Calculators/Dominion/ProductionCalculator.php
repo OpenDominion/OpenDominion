@@ -7,6 +7,9 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class ProductionCalculator
 {
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
 
@@ -28,6 +31,7 @@ class ProductionCalculator
     /**
      * ProductionCalculator constructor.
      *
+     * @param HeroCalculator $heroCalculator
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      * @param PopulationCalculator $populationCalculator
@@ -36,6 +40,7 @@ class ProductionCalculator
      * @param GuardMembershipService $guardMembershipService
      */
     public function __construct(
+        HeroCalculator $heroCalculator,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         PopulationCalculator $populationCalculator,
@@ -44,6 +49,7 @@ class ProductionCalculator
         GuardMembershipService $guardMembershipService
     )
     {
+        $this->heroCalculator = $heroCalculator;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->populationCalculator = $populationCalculator;
@@ -136,6 +142,9 @@ class ProductionCalculator
         // Improvement: Science
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
 
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'platinum_production');
+
         // Guard Tax
         if ($this->guardMembershipService->isGuardMember($dominion)) {
             $multiplier -= ($guardTax / 100);
@@ -220,6 +229,9 @@ class ProductionCalculator
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'food_production');
 
         // Prestige Bonus
         $multiplier += ($this->prestigeCalculator->getPrestigeMultiplier($dominion) * (1 + $dominion->getTechPerkMultiplier('food_production_prestige')));
@@ -691,6 +703,9 @@ class ProductionCalculator
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'gem_production');
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'gem_production');
 
         return $multiplier;
     }

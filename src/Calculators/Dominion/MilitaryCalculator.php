@@ -38,6 +38,9 @@ class MilitaryCalculator
     /** @var GovernmentService */
     protected $governmentService;
 
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
 
@@ -60,6 +63,8 @@ class MilitaryCalculator
      * MilitaryCalculator constructor.
      *
      * @param BuildingCalculator $buildingCalculator
+     * @param GovernmentService $governmentService
+     * @param HeroCalculator $heroCalculator
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      * @param PrestigeCalculator $prestigeCalculator
@@ -69,6 +74,7 @@ class MilitaryCalculator
     public function __construct(
         BuildingCalculator $buildingCalculator,
         GovernmentService $governmentService,
+        HeroCalculator $heroCalculator,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         PrestigeCalculator $prestigeCalculator,
@@ -78,6 +84,7 @@ class MilitaryCalculator
     {
         $this->buildingCalculator = $buildingCalculator;
         $this->governmentService = $governmentService;
+        $this->heroCalculator = $heroCalculator;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
@@ -915,6 +922,9 @@ class MilitaryCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');
 
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'spy_strength');
+
         return $multiplier;
     }
 
@@ -929,12 +939,12 @@ class MilitaryCalculator
         $regen = 4;
 
         // Guilds
-        $spyStrengthPerguild = 0.1;
-        $spyStrengthPerguildMax = 1;
+        $spyStrengthPerGuild = 0.1;
+        $spyStrengthPerGuildMax = 1;
 
         $regen += min(
-            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerguild),
-            $spyStrengthPerguildMax
+            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerGuild),
+            $spyStrengthPerGuildMax
         );
 
         // Techs
@@ -1000,6 +1010,9 @@ class MilitaryCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('wizard_strength');
 
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_strength');
+
         // Improvement: Towers
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
 
@@ -1017,12 +1030,12 @@ class MilitaryCalculator
         $regen = 4;
 
         // Guilds
-        $wizardStrengthPerguild = 0.1;
-        $wizardStrengthPerguildMax = 1;
+        $wizardStrengthPerGuild = 0.1;
+        $wizardStrengthPerGuildMax = 1;
 
         $regen += min(
-            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerguild),
-            $wizardStrengthPerguildMax
+            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerGuild),
+            $wizardStrengthPerGuildMax
         );
 
         // Techs

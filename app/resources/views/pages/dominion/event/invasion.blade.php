@@ -270,6 +270,11 @@
                                         {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $event->source->race) }}
                                     </p>
                                 @endif
+                                @if (isset($event->data['attacker']['xpGain']))
+                                    <p class="text-center text-green">
+                                        {{ $event->data['attacker']['xpGain'] }} XP gained.
+                                    </p>
+                                @endif
                             @endif
 
                             {{-- Additional information to show if we are in the defender's realm --}}

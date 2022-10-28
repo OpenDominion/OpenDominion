@@ -20,16 +20,15 @@ class CreateHeroesTable extends Migration
             $table->string('class')->nullable();
             //$table->integer('class_id')->unsigned()->nullable();
             $table->string('trade')->nullable();
-            //$table->integer('vocation_id')->unsigned()->nullable();
+            //$table->integer('trade_id')->unsigned()->nullable();
             $table->integer('experience')->default(0);
-            $table->integer('level')->default(0);
-            //$table->boolean('is_home')->default(true);
-            $table->timestamp('returning_at')->nullable();
+            //$table->integer('level')->default(0);
+            //$table->timestamp('returning_at')->nullable();
             $table->timestamps();
 
             $table->foreign('dominion_id')->references('id')->on('dominions');
             //$table->foreign('class_id')->references('id')->on('hero_classes');
-            //$table->foreign('vocation_id')->references('id')->on('hero_vocations');
+            //$table->foreign('trade_id')->references('id')->on('hero_trades');
         });
     }
 

@@ -301,6 +301,7 @@ class InvadeActionService
             } else {
                 $target->stat_defending_success += 1;
                 $dominion->stat_attacking_failure += 1;
+                $this->invasionResult['attacker']['xpGain'] = 0;
             }
 
             // todo: move to GameEventService
@@ -339,6 +340,12 @@ class InvadeActionService
 
             $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
             $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
+
+            // Hero Experience
+            if ($dominion->hero && $this->invasionResult['attacker']['xpGain']) {
+                $dominion->hero->experience += $this->invasionResult['attacker']['xpGain'];
+                $dominion->hero->save();
+            }
         });
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
@@ -724,6 +731,7 @@ class InvadeActionService
         $acresLost = $this->militaryCalculator->getLandLost($dominion, $target);
         $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
         $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
+        $this->invasionResult['attacker']['xpGain'] = $acresLost;
 
         $landGainedPerLandType = [];
         foreach ($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 //use OpenDominion\Calculators\Dominion\LandCalculator;
 //use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Helpers\HeroHelper;
@@ -18,6 +19,7 @@ class HeroController extends AbstractDominionController
     public function getHeroes()
     {
         //$guardMembershipService = app(GuardMembershipService::class);
+        $heroCalculator = app(HeroCalculator::class);
         $heroHelper = app(HeroHelper::class);
         //$landCalculator = app(LandCalculator::class);
         //$networthCalculator = app(NetworthCalculator::class);
@@ -28,6 +30,7 @@ class HeroController extends AbstractDominionController
 
         return view('pages.dominion.heroes', compact(
             //'guardMembershipService',
+            'heroCalculator',
             'heroHelper',
             //'landCalculator',
             //'networthCalculator',

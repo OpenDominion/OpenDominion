@@ -173,16 +173,19 @@ class SpellActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $manaCost, $spell, &$result, $target) {
+            $xpGain = 0;
             $wizardStrengthLost = $spell->cost_strength;
 
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
             } elseif ($this->spellHelper->isInfoOpSpell($spell)) {
+                $xpGain = 1;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $wizardStrengthLost = 1;
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
+                $xpGain = 5;
                 $result = $this->castHostileSpell($dominion, $spell, $target);
                 $dominion->resetAbandonment();
             } else {
@@ -205,8 +208,15 @@ class SpellActionService
             if (!$this->spellHelper->isSelfSpell($spell)) {
                 if ($result['success']) {
                     $dominion->stat_spell_success += 1;
+                    // Hero Experience
+                    if ($dominion->hero && $xpGain) {
+                        $dominion->hero->experience += $xpGain;
+                        $dominion->hero->save();
+                        $result['message'] .=  " You gain {$xpGain} XP.";
+                    }
                 } else {
                     $dominion->stat_spell_failure += 1;
+                    $xpGain = 0;
                 }
             }
 

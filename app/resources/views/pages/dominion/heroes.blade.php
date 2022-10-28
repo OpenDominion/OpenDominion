@@ -22,7 +22,7 @@
                                             <input name="name" id="name" class="form-control" />
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group hidden">
                                         <label class="col-sm-3 control-label">Class</label>
                                         <div class="col-sm-9">
                                             <select name="class" class="form-control">
@@ -35,20 +35,17 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Trade</label>
+                                        <label class="col-sm-3 control-label">Class</label>
                                         <div class="col-sm-9">
                                             <select name="trade" class="form-control">
                                                 @foreach ($heroHelper->getTrades() as $trade)
                                                     <option value="{{ $trade['key'] }}">
-                                                        {{ $trade['name'] }} - {{ $trade['perk_type'] }}
+                                                        {{ $trade['name'] }} - {{ str_replace('_', ' ', $trade['perk_type']) }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    Placeholder image
                                 </div>
                             </div>
                         </div>
@@ -62,6 +59,7 @@
                             @csrf
                             <div class="box-body">
                                 <div class="row">
+                                    <!--
                                     <div class="col-md-6">
                                         <div class="row" style="font-size: 36px;">
                                             <div class="col-xs-3">
@@ -70,7 +68,7 @@
                                                 <i class="ra ra-shield" title="Shield" data-toggle="tooltip"></i>
                                             </div>
                                             <div class="col-xs-6">
-                                                Placeholder image
+                                                <img class="img-responsive" src="https://place-hold.it/200x300" />
                                             </div>
                                             <div class="col-xs-3">
                                                 <i class="ra ra-gold-bar" title="Alchemist" data-toggle="tooltip"></i><br/>
@@ -79,27 +77,24 @@
                                             </div>
                                         </div>
                                     </div>
+                                    -->
+                                    <div class="col-md-3">
+                                        <div class="text-center" style="font-size: 64px;">
+                                            <i class="{{ $heroHelper->getTradeIconClass($hero->trade) }}" title="{{ $heroHelper->getTradeDisplayName($hero->trade) }}" data-toggle="tooltip"></i>
+                                        </div>
+                                    </div>
                                     <div class="col-md-6">
-                                        <div class="text-center">
+                                        <div class="text-center" style="font-size: 24px;">
                                             {{ $hero->name }}
                                         </div>
                                         <div class="text-center">
-                                            Level 1 {{ $heroHelper->getClassDisplayName($hero->class) }}
+                                            Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getTradeDisplayName($hero->trade) }}
                                         </div>
                                         <div class="text-center">
-                                            {{ $hero->experience }} / 12,000 XP
+                                            {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
                                         </div>
-                                        <div>
-                                            Trade:<br/>
-                                            {{ $heroHelper->getTradeDisplayName($hero->trade) }} - +9.34% platinum production
-                                        </div>
-                                        <div>
-                                            Gear:<br/>
-                                            Cool Dagger - +5% spy strength
-                                        </div>
-                                        <div>
-                                            Abilities:<br/>
-                                            Cool Ability - +1% offense when you have less than 10,000 food
+                                        <div class="text-center">
+                                            {{ $heroCalculator->getTradeDescription($hero) }}
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +113,27 @@
                 <div class="box-body">
                     <p>You can only have one hero at a time.</p>
                     <p>Your hero gains experience and levels up, increasing it's trade bonus and unlocking new upgrades.</p>
-                    <p>Your hero gains 175xp per invasion, 2xp per acre explored, 2xp per info op, 8xp per black op.</p>
+                    <p>Your hero gains 1 XP per acre conquered, 1 XP per info operation, and 5 XP per black/war operation.</p>
+                    <!--
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>XP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($heroCalculator->getExperienceLevels() as $level)
+                                @if ($level['level'] !== 0)
+                                    <tr>
+                                        <td>{{ $level['level'] }}</td>
+                                        <td>{{ $level['xp'] }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                    -->
                 </div>
             </div>
         </div>

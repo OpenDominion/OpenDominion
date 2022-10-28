@@ -23,6 +23,6 @@ class Hero extends AbstractModel
 
     public function dominion()
     {
-        return $this->hasOne(Dominion::class);
+        return $this->belongsTo(Dominion::class);
     }
 }

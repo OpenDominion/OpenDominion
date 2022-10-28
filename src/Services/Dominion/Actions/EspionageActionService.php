@@ -178,7 +178,10 @@ class EspionageActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
+            $xpGain = 0;
+
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
+                $xpGain = 1;
                 $spyStrengthLost = 2;
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $spyStrengthLost = 1;
@@ -188,6 +191,7 @@ class EspionageActionService
                 $spyStrengthLost = 5;
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
+                $xpGain = 5;
                 $spyStrengthLost = 5;
                 $result = $this->performHostileOperation($dominion, $operationKey, $target);
                 $dominion->resetAbandonment();
@@ -199,8 +203,15 @@ class EspionageActionService
 
             if ($result['success']) {
                 $dominion->stat_espionage_success += 1;
+                // Hero Experience
+                if ($dominion->hero && $xpGain) {
+                    $dominion->hero->experience += $xpGain;
+                    $dominion->hero->save();
+                    $result['message'] .=  " You gain {$xpGain} XP.";
+                }
             } else {
                 $dominion->stat_espionage_failure += 1;
+                $xpGain = 0;
             }
 
             $dominion->save([
@@ -251,7 +262,7 @@ class EspionageActionService
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa == 0) {
             // Don't reduce spy strength by throwing an exception here
-            throw new GameException("Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.");
+            throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
         if ($targetSpa != 0) {

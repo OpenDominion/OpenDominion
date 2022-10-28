@@ -7,6 +7,9 @@ use OpenDominion\Models\Dominion;
 
 class CasualtiesCalculator
 {
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -18,16 +21,13 @@ class CasualtiesCalculator
 
     /**
      * CasualtiesCalculator constructor.
-     *
-     * @param LandCalculator $landCalculator
-     * @param PopulationCalculator $populationCalculator
-     * @param UnitHelper $unitHelper
      */
-    public function __construct(LandCalculator $landCalculator, PopulationCalculator $populationCalculator, UnitHelper $unitHelper)
+    public function __construct()
     {
-        $this->landCalculator = $landCalculator;
-        $this->populationCalculator = $populationCalculator;
-        $this->unitHelper = $unitHelper;
+        $this->heroCalculator = app(HeroCalculator::class);
+        $this->landCalculator = app(LandCalculator::class);
+        $this->populationCalculator = app(PopulationCalculator::class);
+        $this->unitHelper = app(UnitHelper::class);
     }
 
     /**
@@ -316,6 +316,9 @@ class CasualtiesCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_offense');
 
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'fewer_casualties');
+
         // Cap at -80%
         return (1 - min(0.8, $multiplier));
     }
@@ -339,6 +342,9 @@ class CasualtiesCalculator
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_defense');
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'fewer_casualties');
 
         // Cap at -80%
         return (1 - min(0.8, $multiplier));

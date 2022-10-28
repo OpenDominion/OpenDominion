@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 
@@ -11,19 +12,20 @@ class ConstructionCalculator
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
     /**
      * ConstructionCalculator constructor.
-     *
-     * @param BuildingCalculator $buildingCalculator
-     * @param LandCalculator $landCalculator
      */
-    public function __construct(BuildingCalculator $buildingCalculator, LandCalculator $landCalculator)
+    public function __construct()
     {
-        $this->buildingCalculator = $buildingCalculator;
-        $this->landCalculator = $landCalculator;
+        $this->buildingCalculator = app(BuildingCalculator::class);
+        $this->heroCalculator = app(HeroCalculator::class);
+        $this->landCalculator = app(LandCalculator::class);
     }
 
     /**
@@ -86,6 +88,9 @@ class ConstructionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('construction_cost');
         $multiplier += $dominion->getTechPerkMultiplier('construction_platinum_cost');
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'construction_cost');
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('construction_cost');
