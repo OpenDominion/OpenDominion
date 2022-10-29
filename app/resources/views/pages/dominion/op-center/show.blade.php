@@ -17,6 +17,7 @@
     $latestSurvey = $latestInfoOps->firstWhere('type', 'survey_dominion');
     $latestLand = $latestInfoOps->firstWhere('type', 'land_spy');
     $latestVision = $latestInfoOps->firstWhere('type', 'vision');
+    $latestDisclosure = $latestInfoOps->firstWhere('type', 'disclosure');
 
     $infoOps = [
         'status' => null,
@@ -25,7 +26,8 @@
         'barracks' => null,
         'survey' => null,
         'land' => null,
-        'vision' => null
+        'vision' => null,
+        'disclosure' => null
     ];
 
     $now = Carbon::now();
@@ -68,6 +70,11 @@
     if($latestVision != null) {
         $infoOps['vision'] = $latestVision->data;
         $infoOps['vision']['created_at'] = isset($latestVision->created_at) ? $latestVision->created_at : $now;
+    }
+
+    if($latestDisclosure != null) {
+        $infoOps['disclosure'] = $latestDisclosure->data;
+        $infoOps['disclosure']['created_at'] = isset($latestDisclosure->created_at) ? $latestDisclosure->created_at : $now;
     }
 
     $infoSpells = $spellHelper->getSpells($dominion->race, 'info');
@@ -660,6 +667,93 @@
                     @slot('noPadding', true)
 
                     @include('partials.dominion.info.techs-combined', ['data' => $latestVision->data['techs']])
+                @endif
+            @endcomponent
+        </div>
+
+    </div>
+    <div class="row">
+
+        <div class="col-sm-12 col-md-6">
+            @component('partials.dominion.op-center.box')
+
+                @slot('title', 'Heroes')
+                @slot('titleIconClass', 'ra ra-knight-helmet')
+                @slot('opData', $infoOps['disclosure'])
+                @slot('opKey', 'disclosure')
+
+                @if ($latestDisclosure === null)
+                    <p>No recent data available.</p>
+                    <p>Cast magic spell 'Disclosure' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <table class="table">
+                                <colgroup>
+                                    <col>
+                                    <col>
+                                </colgroup>
+                                <tbody>
+                                    @foreach ($latestDisclosure->data as $hero)
+                                        <tr>
+                                            <td class="text-right">Name</td>
+                                            <td class="text-left">{{ $hero['name'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Class</td>
+                                            <td class="text-left">{{ ucwords($hero['class']) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Level</td>
+                                            <td class="text-left">{{ $hero['level'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Experience</td>
+                                            <td class="text-left">{{ $hero['experience'] }} / {{ $hero['next_level_xp'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">{{ ucwords(str_replace('_', ' ', $heroHelper->getTradePerkType($hero['class']))) }}</td>
+                                            <td class="text-left">{{ number_format($hero['bonus'], 4) }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
+
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestDisclosure !== null)
+                                <em>Revealed {{ $latestDisclosure->created_at }} by {{ $latestDisclosure->sourceDominion->name }}</em>
+                                @if ($latestDisclosure->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestDisclosure->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestDisclosure->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestDisclosure->created_at) }}</span>
+                            @endif
+                        </div>
+
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="spell" value="disclosure">
+                                <button type="submit" class="btn btn-sm btn-primary">Disclosure ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('disclosure'))) }} mana)</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'disclosure']) }}">View Archives</a>
+                        </div>
+                    @endslot
                 @endif
             @endcomponent
         </div>

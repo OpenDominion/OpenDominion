@@ -555,6 +555,10 @@ class NotificationHelper
                         $resultString = 'A magical presence was detected within our towers.';
                         break;
 
+                    case 'disclosure':
+                        $resultString = 'A magical presence was detected within our hero\'s quarters.';
+                        break;
+
                     case 'plague':
                         $resultString = 'A plague has befallen our people, slowing population growth.';
                         break;

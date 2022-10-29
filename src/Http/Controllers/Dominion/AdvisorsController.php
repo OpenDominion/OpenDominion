@@ -14,6 +14,7 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\MiscHelper;
@@ -106,12 +107,17 @@ class AdvisorsController extends AbstractDominionController
                     'techs' => $this->infoMapper->mapTechs($dominion)
                 ]
             ],
+            (object)[
+                'type' => 'disclosure',
+                'data' => $this->infoMapper->mapHeroes($dominion)
+            ],
         ]);
 
         $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 10);
 
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
+            'heroHelper' => app(HeroHelper::class),
             'improvementHelper' => app(ImprovementHelper::class),
             'infoOpService' => app(InfoOpService::class),
             'landCalculator' => app(LandCalculator::class),

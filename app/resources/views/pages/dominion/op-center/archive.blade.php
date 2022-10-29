@@ -417,6 +417,72 @@
                     </div>
                 </div>
             @endif
+
+            @if ($infoOp->type == 'disclosure')
+                <div class="col-sm-12 col-md-6">
+                    @component('partials.dominion.op-center.box')
+
+                        @slot('title', 'Heroes')
+                        @slot('titleIconClass', 'ra ra-knight-helmet')
+
+                        @if ($infoOp === null)
+                            <p>No recent data available.</p>
+                            <p>Cast magic spell 'Disclosure' to reveal information.</p>
+                        @else
+                            @slot('noPadding', true)
+
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <table class="table">
+                                        <colgroup>
+                                            <col>
+                                            <col>
+                                        </colgroup>
+                                        <tbody>
+                                            @foreach ($infoOp->data as $hero)
+                                                <tr>
+                                                    <td class="text-right">Name</td>
+                                                    <td class="text-left">{{ $hero['name'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">Class</td>
+                                                    <td class="text-left">{{ ucwords($hero['class']) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">Level</td>
+                                                    <td class="text-left">{{ $hero['level'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">Experience</td>
+                                                    <td class="text-left">{{ $hero['experience'] }} / {{ $hero['next_level_xp'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">{{ ucwords(str_replace('_', ' ', $heroHelper->getTradePerkType($hero['class']))) }}</td>
+                                                    <td class="text-left">{{ number_format($hero['bonus'], 4) }}%</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
+
+                        @slot('boxFooter')
+                            @if ($infoOp !== null)
+                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                @if ($infoOp->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($infoOp->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                            @endif
+                        @endslot
+                    @endcomponent
+                </div>
+            @endif
         @endforeach
     </div>
     <div class="row">

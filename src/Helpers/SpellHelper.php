@@ -142,6 +142,7 @@ class SpellHelper
 
             // Info ops
             'clear_sight' => 'Reveal status screen',
+            'disclosure' => 'Reveal heroes',
             'revelation' => 'Reveal active spells',
             'vision' => 'Reveal technology',
 

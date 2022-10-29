@@ -59,7 +59,7 @@ class HeroCalculator
             return 0;
         }
 
-        $heroPerk = $this->heroHelper->getTrades()[$dominion->hero->trade]['perk_type'];
+        $heroPerk = $this->heroHelper->getTradePerkType($dominion->hero->trade);
         if ($heroPerk !== $perkType) {
             return 0;
         }
@@ -77,8 +77,11 @@ class HeroCalculator
      * @param string $perkType
      * @return float
      */
-    public function getTradeBonus(Hero $hero, string $perkType): float
+    public function getTradeBonus(Hero $hero, ?string $perkType = null): float
     {
+        if (!$perkType) {
+            $perkType = $this->heroHelper->getTradePerkType($hero->trade);
+        }
         $level = $this->getHeroLevel($hero);
 
         return $this->calculateTradeBonus($perkType, $level);
@@ -225,7 +228,13 @@ class HeroCalculator
         return 0;
     }
 
-    public function getTradeDescription(Hero $hero)
+    /**
+     * Returns the HTML description of the trade bonus.
+     *
+     * @param string $perkType
+     * @return float
+     */
+    public function getTradeDescription(Hero $hero): string
     {
         $perkType = $this->heroHelper->getTrades()[$hero->trade]['perk_type'];
         $perkValue = $this->getTradeBonus($hero, $perkType);

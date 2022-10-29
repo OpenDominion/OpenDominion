@@ -389,15 +389,15 @@ class SpellActionService
                 $infoOp->data = $this->infoMapper->mapSpells($target);
                 break;
 
+            case 'disclosure':
+                $infoOp->data = $this->infoMapper->mapHeroes($target);
+                break;
+
             case 'clairvoyance':
                 $infoOp->data = [
                     'targetRealmId' => $target->realm->id
                 ];
                 break;
-
-//            case 'disclosure':
-//                $infoOp->data = [];
-//                break;
 
             default:
                 throw new LogicException("Unknown info op spell {$spell->key}");

@@ -104,6 +104,17 @@ class HeroHelper
         ])->keyBy('key');
     }
 
+    /**
+     * Returns the trade's perk type.
+     *
+     * @param string $trade
+     * @return float
+     */
+    public function getTradePerkType(string $trade): string
+    {
+        return $this->getTrades()[$trade]['perk_type'];
+    }
+
     public function getTradeDisplayName(string $key)
     {
         return $this->getTrades()[$key]['name'];

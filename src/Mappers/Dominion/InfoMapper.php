@@ -3,6 +3,7 @@
 namespace OpenDominion\Mappers\Dominion;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -22,6 +23,9 @@ class InfoMapper
 
     /** @var BuildingHelper */
     protected $buildingHelper;
+
+    /** @var HeroCalculator */
+    protected $heroCalculator;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -54,6 +58,7 @@ class InfoMapper
     {
         $this->buildingCalculator = app(BuildingCalculator::class);
         $this->buildingHelper = app(BuildingHelper::class);
+        $this->heroCalculator = app(HeroCalculator::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
         $this->landCalculator = app(LandCalculator::class);
@@ -353,6 +358,24 @@ class InfoMapper
     public function mapTechs(Dominion $dominion): array
     {
         return $dominion->techs->pluck('name', 'key')->all();
+    }
+
+    public function mapHeroes(Dominion $dominion): array
+    {
+        if (!$dominion->hero) {
+            return [];
+        }
+
+        return [
+            [
+                'name' => $dominion->hero->name,
+                'class' => $dominion->hero->trade,
+                'level' => $this->heroCalculator->getHeroLevel($dominion->hero),
+                'experience' => $dominion->hero->experience,
+                'next_level_xp' => $this->heroCalculator->getNextLevelXP($dominion->hero),
+                'bonus' => $this->heroCalculator->getTradeBonus($dominion->hero)
+            ]
+        ];
     }
 
     public function mapResources(Dominion $dominion): array

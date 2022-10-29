@@ -19,6 +19,13 @@ revelation:
   cost_strength: 2
   perks:
     revelation: 1
+disclosure:
+  name: Disclosure
+  category: info
+  cost_mana: 0.5
+  cost_strength: 2
+  perks:
+    disclosure: 1
 plague:
   name: Plague
   category: hostile

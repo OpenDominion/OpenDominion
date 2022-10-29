@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\MiscHelper;
@@ -111,6 +112,7 @@ class OpCenterController extends AbstractDominionController
 
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
+            'heroHelper' => app(HeroHelper::class),
             'improvementHelper' => app(ImprovementHelper::class),
             'infoOpService' => app(InfoOpService::class),
             'landCalculator' => app(LandCalculator::class),
@@ -150,7 +152,7 @@ class OpCenterController extends AbstractDominionController
         }
 
         $resultsPerPage = 10;
-        $valid_types = ['clear_sight', 'vision', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
+        $valid_types = ['clear_sight', 'vision', 'revelation', 'disclosure', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
 
         if (!in_array($type, $valid_types)) {
             return redirect()->route('dominion.op-center.show', $dominion);
@@ -166,6 +168,7 @@ class OpCenterController extends AbstractDominionController
 
         return view('pages.dominion.op-center.archive', [
             'buildingHelper' => app(BuildingHelper::class),
+            'heroHelper' => app(HeroHelper::class),
             'improvementHelper' => app(ImprovementHelper::class),
             'infoOpService' => app(InfoOpService::class),
             'landCalculator' => app(LandCalculator::class),
