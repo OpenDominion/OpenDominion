@@ -90,14 +90,14 @@ class HeroHelper
             [
                 'name' => 'Spy',
                 'key' => 'spy',
-                'perk_type' => 'spy_strength',
+                'perk_type' => 'spy_power',
                 'coefficient' => 2,
                 'icon' => 'ra ra-hood',
             ],
             [
                 'name' => 'Wizard',
                 'key' => 'wizard',
-                'perk_type' => 'wizard_strength',
+                'perk_type' => 'wizard_power',
                 'coefficient' => 2,
                 'icon' => 'ra ra-pointy-hat',
             ],
@@ -137,8 +137,8 @@ class HeroHelper
             'military_cost' => '%+4g%% military training cost',
             'platinum_production' => '%+4g%% platinum production',
             'tech_production' => '%+4g%% research point production',
-            'spy_strength' => '%+4g%% spy power',
-            'wizard_strength' => '%+4g%% wizard power',
+            'spy_power' => '%+4g%% spy power',
+            'wizard_power' => '%+4g%% wizard power',
         ];
 
         return $helpStrings[$perk] ?: null;

@@ -923,7 +923,7 @@ class MilitaryCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');
 
         // Heroes
-        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'spy_strength');
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'spy_power');
 
         return $multiplier;
     }
@@ -1011,7 +1011,7 @@ class MilitaryCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('wizard_strength');
 
         // Heroes
-        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_strength');
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_power');
 
         // Improvement: Towers
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
