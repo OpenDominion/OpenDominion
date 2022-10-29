@@ -21,11 +21,15 @@ class ConstructionCalculator
     /**
      * ConstructionCalculator constructor.
      */
-    public function __construct()
+    public function __construct(
+        BuildingCalculator $buildingCalculator,
+        HeroCalculator $heroCalculator,
+        LandCalculator $landCalculator
+    )
     {
-        $this->buildingCalculator = app(BuildingCalculator::class);
-        $this->heroCalculator = app(HeroCalculator::class);
-        $this->landCalculator = app(LandCalculator::class);
+        $this->buildingCalculator = $buildingCalculator;
+        $this->heroCalculator = $heroCalculator;
+        $this->landCalculator = $landCalculator;
     }
 
     /**

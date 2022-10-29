@@ -5,6 +5,7 @@ namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 use Mockery as m;
 use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -24,6 +25,9 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|BuildingCalculator */
     protected $buildingCalculator;
+
+    /** @var Mock|HeroCalculator */
+    protected $heroCalculator;
 
     /** @var Mock|GovernmentService */
     protected $governmentService;
@@ -56,6 +60,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         $this->sut = m::mock(MilitaryCalculator::class, [
             $this->buildingCalculator = m::mock(BuildingCalculator::class),
             $this->governmentService = m::mock(GovernmentService::class),
+            $this->heroCalculator = m::mock(HeroCalculator::class),
             $this->improvementCalculator = m::mock(ImprovementCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
             $this->prestigeCalculator = m::mock(PrestigeCalculator::class),

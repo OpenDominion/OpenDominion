@@ -6,6 +6,7 @@ use Mockery as m;
 use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
@@ -22,6 +23,9 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|BuildingCalculator */
     protected $buildingCalculator;
 
+    /** @var Mock|HeroCalculator */
+    protected $heroCalculator;
+
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
@@ -37,6 +41,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->sut = m::mock(ConstructionCalculator::class, [
             $this->buildingCalculator = m::mock(BuildingCalculator::class),
+            $this->heroCalculator = m::mock(HeroCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
         ])->makePartial();
     }
