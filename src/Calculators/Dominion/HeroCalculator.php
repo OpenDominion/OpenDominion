@@ -3,9 +3,9 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
-use OpenDominion\Helpers\HeroHelper;
 
 class HeroCalculator
 {
@@ -137,7 +137,7 @@ class HeroCalculator
     {
         $xpLevels = $this->getExperienceLevels();
 
-        return $xpLevels->filter(function($level) use ($hero) {
+        return $xpLevels->filter(function ($level) use ($hero) {
             return $level['xp'] <= $hero->experience;
         })->max('level');
     }
