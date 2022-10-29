@@ -3,12 +3,10 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\HeroCalculator;
-//use OpenDominion\Calculators\Dominion\LandCalculator;
-//use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Models\Dominion;
-//use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -18,24 +16,14 @@ class HeroController extends AbstractDominionController
 
     public function getHeroes()
     {
-        //$guardMembershipService = app(GuardMembershipService::class);
         $heroCalculator = app(HeroCalculator::class);
         $heroHelper = app(HeroHelper::class);
-        //$landCalculator = app(LandCalculator::class);
-        //$networthCalculator = app(NetworthCalculator::class);
-        $protectionService = app(ProtectionService::class);
-        //$rangeCalculator = app(RangeCalculator::class);
 
         $heroes = $this->getSelectedDominion()->heroes;
 
         return view('pages.dominion.heroes', compact(
-            //'guardMembershipService',
             'heroCalculator',
             'heroHelper',
-            //'landCalculator',
-            //'networthCalculator',
-            'protectionService',
-            //'rangeCalculator',
             'heroes'
         ));
     }
@@ -63,6 +51,48 @@ class HeroController extends AbstractDominionController
         ]);
 
         $request->session()->flash('alert-success', 'Your hero has been created!');
+        return redirect()->route('dominion.heroes');
+    }
+
+    public function getRetireHeroes()
+    {
+        $heroCalculator = app(HeroCalculator::class);
+        $heroHelper = app(HeroHelper::class);
+
+        $heroes = $this->getSelectedDominion()->heroes;
+
+        return view('pages.dominion.retire', compact(
+            'heroCalculator',
+            'heroHelper',
+            'heroes'
+        ));
+    }
+
+    public function postRetireHeroes(HeroCreateActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+
+            if ($dominion->heroes->isEmpty()) {
+                throw new GameException('You do not have a hero to retire.');
+            }
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $hero = $dominion->heroes->first();
+        $hero->update([
+            'name' => $request->get('name'),
+            'class' => $request->get('class'),
+            'trade' => $request->get('trade'),
+            'experience' => (int) $hero->experience / 2
+        ]);
+
+        $request->session()->flash('alert-success', 'Your hero has been retired!');
         return redirect()->route('dominion.heroes');
     }
 }

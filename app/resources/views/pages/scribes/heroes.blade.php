@@ -11,6 +11,7 @@
                 <div class="col-md-12">
                     <p>Each dominion can select one hero that gains experience and levels up, increasing a passive bonus based on its class.</p>
                     <p>A hero gains 1 XP per acre conquered, 1 XP per successful info operation, and 5 XP per successful black/war operation.</p>
+                    <p>A hero can be retired and replaced with another. The new hero will start with XP equal to half that of its predecessor.</p>
                 </div>
                 <div class="col-md-6">
                     <table class="table table-striped">
