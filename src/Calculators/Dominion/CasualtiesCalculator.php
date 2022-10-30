@@ -301,9 +301,6 @@ class CasualtiesCalculator
     {
         $multiplier = 0;
 
-        // Shrines
-        $multiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
-
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties');
         $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties_offense');
@@ -348,27 +345,6 @@ class CasualtiesCalculator
 
         // Cap at -80%
         return (1 - min(0.8, $multiplier));
-    }
-
-    /**
-     * Returns the Dominion's offensive casualties reduction from shrines.
-     *
-     * This number is in the 0 - 0.8 range, where 0 is no casualty reduction
-     * (0%) and 0.8 is full (-80%). Used additive in a multiplier formula.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getOffensiveCasualtiesReductionFromShrines(Dominion $dominion): float
-    {
-        // Values (percentage)
-        $casualtyReductionPerShrine = 5;
-        $maxCasualtyReductionFromShrines = 80;
-
-        return min(
-            (($casualtyReductionPerShrine * $dominion->building_shrine) / $this->landCalculator->getTotalLand($dominion)),
-            ($maxCasualtyReductionFromShrines / 100)
-        );
     }
 
     /**

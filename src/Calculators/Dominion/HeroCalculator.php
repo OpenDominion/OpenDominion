@@ -36,7 +36,7 @@ class HeroCalculator
 
         // Values (percentages)
         $xpPerShrine = 2;
-        $xpPerShrineMax = 40;
+        $xpPerShrineMax = 20;
 
         $multiplier += min(
             ($xpPerShrine * $dominion->building_shrine / $this->landCalculator->getTotalLand($dominion)),
@@ -102,7 +102,7 @@ class HeroCalculator
 
         $coefficient = $this->getTradeCoefficient($perkType);
 
-        return $coefficient * exp($level / 4);
+        return $coefficient * $level;
     }
 
     /**
@@ -116,8 +116,8 @@ class HeroCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $bonusPerShrine = 2;
-        $bonusPerShrineMax = 40;
+        $bonusPerShrine = 50;
+        $bonusPerShrineMax = 500;
 
         $multiplier += min(
             ($bonusPerShrine * $dominion->building_shrine / $this->landCalculator->getTotalLand($dominion)),
@@ -240,7 +240,7 @@ class HeroCalculator
         $perkValue = $this->getTradeBonus($hero, $perkType);
         $helpString = vsprintf(
             $this->heroHelper->getTradeHelpString($hero->trade),
-            number_format($perkValue, 4)
+            number_format($perkValue, 2)
         );
 
         return $helpString;

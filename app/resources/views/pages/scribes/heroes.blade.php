@@ -51,7 +51,7 @@
                                 <td>{{ $level['level'] }}</td>
                                 <td>{{ $level['xp'] }}</td>
                                 @foreach ($heroHelper->getTrades() as $trade)
-                                    <th>{{ number_format($heroCalculator->calculateTradeBonus($trade['perk_type'], $level['level']), 4) }}%</th>
+                                    <th>{{ number_format($heroCalculator->calculateTradeBonus($trade['perk_type'], $level['level']), 2) }}%</th>
                                 @endforeach
                             </tr>
                         @endif

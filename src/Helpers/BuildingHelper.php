@@ -101,7 +101,7 @@ class BuildingHelper
             'forest_haven' => 'Produces 25 lumber per hour.<br>Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned.<br>Disband Spies and Assassinate Wizards damage reduced by 10% per 1% owned, up to a maximum of 50% at 5% owned.',
             'factory' => 'Reduces construction and land rezoning costs.<br><br>Construction costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.<br>Rezoning costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.',
             'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
-            'shrine' => 'Reduces offensive casualties.<br><br>Casualties reduced by 5% per 1% owned, up to a maximum of 80% at 16% owned.<br>Hero experience gain increased by 2% per 1% owned, up to a maximum of 40% at 20% owned.<br>Hero bonus increased by 2% per 1% owned, up to a maximum of 40% at 20% owned.',
+            'shrine' => 'Increases Hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.',
             'barracks' => 'Houses 35 trained or training military units.<br><br>Does not increase in capacity for population bonuses other than prestige.',
             'dock' => 'Produces 1 boat every 20 hours on average.<br>Each dock prevents 2.5 of your boats from being sunk (increases by 0.05 each day after Day 25).<br>Produces 40 bushels of food per hour.',
         ];
