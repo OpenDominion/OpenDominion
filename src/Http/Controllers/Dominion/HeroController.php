@@ -89,7 +89,7 @@ class HeroController extends AbstractDominionController
             'name' => $request->get('name'),
             'class' => $request->get('class'),
             'trade' => $request->get('trade'),
-            'experience' => (int) $hero->experience / 2
+            'experience' => (int) min($hero->experience, 4000) / 2
         ]);
 
         $request->session()->flash('alert-success', 'Your hero has been retired!');

@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Select a class which determines the hero's passive bonus
   - Gains experience by attacking and performing info/black ops
   - Level up and increase your hero bonus
+  - Can be retired and half its experience will be applied to a new one
 - New Spell: Disclosure
   - Info op for revealing inforamation about heroes
 
