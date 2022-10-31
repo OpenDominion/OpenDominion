@@ -213,7 +213,7 @@ class EspionageActionService
                     $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpGain);
                     $dominion->hero->experience += $xpGain;
                     $dominion->hero->save();
-                    $result['message'] .=  vsprintf(" You gain %.3g XP.", $xpGain);
+                    $result['message'] .=  vsprintf(' You gain %.3g XP.', $xpGain);
                 }
             } else {
                 $dominion->stat_espionage_failure += 1;
