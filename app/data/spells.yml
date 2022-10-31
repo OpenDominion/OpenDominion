@@ -295,6 +295,17 @@ defensive_frenzy:
     - halfling
   perks:
     defense: 20
+  active: false
+frenzy:
+  name: Frenzy
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - halfling
+  perks:
+    fewer_casualties: 30
 howling:
   name: Howling
   category: self
