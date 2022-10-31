@@ -19,6 +19,7 @@ class UnitHelper
         if (!$hideSpecialUnits) {
             $data = array_merge($data, [
                 'spies',
+                'assassins',
                 'wizards',
                 'archmages',
             ]);
@@ -29,7 +30,7 @@ class UnitHelper
 
     public function getUnitName(string $unitType, Race $race): string
     {
-        if (in_array($unitType, ['spies', 'wizards', 'archmages'], true)) {
+        if (in_array($unitType, ['spies', 'assassins', 'wizards', 'archmages'], true)) {
             return ucfirst($unitType);
         }
 
@@ -45,6 +46,10 @@ class UnitHelper
         foreach ($unitCosts as $costType => $value) {
             switch ($costType) {
                 case 'draftees':
+                    break;
+
+                case 'spies':
+                    $labelParts[] = "{$value} spy";
                     break;
 
                 case 'wizards':
@@ -105,8 +110,9 @@ class UnitHelper
             'unit3' => 'Defensive elite',
             'unit4' => 'Offensive elite',
             'spies' => 'Used for espionage.',
+            'assassins' => 'Used for espionage.<br><br>Twice as strong as spies and cannot be disbanded.',
             'wizards' => 'Used for casting offensive spells.',
-            'archmages' => 'Used for casting offensive spells.<br><br>Twice as strong as regular wizards and cannot be assassinated.',
+            'archmages' => 'Used for casting offensive spells.<br><br>Twice as strong as wizards and cannot be assassinated. Rarely die.',
         ];
 
         // todo: refactor this. very inefficient
@@ -319,8 +325,13 @@ class UnitHelper
                 break;
 
             case 'spies':
-                $iconClass = 'fa fa-user-secret';
+                $iconClass = 'ra ra-plain-dagger';
                 $colorClass = 'text-green';
+                break;
+
+            case 'assassins':
+                $iconClass = 'ra ra-dripping-blade';
+                $colorClass = 'text-light-blue';
                 break;
 
             case 'wizards':
@@ -329,7 +340,7 @@ class UnitHelper
                 break;
 
             case 'archmages':
-                $iconClass = 'ra ra-fairy-wand';
+                $iconClass = 'ra ra-crystal-wand';
                 $colorClass = 'text-light-blue';
                 break;
 

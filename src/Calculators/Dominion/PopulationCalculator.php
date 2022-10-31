@@ -93,7 +93,7 @@ class PopulationCalculator
     /**
      * Returns the Dominion's military population.
      *
-     * The military consists of draftees, combat units, spies, wizards, archmages and
+     * The military consists of draftees, combat units, spies, assassins, wizards, archmages and
      * units currently in training.
      *
      * @param Dominion $dominion
@@ -108,6 +108,7 @@ class PopulationCalculator
             + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3)
             + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4)
             + $dominion->military_spies
+            + $dominion->military_assassins
             + $dominion->military_wizards
             + $dominion->military_archmages
             + $this->queueService->getTrainingQueueTotal($dominion)

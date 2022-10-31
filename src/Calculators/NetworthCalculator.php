@@ -88,6 +88,7 @@ class NetworthCalculator
 
         // Values
         $networthPerSpy = 5;
+        $networthPerAssassin = 5;
         $networthPerWizard = 5;
         $networthPerArchMage = 5;
         $networthPerLand = 20;
@@ -99,6 +100,7 @@ class NetworthCalculator
         }
 
         $networth += ($dominion->military_spies * $networthPerSpy);
+        $networth += ($dominion->military_assassins * $networthPerAssassin);
         $networth += ($dominion->military_wizards * $networthPerWizard);
         $networth += ($dominion->military_archmages * $networthPerArchMage);
 

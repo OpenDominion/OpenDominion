@@ -761,13 +761,16 @@ class EspionageActionService
     protected function handleLosses(Dominion $dominion, Dominion $target, string $type): array
     {
         $spiesKilledPercentage = $this->opsCalculator->getSpyLosses($dominion, $target, $type);
+        $assassinsKilledPercentage = $this->opsCalculator->getAssassinLosses($dominion, $target, $type);
         // Cap losses by land size
         $totalLand = $this->landCalculator->getTotalLand($dominion);
         if ($type == 'info') {
             $spiesKilledCap = $totalLand * 0.006;
+            $assassinsKilledCap = $totalLand * 0.003;
             $unitsKilledCap = $totalLand * 0.003;
         } else {
             $spiesKilledCap = $totalLand * 0.02;
+            $assassinsKilledCap = $totalLand * 0.01;
             $unitsKilledCap = $totalLand * 0.01;
         }
 
@@ -778,12 +781,22 @@ class EspionageActionService
         $unitsKilled = [];
         $spiesKilled = (int)floor($dominion->military_spies * $spiesKilledPercentage);
         $spiesKilled = round(min($spiesKilled, $spiesKilledCap) * $spiesKilledModifier);
+        $assassinsKilled = (int)floor($dominion->military_assassins * $assassinsKilledPercentage);
+        $assassinsKilled = round(min($assassinsKilled, $assassinsKilledCap) * $spiesKilledModifier);
 
         if ($spiesKilled > 0) {
             $unitsKilled['spies'] = $spiesKilled;
             $dominion->military_spies -= $spiesKilled;
             if ($blackGuard && $spiesKilled > 1) {
                 $this->queueService->queueResources('training', $dominion, ['military_spies' => floor(0.75 * $spiesKilled)]);
+            }
+        }
+
+        if ($assassinsKilled > 0) {
+            $unitsKilled['assassins'] = $assassinsKilled;
+            $dominion->military_assassins -= $assassinsKilled;
+            if ($blackGuard && $assassinsKilled > 1) {
+                $this->queueService->queueResources('training', $dominion, ['military_assassins' => floor(0.75 * $assassinsKilled)]);
             }
         }
 

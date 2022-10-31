@@ -105,6 +105,7 @@ class InfoMapper
             'military_unit3' => null,
             'military_unit4' => null,
             'military_spies' => null,
+            'military_assassins' => null,
             'military_wizards' => null,
             'military_archmages' => null,
 
@@ -116,6 +117,7 @@ class InfoMapper
 
         if(!$isOp) {
             $data['military_spies'] = $dominion->military_spies;
+            $data['military_assassins'] = $dominion->military_assassins;
             $data['military_wizards'] = $dominion->military_wizards;
             $data['military_archmages'] = $dominion->military_archmages;
         } else {
@@ -215,6 +217,7 @@ class InfoMapper
             $accuracyMultiplier = 0.85;
         } else {
             array_set($data, 'units.home.spies', $dominion->military_spies);
+            array_set($data, 'units.home.assassins', $dominion->military_assassins);
             array_set($data, 'units.home.wizards', $dominion->military_wizards);
             array_set($data, 'units.home.archmages', $dominion->military_archmages);
         }

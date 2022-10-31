@@ -230,6 +230,7 @@ class TickService
                     'dominions.military_unit3' => DB::raw('dominions.military_unit3 + dominion_tick.military_unit3'),
                     'dominions.military_unit4' => DB::raw('dominions.military_unit4 + dominion_tick.military_unit4'),
                     'dominions.military_spies' => DB::raw('dominions.military_spies + dominion_tick.military_spies'),
+                    'dominions.military_assassins' => DB::raw('dominions.military_assassins + dominion_tick.military_assassins'),
                     'dominions.military_wizards' => DB::raw('dominions.military_wizards + dominion_tick.military_wizards'),
                     'dominions.military_archmages' => DB::raw('dominions.military_archmages + dominion_tick.military_archmages'),
                     'dominions.land_plain' => DB::raw('dominions.land_plain + dominion_tick.land_plain'),

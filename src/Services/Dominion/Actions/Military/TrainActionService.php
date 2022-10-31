@@ -67,6 +67,7 @@ class TrainActionService
             'lumber' => 0,
             'gems' => 0,
             'draftees' => 0,
+            'spies' => 0,
             'wizards' => 0,
         ];
 
@@ -108,6 +109,10 @@ class TrainActionService
             throw new GameException('Training aborted due to lack of draftees');
         }
 
+        if ($totalCosts['spies'] > $dominion->military_spies) {
+            throw new GameException('Training aborted due to lack of spies');
+        }
+
         if ($totalCosts['wizards'] > $dominion->military_wizards) {
             throw new GameException('Training aborted due to lack of wizards');
         }
@@ -128,6 +133,7 @@ class TrainActionService
             $dominion->resource_lumber -= $totalCosts['lumber'];
             $dominion->resource_gems -= $totalCosts['gems'];
             $dominion->military_draftees -= $totalCosts['draftees'];
+            $dominion->military_spies -= $totalCosts['spies'];
             $dominion->military_wizards -= $totalCosts['wizards'];
             $dominion->stat_total_platinum_spent_training += $totalCosts['platinum'];
             $dominion->stat_total_ore_spent_training += $totalCosts['ore'];

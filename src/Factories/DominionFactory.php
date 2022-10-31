@@ -94,6 +94,7 @@ class DominionFactory
             'military_unit3' => 0,
             'military_unit4' => 0,
             'military_spies' => 25,
+            'military_assassins' => 0,
             'military_wizards' => 25,
             'military_archmages' => 0,
 
@@ -426,6 +427,7 @@ class DominionFactory
             'military_unit3' => 0,
             'military_unit4' => 0,
             'military_spies' => 25,
+            'military_assassins' => 0,
             'military_wizards' => 25,
             'military_archmages' => 0,
 
@@ -538,6 +540,7 @@ class DominionFactory
             'military_unit3' => 0,
             'military_unit4' => 0,
             'military_spies' => 15,
+            'military_assassins' => 0,
             'military_wizards' => 15,
             'military_archmages' => 0,
 

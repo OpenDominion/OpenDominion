@@ -137,6 +137,19 @@ class OpsCalculator
     }
 
     /**
+     * Returns the percentage of assassins killed after a failed operation.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function getAssassinLosses(Dominion $dominion, Dominion $target, string $type): float
+    {
+        return $this->getSpyLosses($dominion, $target, $type) / 2;
+    }
+
+    /**
      * Returns the percentage of wizards killed after a failed spell.
      *
      * @param Dominion $dominion

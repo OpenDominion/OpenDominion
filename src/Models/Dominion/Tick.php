@@ -28,6 +28,7 @@ use OpenDominion\Models\AbstractModel;
  * @property int $military_unit3
  * @property int $military_unit4
  * @property int $military_spies
+ * @property int $military_assassins
  * @property int $military_wizards
  * @property int $military_archmages
  * @property int $land_plain
@@ -82,6 +83,7 @@ class Tick extends AbstractModel
         'military_unit3' => 'integer',
         'military_unit4' => 'integer',
         'military_spies' => 'integer',
+        'military_assassins' => 'integer',
         'military_wizards' => 'integer',
         'military_archmages' => 'integer',
         'land_plain' => 'integer',

@@ -887,7 +887,7 @@ class MilitaryCalculator
      */
     public function getSpyRatioRaw(Dominion $dominion, string $type = 'offense'): float
     {
-        $spies = $dominion->military_spies;
+        $spies = $dominion->military_spies + ($dominion->military_assassins * 2);
 
         // Add units which count as (partial) spies (Lizardfolk Chameleon)
         foreach ($dominion->race->units as $unit) {

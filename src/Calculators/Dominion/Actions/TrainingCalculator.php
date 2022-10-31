@@ -38,6 +38,8 @@ class TrainingCalculator
     {
         $costsPerUnit = [];
         $spyBaseCost = 500;
+        $assassinBaseCost = 1000;
+        $assassinBaseCost += $dominion->race->getPerkValue('assassin_cost');
         $wizardBaseCost = 500;
         $archmageBaseCost = 1000;
         $archmageBaseCost += $dominion->race->getPerkValue('archmage_cost');
@@ -47,6 +49,7 @@ class TrainingCalculator
 
         // Values
         $spyPlatinumCost = (int)ceil($spyBaseCost * $spyCostMultiplier);
+        $assassinPlatinumCost = (int)ceil($assassinBaseCost * $spyCostMultiplier);
         $wizardPlatinumCost = (int)ceil($wizardBaseCost * $wizardCostMultiplier);
         $archmagePlatinumCost = (int)ceil($archmageBaseCost * $wizardCostMultiplier);
 
@@ -59,6 +62,11 @@ class TrainingCalculator
                 case 'spies':
                     $cost['draftees'] = 1;
                     $cost['platinum'] = $spyPlatinumCost;
+                    break;
+
+                case 'assassins':
+                    $cost['platinum'] = $assassinPlatinumCost;
+                    $cost['spies'] = 1;
                     break;
 
                 case 'wizards':
@@ -132,6 +140,7 @@ class TrainingCalculator
             'lumber' => 'resource_lumber',
             'gems' => 'resource_gems',
             'draftees' => 'military_draftees',
+            'spies' => 'military_spies',
             'wizards' => 'military_wizards',
         ];
 
@@ -180,7 +189,7 @@ class TrainingCalculator
     }
 
     /**
-     * Returns the Dominion's training platinum cost multiplier for spies.
+     * Returns the Dominion's training platinum cost multiplier for spies and assassins.
      *
      * @param Dominion $dominion
      * @return float
