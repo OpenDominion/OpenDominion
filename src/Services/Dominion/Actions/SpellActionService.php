@@ -6,6 +6,7 @@ use DB;
 use Exception;
 use Illuminate\Support\Str;
 use LogicException;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -38,6 +39,9 @@ class SpellActionService
 
     /** @var GuardMembershipService */
     protected $guardMembershipService;
+
+    /** @var HeroCalculator */
+    protected $heroCalculator;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -85,6 +89,7 @@ class SpellActionService
     {
         $this->governmentService = app(GovernmentService::class);
         $this->guardMembershipService = app(GuardMembershipService::class);
+        $this->heroCalculator = app(HeroCalculator::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->infoMapper = app(InfoMapper::class);
         $this->landCalculator = app(LandCalculator::class);
@@ -210,13 +215,13 @@ class SpellActionService
                     $dominion->stat_spell_success += 1;
                     // Hero Experience
                     if ($dominion->hero && $xpGain) {
+                        $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpGain);
                         $dominion->hero->experience += $xpGain;
                         $dominion->hero->save();
-                        $result['message'] .=  " You gain {$xpGain} XP.";
+                        $result['message'] .=  vsprintf(" You gain %.3g XP.", $xpGain);
                     }
                 } else {
                     $dominion->stat_spell_failure += 1;
-                    $xpGain = 0;
                 }
             }
 

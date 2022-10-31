@@ -371,7 +371,7 @@ class InfoMapper
                 'name' => $dominion->hero->name,
                 'class' => $dominion->hero->trade,
                 'level' => $this->heroCalculator->getHeroLevel($dominion->hero),
-                'experience' => $dominion->hero->experience,
+                'experience' => floor($dominion->hero->experience),
                 'next_level_xp' => $this->heroCalculator->getNextLevelXP($dominion->hero),
                 'bonus' => $this->heroCalculator->getTradeBonus($dominion->hero)
             ]

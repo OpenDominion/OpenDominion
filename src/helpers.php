@@ -123,7 +123,7 @@ if (!function_exists('bonus_display')) {
                 $color = 'text-red';
             }
         }
-        return vsprintf("<span class='{$color}'>%+g%%</span>", $value);
+        return vsprintf("<span class='{$color}'>%+.3f%%</span>", $value);
     }
 }
 

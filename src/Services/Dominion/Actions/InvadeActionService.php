@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
@@ -731,7 +732,9 @@ class InvadeActionService
         $acresLost = $this->militaryCalculator->getLandLost($dominion, $target);
         $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
         $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
-        $this->invasionResult['attacker']['xpGain'] = $acresLost;
+
+        $heroCalculator = app(HeroCalculator::class);
+        $this->invasionResult['attacker']['xpGain'] = $heroCalculator->getExperienceGain($dominion, $acresLost);
 
         $landGainedPerLandType = [];
         foreach ($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {

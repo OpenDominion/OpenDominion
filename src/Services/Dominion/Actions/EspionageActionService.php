@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use Exception;
 use LogicException;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -43,6 +44,9 @@ class EspionageActionService
 
     /** @var GuardMembershipService */
     protected $guardMembershipService;
+
+    /** @var HeroCalculator */
+    protected $heroCalculator;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -92,6 +96,7 @@ class EspionageActionService
         $this->espionageHelper = app(EspionageHelper::class);
         $this->governmentService = app(GovernmentService::class);
         $this->guardMembershipService = app(GuardMembershipService::class);
+        $this->heroCalculator = app(HeroCalculator::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
         $this->infoMapper = app(InfoMapper::class);
@@ -205,13 +210,13 @@ class EspionageActionService
                 $dominion->stat_espionage_success += 1;
                 // Hero Experience
                 if ($dominion->hero && $xpGain) {
+                    $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpGain);
                     $dominion->hero->experience += $xpGain;
                     $dominion->hero->save();
-                    $result['message'] .=  " You gain {$xpGain} XP.";
+                    $result['message'] .=  vsprintf(" You gain %.3g XP.", $xpGain);
                 }
             } else {
                 $dominion->stat_espionage_failure += 1;
-                $xpGain = 0;
             }
 
             $dominion->save([

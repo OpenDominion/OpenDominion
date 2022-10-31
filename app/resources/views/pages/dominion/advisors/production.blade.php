@@ -585,6 +585,12 @@
                                             {!! bonus_display(($trainingCalculator->getWizardCostMultiplier($target) - 1) * 100, false) !!}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Hero XP Gain:</td>
+                                        <td>
+                                            {!! bonus_display(($heroCalculator->getExperienceMultiplier($target) - 1) * 100) !!}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

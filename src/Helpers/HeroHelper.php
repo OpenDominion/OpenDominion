@@ -116,15 +116,15 @@ class HeroHelper
         $perk = $this->getTrades()[$key]['perk_type'];
 
         $helpStrings = [
-            'construction_cost' => '%+4g%% construction platinum cost',
-            'food_production' => '%+4g%% food production',
-            'fewer_casualties' => '%+4g%% fewer casualties',
-            'gem_production' => '%+4g%% gem production',
-            'military_cost' => '%+4g%% military training cost',
-            'platinum_production' => '%+4g%% platinum production',
-            'tech_production' => '%+4g%% research point production',
-            'spy_power' => '%+4g%% spy power',
-            'wizard_power' => '%+4g%% wizard power',
+            'construction_cost' => '%+.2f%% construction platinum cost',
+            'food_production' => '%+.2f%% food production',
+            'fewer_casualties' => '%+.2f%% fewer casualties',
+            'gem_production' => '%+.2f%% gem production',
+            'military_cost' => '%+.2f%% military training cost',
+            'platinum_production' => '%+.2f%% platinum production',
+            'tech_production' => '%+.2f%% research point production',
+            'spy_power' => '%+.2f%% spy power',
+            'wizard_power' => '%+.2f%% wizard power',
         ];
 
         return $helpStrings[$perk] ?: null;

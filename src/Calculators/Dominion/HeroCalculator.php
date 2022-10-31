@@ -25,14 +25,26 @@ class HeroCalculator
     }
 
     /**
+     * Returns the Dominion's experience gain.
+     *
+     * @param Dominion $dominion
+     * @param int $xpGain
+     * @return float
+     */
+    public function getExperienceGain(Dominion $dominion, int $xpGain): float
+    {
+        return $xpGain * $this->getExperienceMultiplier($dominion);
+    }
+
+    /**
      * Returns the Dominion's experience gain multiplier.
      *
      * @param Dominion $dominion
      * @return float
      */
-    public function geExperienceMultiplier(Dominion $dominion): float
+    public function getExperienceMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $xpPerShrine = 2;

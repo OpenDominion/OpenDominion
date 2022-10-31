@@ -21,7 +21,7 @@ class CreateHeroesTable extends Migration
             //$table->integer('class_id')->unsigned()->nullable();
             $table->string('trade')->nullable();
             //$table->integer('trade_id')->unsigned()->nullable();
-            $table->integer('experience')->default(0);
+            $table->float('experience')->default(0);
             //$table->integer('level')->default(0);
             //$table->timestamp('returning_at')->nullable();
             $table->timestamps();

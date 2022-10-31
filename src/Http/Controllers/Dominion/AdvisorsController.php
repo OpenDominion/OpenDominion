@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -156,6 +157,7 @@ class AdvisorsController extends AbstractDominionController
             'bankingCalculator' => app(BankingCalculator::class),
             'constructionCalculator' => app(ConstructionCalculator::class),
             'explorationCalculator' => app(ExplorationCalculator::class),
+            'heroCalculator' => app(HeroCalculator::class),
             'improvementCalculator' => app(ImprovementCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),

@@ -89,7 +89,7 @@
                                         Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getTradeDisplayName($hero->trade) }}
                                     </div>
                                     <div class="text-center">
-                                        {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
+                                        {{ floor($hero->experience) }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
                                     </div>
                                     <div class="text-center">
                                         {{ $heroCalculator->getTradeDescription($hero) }}
