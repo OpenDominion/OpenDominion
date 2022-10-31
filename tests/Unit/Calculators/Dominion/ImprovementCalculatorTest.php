@@ -4,6 +4,7 @@ namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
 use Mockery\Mock;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
@@ -14,6 +15,9 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
  */
 class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
 {
+    /** @var Mock|HeroCalculator */
+    protected $heroCalculator;
+
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
@@ -28,6 +32,7 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->sut = m::mock(ImprovementCalculator::class, [
+            $this->heroCalculator = m::mock(HeroCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
         ])->makePartial();
     }
