@@ -50,7 +50,7 @@ class HeroHelper
                 'key' => 'architect',
                 'perk_type' => 'construction_cost',
                 'coefficient' => -1.2,
-                'icon' => 'ra ra-hand-saw',
+                'icon' => 'ra ra-quill-ink',
             ],
             [
                 'name' => 'Blacksmith',
@@ -58,6 +58,13 @@ class HeroHelper
                 'perk_type' => 'military_cost',
                 'coefficient' => -0.25,
                 'icon' => 'ra ra-anvil',
+            ],
+            [
+                'name' => 'Engineer',
+                'key' => 'engineer',
+                'perk_type' => 'invest_bonus',
+                'coefficient' => 0.6,
+                'icon' => 'ra ra-hammer',
             ],
             [
                 'name' => 'Healer',
@@ -72,13 +79,6 @@ class HeroHelper
                 'perk_type' => 'spy_power',
                 'coefficient' => 2,
                 'icon' => 'ra ra-hood',
-            ],
-            [
-                'name' => 'Miner',
-                'key' => 'miner',
-                'perk_type' => 'gem_production',
-                'coefficient' => 0.6,
-                'icon' => 'ra ra-mining-diamonds',
             ],
             [
                 'name' => 'Sorcerer',
