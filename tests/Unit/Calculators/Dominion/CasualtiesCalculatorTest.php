@@ -109,6 +109,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
                 'military_unit3',
                 'military_unit4',
                 'military_spies',
+                'military_assassins',
                 'military_wizards',
                 'military_archmages',
             ];

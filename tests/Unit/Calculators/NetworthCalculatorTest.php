@@ -106,6 +106,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
         $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
+        $dominion->shouldReceive('getAttribute')->with('military_assassins')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(1000);
@@ -145,6 +146,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
         $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
+        $dominion->shouldReceive('getAttribute')->with('military_assassins')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(0);
@@ -184,6 +186,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
         $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
+        $dominion->shouldReceive('getAttribute')->with('military_assassins')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(1000);
