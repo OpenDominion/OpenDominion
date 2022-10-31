@@ -242,6 +242,17 @@ blizzard:
     - icekin
   perks:
     defense: 15
+  active: false
+alchemist_frost:
+  name: Alchemist Frost
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - icekin
+  perks:
+    platinum_production: 15
 mechanical_genius:
   name: Mechanical Genius
   category: self

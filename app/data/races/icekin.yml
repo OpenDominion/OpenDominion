@@ -9,7 +9,7 @@ explorer_difficulty: 1
 converter_difficulty: 2
 home_land_type: mountain
 perks:
-  platinum_production: 5
+  defense: 5
   food_consumption: -50
   lumber_production: -10
   archmage_cost: -100
