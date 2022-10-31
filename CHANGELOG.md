@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Can be retired and half its experience will be applied to a new one
 - New Spell: Disclosure
   - Info op for revealing inforamation about heroes
+- Production Advisor now shows various expenditure bonuses
 
 ### Changed
 - Shrines:

@@ -2,6 +2,11 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
+use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
+use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
@@ -148,9 +153,15 @@ class AdvisorsController extends AbstractDominionController
         }
 
         return view('pages.dominion.advisors.production', [
+            'bankingCalculator' => app(BankingCalculator::class),
+            'constructionCalculator' => app(ConstructionCalculator::class),
+            'explorationCalculator' => app(ExplorationCalculator::class),
+            'improvementCalculator' => app(ImprovementCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'productionCalculator' => app(ProductionCalculator::class),
+            'rezoningCalculator' => app(RezoningCalculator::class),
+            'trainingCalculator' => app(TrainingCalculator::class),
             'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);

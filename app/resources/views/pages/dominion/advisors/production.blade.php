@@ -15,7 +15,7 @@
     @include('partials.dominion.advisor-selector')
     <div class="row">
 
-        <div class="col-md-12 col-md-9">
+        <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-industry"></i> {{ $pageHeader }}</h3>
@@ -502,6 +502,133 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-money"></i> Expenditure Bonuses</h3>
+                </div>
+                <div class="box-body no-padding">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Civilian Cost Reductions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Explore:</td>
+                                        <td>
+                                            {!! bonus_display(($explorationCalculator->getPlatinumCostMultiplier($target) - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Construction (Platinum):</td>
+                                        <td>
+                                            {!! bonus_display(($constructionCalculator->getPlatinumCostMultiplier($target) - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Construction (Lumber):</td>
+                                        <td>
+                                            {!! bonus_display(($constructionCalculator->getLumberCostMultiplier($target) - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rezone:</td>
+                                        <td>
+                                            {!! bonus_display(($rezoningCalculator->getCostMultiplier($target) - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Military Cost Reductions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Specialist & Elite Training:</td>
+                                        <td>
+                                            {!! bonus_display(($trainingCalculator->getSpecialistEliteCostMultiplier($target) - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spy Training:</td>
+                                        <td>
+                                            {!! bonus_display(($trainingCalculator->getSpyCostMultiplier($target) - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wizard & Archmage Training:</td>
+                                        <td>
+                                            {!! bonus_display(($trainingCalculator->getWizardCostMultiplier($target) - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Investment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Gems:</td>
+                                        <td>
+                                            {!! bonus_display(($improvementCalculator->getInvestmentMultiplier($target, 'gems') - 1) * 100) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ore:</td>
+                                        <td>
+                                            {!! bonus_display(($improvementCalculator->getInvestmentMultiplier($target, 'ore') - 1) * 100) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Other Resource:</td>
+                                        <td>
+                                            {!! bonus_display(($improvementCalculator->getInvestmentMultiplier($target) - 1) * 100) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank Exchange:</td>
+                                        <td>
+                                            {!! bonus_display(($bankingCalculator->getExchangeBonus($target) - 1) * 100) !!}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
                 </div>
             </div>

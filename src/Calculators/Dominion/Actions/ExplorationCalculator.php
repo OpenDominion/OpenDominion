@@ -38,9 +38,19 @@ class ExplorationCalculator
     public function getPlatinumCost(Dominion $dominion): int
     {
         $totalLand = $this->landCalculator->getTotalLand($dominion);
-
         $platinum = max(0.6 * ($totalLand ** 1.299), 850);
 
+        return round($platinum * $this->getPlatinumCostMultiplier($dominion));
+    }
+
+    /**
+     * Returns the Dominion's exploration platinum cost multiplier.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPlatinumCostMultiplier(Dominion $dominion): int
+    {
         $multiplier = 1;
 
         // Racial Bonus
@@ -57,7 +67,7 @@ class ExplorationCalculator
             $multiplier += 0.25;
         }
 
-        return round($platinum * $multiplier);
+        return $multiplier;
     }
 
     /**

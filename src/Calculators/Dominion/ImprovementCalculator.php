@@ -6,16 +6,21 @@ use OpenDominion\Models\Dominion;
 
 class ImprovementCalculator
 {
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
     /**
      * ImprovementCalculator constructor.
-     *
-     * @param LandCalculator $landCalculator
      */
-    public function __construct(LandCalculator $landCalculator)
+    public function __construct(
+        HeroCalculator $heroCalculator,
+        LandCalculator $landCalculator
+    )
     {
+        $this->heroCalculator = $heroCalculator;
         $this->landCalculator = $landCalculator;
     }
 
@@ -110,6 +115,34 @@ class ImprovementCalculator
             $dominion->improvement_walls +
             $dominion->improvement_harbor
         );
+    }
+
+    /**
+     * Returns the Dominion's investment multiplier.
+     *
+     * @param Dominion $dominion
+     * @param string $resource
+     * @param string $improvementType
+     * @return float
+     */
+    public function getInvestmentMultiplier(Dominion $dominion, string $resource = '', string $improvementType = ''): float
+    {
+        $multiplier = 1;
+
+        // Racial bonus multiplier
+        $multiplier += $dominion->race->getPerkMultiplier('invest_bonus');
+        $multiplier += $dominion->race->getPerkMultiplier("invest_bonus_{$resource}");
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier("invest_bonus_{$improvementType}");
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'invest_bonus');
+
+        // Wonder
+        $multiplier += $dominion->getWonderPerkMultiplier('invest_bonus');
+
+        return $multiplier;
     }
 
     /**

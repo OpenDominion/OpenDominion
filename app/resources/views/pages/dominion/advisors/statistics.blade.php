@@ -112,8 +112,8 @@
                                 <thead>
                                     <tr>
                                         <th>Black Ops</th>
-                                        <td>Offense</td>
-                                        <td>Defense</td>
+                                        <th>Offense</th>
+                                        <th>Defense</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -300,8 +300,8 @@
                                 <thead>
                                     <tr>
                                         <th>Black Ops</th>
-                                        <td>Offense</td>
-                                        <td>Defense</td>
+                                        <th>Offense</th>
+                                        <th>Defense</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -390,8 +390,8 @@
                                 <thead>
                                     <tr>
                                         <th>Energy Mirror</th>
-                                        <td>Offense</td>
-                                        <td>Defense</td>
+                                        <th>Offense</th>
+                                        <th>Defense</th>
                                     </tr>
                                 </thead>
                                 <tbody>

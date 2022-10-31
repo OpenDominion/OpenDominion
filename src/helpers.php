@@ -100,6 +100,33 @@ if (!function_exists('dominion_attr_display')) {
     }
 }
 
+if (!function_exists('bonus_display')) {
+    /**
+     * Returns a string suitable for displaying a color-coded bonus as positive or negative.
+     *
+     * @param float $value
+     * @param bool $positive
+     * @return string
+     */
+    function bonus_display(float $value, bool $positive = true): string {
+        $color = '';
+        if ($positive) {
+            if ($value < 0) {
+                $color = 'text-red';
+            } elseif ($value > 0) {
+                $color = 'text-green';
+            }
+        } else {
+            if ($value < 0) {
+                $color = 'text-green';
+            } elseif ($value > 0) {
+                $color = 'text-red';
+            }
+        }
+        return vsprintf("<span class='{$color}'>%+g%%</span>", $value);
+    }
+}
+
 if (!function_exists('random_chance')) {
     $mockRandomChance = false;
     /**

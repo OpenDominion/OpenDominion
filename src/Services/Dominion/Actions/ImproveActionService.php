@@ -3,7 +3,6 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
-use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -34,7 +33,6 @@ class ImproveActionService
             throw new GameException("You do not have enough {$resource} to invest.");
         }
 
-        $heroCalculator = app(HeroCalculator::class);
         $improvementCalculator = app(ImprovementCalculator::class);
         $repairableImprovements = $improvementCalculator->getRepairableImprovements($dominion);
         $worth = $this->getImprovementWorth();
@@ -48,20 +46,7 @@ class ImproveActionService
                 throw new GameException('Investment aborted due to bad input.');
             }
 
-            $multiplier = 1;
-
-            // Racial bonus multiplier
-            $multiplier += $dominion->race->getPerkMultiplier('invest_bonus');
-            $multiplier += $dominion->race->getPerkMultiplier("invest_bonus_{$resource}");
-
-            // Techs
-            $multiplier += $dominion->getTechPerkMultiplier("invest_bonus_{$improvementType}");
-
-            // Heroes
-            $multiplier += $heroCalculator->getHeroPerkMultiplier($dominion, 'invest_bonus');
-
-            // Wonder
-            $multiplier += $dominion->getWonderPerkMultiplier('invest_bonus');
+            $multiplier = $improvementCalculator->getInvestmentMultiplier($dominion, $resource, $improvementType);
 
             $points = floor($amount * $worth[$resource] * $multiplier);
             if ($repairableImprovements > 0) {
