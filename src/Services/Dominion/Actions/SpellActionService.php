@@ -574,7 +574,7 @@ class SpellActionService
                 ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
             )) {
                 $modifier = min(1, $durationAdded / 9);
-                $results = $this->handleWarResults($dominion, $target, $durationAdded / 9);
+                $results = $this->handleWarResults($dominion, $target, $spell->key, $durationAdded / 9);
                 $warRewardsString = $results['warRewards'];
                 if ($results['damageDealt'] !== '') {
                     $damageDealtString = "Your target lost {$results['damageDealt']}.";
@@ -735,7 +735,7 @@ class SpellActionService
                 $this->spellHelper->isWarSpell($spell) ||
                 ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
             )) {
-                $results = $this->handleWarResults($dominion, $target);
+                $results = $this->handleWarResults($dominion, $target, $spell->key);
                 $warRewardsString = $results['warRewards'];
                 if ($results['damageDealt'] !== '') {
                     $damageDealt[] = $results['damageDealt'];
@@ -984,18 +984,23 @@ class SpellActionService
     /**
      * @param Dominion $dominion
      * @param Dominion $target
+     * @param string $spellKey
      * @param float $modifier
      * @return array
      * @throws Exception
      */
-    protected function handleWarResults(Dominion $dominion, Dominion $target, float $modifier = 1): array
+    protected function handleWarResults(Dominion $dominion, Dominion $target, string $spellKey, float $modifier = 1): array
     {
         $damageDealtString = '';
         $warRewardsString = '';
 
         // Infamy and Resilience Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
-        $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
+        if ($spellKey == 'fireball') {
+            $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
+        } else {
+            $resilienceGain = 0;
+        }
 
         // Mutual War
         $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);

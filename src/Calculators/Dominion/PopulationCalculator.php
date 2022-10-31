@@ -255,9 +255,10 @@ class PopulationCalculator
      */
     public function getPopulationBirth(Dominion $dominion): int
     {
-        $populationBirth = round($this->getPopulationBirthRaw($dominion) * $this->getPopulationBirthMultiplier($dominion));
+        $multiplier = $this->getPopulationBirthMultiplier($dominion);
+        $populationBirth = round($this->getPopulationBirthRaw($dominion) * $multiplier);
         $maxPeasantPopulation = $this->getMaxPopulation($dominion) - $this->getPopulationMilitary($dominion);
-        $birthFromResilience = $maxPeasantPopulation * $dominion->wizard_resilience / 250 / 100;
+        $birthFromResilience = $maxPeasantPopulation * ($dominion->wizard_resilience / 250 / 100) * (1 + (($multiplier - 1) / 10));
         return max($populationBirth, $birthFromResilience);
     }
 

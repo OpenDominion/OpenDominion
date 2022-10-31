@@ -717,7 +717,7 @@ class EspionageActionService
             $this->espionageHelper->isWarOperation($operationKey) ||
             ($this->espionageHelper->isBlackOperation($operationKey) && ($warDeclared || $blackGuard))
         )) {
-            $results = $this->handleWarResults($dominion, $target);
+            $results = $this->handleWarResults($dominion, $target, $operationKey);
             $warRewardsString = $results['warRewards'];
             if ($results['damageDealt'] !== '') {
                 $damageDealt[] = $results['damageDealt'];
@@ -819,18 +819,23 @@ class EspionageActionService
     /**
      * @param Dominion $dominion
      * @param Dominion $target
+     * @param string $operationKey
      * @param float $modifier
      * @return array
      * @throws Exception
      */
-    protected function handleWarResults(Dominion $dominion, Dominion $target, float $modifier = 1): array
+    protected function handleWarResults(Dominion $dominion, Dominion $target, string $operationKey, float $modifier = 1): array
     {
         $damageDealtString = '';
         $warRewardsString = '';
 
         // Infamy and Resilience Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'spy', $modifier);
-        $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'spy');
+        if ($operationKey == 'magic_snare') {
+            $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'spy');
+        } else {
+            $resilienceGain = 0;
+        }
 
         // Mutual War
         $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
