@@ -20,18 +20,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Casualty reduction removed (in lieu of Healer hero)
   - Increases hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned.
   - Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.
-- Halfling: Defensive Frenzy removed
+- Barracks:
+  - No longer scale with prestige
+  - Increased to 36 housing (from 35)
+  - Bunk Beds tech increased to +2 barracks housing (from +1)
+- Halfling:
+  - Defensive Frenzy removed
   - added +10% defensive power racial
   - removed 30% fewer casualties from Staff Master
   - Frenzy: new spell, 30% fewer casualties
-- Icekin: Blizzard removed
+- Icekin:
+  - Blizzard removed
   - added +5% defensive power racial
   - removed 5% platinum production racial
   - Alchemist Frost: new spell, 15% platinum production (does not stack with Midas)
-- Spy resilience is now only increased by Magic Snare
-- Wizard strength regen under 30% is now increased by by 1% per 100 spy resilience (from 1% per 250)
-- Wizard resilience is now only increased by Fireball
-- Peasant change due to wizard resilience is now increased by 10% of your total pop growth (Plague, Harmony, temples, techs, etc.)
+- Resilience:
+  - Spy resilience is now only increased by Magic Snare
+  - Wizard strength regen under 30% is now increased by by 1% per 100 spy resilience (from 1% per 250)
+  - Wizard resilience is now only increased by Fireball
+  - Peasant change due to wizard resilience is now increased by 10% of your total pop growth (Plague, Harmony, temples, techs, etc.)
 
 ## [1.31.0] - 2022-09-02
 ### Added
