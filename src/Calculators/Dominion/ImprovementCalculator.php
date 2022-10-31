@@ -159,4 +159,28 @@ class ImprovementCalculator
         }
         return 0;
     }
+
+    /**
+     * Returns the percentage of damage done to a dominion's improvements.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDamagePercentage(Dominion $dominion): float
+    {
+        return ($this->getRepairableImprovements($dominion) / $dominion->highest_improvement_total);
+    }
+
+    /**
+     * Returns the percentage of damage done to a dominion's improvements.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getRepairMultiplier(Dominion $dominion): float
+    {
+        $damagePercentage = $this->getDamagePercentage($dominion);
+
+        return min($damagePercentage * 10, 1);
+    }
 }

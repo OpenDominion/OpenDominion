@@ -198,6 +198,9 @@ class InfoMapper
             );
         }
 
+        array_set($data, 'total', $this->improvementCalculator->getImprovementTotal($dominion));
+        array_set($data, 'highest_total', $dominion->highest_improvement_total);
+
         return $data;
     }
 

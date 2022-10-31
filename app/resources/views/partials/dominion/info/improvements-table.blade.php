@@ -30,7 +30,13 @@
         @endforeach
         <tr>
             <td>Total</td>
-            <td></td>
+            <td>
+                @if (isset($data['total']) && isset($data['highest_total']) && $data['highest_total'] > $data['total'])
+                    <span class="text-muted">
+                        ({{ number_format($data['highest_total'] - $data['total']) }} damage repairable at +{{ number_format((1 - $data['total'] / $data['highest_total']) * 100 * 10, 2) }}% bonus)
+                    </span>
+                @endif
+            </td>
             <td class="text-center">
                 {{ number_format(array_sum(array_column($data, 'points'))) }}
             </td>

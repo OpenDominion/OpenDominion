@@ -35,6 +35,7 @@ class ImproveActionService
 
         $improvementCalculator = app(ImprovementCalculator::class);
         $repairableImprovements = $improvementCalculator->getRepairableImprovements($dominion);
+        $repairMultiplier = (1 + $improvementCalculator->getRepairMultiplier($dominion));
         $worth = $this->getImprovementWorth();
 
         foreach ($data as $improvementType => $amount) {
@@ -50,7 +51,7 @@ class ImproveActionService
 
             $points = floor($amount * $worth[$resource] * $multiplier);
             if ($repairableImprovements > 0) {
-                $points = min($points * 2, $points + $repairableImprovements);
+                $points = min($points * $repairMultiplier, $points + $repairableImprovements);
                 $repairableImprovements -= $points;
             }
 

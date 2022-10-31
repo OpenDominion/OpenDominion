@@ -96,7 +96,7 @@
                         <p>Masonries are increasing your castle improvements by {{ number_format(($improvementCalculator->getImprovementMultiplier($selectedDominion) - 1) * 100, 2) }}%</p>
                     @endif
                     @if ($improvementCalculator->getRepairableImprovements($selectedDominion) > 0)
-                        <p>You can repair up to {{ $improvementCalculator->getRepairableImprovements($selectedDominion) }} points in your castle (investment is doubled).</p>
+                        <p><b>Lightning has damanged your castle!</b><br>Total investment has been reduced by {{ number_format($improvementCalculator->getDamagePercentage($selectedDominion) * 100, 3) }}% of maximum. You will receive an investment bonus (currently +{{ number_format($improvementCalculator->getRepairMultiplier($selectedDominion) * 100, 2) }}%) until {{ number_format($improvementCalculator->getRepairableImprovements($selectedDominion)) }} points have been repaired.</p>
                     @endif
                 </div>
             </div>
