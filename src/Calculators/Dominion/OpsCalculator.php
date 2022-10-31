@@ -343,7 +343,11 @@ class OpsCalculator
             return 0;
         }
 
-        return min(1, $ratio) / 2;
+        // Scale ratio required from 0.5 at Day 4 to 1.0 at Day 24, to 1.5 at Day 44
+        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
+        $daysModifier = (0.025 * $days) + 0.5;
+
+        return min(0.5, $ratio / $daysModifier / 2);
     }
 
     /**

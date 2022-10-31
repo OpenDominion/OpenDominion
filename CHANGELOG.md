@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Can be retired and half its experience will be applied to a new one
 - New Spell: Disclosure
   - Info op for revealing inforamation about heroes
-- New Unit: Master Assassin
+- New Unit: Assassins
   - Costs 1000p and 1 spy to train, counts as 2 spies
   - Cannot be killed by Disband Spies
 - Production Advisor now shows various expenditure bonuses
@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Wizard strength regen under 30% is now increased by by 1% per 100 spy resilience (from 1% per 250)
   - Wizard resilience is now only increased by Fireball
   - Peasant change due to wizard resilience is now increased by 10% of your total pop growth (Plague, Harmony, temples, techs, etc.)
+- Spy/Wizard ratio required for maximum damage reduction from black ops now scales up during the round: 0.5 at Day 4, 1.0 at Day 24, 1.5 at Day 44 (from 1.0 all round)
 
 ## [1.31.0] - 2022-09-02
 ### Added
