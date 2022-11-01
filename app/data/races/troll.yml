@@ -30,15 +30,13 @@ units:
       offense: 0
       defense: 3
   - name: Basher
-    type: offensive_elite
+    type: hybrid_elite
     cost:
-      platinum: 1000
-      ore: 100
+      platinum: 1425
+      ore: 150
     power:
-      offense: 5
-      defense: 2
-    perks:
-      reduce_combat_losses: 1
+      offense: 7
+      defense: 7
   - name: Smasher
     type: hybrid_elite
     cost:
