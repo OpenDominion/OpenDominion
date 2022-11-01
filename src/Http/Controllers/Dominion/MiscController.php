@@ -451,7 +451,7 @@ class MiscController extends AbstractDominionController
             $settings['preferred_title'] = $request->get('title');
             $settings['show_icon'] = $request->get('show_icon');
             $settings['black_guard_icon'] = $request->get('black_guard_icon');
-    
+
             $dominion->settings = $settings;
             $dominion->save();
         } catch (GameException $e) {
