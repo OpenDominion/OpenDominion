@@ -56,7 +56,6 @@ class ScribesController extends AbstractController
             }
         }
 
-        $buildingTypeWithLandType['shrine'] = null;
         $buildingTypeWithLandType['home'] = null;
 
         ksort($buildingTypeWithLandType);

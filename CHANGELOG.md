@@ -19,7 +19,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - Shrines:
-  - Moved to home land type
   - Casualty reduction removed (in lieu of Healer hero)
   - Increases hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned.
   - Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.

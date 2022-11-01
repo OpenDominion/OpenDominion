@@ -67,6 +67,7 @@ class BuildingHelper
             'hill' => [
                 'factory',
                 'guard_tower',
+                'shrine',
                 'barracks',
             ],
             'water' => [
@@ -75,7 +76,6 @@ class BuildingHelper
         ];
 
         if ($race !== null) {
-            array_unshift($return[$race->home_land_type], 'shrine');
             array_unshift($return[$race->home_land_type], 'home');
         }
 
