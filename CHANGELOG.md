@@ -43,6 +43,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Peasant change due to wizard resilience is now increased by 10% of your total pop growth (Plague, Harmony, temples, techs, etc.)
 - Lightning repair bonus now scales based on total damage received, up to 100% at 10% damage received (from constant 100%)
 - Spy/Wizard ratio required for maximum damage reduction from black ops now scales up during the round: 0.5 at Day 4, 1.0 at Day 24, 1.5 at Day 44 (from 1.0 all round)
+- Research point gains on attack are now 5x land conquered OR 750 whichever is higher (from 750 flat)
 
 ## [1.31.0] - 2022-09-02
 ### Added

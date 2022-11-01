@@ -279,13 +279,13 @@ class InvadeActionService
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
-            $this->handleResearchPoints($dominion, $target, $survivingUnits);
 
             $convertedUnits = $this->handleConversions($dominion, $target, $units, $survivingUnits);
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
 
             $this->handleMoraleChanges($dominion, $target);
             $this->handleLandGrabs($dominion, $target);
+            $this->handleResearchPoints($dominion, $target, $survivingUnits);
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
@@ -302,7 +302,6 @@ class InvadeActionService
             } else {
                 $target->stat_defending_success += 1;
                 $dominion->stat_attacking_failure += 1;
-                $this->invasionResult['attacker']['xpGain'] = 0;
             }
 
             // todo: move to GameEventService
@@ -343,8 +342,11 @@ class InvadeActionService
             $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
 
             // Hero Experience
-            if ($dominion->hero && $this->invasionResult['attacker']['xpGain']) {
-                $dominion->hero->experience += $this->invasionResult['attacker']['xpGain'];
+            if ($dominion->hero && $this->invasionResult['result']['success']) {
+                $heroCalculator = app(HeroCalculator::class);
+                $xpGain = $heroCalculator->getExperienceGain($dominion, $this->landLost);
+                $this->invasionResult['attacker']['xpGain'] = $xpGain;
+                $dominion->hero->experience += $xpGain;
                 $dominion->hero->save();
             }
         });
@@ -733,9 +735,6 @@ class InvadeActionService
         $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
         $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
-        $heroCalculator = app(HeroCalculator::class);
-        $this->invasionResult['attacker']['xpGain'] = $heroCalculator->getExperienceGain($dominion, $acresLost);
-
         $landGainedPerLandType = [];
         foreach ($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
             if (!isset($this->invasionResult['attacker']['landConquered'][$landType])) {
@@ -972,7 +971,7 @@ class InvadeActionService
             } elseif ($range < 75) {
                 $researchPointsGained = $baseResearchPointsGained / 2;
             } else {
-                $researchPointsGained = $baseResearchPointsGained;
+                $researchPointsGained = max(5 * $this->landLost, $baseResearchPointsGained);
                 $this->queueService->dequeueResource('invasion', $target, 'resource_tech', $researchPointsGained);
                 $this->invasionResult['defender']['researchPoints'] = -$researchPointsGained;
             }
