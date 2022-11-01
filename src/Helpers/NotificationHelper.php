@@ -629,8 +629,10 @@ class NotificationHelper
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
 
                 return sprintf(
-                    'The energy mirror protecting our dominion has reflected a %s spell back at the caster.',
-                    $data['spellName']
+                    'The energy mirror protecting our dominion has reflected a %s spell back at %s (#%s).',
+                    $data['spellName'],
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':
