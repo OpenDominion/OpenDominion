@@ -107,7 +107,6 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $buildingTypesByLandType = [
             'plain' => [
                 'home',
-                'shrine',
                 'alchemy',
                 'farm',
                 'smithy',
@@ -133,6 +132,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
             'hill' => [
                 'factory',
                 'guard_tower',
+                'shrine',
                 'barracks',
             ],
             'water' => [
