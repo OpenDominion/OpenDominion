@@ -146,7 +146,7 @@ class OpsCalculator
      */
     public function getAssassinLosses(Dominion $dominion, Dominion $target, string $type): float
     {
-        return $this->getSpyLosses($dominion, $target, $type) / 2;
+        return $this->getSpyLosses($dominion, $target, $type);
     }
 
     /**
