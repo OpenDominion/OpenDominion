@@ -250,7 +250,7 @@ class HeroCalculator
     {
         $perkType = $this->heroHelper->getTrades()[$hero->trade]['perk_type'];
         $perkValue = $this->getTradeBonus($hero, $perkType);
-        $helpString = sprintf(
+        $helpString = vsprintf(
             $this->heroHelper->getTradeHelpString($hero->trade),
             number_format($perkValue, 2)
         );
