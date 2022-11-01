@@ -11,6 +11,7 @@
                 <div class="col-md-12">
                     <p>Magic will let your wizards cast a variety of spells, giving temporary bonuses, information or damaging your enemies.</p>
                     <p>All spells cost mana, which is produced by towers. The cost of each spell is based on a multiplier of your land size.</p>
+                    <p>Self spell bonuses of the same type do not stack. Only the highest bonus will be applied.</p>
                     <em>
                         <p>More information can be found on the <a href="https://wiki.opendominion.net/wiki/Magic">wiki</a>.</p>
                     </em>
