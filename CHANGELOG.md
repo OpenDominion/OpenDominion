@@ -4,6 +4,7 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.32.0] - 2022-11-01
 ### Added
 - Heroes: create a hero for your dominion
   - Select a class which determines the hero's passive bonus

@@ -37,7 +37,7 @@ units:
       offense: 0
       defense: 4.5
     perks:
-      rebirth: 12
+      rebirth: 6
   - name: Salamander
     cost:
       platinum: 950
