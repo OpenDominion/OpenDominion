@@ -120,6 +120,7 @@ class HeroHelper
             'food_production' => '%+.2f%% food production',
             'fewer_casualties' => '%+.2f%% fewer casualties',
             'gem_production' => '%+.2f%% gem production',
+            'invest_bonus' => '%+.2%% castle investment bonus',
             'military_cost' => '%+.2f%% military training cost',
             'platinum_production' => '%+.2f%% platinum production',
             'tech_production' => '%+.2f%% research point production',
