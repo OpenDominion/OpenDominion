@@ -684,15 +684,24 @@ class InvadeActionService
 
             if ($slotLost > 0) {
                 $defensiveUnitsLost[$unit->slot] = $slotLost;
-
                 $this->unitsLost += $slotLost; // todo: refactor
             }
         }
 
         foreach ($defensiveUnitsLost as $slot => $amount) {
             $target->{"military_unit{$slot}"} -= $amount;
-
             $this->invasionResult['defender']['unitsLost'][$slot] = $amount;
+
+            // Rebirth perk
+            $rebirthHours = $target->race->getUnitPerkValueForUnitSlot($slot, 'rebirth');
+            if ($rebirthHours) {
+                $this->queueService->queueResources(
+                    'invasion',
+                    $target,
+                    ["military_unit{$slot}" => $amount],
+                    $rebirthHours
+                );
+            }
         }
 
         return $this->unitsLost;

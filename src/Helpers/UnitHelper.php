@@ -168,6 +168,7 @@ class UnitHelper
 
             'kills_immortal' => 'Can kill spirits and the undead.',
             'reduce_combat_losses' => 'Reduces combat losses.',
+            'rebirth' => 'Reborn %d hours after death.',
 
             // Resource related
             'ore_production' => 'Each unit produces %s units of ore per hour.',
