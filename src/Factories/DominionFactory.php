@@ -156,6 +156,11 @@ class DominionFactory
             ->where('dominion_id', $dominion->id)
             ->delete();
 
+        // Reset Heroes
+        DB::table('heroes')
+            ->where('dominion_id', $dominion->id)
+            ->delete();
+
         // Reset Notifications
         DB::table('notifications')
             ->where('notifiable_type', Dominion::class)
