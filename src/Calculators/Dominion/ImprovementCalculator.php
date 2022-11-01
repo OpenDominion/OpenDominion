@@ -168,7 +168,10 @@ class ImprovementCalculator
      */
     public function getDamagePercentage(Dominion $dominion): float
     {
-        return ($this->getRepairableImprovements($dominion) / $dominion->highest_improvement_total);
+        if ($dominion->highest_improvement_total > 0) {
+            return ($this->getRepairableImprovements($dominion) / $dominion->highest_improvement_total);
+        }
+        return 0;
     }
 
     /**
