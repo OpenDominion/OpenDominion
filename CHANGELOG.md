@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Costs 1000p and 1 spy to train, counts as 2 spies
   - Cannot be killed by Disband Spies
 - Production Advisor now shows various expenditure bonuses
+- Settings page where you select your preferred title for the round forum, choose to display it on the realm page, and toggle Shadow League visibility.
 
 ### Changed
 - Shrines:

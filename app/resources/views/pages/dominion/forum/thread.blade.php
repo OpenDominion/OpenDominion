@@ -19,7 +19,7 @@
                             @php
                                 $rankings = $rankingsService->getTopRankedDominions($thread->dominion->round);
                                 $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
-                                $ranking = $rankingsHelper->getFirstRanking($titles);
+                                $ranking = $rankingsHelper->getFirstRanking($titles, isset($thread->dominion->settings['preferred_title']) ? $thread->dominion->settings['preferred_title'] : '');
                             @endphp
                             <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
                             <span class="username">
@@ -59,7 +59,7 @@
                                 @php
                                     $rankings = $rankingsService->getTopRankedDominions($post->dominion->round);
                                     $titles = isset($rankings[$post->dominion->id]) ? $rankings[$post->dominion->id] : [];
-                                    $ranking = $rankingsHelper->getFirstRanking($titles);
+                                    $ranking = $rankingsHelper->getFirstRanking($titles, isset($post->dominion->settings['preferred_title']) ? $post->dominion->settings['preferred_title'] : '');
                                 @endphp
                                 <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
                                 <div class="comment-text">
@@ -122,7 +122,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here.</p>
+                    <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here. You may also <a href="{{ route('dominion.misc.settings') }}">select your title</a>.</p>
                     <p>There {{ ($thread->posts->count() === 1) ? 'is' : 'are' }} {{ number_format($thread->posts->count()) }} {{ str_plural('reply', $thread->posts->count()) }} in this thread.</p>
                     @include('partials.forum-rules')
                 </div>

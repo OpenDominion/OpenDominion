@@ -9,12 +9,14 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Helpers\DiscordHelper;
+use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\RankingsService;
 
 class RealmController extends AbstractDominionController
 {
@@ -26,6 +28,8 @@ class RealmController extends AbstractDominionController
         $landCalculator = app(LandCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
         $protectionService = app(ProtectionService::class);
+        $rankingsHelper = app(RankingsHelper::class);
+        $rankingsService = app(RankingsService::class);
         $wonderCalculator = app(WonderCalculator::class);
         $wonderHelper = app(WonderHelper::class);
 
@@ -85,6 +89,8 @@ class RealmController extends AbstractDominionController
             })
             ->flatten();
 
+        $rankings = $rankingsService->getTopRankedDominions($round);
+
         // Todo: refactor this hacky hacky navigation stuff
         $prevRealm = DB::table('realms')
             ->where('round_id', $round->id)
@@ -111,8 +117,10 @@ class RealmController extends AbstractDominionController
             'landCalculator',
             'networthCalculator',
             'protectionService',
+            'rankingsHelper',
             'wonderCalculator',
             'wonderHelper',
+            'rankings',
             'realm',
             'round',
             'dominions',

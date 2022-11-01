@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Helpers\AIHelper;
+use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -422,5 +423,44 @@ class MiscController extends AbstractDominionController
         }
 
         return redirect()->back();
+    }
+
+    public function getDominionSettings(Request $request) {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return view('pages.dominion.settings', [
+            'rankingsHelper' => app(RankingsHelper::class),
+        ]);
+    }
+
+    public function postDominionSettings(Request $request) {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+
+            $settings = $dominion->settings;
+            $settings['preferred_title'] = $request->get('title');
+            $settings['show_icon'] = $request->get('show_icon');
+            $settings['black_guard_icon'] = $request->get('black_guard_icon');
+    
+            $dominion->settings = $settings;
+            $dominion->save();
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Your settings have been updated!');
+        return redirect()->route('dominion.misc.settings');
     }
 }

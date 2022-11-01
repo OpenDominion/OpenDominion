@@ -54,21 +54,25 @@
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($dominion->isMonarch())
-                                                <i class="ra ra-queen-crown ra-lg text-red" title="Monarch"></i>
+                                                <i class="ra ra-queen-crown ra-lg text-red" title="Monarch" data-toggle="tooltip"></i>
                                             @endif
 
                                             @if ($protectionService->isUnderProtection($dominion))
-                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
+                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection" data-toggle="tooltip"></i>
                                             @endif
 
                                             @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
+                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard" data-toggle="tooltip"></i>
                                             @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
+                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard" data-toggle="tooltip"></i>
                                             @endif
 
-                                            @if ($guardMembershipService->isBlackGuardMember($dominion))
-                                                <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League"></i>
+                                            @if ((isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public') || ($guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion)))
+                                                <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League" data-toggle="tooltip"></i>
+                                            @endif
+
+                                            @if (isset($dominion->settings['show_icon']) && $dominion->settings['show_icon'] == 'on')
+                                                {!! $rankingsHelper->getIconDisplay(isset($rankings[$dominion->id]) ? $rankings[$dominion->id] : [], isset($dominion->settings['preferred_title']) ? $dominion->settings['preferred_title'] : '') !!}
                                             @endif
 
                                             @if ($dominion->id === $selectedDominion->id)
@@ -97,6 +101,12 @@
                                                 <span class="label label-danger">Locked</span>
                                             @elseif ($dominion->isAbandoned())
                                                 <span class="label label-warning">Abandoned</span>
+                                            @endif
+
+                                            @if (!$round->hasEnded() && $dominion->user_id == $selectedDominion->user_id)
+                                                <a href="{{ route('dominion.misc.settings') }}" title="Icon Settings" data-toggle="tooltip">
+                                                    <i class="fa fa-cog fa-lg"></i>
+                                                </a>
                                             @endif
                                         </td>
                                         @if ($isOwnRealm || $round->hasEnded())

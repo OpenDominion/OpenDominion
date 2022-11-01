@@ -268,8 +268,12 @@ class RankingsHelper
         ])->keyBy('key')->toArray();
     }
 
-    public function getFirstRanking(array $keys): array
+    public function getFirstRanking(array $keys, string $preferred = ''): array
     {
+        if (in_array($preferred, $keys)) {
+            $keys = [$preferred];
+        }
+
         foreach ($this->getRankings() as $ranking) {
             if (in_array($ranking['key'], $keys)) {
                 return $ranking;
@@ -277,5 +281,20 @@ class RankingsHelper
         }
 
         return [];
+    }
+
+    public function getIconDisplay(array $keys, string $preferred = ''): string
+    {
+        $defaultRanking = $this->getFirstRanking($keys, $preferred);
+
+        if ($defaultRanking) {
+            return sprintf(
+                '<i class="ra %s" title="%s" data-toggle="tooltip"></i>',
+                $defaultRanking['title_icon'],
+                $defaultRanking['title']
+            );
+        }
+
+        return '';
     }
 }

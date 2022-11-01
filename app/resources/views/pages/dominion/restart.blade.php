@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', 'Status')
+@section('page-header', 'Restart')
 
 @section('content')
     <div class="row">

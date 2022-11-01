@@ -107,7 +107,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here.</p>
+                    <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here. You may also <a href="{{ route('dominion.misc.settings') }}">select your title</a>.</p>
                     <p>There {{ ($forumThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($forumThreads->count()) }} {{ str_plural('thread', $forumThreads->count()) }} in the forum.</p>
                     @include('partials.forum-rules')
                 </div>
