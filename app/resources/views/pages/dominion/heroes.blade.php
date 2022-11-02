@@ -52,36 +52,37 @@
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Create Hero</button>
                         </div>
-                        <div class="box">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Hero Bonuses</h3>
-                            </div>
-                            <div class="box-body table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Level</th>
-                                            <th>XP</th>
-                                            @foreach ($heroHelper->getTrades() as $trade)
-                                                <th>{{ $trade['name'] }}</th>
-                                            @endforeach
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($heroCalculator->getExperienceLevels() as $level)
-                                            @if ($level['level'] !== 0)
-                                                <tr>
-                                                    <td>{{ $level['level'] }}</td>
-                                                    <td>{{ $level['xp'] }}</td>
-                                                    @foreach ($heroHelper->getTrades() as $trade)
-                                                        <th>{{ number_format($heroCalculator->calculateTradeBonus($trade['perk_type'], $level['level']), 2) }}%</th>
-                                                    @endforeach
-                                                </tr>
-                                            @endif
+                    </div>
+
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Hero Bonuses</h3>
+                        </div>
+                        <div class="box-body table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Level</th>
+                                        <th>XP</th>
+                                        @foreach ($heroHelper->getTrades() as $trade)
+                                            <th>{{ $trade['name'] }}</th>
                                         @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($heroCalculator->getExperienceLevels() as $level)
+                                        @if ($level['level'] !== 0)
+                                            <tr>
+                                                <td>{{ $level['level'] }}</td>
+                                                <td>{{ $level['xp'] }}</td>
+                                                @foreach ($heroHelper->getTrades() as $trade)
+                                                    <th>{{ number_format($heroCalculator->calculateTradeBonus($trade['perk_type'], $level['level']), 2) }}%</th>
+                                                @endforeach
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </form>
