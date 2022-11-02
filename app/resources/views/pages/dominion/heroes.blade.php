@@ -6,13 +6,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
-                </div>
-                @if ($heroes->isEmpty())
-                    <form class="form-horizontal" action="{{ route('dominion.heroes.create') }}" method="post" role="form">
-                        @csrf
+            @if ($heroes->isEmpty())
+                <form class="form-horizontal" action="{{ route('dominion.heroes.create') }}" method="post" role="form">
+                    @csrf
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
+                        </div>
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-md-6">
@@ -52,36 +52,67 @@
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Create Hero</button>
                         </div>
-                    </form>
-                @else
-                    @foreach ($heroes as $hero)
-                        <div class="box-body">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Hero Bonuses</h3>
+                            </div>
+                            <div class="box-body table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Level</th>
+                                            <th>XP</th>
+                                            @foreach ($heroHelper->getTrades() as $trade)
+                                                <th>{{ $trade['name'] }}</th>
+                                            @endforeach
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($heroCalculator->getExperienceLevels() as $level)
+                                            @if ($level['level'] !== 0)
+                                                <tr>
+                                                    <td>{{ $level['level'] }}</td>
+                                                    <td>{{ $level['xp'] }}</td>
+                                                    @foreach ($heroHelper->getTrades() as $trade)
+                                                        <th>{{ number_format($heroCalculator->calculateTradeBonus($trade['perk_type'], $level['level']), 2) }}%</th>
+                                                    @endforeach
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            @else
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
+                    </div>
+                    <div class="box-body">
+                        @foreach ($heroes as $hero)
                             <div class="row">
-                                <!--
                                 <div class="col-md-6">
-                                    <div class="row" style="font-size: 36px;">
-                                        <div class="col-xs-3">
-                                            <i class="ra ra-knight-helmet" title="Helmet" data-toggle="tooltip"></i><br/>
-                                            <i class="ra ra-sword" title="Sword" data-toggle="tooltip"></i><br/>
-                                            <i class="ra ra-shield" title="Shield" data-toggle="tooltip"></i>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <img class="img-responsive" src="https://place-hold.it/200x300" />
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <i class="ra ra-gold-bar" title="Alchemist" data-toggle="tooltip"></i><br/>
-                                            <i class="ra ra-falling" title="Ooopsie" data-toggle="tooltip"></i><br/>
-                                            <i class="ra ra-roast-chicken" title="Hangry" data-toggle="tooltip"></i>
+                                    <!--
+                                    <div class="col-md-6">
+                                        <div class="row" style="font-size: 36px;">
+                                            <div class="col-xs-3">
+                                                <i class="ra ra-knight-helmet" title="Helmet" data-toggle="tooltip"></i><br/>
+                                                <i class="ra ra-sword" title="Sword" data-toggle="tooltip"></i><br/>
+                                                <i class="ra ra-shield" title="Shield" data-toggle="tooltip"></i>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <img class="img-responsive" src="https://place-hold.it/200x300" />
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <i class="ra ra-gold-bar" title="Alchemist" data-toggle="tooltip"></i><br/>
+                                                <i class="ra ra-falling" title="Ooopsie" data-toggle="tooltip"></i><br/>
+                                                <i class="ra ra-roast-chicken" title="Hangry" data-toggle="tooltip"></i>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                -->
-                                <div class="col-md-3">
-                                    <div class="text-center" style="font-size: 64px;">
-                                        <i class="{{ $heroHelper->getTradeIconClass($hero->trade) }}" title="{{ $heroHelper->getTradeDisplayName($hero->trade) }}" data-toggle="tooltip"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                    -->
                                     <div class="text-center" style="font-size: 24px;">
                                         {{ $hero->name }}
                                     </div>
@@ -94,12 +125,37 @@
                                     <div class="text-center">
                                         {{ $heroCalculator->getTradeDescription($hero) }}
                                     </div>
+                                    <div class="text-center" style="font-size: 64px;">
+                                        <i class="{{ $heroHelper->getTradeIconClass($hero->trade) }}" title="{{ $heroHelper->getTradeDisplayName($hero->trade) }}" data-toggle="tooltip" data-placement="bottom"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 table-responsive">
+                                    <table class="table table-condensed table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Level</th>
+                                                <th>XP</th>
+                                                <th>Bonus</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($heroCalculator->getExperienceLevels() as $level)
+                                                @if ($level['level'] !== 0)
+                                                    <tr class="{{ $heroCalculator->getHeroLevel($hero) == $level['level'] ? 'text-bold' : null }}">
+                                                        <td>{{ $level['level'] }}</td>
+                                                        <td>{{ $level['xp'] }}</td>
+                                                        <th>{{ number_format($heroCalculator->calculateTradeBonus($heroHelper->getTrades()[$hero->trade]['perk_type'], $level['level']), 2) }}%</th>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div class="col-sm-12 col-md-3">
