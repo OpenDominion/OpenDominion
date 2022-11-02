@@ -38,17 +38,17 @@ class HeroController extends AbstractDominionController
             if (!$dominion->heroes->isEmpty()) {
                 throw new GameException('You can only have one hero at a time.');
             }
+
+            $dominion->heroes()->create([
+                'name' => $request->get('name'),
+                'class' => $request->get('class'),
+                'trade' => $request->get('trade')
+            ]);
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
-
-        $dominion->heroes()->create([
-            'name' => $request->get('name'),
-            'class' => $request->get('class'),
-            'trade' => $request->get('trade')
-        ]);
 
         $request->session()->flash('alert-success', 'Your hero has been created!');
         return redirect()->route('dominion.heroes');
@@ -78,19 +78,18 @@ class HeroController extends AbstractDominionController
             if ($dominion->heroes->isEmpty()) {
                 throw new GameException('You do not have a hero to retire.');
             }
+
+            $dominion->hero()->update([
+                'name' => $request->get('name'),
+                'class' => $request->get('class'),
+                'trade' => $request->get('trade'),
+                'experience' => (int) min($hero->experience, 4000) / 2
+            ]);
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
-
-        $hero = $dominion->heroes->first();
-        $hero->update([
-            'name' => $request->get('name'),
-            'class' => $request->get('class'),
-            'trade' => $request->get('trade'),
-            'experience' => (int) min($hero->experience, 4000) / 2
-        ]);
 
         $request->session()->flash('alert-success', 'Your hero has been retired!');
         return redirect()->route('dominion.heroes');

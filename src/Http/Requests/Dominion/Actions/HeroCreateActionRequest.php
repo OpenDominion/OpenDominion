@@ -12,7 +12,7 @@ class HeroCreateActionRequest extends AbstractDominionRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name' => 'required|min:3|max:32',
             'class' => 'required',
             'trade' => 'required',
         ];
