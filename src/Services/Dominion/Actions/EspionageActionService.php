@@ -196,7 +196,11 @@ class EspionageActionService
                 $spyStrengthLost = 5;
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
-                $xpGain = 5;
+                if ($this->espionageHelper->isWarOperation($spell)) {
+                    $xpGain = 5;
+                } else {
+                    $xpGain = 3;
+                }
                 $spyStrengthLost = 5;
                 $result = $this->performHostileOperation($dominion, $operationKey, $target);
                 $dominion->resetAbandonment();

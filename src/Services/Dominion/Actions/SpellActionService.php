@@ -190,7 +190,11 @@ class SpellActionService
                     $wizardStrengthLost = 1;
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
-                $xpGain = 5;
+                if ($this->spellHelper->isWarSpell($spell)) {
+                    $xpGain = 5;
+                } else {
+                    $xpGain = 3;
+                }
                 $result = $this->castHostileSpell($dominion, $spell, $target);
                 $dominion->resetAbandonment();
             } else {
