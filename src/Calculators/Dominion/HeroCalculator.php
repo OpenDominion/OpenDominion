@@ -128,8 +128,8 @@ class HeroCalculator
         $multiplier = 0;
 
         // Values (percentages)
-        $bonusPerShrine = 40;
-        $bonusPerShrineMax = 400;
+        $bonusPerShrine = 50;
+        $bonusPerShrineMax = 500;
 
         $multiplier += min(
             ($bonusPerShrine * $dominion->building_shrine / $this->landCalculator->getTotalLand($dominion)),
