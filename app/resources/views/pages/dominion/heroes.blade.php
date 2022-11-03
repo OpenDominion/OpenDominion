@@ -93,6 +93,7 @@
                     </div>
                     <div class="box-body">
                         @foreach ($heroes as $hero)
+                            @php $perkType = $heroHelper->getTrades()[$hero->trade]['perk_type']; @endphp
                             <div class="row">
                                 <div class="col-md-6">
                                     <!--
@@ -126,6 +127,11 @@
                                     <div class="text-center">
                                         {{ $heroCalculator->getTradeDescription($hero) }}
                                     </div>
+                                    @if ($selectedDominion->building_shrine > 0)
+                                        <div class="text-center">
+                                            {{ number_format($heroCalculator->getHeroPerkMultiplier($selectedDominion, $perkType) * 100, 2) }}% from Shrines
+                                        </div>
+                                    @endif
                                     <div class="text-center" style="font-size: 64px;">
                                         <i class="{{ $heroHelper->getTradeIconClass($hero->trade) }}" title="{{ $heroHelper->getTradeDisplayName($hero->trade) }}" data-toggle="tooltip" data-placement="bottom"></i>
                                     </div>
@@ -145,7 +151,7 @@
                                                     <tr class="{{ $heroCalculator->getHeroLevel($hero) == $level['level'] ? 'text-bold' : null }}">
                                                         <td>{{ $level['level'] }}</td>
                                                         <td>{{ $level['xp'] }}</td>
-                                                        <th>{{ number_format($heroCalculator->calculateTradeBonus($heroHelper->getTrades()[$hero->trade]['perk_type'], $level['level']), 2) }}%</th>
+                                                        <th>{{ number_format($heroCalculator->calculateTradeBonus($perkType, $level['level']), 2) }}%</th>
                                                     </tr>
                                                 @endif
                                             @endforeach
