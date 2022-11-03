@@ -34,7 +34,7 @@ units:
       offense: 2
       defense: 6
     perks:
-      fewer_casualties: 25
+      casualties: -25
   - name: Cavalry
     cost:
       platinum: 1200

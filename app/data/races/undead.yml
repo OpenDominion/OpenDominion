@@ -32,7 +32,7 @@ units:
       offense: 0
       defense: 2.5
     perks:
-      fewer_casualties: 75
+      casualties: -75
   - name: Progeny
     cost:
       platinum: 860
@@ -41,7 +41,7 @@ units:
       offense: 2
       defense: 4
     perks:
-      fewer_casualties: 75
+      casualties: -75
       conversion: 2,20 # slot 2, one per 20 sent
     need_boat: false
   - name: Vampire

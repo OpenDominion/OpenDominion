@@ -274,7 +274,7 @@ bloodrage:
     - orc
   perks:
     offense: 10
-    increased_casualties_offense: 10
+    casualties_offense: 10
 unholy_ghost:
   name: Unholy Ghost
   category: self
@@ -305,7 +305,7 @@ frenzy:
   races:
     - halfling
   perks:
-    fewer_casualties: 30
+    casualties: -30
 howling:
   name: Howling
   category: self
@@ -347,7 +347,7 @@ regeneration:
   races:
     - troll
   perks:
-    fewer_casualties: 25
+    casualties: -25
 parasitic_hunger:
   name: Parasitic Hunger
   category: self

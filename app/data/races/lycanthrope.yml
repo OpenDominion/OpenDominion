@@ -36,7 +36,7 @@ units:
       offense: 3
       defense: 4
     perks:
-      fewer_casualties_defense: 50
+      casualties_defense: -50
   - name: Garou
     cost:
       platinum: 1100

@@ -26,8 +26,8 @@ class WonderHelper
             // Casualties related
             'enemy_casualties_defense' => '%+d%% defensive casualties inflicted by this realm',
             'enemy_casualties_offense' => '%+d%% offensive casualties against this realm',
-            'fewer_casualties_defense' => '%+d%% fewer casualties on defense',
-            'fewer_casualties_offense' => '%+d%% fewer casualties on offense',
+            'casualties_defense' => '%d%% defensive casualties',
+            'casualties_offense' => '%d%% offensive casualties',
             'kills_immortal' => 'Can kill all immortal units',
             'max_casualties_defense' => 'Defensive casualties inflicted by this realm cannot be reduced',
             'max_casualties_offense' => 'Offensive casualties against this realm cannot be reduced',

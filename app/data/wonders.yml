@@ -70,8 +70,8 @@ city_of_gold:
 ruby_monolith:
   name: Ruby Monolith
   perks:
-    fewer_casualties_offense: 10
-    fewer_casualties_defense: 10
+    casualties_offense: -10
+    casualties_defense: -10
   power: 150000
 high_clerics_tower:
   name: High Cleric's Tower

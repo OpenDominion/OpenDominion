@@ -46,4 +46,4 @@ units:
       defense: 2
     perks:
       faster_return: 3
-      fewer_casualties: 25
+      casualties: -25

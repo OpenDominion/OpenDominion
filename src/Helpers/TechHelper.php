@@ -24,10 +24,10 @@ class TechHelper
             'barracks_housing' => '%s barracks housing',
 
             // Casualties related
-            'fewer_casualties' => '%s%% fewer casualties',
-            'fewer_casualties_defense' => '%s%% fewer casualties on defense',
-            'fewer_casualties_offense' => '%s%% fewer casualties on offense',
-            'fewer_casualties_wonders' => '%s%% fewer casualties when attacking wonders',
+            'casualties' => '%s%% casualties',
+            'casualties_defense' => '%s%% defensive casualties',
+            'casualties_offense' => '%s%% offensive casualties',
+            'casualties_wonders' => '%s%% casualties when attacking wonders',
 
             // Logistics
             'construction_cost' => '%s%% construction platinum cost',

@@ -69,8 +69,8 @@ class HeroHelper
             [
                 'name' => 'Healer',
                 'key' => 'healer',
-                'perk_type' => 'fewer_casualties',
-                'coefficient' => 1,
+                'perk_type' => 'casualties',
+                'coefficient' => -1,
                 'icon' => 'ra ra-health',
             ],
             [
@@ -116,9 +116,9 @@ class HeroHelper
         $perk = $this->getTrades()[$key]['perk_type'];
 
         $helpStrings = [
+            'casualties' => '%+.2f%% casualties',
             'construction_cost' => '%+.2f%% construction platinum cost',
             'food_production' => '%+.2f%% food production',
-            'fewer_casualties' => '%+.2f%% fewer casualties',
             'gem_production' => '%+.2f%% gem production',
             'invest_bonus' => '%+.2f%% castle investment bonus',
             'military_cost' => '%+.2f%% military training cost',

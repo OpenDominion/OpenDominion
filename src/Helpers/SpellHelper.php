@@ -136,9 +136,9 @@ class SpellHelper
             'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades (75%%+ range only)',
 
             // Casualties related
-            'fewer_casualties' => '%+d%% fewer casualties',
-            'fewer_casualties_offense' => '%+d%% fewer casualties on offense',
-            'increased_casualties_offense' => '%+d%% increased casualties on offense',
+            'casualties' => '%d%% casualties',
+            'casualties_offense' => '%d%% offensive casualties',
+            'casualties_defense' => '%d%% defensive casualties',
 
             // Info ops
             'clear_sight' => 'Reveal status screen',

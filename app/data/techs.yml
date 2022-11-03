@@ -384,7 +384,7 @@ tech_14_11:
 tech_16_11:
   name: Survivalist Mentality
   perks:
-    fewer_casualties: 5
+    casualties: -5
     prestige_gains: 7.5
   requires:
     - tech_17_9
@@ -409,7 +409,7 @@ tech_9_13:
 tech_11_13:
   name: Field Surgery
   perks:
-    fewer_casualties: 7.5
+    casualties: -7.5
     max_population: 0.75
   requires:
     - tech_10_11
@@ -441,7 +441,7 @@ tech_8_15:
 tech_10_15:
   name: Battle Commanders
   perks:
-    fewer_casualties: 7.5
+    casualties: -7.5
   requires:
     - tech_9_13
     - tech_11_17
@@ -503,16 +503,16 @@ tech_12_19:
 tech_11_21:
   name: Battle Tactics
   perks:
-    fewer_casualties: 5
+    casualties: -5
 commanders_insight:
   name: Commander's Insight
   perks:
-    fewer_casualties_offense: 10
+    casualties_offense: -10
   active: false
 tactician:
   name: Tactician
   perks:
-    fewer_casualties_defense: 10
+    casualties_defense: -10
   active: false
 military_genius:
   name: Military Genius
@@ -677,8 +677,8 @@ master_of_resources:
 tactical_battle:
   name: Tactical Battle
   perks:
-    fewer_casualties_offense: 15
-    fewer_casualties_defense: 15
+    casualties_offense: -15
+    casualties_defense: -15
   requires:
     - spy_master
     - military_genius

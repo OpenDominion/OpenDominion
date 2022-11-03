@@ -157,9 +157,9 @@ class UnitHelper
             'counts_as_wizard_offense' => 'Each unit counts as %s of a wizard on offense.',
 
             // Casualties related
-            'fewer_casualties' => '%s%% fewer casualties.',
-            'fewer_casualties_defense' => '%s%% fewer casualties on defense.',
-            'fewer_casualties_offense' => '%s%% fewer casualties on offense.',
+            'casualties' => '%s%% casualties.',
+            'casualties_defense' => '%s%% defensive casualties.',
+            'casualties_offense' => '%s%% offensive casualties.',
             'fixed_casualties' => 'ALWAYS suffers %s%% casualties.',
 
             'immortal' => 'Almost never dies.',

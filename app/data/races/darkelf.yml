@@ -45,5 +45,5 @@ units:
       offense: 6.5
       defense: 2.5
     perks:
-      fewer_casualties: 15
+      casualties: -15
       plunder_mana: 5

@@ -129,7 +129,7 @@ class CasualtiesCalculator
             $unitBonusMultiplier = 0;
 
             // Unit Perk: Fewer Casualties
-            $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_offense']) / 100);
+            $unitBonusMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['casualties', 'casualties_offense']) / 100);
 
             // Unit Perk: Reduce Combat Losses
             $unitsSentPerSlot = [];
@@ -253,7 +253,7 @@ class CasualtiesCalculator
 
             // Unit Perk: Fewer Casualties (only on military units with a slot, draftees don't have this perk)
             if ($slot) {
-                $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_defense']) / 100);
+                $unitBonusMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['casualties', 'casualties_defense']) / 100);
             }
 
             // Unit Perk: Reduce Combat Losses
@@ -294,6 +294,7 @@ class CasualtiesCalculator
 
     /**
      * Returns the Dominion's total offensive non-unit casualty reduction.
+     * 
      * @param Dominion $dominion
      * @return float
      */
@@ -302,19 +303,18 @@ class CasualtiesCalculator
         $multiplier = 0;
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties');
-        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties_offense');
-        $multiplier -= $dominion->getSpellPerkMultiplier('increased_casualties_offense');
+        $multiplier -= $dominion->getSpellPerkMultiplier('casualties');
+        $multiplier -= $dominion->getSpellPerkMultiplier('casualties_offense');
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties');
-        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties_offense');
+        $multiplier -= $dominion->getTechPerkMultiplier('casualties');
+        $multiplier -= $dominion->getTechPerkMultiplier('casualties_offense');
 
         // Wonders
-        $multiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_offense');
+        $multiplier -= $dominion->getWonderPerkMultiplier('casualties_offense');
 
         // Heroes
-        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'fewer_casualties');
+        $multiplier -= $this->heroCalculator->getHeroPerkMultiplier($dominion, 'casualties');
 
         // Cap at -80%
         return (1 - min(0.8, $multiplier));
@@ -322,6 +322,7 @@ class CasualtiesCalculator
 
     /**
      * Returns the Dominion's total defensive non-unit casualty reduction.
+     * 
      * @param Dominion $dominion
      * @return float
      */
@@ -330,18 +331,18 @@ class CasualtiesCalculator
         $multiplier = 0;
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties');
-        $multiplier += $dominion->getSpellPerkMultiplier('fewer_casualties_defense');
+        $multiplier -= $dominion->getSpellPerkMultiplier('casualties');
+        $multiplier -= $dominion->getSpellPerkMultiplier('casualties_defense');
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties');
-        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties_defense');
+        $multiplier -= $dominion->getTechPerkMultiplier('casualties');
+        $multiplier -= $dominion->getTechPerkMultiplier('casualties_defense');
 
         // Wonders
-        $multiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_defense');
+        $multiplier -= $dominion->getWonderPerkMultiplier('casualties_defense');
 
         // Heroes
-        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'fewer_casualties');
+        $multiplier -= $this->heroCalculator->getHeroPerkMultiplier($dominion, 'casualties');
 
         // Cap at -80%
         return (1 - min(0.8, $multiplier));
@@ -349,7 +350,7 @@ class CasualtiesCalculator
 
     /**
      * Returns the Dominion's casualties by unit type.
-     *
+     * 
      * @param  Dominion $dominion
      * @param int $foodDeficit
      * @return array
