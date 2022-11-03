@@ -294,7 +294,7 @@ class CasualtiesCalculator
 
     /**
      * Returns the Dominion's total offensive non-unit casualty reduction.
-     * 
+     *
      * @param Dominion $dominion
      * @return float
      */
@@ -322,7 +322,7 @@ class CasualtiesCalculator
 
     /**
      * Returns the Dominion's total defensive non-unit casualty reduction.
-     * 
+     *
      * @param Dominion $dominion
      * @return float
      */
@@ -350,7 +350,7 @@ class CasualtiesCalculator
 
     /**
      * Returns the Dominion's casualties by unit type.
-     * 
+     *
      * @param  Dominion $dominion
      * @param int $foodDeficit
      * @return array
