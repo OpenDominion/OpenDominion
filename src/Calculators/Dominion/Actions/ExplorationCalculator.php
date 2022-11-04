@@ -49,7 +49,7 @@ class ExplorationCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getPlatinumCostMultiplier(Dominion $dominion): int
+    public function getPlatinumCostMultiplier(Dominion $dominion): float
     {
         $multiplier = 1;
 
