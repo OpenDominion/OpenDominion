@@ -119,7 +119,7 @@
                                                     @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
                                                         <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                                     @endif
-                                                    @if ((isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public') || ($guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion)))
+                                                    @if (($guardMembershipService->isBlackGuardMember($dominion) && (isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public' || $guardMembershipService->isBlackGuardMember($selectedDominion))))
                                                         <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League"></i>
                                                     @endif
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>

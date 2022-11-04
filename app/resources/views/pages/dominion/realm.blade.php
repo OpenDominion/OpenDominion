@@ -67,7 +67,7 @@
                                                 <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard" data-toggle="tooltip"></i>
                                             @endif
 
-                                            @if ((isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public') || ($guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion)))
+                                            @if (($guardMembershipService->isBlackGuardMember($dominion) && (isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public' || $guardMembershipService->isBlackGuardMember($selectedDominion))))
                                                 <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League" data-toggle="tooltip"></i>
                                             @endif
 
