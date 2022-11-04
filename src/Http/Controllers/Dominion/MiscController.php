@@ -243,6 +243,7 @@ class MiscController extends AbstractDominionController
             return redirect()->back()->withErrors(['There was a problem renaming your dominion.']);
         }
 
+        $request->session()->flash('alert-success', 'Your dominion has been renamed.');
         return redirect()->route('dominion.status');
     }
 
@@ -301,6 +302,7 @@ class MiscController extends AbstractDominionController
             return redirect()->back()->withErrors(['There was a problem restarting your dominion.']);
         }
 
+        $request->session()->flash('alert-success', 'Your dominion has been restarted.');
         return redirect()->route('dominion.status');
     }
 
