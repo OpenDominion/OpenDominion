@@ -9,8 +9,8 @@ use OpenDominion\Models\Hero;
 
 class HeroCalculator
 {
-     /** @var HeroHelper */
-     protected $heroHelper;
+    /** @var HeroHelper */
+    protected $heroHelper;
 
     /** @var LandCalculator */
     protected $landCalculator;

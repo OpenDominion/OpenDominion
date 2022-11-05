@@ -31,16 +31,20 @@ class Hero extends AbstractModel
 
     public function save(array $options = [])
     {
-        $heroCalculator = app(HeroCalculator::class);
+        $original = $this->getOriginal();
 
-        $previousLevel = $heroCalculator->getExperienceLevel($this->getOriginal()['experience']);
-        $currentLevel = $heroCalculator->getHeroLevel($this);
-        if ($previousLevel != $currentLevel) {
-            $notificationService = app(NotificationService::class);
-            $notificationService->queueNotification('hero_level', [
-                'level' => $currentLevel,
-            ]);
-            $notificationService->sendNotifications($this->dominion, 'irregular_dominion');
+        if ($original && isset($original['experience'])) {
+            $heroCalculator = app(HeroCalculator::class);
+
+            $previousLevel = $heroCalculator->getExperienceLevel($original['experience']);
+            $currentLevel = $heroCalculator->getHeroLevel($this);
+            if ($previousLevel != $currentLevel) {
+                $notificationService = app(NotificationService::class);
+                $notificationService->queueNotification('hero_level', [
+                    'level' => $currentLevel,
+                ]);
+                $notificationService->sendNotifications($this->dominion, 'irregular_dominion');
+            }
         }
 
         $saved = parent::save($options);
