@@ -340,18 +340,18 @@ class InvadeActionService
 
             $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
             $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
-
-            // Hero Experience
-            if ($dominion->hero && $this->invasionResult['result']['success']) {
-                $heroCalculator = app(HeroCalculator::class);
-                $xpGain = $heroCalculator->getExperienceGain($dominion, $this->landLost);
-                $this->invasionResult['attacker']['xpGain'] = $xpGain;
-                $dominion->hero->experience += $xpGain;
-                $dominion->hero->save();
-            }
         });
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
+
+        // Hero Experience
+        if ($dominion->hero && $this->invasionResult['result']['success']) {
+            $heroCalculator = app(HeroCalculator::class);
+            $xpGain = $heroCalculator->getExperienceGain($dominion, $this->landLost);
+            $this->invasionResult['attacker']['xpGain'] = $xpGain;
+            $dominion->hero->experience += $xpGain;
+            $dominion->hero->save();
+        }
 
         if ($this->invasionResult['result']['success']) {
             $message = sprintf(

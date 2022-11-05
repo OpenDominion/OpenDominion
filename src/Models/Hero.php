@@ -42,8 +42,7 @@ class Hero extends AbstractModel
                 $notificationService = app(NotificationService::class);
                 $notificationService->queueNotification('hero_level', [
                     'level' => $currentLevel,
-                ]);
-                $notificationService->sendNotifications($this->dominion, 'irregular_dominion');
+                ])->sendNotifications($this->dominion, 'irregular_dominion');
             }
         }
 
