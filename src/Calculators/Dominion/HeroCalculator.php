@@ -147,10 +147,21 @@ class HeroCalculator
      */
     public function getHeroLevel(Hero $hero): float
     {
+        return $this->getExperienceLevel($hero->experience);
+    }
+
+    /**
+     * Returns the level by experience total.
+     *
+     * @param float $experience
+     * @return float
+     */
+    public function getExperienceLevel(float $experience): float
+    {
         $xpLevels = $this->getExperienceLevels();
 
-        return $xpLevels->filter(function ($level) use ($hero) {
-            return $level['xp'] <= $hero->experience;
+        return $xpLevels->filter(function ($level) use ($experience) {
+            return $level['xp'] <= $experience;
         })->max('level');
     }
 

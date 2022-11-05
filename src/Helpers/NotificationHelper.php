@@ -101,6 +101,12 @@ class NotificationHelper
     public function getIrregularDominionTypes(): array
     {
         return [
+            'hero_level' => [
+                'label' => 'Your hero gained a level',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.heroes'),
+                'iconClass' => 'ra ra-knight-helmet text-green',
+            ],
             'realm_assignment' => [
                 'label' => 'Your dominion was assigned a realm',
                 'defaults' => ['email' => true, 'ingame' => true],
@@ -315,6 +321,12 @@ class NotificationHelper
                     '%s %s died due to starvation',
                     number_format($units),
                     str_plural('unit', $units)
+                );
+
+            case 'irregular_dominion.hero_level':
+                return sprintf(
+                    'Your hero reached level %s.',
+                    $data['level']
                 );
 
             case 'irregular_dominion.realm_assignment':
