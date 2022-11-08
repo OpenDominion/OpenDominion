@@ -632,7 +632,7 @@ class SpellActionService
             // Cast spell instantly
             $damageDealt = [];
             $totalDamage = 0;
-            $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($dominion, 'wizard');
+            $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'wizard');
 
             // Towers
             $baseDamageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers');
