@@ -142,7 +142,7 @@ class EspionageHelper
         return collect([
             [
                 'name' => 'Assassinate Wizards',
-                'description' => 'Kills 2% wizards',
+                'description' => 'Kills 2% wizards, Scales by day in round from 137.5% to 62.5%',
                 'key' => 'assassinate_wizards',
                 'decreases' => ['military_wizards'],
                 'percentage' => 2,

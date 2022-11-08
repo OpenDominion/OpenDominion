@@ -574,7 +574,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Spy Training:</td>
+                                        <td>Spy & Assassin Training:</td>
                                         <td>
                                             {!! bonus_display(($trainingCalculator->getSpyCostMultiplier($target) - 1) * 100, false) !!}
                                         </td>

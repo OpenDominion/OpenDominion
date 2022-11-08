@@ -179,6 +179,7 @@ class SpellHelper
             'mana_decay' => '%+d%% mana drain',
             'wizard_strength' => '%+d%% wizard power',
             'wonder_damage' => 'Deals damage to wonders',
+            'scale_by_day' => 'Scales by day in round from 137.5%% to 62.5%%',
         ];
     }
 
