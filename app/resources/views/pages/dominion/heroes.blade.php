@@ -151,7 +151,7 @@
                                                     <tr class="{{ $heroCalculator->getHeroLevel($hero) == $level['level'] ? 'text-bold' : null }}">
                                                         <td>{{ $level['level'] }}</td>
                                                         <td>{{ $level['xp'] }}</td>
-                                                        <th>{{ number_format($heroCalculator->calculateTradeBonus($perkType, $level['level']), 2) }}%</th>
+                                                        <td>{{ number_format($heroCalculator->calculateTradeBonus($perkType, $level['level']), 2) }}%</td>
                                                     </tr>
                                                 @endif
                                             @endforeach

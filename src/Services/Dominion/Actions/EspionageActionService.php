@@ -196,7 +196,7 @@ class EspionageActionService
                 $spyStrengthLost = 5;
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
-                if ($this->espionageHelper->isWarOperation($spell)) {
+                if ($this->espionageHelper->isWarOperation($operationKey)) {
                     $xpGain = 5;
                 } else {
                     $xpGain = 3;
@@ -685,7 +685,7 @@ class EspionageActionService
 
                 if ($attr == 'wizard_strength') {
                     // Flat damage for Magic Snare
-                    $damage = $baseDamage;
+                    $damage = $baseDamage * 100;
                     if ($damage > $target->{$attr}) {
                         $damage = max(0, $target->{$attr});
                     }
