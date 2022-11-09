@@ -289,6 +289,13 @@ class InvadeActionService
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
+            // Hero Experience
+            if ($dominion->hero && $this->invasionResult['result']['success']) {
+                $heroCalculator = app(HeroCalculator::class);
+                $xpGain = $heroCalculator->getExperienceGain($dominion, $this->landLost);
+                $this->invasionResult['attacker']['xpGain'] = $xpGain;
+            }
+
             // Stat changes
             // todo: move to own method
             if ($this->invasionResult['result']['success']) {
@@ -344,12 +351,9 @@ class InvadeActionService
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
 
-        // Hero Experience
-        if ($dominion->hero && $this->invasionResult['result']['success']) {
-            $heroCalculator = app(HeroCalculator::class);
-            $xpGain = $heroCalculator->getExperienceGain($dominion, $this->landLost);
-            $this->invasionResult['attacker']['xpGain'] = $xpGain;
-            $dominion->hero->experience += $xpGain;
+        // Save Hero
+        if (isset($this->invasionResult['attacker']['xpGain'])) {
+            $dominion->hero->experience += $this->invasionResult['attacker']['xpGain'];
             $dominion->hero->save();
         }
 
