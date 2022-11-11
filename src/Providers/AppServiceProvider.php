@@ -14,6 +14,7 @@ use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\EspionageCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -28,6 +29,7 @@ use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
+use OpenDominion\Services\DiscordService;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
@@ -45,6 +47,7 @@ use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\Actions\TechActionService;
 use OpenDominion\Services\Dominion\Actions\WonderActionService;
+use OpenDominion\Services\Dominion\AIService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -103,6 +106,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(BuildingCalculator::class);
         $this->app->singleton(CasualtiesCalculator::class);
         $this->app->singleton(EspionageCalculator::class);
+        $this->app->singleton(HeroCalculator::class);
         $this->app->singleton(ImprovementCalculator::class);
         $this->app->singleton(LandCalculator::class);
         $this->app->singleton(MilitaryCalculator::class);
@@ -112,13 +116,13 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ProductionCalculator::class);
         $this->app->singleton(RangeCalculator::class);
         $this->app->singleton(SpellCalculator::class);
-        $this->app->singleton(TechCalculator::class);
 
         // Dominion Action Calculators
         $this->app->singleton(BankingCalculator::class);
         $this->app->singleton(ConstructionCalculator::class);
         $this->app->singleton(ExplorationCalculator::class);
         $this->app->singleton(RezoningCalculator::class);
+        $this->app->singleton(TechCalculator::class);
         $this->app->singleton(TrainingCalculator::class);
     }
 
@@ -128,6 +132,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ActivityService::class);
         $this->app->singleton(AnalyticsService::class);
         $this->app->singleton(CouncilService::class);
+        $this->app->singleton(DiscordService::class);
         $this->app->singleton(ForumService::class);
         $this->app->singleton(GameEventService::class);
         $this->app->singleton(MessageBoardService::class);
@@ -137,6 +142,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(WonderService::class);
 
         // Dominion Services
+        $this->app->singleton(AIService::class);
         $this->app->singleton(GovernmentService::class);
         $this->app->singleton(GuardMembershipService::class);
         $this->app->singleton(HistoryService::class);
