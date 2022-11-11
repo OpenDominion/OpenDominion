@@ -976,15 +976,14 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $baseResearchPointsGained = 750;
+            $researchPointsGained = max(5 * $this->landLost, 750);
 
             $range = $this->invasionResult['result']['range'];
             if ($range < 60) {
                 $researchPointsGained = 0;
             } elseif ($range < 75) {
-                $researchPointsGained = $baseResearchPointsGained / 2;
+                $researchPointsGained = $researchPointsGained / 2;
             } else {
-                $researchPointsGained = max(5 * $this->landLost, $baseResearchPointsGained);
                 $this->queueService->dequeueResource('invasion', $target, 'resource_tech', $researchPointsGained);
                 $this->invasionResult['defender']['researchPoints'] = -$researchPointsGained;
             }
