@@ -18,7 +18,12 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Name</label>
                                     <div class="col-sm-9">
-                                        <input name="name" id="name" class="form-control" />
+                                        <div class="input-group">
+                                            <input name="name" id="name" class="form-control" />
+                                            <div class="input-group-btn">
+                                                <button id="randomize" class="btn btn-default" type="button">Randomize</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group hidden">
@@ -86,3 +91,25 @@
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            const names = @json($heroHelper->getNamesByRace($selectedDominion->race->key));
+
+            var buttonElement = $('#randomize'),
+                nameElement = $('#name');
+
+            function randomizeName() {
+                var random = names[Math.floor(Math.random() * names.length)];
+                nameElement.val(random);
+            }
+
+            buttonElement.click(function() {
+                randomizeName();
+            });
+
+            randomizeName();
+        })(jQuery);
+    </script>
+@endpush

@@ -130,4 +130,21 @@ class HeroHelper
 
         return $helpStrings[$perk] ?: null;
     }
+
+    /**
+     * Returns the trade's perk type.
+     *
+     * @param string $race
+     * @return array
+     */
+    public function getNamesByRace(string $race): array
+    {
+        $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+        try {
+            $names_json = json_decode($filesystem->get(base_path("app/data/heroes/{$race}.json")));
+        } catch (\Illuminate\Contracts\Filesystem\FileNotFoundException $e) {
+            return [];
+        }
+        return $names_json->names;
+    }
 }
