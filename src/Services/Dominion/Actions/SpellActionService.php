@@ -184,16 +184,16 @@ class SpellActionService
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
             } elseif ($this->spellHelper->isInfoOpSpell($spell)) {
-                $xpGain = 1;
+                $xpGain = 2;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $wizardStrengthLost = 1;
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
                 if ($this->spellHelper->isWarSpell($spell)) {
-                    $xpGain = 5;
+                    $xpGain = 6;
                 } else {
-                    $xpGain = 3;
+                    $xpGain = 4;
                 }
                 $result = $this->castHostileSpell($dominion, $spell, $target);
                 $dominion->resetAbandonment();

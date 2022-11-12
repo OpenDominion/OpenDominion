@@ -84,7 +84,7 @@
                 <div class="box-body">
                     <p>You can only have one hero at a time.</p>
                     <p>Your hero gains experience and levels up, increasing it's trade bonus and unlocking new upgrades.</p>
-                    <p>Your hero gains 1 XP per acre conquered, 1 XP per info operation, and 5 XP per black/war operation.</p>
+                    <p>Your hero gains 1 XP per acre gained from invasion, 2 XP per successful info operation, 4 XP per successful black operation, and 6 XP per successful war operation.</p>
                 </div>
             </div>
         </div>

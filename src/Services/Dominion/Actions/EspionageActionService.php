@@ -186,7 +186,7 @@ class EspionageActionService
             $xpGain = 0;
 
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $xpGain = 1;
+                $xpGain = 2;
                 $spyStrengthLost = 2;
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $spyStrengthLost = 1;
@@ -197,9 +197,9 @@ class EspionageActionService
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
                 if ($this->espionageHelper->isWarOperation($operationKey)) {
-                    $xpGain = 5;
+                    $xpGain = 6;
                 } else {
-                    $xpGain = 3;
+                    $xpGain = 4;
                 }
                 $spyStrengthLost = 5;
                 $result = $this->performHostileOperation($dominion, $operationKey, $target);
