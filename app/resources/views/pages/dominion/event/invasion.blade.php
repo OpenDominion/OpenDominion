@@ -272,7 +272,7 @@
                                 @endif
                                 @if (isset($event->data['attacker']['xpGain']))
                                     <p class="text-center text-green">
-                                        {{ $event->data['attacker']['xpGain'] }} XP gained.
+                                        +<b>{{ number_format($event->data['attacker']['xpGain'], 2) }}</b> XP
                                     </p>
                                 @endif
                             @endif
@@ -295,7 +295,7 @@
                                 @endif
                                 @if (isset($event->data['defender']['xpLoss']))
                                     <p class="text-center text-green">
-                                        {{ $event->data['defender']['xpLoss'] }} XP lost.
+                                        -<b>{{ number_format($event->data['defender']['xpLoss'], 2) }}</b> XP
                                     </p>
                                 @endif
                             @endif
