@@ -3,6 +3,9 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Black ops and Theft success rates now use the same formula (~ average of the two)
+- Human Cavalry: +50p (from 1200p)
 
 ## [1.32.0] - 2022-11-01
 ### Added
