@@ -201,6 +201,11 @@ class SpellActionService
                 throw new LogicException("Unknown type for spell {$spell->key}");
             }
 
+            // No XP for bots
+            if ($target->user_id == null) {
+                $xpGain = 0;
+            }
+
             // Amplify Magic
             if ($this->spellCalculator->isSpellActive($dominion, 'amplify_magic')) {
                 if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {

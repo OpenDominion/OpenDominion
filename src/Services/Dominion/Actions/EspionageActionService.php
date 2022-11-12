@@ -208,6 +208,11 @@ class EspionageActionService
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
 
+            // No XP for bots
+            if ($target->user_id == null) {
+                $xpGain = 0;
+            }
+
             $dominion->spy_strength -= $spyStrengthLost;
 
             if ($result['success']) {
