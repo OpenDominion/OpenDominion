@@ -293,6 +293,11 @@
                                         </p>
                                     @endif
                                 @endif
+                                @if (isset($event->data['defender']['xpLoss']))
+                                    <p class="text-center text-green">
+                                        {{ $event->data['defender']['xpLoss'] }} XP lost.
+                                    </p>
+                                @endif
                             @endif
                         </div>
                     </div>

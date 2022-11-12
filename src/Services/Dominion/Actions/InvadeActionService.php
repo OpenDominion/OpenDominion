@@ -118,10 +118,12 @@ class InvadeActionService
     protected $invasionResult = [
         'result' => [],
         'attacker' => [
+            'landGained' => 0,
             'unitsLost' => [],
             'unitsSent' => [],
         ],
         'defender' => [
+            'landLost' => 0,
             'unitsLost' => [],
         ],
     ];
@@ -129,10 +131,6 @@ class InvadeActionService
     // todo: refactor
     /** @var GameEvent */
     protected $invasionEvent;
-
-    // todo: refactor to use $invasionResult instead
-    /** @var int The amount of land lost during the invasion */
-    protected $landLost = 0;
 
     /** @var int The amount of units lost during the invasion */
     protected $unitsLost = 0;
@@ -292,8 +290,16 @@ class InvadeActionService
             // Hero Experience
             if ($dominion->hero && $this->invasionResult['result']['success']) {
                 $heroCalculator = app(HeroCalculator::class);
-                $xpGain = $heroCalculator->getExperienceGain($dominion, $this->landLost);
+                $xpGain = $heroCalculator->getExperienceGain($dominion, $this->invasionResult['attacker']['landGained']);
                 $this->invasionResult['attacker']['xpGain'] = $xpGain;
+            }
+            if ($target->hero && $this->invasionResult['result']['success']) {
+                // Hero cannot lose a level
+                $levels = $heroCalculator->getExperienceLevels();
+                $currentLevel = $heroCalculator->getHeroLevel($target->hero);
+                $currentLevelXP = $levels->firstWhere('level', $currentLevel)['xp'];
+                $xpLoss = min($target->hero->experience - $currentLevelXP, $this->invasionResult['attacker']['landLost']);
+                $this->invasionResult['defender']['xpLoss'] = $xpLoss;
             }
 
             // Stat changes
@@ -328,7 +334,7 @@ class InvadeActionService
                 $this->notificationService->queueNotification('received_invasion', [
                     '_routeParams' => [(string)$this->invasionEvent->id],
                     'attackerDominionId' => $dominion->id,
-                    'landLost' => $this->landLost,
+                    'landLost' => $this->invasionResult['defender']['landLost'],
                     'unitsLost' => $this->unitsLost,
                 ]);
             } else {
@@ -351,10 +357,14 @@ class InvadeActionService
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
 
-        // Save Hero
+        // Save Heroes AFTER notifications to prevent race condition
         if (isset($this->invasionResult['attacker']['xpGain'])) {
             $dominion->hero->experience += $this->invasionResult['attacker']['xpGain'];
             $dominion->hero->save();
+        }
+        if (isset($this->invasionResult['defender']['xpLoss'])) {
+            $target->hero->experience += $this->invasionResult['defender']['xpLoss'];
+            $target->hero->save();
         }
 
         if ($this->invasionResult['result']['success']) {
@@ -831,9 +841,11 @@ class InvadeActionService
 
             $this->invasionResult['attacker']['landConquered'][$landType] += $landConquered;
             $this->invasionResult['attacker']['landGenerated'][$landType] += $landGenerated;
+            $this->invasionResult['attacker']['landGained'] += $landConquered;
+            $this->invasionResult['attacker']['landGained'] += $landGenerated;
         }
 
-        $this->landLost = $acresLost;
+        $this->invasionResult['defender']['landLost'] += $acresLost;
 
         $queueData = $landGainedPerLandType;
 
@@ -976,7 +988,7 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $researchPointsGained = max(5 * $this->landLost, 750);
+            $researchPointsGained = max(5 * $this->invasionResult['defender']['landLost'], 750);
 
             $range = $this->invasionResult['result']['range'];
             if ($range < 60) {
