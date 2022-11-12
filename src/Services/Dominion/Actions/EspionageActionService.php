@@ -189,6 +189,7 @@ class EspionageActionService
                 $xpGain = 2;
                 $spyStrengthLost = 2;
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+                    $xpGain = 1;
                     $spyStrengthLost = 1;
                 }
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
@@ -209,7 +210,7 @@ class EspionageActionService
             }
 
             // No XP for bots
-            if ($target->user_id == null) {
+            if ($target && $target->user_id == null) {
                 $xpGain = 0;
             }
 

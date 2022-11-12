@@ -187,6 +187,7 @@ class SpellActionService
                 $xpGain = 2;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
+                    $xpGain = 1;
                     $wizardStrengthLost = 1;
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
@@ -202,7 +203,7 @@ class SpellActionService
             }
 
             // No XP for bots
-            if ($target->user_id == null) {
+            if ($target && $target->user_id == null) {
                 $xpGain = 0;
             }
 
