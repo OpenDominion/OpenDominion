@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.32.1] - 2022-11-14
 ### Changed
 - Black ops and Theft success rates now use the same formula (an approximate average of the two)
 - Adjust XP gain for invasion to 1 per acre gained (from 1 per acre captured)
@@ -1820,7 +1822,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.31.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.32.1...HEAD
+[1.32.1]: https://github.com/OpenDominion/OpenDominion/compare/1.32.0...1.32.1
+[1.32.0]: https://github.com/OpenDominion/OpenDominion/compare/1.31.0...1.32.0
 [1.31.0]: https://github.com/OpenDominion/OpenDominion/compare/1.30.0...1.31.0
 [1.30.0]: https://github.com/OpenDominion/OpenDominion/compare/1.9.0...1.30.0
 [1.9.0]: https://github.com/OpenDominion/OpenDominion/compare/1.8.3...1.9.0
