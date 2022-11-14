@@ -6,6 +6,7 @@ use Auth;
 use DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use LogicException;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
@@ -77,8 +78,24 @@ class RoundController extends AbstractController
         // todo: make this its own FormRequest class? Might be hard due to depending on $round->pack_size, needs investigating
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->validate($request, [
-            'dominion_name' => 'required|string|min:3|max:50|regex:/[a-zA-Z0-9]{3,}/i',
-            'ruler_name' => 'nullable|string|max:50',
+            'dominion_name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:50',
+                'regex:/[a-zA-Z0-9]{3,}/i',
+                Rule::unique('dominions', 'name')->where(function ($query) use ($round) {
+                    return $query->where('round_id', $round->id);
+                }),
+            ],
+            'ruler_name' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('dominions', 'ruler_name')->where(function ($query) use ($round) {
+                    return $query->where('round_id', $round->id);
+                }),
+            ],
             'race' => 'required|exists:races,id',
             'realm_type' => 'in:random,join_pack,create_pack',
             'pack_name' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
@@ -172,11 +189,10 @@ class RoundController extends AbstractController
                     $pack->save();
                 }
             });
-
         } catch (QueryException $e) {
             return redirect()->back()
                 ->withInput($request->all())
-                ->withErrors(["Someone already registered a dominion with the name '{$dominionName}' for this round."]);
+                ->withErrors([$e->getMessage()]);
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
