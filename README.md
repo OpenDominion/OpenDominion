@@ -39,7 +39,7 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 | Authentication | ![Progress](https://progress-bar.dev/95/)  | 2FA
 | Buildings      | ![Progress](https://progress-bar.dev/100/) |
 | Land           | ![Progress](https://progress-bar.dev/100/) |
-| Heroes         | ![Progress](https://progress-bar.dev/0/)   | Everything
+| Heroes         | ![Progress](https://progress-bar.dev/100/) | 
 | Notifications  | ![Progress](https://progress-bar.dev/50/)  | Needs refactoring and email digests
 | Population     | ![Progress](https://progress-bar.dev/100/) |
 | Races & Units  | ![Progress](https://progress-bar.dev/100/) |
