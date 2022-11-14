@@ -197,6 +197,9 @@ class SpellActionService
                     $xpGain = 4;
                 }
                 $result = $this->castHostileSpell($dominion, $spell, $target);
+                if (isset($result['damage']) && $result['damage'] == 0) {
+                    $xpGain = 0;
+                }
                 $dominion->resetAbandonment();
             } else {
                 throw new LogicException("Unknown type for spell {$spell->key}");
@@ -631,7 +634,8 @@ class SpellActionService
                         $durationAdded,
                         $damageDealtString,
                         $warRewardsString
-                    )
+                    ),
+                    'damage' => $durationAdded
                 ];
             }
         } else {
@@ -795,6 +799,7 @@ class SpellActionService
                         $damageString,
                         $warRewardsString
                     ),
+                    'damage' => $totalDamage
                 ];
             }
         }

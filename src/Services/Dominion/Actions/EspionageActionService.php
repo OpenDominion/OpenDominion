@@ -204,6 +204,9 @@ class EspionageActionService
                 }
                 $spyStrengthLost = 5;
                 $result = $this->performHostileOperation($dominion, $operationKey, $target);
+                if (isset($result['damage']) && $result['damage'] == 0) {
+                    $xpGain = 0;
+                }
                 $dominion->resetAbandonment();
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
@@ -757,6 +760,7 @@ class EspionageActionService
                 $damageString,
                 $warRewardsString
             ),
+            'damage' => $totalDamage,
             'redirect' => route('dominion.op-center.show', $target),
         ];
     }
