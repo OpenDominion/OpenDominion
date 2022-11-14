@@ -126,7 +126,7 @@ class RangeCalculator
     {
         $range = $this->getDominionRange($self, $target);
 
-        if ($range >= 120) {
+        if ($range >= (100 / 0.75)) {
             return 'text-red';
         }
 
