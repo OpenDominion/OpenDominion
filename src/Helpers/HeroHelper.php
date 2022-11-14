@@ -42,7 +42,7 @@ class HeroHelper
                 'name' => 'Alchemist',
                 'key' => 'alchemist',
                 'perk_type' => 'platinum_production',
-                'coefficient' => 0.4,
+                'coefficient' => 0.2,
                 'icon' => 'ra ra-gold-bar',
             ],
             [

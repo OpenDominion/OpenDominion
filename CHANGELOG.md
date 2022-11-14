@@ -4,10 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Changed
-- Black ops and Theft success rates now use the same formula (~ average of the two)
+- Black ops and Theft success rates now use the same formula (an approximate average of the two)
 - Adjust XP gain for invasion to 1 per acre gained (from 1 per acre captured)
 - Adjust XP gain for info/black/war to 2/4/6 (from 1/3/5)
 - Heroes now lose 1 XP per acre lost from invasion
+- Max Hero level increased to 12 (from 10)
+- Adjusted XP requirements for all levels
+- Alchemist bonus reduced to 0.2% per level (from 0.4%)
 - Human Cavalry: +50p (from 1200p)
 
 ## [1.32.0] - 2022-11-01
