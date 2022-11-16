@@ -71,7 +71,7 @@ class HeroHelper
                 'key' => 'healer',
                 'perk_type' => 'casualties',
                 'coefficient' => -1,
-                'icon' => 'ra ra-health',
+                'icon' => 'ra ra-apothecary',
             ],
             [
                 'name' => 'Infiltrator',
