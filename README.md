@@ -76,7 +76,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Rankings            | ![Progress](https://progress-bar.dev/100/) |
 | Town Crier          | ![Progress](https://progress-bar.dev/95/)  | Black ops reports
 | Valhalla            | ![Progress](https://progress-bar.dev/80/)  | More categories
-| Scribes / Manual    | ![Progress](https://progress-bar.dev/60/)  | Additional pages
+| Scribes / Manual    | ![Progress](https://progress-bar.dev/80/)  | Additional pages
 
 
 ## Contributing
