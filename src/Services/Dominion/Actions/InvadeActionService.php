@@ -363,7 +363,7 @@ class InvadeActionService
             $dominion->hero->save();
         }
         if (isset($this->invasionResult['defender']['xpLoss'])) {
-            $target->hero->experience += $this->invasionResult['defender']['xpLoss'];
+            $target->hero->experience -= $this->invasionResult['defender']['xpLoss'];
             $target->hero->save();
         }
 
