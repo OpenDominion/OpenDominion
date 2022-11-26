@@ -92,7 +92,7 @@ class AutomationService
                         foreach ($actions as $action) {
                             $this->lastAction = $action;
                             $this->lastHour = $hour + 1;
-                            $processFunc = "process".ucfirst($action['type']);
+                            $processFunc = 'process' . ucfirst($action['type']);
                             $this->$processFunc($dominion, $action['data']);
                         }
                         if ($hour < 72) {
@@ -120,7 +120,7 @@ class AutomationService
                 }
             }
         } catch (GameException $e) {
-            throw new GameException("Error processing hour {$this->lastHour} line {$this->lastAction['line']} - ".$e->getMessage());
+            throw new GameException("Error processing hour {$this->lastHour} line {$this->lastAction['line']} - " . $e->getMessage());
         }
     }
 

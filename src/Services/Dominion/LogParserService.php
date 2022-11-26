@@ -82,7 +82,7 @@ class LogParserService
 
             if (preg_match('/\w/', $line)) {
                 foreach ($this::ACTIONS as $action) {
-                    $parseFunc = "parse".ucfirst($action);
+                    $parseFunc = 'parse' . ucfirst($action);
                     $data = $this->$parseFunc($line);
                     if ($data) {
                         $actions[$this->currentHour-1][] = [
@@ -108,13 +108,14 @@ class LogParserService
         return [$this->errors, $actions];
     }
 
-    protected function writeError($message)
+    protected function writeError(string $message)
     {
         $line = $this->lineNumber + 1;
         $this->errors[] = "Line {$line}: {$message}";
     }
 
-    protected function parseBank($line) {
+    protected function parseBank(string $line)
+    {
         if (preg_match('/([\w\s,]*) have been traded for (\d+) (\w+)/', $line, $matches)) {
             if (preg_match_all('/(\d+)\s(\w+)/', $matches[1], $bankMatches)) {
                 $bankData = [];
@@ -133,7 +134,8 @@ class LogParserService
         return false;
     }
 
-    protected function parseConstruction($line) {
+    protected function parseConstruction(string $line)
+    {
         if (preg_match('/Construction of ([\w\s,-]*) started at a cost of/', $line, $matches)) {
             if (preg_match_all('/(-*\d+)\s([\w\s]+)/', $matches[1], $constructMatches)) {
                 $constructData = [];
@@ -143,7 +145,7 @@ class LogParserService
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
                         $buildingType = $this::ATTRIBUTE_MAP[$name];
                     } else {
-                        $buildingType = str_replace(' ', '_', strtolower(rtrim($name, "s")));
+                        $buildingType = str_replace(' ', '_', strtolower(rtrim($name, 's')));
                     }
                     $constructData["building_$buildingType"] = (int)$amount;
                 }
@@ -153,7 +155,8 @@ class LogParserService
         return false;
     }
 
-    protected function parseDaily($line) {
+    protected function parseDaily(string $line)
+    {
         if (preg_match('/You have been awarded with (\d+) (\w+)/', $line, $matches)) {
             if ($matches[2] != 'platinum') {
                 return 'land';
@@ -163,7 +166,8 @@ class LogParserService
         return false;
     }
 
-    protected function parseDestruction($line) {
+    protected function parseDestruction(string $line)
+    {
         if (preg_match('/Destruction of ([\w\s,-]*) is complete/', $line, $matches)) {
             if (preg_match_all('/(-*\d+)\s([\w\s]+)/', $matches[1], $destroyMatches)) {
                 $destroyData = [];
@@ -173,7 +177,7 @@ class LogParserService
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
                         $buildingType = $this::ATTRIBUTE_MAP[$name];
                     } else {
-                        $buildingType = str_replace(' ', '_', strtolower(rtrim($name, "s")));
+                        $buildingType = str_replace(' ', '_', strtolower(rtrim($name, 's')));
                     }
                     $destroyData["$buildingType"] = (int)$amount;
                 }
@@ -183,7 +187,7 @@ class LogParserService
         return false;
     }
 
-    protected function parseDraftrate($line)
+    protected function parseDraftrate(string $line)
     {
         if (preg_match('/Draftrate changed to (\d+)/', $line, $matches)) {
             return (int)$matches[1];
@@ -191,12 +195,13 @@ class LogParserService
         return false;
     }
 
-    protected function parseExplore($line) {
+    protected function parseExplore(string $line)
+    {
         if (preg_match('/Exploration for ([\w\s,-]*) begun at a cost of/', $line, $matches)) {
             if (preg_match_all('/(-*\d+)\s(\w+)/', $matches[1], $exploreMatches)) {
                 $exploreData = [];
                 foreach ($exploreMatches[1] as $idx => $amount) {
-                    $landType = str_replace(' ', '_', strtolower(rtrim($exploreMatches[2][$idx], "s")));
+                    $landType = str_replace(' ', '_', strtolower(rtrim($exploreMatches[2][$idx], 's')));
                     $exploreData["land_$landType"] = (int)$amount;
                 }
                 return $exploreData;
@@ -205,7 +210,8 @@ class LogParserService
         return false;
     }
 
-    protected function parseInvest($line) {
+    protected function parseInvest(string $line)
+    {
         if (preg_match('/You invested (\d+) (\w+) into (\w+)/', $line, $matches)) {
             $improvement = strtolower($matches[3]);
             return [
@@ -217,9 +223,10 @@ class LogParserService
         return false;
     }
 
-    protected function parseMagic($line) {
+    protected function parseMagic(string $line)
+    {
         if (preg_match('/Your wizards successfully cast (.*) at a cost of (\d+) mana/', $line, $matches)) {
-            $spellName = trim(str_replace("'", "", $matches[1]));
+            $spellName = trim(str_replace("'", '', $matches[1]));
             if (isset($this::ATTRIBUTE_MAP[$spellName])) {
                 $spellName = $this::ATTRIBUTE_MAP[$spellName];
             }
@@ -232,7 +239,8 @@ class LogParserService
         return false;
     }
 
-    protected function parseRelease($line) {
+    protected function parseRelease(string $line)
+    {
         if (preg_match('/You successfully released ([\w\s,]*)/', $line, $matches)) {
             if (preg_match_all('/(\d+)\s(\w+)/', $matches[1], $releaseMatches)) {
                 $releaseData = [];
@@ -255,16 +263,17 @@ class LogParserService
         return false;
     }
 
-    protected function parseRezone($line) {
+    protected function parseRezone(string $line)
+    {
         if (preg_match('/The changes in land are as following: ([\w\s,-]*)/', $line, $matches)) {
             if (preg_match_all('/(-*\d+)\s(\w+)/', $matches[1], $rezoneMatches)) {
                 $rezoneData = [];
                 foreach ($rezoneMatches[1] as $idx => $amount) {
-                    $landType = str_replace(' ', '_', strtolower(rtrim($rezoneMatches[2][$idx], "s")));
+                    $landType = str_replace(' ', '_', strtolower(rtrim($rezoneMatches[2][$idx], 's')));
                     if ((int)$amount < 0) {
-                        $rezoneData["remove"]["$landType"] = -(int)$amount;
+                        $rezoneData['remove'][$landType] = -(int)$amount;
                     } else {
-                        $rezoneData["add"]["$landType"] = (int)$amount;
+                        $rezoneData['add'][$landType] = (int)$amount;
                     }
                 }
                 return $rezoneData;
@@ -273,7 +282,8 @@ class LogParserService
         return false;
     }
 
-    protected function parseTrain($line) {
+    protected function parseTrain(string $line)
+    {
         if (preg_match('/Training of ([\w\s,]*) begun at a cost of ([\w\s,]*)/', $line, $matches)) {
             if (preg_match_all('/(\d+)\s(\w+)/', $matches[1], $trainingMatches)) {
                 $trainingData = [];
