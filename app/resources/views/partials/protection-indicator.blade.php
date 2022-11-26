@@ -3,8 +3,12 @@
         <div class="row">
             <div class="col-xs-2 text-left">
                 @if ($selectedDominion->protection_ticks_remaining < 72)
-                    <a href="{{ route('dominion.misc.undo-tick') }}" class="btn btn-xs btn-danger" style="margin-right: 20px;">
+                    <a href="{{ route('dominion.misc.undo-tick') }}" class="btn btn-xs btn-danger disable-after-click" style="margin-right: 20px;">
                         &laquo; Undo
+                    </a>
+                @else
+                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-xs btn-primary" style="margin-right: 20px;">
+                        Import
                     </a>
                 @endif
             </div>
@@ -21,7 +25,7 @@
             </div>
             <div class="col-xs-2 text-right">
                 @if ($selectedDominion->protection_ticks_remaining > 0)
-                    <a href="{{ route('dominion.misc.tick') }}" class="btn btn-xs btn-primary">
+                    <a href="{{ route('dominion.misc.tick') }}" class="btn btn-xs btn-primary disable-after-click">
                         Next &raquo;
                     </a>
                 @endif
