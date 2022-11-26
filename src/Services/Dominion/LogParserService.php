@@ -42,6 +42,8 @@ class LogParserService
         'Alchemies' => 'alchemy',
         'Barracks' => 'barracks',
         'Factories' => 'factory',
+        'Guilds' => 'wizard_guild',
+        'Lumber Yards' => 'lumberyard',
         'Masonries' => 'masonry',
         'Smithies' => 'smithy',
         'Ares Call' => 'Ares\' Call',
@@ -294,7 +296,7 @@ class LogParserService
                     } else {
                         $unit = $this->units->firstWhere('name', $name);
                         if (!$unit) {
-                            throw new GameException("Unit not found: {$name}");
+                            throw new GameException("Unit not found for this race: {$name}");
                         }
                         $attribute = "military_unit{$unit->slot}";
                     }
