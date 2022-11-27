@@ -35,6 +35,7 @@ class LogParserService
     ];
 
     const ATTRIBUTE_MAP = [
+        'draftees' => 'draftees',
         'Spies' => 'spies',
         'Archspies' => 'assassins',
         'Wizards' => 'wizards',
@@ -47,7 +48,7 @@ class LogParserService
         'Masonries' => 'masonry',
         'Smithies' => 'smithy',
         'Ares Call' => 'Ares\' Call',
-        'Gaias Blessing' => 'Gaia\'s Blessing',
+        'Gaias Watch' => 'Gaia\'s Watch',
         'Miners Sight' => 'Miner\'s Sight'
     ];
 
@@ -63,7 +64,7 @@ class LogParserService
     public function parseLog(Dominion $dominion, string $log)
     {
         $this->spells = $this->spellHelper->getSpells($dominion->race);
-        $this->units = $dominion->race->units;
+        $this->race = $dominion->race;
         $this->errors = [];
 
         $actions = array_fill(0, 72, []);
@@ -229,10 +230,15 @@ class LogParserService
     {
         if (preg_match('/Your wizards successfully cast (.*) at a cost of (\d+) mana/', $line, $matches)) {
             $spellName = trim(str_replace("'", '', $matches[1]));
-            if (isset($this::ATTRIBUTE_MAP[$spellName])) {
-                $spellName = $this::ATTRIBUTE_MAP[$spellName];
+            if ($spellName == 'Racial Spell') {
+                $racialSpell = $this->spellHelper->getSpells($this->race, 'self')->where('races', '!=', null)->first();
+                $spell = $this->spells->firstWhere('name', $racialSpell->name);
+            } else {
+                if (isset($this::ATTRIBUTE_MAP[$spellName])) {
+                    $spellName = $this::ATTRIBUTE_MAP[$spellName];
+                }
+                $spell = $this->spells->firstWhere('name', $spellName);
             }
-            $spell = $this->spells->firstWhere('name', $spellName);
             if (!$spell) {
                 throw new GameException("Spell not found: {$spellName}");
             }
@@ -251,7 +257,7 @@ class LogParserService
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
                         $attribute = $this::ATTRIBUTE_MAP[$name];
                     } else {
-                        $unit = $this->units->firstWhere('name', $name);
+                        $unit = $this->race->units->firstWhere('name', $name);
                         if (!$unit) {
                             throw new GameException("Unit not found: {$name}");
                         }
@@ -294,7 +300,7 @@ class LogParserService
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
                         $attribute = "military_{$this::ATTRIBUTE_MAP[$name]}";
                     } else {
-                        $unit = $this->units->firstWhere('name', $name);
+                        $unit = $this->race->units->firstWhere('name', $name);
                         if (!$unit) {
                             throw new GameException("Unit not found for this race: {$name}");
                         }
