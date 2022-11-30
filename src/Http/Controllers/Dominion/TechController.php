@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\TechActionRequest;
@@ -16,6 +17,7 @@ class TechController extends AbstractDominionController
     public function getTechs()
     {
         return view('pages.dominion.techs', [
+            'productionCalculator' => app(ProductionCalculator::class),
             'techs' => Tech::active()->with('perks')->get()->keyBy('key'),
             'techCalculator' => app(TechCalculator::class),
             'techHelper' => app(TechHelper::class),
