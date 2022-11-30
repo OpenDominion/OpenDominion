@@ -353,34 +353,31 @@ class SpellActionService
             throw new GameException("Your wizard force is too weak to cast {$spell->name}. Please train more wizards.");
         }
 
-        // 100% spell success if target has a WPA of 0
-        if ($targetWpa != 0) {
-            $successRate = $this->opsCalculator->infoOperationSuccessChance($selfWpa, $targetWpa);
+        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfWpa, $targetWpa);
 
-            // Wonders
-            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
+        // Wonders
+        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
-            if (!random_chance($successRate)) {
-                // Inform target that they repelled a hostile spell
-                $this->notificationService
-                    ->queueNotification('repelled_hostile_spell', [
-                        'sourceDominionId' => $dominion->id,
-                        'spellKey' => $spell->key,
-                        'spellName' => $spell->name,
-                        'unitsKilled' => '',
-                    ])
-                    ->sendNotifications($target, 'irregular_dominion');
+        if (!random_chance($successRate)) {
+            // Inform target that they repelled a hostile spell
+            $this->notificationService
+                ->queueNotification('repelled_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spell->key,
+                    'spellName' => $spell->name,
+                    'unitsKilled' => '',
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
 
-                // Return here, thus completing the spell cast and reducing the caster's mana
-                return [
-                    'success' => false,
-                    'message' => sprintf(
-                        'The enemy wizards have repelled our %s attempt.',
-                        $spell->name
-                    ),
-                    'alert-type' => 'warning',
-                ];
-            }
+            // Return here, thus completing the spell cast and reducing the caster's mana
+            return [
+                'success' => false,
+                'message' => sprintf(
+                    'The enemy wizards have repelled our %s attempt.',
+                    $spell->name
+                ),
+                'alert-type' => 'warning',
+            ];
         }
 
         $infoOp = new InfoOp([
@@ -493,45 +490,42 @@ class SpellActionService
             throw new GameException("Your wizard force is too weak to cast {$spell->name}. Please train more wizards.");
         }
 
-        // 100% spell success if target has a WPA of 0
-        if ($targetWpa != 0) {
-            $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa);
+        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa);
 
-            // Wonders
-            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
+        // Wonders
+        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
-            if (!random_chance($successRate)) {
-                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
+        if (!random_chance($successRate)) {
+            list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
-                // Inform target that they repelled a hostile spell
-                $this->notificationService
-                    ->queueNotification('repelled_hostile_spell', [
-                        'sourceDominionId' => $dominion->id,
-                        'spellKey' => $spell->key,
-                        'spellName' => $spell->name,
-                        'unitsKilled' => $unitsKilledString,
-                    ])
-                    ->sendNotifications($target, 'irregular_dominion');
+            // Inform target that they repelled a hostile spell
+            $this->notificationService
+                ->queueNotification('repelled_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spell->key,
+                    'spellName' => $spell->name,
+                    'unitsKilled' => $unitsKilledString,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
 
-                if ($unitsKilledString) {
-                    $message = sprintf(
-                        'The enemy wizards have repelled our %s attempt and managed to kill %s.',
-                        $spell->name,
-                        $unitsKilledString
-                    );
-                } else {
-                    $message = sprintf(
-                        'The enemy wizards have repelled our %s attempt.',
-                        $spell->name
-                    );
-                }
-
-                return [
-                    'success' => false,
-                    'message' => $message,
-                    'alert-type' => 'warning',
-                ];
+            if ($unitsKilledString) {
+                $message = sprintf(
+                    'The enemy wizards have repelled our %s attempt and managed to kill %s.',
+                    $spell->name,
+                    $unitsKilledString
+                );
+            } else {
+                $message = sprintf(
+                    'The enemy wizards have repelled our %s attempt.',
+                    $spell->name
+                );
             }
+
+            return [
+                'success' => false,
+                'message' => $message,
+                'alert-type' => 'warning',
+            ];
         }
 
         $spellReflected = false;

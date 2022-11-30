@@ -55,6 +55,10 @@ class OpsCalculator
      */
     public function infoOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
+        if (!$targetRatio) {
+            return 1;
+        }
+
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.8 ** (2 / (($relativeRatio * 1.4) ** 1.2));
         return clamp($successChance, 0.01, 0.98);
@@ -69,6 +73,10 @@ class OpsCalculator
      */
     public function theftOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
+        if (!$targetRatio) {
+            return 1;
+        }
+
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
         return clamp($successChance, 0.01, 0.97);
@@ -83,6 +91,10 @@ class OpsCalculator
      */
     public function blackOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
+        if (!$targetRatio) {
+            return 1;
+        }
+
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
         return clamp($successChance, 0.01, 0.97);

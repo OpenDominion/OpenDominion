@@ -283,43 +283,41 @@ class EspionageActionService
             throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        if ($targetSpa != 0) {
-            $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa);
 
-            // Wonders
-            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
+        // Wonders
+        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
-            if (!random_chance($successRate)) {
-                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
+        if (!random_chance($successRate)) {
+            list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
 
-                // Inform target that they repelled a hostile spy operation
-                $this->notificationService
-                    ->queueNotification('repelled_spy_op', [
-                        'sourceDominionId' => $dominion->id,
-                        'operationKey' => $operationKey,
-                        'unitsKilled' => $unitsKilledString,
-                    ])
-                    ->sendNotifications($target, 'irregular_dominion');
+            // Inform target that they repelled a hostile spy operation
+            $this->notificationService
+                ->queueNotification('repelled_spy_op', [
+                    'sourceDominionId' => $dominion->id,
+                    'operationKey' => $operationKey,
+                    'unitsKilled' => $unitsKilledString,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
 
-                if ($unitsKilledString) {
-                    $message = sprintf(
-                        'The enemy has prevented our %s attempt and managed to capture %s.',
-                        $operationInfo['name'],
-                        $unitsKilledString
-                    );
-                } else {
-                    $message = sprintf(
-                        'The enemy has prevented our %s attempt.',
-                        $operationInfo['name']
-                    );
-                }
-
-                return [
-                    'success' => false,
-                    'message' => $message,
-                    'alert-type' => 'warning',
-                ];
+            if ($unitsKilledString) {
+                $message = sprintf(
+                    'The enemy has prevented our %s attempt and managed to capture %s.',
+                    $operationInfo['name'],
+                    $unitsKilledString
+                );
+            } else {
+                $message = sprintf(
+                    'The enemy has prevented our %s attempt.',
+                    $operationInfo['name']
+                );
             }
+
+            return [
+                'success' => false,
+                'message' => $message,
+                'alert-type' => 'warning',
+            ];
         }
 
         $infoOp = new InfoOp([
@@ -392,38 +390,36 @@ class EspionageActionService
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa == 0) {
             // Don't reduce spy strength by throwing an exception here
-            throw new GameException("Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.");
+            throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        if ($targetSpa != 0) {
-            $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa);
 
-            // Wonders
-            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
+        // Wonders
+        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
-            if (!random_chance($successRate)) {
-                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'theft');
+        if (!random_chance($successRate)) {
+            list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'theft');
 
-                $this->notificationService
-                    ->queueNotification('repelled_resource_theft', [
-                        'sourceDominionId' => $dominion->id,
-                        'operationKey' => $operationKey,
-                        'unitsKilled' => $unitsKilledString,
-                    ])
-                    ->sendNotifications($target, 'irregular_dominion');
+            $this->notificationService
+                ->queueNotification('repelled_resource_theft', [
+                    'sourceDominionId' => $dominion->id,
+                    'operationKey' => $operationKey,
+                    'unitsKilled' => $unitsKilledString,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
 
-                if ($unitsKilledString) {
-                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $unitsKilledString.";
-                } else {
-                    $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
-                }
-
-                return [
-                    'success' => false,
-                    'message' => $message,
-                    'alert-type' => 'warning',
-                ];
+            if ($unitsKilledString) {
+                $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $unitsKilledString.";
+            } else {
+                $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
             }
+
+            return [
+                'success' => false,
+                'message' => $message,
+                'alert-type' => 'warning',
+            ];
         }
 
         switch ($operationKey) {
@@ -602,54 +598,52 @@ class EspionageActionService
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa == 0) {
             // Don't reduce spy strength by throwing an exception here
-            throw new GameException("Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.");
+            throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        if ($targetSpa != 0) {
-            $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa);
 
-            // Wonders
-            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
+        // Wonders
+        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
-            if (!random_chance($successRate)) {
-                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
+        if (!random_chance($successRate)) {
+            list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
-                $this->notificationService
-                    ->queueNotification('repelled_spy_op', [
-                        'sourceDominionId' => $dominion->id,
-                        'operationKey' => $operationKey,
-                        'unitsKilled' => $unitsKilledString,
-                    ])
-                    ->sendNotifications($target, 'irregular_dominion');
+            $this->notificationService
+                ->queueNotification('repelled_spy_op', [
+                    'sourceDominionId' => $dominion->id,
+                    'operationKey' => $operationKey,
+                    'unitsKilled' => $unitsKilledString,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
 
-                if ($unitsKilledString) {
-                    $message = sprintf(
-                        'The enemy has prevented our %s attempt and managed to capture %s.',
-                        $operationInfo['name'],
-                        $unitsKilledString
-                    );
-                } else {
-                    $message = sprintf(
-                        'The enemy has prevented our %s attempt.',
-                        $operationInfo['name']
-                    );
-                }
-
-                return [
-                    'success' => false,
-                    'message' => $message,
-                    'alert-type' => 'warning',
-                ];
+            if ($unitsKilledString) {
+                $message = sprintf(
+                    'The enemy has prevented our %s attempt and managed to capture %s.',
+                    $operationInfo['name'],
+                    $unitsKilledString
+                );
+            } else {
+                $message = sprintf(
+                    'The enemy has prevented our %s attempt.',
+                    $operationInfo['name']
+                );
             }
+
+            return [
+                'success' => false,
+                'message' => $message,
+                'alert-type' => 'warning',
+            ];
         }
 
         $damageDealt = [];
         $totalDamage = 0;
-        $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'spy');
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
         if (isset($operationInfo['scale_by_day']) && $operationInfo['scale_by_day'] == 1) {
             $baseDamage *= (1.625 - 0.025 * clamp($dominion->round->daysInRound(), 10, 40));
         }
+        $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'spy');
 
         // Techs
         $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage");
