@@ -11,7 +11,7 @@
                 <div class="col-md-12">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
                     <p>The first wave of wonders will appear at the start of the round. An additional wonder will appear every 48 hours starting on Day 3. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
-                    <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>3.5% casualties</b> (including immortal units). Each dominion that participates in destroying a wonder that is controlled by another realm is awarded prestige.</p>
+                    <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>3.5% casualties</b> (including immortal units). Each dominion that attacks a wonder controlled by another realm is awarded prestige if they destroy and rebuild it in their realm.</p>
                     <em>
                         <p>More information can be found on the <a href="https://wiki.opendominion.net/wiki/Wonders">wiki</a>.</p>
                     </em>
