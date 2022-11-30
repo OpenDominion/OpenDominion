@@ -1082,7 +1082,7 @@ class MilitaryCalculator
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25);
 
-        return $boatsProtected;
+        return ceil($boatsProtected);
     }
 
     /**
