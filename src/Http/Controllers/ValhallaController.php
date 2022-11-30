@@ -122,9 +122,12 @@ class ValhallaController extends AbstractController
             case 'realm-stat-prestige': $data = $this->getRealmsByStatistic($round, 'prestige'); break;
             case 'realm-stat-attacking-success': $data = $this->getRealmsByStatistic($round, 'stat_attacking_success'); break;
             case 'stat-wonder-damage': $data = $this->getDominionsByRanking($round, 'wonder-damage'); break;
-            case 'realm-stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'wonders_destroyed'); break;
+            case 'stat-wonders-destroyed': $data = $this->getDominionsByStatistic($round, 'stat_wonders_destroyed'); break;
+            case 'realm-stat-wonder-damage': $data = $this->getRealmsByStatistic($round, 'stat_wonder_damage'); break;
+            case 'realm-stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'stat_wonders_destroyed'); break;
             case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'total_land_explored'); break;
             case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'total_land_conquered'); break;
+            case 'hero-stat-experience': $data = $this->getHeroesByStatistic($round, 'experience'); break;
 
             default:
                 if (!preg_match('/(strongest|largest|stat)-([-\w]+)/', $type, $matches)) {
@@ -625,6 +628,41 @@ class ValhallaController extends AbstractController
                     'alignment' => ucfirst($realm->alignment),
                     'number' => $realm->number,
                     'value' => $realm->{$stat},
+                ];
+                return $data;
+            })
+            ->sortByDesc(function ($row) {
+                return $row['value'];
+            })
+            ->take(100)
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['value'] = number_format($row['value']);
+                return $row;
+            });
+    }
+
+    protected function getHeroesByStatistic(Round $round, string $stat)
+    {
+        $builder = $round->dominions()
+            ->with(['hero']);
+
+        return $builder->get()
+            ->filter(function (Dominion $dominion) {
+                return isset($dominion->hero);
+            })
+            ->map(function (Dominion $dominion) use ($stat) {
+                $player = '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>';
+
+                $data = [
+                    '#' => null,
+                    'dominion' => $dominion->name,
+                    'hero' => $dominion->hero->name,
+                    'player' => $player,
+                    'race' => $dominion->race->name,
+                    'realm' => $dominion->realm->number,
+                    'value' => $dominion->hero->{$stat},
                 ];
                 return $data;
             })
