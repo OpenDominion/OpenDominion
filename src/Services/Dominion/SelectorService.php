@@ -83,6 +83,31 @@ class SelectorService
             ])->findOrFail($dominionId);
         }
 
+        // Track hourly access activity
+        if ($this->selectedDominion && $this->selectedDominion->round->isActive()) {
+            // Generate 1128 bit string of 0s
+            if (!$this->selectedDominion->hourly_activity) {
+                $roundBinary = '';
+                $dayBinary = '';
+                foreach(range(1, 24) as $n) {
+                    $dayBinary .= '0';
+                }
+                foreach(range(1, 47) as $n) {
+                    $roundBinary .= $dayBinary;
+                }
+                $this->selectedDominion->hourly_activity = $roundBinary;
+            }
+
+            // Set bit for this day/hour to 1
+            $index = (24 * ($this->selectedDominion->round->daysInRound() - 1)) + $this->selectedDominion->round->hoursInDay() - 1;
+            $hourlyActivity = $this->selectedDominion->hourly_activity;
+            if ($index < (47 * 24) && !$hourlyActivity[$index]) {
+                $hourlyActivity[$index] = 1;
+                $this->selectedDominion->hourly_activity = $hourlyActivity;
+                $this->selectedDominion->save();
+            }
+        }
+
         return $this->selectedDominion;
     }
 

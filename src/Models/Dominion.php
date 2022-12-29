@@ -196,6 +196,7 @@ class Dominion extends AbstractModel
         'black_guard_active_at' => 'datetime',
         'black_guard_inactive_at' => 'datetime',
         'last_tick_at' => 'datetime',
+        'hourly_activity' => 'string',
         'locked_at' => 'datetime',
         'abandoned_at' => 'datetime',
         'protection_ticks_remaining' => 'integer',
