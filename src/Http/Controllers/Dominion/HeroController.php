@@ -83,7 +83,7 @@ class HeroController extends AbstractDominionController
                 'name' => $request->get('name'),
                 'class' => $request->get('class'),
                 'trade' => $request->get('trade'),
-                'experience' => (int) min($dominion->hero->experience, 4000) / 2
+                'experience' => (int) min($dominion->hero->experience, 10000) / 2
             ]);
         } catch (GameException $e) {
             return redirect()->back()
