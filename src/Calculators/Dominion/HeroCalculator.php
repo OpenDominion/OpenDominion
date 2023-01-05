@@ -176,7 +176,7 @@ class HeroCalculator
         $level = $this->getHeroLevel($hero);
         $xpLevels = $this->getExperienceLevels();
         $nextLevel = $xpLevels->firstWhere('level', $level + 1);
-        return $nextLevel['xp'] ?: 99999;
+        return $nextLevel ? $nextLevel['xp'] : 99999;
     }
 
     /**
