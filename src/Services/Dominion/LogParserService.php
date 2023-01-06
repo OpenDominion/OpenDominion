@@ -250,7 +250,7 @@ class LogParserService
     protected function parseRelease(string $line)
     {
         if (preg_match('/You successfully released ([\w\s,]*)/', $line, $matches)) {
-            if (preg_match_all('/(\d+)\s(\w+)/', $matches[1], $releaseMatches)) {
+            if (preg_match_all('/(\d+)\s([\w\s]+)/', $matches[1], $releaseMatches)) {
                 $releaseData = [];
                 foreach ($releaseMatches[1] as $idx => $amount) {
                     $name = $releaseMatches[2][$idx];
@@ -293,7 +293,7 @@ class LogParserService
     protected function parseTrain(string $line)
     {
         if (preg_match('/Training of ([\w\s,]*) begun at a cost of ([\w\s,]*)/', $line, $matches)) {
-            if (preg_match_all('/(\d+)\s(\w+)/', $matches[1], $trainingMatches)) {
+            if (preg_match_all('/(\d+)\s([\w\s]+)/', $matches[1], $trainingMatches)) {
                 $trainingData = [];
                 foreach ($trainingMatches[1] as $idx => $amount) {
                     $name = $trainingMatches[2][$idx];
