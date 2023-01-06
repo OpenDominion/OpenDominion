@@ -187,7 +187,7 @@ class SpellActionService
                 $xpGain = 2;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-                    $xpGain = 1;
+                    $xpGain = 1.5;
                     $wizardStrengthLost = 1;
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
