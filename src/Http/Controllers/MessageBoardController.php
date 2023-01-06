@@ -202,8 +202,9 @@ class MessageBoardController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
+        $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
         $request->session()->flash('alert-success', 'Your message has been posted');
-        return redirect()->route('message-board.thread', $thread);
+        return redirect()->route('message-board.thread', [$thread, 'page' => $posts->lastPage()]);
     }
 
     public function getDeletePost(MessageBoard\Post $post)

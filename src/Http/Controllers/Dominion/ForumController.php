@@ -75,15 +75,6 @@ class ForumController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        // todo: fire laravel event
-//        $analyticsService = app(AnalyticsService::class);
-//        $analyticsService->queueFlashEvent(new Event( // todo: contract
-//            'forum',
-//            'create-thread',
-//            $thread->title, // ?
-//            null
-//        ));
-
         $request->session()->flash('alert-success', 'Your thread has been created');
         return redirect()->route('dominion.forum.thread', $thread);
     }
@@ -131,26 +122,17 @@ class ForumController extends AbstractDominionController
         $forumService = app(ForumService::class);
 
         try {
-            // todo: $post = ... and navigate to anchor with post id on page?
             $forumService->postReply($dominion, $thread, $request->get('body'));
-
+            $this->updateDominionForumLastRead($dominion);
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
-        // todo: fire laravel event
-//        $analyticsService = app(AnalyticsService::class);
-//        $analyticsService->queueFlashEvent(new Event( // todo: contract
-//            'dominion.forum',
-//            'create-post',
-//            $thread->title, // ?
-//            null
-//        ));
-
+        $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
         $request->session()->flash('alert-success', 'Your message has been posted');
-        return redirect()->route('dominion.forum.thread', $thread);
+        return redirect()->route('dominion.forum.thread', [$thread, 'page' => $posts->lastPage()]);
     }
 
     public function getDeletePost(Forum\Post $post)
