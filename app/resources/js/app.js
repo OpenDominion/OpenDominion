@@ -4,7 +4,6 @@ require('./momentum.js');
 require('./bootstrap');
 
 $(() => {
-
     // Ticker
     window.ticker.start();
 
@@ -18,4 +17,11 @@ $(() => {
         e.preventDefault();
     });
 
+    // disable link after click
+    $('.disable-after-click').on('click', function(e) {
+        if ($(this).attr('disabled') == 'disabled') {
+            e.preventDefault();
+        }
+        $(this).attr('disabled', 'disabled');
+    });
 });
