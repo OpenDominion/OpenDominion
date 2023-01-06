@@ -961,7 +961,7 @@ class MilitaryCalculator
      */
     public function getWizardRatio(Dominion $dominion, string $type = 'offense'): float
     {
-        return ($this->getWizardRatioRaw($dominion, $type) * $this->getWizardRatioMultiplier($dominion));
+        return ($this->getWizardRatioRaw($dominion, $type) * $this->getWizardRatioMultiplier($dominion, $type));
     }
 
     /**
@@ -994,7 +994,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getWizardRatioMultiplier(Dominion $dominion): float
+    public function getWizardRatioMultiplier(Dominion $dominion, string $type = 'offense'): float
     {
         $multiplier = 1;
 
@@ -1014,7 +1014,9 @@ class MilitaryCalculator
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_power');
 
         // Improvement: Towers
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
+        if ($type == 'offense') {
+            $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
+        }
 
         return $multiplier;
     }

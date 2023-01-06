@@ -3,6 +3,12 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Automated protection via importing from an Excel Log
+
+### Changed
+- Minimum war duration changed to 48 hours (from 60), however the invasion bonuses will remain active for 12 hours after war is cancelled
+- Spires improvement no longer increases defensive wizard power, only offensive
 
 ## [1.32.1] - 2022-11-14
 ### Changed
