@@ -166,8 +166,8 @@ amplify_magic:
   cost_strength: 5
   duration: 6
   perks:
-    self_spell_cost: 200
-    self_spell_duration: 150
+    self_spell_cost: 100
+    self_spell_duration: 50
     invalid_protection: 1
 crusade:
   name: Crusade
