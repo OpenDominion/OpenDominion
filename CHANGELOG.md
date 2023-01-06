@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - Minimum war duration changed to 48 hours (from 60), however the invasion bonuses will remain active for 12 hours after war is cancelled
+- Docks now protect 2 + [0.05 x daysInRound] boats (from 2.5 + [daysInRound - 25] after Day 25)
 - Spires improvement no longer increases defensive wizard power, only offensive
 
 ## [1.32.1] - 2022-11-14
