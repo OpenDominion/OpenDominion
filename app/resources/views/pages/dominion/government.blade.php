@@ -180,7 +180,7 @@
                                     <th>Declared By</th>
                                     <th>Declared at</th>
                                     <th>Active at</th>
-                                    <!--<th>Inactive at</th>-->
+                                    <th>Inactive at</th>
                                     <th>War Bonus</th>
                                     <th>&nbsp;</th>
                                 </tr>
@@ -196,9 +196,10 @@
                                         <td>#{{ $selectedDominion->realm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
                                         <td>{{ $war->active_at }}</td>
-                                        <!--<td>{{ $war->inactive_at }}</td>-->
+                                        <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
+                                                <span class="label label-success">Active</span>
                                                 <span class="label label-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>
@@ -328,7 +329,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 4th day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
-                    <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
+                    <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains, which remain active for 12 hours after war is cancelled. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
                     <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, +20% infamy, and -50% resilience.</p>
                 </div>
             </div>

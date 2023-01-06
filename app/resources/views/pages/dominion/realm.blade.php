@@ -199,7 +199,7 @@
                                     <th>Declared By</th>
                                     <th>Declared at</th>
                                     <th>Active at</th>
-                                    <!--<th>Inctive at</th>-->
+                                    <th>Inactive at</th>
                                     <th>War Bonus</th>
                                 </tr>
                                 @foreach ($realm->warsOutgoing()->active()->get() as $war)
@@ -211,9 +211,10 @@
                                         <td>#{{ $realm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
                                         <td>{{ $war->active_at }}</td>
-                                        <!--<td>{{ $war->inactive_at }}</td>-->
+                                        <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
+                                                <span class="label label-success">Active</span>
                                                 <span class="label label-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>
@@ -232,9 +233,10 @@
                                         <td>#{{ $war->sourceRealm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
                                         <td>{{ $war->active_at }}</td>
-                                        <!--<td>{{ $war->inactive_at }}</td>-->
+                                        <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
+                                                <span class="label label-success">Active</span>
                                                 <span class="label label-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>
@@ -291,7 +293,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you view which realms currently have war relations with this one.</p>
-                    <p>Once a war is active, dominions in both realms gain 5% offense when attacking members of the opposing realm. If both realms have an active war bonus, that increases to 10% offense.</p>
+                    <p>While a war is active, dominions in both realms gain 5% offense when attacking members of the opposing realm. If both realms have an active war bonus, that increases to 10% offense.</p>
                 </div>
             </div>
         </div>
