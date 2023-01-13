@@ -13,8 +13,6 @@ perks:
   max_population: 40
   population_growth: 20
   food_consumption: -30
-  spy_strength: -10
-  wizard_strength: -10
   boat_capacity: 10
 units:
   - name: Grunt
@@ -33,7 +31,7 @@ units:
       defense: 2
   - name: Beast
     cost:
-      platinum: 960
+      platinum: 950
       ore: 0
     power:
       offense: 0

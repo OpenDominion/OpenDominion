@@ -14,7 +14,7 @@ perks:
 units:
   - name: Swordsman
     cost:
-      platinum: 460
+      platinum: 485
       ore: 25
     power:
       offense: 4
@@ -35,7 +35,7 @@ units:
       defense: 6
     perks:
       counts_as_wizard_offense: 0.25
-      counts_as_wizard_defense: 0.25
+      counts_as_wizard_defense: 0.2
   - name: Spellblade
     cost:
       platinum: 1200
