@@ -15,7 +15,7 @@ class MilitaryCalculator
     /**
      * @var float Number of boats protected per dock
      */
-    protected const BOATS_PROTECTED_PER_DOCK = 2.5;
+    protected const BOATS_PROTECTED_PER_DOCK = 2;
 
     /**
      * @var int Number of units each boat carries
@@ -876,7 +876,7 @@ class MilitaryCalculator
      */
     public function getSpyRatio(Dominion $dominion, string $type = 'offense'): float
     {
-        return ($this->getSpyRatioRaw($dominion, $type) * $this->getSpyRatioMultiplier($dominion));
+        return ($this->getSpyRatioRaw($dominion, $type) * $this->getSpyRatioMultiplier($dominion, $type));
     }
 
     /**
@@ -909,7 +909,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpyRatioMultiplier(Dominion $dominion): float
+    public function getSpyRatioMultiplier(Dominion $dominion, string $type = 'offense'): float
     {
         $multiplier = 1;
 
@@ -918,6 +918,9 @@ class MilitaryCalculator
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
+        if ($type == 'defense') {
+            $multiplier += $dominion->getTechPerkMultiplier('spy_strength_defense');
+        }
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');
@@ -961,7 +964,7 @@ class MilitaryCalculator
      */
     public function getWizardRatio(Dominion $dominion, string $type = 'offense'): float
     {
-        return ($this->getWizardRatioRaw($dominion, $type) * $this->getWizardRatioMultiplier($dominion));
+        return ($this->getWizardRatioRaw($dominion, $type) * $this->getWizardRatioMultiplier($dominion, $type));
     }
 
     /**
@@ -994,7 +997,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getWizardRatioMultiplier(Dominion $dominion): float
+    public function getWizardRatioMultiplier(Dominion $dominion, string $type = 'offense'): float
     {
         $multiplier = 1;
 
@@ -1014,7 +1017,9 @@ class MilitaryCalculator
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_power');
 
         // Improvement: Towers
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
+        if ($type == 'offense') {
+            $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
+        }
 
         return $multiplier;
     }
@@ -1077,7 +1082,7 @@ class MilitaryCalculator
     public function getBoatsProtected(Dominion $dominion): float
     {
         // Docks
-        $boatsProtected = $dominion->building_dock * (static::BOATS_PROTECTED_PER_DOCK + max(0, 0.05 * ($dominion->round->daysInRound() - 25)));
+        $boatsProtected = $dominion->building_dock * (static::BOATS_PROTECTED_PER_DOCK + (0.05 * $dominion->round->daysInRound()));
 
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25);

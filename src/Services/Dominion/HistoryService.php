@@ -186,6 +186,7 @@ class HistoryService
                 'black_guard_active_at',
                 'black_guard_inactive_at',
                 'last_tick_at',
+                'hourly_activity',
                 'locked_at',
                 'abandoned_at',
                 'ai_enabled',

@@ -33,6 +33,7 @@ class TechHelper
             'construction_cost' => '%s%% construction platinum cost',
             'construction_platinum_cost' => '%s%% construction platinum cost',
             'construction_lumber_cost' => '%s%% construction lumber cost',
+            'destruction_discount' => '%s%% of destroyed buildings can be rebuilt at a discount',
             'destruction_refund' => '%s%% refund when destroying buildings',
             'exchange_bonus' => '%s%% better exchange rates',
             'explore_draftee_cost' => '%s draftee per acre explore cost (min 6)',
@@ -43,7 +44,7 @@ class TechHelper
             'population_growth' => '%s%% population growth',
             'rezone_cost' => '%s%% rezoning platinum cost',
             'invest_bonus_harbor' => '%s%% bonus to harbor investment',
-            'invest_bonus_towers' => '%s%% bonus to towers investment',
+            'invest_bonus_towers' => '%s%% bonus to spires investment',
 
             // Spy related
             'enemy_assassinate_draftees_damage' => '%s%% draftees lost in assassination attempts',
@@ -51,6 +52,7 @@ class TechHelper
             'spy_cost' => '%s%% cost of spies',
             'spy_losses' => '%s%% spy losses on failed operations',
             'spy_strength' => '%s%% spy power',
+            'spy_strength_defense' => '%s%% defensive spy power',
             'spy_strength_recovery' => '%s spy strength per hour',
             'theft_gains' => '%s%% resources gained from theft',
             'theft_losses' => '%s%% resources lost to theft',

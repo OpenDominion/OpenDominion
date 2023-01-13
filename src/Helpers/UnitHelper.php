@@ -180,6 +180,8 @@ class UnitHelper
 
             // Misc
             'faster_return' => 'Returns %s hours faster from battle.',
+            'flavor_basher' => 'BASH!',
+            'flavor_smasher' => 'SMASH!',
         ];
 
         $unitHelpString = $helpStrings[$unitType];

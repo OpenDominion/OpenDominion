@@ -123,12 +123,12 @@ class SpellHelper
     {
         return [
             // Military related
-            'defense' => '%+d%% defensive power',
-            'offense' => '%+d%% offensive power',
-            'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+d%%)',
+            'defense' => '%+g%% defensive power',
+            'offense' => '%+g%% offensive power',
+            'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+g%%)',
             'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
-            'conversion_rate' => '%+d%% conversion rate',
+            'conversion_rate' => '%+g%% conversion rate',
             'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
             'kills_immortal' => 'Can kill spirits and the undead',
             'ignore_draftees' => 'Enemy draftees do not participate in battle',
@@ -147,16 +147,16 @@ class SpellHelper
             'vision' => 'Reveal technology',
 
             // Logistics
-            'population_growth' => '%+d%% population growth',
-            'rezone_cost' => '%+d%% rezoning platinum cost',
+            'population_growth' => '%+g%% population growth',
+            'rezone_cost' => '%+g%% rezoning platinum cost',
 
             // Resource related
-            'boat_production' => '%+d%% boat production',
-            'food_production' => '%+d%% food production',
-            'gem_production' => '%+d%% gem production',
-            'lumber_production' => '%+d%% lumber production',
-            'ore_production' => '%+d%% ore production',
-            'platinum_production' => '%+d%% platinum production',
+            'boat_production' => '%+g%% boat production',
+            'food_production' => '%+g%% food production',
+            'gem_production' => '%+g%% gem production',
+            'lumber_production' => '%+g%% lumber production',
+            'ore_production' => '%+g%% ore production',
+            'platinum_production' => '%+g%% platinum production',
             'platinum_production_raw' => '%+d alchemy platinum production',
 
             // Wizard related
@@ -174,10 +174,10 @@ class SpellHelper
             'destroy_improvement_forges' => 'Destroys %g%% forges',
             'destroy_improvement_walls' => 'Destroys %g%% walls',
             'ore_production_damage' => 'Ore production immune to Earthquake',
-            'food_decay' => '%+d%% food decay',
-            'lumber_decay' => '%+d%% lumber rot',
-            'mana_decay' => '%+d%% mana drain',
-            'wizard_strength' => '%+d%% wizard power',
+            'food_decay' => '%+g%% food decay',
+            'lumber_decay' => '%+g%% lumber rot',
+            'mana_decay' => '%+g%% mana drain',
+            'wizard_strength' => '%+g%% wizard power',
             'wonder_damage' => 'Deals damage to wonders',
             'scale_by_day' => 'Scales by day in round from 137.5%% to 62.5%%',
         ];

@@ -187,7 +187,7 @@ class SpellActionService
                 $xpGain = 2;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-                    $xpGain = 1;
+                    $xpGain = 1.5;
                     $wizardStrengthLost = 1;
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
@@ -665,7 +665,7 @@ class SpellActionService
                 }
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
-                // Fireball damage reduction from Forest Havens
+                // Fireball damage reduction from Forest Havens and Wizard Resilience
                 if ($attr == 'peasants') {
                     $forestHavenFireballReduction = 10;
                     $forestHavenFireballReductionMax = 80;
@@ -674,6 +674,7 @@ class SpellActionService
                         ($forestHavenFireballReductionMax / 100)
                     );
                     $damageReductionMultiplier += $damageMultiplier;
+                    $damageReductionMultiplier += $target->wizard_resilience / 1250;
                 }
 
                 // Disband Spies damage reduction from Forest Havens
@@ -1022,7 +1023,7 @@ class SpellActionService
             $infamyGain = max(0, 1000 - $dominion->infamy);
         }
         $dominion->infamy += $infamyGain;
-        $target->wizard_resilience += $resilienceGain;
+        $this->queueService->queueResources('invasion', $target, ['wizard_resilience' => $resilienceGain]);
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);

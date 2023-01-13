@@ -249,6 +249,12 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
             $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick');
 
+            // Protection
+            // todo: move pack/restart/rename/tick
+            $router->get('protection/import-log')->uses('Dominion\ProtectionController@getImportLog')->name('protection.import-log');
+            $router->post('protection/import-log')->uses('Dominion\ProtectionController@postImportLog');
+            $router->post('automation/protection')->uses('Dominion\ProtectionController@postAutomateProtection')->name('protection.automate');
+
             // Debug
             // todo: remove me later
             $router->get('debug')->uses('DebugController@getIndex');

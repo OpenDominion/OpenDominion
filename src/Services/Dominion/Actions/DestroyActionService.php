@@ -104,6 +104,13 @@ class DestroyActionService
             $dominion->resource_platinum += $platinumRefund;
             $dominion->resource_lumber += $lumberRefund;
         }
+        if ($dominion->getTechPerkValue('destruction_discount') != 0) {
+            $multiplier = $dominion->getTechPerkMultiplier('destruction_discount');
+            $discountedAcres = floor($multiplier * $totalBuildingsToDestroy);
+
+            $destructionRefundString = " {$discountedAcres} acres can now be rebuilt at a discount.";
+            $dominion->discounted_land += $discountedAcres;
+        }
 
         $dominion->save([
             'event' => HistoryService::EVENT_ACTION_DESTROY,

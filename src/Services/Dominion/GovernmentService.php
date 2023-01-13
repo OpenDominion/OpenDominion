@@ -11,10 +11,10 @@ use OpenDominion\Models\RealmWar;
 class GovernmentService
 {
     public const WAR_ACTIVE_WAIT_IN_HOURS = 24;
-    public const WAR_INACTIVE_WAIT_IN_HOURS = 0;
-    public const WAR_CANCEL_WAIT_IN_HOURS = 48;
+    public const WAR_INACTIVE_WAIT_IN_HOURS = 12;
+    public const WAR_CANCEL_WAIT_IN_HOURS = 24;
     public const WAR_REDECLARE_WAIT_IN_HOURS = 48;
-    public const WAR_MAXIMUM_DURATION = 24 * 5;
+    public const WAR_MAXIMUM_DURATION = (24 * 5) - 12;
 
     /**
      * Gets votes for Realm monarchy by Dominion.
@@ -224,7 +224,7 @@ class GovernmentService
     public function getWarsCancelled(Collection $wars): Collection
     {
         return $wars->filter(function ($war) {
-            if ($war->inactive_at !== null && $war->inactive_at < now()) {
+            if ($war->inactive_at !== null && $war->inactive_at > now()) {
                 return $war;
             }
         });
@@ -294,6 +294,27 @@ class GovernmentService
         if (
             $this->getWarsEscalated($realm->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty() &&
             $this->getWarsEscalated($target->warsOutgoing)->where('target_realm_id', $realm->id)->isNotEmpty()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns war status required to attack wonders
+     *
+     * @param Realm $realm
+     * @param Realm $target
+     */
+    public function canAttackWonders(Realm $realm, Realm $target): bool
+    {
+        $escalatedWarsOutgoing = $this->getWarsEscalated($realm->warsOutgoing)->where('target_realm_id', $target->id);
+        $escalatedWarsIncoming = $this->getWarsEscalated($target->warsOutgoing)->where('target_realm_id', $realm->id);
+        $escalatedWars = $escalatedWarsOutgoing->union($escalatedWarsIncoming);
+        $cancelledWars = $this->getWarsCancelled($escalatedWars);
+        if (
+            $escalatedWars->diff($cancelledWars)->isNotEmpty()
         ) {
             return true;
         }

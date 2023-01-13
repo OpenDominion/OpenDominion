@@ -91,7 +91,7 @@
                                     <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option></option>
                                         @foreach ($wonders as $wonder)
-                                            @if ($wonder->realm == null || $governmentService->isWarEscalated($selectedDominion->realm, $wonder->realm) || $governmentService->isWarEscalated($wonder->realm, $selectedDominion->realm))
+                                            @if ($wonder->realm == null || $governmentService->canAttackWonders($selectedDominion->realm, $wonder->realm))
                                                 <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
                                                     {{ $wonder->wonder->name }}
                                                     @if ($wonder->realm !== null)

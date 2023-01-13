@@ -20,12 +20,13 @@
             @if ($protectionService->isUnderProtection($selectedDominion))
                 <div class="box box-success">
                     <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-forward"></i> Quick Start</h3>
+                        <h3 class="box-title"><i class="fa fa-forward"></i> Automate</h3>
                     </div>
                     <div class="box-body">
                         <p>New to the game or just want to get straight to the action?</p>
-                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Select Your Build</a></p>
-                        <p><a href="https://wiki.opendominion.net/wiki/My_First_Round" target="_blank">New Player Guide</a></p>
+                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Quick Start Build</a></p>
+                        <p>Already have a log from the <a href="https://github.com/Yami-10/OD-Simulator" target="_blank">Excel Simulator</a>?</p>
+                        <p><a href="{{ route('dominion.protection.import-log') }}" class="btn btn-primary">Import Log</a></p>
                     </div>
                 </div>
                 <div class="box box-warning">
@@ -34,7 +35,6 @@
                     </div>
                     <div class="box-body">
                         <p>You are under a magical state of protection. During this time you cannot be attacked or attack other dominions. Nor can you cast any offensive spells or engage in espionage.</p>
-                        <p>You have <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks remaining.</p>
                         @php
                             $hoursLeft = $protectionService->getUnderProtectionHoursLeft($selectedDominion);
                         @endphp

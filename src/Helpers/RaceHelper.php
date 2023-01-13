@@ -111,6 +111,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'research point gains';
                 break;
+            case 'tech_production_invasion':
+                $negativeBenefit = false;
+                $description = 'research point gains from invasion';
+                break;
             case 'wizard_strength':
                 $negativeBenefit = false;
                 $description = 'wizard power';
@@ -243,6 +247,10 @@ class RaceHelper
             case 'tech_production':
                 $negativeBenefit = false;
                 $description = 'Research point gains';
+                break;
+            case 'tech_production_invasion':
+                $negativeBenefit = false;
+                $description = 'Research point gains from invasion';
                 break;
             case 'wizard_strength':
                 $negativeBenefit = false;

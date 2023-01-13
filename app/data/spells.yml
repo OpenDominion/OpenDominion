@@ -73,8 +73,8 @@ fireball:
   cost_mana: 3.3
   cost_strength: 5
   perks:
-    destroy_peasants: 2.75
-    destroy_resource_food: 2.75
+    destroy_peasants: 2.5
+    destroy_resource_food: 2.5
 lightning_bolt:
   name: Lightning Bolt
   category: war
@@ -166,8 +166,8 @@ amplify_magic:
   cost_strength: 5
   duration: 6
   perks:
-    self_spell_cost: 200
-    self_spell_duration: 150
+    self_spell_cost: 100
+    self_spell_duration: 50
     invalid_protection: 1
 crusade:
   name: Crusade
@@ -399,7 +399,7 @@ nightfall:
   races:
     - nox
   perks:
-    offense: 5
+    offense: 7.5
 miasma:
   name: Miasma
   category: war

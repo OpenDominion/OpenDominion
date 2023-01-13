@@ -64,7 +64,7 @@ class SpellCalculator
         // Amplify Magic
         if ($this->isSpellActive($dominion, 'amplify_magic')) {
             if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {
-                $manaCost = round($manaCost * $dominion->getSpellPerkValue('self_spell_cost') / 100);
+                $manaCost = round($manaCost * (1 + $dominion->getSpellPerkValue('self_spell_cost') / 100));
             }
         }
 
@@ -188,7 +188,7 @@ class SpellCalculator
         // Amplify Magic
         if ($this->isSpellActive($dominion, 'amplify_magic')) {
             if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {
-                $duration = round($duration * $dominion->getSpellPerkValue('self_spell_duration') / 100);
+                $duration = round($duration * (1 + $dominion->getSpellPerkValue('self_spell_duration') / 100));
             }
         }
 

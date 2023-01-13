@@ -37,6 +37,8 @@ units:
     power:
       offense: 7
       defense: 7
+    perks:
+      flavor_basher: 1
   - name: Smasher
     type: hybrid_elite
     cost:
@@ -45,3 +47,5 @@ units:
     power:
       offense: 7
       defense: 7
+    perks:
+      flavor_smasher: 1
