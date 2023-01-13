@@ -665,7 +665,7 @@ class SpellActionService
                 }
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
-                // Fireball damage reduction from Forest Havens
+                // Fireball damage reduction from Forest Havens and Wizard Resilience
                 if ($attr == 'peasants') {
                     $forestHavenFireballReduction = 10;
                     $forestHavenFireballReductionMax = 80;
@@ -674,6 +674,7 @@ class SpellActionService
                         ($forestHavenFireballReductionMax / 100)
                     );
                     $damageReductionMultiplier += $damageMultiplier;
+                    $damageReductionMultiplier += $target->wizard_resilience / 1250;
                 }
 
                 // Disband Spies damage reduction from Forest Havens
@@ -1023,6 +1024,7 @@ class SpellActionService
         }
         $dominion->infamy += $infamyGain;
         $target->wizard_resilience += $resilienceGain;
+        $queueService->queueResource('invasion', $target, ['wizard_resilience' => $resilienceGain]);
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);

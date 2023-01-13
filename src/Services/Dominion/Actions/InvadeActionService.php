@@ -1004,6 +1004,7 @@ class InvadeActionService
 
             // Racial Bonus
             $multiplier += $dominion->race->getPerkMultiplier('tech_production');
+            $multiplier += $dominion->race->getPerkMultiplier('tech_production_invasion');
 
             // Wonders
             $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
