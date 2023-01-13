@@ -876,7 +876,7 @@ class MilitaryCalculator
      */
     public function getSpyRatio(Dominion $dominion, string $type = 'offense'): float
     {
-        return ($this->getSpyRatioRaw($dominion, $type) * $this->getSpyRatioMultiplier($dominion));
+        return ($this->getSpyRatioRaw($dominion, $type) * $this->getSpyRatioMultiplier($dominion, $type));
     }
 
     /**
@@ -909,7 +909,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpyRatioMultiplier(Dominion $dominion): float
+    public function getSpyRatioMultiplier(Dominion $dominion, string $type = 'offense'): float
     {
         $multiplier = 1;
 
@@ -918,6 +918,9 @@ class MilitaryCalculator
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
+        if ($type == 'defense') {
+            $multiplier += $dominion->getTechPerkMultiplier('spy_strength_defense');
+        }
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');

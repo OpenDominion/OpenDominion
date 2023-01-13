@@ -43,8 +43,8 @@
                                         <td>Spy Ratio (Offense):</td>
                                         <td>
                                             <strong>{{ number_format($militaryCalculator->getSpyRatio($target, 'offense'), 3) }}</strong>
-                                            @if ($militaryCalculator->getSpyRatioMultiplier($target) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($target, 'offense'), 3) }})</small>
+                                            @if ($militaryCalculator->getSpyRatioMultiplier($target, 'offense') !== 1.0)
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getSpyRatioRaw($target, 'offense') - 1) * 100, 2) }}%)</small>
                                             @endif
                                         </td>
                                     </tr>
@@ -52,8 +52,8 @@
                                         <td>Spy Ratio (Defense):</td>
                                         <td>
                                             <strong>{{ number_format($militaryCalculator->getSpyRatio($target, 'defense'), 3) }}</strong>
-                                            @if ($militaryCalculator->getSpyRatioMultiplier($target) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($target, 'defense'), 3) }})</small>
+                                            @if ($militaryCalculator->getSpyRatioMultiplier($target, 'defense') !== 1.0)
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getSpyRatioRaw($target, 'defense') - 1) * 100, 2) }}%)</small>
                                             @endif
                                         </td>
                                     </tr>

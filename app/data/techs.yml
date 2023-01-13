@@ -5,7 +5,7 @@ tech_1_1:
 tech_3_1:
   name: Planar Emissaries
   perks:
-    mana_production: 7.5
+    mana_production: 5
   requires:
     - tech_1_1
     - tech_5_1
@@ -29,7 +29,7 @@ tech_7_1:
 tech_9_1:
   name: Midas's Bargain
   perks:
-    platinum_production: 2.5
+    platinum_production: 2
   requires:
     - tech_7_1
     - tech_11_1
@@ -101,13 +101,14 @@ tech_4_3:
 tech_6_3:
   name: Prefabrication
   perks:
-    construction_platinum_cost: -5
+    construction_platinum_cost: -10
   requires:
     - tech_4_3
     - tech_8_3
 tech_8_3:
   name: Miser's Grasp
   perks:
+    spy_strength_offense: 10
     theft_losses: -25
   requires:
     - tech_7_1
@@ -123,7 +124,7 @@ tech_10_3:
 tech_12_3:
   name: Explorer's Instinct
   perks:
-    construction_platinum_cost: -2.5
+    construction_platinum_cost: -5
     explore_platinum_cost: -2.5
   requires:
     - tech_13_1
@@ -180,14 +181,14 @@ tech_5_5:
 tech_7_5:
   name: Urg Smash Technique
   perks:
-    destruction_refund: 7.5
+    destruction_discout: 25
     lumber_production: 7.5
   requires:
     - tech_9_5
 tech_9_5:
   name: Dark Pact
   perks:
-    mana_production: 7.5
+    mana_production: 10
     wizard_strength: 5
   requires:
     - tech_7_5
@@ -254,20 +255,20 @@ tech_8_7:
 tech_10_7:
   name: Midas's Fountain
   perks:
-    platinum_production: 5
+    platinum_production: 4
   requires:
     - tech_8_7
 tech_12_7:
   name: Menace
   perks:
-    mana_production_raw: 1
-    wartime_mana_production_raw: 2
+    mana_production_raw: 2
+    wartime_mana_production_raw: 1.5
   requires:
     - tech_13_5
 tech_14_7:
   name: Architect's Flourish
   perks:
-    construction_platinum_cost: -7.5
+    construction_platinum_cost: -10
   requires:
     - tech_15_5
     - tech_16_7
@@ -300,6 +301,7 @@ tech_5_9:
 tech_7_9:
   name: Lumberjack's Devotion
   perks:
+    extra_barren_max_population: 2
     construction_lumber_cost: -10
     lumber_decay: -20
   requires:
@@ -362,7 +364,7 @@ tech_10_11:
   perks:
     boat_capacity: 3
     construction_platinum_cost: -5
-    construction_lumber_cost: -5
+    construction_lumber_cost: -10
   requires:
     - tech_9_13
     - tech_11_13
@@ -471,7 +473,7 @@ tech_9_17:
 tech_11_17:
   name: Carpenter's Knowhow
   perks:
-    construction_platinum_cost: -2.5
+    construction_platinum_cost: -5
   requires:
     - tech_10_15
     - tech_12_15
