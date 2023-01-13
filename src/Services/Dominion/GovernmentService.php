@@ -14,7 +14,7 @@ class GovernmentService
     public const WAR_INACTIVE_WAIT_IN_HOURS = 12;
     public const WAR_CANCEL_WAIT_IN_HOURS = 24;
     public const WAR_REDECLARE_WAIT_IN_HOURS = 48;
-    public const WAR_MAXIMUM_DURATION = 24 * 5;
+    public const WAR_MAXIMUM_DURATION = (24 * 5) - 12;
 
     /**
      * Gets votes for Realm monarchy by Dominion.

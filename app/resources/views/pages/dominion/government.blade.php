@@ -234,7 +234,7 @@
                                         <td>#{{ $war->sourceRealm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
                                         <td>{{ $war->active_at }}</td>
-                                        <!--<td>{{ $war->inactive_at }}</td>-->
+                                        <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
                                                 <span class="label label-danger">Expiring</span>
