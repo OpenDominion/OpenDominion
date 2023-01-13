@@ -3,13 +3,52 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.33.0] - 2023-01-13
 ### Added
 - Automated protection via importing from an Excel Log
 
 ### Changed
-- Minimum war duration changed to 48 hours (from 60), however the invasion bonuses will remain active for 12 hours after war is cancelled
-- Docks now protect 2 + [0.05 x daysInRound] boats (from 2.5 + [daysInRound - 25] after Day 25)
+- Minimum war duration changed to 48 hours (from 72), however the invasion bonuses will remain active for 12 hours after war is cancelled
+- Maximum war duration changed to 108 hours (from 120)
+- Docks now protect 2 + [0.05 x daysInRound] boats (from 2.5 + 0.05 x [daysInRound - 25] after Day 25)
+- Fireball damage reduced to 2.5% (from 2.75%)
+- Wizard resilience now takes 12 hours to go into effect
+- Wizard resilience now grants additional fireball damage reduction of [RESIL/1.25]% (cap from all sources remains at 80%)
+- Wizard resilience now increases population growth by [RESIL/100]% of your current peasants (was percentage of maximum peasants)
 - Spires improvement no longer increases defensive wizard power, only offensive
+- XP gained from info ops while in Shadow League increased to 1.5 (from 1)
+- Dark Elf Adept: changed to .2 wizard on defense (was .25)
+- Dark Elf Swordsman: +25p (from 460p)
+- Kobold: removed -10% spy and wizard power penalties
+- Kobold Beast: -10p (from 960p)
+- Lizardfolk Lizardman: +25p (from 1050p)
+- Merfolk: explore cost penalty reduced to +2.5% (was +5%)
+- Nomad: +50% research point gains from invasion
+- Nox: Nightfall increased to 7.5% offense (from 5%)
+- Nox Nightshade: changed to 0/2 +1 DP for every 10% swamps (from 0/3 +1 DP for every 12% swamps)
+- Sylvan Dryad: changed to .2 wizard on offense (was .25)
+- Undead Progeny: -25p (from 860p)
+- Undead Vampire: converts up to one Progeny for every 18 sent on attack (from 20)
+- Tech Adjustments
+  - Architect's Flourish increased to -10% construction platinum cost (from -7.5%)
+  - Carpenter's Knowhow increased to -5% construction platinum cost (from -2.5%)
+  - Dark Pact increased to 10% mana production (from 7.5%)
+  - Explorer's Instinct increased to -5% construction platinum cost (from -2.5%)
+  - Lumberjack's Devotion now grants +2 population from barren land
+  - Menace increased to +2 mana and +1.5 mana per war (max +5) from +1 mana and +2 per mana war (max +4)
+  - Midas's Bargain reduced to 2% platinum production (from 2.5%)
+  - Midas's Fountain reduced to 4% platinum production (from 5%)
+  - Miser's Grasp now grants +10% defensive spy power
+  - Planar Emmissaries reduced to 5% mana production (from 7.5%)
+  - Prefabrication increased to -10% construction cost (from -5%)
+  - Urg Smash Technique now grants discounted construction equal to 25% of acres destroyed (was platinum refund equal to 7.5% of current construction cost)
+  - WaveHack's Expertise increased to -10% construction lumber cost (from -5%)
+
+### Fixed
+- Amplify magic tooltip adjusted
+- Hero class now shown in Valhalla
+- Posting in the round forum will now take you to the most recent page
 
 ## [1.32.1] - 2022-11-14
 ### Changed
