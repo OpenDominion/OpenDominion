@@ -253,7 +253,7 @@ class LogParserService
             if (preg_match_all('/(\d+)\s([\w\s]+)/', $matches[1], $releaseMatches)) {
                 $releaseData = [];
                 foreach ($releaseMatches[1] as $idx => $amount) {
-                    $name = $releaseMatches[2][$idx];
+                    $name = str_replace(' into the peasantry', '', $releaseMatches[2][$idx]);
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
                         $attribute = $this::ATTRIBUTE_MAP[$name];
                     } else {
