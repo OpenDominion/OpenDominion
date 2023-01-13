@@ -73,8 +73,8 @@ fireball:
   cost_mana: 3.3
   cost_strength: 5
   perks:
-    destroy_peasants: 2.75
-    destroy_resource_food: 2.75
+    destroy_peasants: 2.5
+    destroy_resource_food: 2.5
 lightning_bolt:
   name: Lightning Bolt
   category: war

@@ -190,7 +190,8 @@
                         {{ number_format(array_get($data, 'wizard_resilience', 0)) }}
                         @if (array_get($data, 'wizard_resilience', 0) > 0)
                             <small class="text-muted">
-                                ({{ number_format(array_get($data, 'wizard_resilience', 0) / 250, 2) }}%)
+                                (-{{ number_format(array_get($data, 'wizard_resilience', 0) / 12.5, 2) }}%)
+                                <!--(+{{ number_format(array_get($data, 'wizard_resilience', 0) / 100, 2) }}%)-->
                             </small>
                         @endif
                     </td>

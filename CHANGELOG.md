@@ -32,7 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Undead Vampire: converts up to one Progeny for every 18 sent on attack (from 20)
 - Tech Adjustments
   - Architect's Flourish increased to -10% construction platinum cost (from -7.5%)
-  - Carpenter's Knowhow increased to -5% construction platinum cost (from -2.5%)
+  - Carpenter's Knowledge increased to -5% construction platinum cost (from -2.5%)
   - Dark Pact increased to 10% mana production (from 7.5%)
   - Explorer's Instinct increased to -5% construction platinum cost (from -2.5%)
   - Lumberjack's Devotion now grants +2 population from barren land
@@ -1868,7 +1868,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.32.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.33.0...HEAD
+[1.33.0]: https://github.com/OpenDominion/OpenDominion/compare/1.32.1...1.33.0
 [1.32.1]: https://github.com/OpenDominion/OpenDominion/compare/1.32.0...1.32.1
 [1.32.0]: https://github.com/OpenDominion/OpenDominion/compare/1.31.0...1.32.0
 [1.31.0]: https://github.com/OpenDominion/OpenDominion/compare/1.30.0...1.31.0

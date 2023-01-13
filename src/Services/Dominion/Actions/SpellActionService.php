@@ -1023,8 +1023,7 @@ class SpellActionService
             $infamyGain = max(0, 1000 - $dominion->infamy);
         }
         $dominion->infamy += $infamyGain;
-        $target->wizard_resilience += $resilienceGain;
-        $queueService->queueResource('invasion', $target, ['wizard_resilience' => $resilienceGain]);
+        $this->queueService->queueResources('invasion', $target, ['wizard_resilience' => $resilienceGain]);
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);

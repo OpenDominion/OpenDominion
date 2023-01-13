@@ -44,7 +44,7 @@
                                         <td>
                                             <strong>{{ number_format($militaryCalculator->getSpyRatio($target, 'offense'), 3) }}</strong>
                                             @if ($militaryCalculator->getSpyRatioMultiplier($target, 'offense') !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getSpyRatioRaw($target, 'offense') - 1) * 100, 2) }}%)</small>
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getSpyRatioMultiplier($target, 'offense') - 1) * 100, 2) }}%)</small>
                                             @endif
                                         </td>
                                     </tr>
@@ -53,7 +53,7 @@
                                         <td>
                                             <strong>{{ number_format($militaryCalculator->getSpyRatio($target, 'defense'), 3) }}</strong>
                                             @if ($militaryCalculator->getSpyRatioMultiplier($target, 'defense') !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getSpyRatioRaw($target, 'defense') - 1) * 100, 2) }}%)</small>
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getSpyRatioMultiplier($target, 'defense') - 1) * 100, 2) }}%)</small>
                                             @endif
                                         </td>
                                     </tr>
@@ -241,7 +241,7 @@
                                         <td>
                                             <strong>{{ number_format($militaryCalculator->getWizardRatio($target, 'defense'), 3) }}</strong>
                                             @if ($militaryCalculator->getWizardRatioMultiplier($target, 'defense') !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getWizardRatioRaw($target, 'defense') - 1) * 100, 2) }}%)</small>
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getWizardRatioMultiplier($target, 'defense') - 1) * 100, 2) }}%)</small>
                                             @endif
                                         </td>
                                     </tr>
