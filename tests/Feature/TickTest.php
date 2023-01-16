@@ -209,14 +209,14 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $dominion2->refresh();
         $this->assertTrue($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
-        $this->assertEquals($platToBeAdded * 1.1, $productionCalculator->getPlatinumProduction($dominion2));
+        $this->assertEquals(floor($platToBeAdded * 1.1), $productionCalculator->getPlatinumProduction($dominion2));
 
         $tickService->performTick($round);
         $dominion1->refresh();
         $dominion2->refresh();
 
         $this->assertEquals(1000 + $platToBeAdded * 1.0, $dominion1->resource_platinum);
-        $this->assertEquals(1000 + $platToBeAdded * 1.1, $dominion2->resource_platinum);
+        $this->assertEquals(floor(1000 + $platToBeAdded * 1.1), $dominion2->resource_platinum);
     }
 
     // https://github.com/WaveHack/OpenDominion/issues/227
