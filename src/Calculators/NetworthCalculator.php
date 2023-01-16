@@ -133,6 +133,7 @@ class NetworthCalculator
             (1.8 * min(6, max($unitOffense, $unitDefense)))
             + (0.45 * min(6, min($unitOffense, $unitDefense)))
             + (0.2 * (max(($unitOffense - 6), 0) + max(($unitDefense - 6), 0))),
-        2);
+            2
+        );
     }
 }
