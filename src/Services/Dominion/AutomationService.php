@@ -94,6 +94,7 @@ class AutomationService
                             $this->lastHour = $hour + 1;
                             $processFunc = 'process' . ucfirst($action['type']);
                             $this->$processFunc($dominion, $action['data']);
+                            $dominion->refresh();
                         }
                         if ($hour < 72) {
                             // TODO: De-deplicate from MiscController
