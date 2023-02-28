@@ -32,6 +32,10 @@ class WonderHelper
             'max_casualties_defense' => 'Defensive casualties inflicted by this realm cannot be reduced',
             'max_casualties_offense' => 'Offensive casualties against this realm cannot be reduced',
 
+            // Hero related
+            'hero_bonus' => 'Hero bonuses increased by %d%%',
+            'hero_experience' => '%+d%% hero experience gains',
+
             // Logistics
             'construction_cost' => '%+d%% construction platinum cost',
             'employment' => '%+d%% employment',

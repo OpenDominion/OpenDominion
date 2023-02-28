@@ -55,6 +55,9 @@ class HeroCalculator
             ($xpPerShrineMax / 100)
         );
 
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('hero_experience');
+
         return $multiplier;
     }
 
@@ -135,6 +138,9 @@ class HeroCalculator
             ($bonusPerShrine * $dominion->building_shrine / $this->landCalculator->getTotalLand($dominion)),
             ($bonusPerShrineMax / 100)
         );
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('hero_bonus');
 
         return $multiplier;
     }

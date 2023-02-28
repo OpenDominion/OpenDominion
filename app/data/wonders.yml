@@ -156,6 +156,20 @@ astral_panopticon:
   perks:
     surreal_perception: 1
   power: 75000
+wayfarers_outpost:
+  name: Wayfarer's Outpost
+  perks:
+    platinum_production: 2.5
+    explore_platinum_cost: -2.5
+  power: 150000
+  active: false
+altar_of_heroes:
+  name: Altar of Heroes
+  perks:
+    hero_bonus: 100
+    hero_experience: 5
+  power: 150000
+  active: false
 magical_ley_lines:
   name: Magical Ley Lines
   perks:
