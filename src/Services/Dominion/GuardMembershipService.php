@@ -12,7 +12,7 @@ class GuardMembershipService
     public const GUARD_JOIN_DELAY_IN_HOURS = 24;
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
 
-    public const BLACK_GUARD_LEAVE_WAIT_IN_HOURS = 48;
+    public const BLACK_GUARD_LEAVE_WAIT_IN_HOURS = 24;
     public const BLACK_GUARD_LEAVE_DELAY_IN_HOURS = 12;
 
     public const ROYAL_GUARD_RANGE = 0.6;
