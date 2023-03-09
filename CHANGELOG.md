@@ -4,6 +4,26 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.34.0] - 2023-03-09
+### Added
+- New Wonder: Altar of Heroes
+  - Hero bonuses increased by 100%
+  - +5% hero experience gains
+- New Wonder: Wayfarer's Outpost
+  - +2% platinum production
+  - -5% exploring platinum cost
+
+### Changed
+- Prestige formula changed to 100x[RATIO] - 40 + [LAND]/150 (from 120x[RATIO] - 50 + [LAND]/250)
+- Nox: research point generation bonus increased to 15% (from 10%)
+- Nox: Nightfall reduced to +5% offense (from +7.5%)
+- Goblin Wolf Rider: +25p (from 1275p), +10r (from 100r)
+- Goblin Hobgoblin: -25p (from 1050p)
+- Halfling: Frenzy casualty reduction increased to 35% (from 30%)
+- Firewalker Salamander: casualty reduction increased to 45% (from 40%)
+- Orc: gains 5% additional prestige from invasions
+- Wood Elf Longbowman: -20p (from 380p)
+
 ## [1.33.0] - 2023-01-13
 ### Added
 - Automated protection via importing from an Excel Log
