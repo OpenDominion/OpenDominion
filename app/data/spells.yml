@@ -305,7 +305,7 @@ frenzy:
   races:
     - halfling
   perks:
-    casualties: -30
+    casualties: -35
 howling:
   name: Howling
   category: self
@@ -399,7 +399,7 @@ nightfall:
   races:
     - nox
   perks:
-    offense: 7.5
+    offense: 5
 miasma:
   name: Miasma
   category: war

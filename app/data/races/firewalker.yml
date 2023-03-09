@@ -46,4 +46,4 @@ units:
       offense: 5
       defense: 3
     perks:
-      casualties_offense: -40
+      casualties_offense: -45

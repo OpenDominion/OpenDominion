@@ -26,7 +26,7 @@ units:
       defense: 0
   - name: Longbowman
     cost:
-      platinum: 380
+      platinum: 360
       ore: 10
     power:
       offense: 0

@@ -31,7 +31,7 @@ units:
   - name: Hobgoblin
     type: offensive_elite
     cost:
-      platinum: 1050
+      platinum: 1025
       ore: 80
     power:
       offense: 5
@@ -41,8 +41,8 @@ units:
       plunder_gems: 5
   - name: Wolf Rider
     cost:
-      platinum: 1275
-      ore: 100
+      platinum: 1300
+      ore: 110
     power:
       offense: 6
       defense: 2
