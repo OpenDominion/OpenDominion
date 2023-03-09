@@ -30,7 +30,7 @@ class MiscHelper
             'spy_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery adds 50 to your minimum infamy.',
             'wizard_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery adds 50 to your minimum infamy.',
             'spy_resilience' => 'Gained by victims of the magic snare operationm immediately.<br>Increases wizard strength recovery while under 30% by 1% per 100 resilience.',
-            'wizard_resilience' => 'Gained by victims of the fireball spell after 12 hours.<br>Reduces fireball damage by 1% per 12.5 resilience.<br>Increases peasant growth by 1% of current peasant population per 100 resilience.',
+            'wizard_resilience' => 'Gained by victims of the fireball and lighting bolt spells.<br>Reduces fireball damage by 1% per 12.5 resilience.<br>Increases peasant growth by 1% of current peasant population per 100 resilience.<br>Repairs 1% of lightning damage per 4% resilience after 12 hours.',
             'wpa' => 'Raw Wizard Ratio.<br>Used to calculate offense of Ice Elementals.',
         ];
 

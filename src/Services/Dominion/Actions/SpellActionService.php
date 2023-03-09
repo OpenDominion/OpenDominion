@@ -695,6 +695,19 @@ class SpellActionService
                     (1 - min(0.8, $damageReductionMultiplier))
                 );
 
+                // Temporary lightning damage from Wizard Resilience
+                if (Str::startsWith($attr, 'improvement_keep')) {
+                    $amount = round($damage * $target->wizard_resilience / 4000);
+                    if ($amount > 0) {
+                        $this->queueService->queueResources(
+                            'operations',
+                            $target,
+                            [$attr => $amount],
+                            12
+                        );
+                    }
+                }
+
                 // Immortal Wizards
                 if ($attr == 'military_wizards' && $target->race->getPerkValue('immortal_wizards') != 0) {
                     $damage = 0;
@@ -1006,7 +1019,7 @@ class SpellActionService
 
         // Infamy and Resilience Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
-        if ($spellKey == 'fireball') {
+        if ($spellKey == 'fireball' || $spellKey == 'lightning_bolt') {
             $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
         } else {
             $resilienceGain = 0;
@@ -1023,7 +1036,7 @@ class SpellActionService
             $infamyGain = max(0, 1000 - $dominion->infamy);
         }
         $dominion->infamy += $infamyGain;
-        $this->queueService->queueResources('invasion', $target, ['wizard_resilience' => $resilienceGain]);
+        $target->wizard_resilience += $resilienceGain;
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);

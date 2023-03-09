@@ -8,7 +8,7 @@
         <tr>
             <td>Part</td>
             <td>Rating</td>
-            <td class="text-center">Invested</td>
+            <td class="text-center">Invested <span class="text-muted small">(Incoming)</span></td>
         </tr>
     </thead>
     <tbody>
@@ -25,7 +25,12 @@
                         number_format((array_get($data, "{$improvementType}.rating") * 100 * 1.25), 2)
                     ) }}
                 </td>
-                <td class="text-center">{{ number_format(array_get($data, "{$improvementType}.points")) }}</td>
+                <td class="text-center">
+                    {{ number_format(array_get($data, "{$improvementType}.points")) }}
+                    @if (array_get($data, "{$improvementType}.incoming"))
+                        <span class="text-muted small">({{ number_format(array_get($data, "{$improvementType}.incoming")) }})</span>
+                    @endif
+                </td>
             </tr>
         @endforeach
         <tr>
@@ -33,7 +38,7 @@
             <td>
                 @if (isset($data['total']) && isset($data['highest_total']) && $data['highest_total'] > $data['total'])
                     <span class="text-muted">
-                        ({{ number_format($data['highest_total'] - $data['total']) }} damage repairable at +{{ number_format((1 - $data['total'] / $data['highest_total']) * 100 * 10, 2) }}% bonus)
+                        ({{ number_format($data['highest_total'] - $data['total']) }} damage)
                     </span>
                 @endif
             </td>

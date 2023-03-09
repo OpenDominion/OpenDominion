@@ -144,46 +144,4 @@ class ImprovementCalculator
 
         return $multiplier;
     }
-
-    /**
-     * Returns the difference between improvement total and highest improvements for a dominion.
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getRepairableImprovements(Dominion $dominion): int
-    {
-        $totalImprovements = $this->getImprovementTotal($dominion);
-        if ($totalImprovements < $dominion->highest_improvement_total) {
-            return ($dominion->highest_improvement_total - $totalImprovements);
-        }
-        return 0;
-    }
-
-    /**
-     * Returns the percentage of damage done to a dominion's improvements.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getDamagePercentage(Dominion $dominion): float
-    {
-        if ($dominion->highest_improvement_total > 0) {
-            return ($this->getRepairableImprovements($dominion) / $dominion->highest_improvement_total);
-        }
-        return 0;
-    }
-
-    /**
-     * Returns the percentage of damage done to a dominion's improvements.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getRepairMultiplier(Dominion $dominion): float
-    {
-        $damagePercentage = $this->getDamagePercentage($dominion);
-
-        return min($damagePercentage * 10, 1);
-    }
 }

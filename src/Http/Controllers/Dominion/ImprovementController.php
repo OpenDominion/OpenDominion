@@ -10,6 +10,7 @@ use OpenDominion\Http\Requests\Dominion\Actions\ImproveActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class ImprovementController extends AbstractDominionController
 {
@@ -28,6 +29,7 @@ class ImprovementController extends AbstractDominionController
             'improvementHelper' => app(ImprovementHelper::class),
             'selectedResource' => $request->query('resource', $preferredResource),
             'preferredResource' => $preferredResource,
+            'queueService' => app(QueueService::class),
         ]);
     }
 

@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Prestige formula changed to 100x[RATIO] - 40 + [LAND]/150 (from 120x[RATIO] - 50 + [LAND]/250)
 - Tech cost changed to 2.5x[LAND] + 100x[TECHS] (from 2.5x[LAND] + 150x[TECHS])
+- Lightning bolt repair invest bonus replaced with temporary damage portion based on wizard resilience, [RESIL/4000]% of damage is automatically repaired in 12 hours
 - Black op spells with duration changed to 8 hours, +2 in war, +4 in mutual war (from 6, +3, +6)
 - Shadow League: cannot leave for 24 hours after joining (down from 48)
 - Nox: research point generation bonus increased to 15% (from 10%)

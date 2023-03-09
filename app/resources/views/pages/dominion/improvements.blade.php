@@ -23,7 +23,7 @@
                                 <tr>
                                     <th>Part</th>
                                     <th>Rating</th>
-                                    <th class="text-center">Invested</th>
+                                    <th class="text-center">Invested <span class="text-muted small">(Incoming)</span></th>
                                     <th class="text-center">Invest</th>
                                 </tr>
                             </thead>
@@ -41,7 +41,12 @@
                                                 number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType) * 100 * 1.25, 2)
                                             ) }}
                                         </td>
-                                        <td class="text-center">{{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}</td>
+                                        <td class="text-center">
+                                            {{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}
+                                            @if ($queueService->getQueueTotalByResource('operations', $selectedDominion, "improvement_{$improvementType}"))
+                                                <span class="text-muted small">({{ $queueService->getQueueTotalByResource('operations', $selectedDominion, "improvement_{$improvementType}") }})</span>
+                                            @endif
+                                        </td>
                                         <td class="text-center">
                                             <div class="input-group">
                                                 <input type="number" name="improve[{{ $improvementType }}]" data-type="{{ $improvementType }}" class="form-control text-center" placeholder="0" min="0" value="{{ old('improve.' . $improvementType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
@@ -94,9 +99,6 @@
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_lumber) }} lumber, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->resource_gems) }} {{ str_plural('gem', $selectedDominion->resource_gems) }}.</p>
                     @if ($selectedDominion->building_masonry > 0)
                         <p>Masonries are increasing your castle improvements by {{ number_format(($improvementCalculator->getImprovementMultiplier($selectedDominion) - 1) * 100, 2) }}%</p>
-                    @endif
-                    @if ($improvementCalculator->getRepairableImprovements($selectedDominion) > 0)
-                        <p><b>Lightning has damanged your castle!</b><br>Total investment has been reduced by {{ number_format($improvementCalculator->getDamagePercentage($selectedDominion) * 100, 3) }}% of maximum. You will receive an investment bonus (currently +{{ number_format($improvementCalculator->getRepairMultiplier($selectedDominion) * 100, 2) }}%) until {{ number_format($improvementCalculator->getRepairableImprovements($selectedDominion)) }} points have been repaired.</p>
                     @endif
                 </div>
             </div>

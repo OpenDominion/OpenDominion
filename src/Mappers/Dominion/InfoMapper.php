@@ -196,10 +196,14 @@ class InfoMapper
                 "{$type}.rating",
                 $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type)
             );
+            array_set(
+                $data,
+                "{$type}.incoming",
+                $this->queueService->getQueueTotalByResource('operations', $dominion, "improvement_{$type}")
+            );
         }
 
         array_set($data, 'total', $this->improvementCalculator->getImprovementTotal($dominion));
-        array_set($data, 'highest_total', $dominion->highest_improvement_total);
 
         return $data;
     }

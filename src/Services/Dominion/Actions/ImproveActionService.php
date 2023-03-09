@@ -34,8 +34,6 @@ class ImproveActionService
         }
 
         $improvementCalculator = app(ImprovementCalculator::class);
-        $repairableImprovements = $improvementCalculator->getRepairableImprovements($dominion);
-        $repairMultiplier = (1 + $improvementCalculator->getRepairMultiplier($dominion));
         $worth = $this->getImprovementWorth();
 
         foreach ($data as $improvementType => $amount) {
@@ -48,21 +46,13 @@ class ImproveActionService
             }
 
             $multiplier = $improvementCalculator->getInvestmentMultiplier($dominion, $resource, $improvementType);
-
             $points = floor($amount * $worth[$resource] * $multiplier);
-            if ($repairableImprovements > 0) {
-                $points = min($points * $repairMultiplier, $points + $repairableImprovements);
-                $repairableImprovements -= $points;
-            }
 
             $dominion->{"improvement_{$improvementType}"} += $points;
             $result[$improvementType] = $points;
         }
 
         $totalImprovements = $improvementCalculator->getImprovementTotal($dominion);
-        if ($totalImprovements > $dominion->highest_improvement_total) {
-            $dominion->highest_improvement_total = $totalImprovements;
-        }
         $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
         $dominion->{'stat_total_' . $resource . '_spent_investment'} += $totalResourcesToInvest;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);

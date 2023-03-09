@@ -224,6 +224,10 @@ class TickService
                     'dominions.resource_gems' => DB::raw('dominions.resource_gems + dominion_tick.resource_gems'),
                     'dominions.resource_tech' => DB::raw('dominions.resource_tech + dominion_tick.resource_tech'),
                     'dominions.resource_boats' => DB::raw('dominions.resource_boats + dominion_tick.resource_boats'),
+                    'dominions.improvement_science' => DB::raw('dominions.improvement_science + dominion_tick.improvement_science'),
+                    'dominions.improvement_keep' => DB::raw('dominions.improvement_keep + dominion_tick.improvement_keep'),
+                    'dominions.improvement_forges' => DB::raw('dominions.improvement_forges + dominion_tick.improvement_forges'),
+                    'dominions.improvement_walls' => DB::raw('dominions.improvement_walls + dominion_tick.improvement_walls'),
                     'dominions.military_draftees' => DB::raw('dominions.military_draftees + dominion_tick.military_draftees'),
                     'dominions.military_unit1' => DB::raw('dominions.military_unit1 + dominion_tick.military_unit1'),
                     'dominions.military_unit2' => DB::raw('dominions.military_unit2 + dominion_tick.military_unit2'),
@@ -697,7 +701,8 @@ class TickService
             ->get();
 
         foreach ($finished->groupBy('source') as $source => $group) {
-            // if blackops queue, continue
+            if ($source === 'operations') continue;
+
             $resources = [];
             foreach ($group as $row) {
                 $resources[$row->resource] = $row->amount;
