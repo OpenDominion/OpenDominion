@@ -236,7 +236,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you may cast spells which temporarily benefit your dominion or hinder opposing dominions. You can also perform information gathering operations with magic.</p>
-                    <p>Self spells last for <b>12 hours</b>, unless stated otherwise while Black Op spells last for <b>6 hours</b> outside of war, <b>9 hours</b> when at war, and <b>12 hours</b> when at mutual war.</p>
+                    <p>Self spells last for <b>12 hours</b>, unless stated otherwise while Black Op spells last for <b>8 hours</b> outside of war, <b>10 hours</b> when at war, and <b>12 hours</b> when at mutual war.</p>
                     <p>Any obtained data after successfully casting an information gathering spell gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
                     <p>War and black ops cannot be performed until the 4th day of the round.<p>
                     <p>Casting spells spends some wizard strength (2% for info, otherwise 5%), but it regenerates 4% every hour. You may only cast spells at or above 30% strength.</p>

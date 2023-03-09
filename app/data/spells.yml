@@ -31,7 +31,7 @@ plague:
   category: hostile
   cost_mana: 3
   cost_strength: 5
-  duration: 6
+  duration: 8
   perks:
     population_growth: -50
 insect_swarm:
@@ -39,7 +39,7 @@ insect_swarm:
   category: hostile
   cost_mana: 3
   cost_strength: 5
-  duration: 6
+  duration: 8
   perks:
     food_production: -15
 great_flood:
@@ -47,7 +47,7 @@ great_flood:
   category: hostile
   cost_mana: 3
   cost_strength: 5
-  duration: 6
+  duration: 8
   perks:
     boat_production: -25
 earthquake:
@@ -55,7 +55,7 @@ earthquake:
   category: hostile
   cost_mana: 3
   cost_strength: 5
-  duration: 6
+  duration: 8
   perks:
     gem_production: -5
     ore_production: -5

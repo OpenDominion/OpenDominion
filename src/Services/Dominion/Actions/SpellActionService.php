@@ -542,9 +542,9 @@ class SpellActionService
             // Cast spell with duration (increased during war)
             $duration = $spell->duration;
             if ($mutualWarDeclared) {
-                $duration *= 2;
+                $duration += 4;
             } elseif ($warDeclared || $blackGuard) {
-                $duration *= 1.5;
+                $duration += 2;
             }
 
             if ($target->getTechPerkValue('enemy_spell_duration') !== 0) {

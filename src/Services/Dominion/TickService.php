@@ -697,6 +697,7 @@ class TickService
             ->get();
 
         foreach ($finished->groupBy('source') as $source => $group) {
+            // if blackops queue, continue
             $resources = [];
             foreach ($group as $row) {
                 $resources[$row->resource] = $row->amount;
