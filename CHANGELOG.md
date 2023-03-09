@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - Prestige formula changed to 100x[RATIO] - 40 + [LAND]/150 (from 120x[RATIO] - 50 + [LAND]/250)
+- Tech cost changed to 2.5x[LAND] + 100x[TECHS] (from 2.5x[LAND] + 150x[TECHS])
 - Nox: research point generation bonus increased to 15% (from 10%)
 - Nox: Nightfall reduced to +5% offense (from +7.5%)
 - Goblin Wolf Rider: +25p (from 1275p), +10r (from 100r)
