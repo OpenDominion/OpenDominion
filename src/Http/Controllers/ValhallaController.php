@@ -75,6 +75,7 @@ class ValhallaController extends AbstractController
             case 'strongest-good-realms': $data = $this->getStrongestRealms($round, 'good'); break;
             case 'strongest-evil-realms': $data = $this->getStrongestRealms($round, 'evil'); break;
             case 'strongest-packs': $data = $this->getStrongestPacks($round); break;
+            case 'strongest-solo': $data = $this->getDominionsByRanking($round, 'strongest-dominions', true); break;
             case 'largest-dominions': $data = $this->getDominionsByRanking($round, 'largest-dominions'); break;
             case 'largest-good-dominions': $data = $this->getLargestDominions($round, null, 'good'); break;
             case 'largest-evil-dominions': $data = $this->getLargestDominions($round, null, 'evil'); break;
@@ -82,6 +83,7 @@ class ValhallaController extends AbstractController
             case 'largest-good-realms': $data = $this->getLargestRealms($round, 'good'); break;
             case 'largest-evil-realms': $data = $this->getLargestRealms($round, 'evil'); break;
             case 'largest-packs': $data = $this->getLargestPacks($round); break;
+            case 'largest-solo': $data = $this->getDominionsByRanking($round, 'largest-dominions', true); break;
             case 'stat-prestige': $data = $this->getDominionsByRanking($round, 'prestige'); break;
             case 'stat-attacking-success': $data = $this->getDominionsByRanking($round, 'attacking-success'); break;
             case 'stat-defending-success': $data = $this->getDominionsByStatistic($round, 'stat_defending_success'); break;
@@ -125,8 +127,8 @@ class ValhallaController extends AbstractController
             case 'stat-wonders-destroyed': $data = $this->getDominionsByStatistic($round, 'stat_wonders_destroyed'); break;
             case 'realm-stat-wonder-damage': $data = $this->getRealmsByStatistic($round, 'stat_wonder_damage'); break;
             case 'realm-stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'stat_wonders_destroyed'); break;
-            case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'total_land_explored'); break;
-            case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'total_land_conquered'); break;
+            case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'stat_total_land_explored'); break;
+            case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'stat_total_land_conquered'); break;
             case 'hero-stat-experience': $data = $this->getHeroesByStatistic($round, 'experience'); break;
 
             default:
@@ -541,14 +543,24 @@ class ValhallaController extends AbstractController
             });
     }
 
-    protected function getDominionsByRanking(Round $round, string $ranking)
+    protected function getDominionsByRanking(Round $round, string $ranking, bool $solo = false)
     {
-        return DailyRanking::with(['dominion', 'dominion.user'])
+
+        $query = DailyRanking::with(['dominion', 'dominion.user'])
             ->where('round_id', $round->id)
             ->where('key', $ranking)
             ->orderByDesc('value')
-            ->get()
-            ->map(function (DailyRanking $ranking) {
+            ->get();
+
+        if ($solo) {
+            $query = $query->filter(function (DailyRanking $ranking) {
+                if ($ranking->dominion->pack_id == null && $ranking->dominion->user_id !== null) {
+                    return true;
+                }
+            });
+        }
+
+        $query = $query->map(function (DailyRanking $ranking) {
                 if ($ranking->dominion->user) {
                     $player = '<a href="' . route('valhalla.user', $ranking->dominion->user->id) . '">' . htmlentities($ranking->dominion->user->display_name) . '</a>';
                 } else {
@@ -565,6 +577,15 @@ class ValhallaController extends AbstractController
             })
             ->take(100)
             ->values();
+
+        if ($solo) {
+            $query = $query->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                return $row;
+            });
+        }
+
+        return $query;
     }
 
     protected function getDominionsByStatistic(Round $round, string $stat)

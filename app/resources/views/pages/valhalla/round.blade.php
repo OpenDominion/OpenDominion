@@ -111,14 +111,16 @@
                     <b>Strongest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-dominions']) }}">The Strongest Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-realms']) }}">The Strongest Realms</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-packs']) }}">The Strongest Packs</a>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-packs']) }}">The Strongest Packs</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-solo']) }}">The Strongest Solo Dominions</a>
                     {{-- strongest monarchs --}}
                 </div>
                 <div class="col-sm-6 text-center">
                     <b>Largest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-dominions']) }}">The Largest Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-realms']) }}">The Largest Realms</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-packs']) }}">The Largest Packs</a>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-packs']) }}">The Largest Packs</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-solo']) }}">The Largest Solo Dominions</a>
                     {{-- largest monarchs --}}
                 </div>
             </div>
