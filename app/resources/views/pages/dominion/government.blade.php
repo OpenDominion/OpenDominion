@@ -171,7 +171,7 @@
                 <div class="box-header">
                     <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
                 </div>
-                <div class="box-body">
+                <div class="box-body table-responsive">
                     <div class="row">
                         <div class="col-md-12">
                             <table class="table table-condensed">
