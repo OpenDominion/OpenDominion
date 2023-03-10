@@ -322,7 +322,7 @@ class PopulationCalculator
         $currentPopulationChange = ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion));
 
         // Wizard resilience
-        $currentPopulationChange += round($roomForPeasants * $dominion->wizard_resilience / 200 / 100);
+        $currentPopulationChange += round($roomForPeasants * $dominion->wizard_resilience / 125 / 100);
 
         $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
         return max($maximumPeasantDeath, $maximumPopulationChange);
