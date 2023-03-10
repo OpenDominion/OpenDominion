@@ -665,7 +665,7 @@ class SpellActionService
                 }
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
-                // Fireball damage reduction from Forest Havens and Wizard Resilience
+                // Fireball damage reduction from Forest Havens
                 if ($attr == 'peasants') {
                     $forestHavenFireballReduction = 10;
                     $forestHavenFireballReductionMax = 80;
@@ -674,7 +674,6 @@ class SpellActionService
                         ($forestHavenFireballReductionMax / 100)
                     );
                     $damageReductionMultiplier += $damageMultiplier;
-                    $damageReductionMultiplier += $target->wizard_resilience / 1250;
                 }
 
                 // Disband Spies damage reduction from Forest Havens

@@ -254,9 +254,7 @@ class PopulationCalculator
     public function getPopulationBirth(Dominion $dominion): int
     {
         $multiplier = $this->getPopulationBirthMultiplier($dominion);
-        $populationBirth = round($this->getPopulationBirthRaw($dominion) * $multiplier);
-        $birthFromResilience = $dominion->peasants * ($dominion->wizard_resilience / 100 / 100);
-        return $populationBirth + $birthFromResilience;
+        return round($this->getPopulationBirthRaw($dominion) * $multiplier);
     }
 
     /**
@@ -323,8 +321,10 @@ class PopulationCalculator
         $roomForPeasants = ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion));
         $currentPopulationChange = ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion));
 
-        $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
+        // Wizard resilience
+        $currentPopulationChange += round($roomForPeasants * $dominion->wizard_resilience / 200 / 100);
 
+        $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
         return max($maximumPeasantDeath, $maximumPopulationChange);
 
          /*
