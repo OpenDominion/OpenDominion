@@ -55,7 +55,7 @@ class OpsCalculator
      */
     public function infoOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        if ($targetRatio) {
+        if (!$targetRatio) {
             return 1;
         }
 

@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lightning bolt repair invest bonus replaced with temporary damage portion based on wizard resilience, [RESIL/40]% of damage is automatically repaired in 12 hours
 - Black op spells with duration changed to 8 hours, +2 in war, +4 in mutual war (from 6, +3, +6)
 - Shadow League: cannot leave for 24 hours after joining (down from 48)
+- 25% of assassins lost to black ops will be placed in the training queue as spies
 - Nox: research point generation bonus increased to 15% (from 10%)
 - Nox: Nightfall reduced to +5% offense (from +7.5%)
 - Goblin Wolf Rider: +25p (from 1275p), +10r (from 100r)

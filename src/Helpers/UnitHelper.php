@@ -110,9 +110,9 @@ class UnitHelper
             'unit3' => 'Defensive elite',
             'unit4' => 'Offensive elite',
             'spies' => 'Used for espionage.',
-            'assassins' => 'Used for espionage.<br><br>Twice as strong as spies and cannot be disbanded.',
+            'assassins' => 'Used for espionage.<br><br>Twice as strong as spies and cannot be disbanded.<br>25% of black ops losses are retrained as spies.',
             'wizards' => 'Used for casting offensive spells.',
-            'archmages' => 'Used for casting offensive spells.<br><br>Twice as strong as wizards and cannot be assassinated. Rarely die.',
+            'archmages' => 'Used for casting offensive spells.<br><br>Twice as strong as wizards and cannot be assassinated.<br>Black ops losses reduced by 90%.',
         ];
 
         // todo: refactor this. very inefficient
