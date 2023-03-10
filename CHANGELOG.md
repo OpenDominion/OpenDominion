@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Wonder: Wayfarer's Outpost
   - +2% platinum production
   - -5% exploring platinum cost
+- New Valhalla Rankings: Largest and Strongest solo players
 
 ### Changed
 - Prestige formula changed to 100x[RATIO] - 40 + [LAND]/150 (from 120x[RATIO] - 50 + [LAND]/250)
@@ -31,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Firewalker Salamander: casualty reduction increased to 45% (from 40%)
 - Orc: gains 5% additional prestige from invasions
 - Wood Elf Longbowman: -20p (from 380p)
+- Land spy now shows percentages with incoming land instead of constructed
 
 ## [1.33.0] - 2023-01-13
 ### Added

@@ -301,7 +301,7 @@ class InfoMapper
             'totalLand' => $totalLand,
             'totalBarrenLand' => $totalBarrenLand,
             'totalConstructedLand' => $totalConstructedLand,
-            ];
+        ];
 
         if($totalConstructedLand === 0) {
             $totalConstructedLand = 1;

@@ -25,7 +25,6 @@
                 $totalConstructedLand += $amount;
 
                 $amountWithIncoming = $amount;
-
                 if ($amountConstructing = array_get($data, "constructing.{$buildingType}")) {
                     $amountWithIncoming += array_sum($amountConstructing);
                 }
