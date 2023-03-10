@@ -517,8 +517,8 @@ class ProductionCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('mana_production');
 
-        // Improvement: Towers
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
+        // Improvement: Spires
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires');
 
         return $multiplier;
     }

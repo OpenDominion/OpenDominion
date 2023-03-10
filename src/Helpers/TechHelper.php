@@ -44,7 +44,7 @@ class TechHelper
             'population_growth' => '%s%% population growth',
             'rezone_cost' => '%s%% rezoning platinum cost',
             'invest_bonus_harbor' => '%s%% bonus to harbor investment',
-            'invest_bonus_towers' => '%s%% bonus to spires investment',
+            'invest_bonus_spires' => '%s%% bonus to spires investment',
 
             // Spy related
             'enemy_assassinate_draftees_damage' => '%s%% draftees lost in assassination attempts',

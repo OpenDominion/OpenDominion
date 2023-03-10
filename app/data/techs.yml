@@ -395,7 +395,7 @@ tech_7_13:
   name: Reinforced Bulwarks
   perks:
     invest_bonus_harbor: 30
-    invest_bonus_towers: 30
+    invest_bonus_spires: 30
   requires:
     - tech_6_11
     - tech_8_11

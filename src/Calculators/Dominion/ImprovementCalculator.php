@@ -68,7 +68,7 @@ class ImprovementCalculator
         $maximumPercentages = [
             'science' => 20,
             'keep' => 30,
-            'towers' => 60,
+            'spires' => 60,
             'forges' => 30,
             'walls' => 30,
             'harbor' => 60,
@@ -90,7 +90,7 @@ class ImprovementCalculator
         $coefficients = [
             'science' => 4000,
             'keep' => 4000,
-            'towers' => 5000,
+            'spires' => 5000,
             'forges' => 7500,
             'walls' => 7500,
             'harbor' => 5000,
@@ -110,7 +110,7 @@ class ImprovementCalculator
         return (
             $dominion->improvement_science +
             $dominion->improvement_keep +
-            $dominion->improvement_towers +
+            $dominion->improvement_spires +
             $dominion->improvement_forges +
             $dominion->improvement_walls +
             $dominion->improvement_harbor

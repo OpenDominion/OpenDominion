@@ -13,6 +13,10 @@ class AddImprovementsDominionTickTable extends Migration
      */
     public function up()
     {
+        Schema::table('dominions', function (Blueprint $table) {
+            $table->renameColumn('improvement_towers', 'improvement_spires');
+        });
+
         Schema::table('dominion_tick', function (Blueprint $table) {
             $table->integer('improvement_science')->after('resource_boats')->default(0);
             $table->integer('improvement_keep')->after('improvement_science')->default(0);
@@ -28,6 +32,10 @@ class AddImprovementsDominionTickTable extends Migration
      */
     public function down()
     {
+        Schema::table('dominions', function (Blueprint $table) {
+            $table->renameColumn('improvement_spires', 'improvement_towers');
+        });
+
         Schema::table('dominion_tick', function (Blueprint $table) {
             $table->dropColumn([
                 'improvement_science',

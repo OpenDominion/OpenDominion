@@ -1016,9 +1016,9 @@ class MilitaryCalculator
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_power');
 
-        // Improvement: Towers
+        // Improvement: Spires
         if ($type == 'offense') {
-            $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
+            $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires');
         }
 
         return $multiplier;

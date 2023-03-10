@@ -83,7 +83,7 @@ class DominionFactory
 
             'improvement_science' => 0,
             'improvement_keep' => 0,
-            'improvement_towers' => 0,
+            'improvement_spires' => 0,
             'improvement_forges' => 0,
             'improvement_walls' => 0,
             'improvement_harbor' => 0,
@@ -421,7 +421,7 @@ class DominionFactory
 
             'improvement_science' => 0,
             'improvement_keep' => 0,
-            'improvement_towers' => 0,
+            'improvement_spires' => 0,
             'improvement_forges' => 0,
             'improvement_walls' => 0,
             'improvement_harbor' => 0,
@@ -534,7 +534,7 @@ class DominionFactory
 
             'improvement_science' => 0,
             'improvement_keep' => 0,
-            'improvement_towers' => 0,
+            'improvement_spires' => 0,
             'improvement_forges' => 0,
             'improvement_walls' => 0,
             'improvement_harbor' => 0,

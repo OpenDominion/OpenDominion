@@ -638,8 +638,8 @@ class SpellActionService
             $totalDamage = 0;
             $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'wizard');
 
-            // Towers
-            $baseDamageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers');
+            // Improvement: Spires
+            $baseDamageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'spires');
 
             // Techs
             $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$spell->key}_damage");
