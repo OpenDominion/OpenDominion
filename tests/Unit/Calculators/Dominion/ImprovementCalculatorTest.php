@@ -107,9 +107,9 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
                 'expected' => 0.2539, // +25.39
             ],
 
-            // Towers: 250 land, 120k points (invest 10k starter gems)
+            // Spires: 250 land, 120k points (invest 10k starter gems)
             [
-                'attributes' => ['land' => 250, 'improvement_type' => 'towers', 'improvement_points' => 120000],
+                'attributes' => ['land' => 250, 'improvement_type' => 'spires', 'improvement_points' => 120000],
                 'expected' => 0.0543, // +5.43%
             ],
 

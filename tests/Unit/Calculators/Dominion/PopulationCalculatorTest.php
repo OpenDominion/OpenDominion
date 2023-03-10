@@ -119,6 +119,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         int $populationBirth
     ) {
         $this->dominion->shouldReceive('getAttribute')->with('peasants')->andReturn($peasants);
+        $this->dominion->shouldReceive('getAttribute')->with('wizard_resilience')->andReturn(0);
         $this->sut->shouldReceive('getPopulationDrafteeGrowth')->andReturn($drafteeGrowth);
         $this->sut->shouldReceive('getMaxPopulation')->andReturn($maxPopulation);
         $this->sut->shouldReceive('getPopulation')->andReturn($population);
