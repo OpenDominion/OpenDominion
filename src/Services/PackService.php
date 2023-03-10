@@ -86,15 +86,14 @@ class PackService
 
     public function checkRaceLimitForPack(Pack $pack, Race $race): bool
     {
-        $otherRaceId = null;
         $playersPerRace = (int)$pack->round->players_per_race;
-        if ($pack->sizeAllocated() >= $pack->round->pack_size) {
+        if ($pack->sizeAllocated() == $pack->round->pack_size) {
             // Packs of maximum size must use unique races
             $playersPerRace = 1;
         }
 
         $pack = Pack::where('id', $pack->id)->withCount([
-            'dominions AS players_with_race' => static function (Builder $query) use ($race, $otherRaceId) {
+            'dominions AS players_with_race' => static function (Builder $query) use ($race) {
                 $query->where('race_id', $race->id);
             }
         ])->first();
