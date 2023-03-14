@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ed7b2cf8c5e79912b932e48802c2f6e",
+    "content-hash": "1da187a89919f4e999148fc96459a75a",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -662,49 +662,6 @@
                 }
             ],
             "time": "2020-12-03T15:47:16+00:00"
-        },
-        {
-            "name": "deployer/deployer",
-            "version": "v7.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/deployphp/deployer.git",
-                "reference": "61314b16a776da3ba332ee0390e999a361431e52"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/deployphp/deployer/zipball/61314b16a776da3ba332ee0390e999a361431e52",
-                "reference": "61314b16a776da3ba332ee0390e999a361431e52",
-                "shasum": ""
-            },
-            "bin": [
-                "dep"
-            ],
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anton Medvedev",
-                    "email": "anton@medv.io"
-                }
-            ],
-            "description": "Deployment Tool",
-            "homepage": "https://deployer.org",
-            "support": {
-                "docs": "https://deployer.org/docs",
-                "issues": "https://github.com/deployphp/deployer/issues",
-                "source": "https://github.com/deployphp/deployer"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sponsors/antonmedv",
-                    "type": "github"
-                }
-            ],
-            "time": "2023-03-01T20:16:58+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -8111,6 +8068,49 @@
                 }
             ],
             "time": "2021-03-25T17:01:18+00:00"
+        },
+        {
+            "name": "deployer/deployer",
+            "version": "v7.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/deployphp/deployer.git",
+                "reference": "61314b16a776da3ba332ee0390e999a361431e52"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/deployphp/deployer/zipball/61314b16a776da3ba332ee0390e999a361431e52",
+                "reference": "61314b16a776da3ba332ee0390e999a361431e52",
+                "shasum": ""
+            },
+            "bin": [
+                "dep"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Medvedev",
+                    "email": "anton@medv.io"
+                }
+            ],
+            "description": "Deployment Tool",
+            "homepage": "https://deployer.org",
+            "support": {
+                "docs": "https://deployer.org/docs",
+                "issues": "https://github.com/deployphp/deployer/issues",
+                "source": "https://github.com/deployphp/deployer"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/antonmedv",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-03-01T20:16:58+00:00"
         },
         {
             "name": "doctrine/instantiator",
