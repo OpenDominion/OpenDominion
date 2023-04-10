@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.34.1] - 2023-04-09
+### Fixed
+- Defensive casualty reduction bonuses are now properly applied when the recently invaded reduction is also active, but reduction from all sources is capped at 25% of base (0.9% vs 3.6%)
+
 ## [1.34.0] - 2023-03-09
 ### Added
 - New Wonder: Altar of Heroes
