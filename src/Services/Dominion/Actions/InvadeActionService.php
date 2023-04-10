@@ -42,6 +42,11 @@ class InvadeActionService
     protected const CASUALTIES_DEFENSIVE_MAX_PERCENTAGE = 4.8;
 
     /**
+     * @var float Min percentage of defensive casualties
+     */
+    protected const CASUALTIES_DEFENSIVE_MIN_PERCENTAGE = 0.9;
+
+    /**
      * @var float Base percentage of offensive casualties
      */
     protected const CASUALTIES_OFFENSIVE_BASE_PERCENTAGE = 8.5;
@@ -677,10 +682,14 @@ class InvadeActionService
         if ($dominion->getSpellPerkValue('ignore_draftees')) {
             $drafteesLost = 0;
         } else {
-            $finalCasualtiesPercentage = min(
-                $recentInvasionModifier,
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null)
-            ) * $defensiveCasualtiesPercentage;
+            $finalCasualtiesPercentage = max(
+                (
+                    $defensiveCasualtiesPercentage *
+                    $recentInvasionModifier *
+                    $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null)
+                ),
+                static::CASUALTIES_DEFENSIVE_MIN_PERCENTAGE / 100
+            );
             $drafteesLost = (int)floor($target->military_draftees * $finalCasualtiesPercentage);
         }
         if ($drafteesLost > 0) {
@@ -695,10 +704,14 @@ class InvadeActionService
             if ($unit->power_defense === 0.0) {
                 continue;
             }
-            $finalCasualtiesPercentage = min(
-                $recentInvasionModifier,
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units)
-            ) * $defensiveCasualtiesPercentage;
+            $finalCasualtiesPercentage = max(
+                (
+                    $defensiveCasualtiesPercentage *
+                    $recentInvasionModifier *
+                    $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units)
+                ),
+                static::CASUALTIES_DEFENSIVE_MIN_PERCENTAGE / 100
+            );
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $finalCasualtiesPercentage);
 
             if ($slotLost > 0) {
