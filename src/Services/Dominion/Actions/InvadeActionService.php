@@ -704,14 +704,20 @@ class InvadeActionService
             if ($unit->power_defense === 0.0) {
                 continue;
             }
-            $finalCasualtiesPercentage = max(
-                (
-                    $defensiveCasualtiesPercentage *
-                    $recentInvasionModifier *
-                    $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units)
-                ),
-                static::CASUALTIES_DEFENSIVE_MIN_PERCENTAGE / 100
-            );
+            $unitCasualtiesPercentage = $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units);
+            // Check for immortal units
+            if ($unitCasualtiesPercentage > 0) {
+                $finalCasualtiesPercentage = max(
+                    (
+                        $defensiveCasualtiesPercentage *
+                        $recentInvasionModifier *
+                        $unitCasualtiesPercentage
+                    ),
+                    static::CASUALTIES_DEFENSIVE_MIN_PERCENTAGE / 100
+                );
+            } else {
+                $finalCasualtiesPercentage = $unitCasualtiesPercentage;
+            }
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $finalCasualtiesPercentage);
 
             if ($slotLost > 0) {
