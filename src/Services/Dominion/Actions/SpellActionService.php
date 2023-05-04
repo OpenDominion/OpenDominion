@@ -322,6 +322,14 @@ class SpellActionService
             ]);
         }
 
+        foreach ($spell->perks as $perk) {
+            if (Str::startsWith($perk->key, 'sacrifice_')) {
+                $attr = str_replace('sacrifice_', '', $perk->key);
+                $percentage = $perk->pivot->value / 100;
+                $dominion->{$attr} -= round($dominion->{$attr} * $percentage);
+            }
+        }
+
         return [
             'success' => true,
             'duration' => $activeSpellDuration,

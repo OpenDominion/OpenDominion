@@ -420,3 +420,23 @@ necromantic_ritual:
     - undead
   perks:
     convert_peasants_to_self_military_unit3: 2
+cull_the_weak:
+  name: Cull the Weak
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - undead-rework
+  perks:
+    sacrifice_peasants: 10
+raise_the_dead:
+  name: Raise the Dead
+  category: self
+  cost_mana: 2
+  cost_strength: 5
+  duration: 12
+  races:
+    - undead-rework
+  perks:
+    conversions_range: 100

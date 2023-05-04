@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use DB;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
@@ -624,6 +625,7 @@ class MilitaryCalculator
 
         if ($landRatio !== null) {
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
+            $unitPower += $this->getUnitPowerFromSpellPerk($dominion, $landRatio, $unit, $powerType);
         }
 
         $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
@@ -770,6 +772,37 @@ class MilitaryCalculator
             }
 
             $powerFromPerk = $power;
+        }
+
+        return $powerFromPerk;
+    }
+
+    protected function getUnitPowerFromSpellPerk(Dominion $dominion, float $landRatio = null, Unit $unit, string $powerType): float
+    {
+        $powerFromSpellPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+            $unit->slot,
+            "{$powerType}_from_spell"
+        );
+
+        if (!$powerFromSpellPerk) {
+            return 0;
+        }
+
+        if ($landRatio > 1) {
+            return 0;
+        }
+
+        $powerFromPerk = 0;
+        $spellKey = $powerFromSpellPerk[0];
+        $power = (int)$powerFromSpellPerk[1];
+
+        if (isset($dominion->calc['cull_the_weak'])) {
+            $powerFromPerk = $power;
+        } else {
+            $spellCalculator = app(SpellCalculator::class);
+            if ($spellCalculator->isSpellActive($dominion, $spellKey)) {
+                $powerFromPerk = $power;
+            }
         }
 
         return $powerFromPerk;

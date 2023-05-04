@@ -118,68 +118,69 @@ class UnitHelper
         // todo: refactor this. very inefficient
         $perkTypeStrings = [
             // Conversions
-            'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$s sent on attack).',
-            'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$s%%+ of your size.',
+            'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$d sent on attack).',
+            'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$d%%+ of your size.',
 
             // OP/DP related
-            'defense_from_building' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
-            'offense_from_building' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
+            'defense_from_building' => 'Defense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
+            'offense_from_building' => 'Offense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
 
-            'defense_from_land' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
-            'offense_from_land' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
+            'defense_from_land' => 'Defense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
+            'offense_from_land' => 'Offense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
 
-            'defense_from_pairing' => 'Defense increased by %2$s when paired with %3$s %1$s at home.',
-            'offense_from_pairing' => 'Offense increased by %2$s when paired with %3$s %1$s on attack.',
+            'defense_from_pairing' => 'Defense increased by %2$d when paired with %3$d %1$s at home.',
+            'offense_from_pairing' => 'Offense increased by %2$d when paired with %3$d %1$s on attack.',
 
-            'defense_from_prestige' => 'Defense increased by 1 for every %1$s prestige (max +%2$s).',
-            'offense_from_prestige' => 'Offense increased by 1 for every %1$s prestige (max +%2$s).',
+            'defense_from_prestige' => 'Defense increased by 1 for every %1$d prestige (max +%2$d).',
+            'offense_from_prestige' => 'Offense increased by 1 for every %1$d prestige (max +%2$d).',
 
-            'defense_vs_building' => 'Defense decreased by 1 for every %2$s%% %1$ss of defender (max %3$s).',
-            'offense_vs_building' => 'Offense decreased by 1 for every %2$s%% %1$ss of defender (max %3$s).',
+            'defense_vs_building' => 'Defense decreased by 1 for every %2$d%% %1$ss of defender (max %3$d).',
+            'offense_vs_building' => 'Offense decreased by 1 for every %2$d%% %1$ss of defender (max %3$d).',
 
-            'defense_vs_goblin' => 'Defense increased by %s against goblins.',
-            'offense_vs_goblin' => 'Offense increased by %s against goblins.',
-            'defense_vs_kobold' => 'Defense increased by %s against kobolds.',
-            'offense_vs_kobold' => 'Offense increased by %s against kobolds.',
-            'defense_vs_wood_elf' => 'Defense increased by %s against wood elves.',
-            'offense_vs_wood_elf' => 'Offense increased by %s against wood elves.',
+            'defense_vs_goblin' => 'Defense increased by %d against goblins.',
+            'offense_vs_goblin' => 'Offense increased by %d against goblins.',
+            'defense_vs_kobold' => 'Defense increased by %d against kobolds.',
+            'offense_vs_kobold' => 'Offense increased by %d against kobolds.',
+            'defense_vs_wood_elf' => 'Defense increased by %d against wood elves.',
+            'offense_vs_wood_elf' => 'Offense increased by %d against wood elves.',
 
-            'offense_staggered_land_range' => 'Offense increased by %2$s against dominions %1$s%%+ of your size.',
+            'offense_from_spell' => 'Offense increased by %2$d against dominions 100%% of your size or smaller (while %1$s is active).',
+            'offense_staggered_land_range' => 'Offense increased by %2$d against dominions %1$d%%+ of your size.',
 
-            'offense_raw_wizard_ratio' => 'Offense increased by %1$s * Raw Wizard Ratio (max +%2$s).',
+            'offense_raw_wizard_ratio' => 'Offense increased by %1$d * Raw Wizard Ratio (max +%2$d).',
 
             // Spy related
-            'counts_as_spy_defense' => 'Each unit counts as %s of a spy on defense.',
-            'counts_as_spy_offense' => 'Each unit counts as %s of a spy on offense.',
+            'counts_as_spy_defense' => 'Each unit counts as %.2f of a spy on defense.',
+            'counts_as_spy_offense' => 'Each unit counts as %.2f of a spy on offense.',
 
             // Wizard related
-            'counts_as_wizard_defense' => 'Each unit counts as %s of a wizard on defense.',
-            'counts_as_wizard_offense' => 'Each unit counts as %s of a wizard on offense.',
+            'counts_as_wizard_defense' => 'Each unit counts as %.2f of a wizard on defense.',
+            'counts_as_wizard_offense' => 'Each unit counts as %.2f of a wizard on offense.',
 
             // Casualties related
-            'casualties' => '%s%% casualties.',
-            'casualties_defense' => '%s%% defensive casualties.',
-            'casualties_offense' => '%s%% offensive casualties.',
-            'fixed_casualties' => 'ALWAYS suffers %s%% casualties.',
+            'casualties' => '%+d%% casualties.',
+            'casualties_defense' => '%+d%% defensive casualties.',
+            'casualties_offense' => '%+d%% offensive casualties.',
+            'fixed_casualties' => 'ALWAYS suffers %d%% casualties.',
 
             'immortal' => 'Almost never dies.',
             'immortal_except_vs' => 'Almost never dies, except vs %s.',
-            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %s%%+ of your size.',
+            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %d%%+ of your size.',
 
             'kills_immortal' => 'Can kill spirits and the undead.',
             'reduce_combat_losses' => 'Reduces combat losses.',
             'rebirth' => 'Reborn %d hours after death.',
 
             // Resource related
-            'ore_production' => 'Each unit produces %s units of ore per hour.',
-            'plunder_platinum' => 'Each unit plunders %s platinum on attack (max 1 hour of target\'s raw production).',
-            'plunder_gems' => 'Each unit plunders %s gems on attack (max 1 hour of target\'s raw production).',
-            'plunder_mana' => 'Each unit plunders %s mana on attack (max 1 hour of target\'s raw production).',
+            'ore_production' => 'Each unit produces %d units of ore per hour.',
+            'plunder_platinum' => 'Each unit plunders %d platinum on attack (max 1 hour of target\'s raw production).',
+            'plunder_gems' => 'Each unit plunders %d gems on attack (max 1 hour of target\'s raw production).',
+            'plunder_mana' => 'Each unit plunders %d mana on attack (max 1 hour of target\'s raw production).',
             'sink_boats_defense' => 'Sinks boats when defending.',
             'sink_boats_offense' => 'Sinks boats when attacking.',
 
             // Misc
-            'faster_return' => 'Returns %s hours faster from battle.',
+            'faster_return' => 'Returns %d hours faster from battle.',
             'flavor_basher' => 'BASH!',
             'flavor_smasher' => 'SMASH!',
         ];
@@ -259,6 +260,18 @@ class UnitHelper
                     })->first();
 
                     $perkValue[0] = str_plural($unitToConvertTo->name);
+                    $perkValue[1] = $amount;
+                }
+
+                // Special case for spells
+                if ($perk->key === 'offense_from_spell') {
+                    $spellKey = $perkValue[0];
+                    $amount = (int)$perkValue[1];
+
+                    $spellHelper = app(SpellHelper::class);
+                    $spell = $spellHelper->getSpellByKey($spellKey);
+
+                    $perkValue[0] = $spell->name;
                     $perkValue[1] = $amount;
                 }
 

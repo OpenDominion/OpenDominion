@@ -935,6 +935,9 @@ class InvadeActionService
 
         $conversionMultiplier = 1;
         $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversion_rate');
+        if ($landRatio < 0.75) {
+            $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversions_range');
+        }
 
         $unitsWithConversionPerk = $dominion->race->units->filter(function ($unit) use ($dominion, $units) {
             if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {

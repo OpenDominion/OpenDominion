@@ -596,7 +596,7 @@
                                                         $targetBuildingFieldsRequired[] = $building;
                                                     }
                                                 }
-                                                if ($unit->perks->where('key', 'offense_staggered_land_range')->count()) {
+                                                if ($unit->perks->where('key', 'offense_staggered_land_range', 'offense_from_spell')->count()) {
                                                     $targetLandRequired = true;
                                                 }
                                                 if ($unit->perks->whereIn('key', ['offense_vs_goblin', 'offense_vs_kobold', 'offense_vs_wood_elf'])->count()) {
@@ -640,7 +640,7 @@
 
                                 <div class="form-group row">
                                     @php
-                                        $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land'], $race)->first();
+                                        $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land', 'sacrifice_peasants'], $race)->first();
                                     @endphp
                                     <div class="col-xs-3 text-right">
                                         @if ($racialSpell)
