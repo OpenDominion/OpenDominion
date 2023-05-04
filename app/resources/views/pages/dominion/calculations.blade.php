@@ -170,7 +170,7 @@
                                                             value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_get($targetInfoOps['barracks_spy']->data, "units.home.unit{$unit->slot}") : null }}" />
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($unit->power_offense > 0)
+                                                    @if ($unit->power_offense > 0 || $unit->perks->where('key', 'rebirth')->isNotEmpty())
                                                         <input type="number"
                                                                 name="calc[unit{{ $unit->slot }}_away]"
                                                                 class="form-control text-center"
