@@ -10,38 +10,38 @@ converter_difficulty: 3
 overall_difficulty: 3
 home_land_type: hill
 perks:
-  max_population: 40
-  population_growth: 20
-  food_consumption: -30
+  max_population: 30
+  population_growth: 15
+  food_consumption: -25
   boat_capacity: 10
 units:
   - name: Grunt
     cost:
-      platinum: 245
-      ore: 20
+      platinum: 300
+      ore: 25
     power:
-      offense: 2
+      offense: 2.5
       defense: 0
   - name: Underling
     cost:
-      platinum: 250
-      ore: 20
+      platinum: 325
+      ore: 25
     power:
       offense: 0
-      defense: 2
+      defense: 2.5
   - name: Beast
     cost:
-      platinum: 950
+      platinum: 1425
       ore: 0
     power:
       offense: 0
       defense: 3
     perks:
-      defense_from_pairing: 4,2,1 # slot, amount, num required
+      defense_from_pairing: 2,2,1 # slot, amount, num required
   - name: Overlord
     cost:
-      platinum: 875
-      ore: 55
+      platinum: 1100
+      ore: 50
     power:
       offense: 3
       defense: 2
