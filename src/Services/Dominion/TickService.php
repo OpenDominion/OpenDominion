@@ -917,6 +917,7 @@ class TickService
             // Calculate current statistics
             $statistics = [];
             foreach ($activeDominions as $dominion) {
+                $isAbandoned = ($dominion->abandoned_at !== null && $dominion->abandoned_at < now());
                 $isLocked = $dominion->locked_at !== null;
 
                 foreach ($this->rankingsHelper->getRankings() as $ranking) {
@@ -934,7 +935,7 @@ class TickService
                     }
 
                     $zeroOutRank = false;
-                    if($value != 0 && $isLocked) {
+                    if($value != 0 && ($isAbandoned || $isLocked)) {
                         $value = 0;
                         $zeroOutRank = true;
                     }
