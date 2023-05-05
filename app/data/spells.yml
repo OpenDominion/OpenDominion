@@ -314,6 +314,7 @@ howling:
   duration: 12
   races:
     - kobold
+    - kobold-rework
   perks:
     offense: 10
     defense: 10

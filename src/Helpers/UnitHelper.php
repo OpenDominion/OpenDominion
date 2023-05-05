@@ -183,6 +183,7 @@ class UnitHelper
             'faster_return' => 'Returns %d hours faster from battle.',
             'flavor_basher' => 'BASH!',
             'flavor_smasher' => 'SMASH!',
+            'flavor_tunneler' => 'You no take candle!',
         ];
 
         $unitHelpString = $helpStrings[$unitType];

@@ -29,6 +29,8 @@ units:
     power:
       offense: 0
       defense: 2.5
+    perks:
+      flavor_tunneler: 1
   - name: Taskmaster
     cost:
       platinum: 1425
