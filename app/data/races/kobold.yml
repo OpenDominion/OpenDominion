@@ -15,32 +15,32 @@ perks:
   food_consumption: -25
   boat_capacity: 10
 units:
-  - name: Grunt
+  - name: Underling
     cost:
       platinum: 300
       ore: 25
     power:
       offense: 2.5
       defense: 0
-  - name: Underling
+  - name: Tunneler
     cost:
       platinum: 325
       ore: 25
     power:
       offense: 0
       defense: 2.5
-  - name: Beast
+  - name: Taskmaster
     cost:
       platinum: 1425
       ore: 0
     power:
-      offense: 0
+      offense: 3
       defense: 3
     perks:
       defense_from_pairing: 2,2,1 # slot, amount, num required
   - name: Overlord
     cost:
-      platinum: 1100
+      platinum: 1050
       ore: 50
     power:
       offense: 3
