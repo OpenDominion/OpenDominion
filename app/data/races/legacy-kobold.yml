@@ -1,5 +1,5 @@
-key: kobold-rework
-name: Kobold
+key: kobold
+name: Kobold (Legacy)
 alignment: good
 description: >-
   <p>Aggressive, beast-like and intensely xenophobic, Kobolds are universally reviled wherever they nest. Kobolds are only interested in two things: eating, and... well let's just say they think "monogamy" is a dirty word.</p>
@@ -10,40 +10,41 @@ converter_difficulty: 3
 overall_difficulty: 3
 home_land_type: hill
 perks:
-  max_population: 30
-  population_growth: 15
-  food_consumption: -25
+  max_population: 40
+  population_growth: 20
+  food_consumption: -30
   boat_capacity: 10
 units:
   - name: Grunt
     cost:
-      platinum: 300
-      ore: 25
+      platinum: 245
+      ore: 20
     power:
-      offense: 2.5
+      offense: 2
       defense: 0
   - name: Underling
     cost:
-      platinum: 325
-      ore: 25
+      platinum: 250
+      ore: 20
     power:
       offense: 0
-      defense: 2.5
+      defense: 2
   - name: Beast
     cost:
-      platinum: 1425
+      platinum: 950
       ore: 0
     power:
       offense: 0
       defense: 3
     perks:
-      defense_from_pairing: 2,2,1 # slot, amount, num required
+      defense_from_pairing: 4,2,1 # slot, amount, num required
   - name: Overlord
     cost:
-      platinum: 1100
-      ore: 50
+      platinum: 875
+      ore: 55
     power:
       offense: 3
       defense: 2
     perks:
       offense_from_pairing: 1,2,1 # slot, amount, num required
+playable: false

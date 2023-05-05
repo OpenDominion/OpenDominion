@@ -55,3 +55,4 @@ units:
       immortal: 1
       conversion: 3,18 # slot 3, one per 18 sent
     need_boat: false
+playable: false
