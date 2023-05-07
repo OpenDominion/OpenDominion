@@ -23,10 +23,21 @@ class ScribesController extends AbstractController
 
     public function getRaces()
     {
-        $races = collect(Race::orderBy('name')->get())->groupBy('alignment')->toArray();
+        $races = collect(Race::where('playable', true)->orderBy('name')->get())->groupBy('alignment')->toArray();
         return view('pages.scribes.races', [
             'goodRaces' => $races['good'],
             'evilRaces' => $races['evil'],
+            'legacy' => false,
+        ]);
+    }
+
+    public function getLegacyRaces()
+    {
+        $races = collect(Race::where('playable', false)->orderBy('name')->get())->groupBy('alignment')->toArray();
+        return view('pages.scribes.races', [
+            'goodRaces' => $races['good'],
+            'evilRaces' => $races['evil'],
+            'legacy' => true,
         ]);
     }
 

@@ -16,6 +16,15 @@
                 </div>
             </div>
         </div>
+        <div class="box-footer">
+            <div class="pull-right">
+                @if ($legacy)
+                    <a href="{{ route('scribes.races') }}">View Playable Races</a>
+                @else
+                    <a href="{{ route('scribes.legacy-races') }}">View Legacy Races</a>
+                @endif
+            </div>
+        </div>
     </div>
     <div class="box">
         <div class="box-body no-padding">
