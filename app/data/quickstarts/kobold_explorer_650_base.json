@@ -67,9 +67,9 @@
     },
     {
         "attributes": {
-            "peasants": 13431,
+            "peasants": 12660,
             "draft_rate": 60,
-            "resource_platinum": 316000,
+            "resource_platinum": 282500,
             "resource_food": 50000,
             "resource_lumber": 29000,
             "resource_mana": 10000,
@@ -77,9 +77,9 @@
             "resource_gems": 0,
             "resource_tech": 1050,
             "resource_boats": 0,
-            "military_draftees": 281,
+            "military_draftees": 300,
             "military_unit1": 0,
-            "military_unit2": 2728,
+            "military_unit2": 2185,
             "military_unit3": 0,
             "military_unit4": 0,
             "military_spies": 25,
