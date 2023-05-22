@@ -308,8 +308,10 @@ class InvadeActionService
                 $levels = $heroCalculator->getExperienceLevels();
                 $currentLevel = $heroCalculator->getHeroLevel($target->hero);
                 $currentLevelXP = $levels->firstWhere('level', $currentLevel)['xp'];
-                $xpLoss = min($target->hero->experience - $currentLevelXP, $this->invasionResult['defender']['landLost']);
-                $this->invasionResult['defender']['xpLoss'] = $xpLoss;
+                if ($range >= 75) {
+                    $xpLoss = min($target->hero->experience - $currentLevelXP, $this->invasionResult['defender']['landLost']);
+                    $this->invasionResult['defender']['xpLoss'] = $xpLoss;
+                }
             }
 
             // Stat changes
