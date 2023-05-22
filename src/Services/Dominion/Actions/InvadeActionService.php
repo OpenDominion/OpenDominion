@@ -937,7 +937,7 @@ class InvadeActionService
 
         $conversionMultiplier = 1;
         $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversion_rate');
-        if ($landRatio < 0.75) {
+        if ($target->user_id == null && $landRatio < 0.75) {
             $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversions_range');
         }
 
@@ -960,6 +960,9 @@ class InvadeActionService
             } else {
                 $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
                 $unitSlot = (int)$perkValue[0];
+                if ($dominion->getSpellPerkValue('conversions_necromancer')) {
+                    $unitSlot = 4;
+                }
                 $conversionRate = (1 / (int)$perkValue[1]);
             }
 
