@@ -380,6 +380,18 @@ ascendance:
     - dark-elf-rework
   perks:
     upgrade_swordsmen: 8
+  active: false
+delve_into_shadow:
+  name: Delve into Shadow
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - dark-elf-rework
+  perks:
+    explore_cost_wizard_mastery: 100
+    spell_refund: 50
 gaias_blessing:
   name: Gaia's Blessing
   category: self

@@ -120,6 +120,7 @@ class UnitHelper
             // Conversions
             'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$d sent on attack).',
             'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$d%%+ of your size.',
+            'upgrade_survivors' => '%2$d%% of survivors return from battle as %1$s against dominions 75%%+ of your size.',
 
             // OP/DP related
             'defense_from_building' => 'Defense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
@@ -252,7 +253,7 @@ class UnitHelper
                 }
 
                 // Special case for conversions
-                if ($perk->key === 'conversion') {
+                if ($perk->key === 'conversion' || $perk->key === 'upgrade_survivors') {
                     $slot = (int)$perkValue[0];
                     $amount = (int)$perkValue[1];
 

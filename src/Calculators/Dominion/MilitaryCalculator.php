@@ -1269,6 +1269,9 @@ class MilitaryCalculator
             ->get();
 
         $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
+            if (!isset($event->data['result']['range'])) {
+                return false;
+            }
             return $event->data['result']['success'] && $event->data['result']['range'] >= 75;
         });
 

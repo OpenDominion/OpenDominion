@@ -14,11 +14,13 @@ perks:
 units:
   - name: Swordsman
     cost:
-      platinum: 485
+      platinum: 475
       ore: 25
     power:
       offense: 4
       defense: 0
+    perks:
+      upgrade_survivors: 4,8 # slot 4, 8%
   - name: Gargoyle
     cost:
       platinum: 300
