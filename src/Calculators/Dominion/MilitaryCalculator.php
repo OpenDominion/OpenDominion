@@ -16,7 +16,7 @@ class MilitaryCalculator
     /**
      * @var float Number of boats protected per dock
      */
-    protected const BOATS_PROTECTED_PER_DOCK = 2;
+    protected const BOATS_PROTECTED_PER_DOCK = 2.25;
 
     /**
      * @var int Number of units each boat carries
