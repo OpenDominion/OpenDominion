@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Discounted construction from invasion now scales up by 1% per day from Day 20 to Day 40 (was 2% per day from Day 25 to Day 35)
 - Base dock protection increased to 2.25 (from 2), scaling unchanged
 - Increased temporary portion of Lightning Bolt damage to 10% base (from 0% base), conditional 25% from wizard resilience still applies
+- Cyclone now awards wizard mastery when rebuilding a wonder at the same rate as prestige, 25-75 based on damage dealt
 - Dark Elf Swordsman -10p, Ascendence now a unit perk
 - Dark Elf: new spell Delve into Shadow reduces explore cost by 1% per 100 Wizard Mastery and failed/reflected spells refund 50% of their mana cost
 - Goblin: gem investment bonus reduced to 15% (from 20%)

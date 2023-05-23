@@ -253,10 +253,10 @@ class WonderActionService
             if ($this->attackResult['wonder']['destroyed']) {
                 $result = [
                     'message' => sprintf(
-                        'A twisting torrent of wind ravages the %s dealing %s damage and destroying it! You earned %s prestige.',
+                        'A twisting torrent of wind ravages the %s dealing %s damage and destroying it! You earned %s wizard mastery.',
                         $wonder->wonder->name,
                         $this->attackResult['attacker']['damage'],
-                        $this->attackResult['attacker']['prestige']
+                        $this->attackResult['attacker']['mastery']
                     ),
                     'alert-type' => 'success'
                 ];
@@ -465,16 +465,22 @@ class WonderActionService
         }
 
         $prestigeRewards = [];
+        $masteryRewards = [];
         foreach ($friendlyDominions as $friendlyDominion) {
             $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
+            $masteryGain = $this->wonderCalculator->getMasteryGainForDominion($wonder, $friendlyDominion);
             if ($friendlyDominion->id == $dominion->id) {
                 $dominion->prestige += $prestigeGain;
+                $dominion->wizard_mastery += $masteryGain;
                 $this->attackResult['attacker']['prestige'] = $prestigeGain;
+                $this->attackResult['attacker']['mastery'] = $masteryGain;
             } else {
                 $friendlyDominion->prestige += $prestigeGain;
+                $friendlyDominion->wizard_mastery += $masteryGain;
                 $friendlyDominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_DESTROYED]);
             }
             $prestigeRewards[$friendlyDominion->id] = $prestigeGain;
+            $masteryRewards[$friendlyDominion->id] = $masteryGain;
         }
 
         $wonder->damage()->delete();
@@ -497,6 +503,7 @@ class WonderActionService
             $this->notificationService
                 ->queueNotification('wonder_rebuilt', [
                     'prestige' => isset($prestigeRewards[$friendlyDominion->id]) ? $prestigeRewards[$friendlyDominion->id] : 0,
+                    'mastery' => isset($masteryRewards[$friendlyDominion->id]) ? $masteryRewards[$friendlyDominion->id] : 0,
                     'wonderRealmId' => $wonder->realm_id,
                     'wonderId' => $wonder->wonder->id
                 ])

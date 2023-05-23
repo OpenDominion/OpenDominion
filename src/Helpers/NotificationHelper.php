@@ -696,10 +696,11 @@ class NotificationHelper
                 }
 
                 return sprintf(
-                    'Our realm has destroyed%s the %s! You earned %s prestige.',
+                    'Our realm has destroyed%s the %s! You earned %s prestige and %s wizard mastery.',
                     $resultString,
                     $wonder->name,
-                    $data['prestige']
+                    isset($data['prestige']) ? $data['prestige'] : 0,
+                    isset($data['mastery']) ? $data['mastery'] : 0
                 );
 
             // todo: other irregular etc
