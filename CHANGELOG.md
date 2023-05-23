@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dark Elf Swordsman -10p, Ascendence now a unit perk
 - Dark Elf: new spell Delve into Shadow reduces explore cost by 1% per 100 Wizard Mastery and failed/reflected spells refund 50% of their mana cost
 - Goblin: gem investment bonus reduced to 15% (from 20%)
+- Icekin Ice Elemental: added -10% casualties on offense
 - Kobold reworked
 - Orc: prestige bonus increased to 7.5% (from 5%)
 - Undead reworked
