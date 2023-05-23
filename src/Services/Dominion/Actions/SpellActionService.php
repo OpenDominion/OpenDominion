@@ -711,7 +711,7 @@ class SpellActionService
 
                 // Temporary lightning damage from Wizard Resilience
                 if (Str::startsWith($attr, 'improvement_')) {
-                    $amount = round($damage * $target->wizard_resilience / 4000);
+                    $amount = round($damage * (0.1 + $target->wizard_resilience / 4000));
                     if ($amount > 0) {
                         $this->queueService->queueResources(
                             'operations',
