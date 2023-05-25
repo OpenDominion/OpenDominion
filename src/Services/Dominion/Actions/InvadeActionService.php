@@ -308,8 +308,10 @@ class InvadeActionService
                 $levels = $heroCalculator->getExperienceLevels();
                 $currentLevel = $heroCalculator->getHeroLevel($target->hero);
                 $currentLevelXP = $levels->firstWhere('level', $currentLevel)['xp'];
-                $xpLoss = min($target->hero->experience - $currentLevelXP, $this->invasionResult['defender']['landLost']);
-                $this->invasionResult['defender']['xpLoss'] = $xpLoss;
+                if ($range >= 75) {
+                    $xpLoss = min($target->hero->experience - $currentLevelXP, $this->invasionResult['defender']['landLost']);
+                    $this->invasionResult['defender']['xpLoss'] = $xpLoss;
+                }
             }
 
             // Stat changes
@@ -935,7 +937,7 @@ class InvadeActionService
 
         $conversionMultiplier = 1;
         $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversion_rate');
-        if ($landRatio < 0.75) {
+        if ($target->user_id == null && $landRatio < 0.75) {
             $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversions_range');
         }
 
@@ -958,6 +960,9 @@ class InvadeActionService
             } else {
                 $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
                 $unitSlot = (int)$perkValue[0];
+                if ($dominion->getSpellPerkValue('conversions_necromancer')) {
+                    $unitSlot = 4;
+                }
                 $conversionRate = (1 / (int)$perkValue[1]);
             }
 
@@ -985,10 +990,14 @@ class InvadeActionService
         }
 
         // Special case for Ascendance
-        if (isset($survivingUnits[1]) && $dominion->getSpellPerkValue('upgrade_swordsmen') && $this->invasionResult['result']['range'] >= 75) {
-            $ascendedUnits = floor($survivingUnits[1] * $dominion->getSpellPerkValue('upgrade_swordsmen') / 100);
-            $convertedUnits[1] -= $ascendedUnits;
-            $convertedUnits[4] += $ascendedUnits;
+        foreach ($dominion->race->units as $unit) {
+            $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_survivors');
+            if (!$perkValue || !array_key_exists($unit->slot, $survivingUnits) || ($survivingUnits[$unit->slot] === 0)) {
+                continue;
+            }
+            $upgradedUnits = floor($survivingUnits[$unit->slot] * $perkValue[1] / 100);
+            $convertedUnits[$unit->slot] -= $upgradedUnits;
+            $convertedUnits[$perkValue[0]] += $upgradedUnits;
         }
 
         if (!isset($this->invasionResult['attacker']['conversion']) && $convertedUnits !== array_fill(1, 4, 0)) {

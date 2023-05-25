@@ -16,7 +16,7 @@ class MilitaryCalculator
     /**
      * @var float Number of boats protected per dock
      */
-    protected const BOATS_PROTECTED_PER_DOCK = 2;
+    protected const BOATS_PROTECTED_PER_DOCK = 2.25;
 
     /**
      * @var int Number of units each boat carries
@@ -1269,6 +1269,9 @@ class MilitaryCalculator
             ->get();
 
         $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
+            if (!isset($event->data['result']['range'])) {
+                return false;
+            }
             return $event->data['result']['success'] && $event->data['result']['range'] >= 75;
         });
 

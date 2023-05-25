@@ -220,6 +220,12 @@ class SpellActionService
                 }
             }
 
+            // Delve into Shadow
+            $refundPerk = $dominion->getSpellPerkValue('spell_refund');
+            if ($refundPerk && (!$result['success'] || isset($result['reflected']))) {
+                $manaCost = (int) $manaCost * $refundPerk / 100;
+            }
+
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= $wizardStrengthLost;
 
@@ -626,7 +632,8 @@ class SpellActionService
                         'Your wizards cast the spell successfully, but it was reflected and it will now affect your dominion for an additional %s hours.',
                         $durationAdded
                     ),
-                    'alert-type' => 'danger'
+                    'alert-type' => 'danger',
+                    'reflected' => true
                 ];
             } else {
                 return [
@@ -704,7 +711,7 @@ class SpellActionService
 
                 // Temporary lightning damage from Wizard Resilience
                 if (Str::startsWith($attr, 'improvement_')) {
-                    $amount = round($damage * $target->wizard_resilience / 4000);
+                    $amount = round($damage * (0.1 + $target->wizard_resilience / 4000));
                     if ($amount > 0) {
                         $this->queueService->queueResources(
                             'operations',
@@ -804,7 +811,8 @@ class SpellActionService
                         'Your wizards cast the spell successfully, but it was reflected and your dominion lost %s.',
                         $damageString
                     ),
-                    'alert-type' => 'danger'
+                    'alert-type' => 'danger',
+                    'reflected' => true
                 ];
             } else {
                 return [

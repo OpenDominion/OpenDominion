@@ -171,4 +171,32 @@ class WonderCalculator
             (static::PRESTIGE_CONTRIBUTION_MULTIPLIER / static::PRESTIGE_CONTRIBUTION_MAX)
         ));
     }
+
+    /**
+    * Calculates mastery gain for a dominion
+    *
+    * @param RoundWonder $wonder
+    * @param Dominion $dominion
+    * @return float
+    */
+    public function getMasteryGainForDominion(RoundWonder $wonder, Dominion $dominion): float
+    {
+        if ($wonder->realm == null || !$dominion->realm->wonders->isEmpty()) {
+            // Wonder is neutral or realm already has a wonder
+            return 0;
+        }
+
+        $damageByRealm = min($this->getDamageDealtByRealm($wonder, $dominion->realm), $wonder->power);
+        $attackDamageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'cyclone');
+
+        $damageContribution = $attackDamageByDominion / $damageByRealm;
+        if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
+            return 0;
+        }
+
+        return round(static::PRESTIGE_BASE_GAIN + (
+            min($damageContribution, static::PRESTIGE_CONTRIBUTION_MAX) *
+            (static::PRESTIGE_CONTRIBUTION_MULTIPLIER / static::PRESTIGE_CONTRIBUTION_MAX)
+        ));
+    }
 }

@@ -40,7 +40,7 @@ class ConstructionCalculator
      */
     public function getDiscountedLandMultiplier(Dominion $dominion): float
     {
-        return clamp(1 - (0.02 * $dominion->round->daysInRound()), 0.30, 0.50);
+        return clamp(1 - (0.01 * ($dominion->round->daysInRound() + 30)), 0.30, 0.50);
     }
 
     /**

@@ -20,8 +20,6 @@ units:
     power:
       offense: 3
       defense: 0
-    perks:
-      casualties_offense: 10
   - name: Ghoul
     cost:
       platinum: 300
@@ -33,7 +31,7 @@ units:
       casualties: -50
   - name: Death Knight
     cost:
-      platinum: 1100
+      platinum: 1050
       ore: 0
     power:
       offense: 2
@@ -46,9 +44,8 @@ units:
       platinum: 1250
       ore: 0
     power:
-      offense: 4
+      offense: 5
       defense: 3
     perks:
       immortal: 1
-      conversion: 3,15 # slot 3, one per 15 sent
-      offense_from_spell: cull_the_weak,1
+      conversion: 2,15 # slot 3, one per 15 sent

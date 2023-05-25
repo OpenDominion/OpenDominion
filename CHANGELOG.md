@@ -4,6 +4,23 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.35.0] - 2023-05-25
+### Changed
+- Discounted construction from invasion now scales up by 1% per day from Day 20 to Day 40 (was 2% per day from Day 25 to Day 35)
+- Base dock protection increased to 2.25 (from 2), scaling unchanged
+- Increased temporary portion of Lightning Bolt damage to 10% base (from 0% base), conditional 25% from wizard resilience still applies
+- Cyclone now awards wizard mastery when rebuilding a wonder at the same rate as prestige, 25-75 based on damage dealt
+- Dark Elf Swordsman -10p, Ascendence now a unit perk
+- Dark Elf: new spell Delve into Shadow reduces explore cost by 1% per 100 Wizard Mastery and failed/reflected spells refund 50% of their mana cost
+- Goblin: gem investment bonus reduced to 15% (from 20%)
+- Icekin Ice Elemental: added -10% casualties on offense
+- Kobold reworked
+- Orc: prestige bonus increased to 7.5% (from 5%)
+- Undead reworked
+
+### Fixed
+- Invasions below 75% no longer cause XP loss
+
 ## [1.34.1] - 2023-04-09
 ### Fixed
 - Defensive casualty reduction bonuses are now properly applied when the recently invaded reduction is also active, but reduction from all sources is capped at 25% of base (0.9% vs 3.6%)

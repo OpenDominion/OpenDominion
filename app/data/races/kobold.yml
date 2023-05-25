@@ -33,7 +33,7 @@ units:
       flavor_tunneler: 1
   - name: Taskmaster
     cost:
-      platinum: 1425
+      platinum: 1400
       ore: 0
     power:
       offense: 3
@@ -42,7 +42,7 @@ units:
       defense_from_pairing: 2,2,1 # slot, amount, num required
   - name: Overlord
     cost:
-      platinum: 1050
+      platinum: 1000
       ore: 50
     power:
       offense: 3

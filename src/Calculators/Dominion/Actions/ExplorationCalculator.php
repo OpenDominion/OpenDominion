@@ -67,6 +67,12 @@ class ExplorationCalculator
             $multiplier += 0.25;
         }
 
+        // Delve into Shadow
+        $masteryPerk = $dominion->getSpellPerkValue('explore_cost_wizard_mastery');
+        if ($masteryPerk) {
+            $multiplier -= ($dominion->wizard_mastery / $masteryPerk / 100);
+        }
+
         return $multiplier;
     }
 
