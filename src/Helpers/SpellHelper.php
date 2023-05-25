@@ -36,17 +36,23 @@ class SpellHelper
                 $spell->racial = ($spell->races !== []);
                 return $spell;
             });
+
         if ($race !== null) {
             $spells = $spells->filter(function ($spell) use ($race) {
+                if (!$spell->active) {
+                    return false;
+                }
                 if (empty($spell->races) || in_array($race->key, $spell->races)) {
                     return true;
                 }
                 return false;
             });
         }
+
         if ($category !== null) {
             $spells = $spells->where('category', $category);
         }
+
         return $spells->keyBy('key')->sortBy('races');
     }
 
