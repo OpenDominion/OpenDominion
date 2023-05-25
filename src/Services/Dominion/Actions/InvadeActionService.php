@@ -961,7 +961,7 @@ class InvadeActionService
                 $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
                 $unitSlot = (int)$perkValue[0];
                 if ($dominion->getSpellPerkValue('conversions_necromancer')) {
-                    $unitSlot = 4;
+                    $unitSlot = 3;
                 }
                 $conversionRate = (1 / (int)$perkValue[1]);
             }
