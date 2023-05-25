@@ -125,8 +125,8 @@ class TickService
             $names = collect($names_json->dominion_names);
             $races = Race::where('playable', true)->get();
             $realm = $round->realms()->where('number', 0)->first();
-            // Number of NPDs to spawn (half the number of real players)
-            $npdCount = round($round->dominions()->count() * 0.5);
+            // Number of NPDs to spawn (60% of the number of real players)
+            $npdCount = round($round->dominions()->count() * 0.6);
             for ($cnt=0; $cnt<$npdCount; $cnt++) {
                 // Select race
                 if ($realm->alignment != 'neutral') {
@@ -135,8 +135,8 @@ class TickService
                     $race = $races->random();
                 }
                 // Calculate size
-                if ($cnt < $npdCount * 0.8) {
-                    // 80% of NPDs between 400 and 525
+                if ($cnt < $npdCount * 0.7) {
+                    // 70% of NPDs between 400 and 525
                     // Standard distribution centered on 487.5 (650a EG)
                     //   with a standard deviation of 37.5 (600a EG - 700a EG)
                     // Outliers set to exactly 525 (~10-15% of all NPDs)
@@ -145,7 +145,7 @@ class TickService
                         $landSize = 525;
                     }
                 } else {
-                    // Remaining 20% of NPDs between 526-600
+                    // Remaining 30% of NPDs between 526-600
                     // These spawn with increased defense
                     $landSize = mt_rand(526, 600);
                 }
