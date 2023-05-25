@@ -360,6 +360,7 @@ parasitic_hunger:
   perks:
     conversion_rate: 20
     spreads_plague: 1
+  active: false
 feral_hunger:
   name: Feral Hunger
   category: self

@@ -39,9 +39,6 @@ class SpellHelper
 
         if ($race !== null) {
             $spells = $spells->filter(function ($spell) use ($race) {
-                if (!$spell->active) {
-                    return false;
-                }
                 if (empty($spell->races) || in_array($race->key, $spell->races)) {
                     return true;
                 }
