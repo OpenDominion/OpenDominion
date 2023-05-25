@@ -24,7 +24,7 @@ units:
       defense: 0
   - name: Tunneler
     cost:
-      platinum: 350
+      platinum: 325
       ore: 25
     power:
       offense: 0

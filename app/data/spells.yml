@@ -442,7 +442,7 @@ cull_the_weak:
   races:
     - undead-rework
   perks:
-    sacrifice_peasants: 7.5
+    sacrifice_peasants: 10
     conversions_necromancer: 1
 raise_the_dead:
   name: Raise the Dead
