@@ -118,37 +118,37 @@ class UnitHelper
         // todo: refactor this. very inefficient
         $perkTypeStrings = [
             // Conversions
-            'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$d sent on attack).',
-            'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$d%%+ of your size.',
-            'upgrade_survivors' => '%2$d%% of survivors return from battle as %1$s against dominions 75%%+ of your size.',
+            'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$g sent on attack).',
+            'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$g%%+ of your size.',
+            'upgrade_survivors' => '%2$g%% of survivors return from battle as %1$s against dominions 75%%+ of your size.',
 
             // OP/DP related
-            'defense_from_building' => 'Defense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
-            'offense_from_building' => 'Offense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
+            'defense_from_building' => 'Defense increased by 1 for every %2$g%% %1$ss (max +%3$g).',
+            'offense_from_building' => 'Offense increased by 1 for every %2$g%% %1$ss (max +%3$g).',
 
-            'defense_from_land' => 'Defense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
-            'offense_from_land' => 'Offense increased by 1 for every %2$d%% %1$ss (max +%3$d).',
+            'defense_from_land' => 'Defense increased by 1 for every %2$g%% %1$ss (max +%3$g).',
+            'offense_from_land' => 'Offense increased by 1 for every %2$g%% %1$ss (max +%3$g).',
 
-            'defense_from_pairing' => 'Defense increased by %2$d when paired with %3$d %1$s at home.',
-            'offense_from_pairing' => 'Offense increased by %2$d when paired with %3$d %1$s on attack.',
+            'defense_from_pairing' => 'Defense increased by %2$g when paired with %3$g %1$s at home.',
+            'offense_from_pairing' => 'Offense increased by %2$g when paired with %3$g %1$s on attack.',
 
-            'defense_from_prestige' => 'Defense increased by 1 for every %1$d prestige (max +%2$d).',
-            'offense_from_prestige' => 'Offense increased by 1 for every %1$d prestige (max +%2$d).',
+            'defense_from_prestige' => 'Defense increased by 1 for every %1$g prestige (max +%2$g).',
+            'offense_from_prestige' => 'Offense increased by 1 for every %1$g prestige (max +%2$g).',
 
-            'defense_vs_building' => 'Defense decreased by 1 for every %2$d%% %1$ss of defender (max %3$d).',
-            'offense_vs_building' => 'Offense decreased by 1 for every %2$d%% %1$ss of defender (max %3$d).',
+            'defense_vs_building' => 'Defense decreased by 1 for every %2$g%% %1$ss of defender (max %3$g).',
+            'offense_vs_building' => 'Offense decreased by 1 for every %2$g%% %1$ss of defender (max %3$g).',
 
-            'defense_vs_goblin' => 'Defense increased by %d against goblins.',
-            'offense_vs_goblin' => 'Offense increased by %d against goblins.',
-            'defense_vs_kobold' => 'Defense increased by %d against kobolds.',
-            'offense_vs_kobold' => 'Offense increased by %d against kobolds.',
-            'defense_vs_wood_elf' => 'Defense increased by %d against wood elves.',
-            'offense_vs_wood_elf' => 'Offense increased by %d against wood elves.',
+            'defense_vs_goblin' => 'Defense increased by %g against goblins.',
+            'offense_vs_goblin' => 'Offense increased by %g against goblins.',
+            'defense_vs_kobold' => 'Defense increased by %g against kobolds.',
+            'offense_vs_kobold' => 'Offense increased by %g against kobolds.',
+            'defense_vs_wood_elf' => 'Defense increased by %g against wood elves.',
+            'offense_vs_wood_elf' => 'Offense increased by %g against wood elves.',
 
-            'offense_from_spell' => 'Offense increased by %2$d against dominions 100%% of your size or smaller (while %1$s is active).',
-            'offense_staggered_land_range' => 'Offense increased by %2$d against dominions %1$d%%+ of your size.',
+            'offense_from_spell' => 'Offense increased by %2$g against dominions 100%% of your size or smaller (while %1$s is active).',
+            'offense_staggered_land_range' => 'Offense increased by %2$g against dominions %1$g%%+ of your size.',
 
-            'offense_raw_wizard_ratio' => 'Offense increased by %1$d * Raw Wizard Ratio (max +%2$d).',
+            'offense_raw_wizard_ratio' => 'Offense increased by %1$g * Raw Wizard Ratio (max +%2$g).',
 
             // Spy related
             'counts_as_spy_defense' => 'Each unit counts as %.2f of a spy on defense.',
@@ -162,26 +162,26 @@ class UnitHelper
             'casualties' => '%+d%% casualties.',
             'casualties_defense' => '%+d%% defensive casualties.',
             'casualties_offense' => '%+d%% offensive casualties.',
-            'fixed_casualties' => 'ALWAYS suffers %d%% casualties.',
+            'fixed_casualties' => 'ALWAYS suffers %g%% casualties.',
 
             'immortal' => 'Almost never dies.',
             'immortal_except_vs' => 'Almost never dies, except vs %s.',
-            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %d%%+ of your size.',
+            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %g%%+ of your size.',
 
             'kills_immortal' => 'Can kill spirits and the undead.',
             'reduce_combat_losses' => 'Reduces combat losses.',
-            'rebirth' => 'Reborn %d hours after death.',
+            'rebirth' => 'Reborn %g hours after death.',
 
             // Resource related
-            'ore_production' => 'Each unit produces %d units of ore per hour.',
-            'plunder_platinum' => 'Each unit plunders %d platinum on attack (max 1 hour of target\'s raw production).',
-            'plunder_gems' => 'Each unit plunders %d gems on attack (max 1 hour of target\'s raw production).',
-            'plunder_mana' => 'Each unit plunders %d mana on attack (max 1 hour of target\'s raw production).',
+            'ore_production' => 'Each unit produces %g units of ore per hour.',
+            'plunder_platinum' => 'Each unit plunders %g platinum on attack (max 1 hour of target\'s raw production).',
+            'plunder_gems' => 'Each unit plunders %g gems on attack (max 1 hour of target\'s raw production).',
+            'plunder_mana' => 'Each unit plunders %g mana on attack (max 1 hour of target\'s raw production).',
             'sink_boats_defense' => 'Sinks boats when defending.',
             'sink_boats_offense' => 'Sinks boats when attacking.',
 
             // Misc
-            'faster_return' => 'Returns %d hours faster from battle.',
+            'faster_return' => 'Returns %g hours faster from battle.',
             'flavor_basher' => 'BASH!',
             'flavor_smasher' => 'SMASH!',
             'flavor_tunneler' => 'You no take candle!',
