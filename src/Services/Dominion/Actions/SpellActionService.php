@@ -222,7 +222,7 @@ class SpellActionService
 
             // Delve into Shadow
             $refundPerk = $dominion->getSpellPerkValue('spell_refund');
-            if ($refundPerk && (!$result['success'] || isset($result['reflected']))) {
+            if ($refundPerk && !$result['success']) {
                 $manaCost = (int) $manaCost * $refundPerk / 100;
             }
 
