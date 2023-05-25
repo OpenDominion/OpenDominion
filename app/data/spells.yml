@@ -433,6 +433,7 @@ necromantic_ritual:
     - undead
   perks:
     convert_peasants_to_self_military_unit3: 2
+  active: false
 cull_the_weak:
   name: Cull the Weak
   category: self
