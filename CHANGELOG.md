@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Base dock protection increased to 2.25 (from 2), scaling unchanged
 - Increased temporary portion of Lightning Bolt damage to 10% base (from 0% base), conditional 25% from wizard resilience still applies
 - Cyclone now awards wizard mastery when rebuilding a wonder at the same rate as prestige, 25-75 based on damage dealt
-- Dark Elf Swordsman -10p, Ascendence now a unit perk
+- Dark Elf Swordsman: -10p, Ascendence now a unit perk
 - Dark Elf: new spell Delve into Shadow reduces explore cost by 1% per 100 Wizard Mastery and failed spells refund 50% of their mana cost
 - Goblin: gem investment bonus reduced to 15% (from 20%)
 - Icekin Ice Elemental: added -10% casualties on offense
