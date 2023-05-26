@@ -8,7 +8,10 @@
         </div>
         <div class="box-body table-responsive">
             <div class="row">
-                <div class="col-md-12 col-md-9">
+                <div class="col-md-4">
+                    <img class="img-responsive" style="padding: 0 10px 10px 10px;" src="https://s3.us-east-2.amazonaws.com/dominion.opendominion.net/images/races/{{ $race->key }}.png" />
+                </div>
+                <div class="col-md-8">
                     {{-- Description --}}
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Description</h4>
                     <em>
@@ -16,7 +19,37 @@
                     </em>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-4">
+                            {{-- Racial Perks --}}
+                            <table class="table table-striped">
+                                <colgroup>
+                                    <col>
+                                    <col width="50px">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Race Perk</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($race->perks as $perk)
+                                        @php
+                                            $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                {!! $perkDescription['description'] !!}
+                                            </td>
+                                            <td class="text-center">
+                                                {!! $perkDescription['value']  !!}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-8">
                             {{-- Racial Spells --}}
                             @php
                                 $racialSpells = $spellHelper->getSpells($race)->where('races', '!=', []);
@@ -25,7 +58,6 @@
                                 <thead>
                                     <tr>
                                         <th>Racial Spell</th>
-                                        <th>Description</th>
                                         <th>Category</th>
                                         <th>Duration</th>
                                     </tr>
@@ -33,51 +65,20 @@
                                 <tbody>
                                     @foreach ($racialSpells as $spell)
                                         <tr>
-                                            <td>{{ $spell->name }}</td>
-                                            <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                            <td>{{ $spell->name }}: {{ $spellHelper->getSpellDescription($spell) }}</td>
                                             <td>{{ $spellHelper->getSpellType($spell) }}</td>
                                             <td>{{ $spell->duration ? $spell->duration.' hours' : '--' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+                            {{-- Home land --}}
+                            <h5 class="text-bold">Home Land</h5>
+                            <p>
+                                {!! $landHelper->getLandTypeIconHtml($race->home_land_type) !!} {{ ucfirst($race->home_land_type) }}
+                            </p>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-md-3">
-                    {{-- Home land --}}
-                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Home land</h4>
-                    <p>
-                        {!! $landHelper->getLandTypeIconHtml($race->home_land_type) !!} {{ ucfirst($race->home_land_type) }}
-                    </p>
-                    {{-- Racial Perks --}}
-                    <table class="table table-striped">
-                        <colgroup>
-                            <col>
-                            <col width="50px">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Race Perk</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($race->perks as $perk)
-                                @php
-                                    $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
-                                @endphp
-                                <tr>
-                                    <td>
-                                        {!! $perkDescription['description'] !!}
-                                    </td>
-                                    <td class="text-center">
-                                        {!! $perkDescription['value']  !!}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
                 </div>
             </div>
             <div class="row">
