@@ -171,9 +171,9 @@
                 <div class="box-header">
                     <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="box-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 table-responsive">
                             <table class="table table-condensed">
                                 <tr>
                                     <th>Realm</th>
@@ -237,6 +237,7 @@
                                         <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
+                                                <span class="label label-success">Active</span>
                                                 <span class="label label-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>

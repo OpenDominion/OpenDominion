@@ -110,6 +110,10 @@
                 @else
                     <div class="box-body">
                         <table class="table table-condensed no-border">
+                            <colgroup>
+                                <col width="150">
+                                <col>
+                            </colgroup>
                             @foreach ($notifications as $notification)
                                 @php
                                 $route = array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.route", '#');

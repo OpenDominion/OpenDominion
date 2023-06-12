@@ -67,7 +67,7 @@
                                                 <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard" data-toggle="tooltip"></i>
                                             @endif
 
-                                            @if (($guardMembershipService->isBlackGuardMember($dominion) && (isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public' || $guardMembershipService->isBlackGuardMember($selectedDominion))))
+                                            @if ($guardMembershipService->isBlackGuardMember($dominion) && ((isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public') || $guardMembershipService->isBlackGuardMember($selectedDominion) || ($dominion->realm_id == $selectedDominion->realm_id)))
                                                 <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League" data-toggle="tooltip"></i>
                                             @endif
 
@@ -190,9 +190,9 @@
                 <div class="box-header">
                     <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="box-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 table-responsive">
                             <table class="table table-condensed">
                                 <tr>
                                     <th>Realm</th>
@@ -256,9 +256,9 @@
                 <div class="box-header">
                     <h3 class="box-title"><i class="ra ra-pyramids ra-lg"></i> Wonder</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="box-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 table-responsive">
                             <table class="table table-condensed">
                                 <tr>
                                     <th>Name</th>
