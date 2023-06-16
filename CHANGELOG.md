@@ -1929,12 +1929,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 [Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.35.1...HEAD
 [1.35.1]: https://github.com/OpenDominion/OpenDominion/compare/1.35.0...1.35.1
-[1.35.0]: https://github.com/OpenDominion/OpenDominion/compare/1.34.0...1.35.0
+[1.35.0]: https://github.com/OpenDominion/OpenDominion/compare/1.34.1...1.35.0
+[1.34.1]: https://github.com/OpenDominion/OpenDominion/compare/1.34.0...1.34.1
 [1.34.0]: https://github.com/OpenDominion/OpenDominion/compare/1.33.0...1.34.0
 [1.33.0]: https://github.com/OpenDominion/OpenDominion/compare/1.32.1...1.33.0
 [1.32.1]: https://github.com/OpenDominion/OpenDominion/compare/1.32.0...1.32.1
 [1.32.0]: https://github.com/OpenDominion/OpenDominion/compare/1.31.0...1.32.0
-[1.31.0]: https://github.com/OpenDominion/OpenDominion/compare/1.30.0...1.31.0
+[1.31.0]: https://github.com/OpenDominion/OpenDominion/compare/1.30.1...1.31.0
+[1.30.1]: https://github.com/OpenDominion/OpenDominion/compare/1.30.0...1.30.1
 [1.30.0]: https://github.com/OpenDominion/OpenDominion/compare/1.9.0...1.30.0
 [1.9.0]: https://github.com/OpenDominion/OpenDominion/compare/1.8.3...1.9.0
 [1.8.3]: https://github.com/OpenDominion/OpenDominion/compare/1.8.2...1.8.3

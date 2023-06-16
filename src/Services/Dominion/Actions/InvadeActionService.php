@@ -825,6 +825,8 @@ class InvadeActionService
                 $landGenerated = 0;
             }
             $landGained = ($landConquered + $landGenerated);
+            $landRezonedConquered = 0;
+            $landRezonedGenerated = 0;
 
             // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan)
             if ($dominion->getSpellPerkValue('auto_rezone_forest') || $dominion->getSpellPerkValue('auto_rezone_water')) {

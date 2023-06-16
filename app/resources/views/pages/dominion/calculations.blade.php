@@ -640,7 +640,7 @@
 
                                 <div class="form-group row">
                                     @php
-                                        $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land', 'sacrifice_peasants'], $race)->first();
+                                        $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land'], $race)->first();
                                     @endphp
                                     <div class="col-xs-3 text-right">
                                         @if ($racialSpell)
