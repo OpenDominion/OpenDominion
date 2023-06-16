@@ -596,7 +596,7 @@
                                                         $targetBuildingFieldsRequired[] = $building;
                                                     }
                                                 }
-                                                if ($unit->perks->where('key', 'offense_staggered_land_range', 'offense_from_spell')->count()) {
+                                                if ($unit->perks->where('key', 'offense_staggered_land_range')->count()) {
                                                     $targetLandRequired = true;
                                                 }
                                                 if ($unit->perks->whereIn('key', ['offense_vs_goblin', 'offense_vs_kobold', 'offense_vs_wood_elf'])->count()) {
