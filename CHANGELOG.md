@@ -4,6 +4,14 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.35.1] - 2023-06-15
+### Fixed
+- Target Land box has been added back to OP calculator (Gnome)
+- XP gains from ops are no longer being rounded (Shrines, Shadow League)
+- Erosion and Verdant Bloom now award the correct amount of XP
+- Shadow League membership can now be seen by realmies who aren't members
+- Government page now properly shows expiring wars as active, no longer renders an unnecessary scrollbar
+
 ## [1.35.0] - 2023-05-25
 ### Changed
 - Discounted construction from invasion now scales up by 1% per day from Day 20 to Day 40 (was 2% per day from Day 25 to Day 35)
@@ -1919,7 +1927,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.33.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.35.1...HEAD
+[1.35.1]: https://github.com/OpenDominion/OpenDominion/compare/1.35.0...1.35.1
+[1.35.0]: https://github.com/OpenDominion/OpenDominion/compare/1.34.0...1.35.0
+[1.34.0]: https://github.com/OpenDominion/OpenDominion/compare/1.33.0...1.34.0
 [1.33.0]: https://github.com/OpenDominion/OpenDominion/compare/1.32.1...1.33.0
 [1.32.1]: https://github.com/OpenDominion/OpenDominion/compare/1.32.0...1.32.1
 [1.32.0]: https://github.com/OpenDominion/OpenDominion/compare/1.31.0...1.32.0
