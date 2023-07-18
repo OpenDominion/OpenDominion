@@ -481,7 +481,7 @@ class ProductionCalculator
 
         $wartimeManaProduction = $dominion->getTechPerkValue('wartime_mana_production_raw');
         if ($wartimeManaProduction > 0) {
-            $warCount = min(2, $dominion->realm->warsIncoming->count() + $dominion->realm->warsOutgoing->count());
+            $warCount = min(2, $dominion->realm->warsIncoming()->active()->count() + $dominion->realm->warsOutgoing()->active()->count());
             $mana += ($dominion->building_tower * $wartimeManaProduction * $warCount);
         }
 
