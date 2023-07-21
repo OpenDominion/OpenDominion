@@ -12,7 +12,6 @@ perks:
   max_population: 7.5
   extra_barren_max_population: 5
   ore_production: 10
-  invest_bonus_ore: 15
 units:
   - name: Soldier
     cost:
@@ -33,7 +32,7 @@ units:
   - name: Cleric
     type: hybrid_elite  
     cost:
-      platinum: 850
+      platinum: 835
       ore: 0
     power:
       offense: 4
@@ -42,7 +41,7 @@ units:
       reduce_combat_losses: 1
   - name: Warrior
     cost:
-      platinum: 1250
+      platinum: 1215
       ore: 100
     power:
       offense: 7

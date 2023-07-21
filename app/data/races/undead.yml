@@ -11,7 +11,7 @@ home_land_type: swamp
 perks:
   max_population: 5
   food_consumption: -50
-  mana_production: 10
+  mana_production: 20
 units:
   - name: Skeleton
     cost:

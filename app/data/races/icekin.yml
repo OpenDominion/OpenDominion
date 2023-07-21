@@ -48,4 +48,3 @@ units:
       defense: 2
     perks:
       offense_raw_wizard_ratio: 1,3 # ratio%, max
-      casualties_offense: -10

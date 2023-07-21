@@ -301,8 +301,7 @@ tech_5_9:
 tech_7_9:
   name: Lumberjack's Devotion
   perks:
-    extra_barren_max_population: 2
-    construction_lumber_cost: -10
+    construction_lumber_cost: -20
     lumber_decay: -20
   requires:
     - tech_5_9
@@ -489,7 +488,7 @@ tech_13_17:
 tech_10_19:
   name: Military Culture
   perks:
-    prestige_gains: 5
+    prestige_gains: 7.5
   requires:
     - tech_9_17
     - tech_11_17

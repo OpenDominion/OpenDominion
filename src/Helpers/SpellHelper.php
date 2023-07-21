@@ -137,7 +137,7 @@ class SpellHelper
             'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
             'kills_immortal' => 'Can kill spirits and the undead',
             'ignore_draftees' => 'Enemy draftees do not participate in battle',
-            'sacrifice_peasants' => 'Sacrifice %g%% of your peasants (while active, the effects of Harmony and Plague are ignored)',
+            'sacrifice_peasants' => 'Sacrifice %g%% of your peasants',
             'spreads_plague' => 'afflicts your enemies with Plague',
             'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades (75%%+ range only)',
 

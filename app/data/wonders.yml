@@ -114,6 +114,7 @@ spire_of_illusion:
   perks:
     clear_sight_accuracy: 85
   power: 75000
+  active: false
 onyx_mausoleum:
   name: Onyx Mausoleum
   perks:
