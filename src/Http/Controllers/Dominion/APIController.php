@@ -2,9 +2,12 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Auth;
+use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\API\InvadeCalculationRequest;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\UserFeedback;
 use OpenDominion\Services\Dominion\API\DefenseCalculationService;
 use OpenDominion\Services\Dominion\API\InvadeCalculationService;
 use OpenDominion\Services\Dominion\API\OffenseCalculationService;
@@ -195,6 +198,31 @@ class APIController extends AbstractDominionController
                 $target,
                 $landRatio
             );
+        } catch (GameException $e) {
+            return [
+                'result' => 'error',
+                'errors' => [$e->getMessage()]
+            ];
+        }
+
+        return $result;
+    }
+
+    public function endorsePlayer(Request $request)
+    {
+        $user = Auth::user();
+        $dominion = $this->getSelectedDominion();
+
+        $targetId = (int) $request->get('user_id');
+        $endorsed = (bool) $request->get('endorsed');
+
+        try {
+            $result = UserFeedback::updateOrCreate([
+                'source_id' => $user->id,
+                'target_id' => $targetId
+            ], [
+                'endorsed' => $endorsed
+            ]);
         } catch (GameException $e) {
             return [
                 'result' => 'error',

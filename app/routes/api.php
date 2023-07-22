@@ -18,4 +18,8 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
         $router->get('offense')->uses('Dominion\APIController@calculateOffense')->name('offense');
     });
 
+    $router->group(['prefix' => 'user', 'middleware' => ['api', 'auth'], 'as' => 'user.'], static function (Router $router) {
+        $router->get('feedback')->uses('Dominion\APIController@endorsePlayer')->name('feedback');
+    });
+
 });

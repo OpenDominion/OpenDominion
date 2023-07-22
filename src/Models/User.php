@@ -34,6 +34,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Achievement[] $achievements
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UserActivity[] $activities
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UserFeedback[] $feedback
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
@@ -87,6 +88,11 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         return $this->hasOne(DiscordUser::class);
     }
 
+    public function feedback()
+    {
+        return $this->hasMany(UserFeedback::class, 'source_id');
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -96,6 +102,22 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     }
 
     // Methods
+
+    public function hasUpvotedUser(int $userId)
+    {
+        return !$this->feedback
+            ->where('target_id', $userId)
+            ->where('endorsed', 1)
+            ->isEmpty();
+    }
+
+    public function hasDownvotedUser(int $userId)
+    {
+        return !$this->feedback
+            ->where('target_id', $userId)
+            ->where('endorsed', 0)
+            ->isEmpty();
+    }
 
     public function getAvatarUrl()
     {

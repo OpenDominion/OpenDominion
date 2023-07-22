@@ -16,7 +16,7 @@
                             <col width="50">
                             <col>
                             @if ($isOwnRealm || $round->hasEnded())
-                                <col width="150">
+                                <col width="200">
                             @endif
                             <col width="100">
                             <col width="100">
@@ -119,6 +119,24 @@
                                                     >
                                                         {{ $dominion->user->display_name }}
                                                     </a>
+                                                    @if ($isOwnRealm && ($dominion->user_id !== $selectedDominion->user_id) && ($round->hasEnded() && $round->end_date->addDays(7) > now()))
+                                                        <a
+                                                            href="{{ route('api.user.feedback') }}?user_id={{ $dominion->user_id }}&endorsed=1"
+                                                            class="upvote_user{{ $selectedDominion->user->hasUpvotedUser($dominion->user_id) ? ' text-green' : null }}"
+                                                            title="Upvote"
+                                                            data-toggle="tooltip"
+                                                        >
+                                                            <i class="fa fa-thumbs-up" style="margin-left: 2px;"></i>
+                                                        </a>
+                                                        <a
+                                                            href="{{ route('api.user.feedback') }}?user_id={{ $dominion->user_id }}&endorsed=0"
+                                                            class="downvote_user{{ $selectedDominion->user->hasDownvotedUser($dominion->user_id) ? ' text-red' : null }}"
+                                                            title="Downvote"
+                                                            data-toggle="tooltip"
+                                                        >
+                                                            <i class="fa fa-thumbs-down" style="margin-left: 2px;"></i>
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             @else
                                                 <td class="text-center"></td>
@@ -299,3 +317,34 @@
         </div>
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('.upvote_user').click(function (e) {
+                e.preventDefault();
+                sendFeedback(e.delegateTarget, true);
+            });
+
+            $('.downvote_user').click(function (e) {
+                e.preventDefault();
+                sendFeedback(e.delegateTarget, false);
+            });
+
+            function sendFeedback(anchorElem, endorsed) {
+                $.get(
+                    anchorElem.href, {},
+                    function(response) {
+                        if (endorsed) {
+                            $(anchorElem).siblings().removeClass('text-red');
+                            $(anchorElem).addClass('text-green');
+                        } else {
+                            $(anchorElem).siblings().removeClass('text-green');
+                            $(anchorElem).addClass('text-red');
+                        }
+                    }
+                );
+            }
+        })(jQuery);
+    </script>
+@endpush
