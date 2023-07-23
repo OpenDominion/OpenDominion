@@ -22,7 +22,7 @@ class RealmFinderService
     /**
      * @var int Maximum number of players allowed in packs in a single realm
      */
-    protected const MAX_PACKED_PLAYERS_PER_REALM = 10;
+    protected const MAX_PACKED_PLAYERS_PER_REALM = 9;
 
     /**
      * @var int Number of hours before round start to begin realm assignment
@@ -188,77 +188,37 @@ class RealmFinderService
             $packs[$player['pack_id']]['rating'] = $this->calculateRating($packs[$player['pack_id']]['players']);
         }
 
-        // Merge 2/3-packs into 4/5/6-packs (not final)
-        $packsMerged = [];
-        $largePackCount = 0;
-        $smallPackCount = 0;
+        // Classify packs by size
+        $largePacks = collect();
+        $smallPacks = collect();
         foreach ($packs as $packId => $pack) {
-            // Calculate realm count
-            if ($pack['size'] > 3) {
-                $largePackCount++;
-                $packsMerged[$packId] = $pack;
+            if ($pack['size'] > 4) {
+                $largePacks[$packId] = $pack;
             } else {
-                $smallPackCount++;
+                $smallPacks[$packId] = $pack;
             }
             // Update rating
             Pack::where('id', $packId)->update(['rating' => $pack['rating']]);
         }
-        $realmCount = max(ceil(($largePackCount / 2) + ($smallPackCount / 4)), static::ASSIGNMENT_MIN_REALM_COUNT);
-        $packsToMerge = $largePackCount + $smallPackCount - (2 * $realmCount);
-        $currentPackSize = 0;
-        foreach (collect($packs)->where('size', '<=', 3)->shuffle() as $packId => $pack) {
-            if ($packsToMerge > 0) {
-                if ($currentPackSize == 0) {
-                    $currentPack = $packId;
-                    $packsMerged[$packId] = $pack;
-                } else {
-                    $packsMerged[$currentPack]['players'] = array_merge($packsMerged[$currentPack]['players'], $pack['players']);
+
+        // 'Promote' smaller packs
+        if ($largePacks->count() < static::ASSIGNMENT_MIN_REALM_COUNT) {
+            $promoteCount = static::ASSIGNMENT_MIN_REALM_COUNT - $largePacks->count();
+            $promotedCount = 0;
+            foreach ($smallPacks->sortByDesc('rating') as $smallPack) {
+                $largePacks->put($smallPack['id'], $smallPack);
+                $smallPacks->forget($smallPack['id']);
+                $promotedCount++;
+                if ($promotedCount >= $promoteCount) {
+                    break;
                 }
-                $packsMerged[$currentPack]['rating'] = $this->calculateRating($packsMerged[$currentPack]['players']);
-                $currentPackSize += $pack['size'];
-                if ($currentPackSize > 3) {
-                    $currentPackSize = 0;
-                    $packsToMerge--;
-                }
-            } else {
-                $packsMerged[$packId] = $pack;
             }
         }
 
-        // Randomize in chunks
-        $packsByRating = array_values(collect($packsMerged)->sortByDesc('rating')->toArray());
-        $packsChunked = array_chunk($packsByRating, 2);
-        $packsByRating = [];
-        foreach ($packsChunked as $chunk) {
-            shuffle($chunk);
-            $packsByRating = array_merge($packsByRating, $chunk);
-        }
-
-        // Pair packs together into realms
-        $realms = [];
-        $midpoint = (int)ceil(count($packsByRating)/2);
-        foreach (range(0, $midpoint - 1) as $key) {
-            $matchKey = count($packsByRating) - 1 - $key;
-            if ($key != $midpoint - 1 || !(count($packsByRating) % 2)) {
-                $players = array_merge($packsByRating[$key]['players'], $packsByRating[$matchKey]['players']);
-            } else {
-                $players = $packsByRating[$key]['players'];
-            }
-            $realms[] = [
-                'players' => $players,
-                'rating' => $this->calculateRating($players)
-            ];
-        }
-
-        // TODO: This should be done prior to merging packs together!
-        if (count($realms) < static::ASSIGNMENT_MIN_REALM_COUNT) {
-            foreach (range(1, static::ASSIGNMENT_MIN_REALM_COUNT - count($realms)) as $realmKey) {
-                $realms[] = [
-                    'players' => [],
-                    'rating' => $averageRating
-                ];
-            }
-        }
+        // Calculate number of realms
+        $realmCount = count($largePacks);
+        $packsToCreate = max($realmCount - count($smallPacks), 0);
+        $soloPlayersToMerge = $packsToCreate * 3;
 
         // Separate solo players
         $soloPlayers = [];
@@ -270,11 +230,34 @@ class RealmFinderService
         }
         $soloPlayers = collect($soloPlayers)->keyBy('user_id')->sortBy('rating');
 
+        // Create 'packs' of solo players
+        $soloPlayersMerged = $soloPlayers->take($soloPlayersToMerge);
+        foreach ($soloPlayersMerged->shuffle()->chunk(3) as $soloPack) {
+            $smallPacks->push([
+                'size' => 3,
+                'players' => $soloPack->toArray(),
+                'rating' => $this->calculateRating($soloPack->toArray()),
+            ]);
+        }
+        $soloPlayers = $soloPlayers->diffKeys($soloPlayersMerged);
+
+        // Pair packs together into realms
+        $realms = [];
+        $largePacks = $largePacks->sortByDesc('rating')->values();
+        $smallPacks = $smallPacks->sortBy('rating')->values();
+        foreach (range(0, $realmCount - 1) as $idx) {
+            $players = array_merge($largePacks[$idx]['players'], $smallPacks[$idx]['players']);
+            $realms[] = [
+                'players' => $players,
+                'rating' => $this->calculateRating($players)
+            ];
+        }
+
         // Assign solo players to undersized realms
         $medianRealmRating = collect($realms)->median('rating');
         $averageSoloPlayerRating = $soloPlayers->avg('rating');
-        foreach ($realms as $key => $realm) {
-            while (count($realms[$key]['players']) < static::MAX_PACKED_PLAYERS_PER_REALM && $soloPlayers->count() > 0) {
+        foreach ($realms as $idx => $realm) {
+            while (count($realms[$idx]['players']) < static::MAX_PACKED_PLAYERS_PER_REALM && $soloPlayers->count() > 0) {
                 $randomPlayer = null;
                 if ($realm['rating'] > $medianRealmRating) {
                     $belowAveragePlayers = $soloPlayers->where('rating', '<', $averageSoloPlayerRating);
@@ -290,33 +273,23 @@ class RealmFinderService
                 if ($randomPlayer == null) {
                     $randomPlayer = $soloPlayers->random();
                 }
-                $realms[$key]['players'] = array_merge($realms[$key]['players'], [$randomPlayer]);
-                $realms[$key]['rating'] = $this->calculateRating($realms[$key]['players']);
+                $realms[$idx]['players'] = array_merge($realms[$idx]['players'], [$randomPlayer]);
+                $realms[$idx]['rating'] = $this->calculateRating($realms[$idx]['players']);
                 $soloPlayers->forget($randomPlayer['user_id']);
             }
         }
 
         // Assign solo players evenly to realms
-        $realms = array_values(collect($realms)->sortByDesc('rating')->toArray());
+        $realms = array_values(collect($realms)->sortBy('rating')->toArray());
         while ($soloPlayers->count() > count($realms)) {
             $current = 0;
-            foreach ($soloPlayers->sortBy('rating') as $player) {
-                if ($current < $midpoint) {
-                    $realms[$current]['players'] = array_merge($realms[$current]['players'], [$player]);
-                    $realms[$current]['rating'] = $this->calculateRating($realms[$current]['players']);
-                    $soloPlayers->forget($player['user_id']);
-                }
-                $current++;
-            }
-
-            $current = count($realms) - 1;
             foreach ($soloPlayers->sortByDesc('rating') as $player) {
-                if ($current >= $midpoint) {
+                $current++;
+                if ($current < count($realms)) {
                     $realms[$current]['players'] = array_merge($realms[$current]['players'], [$player]);
                     $realms[$current]['rating'] = $this->calculateRating($realms[$current]['players']);
                     $soloPlayers->forget($player['user_id']);
                 }
-                $current--;
             }
         }
 

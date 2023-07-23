@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [1.36.0] - 2023-07-21
 ### Changed
+- Packs with 5 players can no longer be paired together
 - Bot defense formula (post-OOP) increased by 5%
 - Lumberjack's Devotion (tech): barren population bonus removed (was +2), construction lumber cost bonus increased to -20% (from -10%)
 - Military Culture (tech): prestige bonus increased to 7.5% (from 5%)
@@ -1949,7 +1950,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.35.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.36.0...HEAD
+[1.36.0]: https://github.com/OpenDominion/OpenDominion/compare/1.35.1...1.36.0
 [1.35.1]: https://github.com/OpenDominion/OpenDominion/compare/1.35.0...1.35.1
 [1.35.0]: https://github.com/OpenDominion/OpenDominion/compare/1.34.1...1.35.0
 [1.34.1]: https://github.com/OpenDominion/OpenDominion/compare/1.34.0...1.34.1

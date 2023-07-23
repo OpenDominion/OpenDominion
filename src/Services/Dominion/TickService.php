@@ -135,7 +135,7 @@ class TickService
                     $race = $races->random();
                 }
                 // Calculate size
-                if ($cnt < $npdCount * 0.7) {
+                if ($cnt < $npdCount * 0.6) {
                     // 70% of NPDs between 400 and 525
                     // Standard distribution centered on 487.5 (650a EG)
                     //   with a standard deviation of 37.5 (600a EG - 700a EG)
