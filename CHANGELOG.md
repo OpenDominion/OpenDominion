@@ -4,7 +4,7 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
-## [1.36.0] - 2023-07-21
+## [1.36.0] - 2023-07-23
 ### Changed
 - Packs with 5 players can no longer be paired together
 - Bot defense formula (post-OOP) increased by 5%
@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Icekin Ice Elemental: reduced casualties removed (was -10%)
 - Lizardfolk Lizardman: +15p (from 1075p)
 - Lycanthrope Ratman: +15p (from 250p)
+- Merfolk: +2.5% explore cost removed, -10% gem production added, offensive power increased to 7.5% (from 5%)
 - Orc: prestige bonus removed (was +7.5%)
 - Orc Bone Breaker: offense changed to 4 + 1 per 333 prestige, max 3 (from 4 + 1 per 250 prestige,  max 3)
 - Orc Savage: now 4/0 400p 25r (from 3.5/0 330p 20r)
