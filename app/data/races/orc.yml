@@ -39,7 +39,7 @@ units:
       platinum: 1150
       ore: 100
     power:
-      offense: 3
+      offense: 4
       defense: 3
     perks:
-      offense_from_prestige: 250,4 # amount, max
+      offense_from_prestige: 333,3 # amount, max
