@@ -5,7 +5,7 @@ description: >-
   <p>Dwarves are a short and ill-tempered race well-known for their majestic beards, love of ale and tireless labour. Their spirited songs echo long into the night as mountains tremble under the relentless assault of their mining picks.</p>
   <p>Dwarven mines are the most productive in the lands, producing a steady flow of ore used to fortify their great cities, and craft legendary Dwarven armor for their military forces.</p>
 attacker_difficulty: 2
-explorer_difficulty: 3
+explorer_difficulty: 2
 converter_difficulty: 3
 home_land_type: mountain
 perks:

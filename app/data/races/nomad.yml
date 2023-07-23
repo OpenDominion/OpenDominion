@@ -6,7 +6,7 @@ description: >-
   <p>Over time, the old allegiances turned to bitter rivalries, and the Nomads are now considered enemies of the Human empire, often clashing over resources.</p>
 attacker_difficulty: 2
 explorer_difficulty: 2
-converter_difficulty: 2
+converter_difficulty: 3
 home_land_type: plain
 perks:
   extra_barren_max_population: 20

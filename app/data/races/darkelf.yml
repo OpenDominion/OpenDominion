@@ -6,7 +6,7 @@ description: >-
   <p>Dark Elves have black magic coursing through their veins. Capable of calling down a rain of fire and lightning upon their enemies, they are a terrifying force to reckon with. Their most gifted Swordsmen, tempered through combat, can ascend to become revered Spellblades; masters of both sword and sorcery.</p>
 attacker_difficulty: 1
 explorer_difficulty: 1
-converter_difficulty: 2
+converter_difficulty: 3
 home_land_type: cavern
 perks:
   max_population: -5
