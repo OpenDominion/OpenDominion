@@ -309,6 +309,7 @@ class GovernmentService
      */
     public function canAttackWonders(Realm $realm, Realm $target): bool
     {
+        return true;
         $escalatedWarsOutgoing = $this->getWarsEscalated($realm->warsOutgoing)->where('target_realm_id', $target->id);
         $escalatedWarsIncoming = $this->getWarsEscalated($target->warsOutgoing)->where('target_realm_id', $realm->id);
         $escalatedWars = $escalatedWarsOutgoing->union($escalatedWarsIncoming);

@@ -11,7 +11,7 @@ use OpenDominion\Models\Wonder;
 
 class WonderService
 {
-    public const MAX_WONDERS_PER_REALM = 0.4;
+    public const MAX_WONDERS_PER_REALM = 1;
 
     /**
      * Get the starting wonders to spawn in the first wave.

@@ -19,8 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Wonder extends AbstractModel
 {
-    public const TIER_ONE_POWER = 150000;
-    public const TIER_TWO_POWER = 75000;
+    public const TIER_ONE_POWER = 15000;
+    public const TIER_TWO_POWER = 10000;
 
     protected $table = 'wonders';
 

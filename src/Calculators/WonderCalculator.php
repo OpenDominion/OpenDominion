@@ -4,6 +4,7 @@ namespace OpenDominion\Calculators;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
@@ -18,12 +19,12 @@ class WonderCalculator
     /**
      * @var float Maximum potential gain from scaling damage contribution
      */
-    protected const PRESTIGE_CONTRIBUTION_MULTIPLIER = 50;
+    protected const PRESTIGE_CONTRIBUTION_MULTIPLIER = 0;
 
     /**
      * @var float Minimum damage threshold for prestige gain
      */
-    protected const PRESTIGE_CONTRIBUTION_MIN = 0.02;
+    protected const PRESTIGE_CONTRIBUTION_MIN = 0.20;
 
     /**
      * @var float Maximum damage threshold for prestige gain
@@ -33,7 +34,7 @@ class WonderCalculator
     /**
      * @var float Minimum power after a wonder is rebuilt
      */
-    protected const MIN_SPAWN_POWER = 150000;
+    protected const MIN_SPAWN_POWER = 15000;
 
     /**
      * @var float Maximum power after a neutral wonder is respawned
@@ -49,6 +50,9 @@ class WonderCalculator
      */
     public function getNewPower(RoundWonder $wonder, Realm $realm): float
     {
+        $timesDestroyed = GameEvent::where('type', 'wonder_destroyed')->where('source_id', $wonder->id)->count();
+        return (static::MIN_SPAWN_POWER + (5000 * $timesDestroyed));
+
         $day = $wonder->round->daysInRound();
 
         if ($wonder->realm == null || $wonder->realm_id == null) {
