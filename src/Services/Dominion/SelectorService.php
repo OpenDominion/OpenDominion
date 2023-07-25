@@ -147,6 +147,7 @@ class SelectorService
             // Rounds that haven't started yet
             $activeDominions = Dominion::with('round')
                 ->where('user_id', $user->id)
+                ->orderByDesc('created_at')
                 ->get()
                 ->filter(function ($dominion) {
                     if ($dominion->round->start_date > now()) {
