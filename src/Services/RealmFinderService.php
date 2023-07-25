@@ -205,9 +205,9 @@ class RealmFinderService
         if ($largePacks->count() < static::ASSIGNMENT_MIN_REALM_COUNT) {
             $promoteCount = static::ASSIGNMENT_MIN_REALM_COUNT - $largePacks->count();
             $promotedCount = 0;
-            foreach ($smallPacks->sortByDesc('rating') as $smallPack) {
-                $largePacks->put($smallPack['id'], $smallPack);
-                $smallPacks->forget($smallPack['id']);
+            foreach ($smallPacks->sortByDesc('rating') as $idx => $smallPack) {
+                $largePacks->put($idx, $smallPack);
+                $smallPacks->forget($idx);
                 $promotedCount++;
                 if ($promotedCount >= $promoteCount) {
                     break;
