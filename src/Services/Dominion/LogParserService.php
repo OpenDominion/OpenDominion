@@ -43,6 +43,7 @@ class LogParserService
         'Ice Beast' => 'Icebeast',
         'Frost Mage' => 'FrostMage',
         'Voodoo Magi' => 'Voodoo Mage',
+        'Mermen' => 'Merman',
         'Sirens' => 'Siren',
         'Archmages' => 'archmages',
         'Alchemies' => 'alchemy',
@@ -303,14 +304,13 @@ class LogParserService
                 foreach ($trainingMatches[1] as $idx => $amount) {
                     $name = $trainingMatches[2][$idx];
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
-                        $attribute = "military_{$this::ATTRIBUTE_MAP[$name]}";
-                    } else {
-                        $unit = $this->race->units->firstWhere('name', $name);
-                        if (!$unit) {
-                            throw new GameException("Unit not found for this race: {$name}");
-                        }
-                        $attribute = "military_unit{$unit->slot}";
+                        $name = $this::ATTRIBUTE_MAP[$name];
                     }
+                    $unit = $this->race->units->firstWhere('name', $name);
+                    if (!$unit) {
+                        throw new GameException("Unit not found for this race: {$name}");
+                    }
+                    $attribute = "military_unit{$unit->slot}";
                     $trainingData[$attribute] = (int)$amount;
                 }
                 return $trainingData;
