@@ -95,6 +95,12 @@ class NotificationHelper
                 'route' => route('dominion.advisors.production'),
                 'iconClass' => 'ra ra-tombstone text-red',
             ],
+            'overpopulation_occurred' => [
+                'label' => 'Overpopulation occurred',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.advisors.production'),
+                'iconClass' => 'fa fa-flag text-red',
+            ]
         ];
     }
 
@@ -319,6 +325,15 @@ class NotificationHelper
 
                 return sprintf(
                     '%s %s died due to starvation',
+                    number_format($units),
+                    str_plural('unit', $units)
+                );
+
+            case 'hourly_dominion.overpopulation_occurred':
+                $units = array_sum($data);
+
+                return sprintf(
+                    '%s %s defected due to overpopulation',
                     number_format($units),
                     str_plural('unit', $units)
                 );

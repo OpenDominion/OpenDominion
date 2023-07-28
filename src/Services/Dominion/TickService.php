@@ -338,6 +338,13 @@ class TickService
                     );
                 }
 
+                if (!empty($dominion->tick->overpopulation_casualties)) {
+                    $this->notificationService->queueNotification(
+                        'overpopulation_occurred',
+                        $dominion->tick->overpopulation_casualties
+                    );
+                }
+
                 $this->cleanupActiveSpells($dominion);
                 $this->cleanupQueues($dominion);
 
@@ -506,7 +513,15 @@ class TickService
                                         $unitsStarved = $casualties->{$key};
                                     }
                                 }
-                                $this->queueService->queueResources('training', $dominion, [$key => ($value + $unitsStarved)], 0);
+                                // Overpopulation
+                                $unitsDefected = 0;
+                                if (isset($action->delta['overpopulation_casualties'])) {
+                                    $casualties = json_decode($action->delta['overpopulation_casualties']);
+                                    if (isset($casualties->{$key})) {
+                                        $unitsDefected = $casualties->{$key};
+                                    }
+                                }
+                                $this->queueService->queueResources('training', $dominion, [$key => ($value + $unitsStarved + $unitsDefected)], 0);
                             }
                         }
                     }
@@ -758,9 +773,9 @@ class TickService
 
         // Reset tick values
         foreach ($tick->getAttributes() as $attr => $value) {
-            if (!in_array($attr, ['id', 'dominion_id', 'updated_at', 'starvation_casualties', 'expiring_spells'], true)) {
+            if (!in_array($attr, ['id', 'dominion_id', 'updated_at', 'starvation_casualties', 'overpopulation_casualties', 'expiring_spells'], true)) {
                 $tick->{$attr} = 0;
-            } elseif ($attr === 'starvation_casualties' || $attr === 'expiring_spells') {
+            } elseif ($attr === 'starvation_casualties' || $attr === 'overpopulation_casualties' || $attr === 'expiring_spells') {
                 $tick->{$attr} = [];
             }
         }
@@ -841,6 +856,21 @@ class TickService
         } else {
             // Food production
             $tick->resource_food += $foodNetChange;
+        }
+
+        // Overpopulation casualties
+        $netPopulation = $this->populationCalculator->getMaxPopulation($dominion) - $this->populationCalculator->getPopulationMilitary($dominion);
+        if ($netPopulation < 0) {
+            $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType(
+                $dominion,
+                (int) ceil($netPopulation / 4)
+            );
+
+            $tick->overpopulation_casualties = $casualties;
+
+            foreach ($casualties as $unitType => $unitCasualties) {
+                $tick->{$unitType} -= $unitCasualties;
+            }
         }
 
         // Morale

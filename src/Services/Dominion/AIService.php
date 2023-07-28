@@ -198,7 +198,7 @@ class AIService
         // Explore
         try {
             if ($dominion->round->daysInRound() > 1 || ($dominion->round->daysInRound() == 1 && $dominion->round->hoursInDay() >= 3)) {
-                if ($incomingLand < 90 && $totalLand < $config['max_land']) {
+                if ($incomingLand < 96 && $totalLand < $config['max_land']) {
                     $this->exploreLand($dominion->refresh(), $config, $totalLand);
                 }
             }
@@ -283,7 +283,7 @@ class AIService
     public function exploreLand(Dominion $dominion, array $config, int $totalLand) {
         // TODO: calcuate actual percentages needed for farms, towers, etc
         $landToExplore = [];
-        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 15);
+        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 16);
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (

@@ -279,7 +279,7 @@ class InvadeActionService
 
             $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
-            $this->invasionResult['attacker']['repeatInvasion'] = $this->militaryCalculator->getRecentlyInvadedCount($target, 8, true, $dominion) > 1;
+            $this->invasionResult['attacker']['repeatInvasion'] = $target->user_id !== null && $this->militaryCalculator->getRecentlyInvadedCount($target, 8, true, $dominion) > 1;
             $this->invasionResult['defender']['recentlyInvadedCount'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);

@@ -113,6 +113,7 @@ class Tick extends AbstractModel
         'building_barracks' => 'integer',
         'building_dock' => 'integer',
         'starvation_casualties' => 'array',
+        'overpopulation_casualties' => 'array',
         'expiring_spells' => 'array',
     ];
 
