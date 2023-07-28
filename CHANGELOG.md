@@ -4,10 +4,7 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
-## [1.36.0] - 2023-07-27
-### Added
-- Overpopulation will now cause your units to defect (same mechanic as starvation)
-
+## [1.36.0] - 2023-07-23
 ### Changed
 - Packs with 5 players can no longer be paired together
 - Bot defense formula (post-OOP) increased by 5%
@@ -30,9 +27,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Undead Cull the Weak (spell): peasants killed reduced to 1% (was 10%), mana cost reverted to 5x (was 3x)
 - Undead Raise the Dead (spell): removed
 - Wood Elf: offensive power reduced to +2.5% (from +5%)
-
-### Fixed
-- Several units whose in-game names don't match the Excel log are now parsed correctly
 
 ## [1.35.1] - 2023-06-15
 ### Fixed
