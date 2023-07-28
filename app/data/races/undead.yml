@@ -4,14 +4,14 @@ alignment: evil
 description: >-
   <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, mysterious necromancers and their fearsome death knight creations. This eclectic union has one thing in common: a loathing of life. They will seize every opportunity to snuff it out or drag it kicking and screaming into the shadow of undeath.</p>
   <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with fresh corpses. They tend to inhabit putrid swamps, where the dense, humid atmosphere obscures the stench of decay and provides cover for their unscrupulous activities.</p>
-attacker_difficulty: 2
-explorer_difficulty: 2
+attacker_difficulty: 1
+explorer_difficulty: 3
 converter_difficulty: 3
 home_land_type: swamp
 perks:
   max_population: 5
   food_consumption: -50
-  mana_production: 10
+  mana_production: 20
 units:
   - name: Skeleton
     cost:

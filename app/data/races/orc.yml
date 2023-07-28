@@ -10,14 +10,13 @@ converter_difficulty: 3
 home_land_type: forest
 perks:
   lumber_production: 50
-  prestige_gains: 7.5
 units:
   - name: Savage
     cost:
-      platinum: 330
-      ore: 20
+      platinum: 400
+      ore: 25
     power:
-      offense: 3.5
+      offense: 4
       defense: 0
   - name: Guard
     cost:
@@ -43,4 +42,4 @@ units:
       offense: 4
       defense: 3
     perks:
-      offense_from_prestige: 250,3 # amount, max
+      offense_from_prestige: 333,3 # amount, max

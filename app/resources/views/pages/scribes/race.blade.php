@@ -72,11 +72,22 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{-- Home land --}}
-                            <h5 class="text-bold">Home Land</h5>
-                            <p>
-                                {!! $landHelper->getLandTypeIconHtml($race->home_land_type) !!} {{ ucfirst($race->home_land_type) }}
-                            </p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {{-- Home land --}}
+                                    <h5 class="text-bold">Home Land</h5>
+                                    <p>
+                                        {!! $landHelper->getLandTypeIconHtml($race->home_land_type) !!} {{ ucfirst($race->home_land_type) }}
+                                    </p>
+                                </div>
+                                <div class="col-md-8">
+                                    {{-- Difficulty --}}
+                                    <h5 class="text-bold">Difficulty</h5>
+                                    <div>Attacker: {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}</div>
+                                    <div>Explorer: {!! $raceHelper->getDifficultyString($race->explorer_difficulty) !!}</div>
+                                    <div>Converter: {!! $raceHelper->getDifficultyString($race->converter_difficulty) !!}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

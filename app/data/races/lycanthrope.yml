@@ -22,7 +22,7 @@ units:
       defense: 0
   - name: Ratman
     cost:
-      platinum: 250
+      platinum: 265
       ore: 0
     power:
       offense: 0

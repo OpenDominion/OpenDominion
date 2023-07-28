@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion;
 
 use DB;
+use Illuminate\Support\Str;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
@@ -35,16 +36,17 @@ class LogParserService
     ];
 
     const ATTRIBUTE_MAP = [
-        'draftees' => 'draftees',
-        'Spies' => 'spies',
-        'Archspies' => 'assassins',
-        'Wizards' => 'wizards',
+        'draftees' => 'military_draftees',
+        'Spies' => 'military_spies',
+        'Archspies' => 'military_assassins',
+        'Wizards' => 'military_wizards',
+        'Archmages' => 'military_archmages',
         'Fire Spirit' => 'Fire Sprite',
         'Ice Beast' => 'Icebeast',
         'Frost Mage' => 'FrostMage',
         'Voodoo Magi' => 'Voodoo Mage',
+        'Mermen' => 'Merman',
         'Sirens' => 'Siren',
-        'Archmages' => 'archmages',
         'Alchemies' => 'alchemy',
         'Barracks' => 'barracks',
         'Factories' => 'factory',
@@ -260,11 +262,14 @@ class LogParserService
                 foreach ($releaseMatches[1] as $idx => $amount) {
                     $name = str_replace(' into the peasantry', '', $releaseMatches[2][$idx]);
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
-                        $attribute = $this::ATTRIBUTE_MAP[$name];
+                        $name = $this::ATTRIBUTE_MAP[$name];
+                    }
+                    if (Str::startsWith($name, 'military_')) {
+                        $attribute = Str::replace('military_', '', $name);
                     } else {
                         $unit = $this->race->units->firstWhere('name', $name);
                         if (!$unit) {
-                            throw new GameException("Unit not found: {$name}");
+                            throw new GameException("Unit not found for this race: {$name}");
                         }
                         $attribute = "unit{$unit->slot}";
                     }
@@ -303,7 +308,10 @@ class LogParserService
                 foreach ($trainingMatches[1] as $idx => $amount) {
                     $name = $trainingMatches[2][$idx];
                     if (isset($this::ATTRIBUTE_MAP[$name])) {
-                        $attribute = "military_{$this::ATTRIBUTE_MAP[$name]}";
+                        $name = $this::ATTRIBUTE_MAP[$name];
+                    }
+                    if (Str::startsWith($name, 'military_')) {
+                        $attribute = $name;
                     } else {
                         $unit = $this->race->units->firstWhere('name', $name);
                         if (!$unit) {

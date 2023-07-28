@@ -32,7 +32,7 @@ units:
       immortal: 1
   - name: Phantom Knight
     cost:
-      platinum: 1000
+      platinum: 1025
       mana: 30
     power:
       offense: 3
@@ -42,7 +42,7 @@ units:
     need_boat: false
   - name: Spectral Warrior
     cost:
-      platinum: 1150
+      platinum: 1175
       mana: 40
     power:
       offense: 6

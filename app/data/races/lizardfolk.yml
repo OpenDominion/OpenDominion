@@ -43,7 +43,7 @@ units:
     need_boat: false
   - name: Lizardman
     cost:
-      platinum: 1075
+      platinum: 1090
       ore: 0
     power:
       offense: 6

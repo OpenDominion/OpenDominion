@@ -438,13 +438,13 @@ necromantic_ritual:
 cull_the_weak:
   name: Cull the Weak
   category: self
-  cost_mana: 3
+  cost_mana: 5
   cost_strength: 5
   duration: 12
   races:
     - undead-rework
   perks:
-    sacrifice_peasants: 10
+    sacrifice_peasants: 1
     conversions_necromancer: 1
 raise_the_dead:
   name: Raise the Dead
@@ -456,3 +456,4 @@ raise_the_dead:
     - undead-rework
   perks:
     conversions_range: 60
+  active: false
