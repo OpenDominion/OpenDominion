@@ -13,9 +13,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Bot defense formula (post-OOP) increased by 5%
 - Lumberjack's Devotion (tech): barren population bonus removed (was +2), construction lumber cost bonus increased to -20% (from -10%)
 - Military Culture (tech): prestige bonus increased to 7.5% (from 5%)
-- Dwarf: ore invest bonus removed (was +15%)
+- Dwarf: ore invest bonus increased to +25% (was +15%), ore production bonus removed (was 10%)
+- Dwarf Miner: ore production reduced to 0.4 (from 0.5)
 - Dwarf Cleric: -15p (from 850p)
-- Dwarf Warrior: -35p (from 1250p)
+- Dwarf Warrior: -35p (from 1250p), -15r (from 100r)
 - Icekin Ice Elemental: reduced casualties removed (was -10%)
 - Lizardfolk Lizardman: +15p (from 1075p)
 - Lycanthrope Ratman: +15p (from 250p)

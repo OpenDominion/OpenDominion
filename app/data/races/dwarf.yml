@@ -11,7 +11,7 @@ home_land_type: mountain
 perks:
   max_population: 7.5
   extra_barren_max_population: 5
-  ore_production: 10
+  invest_bonus_ore: 25
 units:
   - name: Soldier
     cost:
@@ -28,7 +28,7 @@ units:
       offense: 0
       defense: 3
     perks:
-      ore_production: 0.5
+      ore_production: 0.4
   - name: Cleric
     type: hybrid_elite  
     cost:
@@ -42,7 +42,7 @@ units:
   - name: Warrior
     cost:
       platinum: 1215
-      ore: 100
+      ore: 85
     power:
       offense: 7
       defense: 2
