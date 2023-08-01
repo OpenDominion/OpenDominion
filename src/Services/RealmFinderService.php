@@ -280,10 +280,10 @@ class RealmFinderService
         }
 
         // Assign solo players evenly to realms
-        $realms = array_values(collect($realms)->sortBy('rating')->toArray());
+        $realms = array_values(collect($realms)->sortByDesc('rating')->toArray());
         while ($soloPlayers->count() > count($realms)) {
             $current = 0;
-            foreach ($soloPlayers->sortByDesc('rating') as $player) {
+            foreach ($soloPlayers->sortBy('rating') as $player) {
                 if ($current < count($realms)) {
                     $realms[$current]['players'] = array_merge($realms[$current]['players'], [$player]);
                     $realms[$current]['rating'] = $this->calculateRating($realms[$current]['players']);
