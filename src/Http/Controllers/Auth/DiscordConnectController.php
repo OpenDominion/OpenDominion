@@ -72,6 +72,11 @@ class DiscordConnectController extends AbstractController
             return redirect()->route('dashboard');
         }
 
+        if ($selectedDominion->locked_at !== null) {
+            $request->session()->flash('alert-warning', 'Locked dominions cannot join Discord.');
+            return redirect()->route('dominion.status');
+        }
+
         if ($selectedDominion->realm->number == 0) {
             $request->session()->flash('alert-danger', 'Discord is not enabled for this realm.');
             return redirect()->route('dominion.status');
