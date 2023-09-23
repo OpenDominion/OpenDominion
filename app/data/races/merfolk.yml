@@ -17,7 +17,7 @@ perks:
 units:
   - name: Merman
     cost:
-      platinum: 275
+      platinum: 285
       ore: 0
     power:
       offense: 3

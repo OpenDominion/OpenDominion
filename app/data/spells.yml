@@ -305,7 +305,7 @@ frenzy:
   races:
     - halfling
   perks:
-    casualties: -35
+    casualties: -40
 howling:
   name: Howling
   category: self

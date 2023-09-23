@@ -22,7 +22,7 @@ units:
       defense: 0
   - name: Ratman
     cost:
-      platinum: 265
+      platinum: 250
       ore: 0
     power:
       offense: 0
@@ -39,7 +39,7 @@ units:
       casualties_defense: -50
   - name: Garou
     cost:
-      platinum: 1100
+      platinum: 1115
       ore: 110
     power:
       offense: 6

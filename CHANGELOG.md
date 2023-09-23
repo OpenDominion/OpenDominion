@@ -4,6 +4,21 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.37.0] - 2023-09-21
+### Changed
+- Dwarf: ore investment bonus removed (was +25%)
+- Dwarf Miner: ore production increased to 0.5 (from 0.4)
+- Goblin Shaman: +5p (from 375p)
+- Halfling: Frenzy casualty reduction increased to 40% (from 35%)
+- Human Cavalry: -10p (from 1250p)
+- Lycantrhope Garou: +15p (from 1100p)
+- Lycanthrope Ratman: -15p (from 265p)
+- Merfolk Merman: +10p (from 275p)
+- Nomad Blademaster: -20p (from 1000p)
+- Troll Basher/Smasher: -10p (from 1425p)
+- Wood Elf Druid: OP/DP from forest is capped at +4.5 (from +5)
+- Wood Elf Mystic: DP from forest is capped at +4.5 (from +5)
+
 ## [1.36.0] - 2023-07-23
 ### Changed
 - Packs with 5 players can no longer be paired together

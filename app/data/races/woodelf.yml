@@ -39,7 +39,7 @@ units:
       offense: 0
       defense: 4
     perks:
-      defense_from_land: forest,20,5 # land type, ratio%, max
+      defense_from_land: forest,20,4.5 # land type, ratio%, max
   - name: Druid
     cost:
       platinum: 1100
@@ -48,5 +48,5 @@ units:
       offense: 3
       defense: 1
     perks:
-      offense_from_land: forest,20,5 # land type, ratio%, max
-      defense_from_land: forest,20,5 # land type, ratio%, max
+      offense_from_land: forest,20,4.5 # land type, ratio%, max
+      defense_from_land: forest,20,4.5 # land type, ratio%, max

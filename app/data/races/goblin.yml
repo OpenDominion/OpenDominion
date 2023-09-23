@@ -21,7 +21,7 @@ units:
       defense: 0
   - name: Shaman
     cost:
-      platinum: 375
+      platinum: 380
       ore: 15
     power:
       offense: 0
