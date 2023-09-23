@@ -395,10 +395,11 @@ class TickService
     public function checkForAbandonedDominions(Round $round)
     {
         $abandonedDominions = $round->dominions()
-            ->where('abandoned_at', now()->startOfHour())
-            ->get();
+            ->where('abandoned_at', now()->startOfHour());
 
-        foreach ($abandonedDominions as $dominion) {
+        $abandonedDominions->update(['monarchy_vote_for_dominion_id' => null]);
+
+        foreach ($abandonedDominions->get() as $dominion) {
             \OpenDominion\Models\GameEvent::create([
                 'round_id' => $round->id,
                 'source_type' => Dominion::class,
