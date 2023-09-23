@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Abandoned dominions will now have their vote for monarch revoked.
 - Attempting to send less than 40-60% of your target's defense will now properly cancel an invasion.
+- Dark Elf Swordsmen are no longer promoted on attacks against dominions under 75% of your size.
 
 ## [1.36.0] - 2023-07-23
 ### Changed
