@@ -16,7 +16,7 @@ class WonderService
     /**
      * Get the most frequent wonders in the past few rounds for each tier.
      *
-     * @return array
+     * @return Collection
      */
     public function getFrequentWonders(Round $round)
     {
@@ -42,7 +42,7 @@ class WonderService
             ->take(6)
             ->keys();
 
-        return array_merge($tierOneWonders, $tierTwoWonders);
+        return $tierOneWonders->merge($tierTwoWonders);
     }
 
     /**
