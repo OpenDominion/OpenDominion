@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [1.37.0] - 2023-09-21
 ### Changed
+- Masonry castle bonus reduced to 2.6% per 1% owned (from 2.75% per 1% owned)
 - Dwarf: ore investment bonus removed (was +25%)
 - Dwarf Miner: ore production increased to 0.5 (from 0.4)
 - Goblin Shaman: +5p (from 375p)
