@@ -7,17 +7,35 @@ use OpenDominion\Models\Round;
 
 class AIHelper
 {
-    public function getDefenseForNonPlayer(Round $round, int $totalLand)
+    protected function getFractionalDay(Round $round): float
     {
         $day = $round->daysInRound() + 3;
         $hours = $round->hoursInDay();
         $fractionalDay = $day + ($hours / 24);
 
+        return $fractionalDay;
+    }
+
+    public function getTopOffense(Round $round): float
+    {
+        $fractionalDay = $this->getFractionalDay($round);
+
         // Formula based on average DP of attacks over several rounds
-        $topOffense = (0.039 * $fractionalDay**4) - (0.45 * $fractionalDay**3) + (12.3 * $fractionalDay**2) + (5950 * $fractionalDay) - 19400;
+        return (0.039 * $fractionalDay**4) - (0.45 * $fractionalDay**3) + (12.3 * $fractionalDay**2) + (5950 * $fractionalDay) - 19400;
+    }
+
+    public function getExpectedLandSize(Round $round): float
+    {
+        $fractionalDay = $this->getFractionalDay($round);
+
         // Approximate land size at max growth rate
-        $expectedLandSize = (0.063 * $fractionalDay**3) - (4.8 * $fractionalDay**2) + (181 * $fractionalDay) - 116;
-        // Scale by expected land size
+        return (0.063 * $fractionalDay**3) - (4.8 * $fractionalDay**2) + (181 * $fractionalDay) - 116;
+    }
+
+    public function getDefenseForNonPlayer(Round $round, int $totalLand): float
+    {
+        $topOffense = $this->getTopOffense($round);
+        $expectedLandSize = $this->getExpectedLandSize($round);
         $defenseRequired = $topOffense * (($expectedLandSize / $totalLand) ** -1.375);
 
         return $defenseRequired;

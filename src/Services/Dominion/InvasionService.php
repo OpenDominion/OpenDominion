@@ -193,7 +193,12 @@ class InvasionService
         }
         $newHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
 
-        $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
+        $ratio = 1.25;
+        $recentInvasions = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 5 * 24, true);
+        if ($recentInvasions > 2) {
+            $ratio = 1.25 - min(0.5, ($recentInvasions - 2) * 0.125);
+        }
+        $attackingForceMaxOP = (int)ceil($newHomeForcesDP * $ratio);
 
         return ($attackingForceOP <= $attackingForceMaxOP);
     }

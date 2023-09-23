@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -107,8 +108,16 @@ class ExploreActionService
             $minimumDefense = $this->militaryCalculator->getMinimumDefense(null, $newLandTotal);
             $defensivePower = $this->militaryCalculator->getDefensivePower($dominion);
 
+            if ($dominion->round->daysInRound() > 1) {
+                $aiHelper = app(AIHelper::class);
+                $botMaxSize = $aiHelper->getExpectedLandSize($dominion->round);
+                if ($newLandTotal < $botMaxSize) {
+                    $minimumDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, $newLandTotal) * 0.90);
+                }
+            }
+
             if ($defensivePower <= $minimumDefense) {
-                throw new GameException('Your military cannot defend any new land at this time.');
+                throw new GameException(sprintf('Your military refuses to explore any new land with less than %s defense.', $minimumDefense));
             }
         }
 

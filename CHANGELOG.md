@@ -4,7 +4,11 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
-## [1.37.0] - 2023-09-21
+## [1.37.0] - 2023-09-23
+### Added
+- Exploration is now prohibited if a dominion has significantly less defense than a similarly sized bot.
+- Recent invasions now reduce maximum offense:defense ratio (5:4 rule) by 0.125 per invasion after the second in a five day period, down to a minimum of 0.75 (from 1.25).
+
 ### Changed
 - Masonry castle bonus reduced to 2.6% per 1% owned (from 2.75% per 1% owned)
 - Dwarf: ore investment bonus removed (was +25%)
