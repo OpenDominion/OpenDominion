@@ -24,6 +24,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wood Elf Druid: OP/DP from forest is capped at +4.5 (from +5)
 - Wood Elf Mystic: DP from forest is capped at +4.5 (from +5)
 
+### Fixed
+- Attempting to send less than 40-60% of your target's defense will now properly cancel an invasion.
+
 ## [1.36.0] - 2023-07-23
 ### Changed
 - Packs with 5 players can no longer be paired together

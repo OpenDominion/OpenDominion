@@ -133,7 +133,7 @@ class InvasionService
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
         $defendingForceDP = $this->militaryCalculator->getDefensivePower($target);
 
-        return ($attackingForceOP > $defendingForceDP / rand(20, 50));
+        return ($attackingForceOP > $defendingForceDP * rand(40, 60) / 100);
     }
 
     /**
