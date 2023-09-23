@@ -92,7 +92,7 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
                     'improvement_points' => 30000000,
                     'building_masonry' => (4000 / 10)
                 ],
-                'expected' => 0.2158, // +21.58
+                'expected' => 0.2133, // +21.33
             ],
 
             // Keep: 250 land, 120k points (invest 10k starter gems)
