@@ -14,6 +14,38 @@ class WonderService
     public const MAX_WONDERS_PER_REALM = 0.4;
 
     /**
+     * Get the most frequent wonders in the past few rounds for each tier.
+     *
+     * @return array
+     */
+    public function getFrequentWonders(Round $round)
+    {
+        $roundIds = $round->league->rounds()->orderByDesc('created_at')->take(10)->pluck('id');
+
+        $tierOneWonderIds = Wonder::active()->tierOne()->pluck('id');
+        $tierOneWonders = RoundWonder::with('wonder')
+            ->whereIn('round_id', $roundIds)
+            ->whereIn('round_id', $tierOneWonderIds)
+            ->get()
+            ->countBy('wonder.key')
+            ->sortDesc()
+            ->take(5)
+            ->keys();
+
+        $tierTwoWonderIds = Wonder::active()->tierTwo()->pluck('id');
+        $tierTwoWonders = RoundWonder::with('wonder')
+            ->whereIn('round_id', $roundIds)
+            ->whereIn('round_id', $tierTwoWonderIds)
+            ->get()
+            ->countBy('wonder.key')
+            ->sortDesc()
+            ->take(6)
+            ->keys();
+
+        return array_merge($tierOneWonders, $tierTwoWonders);
+    }
+
+    /**
      * Get the starting wonders to spawn in the first wave.
      *
      * @return Collection
@@ -23,17 +55,8 @@ class WonderService
         $tier1 = Wonder::active()->tierOne()->get()->keyBy('key');
         $tier2 = Wonder::active()->tierTwo()->get()->keyBy('key');
 
-        // TODO: De-duplicate later
         // Remove most frequent wonders
-        $roundIds = $round->league->rounds->pluck('id');
-        $frequentWonders = RoundWonder::with('wonder')
-            ->whereIn('round_id', $roundIds)
-            ->get()
-            ->where('wonder.active', true)
-            ->countBy('wonder.key')
-            ->sortDesc()
-            ->take(5)
-            ->keys();
+        $frequentWonders = $this->getFrequentWonders($round);
         foreach ($frequentWonders as $wonderKey) {
             $tier1->forget($wonderKey);
             $tier2->forget($wonderKey);
@@ -62,17 +85,8 @@ class WonderService
         $wonders = Wonder::active()->get()->keyBy('key');
         $existingWonders = RoundWonder::with('wonder')->where('round_id', $round->id)->get()->keyBy('wonder.key');
 
-        // TODO: De-duplicate later
         // Remove most frequent wonders
-        $roundIds = $round->league->rounds->pluck('id');
-        $frequentWonders = RoundWonder::with('wonder')
-            ->whereIn('round_id', $roundIds)
-            ->get()
-            ->where('wonder.active', true)
-            ->countBy('wonder.key')
-            ->sortDesc()
-            ->take(5)
-            ->keys();
+        $frequentWonders = $this->getFrequentWonders($round);
         foreach ($frequentWonders as $wonderKey) {
             $wonders->forget($wonderKey);
         }
