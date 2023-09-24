@@ -1977,7 +1977,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.36.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...HEAD
+[1.37.0]: https://github.com/OpenDominion/OpenDominion/compare/1.36.0...1.37.0
 [1.36.0]: https://github.com/OpenDominion/OpenDominion/compare/1.35.1...1.36.0
 [1.35.1]: https://github.com/OpenDominion/OpenDominion/compare/1.35.0...1.35.1
 [1.35.0]: https://github.com/OpenDominion/OpenDominion/compare/1.34.1...1.35.0
