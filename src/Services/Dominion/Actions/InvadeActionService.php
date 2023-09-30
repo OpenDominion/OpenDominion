@@ -993,7 +993,7 @@ class InvadeActionService
         // Special case for Ascendance
         foreach ($dominion->race->units as $unit) {
             $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_survivors');
-            if (!$perkValue || $this->invasionResult['range'] < 75 || !array_key_exists($unit->slot, $survivingUnits) || ($survivingUnits[$unit->slot] === 0)) {
+            if (!$perkValue || $this->invasionResult['result']['range'] < 75 || !array_key_exists($unit->slot, $survivingUnits) || ($survivingUnits[$unit->slot] === 0)) {
                 continue;
             }
             $upgradedUnits = floor($survivingUnits[$unit->slot] * $perkValue[1] / 100);
