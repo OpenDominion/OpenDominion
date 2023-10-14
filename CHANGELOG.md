@@ -4,6 +4,11 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.37.1] - 2023-10-13
+### Changed
+- Dark Elf Swordsman: -15p (from 475p)
+- Dwarf: ore production increased by 10% (was removed previously)
+
 ## [1.37.0] - 2023-09-23
 ### Added
 - Exploration is now prohibited if a dominion has significantly less defense than a similarly sized bot.
@@ -1977,7 +1982,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.37.1...HEAD
+[1.37.1]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...1.37.1
 [1.37.0]: https://github.com/OpenDominion/OpenDominion/compare/1.36.0...1.37.0
 [1.36.0]: https://github.com/OpenDominion/OpenDominion/compare/1.35.1...1.36.0
 [1.35.1]: https://github.com/OpenDominion/OpenDominion/compare/1.35.0...1.35.1

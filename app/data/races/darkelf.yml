@@ -14,7 +14,7 @@ perks:
 units:
   - name: Swordsman
     cost:
-      platinum: 475
+      platinum: 460
       ore: 25
     power:
       offense: 4
