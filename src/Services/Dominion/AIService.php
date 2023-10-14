@@ -197,7 +197,7 @@ class AIService
 
         // Explore
         try {
-            if ($dominion->round->daysInRound() > 1 || ($dominion->round->daysInRound() == 1 && $dominion->round->hoursInDay() >= 3)) {
+            if ($dominion->round->daysInRound() > 1 || $dominion->round->hoursInDay() >= 3) {
                 if ($incomingLand < 96 && $totalLand < $config['max_land']) {
                     $this->exploreLand($dominion->refresh(), $config, $totalLand);
                 }

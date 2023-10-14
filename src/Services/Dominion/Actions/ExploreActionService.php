@@ -106,9 +106,26 @@ class ExploreActionService
 
             $newLandTotal = $totalLandToExplore + $incomingLand + $this->landCalculator->getTotalLand($dominion);
             $minimumDefense = $this->militaryCalculator->getMinimumDefense(null, $newLandTotal);
+
+            // Queues
+            $incomingQueue = DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->get();
+
+            foreach ($incomingQueue as $row) {
+                // Temporarily add incoming resources for accurate calculations
+                $dominion->{$row->resource} += $row->amount;
+            }
+
+            // Calculate defense with incomings
             $defensivePower = $this->militaryCalculator->getDefensivePower($dominion);
 
-            if ($dominion->round->daysInRound() > 1) {
+            foreach ($incomingQueue as $row) {
+                // Reset current resources in case object is saved later
+                $dominion->{$row->resource} -= $row->amount;
+            }
+
+            if ($dominion->round->daysInRound() > 1 || $dominion->round->hoursInDay() >= 3) {
                 $aiHelper = app(AIHelper::class);
                 $botMaxSize = $aiHelper->getExpectedLandSize($dominion->round);
                 if ($newLandTotal < $botMaxSize) {

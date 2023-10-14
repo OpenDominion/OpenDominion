@@ -232,7 +232,7 @@ class DominionFactory
             }
 
             // Late start defense
-            if ($dominion->round->daysInRound() > 1 || ($dominion->round->daysInRound() == 1 && $dominion->round->hoursInDay() > 3)) {
+            if ($dominion->round->daysInRound() > 1 || $dominion->round->hoursInDay() >= 3) {
                 $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
                 $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
                 $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
