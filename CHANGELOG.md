@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dark Elf Swordsman: -15p (from 475p)
 - Dwarf: ore production increased by 10% (was removed previously)
 
+### Fixed
+- Late starters will now receive bonus defense on the first day of the round.
+
 ## [1.37.0] - 2023-09-23
 ### Added
 - Exploration is now prohibited if a dominion has significantly less defense than a similarly sized bot.
