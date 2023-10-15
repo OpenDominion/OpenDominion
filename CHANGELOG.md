@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Late starters will now receive bonus defense on the first day of the round.
+- Spy resilience bonus will now always be applied below 30% wizard strength.
 
 ## [1.37.0] - 2023-09-23
 ### Added

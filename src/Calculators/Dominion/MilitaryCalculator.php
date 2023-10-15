@@ -1080,7 +1080,7 @@ class MilitaryCalculator
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
 
         // Resilience bonus when snared
-        if (floor($dominion->wizard_strength) + $regen < 30) {
+        if ($dominion->wizard_strength < 30) {
             $regen += ($dominion->spy_resilience / 100);
         }
 
