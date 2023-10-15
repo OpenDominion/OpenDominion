@@ -135,7 +135,7 @@ class RoundOpenCommand extends Command implements CommandInterface
             $mixedAlignments
         );
 
-        if ($discordEnabled === true) {
+        if ($discordEnabled == true) {
             $this->discordService->getDiscordGuild($round);
         }
 
