@@ -96,9 +96,6 @@ class ProductionCalculator
         $platinumPerAlchemy += $dominion->getSpellPerkValue('platinum_production_raw');
         $platinum += ($dominion->building_alchemy * $platinumPerAlchemy);
 
-        // Back2School
-        $platinum += ($dominion->building_school * 5);
-
         return $platinum;
     }
 
@@ -370,9 +367,6 @@ class ProductionCalculator
         // Building: Forest Haven
         $lumber += ($dominion->building_forest_haven * $lumberPerForestHaven);
 
-        // Back2School
-        $lumber += ($dominion->building_school * 4);
-
         return $lumber;
     }
 
@@ -481,9 +475,6 @@ class ProductionCalculator
 
         // Building: Tower
         $mana += ($dominion->building_tower * $manaPerTower);
-
-        // Back2School
-        $mana += ($dominion->building_school * 3);
 
         // Techs
         $mana += ($dominion->building_tower * $dominion->getTechPerkValue('mana_production_raw'));
@@ -602,9 +593,6 @@ class ProductionCalculator
         // Building: Ore Mine
         $ore += ($dominion->building_ore_mine * $orePerOreMine);
 
-        // Back2School
-        $ore += ($dominion->building_school * 6);
-
         // Unit Perk Production Bonus (Dwarf Unit: Miner)
         $ore += $dominion->getUnitPerkProductionBonus('ore_production');
 
@@ -680,9 +668,6 @@ class ProductionCalculator
 
         // Building: Diamond Mine
         $gems += ($dominion->building_diamond_mine * $gemsPerDiamondMine);
-
-        // Back2School
-        $gems += ($dominion->building_school * 2);
 
         return $gems;
     }
@@ -763,9 +748,6 @@ class ProductionCalculator
             $dominion->building_school / $totalLand
         );
         $tech += min($dominion->building_school, floor($totalLand / 2)) * (1 - $schoolPercentage);
-
-        // Back2School
-        $tech = $dominion->building_school;
 
         // Wonders
         $tech += $dominion->getWonderPerkValue('tech_production_raw');
