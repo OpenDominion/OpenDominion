@@ -4,7 +4,7 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
-## [1.37.1] - 2023-10-13
+## [1.37.1] - 2023-10-15
 ### Changed
 - Dark Elf Swordsman: -15p (from 475p)
 - Dwarf: ore production increased by 10% (was removed previously)
