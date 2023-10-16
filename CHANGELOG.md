@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Goblin Shaman: +5p (from 375p)
 - Halfling: Frenzy casualty reduction increased to 40% (from 35%)
 - Human Cavalry: -10p (from 1250p)
-- Lycantrhope Garou: +15p (from 1100p)
+- Lycanthrope Garou: +15p (from 1100p)
 - Lycanthrope Ratman: -15p (from 265p)
 - Merfolk Merman: +10p (from 275p)
 - Nomad Blademaster: -20p (from 1000p)

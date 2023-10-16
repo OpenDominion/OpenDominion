@@ -345,7 +345,7 @@
                     <table class="table">
                         @if ($targetDominion !== null)
                             <thead>
-                                <tr class="target-dominion-dp">
+                                <tr class="target-dominion-dp" style="overflow-wrap: anywhere;">
                                     <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
                                 </tr>
                             </thead>
@@ -833,7 +833,7 @@
                     <table class="table">
                         @if ($targetDominion !== null)
                             <thead>
-                                <tr class="target-dominion-op">
+                                <tr class="target-dominion-op" style="overflow-wrap: anywhere;">
                                     <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
                                 </tr>
                             </thead>
