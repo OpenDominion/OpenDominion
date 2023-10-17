@@ -125,12 +125,10 @@ class ExploreActionService
                 $dominion->{$row->resource} -= $row->amount;
             }
 
-            if ($dominion->round->daysInRound() > 1 || $dominion->round->hoursInDay() >= 3) {
-                $aiHelper = app(AIHelper::class);
-                $botMaxSize = $aiHelper->getExpectedLandSize($dominion->round);
-                if ($newLandTotal < $botMaxSize) {
-                    $minimumDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, $newLandTotal) * 0.90);
-                }
+            $aiHelper = app(AIHelper::class);
+            $botMaxSize = $aiHelper->getExpectedLandSize($dominion->round);
+            if ($newLandTotal < max(600, $botMaxSize)) {
+                $minimumDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, max(600, $newLandTotal)) * 0.90);
             }
 
             if ($defensivePower <= $minimumDefense) {

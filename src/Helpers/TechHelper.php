@@ -100,9 +100,9 @@ class TechHelper
             if (isset($perkTypeStrings[$perk->key])) {
                 $perkValue = (float)$perk->pivot->value;
                 if ($perkValue < 0) {
-                    $perkStrings[] = vsprintf($perkTypeStrings[$perk->key], $perkValue);
+                    $perkStrings[] = sprintf($perkTypeStrings[$perk->key], $perkValue);
                 } else {
-                    $perkStrings[] = vsprintf($perkTypeStrings[$perk->key], '+' . $perkValue);
+                    $perkStrings[] = sprintf($perkTypeStrings[$perk->key], '+' . $perkValue);
                 }
             }
         }

@@ -35,6 +35,11 @@ class RealmFinderService
     public const ASSIGNMENT_MIN_REALM_COUNT = 8;
 
     /**
+     * @var int Maximum number of realms to create
+     */
+    public const ASSIGNMENT_MAX_REALM_COUNT = 14;
+
+    /**
      * Finds and returns the first best realm for a new Dominion to settle in.
      *
      * @param Round $round
@@ -172,6 +177,7 @@ class RealmFinderService
 
         // Calculations to be used later
         $averageRating = $allPlayers->where('rating', '!=', 0)->avg('rating');
+        $averageRating = max(1, $averageRating - 200);
 
         // Separate packed players
         $packs = [];
@@ -215,10 +221,25 @@ class RealmFinderService
             }
         }
 
+        // 'Demote' larger packs
+        if ($largePacks->count() > static::ASSIGNMENT_MAX_REALM_COUNT) {
+            $demoteCount = $largePacks->count() - static::ASSIGNMENT_MAX_REALM_COUNT;
+            $demotedCount = 0;
+            foreach ($largePacks->sortBy('rating') as $idx => $largePack) {
+                $smallPacks->put($idx, $largePack);
+                $largePacks->forget($idx);
+                $demotedCount++;
+                if ($demotedCount >= $demoteCount) {
+                    break;
+                }
+            }
+        }
+
         // Calculate number of realms
         $realmCount = count($largePacks);
         $packsToCreate = max($realmCount - count($smallPacks), 0);
         $soloPlayersToMerge = $packsToCreate * 3;
+        $packsToMerge = max(count($smallPacks) - $realmCount, 0);
 
         // Separate solo players
         $soloPlayers = [];
@@ -231,15 +252,33 @@ class RealmFinderService
         $soloPlayers = collect($soloPlayers)->keyBy('user_id')->sortBy('rating');
 
         // Create 'packs' of solo players
-        $soloPlayersMerged = $soloPlayers->take($soloPlayersToMerge);
-        foreach ($soloPlayersMerged->shuffle()->chunk(3) as $soloPack) {
-            $smallPacks->push([
-                'size' => 3,
-                'players' => $soloPack->toArray(),
-                'rating' => $this->calculateRating($soloPack->toArray()),
-            ]);
+        if ($soloPlayersToMerge > 0) {
+            $soloPlayersMerged = $soloPlayers->take($soloPlayersToMerge);
+            foreach ($soloPlayersMerged->shuffle()->chunk(3) as $soloPack) {
+                $smallPacks->push([
+                    'size' => 3,
+                    'players' => $soloPack->toArray(),
+                    'rating' => $this->calculateRating($soloPack->toArray()),
+                ]);
+            }
+            $soloPlayers = $soloPlayers->diffKeys($soloPlayersMerged);
         }
-        $soloPlayers = $soloPlayers->diffKeys($soloPlayersMerged);
+
+        // Merge smaller packs
+        if ($packsToMerge > 0) {
+            foreach ($smallPacks->sortBy('size')->take($packsToMerge * 2)->chunk(2) as $idx => $packPair) {
+                $firstPack = $packPair->first();
+                $lastPack = $packPair->last();
+                $players = array_merge($firstPack['players'], $lastPack['players']);
+                $combinedPack = [
+                    'size' => $firstPack['size'] + $lastPack['size'],
+                    'players' => $players,
+                    'rating' => $this->calculateRating($players),
+                ];
+                $smallPacks->put($packPair->keys()[0], $combinedPack);
+                $smallPacks->forget($packPair->keys()[1]);
+            }
+        }
 
         // Pair packs together into realms
         $realms = [];

@@ -199,7 +199,7 @@ class SpellHelper
         foreach ($spell->perks as $perk) {
             if (isset($perkTypeStrings[$perk->key])) {
                 $perkValue = (float)$perk->pivot->value;
-                $perkStrings[] = vsprintf($perkTypeStrings[$perk->key], $perkValue);
+                $perkStrings[] = sprintf($perkTypeStrings[$perk->key], $perkValue);
             }
         }
 
