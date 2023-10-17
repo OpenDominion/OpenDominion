@@ -82,29 +82,10 @@
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="fa fa-history"></i> Protection History</h3>
                     </div>
-                    <div class="box-body table-responsive no-padding">
-                        <table class="table">
-                            @php
-                                $ticksRemaining = $selectedDominion->protection_ticks_remaining;
-                            @endphp
-                            @foreach ($selectedDominion->history()->orderByDesc('created_at')->get() as $history)
-                                @php
-                                    if ($history->event == "restart") {
-                                        break;
-                                    }
-                                    if (isset($history->delta["protection_ticks_remaining"])) {
-                                        $ticksRemaining += 1;
-                                    }
-                                @endphp
-                                @if ($history->event !== 'tick' && $history->event !== 'advance tick')
-                                    <tr>
-                                        <td>Hour {{ 73 - $ticksRemaining }}</td>
-                                        <td>{{ ucwords($history->event) }}</td>
-                                        <td>{{ $history->getDeltaString() }}</td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                            </table>
+                    <div class="box-body table-responsive">
+                        @foreach ($log as $line)
+                            <div>{{ $line }}</div>
+                        @endforeach
                     </div>
                 </div>
             @endif

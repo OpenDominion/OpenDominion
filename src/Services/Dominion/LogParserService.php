@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Dominion\History;
 use OpenDominion\Models\Spell;
 
 class LogParserService
@@ -37,6 +38,7 @@ class LogParserService
 
     const ATTRIBUTE_MAP = [
         'draftees' => 'military_draftees',
+        'Draftees' => 'military_draftees',
         'Spies' => 'military_spies',
         'Archspies' => 'military_assassins',
         'Wizards' => 'military_wizards',
@@ -52,9 +54,11 @@ class LogParserService
         'Factories' => 'factory',
         'Guilds' => 'wizard_guild',
         'Lumber Yards' => 'lumberyard',
+        'Lumberyards' => 'lumberyard',
         'Masonries' => 'masonry',
         'Smithies' => 'smithy',
         'Ares Call' => 'Ares\' Call',
+        'Gaias Blessing' => 'Gaia\'s Blessing',
         'Gaias Watch' => 'Gaia\'s Watch',
         'Miners Sight' => 'Miner\'s Sight'
     ];
@@ -325,5 +329,244 @@ class LogParserService
             }
         }
         return false;
+    }
+
+    public function writeLog(Dominion $dominion) {
+        if ($dominion->protection_ticks_remaining == 0 && $dominion->round->hasStarted()) {
+            return array();
+        }
+
+        $log = array("====== Protection Hour: 1 ======");
+        $protectionHour = 1;
+        $events = $dominion->history();
+
+        // Ignore everything prior to latest restart
+        $lastRestart = $dominion->history()
+            ->where('event', 'restart')
+            ->orderByDesc('created_at')
+            ->first();
+        if ($lastRestart !== null) {
+            $events = $events->where('created_at', '>', $lastRestart->created_at);
+        }
+
+        foreach ($events->orderBy('created_at')->get() as $history) {
+            if ($history->event == "tick") {
+                $protectionHour++;
+                if ($protectionHour > 73) {
+                    break;
+                }
+            }
+            $log[] = $this->formatHistory($dominion, $history, $protectionHour);
+        }
+
+        return $log;
+    }
+
+    protected function formatHistory(Dominion $dominion, History $history, int $hour) {
+        switch ($history->event) {
+            case "tick":
+                return sprintf(
+                    "====== Protection Hour: %d ======",
+                    $hour
+                );
+
+            case "bank":
+                $negative = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($value) {
+                        return $value < 0;
+                    }),
+                );
+                $positive = array_filter($history->delta, function ($value) {
+                    return $value > 0;
+                });
+                return sprintf(
+                    "%s have been traded for %s.",
+                    dominion_attr_sentence_from_array($negative, true),
+                    dominion_attr_sentence_from_array($positive, true)
+                );
+
+            case "construct":
+                if (!isset($history->delta["queue"]["construction"])) {
+                    return "";
+                }
+                $resources = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'resource_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                return sprintf(
+                    "Construction of %s started at a cost of %s.",
+                    dominion_attr_sentence_from_array($history->delta["queue"]["construction"], true),
+                    dominion_attr_sentence_from_array($resources, true)
+                );
+
+            case "daily bonus":
+                $resources = array_filter($history->delta, function ($key) {
+                    return Str::startsWith($key, 'land_') || Str::startsWith($key, 'resource_');
+                }, ARRAY_FILTER_USE_KEY);
+                return sprintf(
+                    "You have been awarded with %s.",
+                    dominion_attr_sentence_from_array($resources, true)
+                );
+
+            case "destroy":
+                $buildings =  array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'building_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                return sprintf(
+                    "Destruction of %s is complete.",
+                    dominion_attr_sentence_from_array($buildings, true)
+                );
+
+            case "change draft rate":
+                # TODO: Calculate draftrate from deltas
+                return sprintf(
+                    "Draftrate changed to %s.",
+                    "90%"
+                );
+
+            case "explore":
+                if (!isset($history->delta["queue"]["exploration"])) {
+                    return "";
+                }
+                $resources = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'resource_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                return sprintf(
+                    "Exploration for %s begun at a cost of %s.",
+                    dominion_attr_sentence_from_array($history->delta["queue"]["exploration"], true),
+                    dominion_attr_sentence_from_array($resources, true)
+                );
+
+            case "improve":
+                $resources = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'resource_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                $imps = array_filter($history->delta, function ($key) {
+                    return Str::startsWith($key, 'improvement_');
+                }, ARRAY_FILTER_USE_KEY);
+                return sprintf(
+                    "You invested %s into %s.",
+                    dominion_attr_sentence_from_array($resources, true),
+                    dominion_attr_display(key($imps), true)
+                );
+
+            case "cast spell":
+                if (!isset($history->delta["action"]) || !isset($history->delta["resource_mana"])) {
+                    return "";
+                }
+                return sprintf(
+                    "Your wizards successfully cast %s at a cost of %d mana.",
+                    format_string($history->delta["action"]),
+                    abs(intval($history->delta["resource_mana"]))
+                );
+
+            case "release":
+                $military = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'military_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                $militaryTransformed = array();
+                foreach ($military as $key => $value) {
+                    if  (Str::startsWith($key, 'military_unit')) {
+                        $unitSlot = substr($key, -1);
+                        $unit = $dominion->race->units->where('slot', $unitSlot)->first();
+                        $unitName = sprintf(
+                            "military_unit_%s",
+                            str_replace(" ", "_", strtolower($unit->name))
+                        );
+                        $militaryTransformed[$unitName] = $value;
+                    } else {
+                        $militaryTransformed[$key] = $value;
+                    }
+                }
+                return sprintf(
+                    "You successfully released %s.",
+                    dominion_attr_sentence_from_array($militaryTransformed, true)
+                );
+
+            case "rezone":
+                $resources = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'resource_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                $land = array_filter($history->delta, function ($key) {
+                    return Str::startsWith($key, 'land_');
+                }, ARRAY_FILTER_USE_KEY);
+                return sprintf(
+                    "Rezoning begun at a cost of %s. The changes in land are as following: %s",
+                    dominion_attr_sentence_from_array($resources, true),
+                    dominion_attr_sentence_from_array($land, true)
+                );
+
+            case "train":
+                if (!isset($history->delta["queue"]["training"])) {
+                    return "";
+                }
+                $military = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta["queue"]["training"], function ($key) {
+                        return Str::startsWith($key, 'military_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                $militaryTransformed = array();
+                foreach ($military as $key => $value) {
+                    if  (Str::startsWith($key, 'military_unit')) {
+                        $unitSlot = substr($key, -1);
+                        $unit = $dominion->race->units->where('slot', $unitSlot)->first();
+                        $unitName = sprintf(
+                            "military_unit_%s",
+                            str_replace(" ", "_", strtolower($unit->name))
+                        );
+                        $militaryTransformed[$unitName] = $value;
+                    } else {
+                        $militaryTransformed[$key] = $value;
+                    }
+                }
+                $resources = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'resource_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                return sprintf(
+                    "Training of %s begun at a cost of %s.",
+                    dominion_attr_sentence_from_array($militaryTransformed, true),
+                    dominion_attr_sentence_from_array($resources, true),
+                );
+        }
     }
 }

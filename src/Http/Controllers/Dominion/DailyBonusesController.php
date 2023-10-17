@@ -6,12 +6,20 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesLandActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesPlatinumActionRequest;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
+use OpenDominion\Services\Dominion\LogParserService;
 
 class DailyBonusesController extends AbstractDominionController
 {
     public function getBonuses()
     {
-        return view('pages.dominion.bonuses');
+        $dominion = $this->getSelectedDominion();
+
+        $logParserService = app(LogParserService::class);
+        $log = $logParserService->writeLog($dominion);
+
+        return view('pages.dominion.bonuses', [
+            'log' => $log
+        ]);
     }
 
     public function postBonusesPlatinum(DailyBonusesPlatinumActionRequest $request)

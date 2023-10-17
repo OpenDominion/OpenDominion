@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 if (!function_exists('carbon')) {
     /**
@@ -97,6 +98,37 @@ if (!function_exists('dominion_attr_display')) {
                 return str_plural(str_singular($attribute), $value);
             }
         }
+    }
+}
+
+if (!function_exists('dominion_attr_sentence_from_array')) {
+    /**
+     * Generates a string from a multidimensional array.
+     *
+     * @param array $attrs
+     * @return string
+     */
+    function dominion_attr_sentence_from_array(array $attrs, bool $simLog = true): string {
+        $stringParts = array();
+        foreach ($attrs as $key => $value) {
+            $capitalize = false;
+            $forcePlural = false;
+            $forceSingular = false;
+            if ($simLog) {
+                if (Str::startsWith($key, "military_unit_")) {
+                    $forceSingular = true;
+                    $key = str_replace("unit_", "", $key);
+                } else {
+                    $forcePlural = true;
+                }
+                if (!Str::startsWith($key, "resource_")) {
+                    $capitalize = true;
+                }
+            }
+            $attributeDisplay = dominion_attr_display($key, $forcePlural ? 2 : ($forceSingular ? 1 : $value));
+            $stringParts[] = sprintf("%s %s", $value, $capitalize ? ucwords($attributeDisplay) : $attributeDisplay);
+        }
+        return generate_sentence_from_array($stringParts, ", ", ", ");
     }
 }
 
@@ -279,5 +311,14 @@ if (!function_exists('format_percentage')) {
             );
         }
         return number_format($number);
+    }
+}
+
+if (!function_exists('format_string')) {
+    /**
+     * Format a string by replacing underscores with spaces and capitalizg each word.
+     */
+    function format_string($str) {
+        return ucwords(str_replace("_", " ", $str));
     }
 }
