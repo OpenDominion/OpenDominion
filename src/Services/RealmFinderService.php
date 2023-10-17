@@ -266,7 +266,7 @@ class RealmFinderService
 
         // Merge smaller packs
         if ($packsToMerge > 0) {
-            foreach ($smallPacks->sortBy('size')->take($packsToMerge) as $idx => $packPair) {
+            foreach ($smallPacks->sortBy('size')->take($packsToMerge * 2)->chunk(2) as $idx => $packPair) {
                 $firstPack = $packPair->first();
                 $lastPack = $packPair->last();
                 $players = array_merge($firstPack['players'], $lastPack['players']);
