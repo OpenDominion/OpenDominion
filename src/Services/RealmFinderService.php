@@ -37,7 +37,7 @@ class RealmFinderService
     /**
      * @var int Maximum number of realms to create
      */
-    public const ASSIGNMENT_MAX_REALM_COUNT = 12;
+    public const ASSIGNMENT_MAX_REALM_COUNT = 14;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.

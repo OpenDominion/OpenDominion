@@ -92,9 +92,10 @@ class Pack extends AbstractModel
 
     public function close()
     {
+        $this->size = $this->dominions->count();
         if ($this->closed_at == null) {
             $this->closed_at = now();
-            $this->save();
         }
+        $this->save();
     }
 }
