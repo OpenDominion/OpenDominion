@@ -109,26 +109,26 @@ if (!function_exists('dominion_attr_sentence_from_array')) {
      * @return string
      */
     function dominion_attr_sentence_from_array(array $attrs, bool $simLog = true): string {
-        $stringParts = array();
+        $stringParts = [];
         foreach ($attrs as $key => $value) {
             $capitalize = false;
             $forcePlural = false;
             $forceSingular = false;
             if ($simLog) {
-                if (Str::startsWith($key, "military_unit_")) {
+                if (Str::startsWith($key, 'military_unit_')) {
                     $forceSingular = true;
-                    $key = str_replace("unit_", "", $key);
+                    $key = str_replace('unit_', '', $key);
                 } else {
                     $forcePlural = true;
                 }
-                if (!Str::startsWith($key, "resource_")) {
+                if (!Str::startsWith($key, 'resource_')) {
                     $capitalize = true;
                 }
             }
             $attributeDisplay = dominion_attr_display($key, $forcePlural ? 2 : ($forceSingular ? 1 : $value));
-            $stringParts[] = sprintf("%s %s", $value, $capitalize ? ucwords($attributeDisplay) : $attributeDisplay);
+            $stringParts[] = sprintf('%s %s', $value, $capitalize ? ucwords($attributeDisplay) : $attributeDisplay);
         }
-        return generate_sentence_from_array($stringParts, ", ", ", ");
+        return generate_sentence_from_array($stringParts, ', ', ', ');
     }
 }
 
@@ -319,6 +319,6 @@ if (!function_exists('format_string')) {
      * Format a string by replacing underscores with spaces and capitalizg each word.
      */
     function format_string($str) {
-        return ucwords(str_replace("_", " ", $str));
+        return ucwords(str_replace('_', ' ', $str));
     }
 }
