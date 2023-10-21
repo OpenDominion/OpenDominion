@@ -314,7 +314,7 @@
             }
 
             return $(`
-                <div class="pull-left">${state.text} - ${race}</div>
+                <div class="pull-left">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
                 ${warStatus}
                 <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
