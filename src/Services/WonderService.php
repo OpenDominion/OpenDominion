@@ -25,7 +25,7 @@ class WonderService
         $tierOneWonderIds = Wonder::active()->tierOne()->pluck('id');
         $tierOneWonders = RoundWonder::with('wonder')
             ->whereIn('round_id', $roundIds)
-            ->whereIn('round_id', $tierOneWonderIds)
+            ->whereIn('wonder_id', $tierOneWonderIds)
             ->get()
             ->countBy('wonder.key')
             ->sortDesc()
@@ -35,7 +35,7 @@ class WonderService
         $tierTwoWonderIds = Wonder::active()->tierTwo()->pluck('id');
         $tierTwoWonders = RoundWonder::with('wonder')
             ->whereIn('round_id', $roundIds)
-            ->whereIn('round_id', $tierTwoWonderIds)
+            ->whereIn('wonder_id', $tierTwoWonderIds)
             ->get()
             ->countBy('wonder.key')
             ->sortDesc()
