@@ -196,19 +196,17 @@ class AIService
             }
 
             // Remove any failed/missed actions
-            foreach ($config as $tick) {
+            foreach ($config as $tick => $actions) {
                 if ($tick < $currentTick) {
-                    unset($config[$currentTick]);
+                    unset($config[$tick]);
                 }
             }
 
-            if ($config != $dominion->ai_config) {
-                $dominion->update([
-                    'ai_enabled' => !empty($config),
-                    'ai_config' => $config,
-                    'daily_actions' => DB::raw("daily_actions - {$actionsTaken}")
-                ]);
-            }
+            $dominion->ai_enabled = !empty($config);
+            $dominion->ai_config = $config;
+            $dominion->daily_actions -= $actionsTaken;
+            $dominion->save();
+
             return;
         }
 
