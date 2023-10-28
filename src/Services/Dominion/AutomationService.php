@@ -227,7 +227,7 @@ class AutomationService
         })->sum(function ($actions) {
             return count($actions);
         });
-        if ($dominion->daily_actions + 2 < $beforeResetCount) {
+        if ($dominion->daily_actions < $beforeResetCount) {
             throw new GameException('You do not have enough scheduled actions remaining.');
         }
 
