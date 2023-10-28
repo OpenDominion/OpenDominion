@@ -220,7 +220,7 @@ class AutomationService
             throw new GameException('You cannot schedule more than two actions at a time.');
         }
 
-        $hoursUntilReset = 24 - $dominion->round->hoursInDay() - 1;
+        $hoursUntilReset = 24 - $dominion->round->hoursInDay() + 1;
 
         $beforeResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {
             return intval($key) - $currentTick < $hoursUntilReset;
