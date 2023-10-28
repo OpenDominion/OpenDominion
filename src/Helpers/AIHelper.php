@@ -190,7 +190,8 @@ class AIHelper
     {
         return [
             'active_chance' => '0.25',
-            'max_land' => 3000,
+            'max_land' => 3500,
+            'elite_guard_land' => 3000,
             'invest' => 'gems',
             'spells' => [
                 'midas_touch'

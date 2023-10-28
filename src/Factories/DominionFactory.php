@@ -409,6 +409,7 @@ class DominionFactory
             'wizard_strength' => 100,
             'daily_platinum' => 0,
             'daily_land' => 0,
+            'daily_actions' => 2,
 
             'resource_platinum' => 100000,
             'resource_food' => 15000,

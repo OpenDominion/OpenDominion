@@ -72,6 +72,9 @@ class AIService
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /** @var ReleaseActionService */
     protected $releaseActionService;
 
@@ -158,7 +161,46 @@ class AIService
 
     public function performActions(Dominion $dominion)
     {
+        $actionsTaken = 0;
         $config = $dominion->ai_config;
+
+        // Automated player actions
+        if ($dominion->user_id !== null) {
+            if ($dominion->daily_actions == 0) {
+                return;
+            }
+
+            $tick = $dominion->round->getTick();
+            if (isset($config[$tick])) {
+                foreach ($config[$tick] as $instruction) {
+                    $dominion->refresh();
+                    try {
+                        switch ($instruction['action']) {
+                            case 'spell':
+                                $this->spellActionService->castSpell($dominion, $instruction['key']);
+                                break;
+                            case 'train':
+                                $maxAfford = min(
+                                    $instruction['amount'],
+                                    $this->trainingCalculator->getMaxTrainable($dominion)[$instruction['key']]
+                                );
+                                $this->trainActionService->train($dominion, ['military_' . $instruction['key'] => $maxAfford]);
+                                break;
+                        }
+                        $actionsTaken++;
+                    } catch (GameException $e) {
+                        // TODO: Log an error here
+                    }
+                }
+                unset($config[$tick]);
+                $dominion->update([
+                    'ai_enabled' => !empty($config),
+                    'ai_config' => $config,
+                    'daily_actions' => DB::raw("daily_actions - {$actionsTaken}")
+                ]);
+            }
+            return;
+        }
 
         // Set max draft rate for active NPDs
         if ($dominion->draft_rate < 90) {

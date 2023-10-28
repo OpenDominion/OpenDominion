@@ -34,6 +34,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $wizard_mastery
  * @property bool $daily_platinum
  * @property bool $daily_land
+ * @property int $daily_actions
  * @property int $resource_platinum
  * @property int $resource_food
  * @property int $resource_lumber
@@ -137,6 +138,7 @@ class Dominion extends AbstractModel
         'wizard_mastery' => 'integer',
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
+        'daily_actions' => 'integer',
         'resource_platinum' => 'integer',
         'resource_food' => 'integer',
         'resource_lumber' => 'integer',

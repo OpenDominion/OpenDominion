@@ -17,13 +17,12 @@
                     &nbsp;|&nbsp;
                 @endif
                 @php
-                    $diff = $selectedDominion->round->start_date->subDays(1)->diff(now());
                     $roundDay = $selectedDominion->round->daysInRound();
                     $roundDurationInDays = $selectedDominion->round->durationInDays();
-                    $currentHour = ($diff->h + 1);
+                    $currentHour = $selectedDominion->round->hoursInDay();
                 @endphp
                 <span data-toggle="tooltip" data-placement="top" title="{{ now() }}">
-                    Day <strong>{{ $roundDay }}</strong>/{{ $roundDurationInDays }}, hour <strong>{{ $currentHour }}</strong>
+                    Day <strong>{{ $roundDay }}</strong>/{{ $roundDurationInDays }}, Hour <strong>{{ $currentHour }}</strong>
                 </span>
             @endif
         </div>

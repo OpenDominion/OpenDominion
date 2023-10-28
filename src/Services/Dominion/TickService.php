@@ -634,6 +634,7 @@ class TickService
             $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
                 'daily_platinum' => false,
                 'daily_land' => false,
+                'daily_actions' => 2,
             ], [
                 'event' => 'tick',
             ]);

@@ -353,4 +353,14 @@ class Round extends AbstractModel
     {
         return $this->start_date->diffInDays($this->end_date);
     }
+
+    /**
+     * Returns the tick number for current time.
+     * 
+     * @return int
+     */
+    public function getTick()
+    {
+        return (24 * ($this->daysInRound() - 1)) + ($this->hoursInDay() - 1);
+    }
 }

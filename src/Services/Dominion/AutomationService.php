@@ -184,4 +184,75 @@ class AutomationService
     {
         $this->trainActionService->train($dominion, $data);
     }
+
+    public function setConfig(Dominion $dominion, array $data)
+    {
+        $currentTick = $dominion->round->getTick();
+
+        if ($data['tick'] > $currentTick + 8) {
+            throw new GameException('You cannot schedule actions more than 8 hours in advance.');
+        }
+
+        if ($dominion->protection_ticks_remaining > 0) {
+            throw new GameException('You cannot schedule actions while under protection.');
+        }
+
+        if ($data['value']['action'] == 'spell' && in_array($data['value']['key'], ['ares_call', 'fools_gold'])) {
+            throw new GameException('You cannot automate this spell.');
+        }
+
+        // Create new AI config
+        $config = $dominion->ai_config;
+        if (!isset($config[$data['tick']])) {
+            $config[$data['tick']] = [];
+        }
+        array_push($config[$data['tick']], $data['value']);
+        $countCollection = collect($config);
+
+        $totalCount = $countCollection->sum(function ($actions) {
+            return count($actions);
+        });
+        if ($totalCount > 2) {
+            throw new GameException('You cannot schedule more than two actions at a time.');
+        }
+
+        $currentTick = $dominion->round->getTick();
+        $hoursUntilReset = 24 - $dominion->round->hoursInDay() - 1;
+
+        $beforeResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {
+            return intval($key) - $currentTick < $hoursUntilReset;
+        })->sum(function ($actions) {
+            return count($actions);
+        });
+        if ($dominion->daily_actions + 2 < $beforeResetCount) {
+            throw new GameException('You do not have enough scheduled actions remaining.');
+        }
+
+        $afterResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {
+            return intval($key) - $currentTick >= $hoursUntilReset;
+        })->sum(function ($actions) {
+            return count($actions);
+        });
+        if ($afterResetCount > 2) {
+            throw new GameException('You do not have enough scheduled actions remaining.');
+        }
+
+        // Save updated AI config
+        $dominion->ai_config = $config;
+        $dominion->ai_enabled = true;
+        $dominion->save();
+    }
+
+    public function deleteAction(Dominion $dominion, int $tick, int $key)
+    {
+        $config = $dominion->ai_config;
+        unset($config[$tick][$key]);
+
+        // Save updated AI config
+        $dominion->ai_config = $config;
+        if (empty($config)) {
+            $dominion->ai_enabled = false;
+        }
+        $dominion->save();
+    }
 }

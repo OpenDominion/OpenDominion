@@ -1,0 +1,175 @@
+@extends('layouts.master')
+
+@section('page-header', 'Status')
+
+@section('content')
+    <div class="row">
+
+        <div class="col-sm-12 col-md-9">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="ra ra-robot-arm"></i> Automated Actions</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            @php
+                                $currentTick = $selectedDominion->round->getTick();
+                            @endphp
+                            <h4>Current Tick</h4>
+                            <div>
+                                Day {{ $selectedDominion->round->daysInRound() }}, Hour {{ $selectedDominion->round->hoursInDay() }}
+                            </div>
+                            <h4>Configured Actions</h4>
+                            <div>
+                                @if (!$selectedDominion->ai_enabled || empty($selectedDominion->ai_config))
+                                    <p><i>No automated actions scheduled.</i></p>
+                                @else
+                                    <table class="table table-condensed">
+                                        <colgroup>
+                                            <col width="15%">
+                                            <col width="15%">
+                                            <col width="15%">
+                                            <col>
+                                        </colgroup>
+                                        <tr>
+                                            <th>Ticks</th>
+                                            <th>Day</th>
+                                            <th>Hour</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        @foreach ($selectedDominion->ai_config as $tick => $config)
+                                            @php
+                                                $hours = $tick - $currentTick;
+                                                $day = $selectedDominion->round->daysInRound(now()->addHours($hours));
+                                                $hour = $selectedDominion->round->hoursInDay(now()->addHours($hours));
+                                            @endphp
+                                            @foreach ($config as $index => $item)
+                                                <tr>
+                                                    <td>
+                                                        +{{ $hours }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $day }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $hour }}
+                                                    </td>
+                                                    <td>
+                                                        @if ($item['action'] == 'train')
+                                                            Train
+                                                            {{ $item['amount'] }}
+                                                            {{ $unitHelper->getUnitName($item['key'], $selectedDominion->race) }}
+                                                        @elseif ($item['action'] == 'spell')
+                                                            Cast
+                                                            {{ $spellHelper->getSpellByKey($item['key'])->name }}
+                                                        @endif
+                                                        <form action="{{ route('dominion.bonuses.actions.delete') }}" method="post" class="inline">
+                                                            @csrf
+                                                            <input type="hidden" name="tick" value="{{ $tick }}" />
+                                                            <input type="hidden" name="key" value="{{ $index }}" />
+                                                            <button class="btn btn-link no-padding pull-right" type="submit">
+                                                                <i class="fa fa-trash text-danger"></i>
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @endforeach
+                                    </table>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <h4>Add Action</h4>
+                            <form action="{{ route('dominion.bonuses.actions') }}" method="post" role="form">
+                                @csrf
+                                <div class="form-group">
+                                    Tick:
+                                    <select class="form-control" name="tick">
+                                        @foreach (range(1, 8) as $hours)
+                                            <option value="{{ $currentTick + $hours }}">
+                                                Day {{ $selectedDominion->round->daysInRound(now()->addHours($hours)) }},
+                                                Hour {{ $selectedDominion->round->hoursInDay(now()->addHours($hours)) }}
+                                                (+{{ $hours }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    Action:
+                                    <select class="form-control" name="action">
+                                        <option value="train">Train Military</option>
+                                        <option value="spell">Cast Spell</option>
+                                    </select>
+                                </div>
+                                <div class="form-group action-options train">
+                                    Unit:
+                                    <select class="form-control" name="key">
+                                        @foreach ($unitTypes as $unitType)
+                                            <option value="{{ $unitType }}">
+                                                {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group action-options train">
+                                    Amount:
+                                    <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" />
+                                </div>
+                                <div class="form-group action-options spell" style="display: none;">
+                                    Spell:
+                                    <select class="form-control" name="key" disabled>
+                                        @foreach ($spells as $spell)
+                                            <option value="{{ $spell->key }}">
+                                                {{ $spell->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                </div>
+                <div class="box-body">
+                    <p>You can perform two automated actions per day, which resets with your daily bonuses.</p>
+                    <p>Actions cannot be scheduled more than 8 hours in advance and are performed ~30 minutes into the hour.</p>
+                    <p>In the event that you do not have enough resources to perform the action, it will instead use the max that you can afford.</p>
+                    <p>You have used <b>{{ 2 - $selectedDominion->daily_actions }}</b> actions today.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+@endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            var actionSelectElement = $('select[name=action]');
+            var actionContainerElements = $('.action-options');
+
+            function toggleDropdowns(value) {
+                actionContainerElements.hide();
+                actionContainerElements.children('select,input').prop('disabled', true);
+
+                var selectedParentElement = $("." + value);
+                selectedParentElement.children('select,input').prop('disabled', false);
+                selectedParentElement.show();
+            }
+
+            actionSelectElement.change(function (e) {
+                toggleDropdowns(e.currentTarget.value);
+            });
+        })(jQuery);
+    </script>
+@endpush

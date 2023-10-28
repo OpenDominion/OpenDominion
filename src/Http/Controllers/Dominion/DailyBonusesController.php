@@ -2,15 +2,20 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Http\Requests\Dominion\Actions\AutomationActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesLandActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesPlatinumActionRequest;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
+use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\LogParserService;
 
 class DailyBonusesController extends AbstractDominionController
 {
-    public function getBonuses()
+    public function getBonuses(Request $request)
     {
         $dominion = $this->getSelectedDominion();
 
@@ -54,5 +59,67 @@ class DailyBonusesController extends AbstractDominionController
 
         $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.bonuses');
+    }
+
+    public function getAutomatedActions()
+    {
+        $dominion = $this->getSelectedDominion();
+        $spellHelper = app(SpellHelper::class);
+        $unitHelper = app(UnitHelper::class);
+
+        $spells = $spellHelper->getSpells($dominion->race, 'self')
+            ->forget(['amplify_magic', 'ares_call', 'fools_gold'])
+            ->sortBy('key');
+        $unitTypes = $unitHelper->getUnitTypes();
+
+        return view('pages.dominion.automation', [
+            'spellHelper' => $spellHelper,
+            'unitHelper' => $unitHelper,
+            'spells' => $spells,
+            'unitTypes' => $unitTypes,
+        ]);
+    }
+
+    public function postAutomatedActions(AutomationActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+
+        $config = [
+            'tick' => $request->get('tick'),
+            'value' => [
+                'action' => $request->get('action'),
+                'key' => $request->get('key'),
+                'amount' => $request->get('amount')
+            ]
+        ];
+
+        try {
+            $automationService->setConfig($dominion, $config);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Action was successfully scheduled.');
+        return redirect()->route('dominion.bonuses.actions');
+    }
+
+    public function postDeleteAutomatedAction(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+
+        try {
+            $automationService->deleteAction($dominion, $request->get('tick'), $request->get('key'));
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Action was successfully deleted.');
+        return redirect()->route('dominion.bonuses.actions');
     }
 }

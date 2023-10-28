@@ -84,6 +84,7 @@ class SelectorService
         }
 
         // Track hourly access activity
+        // TODO: Swap 47 with actual round length
         if ($this->selectedDominion && $this->selectedDominion->round->isActive()) {
             // Generate 1128 bit string of 0s
             if (!$this->selectedDominion->hourly_activity) {
@@ -99,7 +100,7 @@ class SelectorService
             }
 
             // Set bit for this day/hour to 1
-            $index = (24 * ($this->selectedDominion->round->daysInRound() - 1)) + $this->selectedDominion->round->hoursInDay() - 1;
+            $index = $this->selectedDominion->round->getTick();
             $hourlyActivity = $this->selectedDominion->hourly_activity;
             if ($index < (47 * 24) && !$hourlyActivity[$index]) {
                 $hourlyActivity[$index] = 1;
