@@ -170,9 +170,9 @@ class AIService
                 return;
             }
 
-            $tick = $dominion->round->getTick();
-            if (isset($config[$tick])) {
-                foreach ($config[$tick] as $instruction) {
+            $currentTick = $dominion->round->getTick();
+            if (isset($config[$currentTick])) {
+                foreach ($config[$currentTick] as $instruction) {
                     $dominion->refresh();
                     try {
                         switch ($instruction['action']) {
@@ -192,7 +192,17 @@ class AIService
                         // TODO: Log an error here
                     }
                 }
-                unset($config[$tick]);
+                unset($config[$currentTick]);
+            }
+
+            // Remove any failed/missed actions
+            foreach ($config as $tick) {
+                if ($tick < $currentTick) {
+                    unset($config[$currentTick]);
+                }
+            }
+
+            if ($config != $dominion->ai_config) {
                 $dominion->update([
                     'ai_enabled' => !empty($config),
                     'ai_config' => $config,

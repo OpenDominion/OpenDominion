@@ -193,6 +193,10 @@ class AutomationService
             throw new GameException('You cannot schedule actions more than 8 hours in advance.');
         }
 
+        if ($data['tick'] <= $currentTick) {
+            throw new GameException('You cannot schedule actions for current or past ticks.');
+        }
+
         if ($dominion->protection_ticks_remaining > 0) {
             throw new GameException('You cannot schedule actions while under protection.');
         }
@@ -216,7 +220,6 @@ class AutomationService
             throw new GameException('You cannot schedule more than two actions at a time.');
         }
 
-        $currentTick = $dominion->round->getTick();
         $hoursUntilReset = 24 - $dominion->round->hoursInDay() - 1;
 
         $beforeResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {

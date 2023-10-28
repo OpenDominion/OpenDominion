@@ -356,7 +356,7 @@ class Round extends AbstractModel
 
     /**
      * Returns the tick number for current time.
-     * 
+     *
      * @return int
      */
     public function getTick()
