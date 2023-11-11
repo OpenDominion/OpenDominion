@@ -29,6 +29,12 @@
     @endif
 @endif
 
+@if ($selectedDominion->ai_enabled)
+    <div class="alert alert-info">
+        <p><i class="ra ra-robot-arm"></i> You have <a href="{{ route('dominion.bonuses.actions') }}">automated actions</a> scheduled in {{ hours_until_next_action($selectedDominion->ai_config, $selectedDominion->round->getTick()) }} hour(s).</p>
+    </div>
+@endif
+
 @if (!$errors->isEmpty())
     <div class="alert alert-danger alert-dismissible">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

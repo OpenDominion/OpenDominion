@@ -250,6 +250,9 @@ class AutomationService
     {
         $config = $dominion->ai_config;
         unset($config[$tick][$key]);
+        if (empty($config[$tick])) {
+            unset($config[$tick]);
+        }
 
         // Save updated AI config
         $dominion->ai_config = $config;

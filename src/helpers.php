@@ -132,6 +132,28 @@ if (!function_exists('dominion_attr_sentence_from_array')) {
     }
 }
 
+if (!function_exists('hours_until_next_action')) {
+    /**
+     * Calculate the time until the next action by tick number.
+     *
+     * @param array $aiConfig
+     * @param int $tick
+     * @return int
+     */
+    function hours_until_next_action(
+        array $aiConfig,
+        int $tick
+    ): int {
+        $hours = 24;
+        foreach ($aiConfig as $key => $actions) {
+            if ($hours == 24 || $tick - intval($key) > $hours) {
+                $hours = intval($key) - $tick;
+            }
+        }
+        return $hours;
+    }
+}
+
 if (!function_exists('bonus_display')) {
     /**
      * Returns a string suitable for displaying a color-coded bonus as positive or negative.
