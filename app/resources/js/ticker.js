@@ -9,6 +9,7 @@ class Ticker {
         this.tickerNextHourElement = null;
         this.tickerNextRoundElement = null;
         this.nextRoundStartDate = null;
+        this.nextHour = null;
     }
 
     /**
@@ -49,6 +50,15 @@ class Ticker {
 
             const diffDate = (nextHour - currentTime);
             this.tickerNextHourElement.innerHTML = Ticker.hms(diffDate);
+
+            if (this.nextHour == null) {
+                this.nextHour = nextHour;
+            }
+
+            if (currentTime >= this.nextHour) {
+                var htmlElement = document.getElementsByTagName("html")[0];
+                htmlElement.classList.add("hourchange");
+            }
         } else if(this.tickerNextRoundElement !== null){
             const diffDate = (this.nextRoundStartDate - new Date());
 
