@@ -27,12 +27,12 @@
             <p><i class="fa fa-warning"></i> The round has not yet started, but you can simulate your protection in advance. Realms will be assigned in {{ $selectedDominion->round->timeUntilRealmAssignment() }}, after which you will have 4 days to coordinate with your realm before the round starts.</p>
         </div>
     @endif
-@endif
 
-@if ($selectedDominion->ai_enabled)
-    <div class="alert alert-info">
-        <p><i class="ra ra-robot-arm"></i> You have <a href="{{ route('dominion.bonuses.actions') }}">automated actions</a> scheduled in {{ hours_until_next_action($selectedDominion->ai_config, $selectedDominion->round->getTick()) }} hour(s).</p>
-    </div>
+    @if ($selectedDominion->ai_enabled)
+        <div class="alert alert-info">
+            <p><i class="ra ra-robot-arm"></i> You have <a href="{{ route('dominion.bonuses.actions') }}">automated actions</a> scheduled in {{ hours_until_next_action($selectedDominion->ai_config, $selectedDominion->round->getTick()) }} hour(s).</p>
+        </div>
+    @endif
 @endif
 
 @if (!$errors->isEmpty())
