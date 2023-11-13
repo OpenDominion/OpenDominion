@@ -643,8 +643,8 @@ class MilitaryCalculator
         }
 
         $landType = $landPerkData[0];
-        $ratio = (int)$landPerkData[1];
-        $max = (int)$landPerkData[2];
+        $ratio = (float)$landPerkData[1];
+        $max = (float)$landPerkData[2];
         $constructedOnly = false;
         //$constructedOnly = $landPerkData[3]; todo: implement for Nox?
         $totalLand = $this->landCalculator->getTotalLand($dominion);
@@ -680,8 +680,8 @@ class MilitaryCalculator
         }
 
         $buildingType = $buildingPerkData[0];
-        $ratio = (int)$buildingPerkData[1];
-        $max = (int)$buildingPerkData[2];
+        $ratio = (float)$buildingPerkData[1];
+        $max = (float)$buildingPerkData[2];
         $totalLand = $this->landCalculator->getTotalLand($dominion);
         $landPercentage = ($dominion->{"building_{$buildingType}"} / $totalLand) * 100;
 
@@ -709,7 +709,7 @@ class MilitaryCalculator
         }
 
         $ratio = (float)$wizardRatioPerk[0];
-        $max = (int)$wizardRatioPerk[1];
+        $max = (float)$wizardRatioPerk[1];
 
         $wizardRawRatio = $this->getWizardRatioRaw($dominion, 'offense');
 
@@ -739,7 +739,7 @@ class MilitaryCalculator
         }
 
         $amount = (float)$prestigePerk[0];
-        $max = (int)$prestigePerk[1];
+        $max = (float)$prestigePerk[1];
 
         $powerFromPerk = min($dominion->prestige / $amount, $max);
 
@@ -794,7 +794,7 @@ class MilitaryCalculator
 
         $powerFromPerk = 0;
         $spellKey = $powerFromSpellPerk[0];
-        $power = (int)$powerFromSpellPerk[1];
+        $power = (float)$powerFromSpellPerk[1];
 
         if (isset($dominion->calc['cull_the_weak'])) {
             $powerFromPerk = $power;
@@ -864,8 +864,8 @@ class MilitaryCalculator
         }
 
         $buildingType = $versusBuildingPerkData[0];
-        $ratio = (int)$versusBuildingPerkData[1];
-        $max = (int)$versusBuildingPerkData[2];
+        $ratio = (float)$versusBuildingPerkData[1];
+        $max = (float)$versusBuildingPerkData[2];
 
         $landPercentage = 0;
         if ($dominion->calc !== null) {
