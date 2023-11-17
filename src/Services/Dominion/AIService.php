@@ -19,6 +19,7 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\AIHelper;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
@@ -63,6 +64,9 @@ class AIService
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var LandHelper */
+    protected $landHelper;
+
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
@@ -103,6 +107,7 @@ class AIService
         $this->explorationCalculator = app(ExplorationCalculator::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
+        $this->landHelper = app(LandHelper::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
@@ -176,6 +181,16 @@ class AIService
                     $dominion->refresh();
                     try {
                         switch ($instruction['action']) {
+                            case 'construct':
+                                $landType = $this->landHelper->getLandTypeForBuildingByRace($instruction['key'], $dominion->race);
+                                $barrenLand = $this->landCalculator->getBarrenLandByLandType($dominion)[$landType];
+                                $maxAfford = min(
+                                    $barrenLand,
+                                    $instruction['amount'],
+                                    $this->constructionCalculator->getMaxAfford($dominion)
+                                );
+                                $this->constructActionService->construct($dominion, ['building_' . $instruction['key'] => $maxAfford]);
+                                break;
                             case 'spell':
                                 $this->spellActionService->castSpell($dominion, $instruction['key']);
                                 break;

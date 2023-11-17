@@ -14,6 +14,9 @@ class DestroyActionService
 {
     use DominionGuardsTrait;
 
+    /** @var ConstructionCalculator */
+    protected $constructionCalculator;
+
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 

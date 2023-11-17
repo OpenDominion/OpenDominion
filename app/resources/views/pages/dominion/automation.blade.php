@@ -60,6 +60,10 @@
                                                             Train
                                                             {{ $item['amount'] }}
                                                             {{ $unitHelper->getUnitName($item['key'], $selectedDominion->race) }}
+                                                        @elseif ($item['action'] == 'construct')
+                                                            Construct
+                                                            {{ $item['amount'] }}
+                                                            {{ $buildingHelper->getBuildingName($item['key']) }}
                                                         @elseif ($item['action'] == 'spell')
                                                             Cast
                                                             {{ $spellHelper->getSpellByKey($item['key'])->name }}
@@ -100,6 +104,7 @@
                                     Action:
                                     <select class="form-control" name="action">
                                         <option value="train">Train Military</option>
+                                        <option value="construct">Construct Buildings</option>
                                         <option value="spell">Cast Spell</option>
                                     </select>
                                 </div>
@@ -113,7 +118,17 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options train">
+                                <div class="form-group action-options construct" style="display: none;">
+                                    Building:
+                                    <select class="form-control" name="key">
+                                        @foreach ($buildings as $building)
+                                            <option value="{{ $building }}">
+                                                {{ $buildingHelper->getBuildingName($building) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group action-options train construct">
                                     Amount:
                                     <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" />
                                 </div>

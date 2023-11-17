@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\AutomationActionRequest;
@@ -64,17 +65,21 @@ class DailyBonusesController extends AbstractDominionController
     public function getAutomatedActions()
     {
         $dominion = $this->getSelectedDominion();
+        $buildingHelper = app(BuildingHelper::class);
         $spellHelper = app(SpellHelper::class);
         $unitHelper = app(UnitHelper::class);
 
+        $buildings = $buildingHelper->getBuildingTypes();
         $spells = $spellHelper->getSpells($dominion->race, 'self')
             ->forget(['amplify_magic', 'ares_call', 'fools_gold'])
             ->sortBy('key');
         $unitTypes = $unitHelper->getUnitTypes();
 
         return view('pages.dominion.automation', [
+            'buildingHelper' => $buildingHelper,
             'spellHelper' => $spellHelper,
             'unitHelper' => $unitHelper,
+            'buildings' => $buildings,
             'spells' => $spells,
             'unitTypes' => $unitTypes,
         ]);
