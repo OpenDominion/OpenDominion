@@ -25,6 +25,7 @@ class DailyBonusesController extends AbstractDominionController
         $log = $logParserService->writeLog($dominion);
 
         return view('pages.dominion.bonuses', [
+            'allowedActions' => AutomationService::DAILY_ACTIONS,
             'log' => $log
         ]);
     }
@@ -82,6 +83,7 @@ class DailyBonusesController extends AbstractDominionController
             'buildingHelper' => $buildingHelper,
             'spellHelper' => $spellHelper,
             'unitHelper' => $unitHelper,
+            'allowedActions' => AutomationService::DAILY_ACTIONS,
             'buildings' => $buildings,
             'landTypes' => $landTypes,
             'spells' => $spells,

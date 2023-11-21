@@ -24,6 +24,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
+use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\WonderService;
@@ -634,7 +635,7 @@ class TickService
             $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
                 'daily_platinum' => false,
                 'daily_land' => false,
-                'daily_actions' => 2,
+                'daily_actions' => AutomationService::DAILY_ACTIONS,
             ], [
                 'event' => 'tick',
             ]);

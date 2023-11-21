@@ -22,6 +22,8 @@ use OpenDominion\Services\Dominion\TickService;
 
 class AutomationService
 {
+    public const DAILY_ACTIONS = 2;
+
     /** @var BankActionService */
     protected $bankActionService;
 
@@ -187,6 +189,7 @@ class AutomationService
 
     public function setConfig(Dominion $dominion, array $data)
     {
+        $actionsAllowed = static::DAILY_ACTIONS;
         $currentTick = $dominion->round->getTick();
 
         if ($data['tick'] > $currentTick + 8) {
@@ -216,8 +219,8 @@ class AutomationService
         $totalCount = $countCollection->sum(function ($actions) {
             return count($actions);
         });
-        if ($totalCount > 2) {
-            throw new GameException('You cannot schedule more than two actions at a time.');
+        if ($totalCount > $actionsAllowed) {
+            throw new GameException("You cannot schedule more than {$actionsAllowed} actions at a time.");
         }
 
         $hoursUntilReset = 24 - $dominion->round->hoursInDay() + 1;
@@ -236,7 +239,7 @@ class AutomationService
         })->sum(function ($actions) {
             return count($actions);
         });
-        if ($afterResetCount > 2) {
+        if ($afterResetCount > $actionsAllowed) {
             throw new GameException('You do not have enough scheduled actions remaining.');
         }
 

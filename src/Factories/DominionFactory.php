@@ -12,6 +12,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\User;
+use OpenDominion\Services\Dominion\AutomationService;
 
 class DominionFactory
 {
@@ -409,7 +410,7 @@ class DominionFactory
             'wizard_strength' => 100,
             'daily_platinum' => 0,
             'daily_land' => 0,
-            'daily_actions' => 2,
+            'daily_actions' => AutomationService::DAILY_ACTIONS,
 
             'resource_platinum' => 100000,
             'resource_food' => 15000,
