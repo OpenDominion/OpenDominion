@@ -191,6 +191,13 @@ class AIService
                                 );
                                 $this->constructActionService->construct($dominion, ['building_' . $instruction['key'] => $maxAfford]);
                                 break;
+                            case 'explore':
+                                $maxAfford = min(
+                                    $instruction['amount'],
+                                    $this->explorationCalculator->getMaxAfford($dominion)
+                                );
+                                $this->exploreActionService->explore($dominion, ['land_' . $instruction['key'] => $maxAfford]);
+                                break;
                             case 'spell':
                                 $this->spellActionService->castSpell($dominion, $instruction['key']);
                                 break;

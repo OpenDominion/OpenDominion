@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\AutomationActionRequest;
@@ -66,10 +67,12 @@ class DailyBonusesController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $buildingHelper = app(BuildingHelper::class);
+        $landHelper = app(LandHelper::class);
         $spellHelper = app(SpellHelper::class);
         $unitHelper = app(UnitHelper::class);
 
         $buildings = $buildingHelper->getBuildingTypes();
+        $landTypes = $landHelper->getLandTypes();
         $spells = $spellHelper->getSpells($dominion->race, 'self')
             ->forget(['amplify_magic', 'ares_call', 'fools_gold'])
             ->sortBy('key');
@@ -80,6 +83,7 @@ class DailyBonusesController extends AbstractDominionController
             'spellHelper' => $spellHelper,
             'unitHelper' => $unitHelper,
             'buildings' => $buildings,
+            'landTypes' => $landTypes,
             'spells' => $spells,
             'unitTypes' => $unitTypes,
         ]);

@@ -64,6 +64,10 @@
                                                             Construct
                                                             {{ $item['amount'] }}
                                                             {{ $buildingHelper->getBuildingName($item['key']) }}
+                                                        @elseif ($item['action'] == 'explore')
+                                                            Explore
+                                                            {{ $item['amount'] }}
+                                                            {{ ucwords($item['key']) }}
                                                         @elseif ($item['action'] == 'spell')
                                                             Cast
                                                             {{ $spellHelper->getSpellByKey($item['key'])->name }}
@@ -105,6 +109,7 @@
                                     <select class="form-control" name="action">
                                         <option value="train">Train Military</option>
                                         <option value="construct">Construct Buildings</option>
+                                        <option value="explore">Explore Land</option>
                                         <option value="spell">Cast Spell</option>
                                     </select>
                                 </div>
@@ -128,7 +133,17 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options train construct">
+                                <div class="form-group action-options explore" style="display: none;">
+                                    Land Type:
+                                    <select class="form-control" name="key">
+                                        @foreach ($landTypes as $landType)
+                                            <option value="{{ $landType }}">
+                                                {{ ucwords($landType) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group action-options train construct explore">
                                     Amount:
                                     <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" />
                                 </div>
