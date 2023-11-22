@@ -179,7 +179,7 @@
 
                             <div>
                                 <div class="pull-left">
-                                    <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
+                                    <a href="{{ route('dominion.calculations.military') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
                                         <i class="fa fa-calculator"></i> Calculate
                                     </a>
                                 </div>

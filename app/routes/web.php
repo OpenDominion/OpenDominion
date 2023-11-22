@@ -169,6 +169,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Calculations
             $router->get('calculations')->uses('Dominion\CalculationsController@getIndex')->name('calculations');
+            $router->get('calculations/military')->uses('Dominion\CalculationsController@getMilitary')->name('calculations.military');
 
             // Magic
             $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
