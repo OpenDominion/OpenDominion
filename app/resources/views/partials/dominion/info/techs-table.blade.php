@@ -10,9 +10,12 @@
         </tr>
     </thead>
     <tbody>
+        @php
+            $techs = OpenDominion\Models\Tech::with('perks')->get()->keyBy('key');
+        @endphp
         @foreach ($data as $techKey => $techName)
             @php
-                $techDescription = $techHelper->getTechDescription(OpenDominion\Models\Tech::where('key', $techKey)->firstOrFail());
+                $techDescription = $techHelper->getTechDescription($techs[$techKey]);
             @endphp
             <tr>
                 <td>{{ $techName }}</td>

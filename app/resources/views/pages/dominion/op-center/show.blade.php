@@ -275,9 +275,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $spells = $spellHelper->getSpells()->keyBy('key');
+                            @endphp
                             @foreach ($latestRevelation->data as $activeSpell)
                                 @php
-                                    $spell = $spellHelper->getSpellByKey($activeSpell['spell']);
+                                    $spell = $spells[$activeSpell['spell']];
                                 @endphp
                                 <tr>
                                     <td>{{ $spell->name }}</td>

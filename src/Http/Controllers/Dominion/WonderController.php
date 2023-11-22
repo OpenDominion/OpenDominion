@@ -27,7 +27,7 @@ class WonderController extends AbstractDominionController
         $this->updateDominionWondersLastSeen($dominion);
 
         $wonders = $dominion->round->wonders()
-            ->with(['realm', 'wonder', 'damage'])
+            ->with(['damage', 'realm', 'wonder', 'wonder.perks'])
             ->get()
             ->sortBy('wonder.name');
 

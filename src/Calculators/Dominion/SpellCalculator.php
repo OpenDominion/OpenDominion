@@ -143,7 +143,7 @@ class SpellCalculator
      */
     public function getActiveSpells(Dominion $dominion): Collection
     {
-        return DominionSpell::where('dominion_id', $dominion->id)->where('duration', '>', 0)->get();
+        return DominionSpell::with(['castByDominion', 'spell'])->where('dominion_id', $dominion->id)->where('duration', '>', 0)->get();
     }
 
     /**
