@@ -23,6 +23,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\Tech;
 use OpenDominion\Services\GameEventService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class CalculationsController extends AbstractDominionController
 {
@@ -58,6 +59,7 @@ class CalculationsController extends AbstractDominionController
             'spellHelper' => app(SpellHelper::class),
             'techHelper' => app(TechHelper::class),
             'unitHelper' => app(UnitHelper::class),
+            'queueService' => app(QueueService::class),
         ]);
     }
 
@@ -72,7 +74,13 @@ class CalculationsController extends AbstractDominionController
         $populationCalculator = app(PopulationCalculator::class);
 
         $dominion = new Dominion($attrs);
-        $dominion->realm = new Realm();
+        $dominion->setRelation('realm', new Realm());
+        $dominion->race->load(['units.perks']);
+        $spells = Spell::with('perks')->whereIn('key', array_keys($spells))->get();
+        $dominion->setRelation('spells', $spells);
+        $techs = Tech::with('perks')->whereIn('key', array_keys($techs))->get();
+        $dominion->setRelation('techs', $techs);
+
         $dominion->resource_food = 1;
         $dominion->{'land_'.$dominion->race->home_land_type} = $calc['barren'];
         foreach ($buildingHelper->getBuildingTypesByRace($dominion->race) as $landType => $buildings) {
@@ -83,14 +91,9 @@ class CalculationsController extends AbstractDominionController
             }
         }
 
-        $spells = Spell::with('perks')->whereIn('key', array_keys($spells))->get();
-        $dominion->setRelation('spells', $spells);
-        $techs = Tech::whereIn('key', array_keys($techs))->get();
-        $dominion->setRelation('techs', $techs);
-
         $maxPopulation = $populationCalculator->getMaxPopulation($dominion);
         $militaryPopulation = $populationCalculator->getPopulationMilitary($dominion);
-        $dominion->peasants = $maxPopulation - $militaryPopulation;
+        $dominion->peasants = max(0, $maxPopulation - $militaryPopulation);
 
         return view('pages.dominion.calculations.general', [
             'targetDominion' => $dominion,
