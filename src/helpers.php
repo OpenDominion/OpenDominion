@@ -177,7 +177,33 @@ if (!function_exists('bonus_display')) {
                 $color = 'text-red';
             }
         }
-        return vsprintf("<span class='{$color}'>%+.3f%%</span>", $value);
+        return sprintf("<span class='{$color}'>%+.3f%%</span>", $value);
+    }
+}
+
+if (!function_exists('class_method_display')) {
+    /**
+     * Returns an array with display information from a class method.
+     *
+     * @param class $class
+     * @param string $method
+     * @param Dominion $dominion
+     * @param array $optionalArgs
+     * @return array
+     */
+    function class_method_display($class, $method, $dominion, $optionalArgs = []): array {
+        $parts = preg_split('/(?=[A-Z])/', str_replace('get', '', $method));
+        $label = ucwords(implode(' ', $parts));
+        $value = $class->$method($dominion, ...$optionalArgs);
+        if (in_array("Multiplier", $parts)) {
+            $value = (float) $value * 100;
+            $display = number_format($value, 2)."%";
+        } elseif (in_array("Percentage", $parts)) {
+            $display = number_format($value, 2)."%";
+        } else {
+            $display = number_format($value);
+        }
+        return ["label" => $label, "value" => $display];
     }
 }
 

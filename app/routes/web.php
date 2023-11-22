@@ -168,7 +168,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('event/{uuid}')->uses('Dominion\EventController@index')->name('event');
 
             // Calculations
-            $router->get('calculations')->uses('Dominion\CalculationsController@getIndex')->name('calculations');
+            $router->get('calculations')->uses('Dominion\CalculationsController@getGeneral')->name('calculations');
+            $router->post('calculations')->uses('Dominion\CalculationsController@postGeneral');
             $router->get('calculations/military')->uses('Dominion\CalculationsController@getMilitary')->name('calculations.military');
 
             // Magic
