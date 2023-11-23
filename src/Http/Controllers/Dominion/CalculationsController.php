@@ -75,10 +75,14 @@ class CalculationsController extends AbstractDominionController
         $dominion = new Dominion($attrs);
         $dominion->setRelation('realm', new Realm());
         $dominion->race->load(['units.perks']);
-        $spells = Spell::with('perks')->whereIn('key', array_keys($spells))->get();
-        $dominion->setRelation('spells', $spells);
-        $techs = Tech::with('perks')->whereIn('key', array_keys($techs))->get();
-        $dominion->setRelation('techs', $techs);
+        if ($spells) {
+            $spells = Spell::with('perks')->whereIn('key', array_keys($spells))->get();
+            $dominion->setRelation('spells', $spells);
+        }
+        if ($techs) {
+            $techs = Tech::with('perks')->whereIn('key', array_keys($techs))->get();
+            $dominion->setRelation('techs', $techs);
+        }
 
         $dominion->resource_food = 1;
         $dominion->{'land_'.$dominion->race->home_land_type} = $calc['barren'];
