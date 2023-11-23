@@ -197,9 +197,9 @@ if (!function_exists('class_method_display')) {
         $value = $class->$method($dominion, ...$optionalArgs);
         if (in_array('Multiplier', $parts)) {
             $value = (float) $value * 100;
-            $display = number_format($value, 2).'%';
+            $display = number_format($value, 2) . '%';
         } elseif (in_array('Percentage', $parts)) {
-            $display = number_format($value, 2).'%';
+            $display = number_format($value, 2) . '%';
         } else {
             $display = number_format($value);
         }
