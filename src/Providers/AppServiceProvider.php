@@ -11,6 +11,9 @@ use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
+use OpenDominion\Calculators\Dominion\API\DefenseCalculationService;
+use OpenDominion\Calculators\Dominion\API\InvadeCalculationService;
+use OpenDominion\Calculators\Dominion\API\OffenseCalculationService;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\EspionageCalculator;
@@ -48,11 +51,13 @@ use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\Actions\TechActionService;
 use OpenDominion\Services\Dominion\Actions\WonderActionService;
 use OpenDominion\Services\Dominion\AIService;
+use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\InvadeService;
+use OpenDominion\Services\Dominion\LogParserService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\RankingsService;
@@ -143,11 +148,13 @@ class AppServiceProvider extends AbstractServiceProvider
 
         // Dominion Services
         $this->app->singleton(AIService::class);
+        $this->app->singleton(AutomationService::class);
         $this->app->singleton(GovernmentService::class);
         $this->app->singleton(GuardMembershipService::class);
         $this->app->singleton(HistoryService::class);
         $this->app->singleton(InfoOpService::class);
         $this->app->singleton(InvadeService::class);
+        $this->app->singleton(LogParserService::class);
         $this->app->singleton(ProtectionService::class);
         $this->app->singleton(QueueService::class);
         $this->app->singleton(RankingsService::class);
@@ -172,5 +179,10 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(SpellActionService::class);
         $this->app->singleton(TechActionService::class);
         $this->app->singleton(WonderActionService::class);
+
+        // Dominion API Services
+        $this->app->singleton(DefenseCalculationService::class);
+        $this->app->singleton(InvadeCalculationService::class);
+        $this->app->singleton(OffenseCalculationService::class);
     }
 }
