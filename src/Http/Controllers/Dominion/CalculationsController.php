@@ -22,7 +22,6 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\Tech;
-use OpenDominion\Services\GameEventService;
 use OpenDominion\Services\Dominion\QueueService;
 
 class CalculationsController extends AbstractDominionController
@@ -85,11 +84,11 @@ class CalculationsController extends AbstractDominionController
         }
 
         $dominion->resource_food = 1;
-        $dominion->{'land_'.$dominion->race->home_land_type} = $calc['barren'];
+        $dominion->{'land_' . $dominion->race->home_land_type} = $calc['barren'];
         foreach ($buildingHelper->getBuildingTypesByRace($dominion->race) as $landType => $buildings) {
             foreach ($buildings as $building) {
-                if (isset($dominion->{'building_'.$building})) {
-                    $dominion->{'land_'.$landType} += $dominion->{'building_'.$building};
+                if (isset($dominion->{'building_' . $building})) {
+                    $dominion->{'land_' . $landType} += $dominion->{'building_' . $building};
                 }
             }
         }
