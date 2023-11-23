@@ -67,6 +67,9 @@ class APIController extends AbstractDominionController
             } elseif (isset($calc["unit{$slot}_home"])) {
                 $units[$slot] = (int) ($calc["unit{$slot}_home"] / $accuracy);
             }
+            if (isset($calc["unit{$slot}_inc"])) {
+                $units[$slot] += $calc["unit{$slot}_inc"];
+            }
         }
 
         $dominion = new Dominion([
@@ -147,7 +150,12 @@ class APIController extends AbstractDominionController
 
         // Calculate unit totals
         foreach(range(1, 4) as $slot) {
-            $units[$slot] = $calc["unit{$slot}"] + $calc["unit{$slot}_inc"];
+            if (isset($calc["unit{$slot}"])) {
+                $units[$slot] = $calc["unit{$slot}"];
+            }
+            if (isset($calc["unit{$slot}_inc"])) {
+                $units[$slot] += $calc["unit{$slot}_inc"];
+            }
         }
 
         $dominion = new Dominion([

@@ -49,7 +49,6 @@ class CalculationsController extends AbstractDominionController
     public function getGeneral(Request $request)
     {
         $dominion = $this->getSelectedDominion();
-        // TODO: pre-populate queued buildings and military?
 
         return view('pages.dominion.calculations.general', [
             'targetDominion' => $dominion,

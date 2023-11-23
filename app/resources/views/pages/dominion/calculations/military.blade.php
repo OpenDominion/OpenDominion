@@ -17,6 +17,7 @@
                                 Race
                             </div>
                             <div class="col-xs-3">
+                                <input type="hidden" name="race" value="{{ $race->id }}" />
                                 <input class="form-control text-center" value="{{ $race->name }}" readonly />
                             </div>
                             <div class="col-xs-3 text-right">
@@ -65,15 +66,17 @@
                                 <colgroup>
                                     <col>
                                     <col width="10%">
+                                    <col width="3%">
                                     <col width="15%">
                                     <col width="15%">
                                     <col width="15%">
-                                    <!--<col width="15%">-->
+                                    <col width="15%">
                                 </colgroup>
                                 <thead>
                                     <tr>
                                         <th>Unit</th>
                                         <th>DP</th>
+                                        <th></th>
                                         <th class="text-center">
                                             <span data-toggle="tooltip" data-placement="top" title="Total units from a Clear Sight">
                                                 Accurate
@@ -89,13 +92,11 @@
                                                 Away
                                             </span>
                                         </th>
-                                        <!--
                                         <th class="text-center">
                                             <span data-toggle="tooltip" data-placement="top" title="Incoming units from a Barracks Spy">
                                                 Incoming
                                             </span>
                                         </th>
-                                        -->
                                     </tr>
                                 </thead>
                                 <thead>
@@ -106,10 +107,14 @@
                                         <td>
                                             1
                                         </td>
+                                        <td>
+                                            <input type="checkbox" id="dp-military-draftee" style="margin-top: 8px;" />
+                                        </td>
                                         <td class="text-center">
                                             <input type="number"
                                                     name="calc[draftees]"
-                                                    class="form-control text-center"
+                                                    class="form-control text-center dp-military-draftee"
+                                                    data-unit-disabled="0"
                                                     placeholder="0"
                                                     min="0"
                                                     value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_draftees") / $clearSightAccuracy) : null }}" />
@@ -117,7 +122,8 @@
                                         <td class="text-center">
                                             <input type="number"
                                                     name="calc[draftees_home]"
-                                                    class="form-control text-center"
+                                                    class="form-control text-center dp-military-draftee"
+                                                    data-unit-disabled="0"
                                                     placeholder="--"
                                                     min="0"
                                                     value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_get($targetInfoOps['barracks_spy']->data, "units.home.draftees") : null }}" />
@@ -125,11 +131,9 @@
                                         <td>
                                             <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
                                         </td>
-                                        <!--
                                         <td>
                                             <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
                                         </td>
-                                        -->
                                     </tr>
                                     @foreach ($race->units->sortBy('slot') as $unit)
                                         @php
@@ -161,10 +165,14 @@
                                             <td class="unit{{ $unit->slot }}_stats">
                                                 <span class="dp">{{ $unit->power_defense }}</span>
                                             </td>
+                                            <td>
+                                                <input type="checkbox" id="dp-military-unit{{ $unit->slot }}" style="margin-top: 8px;" />
+                                            </td>
                                             <td class="text-center">
                                                 <input type="number"
                                                         name="calc[unit{{ $unit->slot }}]"
-                                                        class="form-control text-center"
+                                                        class="form-control text-center dp-military-unit{{ $unit->slot }}"
+                                                        data-unit-disabled="0"
                                                         placeholder="0"
                                                         min="0"
                                                         value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") / $clearSightAccuracy) : null }}" />
@@ -172,7 +180,8 @@
                                             <td class="text-center">
                                                 <input type="number"
                                                         name="calc[unit{{ $unit->slot }}_home]"
-                                                        class="form-control text-center"
+                                                        class="form-control text-center dp-military-unit{{ $unit->slot }}"
+                                                        data-unit-disabled="0"
                                                         placeholder="--"
                                                         min="0"
                                                         value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_get($targetInfoOps['barracks_spy']->data, "units.home.unit{$unit->slot}") : null }}" />
@@ -181,7 +190,8 @@
                                                 @if ($unit->power_offense > 0 || $unit->perks->where('key', 'rebirth')->isNotEmpty())
                                                     <input type="number"
                                                             name="calc[unit{{ $unit->slot }}_away]"
-                                                            class="form-control text-center"
+                                                            class="form-control text-center dp-military-unit{{ $unit->slot }}"
+                                                            data-unit-disabled="0"
                                                             placeholder="--"
                                                             min="0"
                                                             value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_sum(array_get($targetInfoOps['barracks_spy']->data, "units.returning.unit{$unit->slot}", [])) : null }}" />
@@ -189,29 +199,42 @@
                                                     <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
                                                 @endif
                                             </td>
-                                            <!--
                                             <td class="text-center">
                                                 <input type="number"
                                                         name="calc[unit{{ $unit->slot }}_inc]"
-                                                        class="form-control text-center"
+                                                        class="form-control text-center dp-military-unit{{ $unit->slot }} dp-inc"
+                                                        data-unit-disabled="0"
+                                                        data-inc-disabled="1"
                                                         placeholder="--"
                                                         min="0"
                                                         disabled
                                                         {{ $unit->power_defense == 0 ? 'readonly' : null }}
                                                         value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_sum(array_get($targetInfoOps['barracks_spy']->data, "units.training.unit{$unit->slot}", [])) : null }}" />
                                             </td>
-                                            -->
                                         </tr>
                                     @endforeach
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td></td>
+                                        <td></td>
                                         <td colspan="2">
                                             <div class="checkbox text-center" style="margin: 0px;">
-                                                <label data-toggle="tooltip" data-placement="top" title="The unit counts entered into the Home/Away fields should be treated as 100% accurate">
-                                                    <input type="checkbox" name="calc[accurate]" style="margin-top: 8px;" {{ ($targetDominion !== null && $targetDominion->realm_id == $selectedDominion->realm_id) ? 'checked' : null }}>
-                                                    Use exact unit counts
+                                                <label>
+                                                    <input type="checkbox" name="calc[accurate]" style="margin-top: 8px;" {{ ($targetDominion !== null && $targetDominion->realm_id == $selectedDominion->realm_id) ? 'checked' : null }} />
+                                                    <span data-toggle="tooltip" data-placement="top" title="The unit counts entered into the Home/Away fields should be treated as 100% accurate">
+                                                        Use exact unit counts
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="checkbox text-center" style="margin: 0px;">
+                                                <label>
+                                                    <input type="checkbox" id="dp-inc" style="margin-top: 8px;" checked />
+                                                    <span data-toggle="tooltip" data-placement="top" title="Calculate defense including units in training">
+                                                        Exclude
+                                                    </span>
                                                 </label>
                                             </div>
                                         </td>
@@ -503,6 +526,7 @@
                                 Race
                             </div>
                             <div class="col-xs-3">
+                                <input type="hidden" name="race" value="{{ $race->id }}" />
                                 <input class="form-control text-center" value="{{ $race->name }}" readonly />
                             </div>
                             <div class="col-xs-3 text-right">
@@ -557,6 +581,7 @@
                                 <colgroup>
                                     <col>
                                     <col width="10%">
+                                    <col width="3%">
                                     <col width="20%">
                                     <col width="20%">
                                 </colgroup>
@@ -564,6 +589,7 @@
                                     <tr>
                                         <th>Unit</th>
                                         <th>OP</th>
+                                        <th></th>
                                         <th class="text-center">
                                             <span data-toggle="tooltip" data-placement="top" title="Total units from a Clear Sight">
                                                 Accurate
@@ -620,10 +646,14 @@
                                             <td class="unit{{ $unit->slot }}_stats">
                                                 <span class="op">{{ $unit->power_offense }}</span>
                                             </td>
+                                            <td>
+                                                <input type="checkbox" id="op-military-unit{{ $unit->slot }}" style="margin-top: 8px;" />
+                                            </td>
                                             <td class="text-center">
                                                 <input type="number"
                                                         name="calc[unit{{ $unit->slot }}]"
-                                                        class="form-control text-center"
+                                                        class="form-control text-center op-military-unit{{ $unit->slot }}"
+                                                        data-unit-disabled="0"
                                                         placeholder="0"
                                                         min="0"
                                                         {{ $unit->power_offense == 0 ? 'readonly' : null }}
@@ -632,7 +662,9 @@
                                             <td class="text-center">
                                                 <input type="number"
                                                         name="calc[unit{{ $unit->slot }}_inc]"
-                                                        class="form-control text-center"
+                                                        class="form-control text-center op-military-unit{{ $unit->slot }} op-inc"
+                                                        data-unit-disabled="0"
+                                                        data-inc-disabled="0"
                                                         placeholder="--"
                                                         min="0"
                                                         {{ $unit->power_offense == 0 ? 'readonly' : null }}
@@ -640,6 +672,22 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <div class="checkbox text-center" style="margin: 0px;">
+                                                <label>
+                                                    <input type="checkbox" id="op-inc" style="margin-top: 8px;" />
+                                                    <span data-toggle="tooltip" data-placement="top" title="Calculate offense including units in training">
+                                                        Exclude
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </thead>
                             </table>
 
@@ -927,6 +975,54 @@
                     }
                 );
             }
+
+            function disableDefenseInputs() {
+                $('input[class*=dp-]').attr("disabled", false);
+                $('input[class*=dp-][data-inc-disabled=1]').attr("disabled", true);
+                $('input[class*=dp-][data-unit-disabled=1]').attr("disabled", true);
+            }
+
+            $('input[id^=dp-military-]').change(function (e) {
+                if (this.checked) {
+                    $('.'+this.id).attr('data-unit-disabled', 1);
+                } else {
+                    $('.'+this.id).attr('data-unit-disabled', 0);
+                }
+                disableDefenseInputs();
+            });
+
+            $('input[id=dp-inc]').change(function (e) {
+                if (this.checked) {
+                    $('.'+this.id).attr('data-inc-disabled', 1);
+                } else {
+                    $('.'+this.id).attr('data-inc-disabled', 0);
+                }
+                disableDefenseInputs();
+            });
+
+            function disableOffenseInputs() {
+                $('input[class*=op-]').attr("disabled", false);
+                $('input[class*=op-][data-inc-disabled=1]').attr("disabled", true);
+                $('input[class*=op-][data-unit-disabled=1]').attr("disabled", true);
+            }
+
+            $('input[id^=op-military-]').change(function (e) {
+                if (this.checked) {
+                    $('.'+this.id).attr('data-unit-disabled', 1);
+                } else {
+                    $('.'+this.id).attr('data-unit-disabled', 0);
+                }
+                disableOffenseInputs();
+            });
+
+            $('input[id=op-inc]').change(function (e) {
+                if (this.checked) {
+                    $('.'+this.id).attr('data-inc-disabled', 1);
+                } else {
+                    $('.'+this.id).attr('data-inc-disabled', 0);
+                }
+                disableOffenseInputs();
+            });
 
             // OFFENSE CALCULATOR
             var OPTotalElement = $('#op');
