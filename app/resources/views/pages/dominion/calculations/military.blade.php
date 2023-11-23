@@ -208,7 +208,6 @@
                                                         placeholder="--"
                                                         min="0"
                                                         disabled
-                                                        {{ $unit->power_defense == 0 ? 'readonly' : null }}
                                                         value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_sum(array_get($targetInfoOps['barracks_spy']->data, "units.training.unit{$unit->slot}", [])) : null }}" />
                                             </td>
                                         </tr>
@@ -656,7 +655,6 @@
                                                         data-unit-disabled="0"
                                                         placeholder="0"
                                                         min="0"
-                                                        {{ $unit->power_offense == 0 ? 'readonly' : null }}
                                                         value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") : null }}" />
                                             </td>
                                             <td class="text-center">
@@ -667,7 +665,6 @@
                                                         data-inc-disabled="0"
                                                         placeholder="--"
                                                         min="0"
-                                                        {{ $unit->power_offense == 0 ? 'readonly' : null }}
                                                         value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_sum(array_get($targetInfoOps['barracks_spy']->data, "units.training.unit{$unit->slot}", [])) : null }}" />
                                             </td>
                                         </tr>
