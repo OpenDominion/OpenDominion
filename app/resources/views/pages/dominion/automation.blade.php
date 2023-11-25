@@ -125,7 +125,7 @@
                                 </div>
                                 <div class="form-group action-options construct" style="display: none;">
                                     Building:
-                                    <select class="form-control" name="key">
+                                    <select class="form-control" name="key" disabled>
                                         @foreach ($buildings as $building)
                                             <option value="{{ $building }}">
                                                 {{ $buildingHelper->getBuildingName($building) }}
@@ -135,7 +135,7 @@
                                 </div>
                                 <div class="form-group action-options explore" style="display: none;">
                                     Land Type:
-                                    <select class="form-control" name="key">
+                                    <select class="form-control" name="key" disabled>
                                         @foreach ($landTypes as $landType)
                                             <option value="{{ $landType }}">
                                                 {{ ucwords($landType) }}
