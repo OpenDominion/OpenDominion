@@ -76,7 +76,7 @@
                 <div class="box-body">
                     <p><b>Warning</b>: You are about to release your troops.</p>
                     <p>Draftees will release into the peasantry. Other troops into draftees.</p>
-                    <p>Any platinum, ore and wizards used to train any released unit <b>will be lost</b>.</p>
+                    <p>Any resources (including spies and wizards) used to train any released unit <b>will be lost</b>.</p>
                     <p>Releasing troops processes <b>instantly</b>.</p>
                 </div>
             </div>
