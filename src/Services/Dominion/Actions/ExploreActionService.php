@@ -92,7 +92,7 @@ class ExploreActionService
             throw new GameException("You do not have enough platinum and/or draftees to explore for {$totalLandToExplore} acres.");
         }
 
-        if (!$this->protectionService->isUnderProtection($dominion)) {
+        if ($dominion->user_id !== null && !$this->protectionService->isUnderProtection($dominion)) {
             $incomingLand = $this->queueService->getExplorationQueueTotal($dominion);
             if ($totalLandToExplore + $incomingLand > $this->landCalculator->getTotalLand($dominion) / 2) {
                 throw new GameException('You cannot explore for more than 50% of your current land total.');
