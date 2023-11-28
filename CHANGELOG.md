@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - A new General Calculator has been added when directly navigating to the Calculators page
 - At the hour change, a red border will appear around the screen
 
+### Changed
+- A percentage of your peasant population is now invulnerable to fireball damage (scales down during the round from 90% on Day 4 to 70% on Day 44)
+
 ## [1.37.2] - 2023-10-24
 ### Added
 - Protection History (on daily bonus page during protection) is now formatted to be imported as an Excel sim log

@@ -25,10 +25,32 @@ class OpsCalculator
     protected const SPY_RESILIENCE_GAIN = 10;
     protected const WIZARD_RESILIENCE_GAIN = 10;
 
+    /** @var GovernmentService */
+    protected $governmentService;
+
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
+
+    /** @var LandCalculator */
+    private $landCalculator;
+
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var PopulationCalculator */
+    protected $populationCalculator;
+
+    /** @var RangeCalculator */
+    protected $rangeCalculator;
+
     /**
      * OpsCalculator constructor.
      *
+     * @param GovernmentService $governmentService
+     * @param GuardMembershipService $guardMembershipService
+     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
+     * @param PopulationCalculator $populationCalculator
      * @param RangeCalculator $rangeCalculator
      */
     public function __construct(
@@ -36,6 +58,7 @@ class OpsCalculator
         GuardMembershipService $guardMembershipService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
+        PopulationCalculator $populationCalculator,
         RangeCalculator $rangeCalculator
     )
     {
@@ -43,6 +66,7 @@ class OpsCalculator
         $this->guardMembershipService = $guardMembershipService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+        $this->populationCalculator = $populationCalculator;
         $this->rangeCalculator = $rangeCalculator;
     }
 
@@ -358,7 +382,7 @@ class OpsCalculator
             return 0;
         }
 
-        // Scale ratio required from 0.5 at Day 4 to 1.0 at Day 24, to 1.5 at Day 44
+        // Scale ratio required from 0.5 at Day 4, to 1.0 at Day 24, to 1.5 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
         $daysModifier = (0.025 * $days) + 0.5;
 
@@ -436,5 +460,22 @@ class OpsCalculator
         }
 
         return $mastery;
+    }
+
+    /*
+     * Returns the number of peasants that are vulnerable to fireball damage
+     * 
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getVulnerablePeasantCount(Dominion $dominion): int
+    {
+        // Scale vulnerability from 0.1 at Day 4, to 0.2 at Day 24, to 0.3 at Day 44
+        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
+        $daysModifier = (0.005 * $days) + 0.1;
+
+        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+
+        return round($maxPeasants * $daysModifier);
     }
 }

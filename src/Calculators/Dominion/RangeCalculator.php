@@ -11,21 +11,25 @@ class RangeCalculator
 {
     public const MINIMUM_RANGE = 0.4;
 
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
+
     /** @var LandCalculator */
     protected $landCalculator;
+
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
 
     /** @var ProtectionService */
     protected $protectionService;
 
-    /** @var GuardMembershipService */
-    protected $guardMembershipService;
-
     /**
      * RangeCalculator constructor.
      *
-     * @param LandCalculator $landCalculator
-     * @param ProtectionService $protectionService
      * @param GuardMembershipService $guardMembershipService
+     * @param LandCalculator $landCalculator
+     * @param MilitaryCalculator $militaryCalculator,
+     * @param ProtectionService $protectionService
      */
     public function __construct(
         GuardMembershipService $guardMembershipService,
