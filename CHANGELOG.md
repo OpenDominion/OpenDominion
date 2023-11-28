@@ -3,8 +3,12 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+## [1.37.2] - 2023-10-24
 ### Added
-- Protection History (on daily bonus page during protection) is now formatted to be imported as an Excel sim log.
+- Protection History (on daily bonus page during protection) is now formatted to be imported as an Excel sim log
+
+### Fixed
+- Common wonders will now be taken out of rotation
 
 ## [1.37.1] - 2023-10-15
 ### Changed
@@ -12,13 +16,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dwarf: ore production increased by 10% (was removed previously)
 
 ### Fixed
-- Late starters will now receive bonus defense on the first day of the round.
-- Spy resilience bonus will now always be applied below 30% wizard strength.
+- Late starters will now receive bonus defense on the first day of the round
+- Spy resilience bonus will now always be applied below 30% wizard strength
 
 ## [1.37.0] - 2023-09-23
 ### Added
-- Exploration is now prohibited if a dominion has significantly less defense than a similarly sized bot.
-- Recent invasions now reduce maximum offense:defense ratio (5:4 rule) by 0.125 per invasion after the second in a five day period, down to a minimum of 0.75 (from 1.25).
+- Exploration is now prohibited if a dominion has significantly less defense than a similarly sized bot
+- Recent invasions now reduce maximum offense:defense ratio (5:4 rule) by 0.125 per invasion after the second in a five day period, down to a minimum of 0.75 (from 1.25)
 
 ### Changed
 - Masonry castle bonus reduced to 2.6% per 1% owned (from 2.75% per 1% owned)
@@ -36,10 +40,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wood Elf Mystic: DP from forest is capped at +4.5 (from +5)
 
 ### Fixed
-- Abandoned dominions will now have their vote for monarch revoked.
-- Attempting to send less than 40-60% of your target's defense will now properly cancel an invasion.
-- Dark Elf Swordsmen are no longer promoted on attacks against dominions under 75% of your size.
-- Frequently spawned wonders will now be excluded based on tiers rather than a smaller global list.
+- Abandoned dominions will now have their vote for monarch revoked
+- Attempting to send less than 40-60% of your target's defense will now properly cancel an invasion
+- Dark Elf Swordsmen are no longer promoted on attacks against dominions under 75% of your size
+- Frequently spawned wonders will now be excluded based on tiers rather than a smaller global list
 
 ## [1.36.0] - 2023-07-23
 ### Changed
@@ -194,13 +198,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Costs 1000p and 1 spy to train, counts as 2 spies
   - Cannot be killed by Disband Spies
 - Production Advisor now shows various expenditure bonuses
-- Settings page where you select your preferred title for the round forum, choose to display it on the realm page, and toggle Shadow League visibility.
+- Settings page where you select your preferred title for the round forum, choose to display it on the realm page, and toggle Shadow League visibility
 
 ### Changed
 - Shrines:
   - Casualty reduction removed (in lieu of Healer hero)
-  - Increases hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned.
-  - Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.
+  - Increases hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned
+  - Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned
 - Barracks:
   - No longer scale with prestige
   - Increased to 36 housing (from 35)
@@ -219,7 +223,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Spy resilience is now only increased by Magic Snare
   - Wizard strength regen under 30% is now increased by by 1% per 100 spy resilience (from 1% per 250)
   - Wizard resilience is now only increased by Fireball
-  - Peasant change due to wizard resilience is now increased by 10% of your total pop growth (Plague, Harmony, temples, techs, etc.)
+  - Peasant change due to wizard resilience is now increased by 10% of your total pop growth (Plague, Harmony, temples, techs, etc)
 - Lightning repair bonus now scales based on total damage received, up to 100% at 10% damage received (from constant 100%)
 - Spy/Wizard ratio required for maximum damage reduction from black ops now scales up during the round: 0.5 at Day 4, 1.0 at Day 24, 1.5 at Day 44 (from 1.0 all round)
 - Research point gains on attack are now 5x land conquered OR 750 whichever is higher (from 750 flat)
@@ -238,13 +242,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Sabotage damage increased to 2.5% (from 2.4%)
 - Magic Snare damage changed to 2% (from 3.5% of current strength)
 - Wizard Guilds renamed to Guilds, loses mana production / castle protection, gains spy bonuses
-  - Spy and Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 1% at 10% owned.
-  - Spy, Wizard, and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.
-  - Losses on failed black ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.
+  - Spy and Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 1% at 10% owned
+  - Spy, Wizard, and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned
+  - Losses on failed black ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned
 - Forest Havens lose spy bonuses
-  - Produces 25 lumber per hour.
-  - Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned.
-  - Disband Spies and Assassinate Wizards damage reduced by 10% per 1% owned, up to a maximum of 50% at 5% owned.
+  - Produces 25 lumber per hour
+  - Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned
+  - Disband Spies and Assassinate Wizards damage reduced by 10% per 1% owned, up to a maximum of 50% at 5% owned
 - Cyclone cost reduced to 2x (from 3x)
 - Trick of the Light tech now protects mana instead of decreasing mana cost
 - Castle improvements destroyed by Lightning Bolt can now be 'repaired' (investment is doubled)
@@ -548,7 +552,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wars will now automatically expire after 5 days
 - Black ops success rate reduced when target's spy/wizard ratio is high
 - Fireball mana cost reverted to 3.3x (from 3x)
-- All NPDs will now actively train troops, cast spells, etc.
+- All NPDs will now actively train troops, cast spells, etc
 - NPDs will now start with a flat amount of defense incoming instead of a percentage of current
 - NPDs now lose 25 prestige when invaded
 - Dark Elf Adept: +50p (from 1100p), Wizard Guild requirement increased to 10% (from 9%) per point
@@ -650,7 +654,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Missing prerequisites for a few techs
 - Better performance on town crier page
-- Numerous bugs related to bots; including overtraining spies, not considering in-training troops in defense calculation (thus training continuously), adding incoming land twice (thus overtraining DP), starving themselves, etc.
+- Numerous bugs related to bots; including overtraining spies, not considering in-training troops in defense calculation (thus training continuously), adding incoming land twice (thus overtraining DP), starving themselves, etc
 
 ## [1.3.1] - 2021-03-16
 ### Added
@@ -676,8 +680,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [1.3.0] - 2021-03-04
 ### Added
 - Realm Assignment & Matchmaking!
-- Dominions will now be placed in realm 0 upon registration and assigned a realm 36 hours prior to attacking being enabled (OOP). Packs will not be able to register during the 36 hours between realm assignment and OOP to preserve the quality of the matches.
-- Dominions will be assigned to 20+ realms with up to 8 packed players per realm based on previous performance. Creating a new account in an attempt to circumvent these measures is against the rules and will not be effective as new players will be assigned an above-average rating.
+- Dominions will now be placed in realm 0 upon registration and assigned a realm 36 hours prior to attacking being enabled (OOP). Packs will not be able to register during the 36 hours between realm assignment and OOP to preserve the quality of the matches
+- Dominions will be assigned to 20+ realms with up to 8 packed players per realm based on previous performance. Creating a new account in an attempt to circumvent these measures is against the rules and will not be effective as new players will be assigned an above-average rating
 - Undo button in protection
 - Every realm now has a pre-made Discord server
 - Non Player Dominions (bots) will now be assigned to realm 0
@@ -1458,15 +1462,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [0.8.0]
 ### Added
 - War & Black Ops!
-- Monarchs may now declare WAR on other realms.
-- War immediately allows the use of war-only black ops.
-- After 24 hours, 5% OP is added to attacks between the two realms (10% for mutual war).
-- Mutual war also awards prestige for successful black ops between the two realms.
-- New Spell: Energy Mirror reflects spells back at the caster.
+- Monarchs may now declare WAR on other realms
+- War immediately allows the use of war-only black ops
+- After 24 hours, 5% OP is added to attacks between the two realms (10% for mutual war)
+- Mutual war also awards prestige for successful black ops between the two realms
+- New Spell: Energy Mirror reflects spells back at the caster
 - Technological Advances!
-- Schools and invasion now reward research points.
-- Use research points to unlock bonuses from the tech tree (minimum cost based on highest land achieved).
-- New Spell: Vision reveals your target's techs.
+- Schools and invasion now reward research points
+- Use research points to unlock bonuses from the tech tree (minimum cost based on highest land achieved)
+- New Spell: Vision reveals your target's techs
 
 ### Changed
 - Gnome: Racial spell changed back to Mechanical Genius (from Miner's Sight)
@@ -1502,8 +1506,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [0.7.1-17]
 ### Fixed
-- Fix an issue with the search page Limit values being flipped.
-- Update daily bonuses in a single query and prevent a partial update in the event of an error.
+- Fix an issue with the search page Limit values being flipped
+- Update daily bonuses in a single query and prevent a partial update in the event of an error
  
 ## [0.7.1-16]
 ### Fixed
@@ -1529,7 +1533,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [0.7.1-13] - 2019-11-12
 ### Added
-- Skin selection with a new DC theme.
+- Skin selection with a new DC theme
 
 ### Fixed
 - Rankings on front page now reflects last round, as long as new round has not started yet. 
@@ -1537,12 +1541,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [0.7.1] - 2019-11-06
 ### Added
 - Added new races: Kobold and Orc
-- Added monarchy: Each realm's elected monarch has the power to change the realm name, post a message of the day, and delete council posts.
+- Added monarchy: Each realm's elected monarch has the power to change the realm name, post a message of the day, and delete council posts
 - Added dominion search page
 - Added new categories to statistics advisor and valhalla
 - Added back spell mana cost of active spells to magic page
 - Added spell recharge time to magic page
-- Top 10 land rankings from current round will now be visible on start page.
+- Top 10 land rankings from current round will now be visible on start page
 
 ### Changed
 - Gnome Juggernaut: OP changed to 7 regardless of range
@@ -1565,14 +1569,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Failed invasions when sending over 85% of the target's defense will now properly reduce defensive casualties for subsequent invasions
 - Slightly tweaked starvation casualties to now kill off population types based on proportion
 - Significantly increased the speed of the hourly tick (hour change)
-- Scribes now contains more information. Construction, Espionage and Magic have now been added.
+- Scribes now contains more information. Construction, Espionage and Magic have now been added
 - Other realms are now hidden before the round starts
-- Updated racial descriptions for a lot of races.
+- Updated racial descriptions for a lot of races
 
 ### Fixed
 - Barracks Spy should now be more clear that draftees are inaccurate
 - Fixed a bug when knocking a target outside of your applied guard range would reset your guard application
-- Chameleons and Master Thieves now die on failed spy operations.
+- Chameleons and Master Thieves now die on failed spy operations
 - Fixed a bug where Survey Dominion calculated percentages based on a dominion's current land total
 - Fixed a bug where races with increased max population from barren land wasn't applied properly
 - Fixed a bug where Erosion reduced land gains
@@ -1655,7 +1659,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [0.7.0] - 2019-08-09
 ### Added
 - Added new races: Lycanthrope, Merfolk, Nox*, Spirit, Undead, Wood Elf
-- *Note: The Nox was a premiun race back in Dominion Classic. In OpenDominion it has been renamed to just 'Nox', and made available for everyone, without restrictions.
+- *Note: The Nox was a premiun race back in Dominion Classic. In OpenDominion it has been renamed to just 'Nox', and made available for everyone, without restrictions
 - Added missing Valhalla races, including the ones mentioned above
 - Construction advisor now shows total amount of barren land
 - Added info op archive, allowing you to view previously taken info ops
@@ -1881,62 +1885,62 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [0.5.2] - 2019-01-27
 ### Added
-- Added new races: Firewalker and Lizardfolk.
+- Added new races: Firewalker and Lizardfolk
 
 ## [0.5.1-4] to [0.5.1-8] - 2018-10-04
 ### Fixed
-- Fix user IP resolving when behind Cloudflare DNS with trusted proxies.
-- Dominion numbering on the realm page now correctly starts at 1, instead of 0.
+- Fix user IP resolving when behind Cloudflare DNS with trusted proxies
+- Dominion numbering on the realm page now correctly starts at 1, instead of 0
 
 ### Other
-- Maintenance work.
+- Maintenance work
 
 ## [0.5.0-9] to [0.5.1-3] - 2018-10-02
 ### Fixed
-- Trying to fix deploy errors.
+- Trying to fix deploy errors
 
 ### Other
-- Maintenance work.
+- Maintenance work
 
 ## [0.5.0-8] - 2018-10-01
 ### Changed
 - Info gathering ops on Op Center page now show exact time upon hover. ([#337](https://github.com/WaveHack/OpenDominion/issues/337))
-- Significantly reduced spy losses on failed ops.
+- Significantly reduced spy losses on failed ops
 
 ### Fixed
 - Fixed networth sometimes showing incorrect values on realm page. ([#310](https://github.com/WaveHack/OpenDominion/issues/310))
 - Fixed construction cost calculation. As a result, construction costs are significantly higher than before. Time to start building factories. ([#347](https://github.com/WaveHack/OpenDominion/issues/347))
 - Barracks Spy now shows number of draftees. ([#331](https://github.com/WaveHack/OpenDominion/issues/331))
 - Fixed an division by zero error if you have 0 peasants. ([#349](https://github.com/WaveHack/OpenDominion/issues/349))
-- Various other issues.
+- Various other issues
 
 ### Other
-- Documentation update.
-- Refactoring.
+- Documentation update
+- Refactoring
 - Queue refactor!
-- More refactoring.
-- Seriously, a lot of refactoring.
+- More refactoring
+- Seriously, a lot of refactoring
 
 ## [0.5.0-7] - 2018-08-26
 ### Other
-- Maintenance work.
+- Maintenance work
 
 ## [0.5.0-6] - 2018-08-26
 ### Changed
 - Switched Information and Under Protection sections around on status page.([#313](https://github.com/WaveHack/OpenDominion/issues/313))
 
 ### Other
-- Maintenance work.
-- Documentation update.
+- Maintenance work
+- Documentation update
 
 ## [0.5.0-5] - 2018-08-11
 ### Fixed
-- Fixed cost rounding issues on wizard cost multiplier when wizard guilds were built.
+- Fixed cost rounding issues on wizard cost multiplier when wizard guilds were built
 - Fixed a bug regarding population growth. ([#176](https://github.com/WaveHack/OpenDominion/issues/176))
 
 ## [0.5.0-4] - 2018-08-07
 ### Fixed
-- Council pages now show ruler name instead of user name.
+- Council pages now show ruler name instead of user name
 
 ## [0.5.0-3] - 2018-08-05
 ### Fixed
@@ -1948,15 +1952,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Limit amount of rows of show on realm page in case realm size is less than 12. ([#308](https://github.com/WaveHack/OpenDominion/issues/308))
 
 ### Other
-- Refactoring.
+- Refactoring
 
 ## [0.5.0-1] - 2018-08-04
 ### Fixed
-- Fix deploy error.
+- Fix deploy error
 
 ## [0.5.0] - 2018-08-04
 ### Added
-- Added new races: Dwarf and Goblin.
+- Added new races: Dwarf and Goblin
 - Added ruler name for round registration. ([#254](https://github.com/WaveHack/OpenDominion/issues/254))
 - Added packs. ([#280](https://github.com/WaveHack/OpenDominion/issues/280))
 - Added racial spells. ([#157](https://github.com/WaveHack/OpenDominion/issues/157))
@@ -1970,23 +1974,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added failed spy op losses reduction on Forest Havens. ([#306](https://github.com/WaveHack/OpenDominion/issues/306))
 
 ### Changed
-- Updated round registration page with better help texts and racial descriptions.
-- Employment percentage on status screen now shows 2 decimals.
-- Updated Re-zone Land icon in the sidebar.
-- Net OP/DP now scales with morale, down to -10% at 0% morale.
+- Updated round registration page with better help texts and racial descriptions
+- Employment percentage on status screen now shows 2 decimals
+- Updated Re-zone Land icon in the sidebar
+- Net OP/DP now scales with morale, down to -10% at 0% morale
 
 ## [0.4.2] - 2018-06-03
 ### Fixed
-- Fixed dashboard page sometimes showing incorrect duration for round start/end dates.
+- Fixed dashboard page sometimes showing incorrect duration for round start/end dates
 - Fixed internal server error on realm page using invalid realm number. ([#270](https://github.com/WaveHack/OpenDominion/issues/270))
 
 ## [0.4.1] - 2018-05-23
 ### Changed
-- Updated `version:update` command to support Git tags.
+- Updated `version:update` command to support Git tags
 
 ## 0.4.0 - 2018-05-22
 ### Added
-- This CHANGELOG file.
+- This CHANGELOG file
 
 [Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.37.1...HEAD
 [1.37.1]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...1.37.1
