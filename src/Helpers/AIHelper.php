@@ -58,14 +58,6 @@ class AIHelper
             $config['invest'] = 'lumber';
         }
 
-        if ($race->name == 'Halfling') {
-            $config['spells'][] = 'defensive_frenzy';
-        } elseif ($race->name == 'Icekin') {
-            $config['spells'][] = 'blizzard';
-        } else {
-            $config['spells'][] = 'ares_call';
-        }
-
         $racesWithManaUnits = ['Nox', 'Spirit'];
         if (in_array($race->name, $racesWithManaUnits)) {
             $config['build'][] = [
@@ -194,6 +186,7 @@ class AIHelper
             'elite_guard_land' => 3000,
             'invest' => 'gems',
             'spells' => [
+                'ares_call',
                 'midas_touch'
             ],
             'build' => [
