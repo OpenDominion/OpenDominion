@@ -468,7 +468,7 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getVulnerablePeasantCount(Dominion $dominion): int
+    public function getVulnerablePeasants(Dominion $dominion): int
     {
         // Scale vulnerability from 0.1 at Day 4, to 0.2 at Day 24, to 0.3 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
@@ -477,5 +477,20 @@ class OpsCalculator
         $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
 
         return round($maxPeasants * $daysModifier);
+    }
+
+    /*
+     * Returns the number of peasants that are protected from fireball damage
+     * 
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getUnprotectedPeasants(Dominion $dominion): int
+    {
+        $vulnerable = $this->getVulnerablePeasants($dominion);
+        $ratioProtection = $this->getDamageReduction($dominion);
+
+        $protectedPeasants = $vulnerable * $ratioProtection;
+        return round($vulnerable * (1 - $ratioProtection));
     }
 }
