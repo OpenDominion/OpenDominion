@@ -2,7 +2,16 @@
 All notable changes relevant to players in this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
+
 ## [Unreleased]
+### Added
+- Automated Actions
+  - You may now schedule up to 2 actions in advance, resets each day
+  - Train, explore, construct, and cast spells (excluding Ares' Call and Fool's Gold)
+- Added checkboxes to exclude units entirely or just incoming units in the Calculators
+- A new General Calculator has been added when directly navigating to the Calculators page
+- At the hour change, a red border will appear around the screen
+
 ## [1.37.2] - 2023-10-24
 ### Added
 - Protection History (on daily bonus page during protection) is now formatted to be imported as an Excel sim log
@@ -1536,7 +1545,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Skin selection with a new DC theme
 
 ### Fixed
-- Rankings on front page now reflects last round, as long as new round has not started yet. 
+- Rankings on front page now reflects last round, as long as new round has not started yet
 
 ## [0.7.1] - 2019-11-06
 ### Added
@@ -1992,7 +2001,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.37.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.37.2...HEAD
+[1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.37.1...1.37.2
 [1.37.1]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...1.37.1
 [1.37.0]: https://github.com/OpenDominion/OpenDominion/compare/1.36.0...1.37.0
 [1.36.0]: https://github.com/OpenDominion/OpenDominion/compare/1.35.1...1.36.0
