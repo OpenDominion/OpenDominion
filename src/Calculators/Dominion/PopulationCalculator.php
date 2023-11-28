@@ -116,6 +116,17 @@ class PopulationCalculator
     }
 
     /**
+     * Returns the Dominion's maximum peasant population.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getMaxPeasantPopulation(Dominion $dominion): int
+    {
+        return $this->getMaxPopulation($dominion) - $this->getPopulationMilitary($dominion);
+    }
+
+    /**
      * Returns the Dominion's max population.
      *
      * @param Dominion $dominion
