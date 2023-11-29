@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - A percentage of your peasant population is now invulnerable to fireball damage (scales down during the round from 90% on Day 4 to 70% on Day 44)
 - Up to 50% of your vulnerable peasant population is protected by defensive WPA
+- Fireball: now kills 5% of your target's unprotected peasant population (from 2.75% of current peasants) and 2% of your target's food (from 2.75%)
 
 ## [1.37.2] - 2023-10-24
 ### Added

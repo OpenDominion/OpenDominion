@@ -680,6 +680,7 @@ class SpellActionService
                 }
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
+                /*
                 // Fireball damage reduction from Forest Havens
                 if ($attr == 'peasants') {
                     $forestHavenFireballReduction = 10;
@@ -690,6 +691,7 @@ class SpellActionService
                     );
                     $damageReductionMultiplier += $damageMultiplier;
                 }
+                */
 
                 // Disband Spies damage reduction from Forest Havens
                 if ($attr == 'military_spies') {
@@ -702,9 +704,17 @@ class SpellActionService
                     $damageReductionMultiplier += $damageMultiplier;
                 }
 
+                $attrValue = $target->{$attr};
+
+                // Account for peasants protected from Fireball
+                if ($attr == 'peasants') {
+                    $protectedPeasants = $this->opsCalculator->getPeasantsProtected($target);
+                    $attrValue = max(0, $target->peasants - $protectedPeasants);
+                }
+
                 // Cap damage reduction at 80%
                 $damage = ceil(
-                    $target->{$attr} *
+                    $attrValue *
                     $baseDamage *
                     (1 - min(0.8, $damageReductionMultiplier))
                 );

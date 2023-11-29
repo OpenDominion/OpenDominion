@@ -678,7 +678,7 @@ class EspionageActionService
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damage = max(floor($target->{$attr}) - $boatsProtected, 0) * $baseDamage;
+                    $damage = max(0, floor($target->{$attr}) - $boatsProtected) * $baseDamage;
                 }
 
                 // Check for immortal wizards
