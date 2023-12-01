@@ -9,14 +9,17 @@ namespace OpenDominion\Models;
  * @property int $spell_id
  * @property int $duration
  * @property int $cast_by_dominion_id
+ * @property array $applications
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
  * @property-read \OpenDominion\Models\Spell $spell
  */
-class DominionSpell extends AbstractModel
+class DominionSpell extends AbstractPivot
 {
     protected $table = 'dominion_spells';
+
+    protected $casts = ['applications' => 'array'];
 
     public function dominion()
     {

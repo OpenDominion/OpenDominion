@@ -295,7 +295,7 @@ class Dominion extends AbstractModel
             Spell::class,
             DominionSpell::class
         )
-        ->withPivot('duration', 'cast_by_dominion_id')
+        ->withPivot('duration', 'cast_by_dominion_id', 'applications')
         ->wherePivot('duration', '>', 0)
         ->withTimestamps();
     }

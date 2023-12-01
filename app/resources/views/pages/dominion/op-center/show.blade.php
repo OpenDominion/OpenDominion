@@ -261,10 +261,10 @@
 
                     <table class="table">
                         <colgroup>
-                            <col width="150">
+                            <col width="20%">
                             <col>
-                            <col width="100">
-                            <col width="200">
+                            <col width="10%">
+                            <col width="25%">
                         </colgroup>
                         <thead>
                             <tr>
@@ -283,8 +283,17 @@
                                     $spell = $spells[$activeSpell['spell']];
                                 @endphp
                                 <tr>
-                                    <td>{{ $spell->name }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                    <td>
+                                        {{ $spell->name }}
+                                        @if ($spell->category == "effect")
+                                            {{ $spellHelper->getStatusEffectStacksDisplay($activeSpell) }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div data-toggle="tooltip" data-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
+                                            {{ Illuminate\Support\Str::limit($spellHelper->getSpellDescription($spell)) }}
+                                        </div>
+                                    </td>
                                     <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                     <td class="text-center">
                                         @php

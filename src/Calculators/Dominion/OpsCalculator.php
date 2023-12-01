@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 
@@ -43,6 +45,9 @@ class OpsCalculator
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
+    /** @var SpellHelper */
+    protected $spellHelper;
+
     /**
      * OpsCalculator constructor.
      *
@@ -52,6 +57,7 @@ class OpsCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param PopulationCalculator $populationCalculator
      * @param RangeCalculator $rangeCalculator
+     * @param SpellHelper $spellHelper
      */
     public function __construct(
         GovernmentService $governmentService,
@@ -59,7 +65,8 @@ class OpsCalculator
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         PopulationCalculator $populationCalculator,
-        RangeCalculator $rangeCalculator
+        RangeCalculator $rangeCalculator,
+        SpellHelper $spellHelper
     )
     {
         $this->governmentService = $governmentService;
@@ -68,6 +75,7 @@ class OpsCalculator
         $this->militaryCalculator = $militaryCalculator;
         $this->populationCalculator = $populationCalculator;
         $this->rangeCalculator = $rangeCalculator;
+        $this->spellHelper = $spellHelper;
     }
 
     /**
@@ -476,7 +484,32 @@ class OpsCalculator
 
         $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
 
-        return round($maxPeasants * $daysModifier);
+        // Increase from Burning stacks
+        $burningMultiplier = 0;
+        $vulnerabilityPerkValue = $dominion->getSpellPerkValue('fireball_vulnerability', true);
+        if ($vulnerabilityPerkValue) {
+            $burningSpell = $dominion->spells->keyBy('key')->get('burning');
+            if ($burningSpell) {
+                $applications = $burningSpell->pivot->applications;
+                $stacks = $this->spellHelper->getStatusEffectStacks($applications);
+
+                // Mutual war adds one stack
+                $mutualWar = false;
+                foreach ($applications['realm_ids'] as $realm_id) {
+                    if ($this->governmentService->isAtMutualWar($dominion->realm, Realm::find($realm_id))) {
+                        $mutualWar = true;
+                    }
+                }
+                if ($mutualWar) {
+                    $stacks += 1;
+                }
+
+                // Total stacks limited to three
+                $burningMultiplier = min(3, $stacks) * $vulnerabilityPerkValue / 100;
+            }
+        }
+
+        return round($maxPeasants * ($burningMultiplier + $daysModifier));
     }
 
     /*

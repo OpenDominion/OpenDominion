@@ -597,6 +597,9 @@ class NotificationHelper
 
                     case 'fireball':
                         $resultString = "A great fireball has crashed into our keep, burning {$data['damageString']}.";
+                        if ($data['statusEffect'] == 'Burning') {
+                            $resultString .= 'The flames begin to spread.';
+                        }
                         break;
 
                     case 'lightning_bolt':

@@ -652,6 +652,7 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'wizard');
+            $statusEffect = null;
 
             // Improvement: Spires
             $baseDamageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'spires');
@@ -663,13 +664,55 @@ class SpellActionService
             $baseDamageReductionMultiplier -= $target->getWonderPerkMultiplier('enemy_spell_damage');
 
             foreach ($spell->perks as $perk) {
+                $perksToIgnore = collect(
+                    'fireball_vulnerability',
+                    'fixed_population_growth',
+                    'scale_by_day'
+                );
                 if (Str::startsWith($perk->key, 'destroy_')) {
                     $attr = str_replace('destroy_', '', $perk->key);
                     $convertAttr = null;
                 } elseif (Str::startsWith($perk->key, 'convert_')) {
                     $components = Str::of($perk->key)->replace('convert_', '')->explode('_to_');
                     list($attr, $convertAttr) = $components;
-                } elseif ($perk->key == 'scale_by_day') {
+                } elseif ($perksToIgnore->has($perk->key) || Str::startsWith($perk->key, 'immune_')) {
+                    continue;
+                } elseif (Str::startsWith($perk->key, 'apply_')) {
+                    if (!$spellReflected && $warDeclared && random_chance($perk->pivot->value)) {
+                        $statusEffectKey = Str::of($perk->key)->replace('apply_', '');
+                        $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
+                        $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);
+
+                        if ($statusEffectActiveSpell !== null) {
+                            $applications = $statusEffectActiveSpell->pivot->applications;
+                            if ($applications == null) {
+                                $applications = [
+                                    'dominion_ids' => [],
+                                    'realm_ids' => [],
+                                ];
+                            }
+                            if (!in_array($dominion->id, $applications['dominion_ids'])) {
+                                $applications['dominion_ids'][] = $dominion->id;
+                            }
+                            if (!in_array($dominion->realm_id, $applications['realm_ids'])) {
+                                $applications['realm_ids'][] = $dominion->realm_id;
+                            }
+                            $statusEffectActiveSpell->pivot->applications = $applications;
+                            $statusEffectActiveSpell->pivot->save();
+                        } else {
+                            $statusEffect = $statusEffectSpell->name;
+                            DominionSpell::insert([
+                                'dominion_id' => $target->id,
+                                'spell_id' => $statusEffectSpell->id,
+                                'duration' => $statusEffectSpell->duration,
+                                'cast_by_dominion_id' => $dominion->id,
+                                'applications' => [
+                                    'dominion_ids' => [$dominion->id],
+                                    'realm_ids' => [$dominion->realm_id],
+                                ],
+                            ]);
+                        }
+                    }
                     continue;
                 } else {
                     throw new GameException("Unrecognized perk {$perk->key}.");
@@ -708,8 +751,7 @@ class SpellActionService
 
                 // Account for peasants protected from Fireball
                 if ($attr == 'peasants') {
-                    $protectedPeasants = $this->opsCalculator->getPeasantsProtected($target);
-                    $attrValue = max(0, $target->peasants - $protectedPeasants);
+                    $attrValue = $this->opsCalculator->getPeasantsUnprotected($target);
                 }
 
                 // Cap damage reduction at 80%
@@ -718,6 +760,13 @@ class SpellActionService
                     $baseDamage *
                     (1 - min(0.8, $damageReductionMultiplier))
                 );
+
+                // Cap Fireball damage by protection
+                if ($attr == 'peasants') {
+                    $peasantsProtected = $this->opsCalculator->getPeasantsProtected($target);
+                    $peasantsKillable = max(0, $target->peasants - $peasantsProtected);
+                    $damage = min($damage, $peasantsKillable);
+                }
 
                 // Temporary lightning damage from Wizard Resilience
                 if (Str::startsWith($attr, 'improvement_')) {
@@ -796,12 +845,18 @@ class SpellActionService
 
             $damageString = generate_sentence_from_array($damageDealt);
 
+            $statusEffectString = '';
+            if ($statusEffect !== null) {
+                $statusEffectString = "You inflicted {$statusEffect}.";
+            }
+
             $this->notificationService
                 ->queueNotification('received_hostile_spell', [
                     'sourceDominionId' => $sourceDominionId,
                     'spellKey' => $spell->key,
                     'spellName' => $spell->name,
                     'damageString' => $damageString,
+                    'statusEffect' => $statusEffect,
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 
@@ -828,8 +883,9 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, your target lost %s. %s',
+                        'Your wizards cast the spell successfully, your target lost %s. %s %s',
                         $damageString,
+                        $statusEffectString,
                         $warRewardsString
                     ),
                     'damage' => $totalDamage
