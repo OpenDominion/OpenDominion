@@ -406,6 +406,37 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <table class="table">
+                                <colgroup>
+                                    <col width="75%">
+                                    <col width="25%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Fireball</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Vulnerability:</td>
+                                        <td>
+                                            <strong>{{ $opsCalculator->getPeasantsVulnerableModifier($target) * 100 }}%</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Peasants Vulnerable:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getPeasantsVulnerable($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Peasants Protected:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getPeasantsProtected($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 

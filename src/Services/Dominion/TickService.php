@@ -327,8 +327,10 @@ class TickService
                 ])
                 ->get();
         } else {
-            $dominions = [$dominion];
+            $dominions = collect([$dominion]);
         }
+
+        $this->convertStatusEffects($dominions->pluck('id')->all());
 
         foreach ($dominions as $dominion) {
             DB::transaction(function () use ($dominion) {
@@ -662,6 +664,21 @@ class TickService
                 $this->wonderService->createWonder($round);
             }
         }
+    }
+
+    protected function convertStatusEffects(array $dominionIds)
+    {
+        $burningSpell = Spell::where('key', 'burning')->first();
+        $rejuvinationSpell = Spell::where('key', 'rejuvination')->first();
+
+        DB::table('dominion_spells')
+            ->whereIn('dominion_id', $dominionIds)
+            ->where('spell_id', $burningSpell->id)
+            ->where('duration', '<=', 0)
+            ->update([
+                'spell_id' => $rejuvinationSpell->id,
+                'duration' => $rejuvinationSpell->duration
+            ]);
     }
 
     protected function cleanupActiveSpells(Dominion $dominion)

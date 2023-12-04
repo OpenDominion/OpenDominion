@@ -471,18 +471,16 @@ class OpsCalculator
     }
 
     /*
-     * Returns the number of peasants that are vulnerable to fireball damage
+     * Returns the percentage of max peasants that are vulnerable to fireball damage
      *
      * @param Dominion $dominion
-     * @return int
+     * @return float
      */
-    public function getPeasantsVulnerable(Dominion $dominion): int
+    public function getPeasantsVulnerableModifier(Dominion $dominion): float
     {
         // Scale vulnerability from 0.1 at Day 4, to 0.2 at Day 24, to 0.3 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
         $daysModifier = (0.005 * $days) + 0.1;
-
-        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
 
         // Increase from Burning stacks
         $burningMultiplier = 0;
@@ -509,7 +507,21 @@ class OpsCalculator
             }
         }
 
-        return round($maxPeasants * ($burningMultiplier + $daysModifier));
+        return $burningMultiplier + $daysModifier;
+    }
+
+    /*
+     * Returns the number of peasants that are vulnerable to fireball damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsVulnerable(Dominion $dominion): int
+    {
+        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+        $vulnerabilityModifier = $this->getPeasantsVulnerableModifier($dominion);
+
+        return round($maxPeasants * $vulnerabilityModifier);
     }
 
     /*

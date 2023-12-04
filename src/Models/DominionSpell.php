@@ -35,4 +35,16 @@ class DominionSpell extends AbstractPivot
     {
         return $this->belongsTo(Spell::class, 'spell_id');
     }
+
+    public function getApplicationsAttribute($value)
+    {
+        if ($value == null) {
+            return [
+                'dominion_ids' => [],
+                'realm_ids' => [],
+            ];
+        }
+
+        return json_decode($value);
+    }
 }
