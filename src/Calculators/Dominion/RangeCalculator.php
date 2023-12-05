@@ -171,7 +171,7 @@ class RangeCalculator
      * @param bool $recentlyInvaded
      * @return Collection
      */
-    public function getDominionsInRange(Dominion $self, bool $recentlyInvaded = false): Collection
+    public function getDominionsInRange(Dominion $self, bool $recentlyInvaded = false, bool $includeFriendly = false): Collection
     {
         if ($recentlyInvaded) {
             $recentlyInvadedByDominionIds = $this->militaryCalculator->getRecentlyInvadedBy($self, 12);
@@ -186,9 +186,9 @@ class RangeCalculator
                 $query->where('abandoned_at', null)->orWhere('abandoned_at', '>', now());
             })
             ->get()
-            ->filter(function ($dominion) use ($self, $recentlyInvadedByDominionIds) {
+            ->filter(function ($dominion) use ($self, $recentlyInvadedByDominionIds, $includeFriendly) {
                 return (
-                    ($dominion->realm->id !== $self->realm->id) &&
+                    (($includeFriendly && $dominion->id !== $self->id) || $dominion->realm->id !== $self->realm->id) &&
                     $this->isInRange($self, $dominion) &&
                     !$this->protectionService->isUnderProtection($dominion)
                 ) || in_array($dominion->id, $recentlyInvadedByDominionIds);

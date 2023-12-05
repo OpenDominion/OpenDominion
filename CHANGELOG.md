@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Automated Actions
   - You may now schedule up to 2 actions in advance, resets each day
   - Train, explore, construct, and cast spells (excluding Ares' Call and Fool's Gold)
+- Friendly Spells
+  - Beneficial duration spells that can be cast on realmies
+  - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt
 - Added checkboxes to exclude units entirely or just incoming units in the Calculators
 - A new General Calculator has been added when directly navigating to the Calculators page
 - At the hour change, a red border will appear around the screen
@@ -21,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Forest Haven: now protects 6.25% of your vulnerable peasant population per 1% owned, up to a maximum of 50% at 80% owned (was reduced fireball damage), removed assassinate wizards/disband spies protection.
 - Aquaponics: now reduces duration of Burning by 6 hours (was -10% fireball damage)
 - Spires: now reduces damage only from lightning bolt (was all spells)
+- Energy Mirror: now reduces enemy spell damage by 15% and enemy spell duration by 2 hours (was 20% chance to reflect)
 
 ## [1.37.2] - 2023-10-24
 ### Added

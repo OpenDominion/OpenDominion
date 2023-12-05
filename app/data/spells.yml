@@ -159,7 +159,8 @@ energy_mirror:
   cost_strength: 5
   duration: 12
   perks:
-    energy_mirror: 1
+    enemy_spell_damage: -15
+    enemy_spell_duration: -2
 amplify_magic:
   name: Amplify Magic
   category: self
@@ -468,7 +469,6 @@ burning:
     fireball_vulnerability: 10
     fixed_population_growth: 5
     apply_rejuvination: 1
-  active: true
 rejuvination:
   name: Rejuvination
   category: effect
@@ -479,4 +479,11 @@ rejuvination:
     population_growth: 300
     enemy_fireball_damage: -75
     immunity_burning: 1
-  active: true
+spell_reflect:
+  name: Spell Reflect
+  category: friendly
+  cost_mana: 3
+  cost_strength: 4
+  duration: 6
+  perks:
+    spell_reflect: 1

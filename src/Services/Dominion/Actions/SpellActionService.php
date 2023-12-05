@@ -201,6 +201,9 @@ class SpellActionService
                     $xpGain = 0;
                 }
                 $dominion->resetAbandonment();
+            } elseif ($this->spellHelper->isFriendlySpell($spell)) {
+                $xpGain = 4;
+                $result = $this->castFriendlySpell($dominion, $spell, $target);
             } else {
                 throw new LogicException("Unknown type for spell {$spell->key}");
             }
@@ -458,6 +461,64 @@ class SpellActionService
     }
 
     /**
+     * Casts a friendly spell for $dominion to $target.
+     *
+     * @param Dominion $dominion
+     * @param Spell $spell
+     * @param Dominion $target
+     * @return array
+     * @throws GameException
+     * @throws LogicException
+     */
+    protected function castFriendlySpell(Dominion $dominion, Spell $spell, Dominion $target): array
+    {
+        if ($dominion->id == $target->id) {
+            throw new GameException('You cannot cast friendly spells on yourself');
+        }
+
+        if ($dominion->realm_id !== $target->realm_id) {
+            throw new GameException('You cannot cast friendly spells on dominions outside of your realm');
+        }
+
+        if ($target->user_id == null) {
+            throw new GameException('You cannot cast friendly spells on bots');
+        }
+
+        $activeSpell = $target->spells->find($spell->id);
+
+        if ($activeSpell !== null) {
+            throw new GameException("Your wizards refused to recast {$spell->name}, since it is already active");
+        }
+
+        $duration = $spell->duration;
+        $duration += $dominion->getTechPerkValue('friendly_spell_duration');
+        DominionSpell::insert([
+            'dominion_id' => $target->id,
+            'spell_id' => $spell->id,
+            'duration' => $duration,
+            'cast_by_dominion_id' => $dominion->id,
+        ]);
+
+        // Inform target that they received a friendly spell
+        $this->notificationService
+            ->queueNotification('received_friendly_spell', [
+                'sourceDominionId' => $dominion->id,
+                'spellKey' => $spell->key,
+                'spellName' => $spell->name,
+            ])
+            ->sendNotifications($target, 'irregular_dominion');
+
+        return [
+            'success' => true,
+            'message' => sprintf(
+                'Your wizards cast the spell successfully, and it will continue to affect your target for %s hours.',
+                $duration,
+            ),
+            'duration' => $duration
+        ];
+    }
+
+    /**
      * Casts a hostile spell for $dominion to $target.
      *
      * @param Dominion $dominion
@@ -475,6 +536,10 @@ class SpellActionService
 
         if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
             throw new GameException('You cannot perform black ops for the first three days of the round');
+        }
+
+        if ($dominion->realm_id == $target->realm_id) {
+            throw new GameException('You cannot perform black ops on dominions in your realm');
         }
 
         if ($target->user_id == null) {
@@ -543,9 +608,24 @@ class SpellActionService
         }
 
         $spellReflected = false;
-        if ($target->getSpellPerkValue('energy_mirror') && random_chance(0.2)) {
+        $spellReflect = $target->getSpellPerkValue('spell_reflect');
+        if ($spellReflect && ($spell->key == 'fireball' || $spell->key == 'lightning_bolt')) {
+            $spellReflected = true;
+            $friendlySpell = $target->spells->where('key', 'spell_reflect')->first();
+            $reflectedBy = $friendlySpell->pivot->castByDominion;
+            // Remove one-shot spell
+            DominionSpell::where([
+                'spell_id' => $friendlySpell->id,
+                'dominion_id' => $target->id,
+            ])->delete();
+        }
+        $energyMirrorChance = $target->getSpellPerkValue('energy_mirror');
+        if ($energyMirrorChance && random_chance($energyMirrorChance)) {
             $spellReflected = true;
             $reflectedBy = $target;
+        }
+        if ($spellReflected) {
+            $protectedDominion = $target;
             $target = $dominion;
             $dominion = $reflectedBy;
             $dominion->stat_spells_reflected += 1;
@@ -614,12 +694,13 @@ class SpellActionService
                 ->sendNotifications($target, 'irregular_dominion');
 
             if ($spellReflected) {
-                // Notification for Energy Mirror deflection
+                // Notification for spell reflection
                 $this->notificationService
                     ->queueNotification('reflected_hostile_spell', [
                         'sourceDominionId' => $target->id,
                         'spellKey' => $spell->key,
                         'spellName' => $spell->name,
+                        'protectedDominionId' => $protectedDominion->id,
                     ])
                     ->sendNotifications($dominion, 'irregular_dominion');
 
@@ -832,12 +913,13 @@ class SpellActionService
                 ->sendNotifications($target, 'irregular_dominion');
 
             if ($spellReflected) {
-                // Notification for Energy Mirror defelection
+                // Notification for spell reflection
                 $this->notificationService
                     ->queueNotification('reflected_hostile_spell', [
                         'sourceDominionId' => $target->id,
                         'spellKey' => $spell->key,
                         'spellName' => $spell->name,
+                        'protectedDominionId' => $protectedDominion->id,
                     ])
                     ->sendNotifications($dominion, 'irregular_dominion');
 

@@ -45,6 +45,6 @@ class DominionSpell extends AbstractPivot
             ];
         }
 
-        return json_decode($value);
+        return json_decode($value, JSON_OBJECT_AS_ARRAY);
     }
 }

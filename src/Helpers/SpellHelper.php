@@ -99,7 +99,7 @@ class SpellHelper
 
     public function isOffensiveSpell(Spell $spell): bool
     {
-        return $spell->category !== 'self';
+        return !in_array($spell->category, ['self', 'friendly']);
     }
 
     public function isInfoOpSpell(Spell $spell): bool
@@ -107,9 +107,14 @@ class SpellHelper
         return $spell->category == 'info';
     }
 
+    public function isFriendlySpell(Spell $spell): bool
+    {
+        return $spell->category == 'friendly';
+    }
+
     public function isHostileSpell(Spell $spell): bool
     {
-        return !in_array($spell->category, ['info', 'self']);
+        return !in_array($spell->category, ['info', 'self', 'friendly']);
     }
 
     public function isBlackOpSpell(Spell $spell): bool
@@ -166,7 +171,10 @@ class SpellHelper
             'platinum_production_raw' => '%+d alchemy platinum production',
 
             // Wizard related
-            'energy_mirror' => '20%% chance to reflect incoming offensive spells',
+            'energy_mirror' => '%d%% chance to reflect incoming offensive spells',
+            'enemy_spell_damage' => '%+g%% enemy spell damage',
+            'enemy_spell_duration' => '%+g enemy spell duration',
+            'spell_reflect' => 'Reflects the next incoming Fireball or Lightning Bolt spell',
             'fools_gold' => 'Platinum theft protection',
             'surreal_perception' => 'Reveals the dominion casting spells or committing spy ops against you',
             'self_spell_cost' => 'Increases the mana cost of your next non-cooldown self spell by %d%%',
@@ -229,6 +237,7 @@ class SpellHelper
     public function getCategoryString(string $category) {
         $categories = [
             'info' => 'Information',
+            'friendly' => 'Friendly',
             'hostile' => 'Offensive',
             'war' => 'War',
             'wonder' => 'Wonder',

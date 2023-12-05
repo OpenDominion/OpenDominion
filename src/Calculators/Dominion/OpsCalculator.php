@@ -539,7 +539,7 @@ class OpsCalculator
         $forestHavenReduction = 6.25;
         $forestHavenReductionMax = 50;
         $forestHavenProtection = min(
-            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenReduction),
+            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenReduction),
             ($forestHavenReductionMax / 100)
         );
 

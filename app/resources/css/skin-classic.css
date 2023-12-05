@@ -297,6 +297,9 @@
 .skin-classic .select2-container--default.select2-container--open {
     background-color: #332f35;
 }
+.skin-classic .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #006C81;
+}
 
 .skin-classic .table > thead > tr > th {
     border-bottom: 2px solid #005566;

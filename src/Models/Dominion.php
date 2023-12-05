@@ -517,7 +517,7 @@ class Dominion extends AbstractModel
             function ($spell) {
                 return $spell->perks->map(
                     function ($perk) use ($spell) {
-                        $perk->self = ($spell->category == 'self');
+                        $perk->friendly = in_array($spell->category, ['self', 'friendly']);
                         return $perk;
                     }
                 );
@@ -532,7 +532,7 @@ class Dominion extends AbstractModel
      */
     public function getSpellPerkValue(string $key, bool $hostile = false): float
     {
-        $perks = $this->getSpellPerks()->where('self', !$hostile)->groupBy('key');
+        $perks = $this->getSpellPerks()->where('friendly', !$hostile)->groupBy('key');
         if (isset($perks[$key])) {
             if ($perks[$key]->count() == 1) {
                 return $perks[$key]->first()->pivot->value;
