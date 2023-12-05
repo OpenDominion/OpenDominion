@@ -947,16 +947,16 @@ class MilitaryCalculator
         $multiplier = 1;
 
         // Racial bonus
-        $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
+        $multiplier += $dominion->race->getPerkMultiplier('spy_power');
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
+        $multiplier += $dominion->getTechPerkMultiplier('spy_power');
         if ($type == 'defense') {
-            $multiplier += $dominion->getTechPerkMultiplier('spy_strength_defense');
+            $multiplier += $dominion->getTechPerkMultiplier('spy_power_defense');
         }
 
         // Wonders
-        $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');
+        $multiplier += $dominion->getWonderPerkMultiplier('spy_power');
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'spy_power');

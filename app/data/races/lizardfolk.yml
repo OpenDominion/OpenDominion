@@ -11,7 +11,7 @@ overall_difficulty: 1
 home_land_type: water
 perks:
   max_population: 5
-  spy_strength: 10
+  spy_power: 10
   food_consumption: -15
 units:
   - name: Reptile

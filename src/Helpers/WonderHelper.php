@@ -50,7 +50,7 @@ class WonderHelper
             'enemy_espionage_chance' => '%d%% chance of causing hostile spy operations to fail',
             'enemy_sabotage_boats_damage' => 'Boats cannot be sabotaged',
             'spy_losses' => '%+g%% spy losses on failed operations',
-            'spy_strength' => '%+g%% spy power',
+            'spy_power' => '%+g%% spy power',
 
             // Wizard related
             'clear_sight_accuracy' => 'Clear sights against this realm are only %d%% accurate',

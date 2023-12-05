@@ -103,7 +103,7 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'rezone cost';
                 break;
-            case 'spy_strength':
+            case 'spy_power':
                 $negativeBenefit = false;
                 $description = 'spy power';
                 break;
@@ -240,7 +240,7 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'Rezone cost';
                 break;
-            case 'spy_strength':
+            case 'spy_power':
                 $negativeBenefit = false;
                 $description = 'Spy power';
                 break;

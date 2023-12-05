@@ -108,7 +108,7 @@ tech_6_3:
 tech_8_3:
   name: Miser's Grasp
   perks:
-    spy_strength_defense: 10
+    spy_power_defense: 10
     theft_losses: -25
   requires:
     - tech_7_1

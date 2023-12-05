@@ -31,7 +31,7 @@ gnomish_mining_machine:
 guild_of_shadows:
   name: Guild of Shadows
   perks:
-    spy_strength: 25
+    spy_power: 25
     spy_losses: -15
   power: 75000
 hanging_gardens:
