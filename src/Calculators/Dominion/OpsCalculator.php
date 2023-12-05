@@ -79,13 +79,24 @@ class OpsCalculator
     }
 
     /**
+     * Returns the success modifier based on relative strength.
+     *
+     * @param float $selfStrength
+     * @param float $targetStrength
+     * @return float
+     */
+    public function getSuccessModifier(float $selfStrength, float $targetStrength) {
+        return ($selfStrength - $targetStrength) / 1000;
+    }
+
+    /**
      * Returns the chance of success for an info operation or spell.
      *
      * @param float $selfRatio
      * @param float $targetRatio
      * @return float
      */
-    public function infoOperationSuccessChance(float $selfRatio, float $targetRatio): float
+    public function infoOperationSuccessChance(float $selfRatio, float $targetRatio, float $selfStrength, float $targetStrength): float
     {
         if (!$targetRatio) {
             return 1;
@@ -93,6 +104,7 @@ class OpsCalculator
 
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.8 ** (2 / (($relativeRatio * 1.4) ** 1.2));
+        $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.98);
     }
 
@@ -103,7 +115,7 @@ class OpsCalculator
      * @param float $targetRatio
      * @return float
      */
-    public function theftOperationSuccessChance(float $selfRatio, float $targetRatio): float
+    public function theftOperationSuccessChance(float $selfRatio, float $targetRatio, float $selfStrength, float $targetStrength): float
     {
         if (!$targetRatio) {
             return 1;
@@ -111,6 +123,7 @@ class OpsCalculator
 
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
+        $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.97);
     }
 
@@ -121,7 +134,7 @@ class OpsCalculator
      * @param float $targetRatio
      * @return float
      */
-    public function blackOperationSuccessChance(float $selfRatio, float $targetRatio): float
+    public function blackOperationSuccessChance(float $selfRatio, float $targetRatio, float $selfStrength, float $targetStrength): float
     {
         if (!$targetRatio) {
             return 1;
@@ -129,6 +142,7 @@ class OpsCalculator
 
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
+        $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.97);
     }
 

@@ -283,7 +283,7 @@ class EspionageActionService
             throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -393,7 +393,7 @@ class EspionageActionService
             throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -601,7 +601,7 @@ class EspionageActionService
             throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));

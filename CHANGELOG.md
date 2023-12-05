@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Aquaponics: now reduces duration of Burning by 6 hours (was -10% fireball damage)
 - Spires: now reduces damage only from lightning bolt (was all spells)
 - Energy Mirror: now reduces enemy spell damage by 15% and enemy spell duration by 2 hours (was 20% chance to reflect)
+- Success chances for ops are now modified by you and your target's current spy/wizard strength by 1% per 10% difference (ranging from -10% to +10%)
 
 ## [1.37.2] - 2023-10-24
 ### Added

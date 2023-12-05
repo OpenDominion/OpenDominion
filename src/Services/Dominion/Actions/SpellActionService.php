@@ -370,7 +370,7 @@ class SpellActionService
             throw new GameException("Your wizard force is too weak to cast {$spell->name}. Please train more wizards.");
         }
 
-        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfWpa, $targetWpa);
+        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfWpa, $targetWpa, $dominion->wizard_strength, $target->wizard_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
@@ -569,7 +569,7 @@ class SpellActionService
             throw new GameException("Your wizard force is too weak to cast {$spell->name}. Please train more wizards.");
         }
 
-        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa);
+        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa, $dominion->wizard_strength, $target->wizard_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
