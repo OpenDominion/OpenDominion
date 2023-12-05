@@ -98,7 +98,7 @@ class BuildingHelper
             'diamond_mine' => 'Produces 15 gems per hour.',
             'school' => 'Produces (1 - (Schools / Total Land)) research points per hour (minimum of 0.5). Limited to 50% of your total land.',
             'lumberyard' => 'Produces 50 lumber per hour.',
-            'forest_haven' => 'Produces 25 lumber per hour.<br>Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned.<br>Disband Spies and Assassinate Wizards damage reduced by 10% per 1% owned, up to a maximum of 50% at 5% owned.',
+            'forest_haven' => 'Produces 25 lumber per hour.<br>Protects 6.25% of your vulnerable peasant population from Fireball per 1% owned, up to a maximum of 50% at 8% owned.',
             'factory' => 'Reduces construction and land rezoning costs.<br><br>Construction costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.<br>Rezoning costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.',
             'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'shrine' => 'Increases Hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.',

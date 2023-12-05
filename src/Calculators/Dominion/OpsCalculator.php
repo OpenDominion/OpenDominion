@@ -535,7 +535,15 @@ class OpsCalculator
         $vulnerable = $this->getPeasantsVulnerable($dominion);
         $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
 
-        return round($vulnerable * (1 - $ratioProtection));
+        // Fireball protection from Forest Havens
+        $forestHavenReduction = 6.25;
+        $forestHavenReductionMax = 50;
+        $forestHavenProtection = min(
+            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenReduction),
+            ($forestHavenReductionMax / 100)
+        );
+
+        return round($vulnerable * (1 - $ratioProtection) * (1 - $forestHavenReduction));
     }
 
     /*

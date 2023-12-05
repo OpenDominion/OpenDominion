@@ -81,6 +81,7 @@ class TechHelper
             'enemy_fireball_damage' => '%s%% enemy fireball damage',
             'enemy_lightning_bolt_damage' => '%s%% enemy lightning bolt damage',
             'enemy_spell_duration' => '%s black op spell duration',
+            'enemy_burning_duration' => '%s Burning duration',
             'spell_cost' => '%s%% cost of spells',
             'self_spell_cost' => '%s%% cost of self spells',
             'racial_spell_cost' => '%s%% cost of racial spells',

@@ -18,6 +18,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fireball: now kills 5% of your target's maximum unprotected peasant population (from 2.75% of current peasants) and 2% of your target's food (from 2.75%), 30% chance to apply Burning if at war
 - Burning: new status effect (spell) with 36 hour duration, increases vulnerability to fireball by 10% of your maximum peasant population (20% in mutual war), population growth is fixed at 5% of your vulerable peasant population, stacks if applied by another realm to a maximum of 30%, applies Rejuvenation upon expiration
 - Rejuvenation: new status effect (spell) with 36 hour duration, increases population growth by 300%, reduces fireball damage by 75%, immune to Burning
+- Forest Haven: now protects 6.25% of your vulnerable peasant population per 1% owned, up to a maximum of 50% at 80% owned (was reduced fireball damage), removed assassinate wizards/disband spies protection.
+- Aquaponics: now reduces duration of Burning by 6 hours (was -10% fireball damage)
+- Spires: now reduces damage only from lightning bolt (was all spells)
 
 ## [1.37.2] - 2023-10-24
 ### Added

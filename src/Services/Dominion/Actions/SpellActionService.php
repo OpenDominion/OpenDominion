@@ -560,10 +560,7 @@ class SpellActionService
             } elseif ($warDeclared || $blackGuard) {
                 $duration += 2;
             }
-
-            if ($target->getTechPerkValue('enemy_spell_duration') !== 0) {
-                $duration += $target->getTechPerkValue('enemy_spell_duration');
-            }
+            $duration += $target->getTechPerkValue('enemy_spell_duration');
 
             $activeSpell = $target->spells->find($spell->id);
 
@@ -654,9 +651,6 @@ class SpellActionService
             $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'wizard');
             $statusEffect = null;
 
-            // Improvement: Spires
-            $baseDamageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'spires');
-
             // Techs
             $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$spell->key}_damage");
 
@@ -696,10 +690,11 @@ class SpellActionService
                             $statusEffectActiveSpell->pivot->save();
                         } else {
                             $statusEffect = $statusEffectSpell->name;
+                            $duration = $statusEffectSpell->duration + $target->getTechPerkValue("enemy_{$statusEffectKey}_duration");
                             DominionSpell::insert([
                                 'dominion_id' => $target->id,
                                 'spell_id' => $statusEffectSpell->id,
-                                'duration' => $statusEffectSpell->duration,
+                                'duration' => $duration,
                                 'cast_by_dominion_id' => $dominion->id,
                                 'applications' => [
                                     'dominion_ids' => [$dominion->id],
@@ -712,38 +707,19 @@ class SpellActionService
                 } else {
                     throw new GameException("Unrecognized perk {$perk->key}.");
                 }
+
                 $baseDamage = $perk->pivot->value / 100;
                 if ($spell->getPerkValue('scale_by_day') == 1) {
                     $baseDamage *= (1.625 - 0.025 * clamp($dominion->round->daysInRound(), 10, 40));
                 }
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
-                /*
-                // Fireball damage reduction from Forest Havens
-                if ($attr == 'peasants') {
-                    $forestHavenFireballReduction = 10;
-                    $forestHavenFireballReductionMax = 80;
-                    $damageMultiplier = min(
-                        (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
-                        ($forestHavenFireballReductionMax / 100)
-                    );
-                    $damageReductionMultiplier += $damageMultiplier;
-                }
-                */
-
-                // Disband Spies damage reduction from Forest Havens
-                if ($attr == 'military_spies') {
-                    $forestHavenDisbandSpyReduction = 10;
-                    $forestHavenDisbandSpyReductionMax = 50;
-                    $damageMultiplier = min(
-                        (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenDisbandSpyReduction),
-                        ($forestHavenDisbandSpyReductionMax / 100)
-                    );
-                    $damageReductionMultiplier += $damageMultiplier;
+                // Improvement: Spires
+                if (Str::startsWith($attr, 'improvement_')) {
+                    $damageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'spires');
                 }
 
                 $attrValue = $target->{$attr};
-
                 // Account for peasants protected from Fireball
                 if ($attr == 'peasants') {
                     $attrValue = $this->opsCalculator->getPeasantsUnprotected($target);

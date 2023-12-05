@@ -21,7 +21,7 @@ tech_7_1:
   name: Aquaponics
   perks:
     food_production: 7.5
-    enemy_fireball_damage: -10
+    enemy_burning_duration: -6
   requires:
     - tech_5_1
     - tech_9_1
