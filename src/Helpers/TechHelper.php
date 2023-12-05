@@ -86,7 +86,7 @@ class TechHelper
             'self_spell_cost' => '%s%% cost of self spells',
             'racial_spell_cost' => '%s%% cost of racial spells',
             'wizard_cost' => '%s%% cost of wizards',
-            'wizard_strength' => '%s%% wizard power',
+            'wizard_power' => '%s%% wizard power',
             'wizard_strength_recovery' => '%s wizard strength per hour',
             'wonder_damage' => '%s%% wonder damage',
         ];

@@ -54,7 +54,7 @@ great_oracle:
   name: Great Oracle
   perks:
     spell_cost: -15
-    wizard_strength: 30
+    wizard_power: 30
   power: 75000
 fountain_of_youth:
   name: Fountain of Youth

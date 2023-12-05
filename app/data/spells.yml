@@ -425,7 +425,7 @@ miasma:
   races:
     - nox
   perks:
-    wizard_strength: -5
+    wizard_power: -5
     mana_decay: 50
 necromantic_ritual:
   name: Necromantic Ritual

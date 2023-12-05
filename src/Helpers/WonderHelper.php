@@ -59,7 +59,7 @@ class WonderHelper
             'spell_cost' => '%+g%% cost of spells',
             'spell_duration' => '%s hour self spell duration',
             'surreal_perception' => 'Grants the effects of Surreal Perception',
-            'wizard_strength' => '%+g%% wizard power',
+            'wizard_power' => '%+g%% wizard power',
 
             // Resource related
             'food_production' => '%+g%% food production',

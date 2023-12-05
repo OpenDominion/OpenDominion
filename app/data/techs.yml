@@ -189,7 +189,7 @@ tech_9_5:
   name: Dark Pact
   perks:
     mana_production: 10
-    wizard_strength: 5
+    wizard_power: 5
   requires:
     - tech_7_5
     - tech_8_3
@@ -317,7 +317,7 @@ tech_11_9:
   name: Avatar of Ares
   perks:
     offense: 2.5
-    wizard_strength: 7.5
+    wizard_power: 7.5
   requires:
     - tech_12_11
 tech_13_9:
@@ -653,7 +653,7 @@ magical_weaponry:
   name: Magical Weaponry
   perks:
     offense: 5
-    wizard_strength: 15
+    wizard_power: 15
   requires:
     - master_of_magi
     - military_genius

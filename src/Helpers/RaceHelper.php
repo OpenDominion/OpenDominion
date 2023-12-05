@@ -115,7 +115,7 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'research point gains from invasion';
                 break;
-            case 'wizard_strength':
+            case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'wizard power';
                 break;
@@ -252,7 +252,7 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Research point gains from invasion';
                 break;
-            case 'wizard_strength':
+            case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'Wizard power';
                 break;

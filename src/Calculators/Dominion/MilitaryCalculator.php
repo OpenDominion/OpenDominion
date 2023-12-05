@@ -1035,16 +1035,16 @@ class MilitaryCalculator
         $multiplier = 1;
 
         // Racial bonus
-        $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
+        $multiplier += $dominion->race->getPerkMultiplier('wizard_power');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('wizard_strength');
+        $multiplier += $dominion->getSpellPerkMultiplier('wizard_power');
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('wizard_strength');
+        $multiplier += $dominion->getTechPerkMultiplier('wizard_power');
 
         // Wonders
-        $multiplier += $dominion->getWonderPerkMultiplier('wizard_strength');
+        $multiplier += $dominion->getWonderPerkMultiplier('wizard_power');
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_power');

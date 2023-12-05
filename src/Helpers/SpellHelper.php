@@ -192,7 +192,7 @@ class SpellHelper
             'food_decay' => '%+g%% food decay',
             'lumber_decay' => '%+g%% lumber rot',
             'mana_decay' => '%+g%% mana drain',
-            'wizard_strength' => '%+g%% wizard power',
+            'wizard_power' => '%+g%% wizard power',
             'wonder_damage' => 'Deals damage to wonders',
             'scale_by_day' => 'Scales by day in round from 137.5%% to 62.5%%',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
