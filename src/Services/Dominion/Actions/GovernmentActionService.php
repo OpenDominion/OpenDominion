@@ -3,9 +3,11 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\GovernmentHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\Realm\History;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
@@ -19,6 +21,9 @@ class GovernmentActionService
     use DominionGuardsTrait;
     use RealmGuardsTrait;
 
+    /** @var GovernmentHelper */
+    protected $governmentHelper;
+
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -30,8 +35,13 @@ class GovernmentActionService
      *
      * @param GovernmentService $governmentService
      */
-    public function __construct(GovernmentService $governmentService, NotificationService $notificationService)
+    public function __construct(
+        GovernmentHelper $governmentHelper,
+        GovernmentService $governmentService,
+        NotificationService $notificationService
+    )
     {
+        $this->governmentHelper = $governmentHelper;
         $this->governmentService = $governmentService;
         $this->notificationService = $notificationService;
     }
@@ -76,8 +86,8 @@ class GovernmentActionService
         $this->guardLockedDominion($dominion);
         $this->guardGraveyardRealm($dominion->realm);
 
-        if (!$dominion->isMonarch()) {
-            throw new GameException('Only the monarch can make changes to their realm.');
+        if (!$dominion->isMonarch() && !$dominion->isJester()) {
+            throw new GameException('Only the monarch or court jester can make changes to their realm.');
         }
 
         if ($motd && strlen($motd) > 256) {
@@ -96,6 +106,72 @@ class GovernmentActionService
             $dominion->realm->name = $name;
         }
         $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_REALM_UPDATED]);
+    }
+
+    /**
+     * Set appointments to the royal court
+     *
+     * @param Dominion $dominion
+     * @param Dominion $appointee
+     * @param string $roles
+     * @throws GameException
+     * @throws RuntimeException
+     */
+    public function setAppointments(Dominion $dominion, Dominion $appointee, string $role)
+    {
+        $this->guardLockedDominion($dominion);
+        $this->guardGraveyardRealm($dominion->realm);
+
+        if (!$dominion->isMonarch()) {
+            throw new GameException('Only the monarch can make appointments.');
+        }
+
+        if ($appointee->id == $dominion->id) {
+            // TODO: Should we clear appointments when monarchy changes?
+            throw new GameException('You cannot appoint yourself to a seat on the royal court.');
+        }
+
+        $appointments = $this->governmentHelper->getCourtAppointments();
+        // Validate role
+        if (!$appointments->map(function ($item) { return $item['key']; })->contains($role)) {
+            throw new GameException('Invalid role selection.');
+        }
+
+        $roleAttr = "{$role}_dominion_id";
+        $currentDominionId = $dominion->realm->{$roleAttr};
+        // No change
+        if ($appointee->id == $currentDominionId) {
+            throw new GameException('Appointee already holds that position.');
+        }
+
+        // Validate realm
+        if ($dominion->realm_id !== $appointee->realm_id) {
+            throw new GameException('You can only appoint dominions from your own realm.');
+        }
+
+        // Check cooldown
+        $history = History::where('realm_id', $dominion->realm_id)
+            ->where('created_at', '>', now()->subHours(72))
+            ->where('event', 'appointed ' . $role)
+            ->count();
+        if ($history > 0) {
+            throw new GameException("You cannot change your {$role} for 72 hours.");
+        }
+
+        // Clear previous role
+        foreach ($appointments as $appointment) {
+            $attr = "{$appointment['key']}_dominion_id";
+            if ($dominion->realm->{$attr} == $appointee->id) {
+                throw new GameException('Each dominion can only hold one seat on the royal court.');
+            }
+        }
+
+        $dominion->realm->{$roleAttr}= $appointee->id;
+        $dominion->realm->save([
+            'event' => 'appointed ' . $role,
+            'monarch_dominion_id' => $dominion->id,
+            $roleAttr => $appointee->id
+        ]);
     }
 
     /**
@@ -118,8 +194,8 @@ class GovernmentActionService
 
         $this->guardGraveyardRealm($target);
 
-        if (!$dominion->isMonarch()) {
-            throw new GameException('Only the monarch can declare war.');
+        if (!$dominion->isMonarch() && !$dominion->isGeneral()) {
+            throw new GameException('Only the monarch or general can declare war.');
         }
 
         if ($dominion->realm->id == $target->id) {
@@ -208,8 +284,8 @@ class GovernmentActionService
         $this->guardLockedDominion($dominion);
         $this->guardGraveyardRealm($dominion->realm);
 
-        if (!$dominion->isMonarch()) {
-            throw new GameException('Only the monarch can declare war.');
+        if (!$dominion->isMonarch() && !$dominion->isGeneral()) {
+            throw new GameException('Only the monarch or general can declare war.');
         }
 
         $war = $this->governmentService->getWarsEngaged($dominion->realm->warsOutgoing)->first();

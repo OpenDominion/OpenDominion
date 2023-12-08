@@ -471,6 +471,16 @@ class Dominion extends AbstractModel
     }
 
     /**
+     * Returns the choice for monarch of a Dominion.
+     *
+     * @return Dominion
+     */
+    public function monarchVote()
+    {
+        return $this->hasOne(static::class, 'id', 'monarchy_vote_for_dominion_id');
+    }
+
+    /**
      * Returns whether this Dominion is the monarch for its realm.
      *
      * @return bool
@@ -482,13 +492,87 @@ class Dominion extends AbstractModel
     }
 
     /**
-     * Returns the choice for monarch of a Dominion.
+     * Returns whether this Dominion is the general for its realm.
      *
-     * @return Dominion
+     * @return bool
      */
-    public function monarchVote()
+    public function isGeneral()
     {
-        return $this->hasOne(static::class, 'id', 'monarchy_vote_for_dominion_id');
+        $general = $this->realm->general;
+        return ($general !== null && $this->id == $general->id);
+    }
+
+    /**
+     * Returns whether this Dominion is the magister for its realm.
+     *
+     * @return bool
+     */
+    public function isMagister()
+    {
+        $magister = $this->realm->magister;
+        return ($magister !== null && $this->id == $magister->id);
+    }
+
+    /**
+     * Returns whether this Dominion is the mage for its realm.
+     *
+     * @return bool
+     */
+    public function isMage()
+    {
+        $mage = $this->realm->mage;
+        return ($mage !== null && $this->id == $mage->id);
+    }
+
+    /**
+     * Returns whether this Dominion is the jester for its realm.
+     *
+     * @return bool
+     */
+    public function isJester()
+    {
+        $jester = $this->realm->jester;
+        return ($jester !== null && $this->id == $jester->id);
+    }
+
+    /**
+     * Returns whether this Dominion holds any poisition in its realm.
+     *
+     * @return bool
+     */
+    public function isCourtMember()
+    {
+        return (
+            $this->isMonarch() ||
+            $this->isGeneral() ||
+            $this->isMagister() ||
+            $this->isMage() ||
+            $this->isJester()
+        );
+    }
+
+    /**
+     * Returns the key for the court seat held by a Dominion.
+     *
+     * @return bool
+     */
+    public function getCourtSeat()
+    {
+        if ($this->isMonarch()) {
+            return 'monarch';
+        }
+        if ($this->isGeneral()) {
+            return 'general';
+        }
+        if ($this->isMagister()) {
+            return 'magister';
+        }
+        if ($this->isMage()) {
+            return 'mage';
+        }
+        if ($this->isJester()) {
+            return 'jester';
+        }
     }
 
     /**

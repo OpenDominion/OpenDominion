@@ -8,9 +8,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Automated Actions
   - You may now schedule up to 2 actions in advance, resets each day
   - Train, explore, construct, and cast spells (excluding Ares' Call and Fool's Gold)
+- The Royal Court
+  - The monarch can appoint members of the realm to positions of power
+  - The General has the power to declare war
+  - The Grand Magister and Court Mage can cast friendly spells
+  - The Court Jester can change the realm name
 - Friendly Spells
   - Beneficial duration spells that can be cast on realmies
   - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt
+  - Arcane Ward: +10% defensive wizard power, 6 hour duration, 3 hour cooldown
+  - Illumination: +10% defensive spy power, 6 hour duration, 3 hour cooldown
 - Added checkboxes to exclude units entirely or just incoming units in the Calculators
 - A new General Calculator has been added when directly navigating to the Calculators page
 - At the hour change, a red border will appear around the screen

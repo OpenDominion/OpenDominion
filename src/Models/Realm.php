@@ -11,6 +11,10 @@ use OpenDominion\Services\Realm\HistoryService;
  * @property int $id
  * @property int $round_id
  * @property int|null $monarch_dominion_id
+ * @property int|null $general_dominion_id
+ * @property int|null $magister_dominion_id
+ * @property int|null $mage_dominion_id
+ * @property int|null $jester_dominion_id
  * @property string $alignment
  * @property int $number
  * @property string|null $name
@@ -28,6 +32,10 @@ use OpenDominion\Services\Realm\HistoryService;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Wonder[] $wonders
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm\History[] $history
  * @property-read \OpenDominion\Models\Dominion $monarch
+ * @property-read \OpenDominion\Models\Dominion $general
+ * @property-read \OpenDominion\Models\Dominion $magister
+ * @property-read \OpenDominion\Models\Dominion $mage
+ * @property-read \OpenDominion\Models\Dominion $jester
  * @property-read \OpenDominion\Models\Round $round
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Realm newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Realm newQuery()
@@ -73,6 +81,26 @@ class Realm extends AbstractModel
     public function monarch()
     {
         return $this->hasOne(Dominion::class, 'id', 'monarch_dominion_id');
+    }
+
+    public function general()
+    {
+        return $this->hasOne(Dominion::class, 'id', 'general_dominion_id');
+    }
+
+    public function magister()
+    {
+        return $this->hasOne(Dominion::class, 'id', 'magister_dominion_id');
+    }
+
+    public function mage()
+    {
+        return $this->hasOne(Dominion::class, 'id', 'mage_dominion_id');
+    }
+
+    public function jester()
+    {
+        return $this->hasOne(Dominion::class, 'id', 'jester_dominion_id');
     }
 
     public function packs()
@@ -148,7 +176,14 @@ class Realm extends AbstractModel
         $saved = parent::save($options);
 
         if ($saved && $recordChanges) {
-            $extraAttributes = ['monarch_dominion_id', 'war_id'];
+            $extraAttributes = [
+                'monarch_dominion_id',
+                'general_dominion_id',
+                'magister_dominion_id',
+                'mage_dominion_id',
+                'jester_dominion_id',
+                'war_id'
+            ];
             foreach ($extraAttributes as $attr) {
                 if (isset($options[$attr])) {
                     $deltaAttributes[$attr] = $options[$attr];

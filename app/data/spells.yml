@@ -484,6 +484,24 @@ spell_reflect:
   category: friendly
   cost_mana: 3
   cost_strength: 4
-  duration: 6
+  duration: 3
   perks:
     spell_reflect: 1
+arcane_ward:
+  name: Arcane Ward
+  category: friendly
+  cost_mana: 3
+  cost_strength: 4
+  duration: 6
+  cooldown: 3
+  perks:
+    wizard_power_defensive: 10
+illumination:
+  name: Illumination
+  category: friendly
+  cost_mana: 3
+  cost_strength: 4
+  duration: 6
+  cooldown: 3
+  perks:
+    spy_power_defensive: 10

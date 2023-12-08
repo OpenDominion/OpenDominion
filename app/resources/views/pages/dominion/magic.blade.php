@@ -183,21 +183,14 @@
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
                                                                 class="btn btn-primary btn-block friendly-spell disabled"
-                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                                {{ !($selectedDominion->isMagister() || $selectedDominion->isMage()) || $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
                                                             {{ $spell->name }}
                                                         </button>
                                                         <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                         <small>
-                                                            @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
-                                                            @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
-                                                            @endif
+                                                            Mana cost: <span class="text-{{ $canCast ? 'success' : 'danger' }}">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
                                                             @if ($spell->duration)
                                                                 Lasts {{ $spell->duration }} hours<br/>
-                                                            @endif
-                                                            @if (!empty($spell->races))
-                                                                Racial<br/>
                                                             @endif
                                                         </small>
                                                     </div>
@@ -281,7 +274,8 @@
                     <p>Self spells last for <b>12 hours</b>, unless stated otherwise while Black Op spells last for <b>8 hours</b> outside of war, <b>10 hours</b> when at war, and <b>12 hours</b> when at mutual war.</p>
                     <p>Any obtained data after successfully casting an information gathering spell gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
                     <p>War and black ops cannot be performed until the 4th day of the round.<p>
-                    <p>Casting spells spends some wizard strength (2% for info, otherwise 5%), but it regenerates 4% every hour. You may only cast spells at or above 30% strength.</p>
+                    <p><b>Friendly spells</b> can only be cast by your realm's Grand Magister or Court Mage.</p>
+                    <p>Casting spells spends some wizard strength (2% for info, 4% for friendly, otherwise 5%), but it regenerates 4% every hour. You may only cast spells at or above 30% strength.</p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ sprintf("%.4g", $selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>
             </div>

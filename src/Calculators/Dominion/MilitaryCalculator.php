@@ -949,6 +949,12 @@ class MilitaryCalculator
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('spy_power');
 
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('spy_power');
+        if ($type == 'defense') {
+            $multiplier += $dominion->getSpellPerkMultiplier('spy_power_defense');
+        }
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('spy_power');
         if ($type == 'defense') {
@@ -1039,6 +1045,9 @@ class MilitaryCalculator
 
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('wizard_power');
+        if ($type == 'defense') {
+            $multiplier += $dominion->getSpellPerkMultiplier('wizard_power_defense');
+        }
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('wizard_power');

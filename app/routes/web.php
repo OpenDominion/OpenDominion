@@ -216,6 +216,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Government
             $router->get('government')->uses('Dominion\GovernmentController@getIndex')->name('government');
             $router->post('government/monarch')->uses('Dominion\GovernmentController@postMonarch')->name('government.monarch');
+            $router->post('government/appointments')->uses('Dominion\GovernmentController@postAppointments')->name('government.appointments');
             $router->post('government/realm')->uses('Dominion\GovernmentController@postRealm')->name('government.realm');
             $router->post('government/royal-guard/join')->uses('Dominion\GovernmentController@postJoinRoyalGuard')->name('government.royal-guard.join');
             $router->post('government/elite-guard/join')->uses('Dominion\GovernmentController@postJoinEliteGuard')->name('government.elite-guard.join');

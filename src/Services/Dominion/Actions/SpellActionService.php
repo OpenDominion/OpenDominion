@@ -472,6 +472,10 @@ class SpellActionService
      */
     protected function castFriendlySpell(Dominion $dominion, Spell $spell, Dominion $target): array
     {
+        if (!$dominion->isMagister() && !$dominion->isMage()) {
+            throw new GameException('Only the Grand Magister or Court Mage of your realm can cast friendly spells.');
+        }
+
         if ($dominion->id == $target->id) {
             throw new GameException('You cannot cast friendly spells on yourself');
         }

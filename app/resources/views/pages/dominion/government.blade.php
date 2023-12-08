@@ -11,11 +11,11 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        @if ($selectedDominion->isMonarch())
+                        @if ($selectedDominion->isMonarch() || $selectedDominion->isJester())
                             <div class="col-md-12">
                                 <form action="{{ route('dominion.government.realm') }}" method="post" role="form">
                                     @csrf
-                                    <label for="realm_name">Realm Message</label>
+                                    <label for="realm_motd">Realm Message</label>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="form-group">
@@ -51,7 +51,7 @@
                                 <div class="row">
                                     <div class="col-sm-8 col-lg-10">
                                         <div class="form-group">
-                                            <select name="monarch" id="monarch" class="form-control select2" required style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <select name="monarch" id="monarch" class="form-control select2 dominion_list" required style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 <option></option>
                                                 @foreach ($dominions as $dominion)
                                                     <option value="{{ $dominion->id }}"
@@ -83,12 +83,14 @@
                                             <col>
                                             <col width="200">
                                         </colgroup>
-                                        <tr>
-                                            <th>Dominion</th>
-                                            <th>Voted for</th>
-                                            <th>Player</th>
-                                            <th>Advisors</th>
-                                        </tr>
+                                        <thead>
+                                            <tr>
+                                                <th>Dominion</th>
+                                                <th>Voted for</th>
+                                                <th>Player</th>
+                                                <th>Advisors</th>
+                                            </tr>
+                                        </thead>
                                         @php
                                             $dominionAdvisors = $selectedDominion->getSetting("realmadvisors");
                                             $realmAdvisors = $selectedDominion->user->getSetting("realmadvisors");
@@ -103,11 +105,9 @@
                                                         {{ $dominion->name }}
                                                     @endif
                                                 </td>
-                                                @if ($dominion->monarchVote)
-                                                    <td>{{ $dominion->monarchVote->name }}</td>
-                                                @else
-                                                    <td>N/A</td>
-                                                @endif
+                                                <td>
+                                                    {{ $dominion->monarchVote ? $dominion->monarchVote->name : '--' }}</td>
+                                                </td>
                                                 <td>
                                                     @if ($dominion->user_id !== null && $selectedDominion->inRealmAndSharesAdvisors($dominion) && $selectedDominion->sharesUsername($dominion))
                                                         {{ $dominion->user->display_name }}
@@ -168,6 +168,113 @@
     <div class="row">
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="ra ra-crown"></i> The Royal Court</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12 table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Role</th>
+                                        <th>Dominion</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                @foreach ($governmentHelper->getCourtAppointments() as $appointment)
+                                    @php
+                                        $appointmentRelation = $selectedDominion->realm->{$appointment['key']};
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <i class="{{ $appointment['icon'] }}"></i>
+                                            {{ $appointment['name'] }}
+                                        </td>
+                                        <td>{{ $appointmentRelation == null ? '--' : $appointmentRelation->name }}</td>
+                                        <td>{{ $appointment['description']}}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                    </div>
+                    @if ($selectedDominion->isMonarch())
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr/>
+                            </div>
+                            <div class="col-md-12">
+                                <form action="{{ route('dominion.government.appointments') }}" method="post" role="form">
+                                    @csrf
+                                    <label for="appointee">Make Appointment</label>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <div class="form-group">
+                                                <select name="appointee" id="appointee" class="form-control select2 dominion_list" style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                    <option></option>
+                                                    @foreach ($dominions as $dominion)
+                                                        @if ($dominion->id !== $selectedDominion->id)
+                                                            <option value="{{ $dominion->id }}"
+                                                                    data-race="{{ $dominion->race->name }}"
+                                                                    data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
+                                                                    data-networth="{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}"
+                                                                    data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}">
+                                                                {{ $dominion->name }} (#{{ $dominion->realm->number }})
+                                                            </option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <select name="role" id="role" class="form-control select2" style="width: 100%" data-placeholder="Select a role" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                    <option></option>
+                                                    @foreach ($governmentHelper->getCourtAppointments() as $appointment)
+                                                        @if ($appointment['key'] !== 'monarch')
+                                                            <option value="{{ $appointment['key'] }}">
+                                                                {{ $appointment['name'] }}
+                                                            </option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary btn-block" {{ (!$selectedDominion->isMonarch() || $selectedDominion->isLocked()) ? 'disabled' : null }}>
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                </div>
+                <div class="box-body">
+                    <p>The monarch of a realm may appoint fellow dominions to their royal court, who are then granted access to special abilities.</p>
+                    <p>The <b>General</b> has the power to cancel and declare wars.</p>
+                    <p>The <b>Grand Magister</b> and <b>Court Mage</b> can wield additional spells to protect the realm.</p>
+                    <p>The <b>Jester</b> can change the realm name and message.</p>
+                    <p>Appointments can only be changed once every five days.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
                 </div>
@@ -175,15 +282,17 @@
                     <div class="row">
                         <div class="col-md-12 table-responsive">
                             <table class="table table-condensed">
-                                <tr>
-                                    <th>Realm</th>
-                                    <th>Declared By</th>
-                                    <th>Declared at</th>
-                                    <th>Active at</th>
-                                    <th>Inactive at</th>
-                                    <th>War Bonus</th>
-                                    <th>&nbsp;</th>
-                                </tr>
+                                <thead>
+                                    <tr>
+                                        <th>Realm</th>
+                                        <th>Declared By</th>
+                                        <th>Declared at</th>
+                                        <th>Active at</th>
+                                        <th>Inactive at</th>
+                                        <th>War Bonus</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
                                 @foreach ($selectedDominion->realm->warsOutgoing()->active()->get() as $war)
                                     @php
                                         $activeHours = $governmentService->getHoursBeforeWarActive($war);
@@ -261,7 +370,7 @@
                                     </tr>
                                 @endforeach
                             </table>
-                            @if ($selectedDominion->isMonarch())
+                            @if ($selectedDominion->isMonarch() || $selectedDominion->isGeneral())
                                 @if ($governmentService->canDeclareWar($selectedDominion->realm))
                                     <form action="{{ route('dominion.government.war.declare') }}" method="post" role="form">
                                         @csrf
@@ -512,10 +621,11 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('#monarch').select2({
+            $('.dominion_list').select2({
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
+            $('#role').select2();
             $('#realm_number').select2();
         })(jQuery);
 
@@ -527,7 +637,6 @@
             const race = state.element.dataset.race;
             const land = state.element.dataset.land;
             const percentage = state.element.dataset.percentage;
-            const war = state.element.dataset.war;
             let difficultyClass;
 
             if (percentage >= 133) {
@@ -540,14 +649,8 @@
                 difficultyClass = 'text-gray';
             }
 
-            warStatus = '';
-            if (war == 1) {
-                warStatus = '<div class="pull-left">&nbsp;<span class="text-red">WAR</span></div>';
-            }
-
             return $(`
                 <div class="pull-left">${state.text} - ${race}</div>
-                ${warStatus}
                 <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);
