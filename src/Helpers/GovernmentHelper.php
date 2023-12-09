@@ -19,29 +19,29 @@ class GovernmentHelper
             [
                 'name' => 'General',
                 'key' => 'general',
-                'icon' => 'ra ra-warlord',
-                'icon-color' => 'primary',
+                'icon' => 'ra ra-warlord-helmet',
+                'icon-color' => 'light-blue',
                 'description' => 'Can cancel and declare war'
             ],
             [
                 'name' => 'Grand Magister',
                 'key' => 'magister',
-                'icon' => 'ra ra-wizard-face',
-                'icon-color' => 'primary',
+                'icon' => 'ra ra-winged-scepter',
+                'icon-color' => 'light-blue',
                 'description' => 'Access to friendly spells'
             ],
             [
                 'name' => 'Court Mage',
                 'key' => 'mage',
                 'icon' => 'ra ra-wizard-face',
-                'icon-color' => 'primary',
+                'icon-color' => 'light-blue',
                 'description' => 'Access to friendly spells'
             ],
             [
                 'name' => 'Court Jester',
                 'key' => 'jester',
                 'icon' => 'ra ra-jester-hat',
-                'icon-color' => 'primary',
+                'icon-color' => 'light-blue',
                 'description' => 'Can change realm name and message'
             ]
         ]);
