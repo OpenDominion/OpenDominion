@@ -151,11 +151,13 @@ class GovernmentActionService
 
         // Check cooldown
         $history = History::where('realm_id', $dominion->realm_id)
-            ->where('created_at', '>', now()->subHours(72))
+            ->where('created_at', '>', now()->subHours(72)->startOfHour())
             ->where('event', 'appointed ' . $role)
-            ->count();
-        if ($history > 0) {
-            throw new GameException("You cannot change your {$role} for 72 hours.");
+            ->orderByDesc('created_at')
+            ->first();
+        if ($history !== null) {
+            $hoursRemaining = 72 - now()->diffInHours($history->created_at);
+            throw new GameException("You cannot appoint a new {$role} for {$hoursRemaining} more hours.");
         }
 
         // Clear previous role

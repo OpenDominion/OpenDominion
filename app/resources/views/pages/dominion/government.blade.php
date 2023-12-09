@@ -188,7 +188,7 @@
                                     @endphp
                                     <tr>
                                         <td>
-                                            <i class="{{ $appointment['icon'] }}"></i>
+                                            <i class="{{ $appointment['icon'] }} ra-lg text-{{ $appointment['icon-color'] }}"></i>
                                             {{ $appointment['name'] }}
                                         </td>
                                         <td>{{ $appointmentRelation == null ? '--' : $appointmentRelation->name }}</td>

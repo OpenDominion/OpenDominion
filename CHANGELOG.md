@@ -14,8 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - The Grand Magister and Court Mage can cast friendly spells
   - The Court Jester can change the realm name
 - Friendly Spells
-  - Beneficial duration spells that can be cast on realmies
-  - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt
+  - Beneficial duration spells that can only be cast on realmies, available to the Grand Magister and Court Mage of a realm or between Shadow League members in the same realm
+  - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt, 3 hour duration
   - Arcane Ward: +10% defensive wizard power, 6 hour duration, 3 hour cooldown
   - Illumination: +10% defensive spy power, 6 hour duration, 3 hour cooldown
 - Added checkboxes to exclude units entirely or just incoming units in the Calculators
@@ -28,7 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fireball: now kills 5% of your target's maximum unprotected peasant population (from 2.75% of current peasants) and 2% of your target's food (from 2.75%), 30% chance to apply Burning if at war
 - Burning: new status effect (spell) with 36 hour duration, increases vulnerability to fireball by 10% of your maximum peasant population (20% in mutual war), population growth is fixed at 5% of your vulerable peasant population, stacks if applied by another realm to a maximum of 30%, applies Rejuvenation upon expiration
 - Rejuvenation: new status effect (spell) with 36 hour duration, increases population growth by 300%, reduces fireball damage by 75%, immune to Burning
-- Forest Haven: now protects 6.25% of your vulnerable peasant population per 1% owned, up to a maximum of 50% at 80% owned (was reduced fireball damage), removed assassinate wizards/disband spies protection.
+- Forest Haven: now protects 6.25% of your vulnerable peasant population per 1% owned, up to a maximum of 50% at 80% owned (was reduced fireball damage), removed assassinate wizards/disband spies protection
 - Aquaponics: now reduces duration of Burning by 6 hours (was -10% fireball damage)
 - Spires: now reduces damage only from lightning bolt (was all spells)
 - Energy Mirror: now reduces enemy spell damage by 15% and enemy spell duration by 2 hours (was 20% chance to reflect)

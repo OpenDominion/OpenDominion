@@ -473,7 +473,10 @@ class SpellActionService
     protected function castFriendlySpell(Dominion $dominion, Spell $spell, Dominion $target): array
     {
         if (!$dominion->isMagister() && !$dominion->isMage()) {
-            throw new GameException('Only the Grand Magister or Court Mage of your realm can cast friendly spells.');
+            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+            if (!$blackGuard) {
+                throw new GameException('Only the Grand Magister, Court Mage, or Shadow League members can cast friendly spells');
+            }
         }
 
         if ($dominion->id == $target->id) {
