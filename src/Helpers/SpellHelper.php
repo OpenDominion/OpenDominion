@@ -192,6 +192,7 @@ class SpellHelper
             'food_decay' => '%+g%% food decay',
             'lumber_decay' => '%+g%% lumber rot',
             'mana_decay' => '%+g%% mana drain',
+            'spy_losses' => '%s%% spy losses on failed operations',
             'spy_power' => '%+g%% spy power',
             'spy_power_defense' => '%+g%% defensive spy power',
             'wizard_power' => '%+g%% wizard power',

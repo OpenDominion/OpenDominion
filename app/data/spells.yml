@@ -307,7 +307,8 @@ frenzy:
   races:
     - halfling
   perks:
-    casualties: -40
+    spy_power: 20
+    spy_losses: -10
 howling:
   name: Howling
   category: self

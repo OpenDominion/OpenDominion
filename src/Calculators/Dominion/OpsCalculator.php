@@ -1,3 +1,4 @@
+
 <?php
 
 namespace OpenDominion\Calculators\Dominion;
@@ -185,6 +186,9 @@ class OpsCalculator
             (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildSpyCasualtyReduction),
             ($guildSpyCasualtyReductionMax / 100)
         ));
+
+        // Spells
+        $spiesKilledMultiplier += $dominion->getSpellPerkMultiplier('spy_losses');
 
         // Techs
         $spiesKilledMultiplier += $dominion->getTechPerkMultiplier('spy_losses');

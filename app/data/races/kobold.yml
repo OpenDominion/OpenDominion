@@ -17,7 +17,7 @@ perks:
 units:
   - name: Underling
     cost:
-      platinum: 300
+      platinum: 295
       ore: 25
     power:
       offense: 2.5
@@ -33,7 +33,7 @@ units:
       flavor_tunneler: 1
   - name: Taskmaster
     cost:
-      platinum: 1400
+      platinum: 1375
       ore: 0
     power:
       offense: 3
@@ -42,7 +42,7 @@ units:
       defense_from_pairing: 2,2,1 # slot, amount, num required
   - name: Overlord
     cost:
-      platinum: 1000
+      platinum: 990
       ore: 50
     power:
       offense: 3

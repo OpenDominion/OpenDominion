@@ -429,11 +429,13 @@ class PopulationCalculator
                 + $dominion->building_school
                 + $dominion->building_lumberyard
                 + $dominion->building_forest_haven
-                + $dominion->building_factory
                 + $dominion->building_guard_tower
                 + $dominion->building_shrine
                 + $dominion->building_dock
         ));
+
+        // Factories
+        $totalJobs += (5 * $dominion->building_factory);
 
         // Wonders
         $totalJobs *= (1 + $dominion->getWonderPerkMultiplier('employment'));

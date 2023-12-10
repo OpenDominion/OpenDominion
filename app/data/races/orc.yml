@@ -13,7 +13,7 @@ perks:
 units:
   - name: Savage
     cost:
-      platinum: 400
+      platinum: 385
       ore: 25
     power:
       offense: 4

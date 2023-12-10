@@ -33,6 +33,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spires: now reduces damage only from lightning bolt (was all spells)
 - Energy Mirror: now reduces enemy spell damage by 15% and enemy spell duration by 2 hours (was 20% chance to reflect)
 - Success chances for ops are now modified by you and your target's current spy/wizard strength by 1% per 10% difference (ranging from -10% to +10%)
+- Factory: construction and rezoning costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned (from 4% per 1%, max 60% at 15% owned)
+- Factory: now employs 25 peasants (instead of 20)
+- Goblin: gem investment bonus reduced to 10% (from 15%)
+- Halfling: Frenzy now increases spy power by 20% and reduces spy losses by 10% (was -40% casualties), spy power racial bonus removed (was +25% spy power)
+- Halfling Staff Master: casualties now reduced by 40%
+- Kobold Underling: -5p (from 300p)
+- Kobold Taskmaster: -25p (from 1400p)
+- Kobold Overlord: -10p (from 1000p)
+- Orc Savage: -15p (from 400p)
+- Visionary Expansionist (tech): now grants +1 population from barren land (was +15% population growth)
+- Visionary Expansionist swaps places with Urban Planner
 
 ## [1.37.2] - 2023-10-24
 ### Added
