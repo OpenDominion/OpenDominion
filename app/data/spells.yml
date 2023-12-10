@@ -506,3 +506,27 @@ illumination:
   cooldown: 3
   perks:
     spy_power_defensive: 10
+gaias_light:
+  name: Gaia's Light
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - wood-elf-rework
+  perks:
+    wizard_power: 20
+    spy_power: -10
+    immunity_gaias_shadow: 1
+gaias_shadow:
+  name: Gaia's Shadow
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - wood-elf-rework
+  perks:
+    spy_power: 20
+    wizard_power: -10
+    immunity_gaias_light: 1
