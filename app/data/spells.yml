@@ -517,7 +517,7 @@ gaias_light:
   perks:
     wizard_power: 20
     spy_power: -10
-    immunity_gaias_shadow: 1
+    cancels_gaias_shadow: 1
 gaias_shadow:
   name: Gaia's Shadow
   category: self
@@ -529,4 +529,4 @@ gaias_shadow:
   perks:
     spy_power: 20
     wizard_power: -10
-    immunity_gaias_light: 1
+    cancels_gaias_light: 1

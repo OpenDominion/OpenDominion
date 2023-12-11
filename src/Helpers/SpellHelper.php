@@ -206,8 +206,9 @@ class SpellHelper
             'apply_rejuvination' => 'Applies Rejuvenation upon expiration',
             'enemy_fireball_damage' => '%+g%% enemy fireball damage',
             'immunity_burning' => 'Immune to Burning',
-            'immunity_gaias_light' => 'Immune to Gaia\'s Light',
-            'immunity_gaias_shadow' => 'Immune to Gaia\'s Shadow',
+            'cancels_gaias_light' => 'Cancels and cancelled by Gaia\'s Light',
+            'cancels_gaias_shadow' => 'Cancels and cancelled by Gaia\'s Shadow',
+            'cancels_midas_touch' => 'Cancels and cancelled by Midas Touch',
         ];
     }
 

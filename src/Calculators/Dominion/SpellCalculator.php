@@ -135,10 +135,9 @@ class SpellCalculator
     }
 
     /**
-     * Returns whether a particular spell is affecting $dominion right now.
+     * Returns all active spells for a dominion.
      *
      * @param Dominion $dominion
-     * @param Spell $spell
      * @return bool
      */
     public function getActiveSpells(Dominion $dominion): Collection

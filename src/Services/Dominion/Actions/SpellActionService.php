@@ -22,6 +22,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Spell;
+use OpenDominion\Models\SpellPerkType;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -337,6 +338,22 @@ class SpellActionService
                 $percentage = $perk->pivot->value / 100;
                 $dominion->{$attr} -= round($dominion->{$attr} * $percentage);
             }
+
+            if (Str::startsWith($perk->key, 'cancels_')) {
+                $spellToCancel = str_replace('cancels_', '', $perk->key);
+                $activeSpells = $dominion->spells->keyBy('key');
+                if ($activeSpells->contains($spellToCancel)) {
+                    $activeSpells->get('key')->pivot->delete();
+                }
+            }
+        }
+
+        $cancelPerk = SpellPerkType::where('key', 'cancels_' . $spell->key)->first();
+        if ($cancelPerk !== null) {
+            $spellIds = $cancelPerk->spells->pluck('id');
+            DominionSpell::where('dominion_id', $dominion->id)
+                ->whereIn('spell_id', $spellIds)
+                ->delete();
         }
 
         return [
