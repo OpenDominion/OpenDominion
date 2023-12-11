@@ -517,8 +517,7 @@ gaias_light:
   races:
     - wood-elf-rework
   perks:
-    wizard_power: 20
-    spy_power: -10
+    wizard_power: 15
     cancels_gaias_shadow: 1
 gaias_shadow:
   name: Gaia's Shadow
@@ -529,6 +528,5 @@ gaias_shadow:
   races:
     - wood-elf-rework
   perks:
-    spy_power: 20
-    wizard_power: -10
+    spy_power: 15
     cancels_gaias_light: 1

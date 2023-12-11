@@ -14,28 +14,28 @@ perks:
   lumber_decay: -50
   offense: 5
 units:
-  - name: Ranger
+  - name: Leafwalker
     cost:
       platinum: 300
       lumber: 50
     power:
       offense: 3
       defense: 0
-  - name: Longbowman
+  - name: Verdant Watcher
     cost:
       platinum: 360
       lumber: 50
     power:
       offense: 0
       defense: 4
-  - name: Mystic
+  - name: Elder Treant
     cost:
       platinum: 725
       lumber: 500
     power:
       offense: 0
       defense: 7
-  - name: Druid
+  - name: Swiftblade
     cost:
       platinum: 800
       lumber: 400
