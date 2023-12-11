@@ -18,12 +18,14 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Dominion\Tick;
+use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
+use OpenDominion\Models\SpellPerkType;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
@@ -330,7 +332,7 @@ class TickService
             $dominions = collect([$dominion]);
         }
 
-        $this->convertStatusEffects($dominions->pluck('id')->all());
+        $this->performSpellEffects($dominions->pluck('id')->all());
 
         foreach ($dominions as $dominion) {
             DB::transaction(function () use ($dominion) {
@@ -614,7 +616,7 @@ class TickService
                 // Erase notifications
                 $notification->delete();
             }
-        });
+        }, 5);
 
         return true;
     }
@@ -666,19 +668,47 @@ class TickService
         }
     }
 
-    protected function convertStatusEffects(array $dominionIds)
+    protected function performSpellEffects(array $dominionIds)
     {
-        $burningSpell = Spell::where('key', 'burning')->first();
-        $rejuvinationSpell = Spell::where('key', 'rejuvination')->first();
+        DB::transaction(function () use ($dominionIds) {
+            // Convert status effects
+            $burningSpell = Spell::where('key', 'burning')->first();
+            $rejuvinationSpell = Spell::where('key', 'rejuvination')->first();
 
-        DB::table('dominion_spells')
-            ->whereIn('dominion_id', $dominionIds)
-            ->where('spell_id', $burningSpell->id)
-            ->where('duration', '<=', 0)
-            ->update([
-                'spell_id' => $rejuvinationSpell->id,
-                'duration' => $rejuvinationSpell->duration
-            ]);
+            DB::table('dominion_spells')
+                ->whereIn('dominion_id', $dominionIds)
+                ->where('spell_id', $burningSpell->id)
+                ->where('duration', '<=', 0)
+                ->update([
+                    'spell_id' => $rejuvinationSpell->id,
+                    'duration' => $rejuvinationSpell->duration
+                ]);
+
+            // Special case for Cull the Weak
+            $upgradePerk = SpellPerkType::where('key', 'upgrade_specs')->first();
+            if ($upgradePerk !== null) {
+                $baseConversion = 2;
+                $landMultiplier = 1/1000;
+                $spellIds = $upgradePerk->spells->pluck('id');
+                $dominionSpells = DominionSpell::whereIn('spell_id', $spellIds)->whereIn('dominion_id', $dominionIds)->get();
+                foreach ($dominionSpells as $dominionSpell) {
+                    $totalLand = $this->landCalculator->getTotalLand($dominionSpell->dominion);
+                    $conversions = $baseConversion + ($totalLand * $landMultiplier);
+                    $unit1 = min($conversions, $dominionSpell->dominion->military_unit1);
+                    $unit2 = min($conversions, $dominionSpell->dominion->military_unit2);
+                    // Queue elites
+                    $units = [
+                        'military_unit3' => $unit2,
+                        'military_unit4' => $unit1,
+                    ];
+                    $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
+                    // Save dominion
+                    $dominionSpell->dominion->military_unit1 -= $unit1;
+                    $dominionSpell->dominion->military_unit2 -= $unit2;
+                    $dominionSpell->save();
+                }
+            }
+        }, 5);
     }
 
     protected function cleanupActiveSpells(Dominion $dominion)

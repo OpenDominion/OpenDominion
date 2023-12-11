@@ -342,18 +342,10 @@ class SpellActionService
             if (Str::startsWith($perk->key, 'cancels_')) {
                 $spellToCancel = str_replace('cancels_', '', $perk->key);
                 $activeSpells = $dominion->spells->keyBy('key');
-                if ($activeSpells->contains($spellToCancel)) {
-                    $activeSpells->get('key')->pivot->delete();
+                if ($activeSpells->has($spellToCancel)) {
+                    $activeSpells->get($spellToCancel)->pivot->delete();
                 }
             }
-        }
-
-        $cancelPerk = SpellPerkType::where('key', 'cancels_' . $spell->key)->first();
-        if ($cancelPerk !== null) {
-            $spellIds = $cancelPerk->spells->pluck('id');
-            DominionSpell::where('dominion_id', $dominion->id)
-                ->whereIn('spell_id', $spellIds)
-                ->delete();
         }
 
         return [

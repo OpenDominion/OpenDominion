@@ -42,6 +42,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Kobold Taskmaster: -25p (from 1400p)
 - Kobold Overlord: -10p (from 1000p)
 - Orc Savage: -15p (from 400p)
+- Undead: Cull the Weak now kills up to 2 Skeletons and 2 Ghouls (plus 1 each per 1000 acres) every hour, re-queueing them as Necromancers and Death Knights, cancels and is cancelled by Midas Touch
+- Undead Necromancer: now always convert Death Knights (from Ghouls when Cull the Weak was inactive)
 - Visionary Expansionist (tech): now grants +1 population from barren land (was +15% population growth)
 - Visionary Expansionist swaps places with Urban Planner
 

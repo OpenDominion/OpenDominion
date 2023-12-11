@@ -138,13 +138,13 @@ class SpellHelper
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
             'conversion_rate' => '%+g%% conversion rate',
             'conversions_range' => 'Conversions increased by %d%% against dominions in The Graveyard under 75%% of your size',
-            'conversions_necromancer' => 'Necromancers now convert enemy peasants into Death Knights instead of Ghouls',
             'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
             'kills_immortal' => 'Can kill spirits and the undead',
             'ignore_draftees' => 'Enemy draftees do not participate in battle',
             'sacrifice_peasants' => 'Sacrifice %g%% of your peasants',
             'spreads_plague' => 'afflicts your enemies with Plague',
             'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades (75%%+ range only)',
+            'upgrade_specs' => 'Sacrifice Skeletons and Ghouls to summon Death Knights and Necromancers (2 plus 1 per 1000 acres, hourly)',
 
             // Casualties related
             'casualties' => '%d%% casualties',

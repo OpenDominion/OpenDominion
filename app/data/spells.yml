@@ -118,6 +118,7 @@ midas_touch:
   duration: 12
   perks:
     platinum_production: 10
+    cancels_cull_the_weak: 1
 mining_strength:
   name: Mining Strength
   category: self
@@ -447,8 +448,9 @@ cull_the_weak:
   races:
     - undead-rework
   perks:
-    sacrifice_peasants: 1
-    conversions_necromancer: 1
+    upgrade_specs: 1
+    cancels_midas_touch: 1
+    invalid_protection: 1
 raise_the_dead:
   name: Raise the Dead
   category: self
