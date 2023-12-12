@@ -818,6 +818,9 @@ class SpellActionService
                     $peasantsProtected = $this->opsCalculator->getPeasantsProtected($target);
                     $peasantsKillable = max(0, $target->peasants - $peasantsProtected);
                     $damage = min($damage, $peasantsKillable);
+                    if ($peasantsKillable == 0) {
+                        throw new GameException("The target's peasants have all gone into hiding.");
+                    }
                 }
 
                 // Temporary lightning damage from Wizard Resilience
@@ -1153,7 +1156,7 @@ class SpellActionService
 
         // Infamy and Resilience Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
-        if ($spellKey == 'fireball' || $spellKey == 'lightning_bolt') {
+        if ($spellKey == 'lightning_bolt') {
             $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
         } else {
             $resilienceGain = 0;

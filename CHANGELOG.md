@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fireball: now kills 5% of your target's vulnerable peasant population (from 2.75% of current peasants), destroys 2% of your target's food (from 2.75%), 30% chance to apply the Burning status effect if at war
 - Burning: new status effect (spell) with 36 hour duration, population growth is fixed at 10% of your vulnerable peasant population, applies Rejuvenation upon expiration
 - Rejuvenation: new status effect (spell) with 36 hour duration, increases population growth by 300%, reduces fireball damage by 75%, immune to Burning
+- Wizard resilience no longer affects pop growth or gets increased by fireball
 - Up to 50% of your vulnerable peasant population is protected by defensive WPA
 - Forest Haven: now protects 6.25% of your vulnerable peasant population per 1% owned, up to a maximum of 50% at 80% owned (was reduced fireball damage), removed assassinate wizards/disband spies protection
 - Aquaponics: now reduces duration of Burning by 6 hours (was -10% fireball damage)
