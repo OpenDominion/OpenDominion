@@ -285,13 +285,10 @@
                                 <tr>
                                     <td>
                                         {{ $spell->name }}
-                                        @if ($spell->category == "effect")
-                                            {{ $spellHelper->getStatusEffectStacksDisplay($activeSpell) }}
-                                        @endif
                                     </td>
                                     <td>
                                         <div data-toggle="tooltip" data-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
-                                            {{ Illuminate\Support\Str::limit($spellHelper->getSpellDescription($spell)) }}
+                                            {{ $spellHelper->getSpellDescription($spell) }}
                                         </div>
                                     </td>
                                     <td class="text-center">{{ $activeSpell['duration'] }}</td>

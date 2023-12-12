@@ -9,7 +9,6 @@ namespace OpenDominion\Models;
  * @property int $spell_id
  * @property int $duration
  * @property int $cast_by_dominion_id
- * @property array $applications
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
@@ -18,8 +17,6 @@ namespace OpenDominion\Models;
 class DominionSpell extends AbstractPivot
 {
     protected $table = 'dominion_spells';
-
-    protected $casts = ['applications' => 'array'];
 
     public function dominion()
     {
@@ -34,17 +31,5 @@ class DominionSpell extends AbstractPivot
     public function spell()
     {
         return $this->belongsTo(Spell::class, 'spell_id');
-    }
-
-    public function getApplicationsAttribute($value)
-    {
-        if ($value == null) {
-            return [
-                'dominion_ids' => [],
-                'realm_ids' => [],
-            ];
-        }
-
-        return json_decode($value, JSON_OBJECT_AS_ARRAY);
     }
 }

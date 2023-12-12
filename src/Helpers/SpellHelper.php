@@ -201,7 +201,6 @@ class SpellHelper
             'scale_by_day' => 'Scales by day in round from 137.5%% to 62.5%%',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
-            'fireball_vulnerability' => 'Increases vulnerability to fireball by %g%% of your maximum peasant population per stack (max 3)',
             'fixed_population_growth' => 'Population growth is fixed at %g%% of your vulnerable peasant population',
             'apply_rejuvination' => 'Applies Rejuvenation upon expiration',
             'enemy_fireball_damage' => '%+g%% enemy fireball damage',
@@ -257,27 +256,6 @@ class SpellHelper
 
     public function getSpellType(Spell $spell) {
         return $this->getCategoryString($spell->category);
-    }
-
-    public function getStatusEffectStacks(array $applications) {
-        if (isset($applications['realm_ids'])) {
-            return count($applications['realm_ids']);
-        }
-        return 0;
-    }
-
-    public function getStatusEffectStacksDisplay(array $activeSpell) {
-        if (isset($activeSpell['applications'])) {
-            $applications = $activeSpell['applications'];
-            if (!is_array($applications)) {
-                $applications = json_decode($applications, JSON_OBJECT_AS_ARRAY);
-            }
-            $stacks = $this->getStatusEffectStacks($applications);
-            if ($stacks > 1) {
-                return " - {$stacks}x";
-            }
-        }
-        return '';
     }
 
     public function obfuscateInfoOps(array $infoOps) {

@@ -756,7 +756,6 @@ class SpellActionService
 
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(
-                    'fireball_vulnerability',
                     'fixed_population_growth',
                     'scale_by_day'
                 );
@@ -774,18 +773,7 @@ class SpellActionService
                         $statusEffectKey = Str::of($perk->key)->replace('apply_', '');
                         $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
                         $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);
-
-                        if ($statusEffectActiveSpell !== null) {
-                            $applications = $statusEffectActiveSpell->pivot->applications;
-                            if (!in_array($dominion->id, $applications['dominion_ids'])) {
-                                $applications['dominion_ids'][] = $dominion->id;
-                            }
-                            if (!in_array($dominion->realm_id, $applications['realm_ids'])) {
-                                $applications['realm_ids'][] = $dominion->realm_id;
-                            }
-                            $statusEffectActiveSpell->pivot->applications = $applications;
-                            $statusEffectActiveSpell->pivot->save();
-                        } else {
+                        if ($statusEffectActiveSpell == null) {
                             $statusEffect = $statusEffectSpell->name;
                             $duration = $statusEffectSpell->duration + $target->getTechPerkValue("enemy_{$statusEffectKey}_duration");
                             DominionSpell::insert([
@@ -793,10 +781,6 @@ class SpellActionService
                                 'spell_id' => $statusEffectSpell->id,
                                 'duration' => $duration,
                                 'cast_by_dominion_id' => $dominion->id,
-                                'applications' => [
-                                    'dominion_ids' => [$dominion->id],
-                                    'realm_ids' => [$dominion->realm_id],
-                                ],
                             ]);
                         }
                     }

@@ -495,36 +495,11 @@ class OpsCalculator
      */
     public function getPeasantsVulnerableModifier(Dominion $dominion): float
     {
-        // Scale vulnerability from 0.1 at Day 4, to 0.2 at Day 24, to 0.3 at Day 44
+        // Scale vulnerability from 0.2 at Day 4, to 0.25 at Day 24, to 0.3 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
-        $daysModifier = (0.005 * $days) + 0.1;
+        $daysModifier = (0.0025 * $days) + 0.2;
 
-        // Increase from Burning stacks
-        $burningMultiplier = 0;
-        $vulnerabilityPerkValue = $dominion->getSpellPerkValue('fireball_vulnerability', true);
-        if ($vulnerabilityPerkValue) {
-            $burningSpell = $dominion->spells->keyBy('key')->get('burning');
-            if ($burningSpell) {
-                $applications = $burningSpell->pivot->applications;
-                $stacks = $this->spellHelper->getStatusEffectStacks($applications);
-
-                // Mutual war adds one stack
-                $mutualWar = false;
-                foreach ($applications['realm_ids'] as $realm_id) {
-                    if ($this->governmentService->isAtMutualWar($dominion->realm, Realm::find($realm_id))) {
-                        $mutualWar = true;
-                    }
-                }
-                if ($mutualWar) {
-                    $stacks += 1;
-                }
-
-                // Total stacks limited to three
-                $burningMultiplier = min(3, $stacks) * $vulnerabilityPerkValue / 100;
-            }
-        }
-
-        return $burningMultiplier + $daysModifier;
+        return $daysModifier;
     }
 
     /*

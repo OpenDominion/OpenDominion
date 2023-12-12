@@ -469,8 +469,7 @@ burning:
   cost_strength: 0
   duration: 36
   perks:
-    fireball_vulnerability: 10
-    fixed_population_growth: 5
+    fixed_population_growth: 10
     apply_rejuvination: 1
 rejuvination:
   name: Rejuvination

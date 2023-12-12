@@ -23,11 +23,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - At the hour change, a red border will appear around the screen
 
 ### Changed
-- A percentage of your peasant population is now invulnerable to fireball damage (scales down during the round from 90% on Day 4 to 70% on Day 44)
-- Up to 50% of your vulnerable peasant population is protected by defensive WPA
-- Fireball: now kills 5% of your target's maximum unprotected peasant population (from 2.75% of current peasants) and 2% of your target's food (from 2.75%), 30% chance to apply Burning if at war
-- Burning: new status effect (spell) with 36 hour duration, increases vulnerability to fireball by 10% of your maximum peasant population (20% in mutual war), population growth is fixed at 5% of your vulerable peasant population, stacks if applied by another realm to a maximum of 30%, applies Rejuvenation upon expiration
+- A portion of your peasants are safeguarded from being killed by fireballs, the percentage of peasants that are vulnerable to fireball starts at 20% on Day 4 and increases by 0.25% per day to a maximum of 30% vulnerable on Day 44
+- Fireball: now kills 5% of your target's vulnerable peasant population (from 2.75% of current peasants), destroys 2% of your target's food (from 2.75%), 30% chance to apply the Burning status effect if at war
+- Burning: new status effect (spell) with 36 hour duration, population growth is fixed at 10% of your vulnerable peasant population, applies Rejuvenation upon expiration
 - Rejuvenation: new status effect (spell) with 36 hour duration, increases population growth by 300%, reduces fireball damage by 75%, immune to Burning
+- Up to 50% of your vulnerable peasant population is protected by defensive WPA
 - Forest Haven: now protects 6.25% of your vulnerable peasant population per 1% owned, up to a maximum of 50% at 80% owned (was reduced fireball damage), removed assassinate wizards/disband spies protection
 - Aquaponics: now reduces duration of Burning by 6 hours (was -10% fireball damage)
 - Spires: now reduces damage only from lightning bolt (was all spells)
