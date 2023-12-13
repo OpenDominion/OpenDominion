@@ -683,10 +683,7 @@ class SpellActionService
 
             $damageDealtString = '';
             $warRewardsString = '';
-            if (!$spellReflected && $durationAdded > 0 && (
-                $this->spellHelper->isWarSpell($spell) ||
-                ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
-            )) {
+            if ($blackGuard && !$spellReflected && $durationAdded > 0) {
                 $modifier = min(1, $durationAdded / 9);
                 $results = $this->handleWarResults($dominion, $target, $spell->key, $durationAdded / 9);
                 $warRewardsString = $results['warRewards'];
@@ -823,9 +820,10 @@ class SpellActionService
                     }
                 }
 
-                // Temporary lightning damage from Wizard Resilience
+                // Temporary lightning damage
+                /*
                 if (Str::startsWith($attr, 'improvement_')) {
-                    $amount = round($damage * (0.1 + $target->wizard_resilience / 4000));
+                    $amount = round($damage / 2);
                     if ($amount > 0) {
                         $this->queueService->queueResources(
                             'operations',
@@ -835,6 +833,7 @@ class SpellActionService
                         );
                     }
                 }
+                */
 
                 // Immortal Wizards
                 if ($attr == 'military_wizards' && $target->race->getPerkValue('immortal_wizards') != 0) {
@@ -881,10 +880,7 @@ class SpellActionService
             }
 
             $warRewardsString = '';
-            if (!$spellReflected && $totalDamage > 0 && (
-                $this->spellHelper->isWarSpell($spell) ||
-                ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
-            )) {
+            if ($blackGuard && !$spellReflected && $totalDamage > 0) {
                 $results = $this->handleWarResults($dominion, $target, $spell->key);
                 $warRewardsString = $results['warRewards'];
                 if ($results['damageDealt'] !== '') {
@@ -1154,26 +1150,13 @@ class SpellActionService
         $damageDealtString = '';
         $warRewardsString = '';
 
-        // Infamy and Resilience Gains
+        // Infamy Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
-        if ($spellKey == 'lightning_bolt') {
-            $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
-        } else {
-            $resilienceGain = 0;
-        }
-
-        // Mutual War
-        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
-        if ($mutualWarDeclared) {
-            $infamyGain = round(1.2 * $infamyGain);
-            $resilienceGain = round(0.5 * $resilienceGain);
-        }
 
         if ($dominion->infamy + $infamyGain > 1000) {
             $infamyGain = max(0, 1000 - $dominion->infamy);
         }
         $dominion->infamy += $infamyGain;
-        $target->wizard_resilience += $resilienceGain;
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);
