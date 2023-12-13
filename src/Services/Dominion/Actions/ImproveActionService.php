@@ -49,10 +49,10 @@ class ImproveActionService
             $points = floor($amount * $worth[$resource] * $multiplier);
 
             $dominion->{"improvement_{$improvementType}"} += $points;
+            $dominion->stat_total_investment += $points;
             $result[$improvementType] = $points;
         }
 
-        $totalImprovements = $improvementCalculator->getImprovementTotal($dominion);
         $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
         $dominion->{'stat_total_' . $resource . '_spent_investment'} += $totalResourcesToInvest;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);

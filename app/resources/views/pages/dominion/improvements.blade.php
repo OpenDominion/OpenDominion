@@ -57,11 +57,12 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                @php $currentTotal = $improvementCalculator->getImprovementTotal($selectedDominion); @endphp
                                 <tr>
                                     <td>Total</td>
                                     <td></td>
                                     <td class="text-center">
-                                        {{ number_format($improvementCalculator->getImprovementTotal($selectedDominion)) }}
+                                        {{ number_format($currentTotal) }}
                                     </td>
                                     <td></td>
                                 </tr>
@@ -97,6 +98,9 @@
                     <p>Invest resources in your castle to improve certain parts of your dominion. Improving processes <b>instantly</b>.</p>
                     <p>Resources are converted to points. Each gem is worth 12 points, lumber and ore are worth 2 points and platinum is worth 1 point.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_lumber) }} lumber, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->resource_gems) }} {{ str_plural('gem', $selectedDominion->resource_gems) }}.</p>
+                    @if ($selectedDominion->stat_lightning_bolt_damage_received !== 0)
+                        <p>{{ number_format(($selectedDominion->stat_total_investment - $currentTotal) / $selectedDominion->stat_total_investment * 100, 2) }}% of your improvements have been destroyed by lightning bolts: {{ number_format($selectedDominion->stat_total_investment - $currentTotal) }} out of {{ number_format($selectedDominion->stat_total_investment) }} invested.</p>
+                    @endif
                     @if ($selectedDominion->building_masonry > 0)
                         <p>Masonries are increasing your castle improvements by {{ number_format(($improvementCalculator->getImprovementMultiplier($selectedDominion) - 1) * 100, 2) }}%</p>
                     @endif
