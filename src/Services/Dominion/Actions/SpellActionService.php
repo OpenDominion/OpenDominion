@@ -657,6 +657,7 @@ class SpellActionService
                 $duration += 2;
             }
             $duration += $target->getTechPerkValue('enemy_spell_duration');
+            $duration += $target->getSpellPerkValue('enemy_spell_duration');
 
             $activeSpell = $target->spells->find($spell->id);
 
