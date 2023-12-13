@@ -82,10 +82,10 @@ lightning_bolt:
   cost_mana: 3.5
   cost_strength: 5
   perks:
-    destroy_improvement_science: 0.4
-    destroy_improvement_keep: 0.4
-    destroy_improvement_forges: 0.4
-    destroy_improvement_walls: 0.4
+    destroy_improvement_science: 1.5
+    destroy_improvement_keep: 1.5
+    destroy_improvement_forges: 1.5
+    destroy_improvement_walls: 1.5
     scale_by_day: 1
 cyclone:
   name: Cyclone

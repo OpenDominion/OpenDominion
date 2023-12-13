@@ -798,9 +798,12 @@ class SpellActionService
                 }
 
                 $attrValue = $target->{$attr};
-                // Account for peasants protected from Fireball
                 if ($attr == 'peasants') {
+                    // Account for peasants protected from Fireball
                     $attrValue = $this->opsCalculator->getPeasantsUnprotected($target, $mutualWarDeclared);
+                } elseif (Str::startsWith($attr, 'improvement_')) {
+                    // Account for peasants protected from Lightning Bolt
+                    $attrValue = $this->opsCalculator->getImprovementsUnprotected($target, $mutualWarDeclared);
                 }
 
                 // Cap damage reduction at 80%
@@ -810,13 +813,20 @@ class SpellActionService
                     (1 - min(0.8, $damageReductionMultiplier))
                 );
 
-                // Cap Fireball damage by protection
                 if ($attr == 'peasants') {
+                    // Cap Fireball damage by protection
                     $peasantsProtected = $this->opsCalculator->getPeasantsProtected($target, $mutualWarDeclared);
                     $peasantsKillable = max(0, $target->peasants - $peasantsProtected);
                     $damage = min($damage, $peasantsKillable);
                     if ($peasantsKillable == 0) {
-                        throw new GameException("The target's peasants have all gone into hiding.");
+                        throw new GameException("The spell was ineffective, the target's peasants have taken cover.");
+                    }
+                } elseif (Str::startsWith($attr, 'improvement_')) {
+                    // Cap Lightning Bolt damage by protection
+                    $improvementsProtected = $this->opsCalculator->getImprovementsProtected($target, $mutualWarDeclared);
+                    $improvementsDestroyable = max(0, $this->improvementCalculator->getTotalImprovements($target) - $improvementsProtected);
+                    if ($improvementsDestroyable == 0) {
+                        throw new GameException("The spell was ineffective, the target's castle is in ruins.");
                     }
                 }
 

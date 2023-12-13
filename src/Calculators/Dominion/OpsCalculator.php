@@ -537,7 +537,7 @@ class OpsCalculator
         $vulnerable = $this->getPeasantsVulnerable($dominion, $mutualWar);
         $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
 
-        return round($vulnerable * (1 - $ratioProtection) * (1 - $forestHavenReduction));
+        return round($vulnerable / (1 - $ratioProtection));
     }
 
     /*
@@ -552,5 +552,65 @@ class OpsCalculator
         $unprotectedPeasants = $this->getPeasantsUnprotected($dominion, $mutualWar);
 
         return max(0, $maxPeasants - $unprotectedPeasants);
+    }
+
+    /*
+     * Returns the percentage of total investment that is vulnerable to lightning damage
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getImprovementsVulnerableModifier(Dominion $dominion, bool $mutualWar = false): float
+    {
+        // Scale vulnerability from 0.3 at Day 4, to 0.25 at Day 24, to 0.2 at Day 44
+        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
+        $daysModifier = 0.3 - (0.0025 * $days);
+
+        // Mutual War
+        if ($mutualWar) {
+            $daysModifier += 0.05;
+        }
+
+        return $daysModifier;
+    }
+
+    /*
+     * Returns the amount of improvements that are vulnerable to lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsVulnerable(Dominion $dominion, bool $mutualWar = false): int
+    {
+        $vulnerabilityModifier = $this->getImprovementsVulnerableModifier($dominion, $mutualWar);
+
+        return round($dominion->stat_total_investment * $vulnerabilityModifier);
+    }
+
+    /*
+     * Returns the amount of improvements that are unprotected from lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsUnprotected(Dominion $dominion, bool $mutualWar = false): int
+    {
+        $vulnerable = $this->getImprovementsVulnerable($dominion, $mutualWar);
+        $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
+
+        return round($vulnerable * (1 - $ratioProtection));
+    }
+
+    /*
+     * Returns the amount of improvements that are protected from lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsProtected(Dominion $dominion, bool $mutualWar = false): int
+    {
+        $unprotectedImprovements = $this->getImprovementsUnprotected($dominion, $mutualWar);
+
+        return max(0, $dominion->stat_total_investment - $unprotectedImprovements);
     }
 }
