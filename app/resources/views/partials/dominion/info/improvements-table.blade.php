@@ -19,11 +19,11 @@
                     <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
                 </td>
                 <td>
-                    {{ sprintf(
+                    {!! sprintf(
                         $improvementHelper->getImprovementRatingString($improvementType),
                         number_format((array_get($data, "{$improvementType}.rating") * 100), 2),
-                        number_format((array_get($data, "{$improvementType}.rating") * 100 * 1.25), 2)
-                    ) }}
+                        number_format((array_get($data, "{$improvementType}.rating", true) * 100), 2)
+                    ) !!}
                 </td>
                 <td class="text-center">
                     {{ number_format(array_get($data, "{$improvementType}.points")) }}

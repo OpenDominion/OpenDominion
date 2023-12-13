@@ -32,11 +32,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lightning Bolt: now kills 1.5% of your target's vulnerable improvements (from 0.4% of current improvements)
 - Up to 50% of your vulnerable peasant population and castle improvements are protected by defensive WPA (remains as damage reduction for all other ops), scaling changed to be more impactful early and less so as you approach the cap (formula in wiki)
 - Spell vulnerability increased by 5% in mutual war
+- Spires: now protects up to 30% of your vulnerable peasant population and castle improvements (from up to 60% spell damage reduction), protection not affected by Masonries
 - Energy Mirror: now reduces enemy spell damage by 15% and enemy spell duration by 2 hours (was 20% chance to reflect)
 - Wizard resilience removed
 - Forest Havens removed
-- Infamy and Mastery can now only be gained in the Shadow League
 - Success chances for ops are now modified by you and your target's current spy/wizard strength by 1% per 10% difference (ranging from -10% to +10%)
+- Infamy and Mastery can now only be gained in the Shadow League
 - Factory: construction and rezoning costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned (from 4% per 1%, max 60% at 15% owned)
 - Factory: now employs 25 peasants (instead of 20)
 - Goblin: gem investment bonus reduced to 10% (from 15%)

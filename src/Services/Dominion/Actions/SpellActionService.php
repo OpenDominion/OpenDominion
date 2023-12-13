@@ -792,11 +792,6 @@ class SpellActionService
                 }
                 $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
-                // Improvement: Spires
-                if (Str::startsWith($attr, 'improvement_')) {
-                    $damageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'spires');
-                }
-
                 $attrValue = $target->{$attr};
                 if ($attr == 'peasants') {
                     // Account for peasants protected from Fireball

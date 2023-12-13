@@ -33,6 +33,9 @@ class OpsCalculator
     /** @var GuardMembershipService */
     protected $guardMembershipService;
 
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
+
     /** @var LandCalculator */
     private $landCalculator;
 
@@ -53,6 +56,7 @@ class OpsCalculator
      *
      * @param GovernmentService $governmentService
      * @param GuardMembershipService $guardMembershipService
+     * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param PopulationCalculator $populationCalculator
@@ -62,6 +66,7 @@ class OpsCalculator
     public function __construct(
         GovernmentService $governmentService,
         GuardMembershipService $guardMembershipService,
+        ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         PopulationCalculator $populationCalculator,
@@ -71,6 +76,7 @@ class OpsCalculator
     {
         $this->governmentService = $governmentService;
         $this->guardMembershipService = $guardMembershipService;
+        $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->populationCalculator = $populationCalculator;
@@ -536,8 +542,9 @@ class OpsCalculator
     {
         $vulnerable = $this->getPeasantsVulnerable($dominion, $mutualWar);
         $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
+        $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
 
-        return round($vulnerable / (1 - $ratioProtection));
+        return round($vulnerable * (1 - $ratioProtection - $spiresProtection));
     }
 
     /*
@@ -597,8 +604,9 @@ class OpsCalculator
     {
         $vulnerable = $this->getImprovementsVulnerable($dominion, $mutualWar);
         $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
+        $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
 
-        return round($vulnerable * (1 - $ratioProtection));
+        return round($vulnerable * (1 - $ratioProtection - $spiresProtection));
     }
 
     /*

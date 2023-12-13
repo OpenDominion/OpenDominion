@@ -23,7 +23,7 @@
                                 <tr>
                                     <th>Part</th>
                                     <th>Rating</th>
-                                    <th class="text-center">Invested <span class="text-muted small">(Incoming)</span></th>
+                                    <th class="text-center">Invested<!-- <span class="text-muted small">(Incoming)</span>--></th>
                                     <th class="text-center">Invest</th>
                                 </tr>
                             </thead>
@@ -35,11 +35,11 @@
                                             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
                                         </td>
                                         <td>
-                                            {{ sprintf(
+                                            {!! sprintf(
                                                 $improvementHelper->getImprovementRatingString($improvementType),
                                                 number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType) * 100, 2),
-                                                number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType) * 100 * 1.25, 2)
-                                            ) }}
+                                                number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType, true) * 100, 2)
+                                            ) !!}
                                         </td>
                                         <td class="text-center">
                                             {{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}
