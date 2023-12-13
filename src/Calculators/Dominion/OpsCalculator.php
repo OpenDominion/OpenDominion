@@ -283,14 +283,18 @@ class OpsCalculator
         if ($type == 'spy') {
             $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
             $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
+            $selfStrength = $dominion->spy_strength;
+            $targetStrength = $target->spy_strength;
         } elseif ($type == 'wizard') {
             $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
             $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
+            $selfStrength = $dominion->wizard_strength;
+            $targetStrength = $target->wizard_strength;
         } else {
             return 0;
         }
 
-        $successRate = $this->blackOperationSuccessChance($selfRatio, $targetRatio);
+        $successRate = $this->blackOperationSuccessChance($selfRatio, $targetRatio, $selfStrength, $targetStrength);
         if ($successRate < 0.7 && $successRate >= 0.6) {
             $infamy += 15;
         } elseif ($successRate < 0.6 && $successRate >= 0.5) {
@@ -410,8 +414,9 @@ class OpsCalculator
         // Scale ratio required from 0.5 at Day 4, to 1.0 at Day 24, to 1.5 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
         $daysModifier = (0.025 * $days) + 0.5;
+        $modifiedRatio = $ratio / $daysModifier;
 
-        return min(0.5, $ratio / $daysModifier / 2);
+        return min(0.5, 0.72 * log(1 + 4 * $modifiedRatio, 10));
     }
 
     /**
@@ -526,14 +531,6 @@ class OpsCalculator
     {
         $vulnerable = $this->getPeasantsVulnerable($dominion);
         $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
-
-        // Fireball protection from Forest Havens
-        $forestHavenReduction = 6.25;
-        $forestHavenReductionMax = 50;
-        $forestHavenProtection = min(
-            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenReduction),
-            ($forestHavenReductionMax / 100)
-        );
 
         return round($vulnerable * (1 - $ratioProtection) * (1 - $forestHavenReduction));
     }

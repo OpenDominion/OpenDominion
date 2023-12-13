@@ -469,7 +469,7 @@ burning:
   cost_strength: 0
   duration: 36
   perks:
-    fixed_population_growth: 10
+    fixed_population_growth: 8
     apply_rejuvination: 1
 rejuvination:
   name: Rejuvination
@@ -478,7 +478,7 @@ rejuvination:
   cost_strength: 0
   duration: 36
   perks:
-    population_growth: 300
+    population_growth: 200
     enemy_fireball_damage: -75
     immunity_burning: 1
 spell_reflect:
