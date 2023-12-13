@@ -800,7 +800,7 @@ class SpellActionService
                 $attrValue = $target->{$attr};
                 // Account for peasants protected from Fireball
                 if ($attr == 'peasants') {
-                    $attrValue = $this->opsCalculator->getPeasantsUnprotected($target);
+                    $attrValue = $this->opsCalculator->getPeasantsUnprotected($target, $mutualWarDeclared);
                 }
 
                 // Cap damage reduction at 80%
@@ -812,7 +812,7 @@ class SpellActionService
 
                 // Cap Fireball damage by protection
                 if ($attr == 'peasants') {
-                    $peasantsProtected = $this->opsCalculator->getPeasantsProtected($target);
+                    $peasantsProtected = $this->opsCalculator->getPeasantsProtected($target, $mutualWarDeclared);
                     $peasantsKillable = max(0, $target->peasants - $peasantsProtected);
                     $damage = min($damage, $peasantsKillable);
                     if ($peasantsKillable == 0) {

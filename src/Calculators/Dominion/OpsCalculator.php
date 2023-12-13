@@ -498,11 +498,16 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getPeasantsVulnerableModifier(Dominion $dominion): float
+    public function getPeasantsVulnerableModifier(Dominion $dominion, bool $mutualWar = false): float
     {
         // Scale vulnerability from 0.2 at Day 4, to 0.25 at Day 24, to 0.3 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
         $daysModifier = (0.0025 * $days) + 0.2;
+
+        // Mutual War
+        if ($mutualWar) {
+            $daysModifier += 0.05;
+        }
 
         return $daysModifier;
     }
@@ -513,10 +518,10 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getPeasantsVulnerable(Dominion $dominion): int
+    public function getPeasantsVulnerable(Dominion $dominion, bool $mutualWar = false): int
     {
         $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
-        $vulnerabilityModifier = $this->getPeasantsVulnerableModifier($dominion);
+        $vulnerabilityModifier = $this->getPeasantsVulnerableModifier($dominion, $mutualWar);
 
         return round($maxPeasants * $vulnerabilityModifier);
     }
@@ -527,9 +532,9 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getPeasantsUnprotected(Dominion $dominion): int
+    public function getPeasantsUnprotected(Dominion $dominion, bool $mutualWar = false): int
     {
-        $vulnerable = $this->getPeasantsVulnerable($dominion);
+        $vulnerable = $this->getPeasantsVulnerable($dominion, $mutualWar);
         $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
 
         return round($vulnerable * (1 - $ratioProtection) * (1 - $forestHavenReduction));
@@ -541,10 +546,10 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getPeasantsProtected(Dominion $dominion): int
+    public function getPeasantsProtected(Dominion $dominion, bool $mutualWar = false): int
     {
         $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
-        $unprotectedPeasants = $this->getPeasantsUnprotected($dominion);
+        $unprotectedPeasants = $this->getPeasantsUnprotected($dominion, $mutualWar);
 
         return max(0, $maxPeasants - $unprotectedPeasants);
     }
