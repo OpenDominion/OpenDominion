@@ -76,7 +76,7 @@
                                                             @csrf
                                                             <input type="hidden" name="tick" value="{{ $tick }}" />
                                                             <input type="hidden" name="key" value="{{ $index }}" />
-                                                            <button class="btn btn-link no-padding pull-right" type="submit">
+                                                            <button class="btn btn-link no-padding pull-right" type="submit" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                                 <i class="fa fa-trash text-danger"></i>
                                                             </button>
                                                         </form>
@@ -94,7 +94,7 @@
                                 @csrf
                                 <div class="form-group">
                                     Tick:
-                                    <select class="form-control" name="tick">
+                                    <select class="form-control" name="tick" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @foreach (range(1, 8) as $hours)
                                             <option value="{{ $currentTick + $hours }}">
                                                 Day {{ $selectedDominion->round->daysInRound(now()->addHours($hours)) }},
@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="form-group">
                                     Action:
-                                    <select class="form-control" name="action">
+                                    <select class="form-control" name="action" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option value="train">Train Military</option>
                                         <option value="construct">Construct Buildings</option>
                                         <option value="explore">Explore Land</option>
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="form-group action-options train">
                                     Unit:
-                                    <select class="form-control" name="key">
+                                    <select class="form-control" name="key" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @foreach ($unitTypes as $unitType)
                                             <option value="{{ $unitType }}">
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
@@ -145,7 +145,7 @@
                                 </div>
                                 <div class="form-group action-options train construct explore">
                                     Amount:
-                                    <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" />
+                                    <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
                                 </div>
                                 <div class="form-group action-options spell" style="display: none;">
                                     Spell:
@@ -157,7 +157,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                                <button type="submit" class="btn btn-primary pull-right" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    Save
+                                </button>
                             </form>
                         </div>
                     </div>

@@ -39,7 +39,9 @@
                                         <div class="input-group">
                                             <input type="number" name="release[draftees]" class="form-control text-center" placeholder="0" min="0" max="{{ $selectedDominion->military_draftees }}" value="{{ old('release.draftees') }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             <span class="input-group-btn">
-                                                <button class="btn btn-danger release-max" type="button">Max</button>
+                                                <button class="btn btn-danger release-max" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                    Max
+                                                </button>
                                             </span>
                                         </div>
                                     </td>
