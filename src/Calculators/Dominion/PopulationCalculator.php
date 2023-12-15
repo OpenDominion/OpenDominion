@@ -440,7 +440,7 @@ class PopulationCalculator
         ));
 
         // Factories
-        $totalJobs += (5 * $dominion->building_factory);
+        $totalJobs += (25 * $dominion->building_factory);
 
         // Wonders
         $totalJobs *= (1 + $dominion->getWonderPerkMultiplier('employment'));
