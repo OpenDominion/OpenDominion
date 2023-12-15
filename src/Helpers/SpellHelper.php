@@ -198,7 +198,6 @@ class SpellHelper
             'wizard_power' => '%+g%% wizard power',
             'wizard_power_defense' => '%+g%% defensive wizard power',
             'wonder_damage' => 'Deals damage to wonders',
-            'scale_by_day' => 'Scales by day in round from 137.5%% to 62.5%%',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
             'fixed_population_growth' => 'Population growth is fixed at %g%% of your vulnerable peasant population',

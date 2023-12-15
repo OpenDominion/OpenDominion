@@ -755,7 +755,6 @@ class SpellActionService
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(
                     'fixed_population_growth',
-                    'scale_by_day'
                 );
                 if (Str::startsWith($perk->key, 'destroy_')) {
                     $attr = str_replace('destroy_', '', $perk->key);
@@ -787,12 +786,6 @@ class SpellActionService
                     throw new GameException("Unrecognized perk {$perk->key}.");
                 }
 
-                $baseDamage = $perk->pivot->value / 100;
-                if ($spell->getPerkValue('scale_by_day') == 1) {
-                    $baseDamage *= (1.625 - 0.025 * clamp($dominion->round->daysInRound(), 10, 40));
-                }
-                $damageReductionMultiplier = $baseDamageReductionMultiplier;
-
                 $attrValue = $target->{$attr};
                 if ($attr == 'peasants') {
                     // Account for peasants protected from Fireball
@@ -801,6 +794,9 @@ class SpellActionService
                     // Account for peasants protected from Lightning Bolt
                     $attrValue = $this->opsCalculator->getImprovementsUnprotected($target, $mutualWarDeclared);
                 }
+
+                $baseDamage = $perk->pivot->value / 100;
+                $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
                 // Cap damage reduction at 80%
                 $damage = ceil(
