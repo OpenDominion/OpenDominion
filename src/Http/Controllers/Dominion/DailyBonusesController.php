@@ -14,6 +14,7 @@ use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesPlatinumActionReques
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\LogParserService;
+use OpenDominion\Services\Dominion\ProtectionService;
 
 class DailyBonusesController extends AbstractDominionController
 {
@@ -64,9 +65,16 @@ class DailyBonusesController extends AbstractDominionController
         return redirect()->route('dominion.bonuses');
     }
 
-    public function getAutomatedActions()
+    public function getAutomatedActions(Request $request)
     {
         $dominion = $this->getSelectedDominion();
+
+        $protectionService = app(ProtectionService::class);
+        if ($protectionService->isUnderProtection($dominion)) {
+            $request->session()->flash('alert-danger', 'Automation is unavailable while under protection.');
+            return redirect()->route('dominion.bonuses');
+        }
+
         $buildingHelper = app(BuildingHelper::class);
         $landHelper = app(LandHelper::class);
         $spellHelper = app(SpellHelper::class);
@@ -94,6 +102,13 @@ class DailyBonusesController extends AbstractDominionController
     public function postAutomatedActions(AutomationActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
+
+        $protectionService = app(ProtectionService::class);
+        if ($protectionService->isUnderProtection($dominion)) {
+            $request->session()->flash('alert-danger', 'Automation is unavailable while under protection.');
+            return redirect()->route('dominion.bonuses');
+        }
+
         $automationService = app(AutomationService::class);
 
         $config = [
