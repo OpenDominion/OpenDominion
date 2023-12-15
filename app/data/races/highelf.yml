@@ -24,7 +24,7 @@ units:
   - name: Verdant Watcher
     cost:
       platinum: 360
-      lumber: 50
+      lumber: 30
     power:
       offense: 0
       defense: 4
