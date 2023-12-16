@@ -137,7 +137,7 @@ class GovernmentService
      */
     public function getHoursBeforeCancelWar(RealmWar $war): int
     {
-        $cancelDate = $war->active_at->addHours(self::WAR_CANCEL_WAIT_IN_HOURS);
+        $cancelDate = $war->active_at->copy()->addHours(self::WAR_CANCEL_WAIT_IN_HOURS);
 
         if ($cancelDate > now()->startOfHour()) {
             return $cancelDate->diffInHours(now()->startOfHour());
@@ -153,7 +153,7 @@ class GovernmentService
      */
     public function getHoursBeforeWarEnds(RealmWar $war): int
     {
-        $endingDate = $war->created_at->addHours(self::WAR_MAXIMUM_DURATION)->startOfHour();
+        $endingDate = $war->created_at->copy()->addHours(self::WAR_MAXIMUM_DURATION)->startOfHour();
 
         if ($endingDate > now()->startOfHour()) {
             return $endingDate->diffInHours(now()->startOfHour());

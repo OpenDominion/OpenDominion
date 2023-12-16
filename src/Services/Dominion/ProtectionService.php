@@ -18,7 +18,7 @@ class ProtectionService
      */
     public function canLeaveProtection(Dominion $dominion): bool
     {
-        $waitPeriodEndDate = $dominion->round->start_date->addHours(self::WAIT_PERIOD_DURATION_IN_HOURS);
+        $waitPeriodEndDate = $dominion->round->start_date->copy()->addHours(self::WAIT_PERIOD_DURATION_IN_HOURS);
 
         if ($dominion->round->start_date < now() && $waitPeriodEndDate > now()) {
             return false;

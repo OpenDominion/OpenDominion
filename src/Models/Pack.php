@@ -87,7 +87,7 @@ class Pack extends AbstractModel
         if ($this->round->realmAssignmentDate() > now()) {
             return $this->round->realmAssignmentDate();
         }
-        return $this->created_at->addDays(3);
+        return $this->created_at->copy()->addDays(3);
     }
 
     public function close()

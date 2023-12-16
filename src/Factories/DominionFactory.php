@@ -578,7 +578,7 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
 
-            'royal_guard_active_at' => $realm->round->start_date->addDays(6),
+            'royal_guard_active_at' => (clone $realm)->round->start_date->addDays(6),
             'protection_ticks_remaining' => 0,
         ]);
 

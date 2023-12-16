@@ -14,10 +14,16 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             @php
-                                $currentTick = $selectedDominion->round->getTick();
+                                if ($selectedDominion->round->hasStarted()) {
+                                    $actionStartDate = now();
+                                    $currentTick = $selectedDominion->round->getTick();
+                                } else {
+                                    $actionStartDate = $selectedDominion->round->start_date;
+                                    $currentTick = 1;
+                                }
                             @endphp
                             <h4>Current Tick</h4>
-                            <div>
+                            <div style="margin-bottom: 20px;">
                                 Day {{ $selectedDominion->round->daysInRound() }}, Hour {{ $selectedDominion->round->hoursInDay() }}
                             </div>
                             <h4>Configured Actions</h4>
@@ -41,8 +47,8 @@
                                         @foreach ($selectedDominion->ai_config as $tick => $config)
                                             @php
                                                 $hours = $tick - $currentTick;
-                                                $day = $selectedDominion->round->daysInRound(now()->addHours($hours));
-                                                $hour = $selectedDominion->round->hoursInDay(now()->addHours($hours));
+                                                $day = $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours));
+                                                $hour = $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours));
                                             @endphp
                                             @foreach ($config as $index => $item)
                                                 <tr>
@@ -97,8 +103,8 @@
                                     <select class="form-control" name="tick" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @foreach (range(1, 8) as $hours)
                                             <option value="{{ $currentTick + $hours }}">
-                                                Day {{ $selectedDominion->round->daysInRound(now()->addHours($hours)) }},
-                                                Hour {{ $selectedDominion->round->hoursInDay(now()->addHours($hours)) }}
+                                                Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours)) }},
+                                                Hour {{ $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours)) }}
                                                 (+{{ $hours }})
                                             </option>
                                         @endforeach
