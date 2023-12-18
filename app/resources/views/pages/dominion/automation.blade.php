@@ -179,7 +179,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>You can perform two automated actions per day, which resets with your daily bonuses.</p>
+                    <p>You can perform two automated actions per day, which reset with your daily bonuses.</p>
                     <p>Actions cannot be scheduled more than 8 hours in advance and are performed ~30 minutes into the hour.</p>
                     <p>In the event that you do not have enough resources to perform the action, it will instead use the max that you can afford.</p>
                     <p>You have used <b>{{ $allowedActions - $selectedDominion->daily_actions }}</b> actions today.</p>

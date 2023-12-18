@@ -421,6 +421,9 @@ class ProductionCalculator
         // Values
         $lumberDecay = 1;
 
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('lumber_decay');
+
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('lumber_decay');
 
