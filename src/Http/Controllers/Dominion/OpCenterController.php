@@ -16,6 +16,7 @@ use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Models\Bounty;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\InfoOpService;
@@ -102,7 +103,13 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.realm.advisors.op-center', $dominion);
         }
 
-        $latestInfoOps = $this->getSelectedDominion()->realm->infoOps()
+        $bounties = Bounty::active()
+            ->where('source_realm_id', $selectedDominion->realm_id)
+            ->where('target_dominion_id', $dominion->id)
+            ->get()
+            ->keyBy('type');
+
+        $latestInfoOps = $selectedDominion->realm->infoOps()
             ->with('sourceDominion')
             ->where('target_dominion_id', '=', $dominion->id)
             ->where('latest', '=', true)
@@ -126,6 +133,7 @@ class OpCenterController extends AbstractDominionController
             'techHelper' => app(TechHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
+            'bounties' => $bounties,
             'latestInfoOps' => $latestInfoOps,
             'latestInvasionEvents' => $latestInvasionEvents,
         ]);

@@ -18,6 +18,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt, 3 hour duration
   - Arcane Ward: +10% defensive wizard power, 6 hour duration, 3 hour cooldown
   - Illumination: +10% defensive spy power, 6 hour duration, 3 hour cooldown
+- Bounty Board
+  - You can now request info ops on a dominion from the Op Center
+  - Other dominions in your realm earn a reward when they collect a bounty by gathering those ops
+  - A bounty awards 4 XP and 20 research points (limited to 24 bounties collected in a 24 hour period)
 - Added checkboxes to exclude units entirely or just incoming units in the Calculators
 - A new General Calculator has been added when directly navigating to the Calculators page
 - At the hour change, a red border will appear around the screen

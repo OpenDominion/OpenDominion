@@ -23,6 +23,7 @@ use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\SpellPerkType;
+use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -34,6 +35,9 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class SpellActionService
 {
     use DominionGuardsTrait;
+
+    /** @var BountyService */
+    protected $bountyService;
 
     /** @var GovernmentService */
     protected $governmentService;
@@ -88,6 +92,7 @@ class SpellActionService
      */
     public function __construct()
     {
+        $this->bountyService = app(BountyService::class);
         $this->governmentService = app(GovernmentService::class);
         $this->guardMembershipService = app(GuardMembershipService::class);
         $this->heroCalculator = app(HeroCalculator::class);
@@ -177,18 +182,19 @@ class SpellActionService
         }
 
         $result = null;
+        $bountyMessage = '';
+        $xpMessage = '';
 
-        DB::transaction(function () use ($dominion, $manaCost, $spell, &$result, $target) {
+        DB::transaction(function () use ($dominion, $target, $manaCost, $spell, &$result, &$bountyMessage, &$xpMessage) {
             $xpGain = 0;
             $wizardStrengthLost = $spell->cost_strength;
 
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
             } elseif ($this->spellHelper->isInfoOpSpell($spell)) {
-                $xpGain = 2;
+                $xpGain = 1;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-                    $xpGain = 1.5;
                     $wizardStrengthLost = 1;
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
@@ -236,12 +242,25 @@ class SpellActionService
             if (!$this->spellHelper->isSelfSpell($spell)) {
                 if ($result['success']) {
                     $dominion->stat_spell_success += 1;
+                    // Bounty result
+                    if (isset($result['bounty'])) {
+                        $bountyRewardString = '';
+                        $rewards = $result['bounty'];
+                        if (isset($rewards['xp'])) {
+                            $xpGain += $rewards['xp'];
+                        }
+                        if (isset($rewards['resource']) && isset($rewards['amount'])) {
+                            $dominion->{$rewards['resource']} += $rewards['amount'];
+                            $bountyRewardString = sprintf(' awarding %d %s', $rewards['amount'], dominion_attr_display($rewards['resource'], $rewards['amount']));
+                        }
+                        $bountyMessage = sprintf('You collected a bounty%s.', $bountyRewardString);
+                    }
                     // Hero Experience
                     if ($dominion->hero && $xpGain) {
                         $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpGain);
                         $dominion->hero->experience += $xpGain;
                         $dominion->hero->save();
-                        $result['message'] .=  sprintf(' You gain %.3g XP.', $xpGain);
+                        $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);
                     }
                 } else {
                     $dominion->stat_spell_failure += 1;
@@ -278,11 +297,7 @@ class SpellActionService
         }
 
         return [
-                'message' => $result['message'], /* sprintf(
-                    $this->getReturnMessageString($dominion), // todo
-                    $spell->name,
-                    number_format($manaCost)
-                ),*/
+                'message' => sprintf('%s %s %s', $result['message'], $bountyMessage, $xpMessage),
                 'data' => [
                     'spell' => $spell->key,
                     'manaCost' => $manaCost,
@@ -457,6 +472,8 @@ class SpellActionService
 
         $infoOp->save();
 
+        $bountyRewards = $this->bountyService->collectBounty($dominion, $target, $spell->key);
+
         $redirect = route('dominion.op-center.show', $target);
         if ($spell->key === 'clairvoyance') {
             $redirect = route('dominion.op-center.clairvoyance', $target->realm->number);
@@ -466,6 +483,7 @@ class SpellActionService
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
             'redirect' => $redirect,
+            'bounty' => $bountyRewards
         ];
     }
 

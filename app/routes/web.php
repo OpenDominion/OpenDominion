@@ -213,6 +213,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
             $router->get('op-center/{dominion}/{type}')->uses('Dominion\OpCenterController@getDominionArchive')->name('op-center.archive');
 
+            // Bounty Board
+            $router->get('bounty-board')->uses('Dominion\BountyController@getBountyBoard')->name('bounty-board');
+            $router->get('bounty-board/{target}/{type}')->uses('Dominion\BountyController@getCreateBounty')->name('bounty-board.create');
+
             // Government
             $router->get('government')->uses('Dominion\GovernmentController@getIndex')->name('government');
             $router->post('government/monarch')->uses('Dominion\GovernmentController@postMonarch')->name('government.monarch');

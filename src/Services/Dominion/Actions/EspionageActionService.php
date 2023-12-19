@@ -21,6 +21,7 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
+use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -32,6 +33,9 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class EspionageActionService
 {
     use DominionGuardsTrait;
+
+    /** @var BountyService */
+    protected $bountyService;
 
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -92,6 +96,7 @@ class EspionageActionService
      */
     public function __construct()
     {
+        $this->bountyService = app(BountyService::class);
         $this->buildingHelper = app(BuildingHelper::class);
         $this->espionageHelper = app(EspionageHelper::class);
         $this->governmentService = app(GovernmentService::class);
@@ -181,15 +186,16 @@ class EspionageActionService
         }
 
         $result = null;
+        $bountyMessage = '';
+        $xpMessage = '';
 
-        DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
+        DB::transaction(function () use ($dominion, $target, $operationKey, &$result, &$bountyMessage, &$xpMessage) {
             $xpGain = 0;
 
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $xpGain = 2;
+                $xpGain = 1;
                 $spyStrengthLost = 2;
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-                    $xpGain = 1.5;
                     $spyStrengthLost = 1;
                 }
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
@@ -221,12 +227,25 @@ class EspionageActionService
 
             if ($result['success']) {
                 $dominion->stat_espionage_success += 1;
+                // Bounty result
+                if (isset($result['bounty'])) {
+                    $bountyRewardString = '';
+                    $rewards = $result['bounty'];
+                    if (isset($rewards['xp'])) {
+                        $xpGain += $rewards['xp'];
+                    }
+                    if (isset($rewards['resource']) && isset($rewards['amount'])) {
+                        $dominion->{$rewards['resource']} += $rewards['amount'];
+                        $bountyRewardString = sprintf(' awarding %d %s', $rewards['amount'], dominion_attr_display($rewards['resource'], $rewards['amount']));
+                    }
+                    $bountyMessage = sprintf('You collected a bounty%s.', $bountyRewardString);
+                }
                 // Hero Experience
                 if ($dominion->hero && $xpGain) {
                     $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpGain);
                     $dominion->hero->experience += $xpGain;
                     $dominion->hero->save();
-                    $result['message'] .=  sprintf(' You gain %.3g XP.', $xpGain);
+                    $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);
                 }
             } else {
                 $dominion->stat_espionage_failure += 1;
@@ -252,7 +271,7 @@ class EspionageActionService
         $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
         return [
-                'message' => $result['message'],
+                'message' => sprintf('%s %s %s', $result['message'], $bountyMessage, $xpMessage),
                 'data' => [
                     'operation' => $operationKey,
                 ],
@@ -361,10 +380,13 @@ class EspionageActionService
 
         $infoOp->save();
 
+        $bountyRewards = $this->bountyService->collectBounty($dominion, $target, $operationKey);
+
         return [
             'success' => true,
             'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
             'redirect' => route('dominion.op-center.show', $target),
+            'bounty' => $bountyRewards
         ];
     }
 
