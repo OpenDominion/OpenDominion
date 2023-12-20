@@ -14,12 +14,11 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             @php
+                                $currentTick = $selectedDominion->round->getTick();
                                 if ($selectedDominion->round->hasStarted()) {
-                                    $actionStartDate = now();
-                                    $currentTick = $selectedDominion->round->getTick();
+                                    $actionStartDate = now()->startOfHour();
                                 } else {
                                     $actionStartDate = $selectedDominion->round->start_date;
-                                    $currentTick = 1;
                                 }
                             @endphp
                             <h4>Current Tick</h4>

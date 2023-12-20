@@ -30,7 +30,7 @@
 
     @if ($selectedDominion->ai_enabled)
         <div class="alert alert-info">
-            <p><i class="ra ra-robot-arm"></i> You have <a href="{{ route('dominion.bonuses.actions') }}">automated actions</a> scheduled in {{ hours_until_next_action($selectedDominion->ai_config, $selectedDominion->round->getTick()) }} hour(s).</p>
+            <p><i class="ra ra-robot-arm"></i> You have <a href="{{ route('dominion.bonuses.actions') }}">automated actions</a> scheduled in {{ hours_until_next_action($selectedDominion->ai_config, $selectedDominion->round->getTick()) }} tick(s).</p>
         </div>
     @endif
 @endif

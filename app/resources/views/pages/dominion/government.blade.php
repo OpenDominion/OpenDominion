@@ -440,7 +440,7 @@
                 <div class="box-body">
                     <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 4th day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
                     <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains, which remain active for 12 hours after war is cancelled. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
-                    <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, +20% infamy, and -50% resilience.</p>
+                    <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses and +5% spell vulnerability.</p>
                 </div>
             </div>
         </div>
