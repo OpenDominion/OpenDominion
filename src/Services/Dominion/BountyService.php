@@ -15,7 +15,7 @@ class BountyService
 
     /**
      * Get bounties for a realm, excluding the selected dominion
-     * 
+     *
      * @param Dominion $dominion
      */
     public function getBounties(Dominion $dominion)
