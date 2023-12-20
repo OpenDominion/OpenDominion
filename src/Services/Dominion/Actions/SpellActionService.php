@@ -304,7 +304,7 @@ class SpellActionService
                 ],
                 'redirect' =>
                     $this->spellHelper->isInfoOpSpell($spell) && $result['success']
-                        ? $result['redirect']
+                        ? route('dominion.op-center.show', $target->id)
                         : null,
             ] + $result;
     }
@@ -474,15 +474,9 @@ class SpellActionService
 
         $bountyRewards = $this->bountyService->collectBounty($dominion, $target, $spell->key);
 
-        $redirect = route('dominion.op-center.show', $target);
-        if ($spell->key === 'clairvoyance') {
-            $redirect = route('dominion.op-center.clairvoyance', $target->realm->number);
-        }
-
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
-            'redirect' => $redirect,
             'bounty' => $bountyRewards
         ];
     }

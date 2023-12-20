@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion;
 
 use DB;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Bounty;
 use OpenDominion\Models\Dominion;
 
@@ -38,6 +39,14 @@ class BountyService
      */
     public function createBounty(Dominion $dominion, Dominion $target, string $type): array
     {
+        $bountiesCreated = Bounty::active()
+            ->where('source_dominion_id', $dominion->id)
+            ->count();
+
+        if ($bountiesCreated >= 40) {
+            throw new GameException('You can only have 40 active bounties at a time.');
+        }
+
         $activeBounties = Bounty::active()
             ->where('source_realm_id', $dominion->realm_id)
             ->where('target_dominion_id', $target->id)

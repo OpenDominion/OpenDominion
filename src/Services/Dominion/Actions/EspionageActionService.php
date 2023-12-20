@@ -385,7 +385,6 @@ class EspionageActionService
         return [
             'success' => true,
             'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
-            'redirect' => route('dominion.op-center.show', $target),
             'bounty' => $bountyRewards
         ];
     }
@@ -531,7 +530,6 @@ class EspionageActionService
                 number_format($amountStolen),
                 $resource
             ),
-            'redirect' => route('dominion.op-center.show', $target),
         ];
     }
 
@@ -774,7 +772,6 @@ class EspionageActionService
                 $warRewardsString
             ),
             'damage' => $totalDamage,
-            'redirect' => route('dominion.op-center.show', $target),
         ];
     }
 
