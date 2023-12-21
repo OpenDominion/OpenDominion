@@ -30,6 +30,24 @@ class BountyService
     }
 
     /**
+     * Get count of bounties collected by a dominion
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getBountiesCollected(Dominion $dominion, int $days = 1)
+    {
+        $currentDay = $dominion->round->daysInRound();
+        $startDate = $dominion->round->start_date->copy()->addDays($currentDay - $days);
+        $collectedBounties = Bounty::query()
+            ->where('collected_by_dominion_id', $dominion->id)
+            ->where('updated_at', '>', $startDate)
+            ->count();
+
+        return $collectedBounties;
+    }
+
+    /**
      * Create a bounty if it doesn't exist
      *
      * @param Dominion $dominion
@@ -105,13 +123,11 @@ class BountyService
             $activeBounty->update([
                 'collected_by_dominion_id' => $dominion->id
             ]);
+            $dominion->stat_bounties_collected += 1;
 
             // Check limits
-            $collectedCount = Bounty::query()
-                ->where('collected_by_dominion_id', $dominion->id)
-                ->where('updated_at', '>', now()->subHours(24))
-                ->count();
-            if ($collectedCount < static::REWARD_DAILY_LIMIT) {
+            $bountiesCollected = $this->getBountiesCollected($dominion);
+            if ($bountiesCollected < static::REWARD_DAILY_LIMIT) {
                 return [
                     'xp' => static::REWARD_XP,
                     'resource' => static::REWARD_RESOURCE,

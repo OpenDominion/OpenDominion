@@ -547,6 +547,38 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">Other</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <table class="table">
+                                        <colgroup>
+                                            <col width="50%">
+                                            <col width="50%">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Bounties Collected:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->stat_bounties_collected) }}</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

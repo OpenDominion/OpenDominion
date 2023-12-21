@@ -22,9 +22,11 @@ class BountyController extends AbstractDominionController
 
         $bountyService = app(BountyService::class);
         $bounties = $bountyService->getBounties($dominion);
+        $bountiesCollected = $bountyService->getBountiesCollected($dominion);
 
         return view('pages.dominion.bounty-board', [
             'bounties' => $bounties,
+            'bountiesCollected' => $bountiesCollected,
             'landCalculator' => app(LandCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class)
         ]);
