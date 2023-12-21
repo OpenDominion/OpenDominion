@@ -228,7 +228,7 @@ class EspionageActionService
             if ($result['success']) {
                 $dominion->stat_espionage_success += 1;
                 // Bounty result
-                if (isset($result['bounty'])) {
+                if (isset($result['bounty']) && $result['bounty']) {
                     $bountyRewardString = '';
                     $rewards = $result['bounty'];
                     if (isset($rewards['xp'])) {
