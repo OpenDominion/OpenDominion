@@ -22,9 +22,13 @@ class BountyService
     public function getBounties(Dominion $dominion)
     {
         $activeBounties = Bounty::active()
+            ->with(['sourceDominion', 'targetDominion'])
             ->where('source_realm_id', $dominion->realm_id)
             ->get()
-            ->groupBy('target_dominion_id');
+            ->groupBy('target_dominion_id')
+            ->map(function ($bounties) {
+                return $bounties->keyBy('type');
+            });
 
         return $activeBounties;
     }

@@ -56,7 +56,6 @@
                                 @foreach ($bounties as $dominionBounties)
                                     @php
                                         $targetDominion = $dominionBounties->first()->targetDominion;
-                                        $bountyTypes = $dominionBounties->pluck('source_dominion_id', 'type');
                                     @endphp
                                     <tr>
                                         <td>
@@ -76,148 +75,76 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('clear_sight'))
-                                                <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="spell" value="clear_sight">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Cast Spell"
-                                                        {{ ($bountyTypes->get('clear_sight') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'clear_sight']) }}" data-toggle="tooltip" title="Request a Clear Sight">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'magic',
+                                                'opType' => 'clear_sight',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('clear_sight')
+                                            ])
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('revelation'))
-                                                <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="spell" value="revelation">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Cast Spell"
-                                                        {{ ($bountyTypes->get('revelation') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'revelation']) }}" data-toggle="tooltip" title="Request a Revelation">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'magic',
+                                                'opType' => 'revelation',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('revelation')
+                                            ])
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('castle_spy'))
-                                                <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="operation" value="castle_spy">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Perform Operation"
-                                                        {{ ($bountyTypes->get('castle_spy') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'castle_spy']) }}" data-toggle="tooltip" title="Request a Castle Spy">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'espionage',
+                                                'opType' => 'castle_spy',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('castle_spy')
+                                            ])
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('barracks_spy'))
-                                                <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="operation" value="barracks_spy">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Perform Operation"
-                                                        {{ ($bountyTypes->get('barracks_spy') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'barracks_spy']) }}" data-toggle="tooltip" title="Request a Barracks Spy">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'espionage',
+                                                'opType' => 'barracks_spy',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('barracks_spy')
+                                            ])
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('survey_dominion'))
-                                                <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="operation" value="survey_dominion">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Perform Operation"
-                                                        {{ ($bountyTypes->get('survey_dominion') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'survey_dominion']) }}" data-toggle="tooltip" title="Request a Survey Dominion">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'espionage',
+                                                'opType' => 'survey_dominion',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('survey_dominion')
+                                            ])
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('land_spy'))
-                                                <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="operation" value="land_spy">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Perform Operation"
-                                                        {{ ($bountyTypes->get('land_spy') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'land_spy']) }}" data-toggle="tooltip" title="Request a Land Spy">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'espionage',
+                                                'opType' => 'land_spy',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('land_spy')
+                                            ])
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('vision'))
-                                                <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="spell" value="vision">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Cast Spell"
-                                                        {{ ($bountyTypes->get('vision') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'vision']) }}" data-toggle="tooltip" title="Request a Vision">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'magic',
+                                                'opType' => 'vision',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('vision')
+                                            ])
                                         </td>
                                         <td class="text-center">
-                                            @if ($bountyTypes->has('disclosure'))
-                                                <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                                                    @csrf
-                                                    <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
-                                                    <input type="hidden" name="spell" value="disclosure">
-                                                    <button type="submit" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Cast Spell"
-                                                        {{ ($bountyTypes->get('disclosure') == $selectedDominion->id) ? 'disabled' : null }}
-                                                    >
-                                                        <i class="fa fa-star"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, 'disclosure']) }}" data-toggle="tooltip" title="Request a Disclosure">
-                                                    <i class="fa fa-star-o" style="margin-top: 4px;"></i>
-                                                </a>
-                                            @endif
+                                            @include('partials.dominion.bounty.board-item', [
+                                                'type' => 'magic',
+                                                'opType' => 'disclosure',
+                                                'selectedDominion' => $selectedDominion,
+                                                'targetDominion' => $targetDominion,
+                                                'bounty' => $dominionBounties->get('disclosure')
+                                            ])
                                         </td>
                                     </tr>
                                 @endforeach
