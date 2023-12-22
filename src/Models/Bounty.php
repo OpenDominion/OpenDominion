@@ -60,10 +60,22 @@ class Bounty extends AbstractModel
         return $this->hasOne(Dominion::class, 'id', 'collected_by_dominion_id');
     }
 
+    public function getLatestInfoOp()
+    {
+        return InfoOp::query()
+            ->where('target_dominion_id', $this->target_dominion_id)
+            ->where('source_realm_id', $this->source_realm_id)
+            ->where('type', $this->type)
+            ->where('latest', true)
+            ->first();
+    }
+
     // Eloquent Query Scopes
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('collected_by_dominion_id', null);
+        return $query
+            ->where('collected_by_dominion_id', null)
+            ->where('created_at', '>', now()->subHours(12));
     }
 }

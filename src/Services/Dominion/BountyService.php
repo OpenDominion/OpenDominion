@@ -76,7 +76,7 @@ class BountyService
             ->get();
 
         if ($activeBounties->isEmpty()) {
-            Bounty::insert([
+            Bounty::create([
                 'round_id' => $dominion->round_id,
                 'source_realm_id' => $dominion->realm_id,
                 'source_dominion_id' => $dominion->id,
