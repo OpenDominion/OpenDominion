@@ -164,7 +164,8 @@ class GovernmentActionService
         foreach ($appointments as $appointment) {
             $attr = "{$appointment['key']}_dominion_id";
             if ($dominion->realm->{$attr} == $appointee->id) {
-                throw new GameException('Each dominion can only hold one seat on the royal court.');
+                // Each dominion can only hold one seat on the royal court
+                $dominion->realm->{$attr} = null;
             }
         }
 
