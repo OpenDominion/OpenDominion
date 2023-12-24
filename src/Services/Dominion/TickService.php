@@ -705,7 +705,7 @@ class TickService
                     // Save dominion
                     $dominionSpell->dominion->military_unit1 -= $unit1;
                     $dominionSpell->dominion->military_unit2 -= $unit2;
-                    $dominionSpell->save();
+                    $dominionSpell->dominion->save();
                 }
             }
         }, 5);
