@@ -265,7 +265,7 @@ class PopulationCalculator
     public function getPopulationBirth(Dominion $dominion): int
     {
         // Special case for Burning
-        $fixedGrowth = $dominion->getSpellPerkValue('fixed_population_growth');
+        $fixedGrowth = $dominion->getSpellPerkValue('fixed_population_growth', true);
         if ($fixedGrowth) {
             $opsCalculator = app(OpsCalculator::class);
             $peasants = $opsCalculator->getPeasantsVulnerable($dominion);
