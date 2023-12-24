@@ -211,7 +211,7 @@ class AIService
                         }
                         $actionsTaken++;
                     } catch (GameException $e) {
-                        // TODO: Log an error here
+                        Log::error($e);
                     }
                 }
                 unset($config[$currentTick]);
