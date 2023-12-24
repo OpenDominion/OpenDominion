@@ -92,9 +92,11 @@ class ExploreActionService
             throw new GameException("You do not have enough platinum and/or draftees to explore for {$totalLandToExplore} acres.");
         }
 
+        $landTotal = $this->landCalculator->getTotalLand($dominion);
+
         if ($dominion->user_id !== null && !$this->protectionService->isUnderProtection($dominion)) {
             $incomingLand = $this->queueService->getExplorationQueueTotal($dominion);
-            if ($totalLandToExplore + $incomingLand > $this->landCalculator->getTotalLand($dominion) / 2) {
+            if (($totalLandToExplore + $incomingLand) > ($landTotal / 2)) {
                 throw new GameException('You cannot explore for more than 50% of your current land total.');
             }
 
@@ -104,7 +106,7 @@ class ExploreActionService
                 }
             })->pluck('amount')->sum();
 
-            $newLandTotal = $totalLandToExplore + $incomingLand + $this->landCalculator->getTotalLand($dominion);
+            $newLandTotal = $totalLandToExplore + $incomingLand + $landTotal;
             $minimumDefense = $this->militaryCalculator->getMinimumDefense(null, $newLandTotal);
 
             // Queues
@@ -127,7 +129,7 @@ class ExploreActionService
 
             $aiHelper = app(AIHelper::class);
             $botMaxSize = $aiHelper->getExpectedLandSize($dominion->round);
-            if ($newLandTotal < max(600, $botMaxSize)) {
+            if ($landTotal < max(600, $botMaxSize)) {
                 $minimumDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, max(600, $newLandTotal)) * 0.90);
             }
 
