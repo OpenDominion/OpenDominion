@@ -479,7 +479,7 @@ rejuvination:
   perks:
     population_growth: 200
     enemy_spell_damage: -75
-    immunity_burning: 1
+    immune_burning: 1
 spell_reflect:
   name: Spell Reflect
   category: friendly

@@ -202,7 +202,7 @@ class SpellHelper
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
             'fixed_population_growth' => 'Population growth is fixed at %g%% of your vulnerable peasant population',
             'apply_rejuvination' => 'Applies Rejuvenation upon expiration',
-            'immunity_burning' => 'Immune to Burning',
+            'immune_burning' => 'Immune to Burning',
             'cancels_gaias_light' => 'Cancels and cancelled by Gaia\'s Light',
             'cancels_gaias_shadow' => 'Cancels and cancelled by Gaia\'s Shadow',
             'cancels_midas_touch' => 'Cancels and cancelled by Midas Touch',
