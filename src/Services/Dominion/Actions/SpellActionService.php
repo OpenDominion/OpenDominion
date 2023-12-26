@@ -780,7 +780,7 @@ class SpellActionService
                 } elseif ($perksToIgnore->has($perk->key) || Str::startsWith($perk->key, 'immune_')) {
                     continue;
                 } elseif (Str::startsWith($perk->key, 'apply_')) {
-                    $statusEffectKey = Str::of($perk->key)->replace('apply_', '');
+                    $statusEffectKey = str_replace('apply_', '', $perk->key);
                     $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", ['self', 'friendly', 'effect']);
                     if (!$immunity && !$spellReflected && $warDeclared && random_chance($perk->pivot->value)) {
                         $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
