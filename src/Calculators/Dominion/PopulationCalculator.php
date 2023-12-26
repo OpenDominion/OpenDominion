@@ -265,11 +265,11 @@ class PopulationCalculator
     public function getPopulationBirth(Dominion $dominion): int
     {
         // Special case for Burning
-        $fixedGrowth = $dominion->getSpellPerkValue('fixed_population_growth', true);
+        $fixedGrowth = $this->spellCalculator->resolveSpellPerk($dominion, 'fixed_population_growth') / 100;
         if ($fixedGrowth) {
             $opsCalculator = app(OpsCalculator::class);
             $peasants = $opsCalculator->getPeasantsVulnerable($dominion);
-            return round($peasants * ($fixedGrowth / 100));
+            return round($peasants * $fixedGrowth);
         }
 
         $multiplier = $this->getPopulationBirthMultiplier($dominion);
@@ -320,7 +320,7 @@ class PopulationCalculator
         $multiplier += $dominion->getTechPerkMultiplier('population_growth');
 
         // Spells
-        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'population_growth');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'population_growth') / 100;
 
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);

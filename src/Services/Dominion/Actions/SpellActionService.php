@@ -758,6 +758,9 @@ class SpellActionService
             $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'wizard');
             $statusEffect = null;
 
+            // Spells
+            $baseDamageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, 'enemy_spell_damage') / 100;
+
             // Techs
             $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$spell->key}_damage");
 
@@ -778,7 +781,7 @@ class SpellActionService
                     continue;
                 } elseif (Str::startsWith($perk->key, 'apply_')) {
                     $statusEffectKey = Str::of($perk->key)->replace('apply_', '');
-                    $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", true);
+                    $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", ['self', 'friendly', 'effect']);
                     if (!$immunity && !$spellReflected && $warDeclared && random_chance($perk->pivot->value)) {
                         $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
                         $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);

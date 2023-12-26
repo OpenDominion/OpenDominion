@@ -203,18 +203,11 @@ class SpellCalculator
      */
     public function resolveSpellPerk(Dominion $dominion, string $key): float
     {
-        $damageMultiplier = 1;
-        $selfPerkValue = $dominion->getSpellPerkValue($key, false);
-        $hostilePerkValue = $dominion->getSpellPerkValue($key, true);
+        $selfPerkValue = $dominion->getSpellPerkValue($key, ['self']);
+        $hostilePerkValue = $dominion->getSpellPerkValue($key, ['hostile']);
+        $friendlyPerkValue = $dominion->getSpellPerkValue($key, ['friendly']);
+        $statusEffectPerkValue = $dominion->getSpellPerkValue($key, ['effect']);
 
-        if ($hostilePerkValue) {
-            // Damage reductions from self spells
-            $protectionPerk = $dominion->getSpellPerkValue("{$key}_damage");
-            if ($protectionPerk) {
-                $damageMultiplier += ($protectionPerk / 100);
-            }
-        }
-
-        return ($selfPerkValue + ($hostilePerkValue * max(0, $damageMultiplier))) / 100;
+        return ($selfPerkValue + $hostilePerkValue + $friendlyPerkValue + $statusEffectPerkValue);
     }
 }
