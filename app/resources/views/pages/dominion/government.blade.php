@@ -76,7 +76,7 @@
                             </form>
                             <form action="{{ route('dominion.government.advisors') }}" method="post" role="form">
                                 @csrf
-                                <div class="form-group">
+                                <div class="form-group table-responsive">
                                     <table class="table table-condensed">
                                         <colgroup>
                                             <col>
@@ -370,6 +370,8 @@
                                     </tr>
                                 @endforeach
                             </table>
+                        </div>
+                        <div class="col-md-12">
                             @if ($selectedDominion->isMonarch() || $selectedDominion->isGeneral())
                                 @if ($governmentService->canDeclareWar($selectedDominion->realm))
                                     <form action="{{ route('dominion.government.war.declare') }}" method="post" role="form">
