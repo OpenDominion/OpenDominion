@@ -469,9 +469,9 @@ burning:
   duration: 36
   perks:
     fixed_population_growth: 8
-    apply_rejuvination: 1
-rejuvination:
-  name: Rejuvination
+    apply_rejuvenation: 1
+rejuvenation:
+  name: Rejuvenation
   category: effect
   cost_mana: 0
   cost_strength: 0

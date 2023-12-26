@@ -201,7 +201,7 @@ class SpellHelper
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
             'fixed_population_growth' => 'Population growth is fixed at %g%% of your vulnerable peasant population',
-            'apply_rejuvination' => 'Applies Rejuvenation upon expiration',
+            'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',
             'cancels_gaias_light' => 'Cancels and cancelled by Gaia\'s Light',
             'cancels_gaias_shadow' => 'Cancels and cancelled by Gaia\'s Shadow',

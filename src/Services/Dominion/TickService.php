@@ -673,15 +673,15 @@ class TickService
         DB::transaction(function () use ($dominionIds) {
             // Convert status effects
             $burningSpell = Spell::where('key', 'burning')->first();
-            $rejuvinationSpell = Spell::where('key', 'rejuvination')->first();
+            $rejuvenationSpell = Spell::where('key', 'rejuvenation')->first();
 
             DB::table('dominion_spells')
                 ->whereIn('dominion_id', $dominionIds)
                 ->where('spell_id', $burningSpell->id)
                 ->where('duration', '<=', 0)
                 ->update([
-                    'spell_id' => $rejuvinationSpell->id,
-                    'duration' => $rejuvinationSpell->duration
+                    'spell_id' => $rejuvenationSpell->id,
+                    'duration' => $rejuvenationSpell->duration
                 ]);
 
             // Special case for Cull the Weak
