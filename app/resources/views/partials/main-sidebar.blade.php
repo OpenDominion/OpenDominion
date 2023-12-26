@@ -105,6 +105,7 @@
                             <span class="pull-right-container">
                                 {!! $activeSelfSpells > 0 ? ('<small class="label pull-right bg-blue">' . $activeSelfSpells . '</small>') : null !!}
                                 {!! $activeHostileSpells > 0 ? ('<small class="label pull-right bg-red">' . $activeHostileSpells . '</small>') : null !!}
+                                {!! $activeFriendlySpells > 0 ? ('<small class="label pull-right bg-green">' . $activeFriendlySpells . '</small>') : null !!}
                             </span>
                         @endif
 

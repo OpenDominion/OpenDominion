@@ -346,10 +346,10 @@ class TickService
                 $this->cleanupActiveSpells($dominion);
                 $this->cleanupQueues($dominion);
 
-                $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
-
                 $this->precalculateTick($dominion, true);
             }, 5);
+
+            $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
         }
 
         $this->now = now();
@@ -675,14 +675,16 @@ class TickService
             $burningSpell = Spell::where('key', 'burning')->first();
             $rejuvenationSpell = Spell::where('key', 'rejuvenation')->first();
 
-            DB::table('dominion_spells')
-                ->whereIn('dominion_id', $dominionIds)
-                ->where('spell_id', $burningSpell->id)
-                ->where('duration', '<=', 0)
-                ->update([
-                    'spell_id' => $rejuvenationSpell->id,
-                    'duration' => $rejuvenationSpell->duration
-                ]);
+            if ($burningSpell && $rejuvenationSpell) {
+                DB::table('dominion_spells')
+                    ->whereIn('dominion_id', $dominionIds)
+                    ->where('spell_id', $burningSpell->id)
+                    ->where('duration', '<=', 0)
+                    ->update([
+                        'spell_id' => $rejuvenationSpell->id,
+                        'duration' => $rejuvenationSpell->duration
+                    ]);
+            }
 
             // Special case for Cull the Weak
             $upgradePerk = SpellPerkType::where('key', 'upgrade_specs')->first();
@@ -713,21 +715,21 @@ class TickService
 
     protected function cleanupActiveSpells(Dominion $dominion)
     {
-        $finished = DB::table('dominion_spells')
+        $finished = DominionSpell::query()
             ->where('dominion_id', $dominion->id)
             ->where('duration', '<=', 0)
-            ->get();
+            ->get()
+            ->map(function ($dominionSpell) {
+                return $dominionSpell->spell;
+            });
 
-        $beneficialSpells = [];
-        $harmfulSpells = [];
+        $beneficialSpells = $finished->filter(function ($spell) {
+            return $spell->category !== 'hostile' && $spell->category !== 'effect';
+        })->toArray();
 
-        foreach ($finished as $row) {
-            if ($row->cast_by_dominion_id == $dominion->id) {
-                $beneficialSpells[] = $row->spell_id;
-            } else {
-                $harmfulSpells[] = $row->spell_id;
-            }
-        }
+        $harmfulSpells = $finished->filter(function ($spell) {
+            return $spell->category === 'hostile' || $spell->category === 'effect';
+        })->toArray();
 
         if (!empty($beneficialSpells)) {
             $this->notificationService->queueNotification('beneficial_magic_dissipated', $beneficialSpells);

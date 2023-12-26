@@ -89,24 +89,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum('posts_count');
             $view->with('forumUnreadCount', $forumUnreadCount);
 
-            $activeSpells = DB::table('dominion_spells')
-                ->where('dominion_id', $selectedDominion->id)
-                ->where('duration', '>', 0)
-                ->get([
-                    'cast_by_dominion_id'
-                ]);
-            $activeSelfSpells = 0;
-            $activeHostileSpells = 0;
-            foreach($activeSpells as $activeSpell) {
-                if($activeSpell->cast_by_dominion_id === $selectedDominion->id) {
-                    $activeSelfSpells++;
-                }
-                else {
-                    $activeHostileSpells++;
-                }
-            }
+            $activeSelfSpells = $selectedDominion->spells->where('category', 'self')->count();
+            $activeHostileSpells = $selectedDominion->spells->whereIn('category', ['hostile', 'effect'])->count();
+            $activeFriendlySpells = $selectedDominion->spells->where('category', 'friendly')->count();
             $view->with('activeSelfSpells', $activeSelfSpells);
             $view->with('activeHostileSpells', $activeHostileSpells);
+            $view->with('activeFriendlySpells', $activeFriendlySpells);
 
             // Show icon for techs
             $techCalculator = app(TechCalculator::class);

@@ -663,9 +663,9 @@ class NotificationHelper
 
                 return sprintf(
                     '%s (%s) has cast %s on our dominion.',
-                    $data['spellName'],
                     $sourceDominion->name,
-                    $sourceDominion->realm->number
+                    $sourceDominion->realm->number,
+                    $data['spellName']
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':
