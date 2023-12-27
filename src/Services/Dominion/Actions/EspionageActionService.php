@@ -878,13 +878,6 @@ class EspionageActionService
             $resilienceGain = 0;
         }
 
-        // Mutual War
-        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
-        if ($mutualWarDeclared) {
-            $infamyGain = round(1.2 * $infamyGain);
-            $resilienceGain = round(0.5 * $resilienceGain);
-        }
-
         if ($dominion->infamy + $infamyGain > 1000) {
             $infamyGain = max(0, 1000 - $dominion->infamy);
         }

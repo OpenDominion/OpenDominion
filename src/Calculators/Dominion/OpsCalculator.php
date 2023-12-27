@@ -13,7 +13,7 @@ class OpsCalculator
     /**
      * @var float Base amount of infamy lost each hour
      */
-    protected const INFAMY_DECAY_BASE = -20;
+    protected const INFAMY_DECAY_BASE = -15;
 
     /**
      * @var float Base amount of resilience lost each hour
@@ -316,6 +316,13 @@ class OpsCalculator
             $infamy += 10;
         }
 
+        // Reduced outside of Shadow League or Mutual War
+        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
+        if (!($blackGuard || $mutualWarDeclared)) {
+            $infamy = $infamy / 3;
+        }
+
         return round($infamy * $modifier);
     }
 
@@ -328,12 +335,6 @@ class OpsCalculator
     public function getInfamyDecay(Dominion $dominion): int
     {
         $decay = static::INFAMY_DECAY_BASE;
-
-        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-            $decay += 5;
-        }
-
-        // TODO: Placeholder for tech perk
 
         $masteryCombined = min($dominion->spy_mastery, 500) + min($dominion->wizard_mastery, 500);
         $minInfamy = floor($masteryCombined / 100) * 50;

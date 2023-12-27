@@ -571,7 +571,7 @@ class SpellActionService
         }
 
         if ($target->user_id == null) {
-            throw new GameException('You cannot perform black ops on bots');
+            //throw new GameException('You cannot perform black ops on bots');
         }
 
         $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
@@ -696,7 +696,7 @@ class SpellActionService
 
             $damageDealtString = '';
             $warRewardsString = '';
-            if ($blackGuard && !$spellReflected && $durationAdded > 0) {
+            if (!$spellReflected && $durationAdded > 0) {
                 $modifier = min(1, $durationAdded / 9);
                 $results = $this->handleWarResults($dominion, $target, $spell->key, $durationAdded / 9);
                 $warRewardsString = $results['warRewards'];
@@ -896,7 +896,7 @@ class SpellActionService
             }
 
             $warRewardsString = '';
-            if ($blackGuard && !$spellReflected && $totalDamage > 0) {
+            if (!$spellReflected && $totalDamage > 0) {
                 $results = $this->handleWarResults($dominion, $target, $spell->key);
                 $warRewardsString = $results['warRewards'];
                 if ($results['damageDealt'] !== '') {
