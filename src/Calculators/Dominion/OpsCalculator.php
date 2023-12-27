@@ -590,7 +590,7 @@ class OpsCalculator
     public function getImprovementsVulnerable(Dominion $dominion, bool $mutualWar = false): int
     {
         $vulnerabilityModifier = $this->getImprovementsVulnerableModifier($dominion, $mutualWar);
-        $vulnerableInvestments = $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->impprovement_harbor;
+        $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->impprovement_harbor);
 
         return round($vulnerableInvestments * $vulnerabilityModifier);
     }

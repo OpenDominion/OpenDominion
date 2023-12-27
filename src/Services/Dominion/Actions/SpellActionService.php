@@ -831,7 +831,7 @@ class SpellActionService
                 } elseif (Str::startsWith($attr, 'improvement_')) {
                     // Cap Lightning Bolt damage by protection
                     $improvementsProtected = $this->opsCalculator->getImprovementsProtected($target, $mutualWarDeclared);
-                    $improvementsDestroyable = max(0, $this->improvementCalculator->getTotalImprovements($target) - $improvementsProtected);
+                    $improvementsDestroyable = max(0, $this->improvementCalculator->getImprovementTotal($target) - $improvementsProtected);
                     if ($improvementsDestroyable == 0) {
                         throw new GameException("The spell was ineffective, the target's castle is in ruins.");
                     }
