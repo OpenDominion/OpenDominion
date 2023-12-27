@@ -466,16 +466,16 @@ burning:
   category: effect
   cost_mana: 0
   cost_strength: 0
-  duration: 36
+  duration: 24
   perks:
-    fixed_population_growth: 8
+    fixed_population_growth: 6
     apply_rejuvenation: 1
 rejuvenation:
   name: Rejuvenation
   category: effect
   cost_mana: 0
   cost_strength: 0
-  duration: 36
+  duration: 24
   perks:
     population_growth: 200
     enemy_spell_damage: -75

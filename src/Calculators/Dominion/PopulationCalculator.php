@@ -264,16 +264,18 @@ class PopulationCalculator
      */
     public function getPopulationBirth(Dominion $dominion): int
     {
+        $peasantBirth = $this->getPopulationBirthRaw($dominion);
+        $multiplier = $this->getPopulationBirthMultiplier($dominion);
+
         // Special case for Burning
         $fixedGrowth = $this->spellCalculator->resolveSpellPerk($dominion, 'fixed_population_growth') / 100;
         if ($fixedGrowth) {
             $opsCalculator = app(OpsCalculator::class);
             $peasants = $opsCalculator->getPeasantsVulnerable($dominion);
-            return round($peasants * $fixedGrowth);
+            $peasantBirth = round($peasants * $fixedGrowth);
         }
 
-        $multiplier = $this->getPopulationBirthMultiplier($dominion);
-        return round($this->getPopulationBirthRaw($dominion) * $multiplier);
+        return round($peasantBirth * $multiplier);
     }
 
     /**
