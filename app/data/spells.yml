@@ -62,7 +62,7 @@ earthquake:
 disband_spies:
   name: Disband Spies
   category: war
-  cost_mana: 4.3
+  cost_mana: 3.5
   cost_strength: 5
   perks:
     convert_military_spies_to_military_draftees: 1.5
@@ -74,7 +74,7 @@ fireball:
   perks:
     destroy_peasants: 5
     destroy_resource_food: 2
-    apply_burning: 30
+    apply_burning: 20
 lightning_bolt:
   name: Lightning Bolt
   category: war
@@ -475,7 +475,7 @@ rejuvenation:
   category: effect
   cost_mana: 0
   cost_strength: 0
-  duration: 24
+  duration: 48
   perks:
     population_growth: 200
     enemy_spell_damage: -75
