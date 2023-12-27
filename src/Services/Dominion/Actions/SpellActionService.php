@@ -806,8 +806,7 @@ class SpellActionService
                     // Account for peasants protected from Fireball
                     $attrValue = $this->opsCalculator->getPeasantsUnprotected($target, $mutualWarDeclared);
                 } elseif (Str::startsWith($attr, 'improvement_')) {
-                    // Account for peasants protected from Lightning Bolt
-                    $attrValue = $this->opsCalculator->getImprovementsUnprotected($target, $mutualWarDeclared);
+                    // TODO: Attempt to calculate partial damage per improvement
                 }
 
                 $baseDamage = $perk->pivot->value / 100;
