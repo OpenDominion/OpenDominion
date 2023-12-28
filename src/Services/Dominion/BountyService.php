@@ -9,9 +9,9 @@ use OpenDominion\Models\Dominion;
 
 class BountyService
 {
-    public const DAILY_LIMIT = 20;
+    public const DAILY_LIMIT = 12;
     public const REWARD_RESOURCE = 'resource_tech';
-    public const REWARD_AMOUNT = 20;
+    public const REWARD_AMOUNT = 10;
 
     /**
      * Get bounties for a realm, excluding the selected dominion

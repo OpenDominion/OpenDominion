@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Bounty Board
   - You can now request info ops on a dominion from the Op Center
   - Other dominions in your realm earn a reward when they collect a bounty by gathering those ops
-  - Bounties award double XP and the first 10 completed each day award 10 research points (no reward is earned for bounties on bots or for ops that have already been taken earlier in the hour)
+  - Bounties award double XP and the first 12 completed each day award 10 research points (no reward is earned for bounties on bots or for ops that have already been taken earlier in the hour)
   - Bounties expire after 12 hours
 - Added checkboxes to exclude units entirely or just incoming units in the Calculators
 - A new General Calculator has been added when directly navigating to the Calculators page
