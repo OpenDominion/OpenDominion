@@ -696,7 +696,7 @@ class SpellActionService
 
             $damageDealtString = '';
             $warRewardsString = '';
-            if (!$spellReflected && $totalDamage > 0 && (
+            if (!$spellReflected && $durationAdded > 0 && (
                 $this->spellHelper->isWarSpell($spell) ||
                 ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
             )) {
