@@ -108,7 +108,7 @@
                                             1
                                         </td>
                                         <td>
-                                            <input type="checkbox" id="dp-military-draftee" style="margin-top: 8px;" />
+                                            <input type="checkbox" id="dp-military-draftee" style="margin-top: 8px;" checked />
                                         </td>
                                         <td class="text-center">
                                             <input type="number"
@@ -166,7 +166,7 @@
                                                 <span class="dp">{{ $unit->power_defense }}</span>
                                             </td>
                                             <td>
-                                                <input type="checkbox" id="dp-military-unit{{ $unit->slot }}" style="margin-top: 8px;" />
+                                                <input type="checkbox" id="dp-military-unit{{ $unit->slot }}" style="margin-top: 8px;" checked />
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
@@ -230,9 +230,9 @@
                                         <td>
                                             <div class="checkbox text-center" style="margin: 0px;">
                                                 <label>
-                                                    <input type="checkbox" id="dp-inc" style="margin-top: 8px;" checked />
+                                                    <input type="checkbox" id="dp-inc" style="margin-top: 8px;" />
                                                     <span data-toggle="tooltip" data-placement="top" title="Calculate defense including units in training">
-                                                        Exclude
+                                                        Include
                                                     </span>
                                                 </label>
                                             </div>
@@ -646,7 +646,7 @@
                                                 <span class="op">{{ $unit->power_offense }}</span>
                                             </td>
                                             <td>
-                                                <input type="checkbox" id="op-military-unit{{ $unit->slot }}" style="margin-top: 8px;" />
+                                                <input type="checkbox" id="op-military-unit{{ $unit->slot }}" style="margin-top: 8px;" checked />
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
@@ -677,9 +677,9 @@
                                         <td>
                                             <div class="checkbox text-center" style="margin: 0px;">
                                                 <label>
-                                                    <input type="checkbox" id="op-inc" style="margin-top: 8px;" />
+                                                    <input type="checkbox" id="op-inc" style="margin-top: 8px;" checked />
                                                     <span data-toggle="tooltip" data-placement="top" title="Calculate offense including units in training">
-                                                        Exclude
+                                                        Include
                                                     </span>
                                                 </label>
                                             </div>
@@ -981,18 +981,18 @@
 
             $('input[id^=dp-military-]').change(function (e) {
                 if (this.checked) {
-                    $('.'+this.id).attr('data-unit-disabled', 1);
-                } else {
                     $('.'+this.id).attr('data-unit-disabled', 0);
+                } else {
+                    $('.'+this.id).attr('data-unit-disabled', 1);
                 }
                 disableDefenseInputs();
             });
 
             $('input[id=dp-inc]').change(function (e) {
                 if (this.checked) {
-                    $('.'+this.id).attr('data-inc-disabled', 1);
-                } else {
                     $('.'+this.id).attr('data-inc-disabled', 0);
+                } else {
+                    $('.'+this.id).attr('data-inc-disabled', 1);
                 }
                 disableDefenseInputs();
             });
@@ -1005,21 +1005,29 @@
 
             $('input[id^=op-military-]').change(function (e) {
                 if (this.checked) {
-                    $('.'+this.id).attr('data-unit-disabled', 1);
-                } else {
                     $('.'+this.id).attr('data-unit-disabled', 0);
+                } else {
+                    $('.'+this.id).attr('data-unit-disabled', 1);
                 }
                 disableOffenseInputs();
             });
 
             $('input[id=op-inc]').change(function (e) {
                 if (this.checked) {
-                    $('.'+this.id).attr('data-inc-disabled', 1);
-                } else {
                     $('.'+this.id).attr('data-inc-disabled', 0);
+                } else {
+                    $('.'+this.id).attr('data-inc-disabled', 1);
                 }
                 disableOffenseInputs();
             });
+
+            // Trigger field updates after pushState
+            setTimeout(function() {
+                $('input[id^=dp-military-]').trigger('change');
+                $('input[id=dp-inc]').trigger('change');
+                $('input[id^=op-military-]').trigger('change');
+                $('input[id=op-inc]').trigger('change');
+            }, 100);
 
             // OFFENSE CALCULATOR
             var OPTotalElement = $('#op');
