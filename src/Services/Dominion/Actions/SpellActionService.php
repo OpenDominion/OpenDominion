@@ -730,6 +730,15 @@ class SpellActionService
                     ])
                     ->sendNotifications($dominion, 'irregular_dominion');
 
+                $this->notificationService
+                    ->queueNotification('reflected_hostile_spell', [
+                        'sourceDominionId' => $target->id,
+                        'spellKey' => $spell->key,
+                        'spellName' => $spell->name,
+                        'protectedDominionId' => $protectedDominion->id,
+                    ])
+                    ->sendNotifications($protectedDominion, 'irregular_dominion');
+
                 return [
                     'success' => true,
                     'message' => sprintf(
@@ -937,6 +946,15 @@ class SpellActionService
                         'protectedDominionId' => $protectedDominion->id,
                     ])
                     ->sendNotifications($dominion, 'irregular_dominion');
+
+                $this->notificationService
+                    ->queueNotification('reflected_hostile_spell', [
+                        'sourceDominionId' => $target->id,
+                        'spellKey' => $spell->key,
+                        'spellName' => $spell->name,
+                        'protectedDominionId' => $protectedDominion->id,
+                    ])
+                    ->sendNotifications($protectedDominion, 'irregular_dominion');
 
                 return [
                     'success' => true,
