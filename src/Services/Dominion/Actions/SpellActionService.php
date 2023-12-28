@@ -696,7 +696,10 @@ class SpellActionService
 
             $damageDealtString = '';
             $warRewardsString = '';
-            if (!$spellReflected && $durationAdded > 0) {
+            if (!$spellReflected && $totalDamage > 0 && (
+                $this->spellHelper->isWarSpell($spell) ||
+                ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
+            )) {
                 $modifier = min(1, $durationAdded / 9);
                 $results = $this->handleWarResults($dominion, $target, $spell->key, $durationAdded / 9);
                 $warRewardsString = $results['warRewards'];
@@ -905,7 +908,10 @@ class SpellActionService
             }
 
             $warRewardsString = '';
-            if (!$spellReflected && $totalDamage > 0) {
+            if (!$spellReflected && $totalDamage > 0 && (
+                $this->spellHelper->isWarSpell($spell) ||
+                ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
+            )) {
                 $results = $this->handleWarResults($dominion, $target, $spell->key);
                 $warRewardsString = $results['warRewards'];
                 if ($results['damageDealt'] !== '') {
