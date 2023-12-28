@@ -231,8 +231,8 @@ class EspionageActionService
                 if (isset($result['bounty']) && $result['bounty']) {
                     $bountyRewardString = '';
                     $rewards = $result['bounty'];
-                    if (isset($rewards['xp'])) {
-                        $xpGain += $rewards['xp'];
+                    if ($rewards) {
+                        $xpGain += 1;
                     }
                     if (isset($rewards['resource']) && isset($rewards['amount'])) {
                         $dominion->{$rewards['resource']} += $rewards['amount'];
@@ -378,9 +378,9 @@ class EspionageActionService
                 ->sendNotifications($target, 'irregular_dominion');
         }
 
-        $infoOp->save();
-
         $bountyRewards = $this->bountyService->collectBounty($dominion, $target, $operationKey);
+
+        $infoOp->save();
 
         return [
             'success' => true,

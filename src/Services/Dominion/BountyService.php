@@ -9,8 +9,7 @@ use OpenDominion\Models\Dominion;
 
 class BountyService
 {
-    public const REWARD_DAILY_LIMIT = 24;
-    public const REWARD_XP = 4;
+    public const DAILY_LIMIT = 20;
     public const REWARD_RESOURCE = 'resource_tech';
     public const REWARD_AMOUNT = 20;
 
@@ -46,9 +45,10 @@ class BountyService
         $collectedBounties = Bounty::query()
             ->where('collected_by_dominion_id', $dominion->id)
             ->where('updated_at', '>', $startDate)
+            ->where('reward', true)
             ->count();
 
-        return $collectedBounties;
+        return min(static::DAILY_LIMIT, $collectedBounties);
     }
 
     /**
@@ -97,6 +97,35 @@ class BountyService
     }
 
     /**
+     * Delete a bounty
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return array
+     */
+    public function deleteBounty(Dominion $dominion, Dominion $target, string $type): array
+    {
+        $bountiesDeleted = Bounty::active()
+            ->where('source_dominion_id', $dominion->id)
+            ->where('target_dominion_id', $target->id)
+            ->where('type', $type)
+            ->delete();
+
+        if ($bountiesDeleted) {
+            return [
+                'message' => 'Bounty successfully deleted.',
+                'alert-type' => 'success'
+            ];
+        }
+
+        return [
+            'message' => 'No valid bounty exists.',
+            'alert-type' => 'danger'
+        ];
+    }
+
+    /**
      * Set a bounty as collected
      *
      * @param Dominion $dominion
@@ -106,6 +135,8 @@ class BountyService
      */
     public function collectBounty(Dominion $dominion, Dominion $target, string $type): array
     {
+        $bountyRewards = [];
+
         $activeBounties = Bounty::active()
             ->where('source_realm_id', $dominion->realm_id)
             ->where('source_dominion_id', '!=', $dominion->id)
@@ -123,23 +154,30 @@ class BountyService
                 Bounty::whereIn('id', $activeBounties->pluck('id'))->delete();
             }
 
+            // Bounty rewards
+            if ($target->user_id !== null) {
+                // Check eligibility
+                $latestOp = $activeBounty->getLatestInfoOp();
+
+                // Check limits
+                $bountiesCollected = $this->getBountiesCollected($dominion);
+
+                if (!($latestOp && !$latestOp->isStale()) && $bountiesCollected < static::DAILY_LIMIT) {
+                    $bountyRewards = [
+                        'resource' => static::REWARD_RESOURCE,
+                        'amount' => static::REWARD_AMOUNT,
+                    ];
+                }
+            }
+
             // Set collected by
             $activeBounty->update([
-                'collected_by_dominion_id' => $dominion->id
+                'collected_by_dominion_id' => $dominion->id,
+                'reward' => !empty($bountyRewards)
             ]);
             $dominion->stat_bounties_collected += 1;
-
-            // Check limits
-            $bountiesCollected = $this->getBountiesCollected($dominion);
-            if ($bountiesCollected < static::REWARD_DAILY_LIMIT) {
-                return [
-                    'xp' => static::REWARD_XP,
-                    'resource' => static::REWARD_RESOURCE,
-                    'amount' => static::REWARD_AMOUNT,
-                ];
-            }
         }
 
-        return [];
+        return $bountyRewards;
     }
 }

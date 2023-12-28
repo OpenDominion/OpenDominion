@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $target_dominion_id
  * @property int|null $collected_by_dominion_id
  * @property string $type
+ * @property bool $reward
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Round $round

@@ -192,7 +192,7 @@ class SpellActionService
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
             } elseif ($this->spellHelper->isInfoOpSpell($spell)) {
-                $xpGain = 1;
+                $xpGain = 2;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $wizardStrengthLost = 1;
@@ -246,8 +246,8 @@ class SpellActionService
                     if (isset($result['bounty']) && $result['bounty']) {
                         $bountyRewardString = '';
                         $rewards = $result['bounty'];
-                        if (isset($rewards['xp'])) {
-                            $xpGain += $rewards['xp'];
+                        if ($rewards) {
+                            $xpGain += 2;
                         }
                         if (isset($rewards['resource']) && isset($rewards['amount'])) {
                             $dominion->{$rewards['resource']} += $rewards['amount'];
@@ -470,9 +470,9 @@ class SpellActionService
                 ->sendNotifications($target, 'irregular_dominion');
         }
 
-        $infoOp->save();
-
         $bountyRewards = $this->bountyService->collectBounty($dominion, $target, $spell->key);
+
+        $infoOp->save();
 
         return [
             'success' => true,
@@ -571,7 +571,7 @@ class SpellActionService
         }
 
         if ($target->user_id == null) {
-            //throw new GameException('You cannot perform black ops on bots');
+            throw new GameException('You cannot perform black ops on bots');
         }
 
         $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);

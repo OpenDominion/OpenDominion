@@ -164,9 +164,10 @@
                         </div>
                         <div class="box-body">
                             <p>Info ops that you have requested to be collected by your realmies appear here.</p>
-                            <p>Each bounty collected will award 4 XP and 20 research points. You can collect up to 24 bounties per day and you cannot collect your own bounties.</p>
+                            <p>Each bounty collected will award double XP and the first {{ $bountyService::DAILY_LIMIT }} bounties per day will award {{ $bountyService::REWARD_AMOUNT }} research points.</p>
+                            <p>Bounties collected from bots or ops that have already been taken for the current tick will earn no rewards. You cannot collect your own bounties.</p>
                             <p>You have {{ number_format($selectedDominion->resource_mana) }} mana, {{ sprintf("%.4g", $selectedDominion->wizard_strength) }}% wizard strength, and {{ sprintf("%.4g", $selectedDominion->spy_strength) }}% spy strength.</p>
-                            <p>You have collected <b>{{ $bountiesCollected }}</b> bounties today.</p>
+                            <p>You have collected <b>{{ $bountiesCollected }}</b> rewards from bounties today.</p>
                         </div>
                     </div>
                 </div>
