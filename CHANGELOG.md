@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - The Court Jester can change the realm name
 - Friendly Spells
   - Beneficial duration spells that can only be cast on realmies, available to the Grand Magister and Court Mage of a realm or between Shadow League members in the same realm
-  - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt, 3 hour duration
+  - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt, 3 hour duration, 3 hour cooldown
   - Arcane Ward: +10% defensive wizard power, 6 hour duration, 3 hour cooldown
   - Illumination: +10% defensive spy power, 6 hour duration, 3 hour cooldown
 - Bounty Board
@@ -25,18 +25,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Bounties expire after 12 hours
 - Added checkboxes to exclude units entirely or just incoming units in the Calculators
 - A new General Calculator has been added when directly navigating to the Calculators page
-- At the hour change, a red border will appear around the screen
+- At the hour change, a yellow border will appear around the screen
 
 ### Changed
 - A portion of your peasants are safeguarded from being killed by fireballs, the percentage of peasants that are vulnerable to fireball starts at 30% of maximum on Day 4 and increases by 0.25% per day to a maximum of 40% vulnerable on Day 44
 - Fireball: now kills 5% of your target's vulnerable peasant population (from 2.75% of current peasants), destroys 2% of your target's food (from 2.75%), 20% chance to apply the Burning status effect if at war
 - A portion of your castle improvements are safeguarded from being destroyed by lightning bolts, the percentage of improvements that are vulnerable to lightning bolt starts at 30% of total investment on Day 4 and decreases by 0.25% per day to a maximum of 20% vulnerable on Day 44
 - Lightning Bolt: now kills 1% of your target's vulnerable improvements (from 0.4% of current improvements), 10% chance to apply the Burning status effect if at war
-- Burning: new status effect (spell) with 24 hour duration, population growth is fixed at 6% of your vulnerable peasant population, applies Rejuvenation upon expiration
-- Rejuvenation: new status effect (spell) with 48 hour duration, increases population growth by 200%, reduces spell damage by 75%, immune to Burning
+- Burning: new status effect (spell) with 24 hour duration, population growth is fixed at 6% of your vulnerable peasant population, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
+- Rejuvenation: new status effect (spell) with 48 hour duration, increases population growth by 200%, reduces spell damage by 75%, immune to Burning, cancelled if target's realm declares war
 - Up to 50% of your vulnerable peasant population and castle improvements are protected by defensive WPA (remains as damage reduction for all other ops), scaling changed to be more impactful early and less so as you approach the cap (formula in wiki)
 - Spires: now protects up to 30% of your vulnerable peasant population and castle improvements (from up to 60% spell damage reduction), protection not affected by Masonries
-- Spell vulnerability increased by 10% in mutual war
 - Energy Mirror: now reduces enemy spell damage by 15% and enemy spell duration by 2 hours (was 20% chance to reflect)
 - Aquaponics (tech): now reduces duration of Burning by 4 hours (was -10% fireball damage)
 - Wizard resilience removed
