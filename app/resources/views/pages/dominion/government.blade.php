@@ -569,9 +569,10 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Joining a guard will reduce the range other dominions can perform hostile interactions against you. In turn, you also can not perform hostile interactions against wonders or dominions outside of your guard range.</p>
+                    <p>Joining the Royal or Elite Guard will reduce the range other dominions can perform hostile interactions against you. In turn, you also can not perform hostile interactions against wonders or dominions outside of your guard range.</p>
                     <p>Upon requesting to join a guard it takes 24 hours for your request to be accepted. If you perform any hostile operations against dominions outside of that guard range, your application is reset back to 24 hours.</p>
-                    <p>Once you join a guard, you cannot leave for 2 days (1 day for Shadow League). Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 3rd day of the round.</p>
+                    <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 3rd day of the round.</p>
+                    <p>Joining the Shadow League takes 12 hours and you cannot leave for the first 12 hours after joining. Leaving the Shadow League also requires an additional 12 hours to go into effect.</p>
 
                     @if ($isEliteGuardMember)
                         <p>You are a member of the Emperor's <span class="text-yellow"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
