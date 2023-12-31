@@ -841,14 +841,14 @@ class SpellActionService
                     $peasantsKillable = max(0, $target->peasants - $peasantsProtected);
                     $damage = min($damage, $peasantsKillable);
                     if ($peasantsKillable == 0) {
-                        throw new GameException("The spell was ineffective, the target's peasants have taken cover.");
+                        throw new GameException("Your wizards refused to cast the spell, since there is nothing left to burn.");
                     }
                 } elseif (Str::startsWith($attr, 'improvement_')) {
                     // Cap Lightning Bolt damage by protection
                     $improvementsProtected = $this->opsCalculator->getImprovementsProtected($target, $mutualWarDeclared);
                     $improvementsDestroyable = max(0, $this->improvementCalculator->getImprovementTotal($target) - $improvementsProtected);
                     if ($improvementsDestroyable == 0) {
-                        throw new GameException("The spell was ineffective, the target's castle is in ruins.");
+                        throw new GameException("Your wizards refused to cast the spell, since there is nothing left to destroy.");
                     }
                 }
 

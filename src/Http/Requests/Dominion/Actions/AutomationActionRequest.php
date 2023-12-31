@@ -15,7 +15,15 @@ class AutomationActionRequest extends AbstractDominionRequest
             'tick' => 'required|integer',
             'action' => 'required|in:construct,explore,spell,train',
             'key' => 'required',
-            'amount' => 'required_unless:action,spell|nullable|integer',
+            'amount' => 'required_unless:action,spell|nullable|integer|max:99999',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'key.required' => 'A selection is required for this action.',
+            'amount.required_unless' => 'An amount is required for this action.',
         ];
     }
 }

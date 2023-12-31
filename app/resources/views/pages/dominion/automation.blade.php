@@ -121,6 +121,7 @@
                                 <div class="form-group action-options train">
                                     Unit:
                                     <select class="form-control" name="key" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                        <option></option>
                                         @foreach ($unitTypes as $unitType)
                                             <option value="{{ $unitType }}">
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
@@ -131,6 +132,7 @@
                                 <div class="form-group action-options construct" style="display: none;">
                                     Building:
                                     <select class="form-control" name="key" disabled>
+                                        <option></option>
                                         @foreach ($buildings as $building)
                                             <option value="{{ $building }}">
                                                 {{ $buildingHelper->getBuildingName($building) }}
@@ -141,6 +143,7 @@
                                 <div class="form-group action-options explore" style="display: none;">
                                     Land Type:
                                     <select class="form-control" name="key" disabled>
+                                        <option></option>
                                         @foreach ($landTypes as $landType)
                                             <option value="{{ $landType }}">
                                                 {{ ucwords($landType) }}
@@ -155,6 +158,7 @@
                                 <div class="form-group action-options spell" style="display: none;">
                                     Spell:
                                     <select class="form-control" name="key" disabled>
+                                        <option></option>
                                         @foreach ($spells as $spell)
                                             <option value="{{ $spell->key }}">
                                                 {{ $spell->name }}
