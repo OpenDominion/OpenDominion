@@ -65,11 +65,11 @@ disband_spies:
   cost_mana: 3.5
   cost_strength: 5
   perks:
-    convert_military_spies_to_military_draftees: 1.5
+    convert_military_spies_to_military_draftees: 2
 fireball:
   name: Fireball
   category: war
-  cost_mana: 3.3
+  cost_mana: 3
   cost_strength: 5
   perks:
     destroy_peasants: 5
@@ -78,7 +78,7 @@ fireball:
 lightning_bolt:
   name: Lightning Bolt
   category: war
-  cost_mana: 3.5
+  cost_mana: 3.25
   cost_strength: 5
   perks:
     destroy_improvement_science: 1
@@ -483,9 +483,10 @@ rejuvenation:
 spell_reflect:
   name: Spell Reflect
   category: friendly
-  cost_mana: 3
+  cost_mana: 2
   cost_strength: 4
   duration: 3
+  cooldown: 3
   perks:
     spell_reflect: 1
 arcane_ward:
