@@ -782,6 +782,7 @@ class SpellActionService
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(
                     'fixed_population_growth',
+                    'war_cancels'
                 );
                 if (Str::startsWith($perk->key, 'destroy_')) {
                     $attr = str_replace('destroy_', '', $perk->key);
@@ -800,6 +801,9 @@ class SpellActionService
                         if ($statusEffectActiveSpell == null) {
                             $statusEffect = $statusEffectSpell->name;
                             $duration = $statusEffectSpell->duration + $target->getTechPerkValue("enemy_{$statusEffectKey}_duration");
+                            if ($mutualWarDeclared) {
+                                $duration += 6;
+                            }
                             DominionSpell::insert([
                                 'dominion_id' => $target->id,
                                 'spell_id' => $statusEffectSpell->id,

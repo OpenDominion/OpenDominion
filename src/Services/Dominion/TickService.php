@@ -724,11 +724,11 @@ class TickService
             });
 
         $beneficialSpells = $finished->filter(function ($spell) {
-            return $spell->category !== 'hostile' && $spell->category !== 'effect';
+            return !$spell->isHarmful();
         })->toArray();
 
         $harmfulSpells = $finished->filter(function ($spell) {
-            return $spell->category === 'hostile' || $spell->category === 'effect';
+            return $spell->isHarmful();
         })->toArray();
 
         if (!empty($beneficialSpells)) {

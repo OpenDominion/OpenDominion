@@ -29,8 +29,13 @@ class HistoryService
             return;
         }
 
+        $monarchId = $realm->monarch_dominion_id;
+        if (isset($deltaAttributes['monarch_dominion_id'])) {
+            $monarchId = $deltaAttributes['monarch_dominion_id'];
+        }
+
         $realm->history()->create([
-            'dominion_id' => $realm->monarch_dominion_id,
+            'dominion_id' => $monarchId,
             'event' => $event,
             'delta' => $deltaAttributes,
         ]);

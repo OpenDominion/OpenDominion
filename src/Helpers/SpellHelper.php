@@ -203,6 +203,7 @@ class SpellHelper
             'fixed_population_growth' => 'Population growth is fixed at %g%% of your vulnerable peasant population',
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',
+            'war_cancels' => 'Cancelled if this realm declares war',
             'cancels_gaias_light' => 'Cancels and cancelled by Gaia\'s Light',
             'cancels_gaias_shadow' => 'Cancels and cancelled by Gaia\'s Shadow',
             'cancels_midas_touch' => 'Cancels and cancelled by Midas Touch',

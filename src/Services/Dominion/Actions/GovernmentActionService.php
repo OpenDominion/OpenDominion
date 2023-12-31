@@ -2,13 +2,16 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use DB;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\GovernmentHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Realm\History;
 use OpenDominion\Models\RealmWar;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\Realm\HistoryService;
@@ -105,7 +108,10 @@ class GovernmentActionService
         if ($name) {
             $dominion->realm->name = $name;
         }
-        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_REALM_UPDATED]);
+        $dominion->realm->save([
+            'event' => HistoryService::EVENT_ACTION_REALM_UPDATED,
+            'monarch_dominion_id' => $dominion->id
+        ]);
     }
 
     /**
@@ -209,13 +215,13 @@ class GovernmentActionService
             throw new GameException('You cannot declare additional wars at this time.');
         }
 
-        $recentlyCanceled = RealmWar::where([
+        $recentlyCancelled = RealmWar::where([
             'source_realm_id' => $dominion->realm->id,
             'target_realm_id' => $target->id,
         ])->where('updated_at', '>', now()->startOfHour()->subHours(GovernmentService::WAR_REDECLARE_WAIT_IN_HOURS - 1))->get();
 
-        if (!$recentlyCanceled->isEmpty()) {
-            $lastCanceled = $recentlyCanceled->sortByDesc('updated_at')->first();
+        if (!$recentlyCancelled->isEmpty()) {
+            $lastCanceled = $recentlyCancelled->sortByDesc('updated_at')->first();
 
             $recentlyDeclared = RealmWar::where([
                 'source_realm_id' => $target->id,
@@ -229,6 +235,24 @@ class GovernmentActionService
 
         if (now()->diffInHours($dominion->round->start_date) < self::WAR_HOURS_AFTER_ROUND_START) {
             throw new GameException('You cannot declare war for the first two days of the round.');
+        }
+
+        $isMutual = $this->governmentService->isAtWar($dominion->realm, $target);
+        $burningSpell = Spell::where('key', 'burning')->first();
+        $rejuvenationSpell = Spell::where('key', 'rejuvenation')->first();
+        if ($rejuvenationSpell) {
+            // Remove Rejuvenation
+            DominionSpell::query()
+                ->where('spell_id', $rejuvenationSpell->id)
+                ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
+                ->delete();
+        }
+        if ($isMutual && $burningSpell) {
+            // Extend Burning by 6 hours
+            DominionSpell::query()
+                ->where('spell_id', $burningSpell->id)
+                ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
+                ->update(['duration' => DB::raw('duration + 6')]);
         }
 
         $war = RealmWar::create([

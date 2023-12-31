@@ -480,6 +480,7 @@ rejuvenation:
     population_growth: 200
     enemy_spell_damage: -75
     immune_burning: 1
+    war_cancels: 1
 spell_reflect:
   name: Spell Reflect
   category: friendly

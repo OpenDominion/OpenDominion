@@ -60,4 +60,8 @@ class Spell extends AbstractModel
 
         return $perks->first()->pivot->value;
     }
+
+    public function isHarmful() {
+        return $this->category == 'hostile' || $this->key == 'burning';
+    }
 }
