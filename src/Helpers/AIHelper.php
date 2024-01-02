@@ -75,10 +75,14 @@ class AIHelper
 
         $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead'];
         if (!in_array($race->name, $racesWithoutOre)) {
+            $oreMinePercentage = 0.06;
+            if ($race->name == 'Troll') {
+                $oreMinePercentage = 0.09;
+            }
             $config['build'][] = [
                 'land_type' => 'mountain',
                 'building' => 'ore_mine',
-                'amount' => 0.06
+                'amount' => $oreMinePercentage
             ];
         }
 
@@ -193,7 +197,7 @@ class AIHelper
                 [
                     'land_type' => 'plain',
                     'building' => 'farm',
-                    'amount' => 0.07
+                    'amount' => 0.08
                 ],
                 [
                     'land_type' => 'forest',

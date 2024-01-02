@@ -526,9 +526,9 @@ class DominionFactory
 
             'resource_platinum' => 0,
             'resource_food' => 100 * $landSize,
-            'resource_lumber' => 5 * $landSize,
-            'resource_mana' => 0,
-            'resource_ore' => 0,
+            'resource_lumber' => 100 * $landSize,
+            'resource_mana' => 100 * $landSize,
+            'resource_ore' => 100 * $landSize,
             'resource_gems' => 0,
             'resource_tech' => 0,
             'resource_boats' => 0,
@@ -707,6 +707,9 @@ class DominionFactory
                 $startingBuildings['building_ore_mine'] += min(100, $landAvailable);
             } else {
                 $startingBuildings['building_ore_mine'] += 20;
+                if ($race->name == 'Troll') {
+                    $startingBuildings['building_ore_mine'] += 20;
+                }
             }
             $landAvailable -= $startingBuildings['building_ore_mine'];
         }
