@@ -32,7 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fireball: now kills 5% of your target's vulnerable peasant population (from 2.75% of current peasants), destroys 2% of your target's food (from 2.75%), 20% chance to apply the Burning status effect if at war
 - A portion of your castle improvements are safeguarded from being destroyed by lightning bolts, the percentage of improvements that are vulnerable to lightning bolt starts at 30% of total investment on Day 4 and decreases by 0.25% per day to a maximum of 20% vulnerable on Day 44
 - Lightning Bolt: now kills 1% of your target's vulnerable improvements (from 0.4% of current improvements), 10% chance to apply the Burning status effect if at war
-- Burning: new status effect (spell) with 24 hour duration, population growth is fixed at 6% of your vulnerable peasant population, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
+- Burning: new status effect (spell) with 24 hour duration, unmodded population growth is fixed at 6% of your vulnerable peasant population, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
 - Rejuvenation: new status effect (spell) with 48 hour duration, increases population growth by 200%, reduces spell damage by 75%, immune to Burning, cancelled if target's realm declares war
 - Up to 50% of your vulnerable peasant population and castle improvements are protected by defensive WPA (remains as damage reduction for all other ops), scaling changed to be more impactful early and less so as you approach the cap (formula in wiki)
 - Spires: now protects up to 30% of your vulnerable peasant population and castle improvements (from up to 60% spell damage reduction), protection not affected by Masonries
@@ -42,6 +42,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Forest Havens removed
 - Success chances for ops are now modified by you and your target's current spy/wizard strength by 1% per 10% difference (ranging from -10% to +10%)
 - Infamy and Mastery gains have been reduced by 2/3 (gains unchanged in mutual war and between Shadow League members)
+- Application, wait, and leave times for the Shadow League reduced to 12 hours each (was 24/24/12, respectively)
+- Offensive actions will be disabled anywhere between 15 and 9 hours remaining in the round (from 18 to 9 hours remaining)
 - Factory: construction and rezoning costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned (from 4% per 1%, max 60% at 15% owned)
 - Factory: now employs 25 peasants (instead of 20)
 - Goblin: gem investment bonus reduced to 10% (from 15%)
