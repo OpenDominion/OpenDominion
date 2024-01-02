@@ -767,17 +767,17 @@ class SpellActionService
             // Cast spell instantly
             $damageDealt = [];
             $totalDamage = 0;
-            $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'wizard');
+            $damageReductionMultiplier = 0;
             $statusEffect = null;
 
             // Spells
-            $baseDamageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, 'enemy_spell_damage') / 100;
+            $damageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, 'enemy_spell_damage') / 100;
 
             // Techs
-            $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$spell->key}_damage");
+            $damageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$spell->key}_damage");
 
             // Wonders
-            $baseDamageReductionMultiplier -= $target->getWonderPerkMultiplier('enemy_spell_damage');
+            $damageReductionMultiplier -= $target->getWonderPerkMultiplier('enemy_spell_damage');
 
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(
@@ -820,15 +820,23 @@ class SpellActionService
                 $attrValue = $target->{$attr};
                 if ($attr == 'peasants') {
                     // Account for peasants protected from Fireball
-                    $attrValue = $this->opsCalculator->getPeasantsUnprotected($target, $mutualWarDeclared);
+                    $peasantsVulnerable = $this->opsCalculator->getPeasantsVulnerable($target);
+                    if ($peasantsVulnerable == 0) {
+                        throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to burn.");
+                    }
+                    $attrValue = $this->opsCalculator->getPeasantsUnprotected($target);
                 } elseif (Str::startsWith($attr, 'improvement_')) {
-                    // TODO: Attempt to calculate partial damage per improvement
+                    $improvementsVulnerable = $this->opsCalculator->getImprovementsVulnerable($target);
+                    if ($improvementsVulnerable == 0) {
+                        throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to destroy.");
+                    }
+                    $attrValue = $this->opsCalculator->getImprovementsUnprotected($target, $attr);
+                } else {
+                    $damageReductionMultiplier -= $this->opsCalculator->getDamageReduction($target, 'wizard');
                 }
 
-                $baseDamage = $perk->pivot->value / 100;
-                $damageReductionMultiplier = $baseDamageReductionMultiplier;
-
                 // Cap damage reduction at 80%
+                $baseDamage = $perk->pivot->value / 100;
                 $damage = ceil(
                     $attrValue *
                     $baseDamage *
@@ -837,19 +845,11 @@ class SpellActionService
 
                 if ($attr == 'peasants') {
                     // Cap Fireball damage by protection
-                    $peasantsProtected = $this->opsCalculator->getPeasantsProtected($target, $mutualWarDeclared);
-                    $peasantsKillable = max(0, $target->peasants - $peasantsProtected);
-                    $damage = min($damage, $peasantsKillable);
-                    if ($peasantsKillable == 0) {
-                        throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to burn.");
-                    }
+                    $damage = min($damage, $peasantsVulnerable);
                 } elseif (Str::startsWith($attr, 'improvement_')) {
                     // Cap Lightning Bolt damage by protection
-                    $improvementsProtected = $this->opsCalculator->getImprovementsProtected($target, $mutualWarDeclared);
-                    $improvementsDestroyable = max(0, $this->improvementCalculator->getImprovementTotal($target) - $improvementsProtected);
-                    if ($improvementsDestroyable == 0) {
-                        throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to destroy.");
-                    }
+                    $improvementVulnerable = $this->opsCalculator->getImprovementsVulnerable($target, $attr);
+                    $damage = min($damage, $improvementVulnerable);
                 }
 
                 // Temporary lightning damage

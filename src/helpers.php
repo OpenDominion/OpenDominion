@@ -221,8 +221,8 @@ if (!function_exists('random_chance')) {
     function random_chance(float $chance): bool
     {
         global $mockRandomChance;
-        if ($mockRandomChance === true) {
-            return false;
+        if ($mockRandomChance === true || $mockRandomChance === false) {
+            return $mockRandomChance;
         }
 
         return ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $chance);

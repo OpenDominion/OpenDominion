@@ -420,13 +420,7 @@
                                     <tr>
                                         <td>Fireball:</td>
                                         <td>
-                                            <strong>{{ $opsCalculator->getPeasantsVulnerableModifier($target) * 100 }}%</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Peasants Vulnerable:</td>
-                                        <td>
-                                            <strong>{{ number_format($opsCalculator->getPeasantsVulnerable($target)) }}</strong>
+                                            <strong>{{ number_format($opsCalculator->getPeasantVulnerablilityModifier($target) * 100, 2) }}%</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -436,21 +430,27 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Lightning Bolt:</td>
+                                        <td>Peasants Vulnerable:</td>
                                         <td>
-                                            <strong>{{ $opsCalculator->getImprovementsVulnerableModifier($target) * 100 }}%</strong>
+                                            <strong>{{ number_format($opsCalculator->getPeasantsVulnerable($target)) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Improvements Vulnerable:</td>
+                                        <td>Lightning Bolt:</td>
                                         <td>
-                                            <strong>{{ number_format($opsCalculator->getImprovementsVulnerable($target)) }}</strong>
+                                            <strong>{{ number_format($opsCalculator->getImprovementVulnerablilityModifier($target) * 100, 2) }}%</strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Improvements Protected:</td>
                                         <td>
                                             <strong>{{ number_format($opsCalculator->getImprovementsProtected($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Improvements Vulnerable:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getImprovementsVulnerable($target)) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>

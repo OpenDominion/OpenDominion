@@ -45,7 +45,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService = $this->app->make(EspionageActionService::class);
 
         global $mockRandomChance;
-        $mockRandomChance = true;
+        $mockRandomChance = false;
     }
 
     public function testPerformOperation_SameSpa_LoseQuarterPercent()

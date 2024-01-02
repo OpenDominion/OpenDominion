@@ -500,12 +500,26 @@ class OpsCalculator
     }
 
     /*
-     * Returns the percentage of max peasants that are vulnerable to fireball damage
+     * Returns the spell vulnerability protection modifier
      *
      * @param Dominion $dominion
      * @return float
      */
-    public function getPeasantsVulnerableModifier(Dominion $dominion, bool $mutualWar = false): float
+    public function getSpellVulnerablilityProtectionModifier(Dominion $dominion): float
+    {
+        $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
+        $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+
+        return min(0.8, $ratioProtection + $spiresProtection);
+    }
+
+    /*
+     * Returns the base percentage of max peasants that are vulnerable to fireball damage
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getPeasantVulnerabilityByDayModifier(Dominion $dominion): float
     {
         // Scale vulnerability from 0.2 at Day 4, to 0.25 at Day 24, to 0.3 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
@@ -515,55 +529,66 @@ class OpsCalculator
     }
 
     /*
-     * Returns the number of peasants that are vulnerable to fireball damage
+     * Returns the final percentage of peasants that are vulnerable to fireball
      *
      * @param Dominion $dominion
      * @return int
      */
-    public function getPeasantsVulnerable(Dominion $dominion, bool $mutualWar = false): int
+    public function getPeasantVulnerablilityModifier(Dominion $dominion): float
+    {
+        $vulnerabilityModifier = $this->getPeasantVulnerabilityByDayModifier($dominion);
+        $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
+
+        return $vulnerabilityModifier * (1 - $protectionModifier);
+    }
+
+    /*
+     * Returns the raw number of max peasants that are protected from fireball damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsProtected(Dominion $dominion): int
+    {
+        $vulnerabilityModifier = $this->getImprovementVulnerablilityModifier($dominion);
+        $vulnerablePeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+
+        return round($vulnerablePeasants * (1 - $vulnerabilityModifier));
+    }
+
+    /*
+     * Returns the raw number of peasants that are not protected from fireball damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsVulnerable(Dominion $dominion): int
+    {
+        $protectedPeasants = $this->getPeasantsProtected($dominion);
+
+        return max(0, $dominion->peasants - $protectedPeasants);
+    }
+
+    /*
+     * Returns the raw number of peasants that can be killed by fireball
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsUnprotected(Dominion $dominion): int
     {
         $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
-        $vulnerabilityModifier = $this->getPeasantsVulnerableModifier($dominion, $mutualWar);
 
-        return round($maxPeasants * $vulnerabilityModifier);
+        return max(0, $maxPeasants - $this->getPeasantsProtected($dominion));
     }
 
     /*
-     * Returns the number of peasants that are unprotected from fireball damage
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getPeasantsUnprotected(Dominion $dominion, bool $mutualWar = false): int
-    {
-        $vulnerable = $this->getPeasantsVulnerable($dominion, $mutualWar);
-        $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
-        $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
-
-        return round($vulnerable * (1 - $ratioProtection - $spiresProtection));
-    }
-
-    /*
-     * Returns the number of peasants that are protected from fireball damage
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getPeasantsProtected(Dominion $dominion, bool $mutualWar = false): int
-    {
-        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
-        $unprotectedPeasants = $this->getPeasantsUnprotected($dominion, $mutualWar);
-
-        return max(0, $maxPeasants - $unprotectedPeasants);
-    }
-
-    /*
-     * Returns the percentage of total investment that is vulnerable to lightning damage
+     * Returns the base percentage of total investment that is vulnerable to lightning damage
      *
      * @param Dominion $dominion
      * @return float
      */
-    public function getImprovementsVulnerableModifier(Dominion $dominion, bool $mutualWar = false): float
+    public function getImprovementVulnerablilityByDayModifier(Dominion $dominion): float
     {
         // Scale vulnerability from 0.3 at Day 4, to 0.25 at Day 24, to 0.2 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
@@ -573,44 +598,77 @@ class OpsCalculator
     }
 
     /*
-     * Returns the amount of improvements that are vulnerable to lightning damage
+     * Returns the final percentage of improvements that are vulnerable to lightning damage
      *
      * @param Dominion $dominion
      * @return int
      */
-    public function getImprovementsVulnerable(Dominion $dominion, bool $mutualWar = false): int
+    public function getImprovementVulnerablilityModifier(Dominion $dominion): float
     {
-        $vulnerabilityModifier = $this->getImprovementsVulnerableModifier($dominion, $mutualWar);
+        $vulnerabilityModifier = $this->getImprovementVulnerablilityByDayModifier($dominion);
+        $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
+
+        return $vulnerabilityModifier * (1 - $protectionModifier);
+    }
+
+    /*
+     * Returns the raw amount of total improvements that are protected from lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsProtected(Dominion $dominion): int
+    {
+        $vulnerabilityModifier = $this->getImprovementVulnerablilityModifier($dominion);
         $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->impprovement_harbor);
 
-        return round($vulnerableInvestments * $vulnerabilityModifier);
+        return round($vulnerableInvestments * (1 - $vulnerabilityModifier));
     }
 
     /*
-     * Returns the amount of improvements that are unprotected from lightning damage
+     * Returns the raw amount of current improvements that are not protected from lightning damage
      *
      * @param Dominion $dominion
      * @return int
      */
-    public function getImprovementsUnprotected(Dominion $dominion, bool $mutualWar = false): int
+    public function getImprovementsVulnerable(Dominion $dominion, ?string $improvementType = null): int
     {
-        $vulnerable = $this->getImprovementsVulnerable($dominion, $mutualWar);
-        $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
-        $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+        $protectedImprovements = $this->getImprovementsProtected($dominion);
+        $currentImprovements = $this->improvementCalculator->getImprovementTotal($dominion);
+        $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;
 
-        return round($vulnerable * (1 - $ratioProtection - $spiresProtection));
+        if ($destroyableImprovements == 0) {
+            return 0;
+        }
+
+        $modifier = 1;
+        if ($improvementType !== null) {
+            $modifier = max(0, $dominion->{$improvementType} / $destroyableImprovements);
+        }
+
+        return max(0, round(($destroyableImprovements - $protectedImprovements) * $modifier));
     }
 
     /*
-     * Returns the amount of improvements that are protected from lightning damage
+     * Returns the raw amount of current improvements that can be destroyed by lightning damage
      *
      * @param Dominion $dominion
      * @return int
      */
-    public function getImprovementsProtected(Dominion $dominion, bool $mutualWar = false): int
+    public function getImprovementsUnprotected(Dominion $dominion, ?string $improvementType = null): int
     {
-        $unprotectedImprovements = $this->getImprovementsUnprotected($dominion, $mutualWar);
+        $protectedImprovements = $this->getImprovementsProtected($dominion);
+        $destroyableImprovements = $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->impprovement_harbor;
 
-        return max(0, $dominion->stat_total_investment - $unprotectedImprovements);
+        if ($destroyableImprovements == 0) {
+            return 0;
+        }
+
+        $modifier = 1;
+        if ($improvementType !== null) {
+            $modifier = max(0, $dominion->{$improvementType} / $destroyableImprovements);
+        }
+
+        return max(0, round(($destroyableImprovements - $protectedImprovements) * $modifier));
     }
 }
