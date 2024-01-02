@@ -88,7 +88,7 @@ class BuildingHelper
             'home' => 'Houses 30 people.<br><br>Does not employ peasants.',
             'alchemy' => 'Produces 45 platinum per hour.',
             'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of one bushel of food per hour.',
-            'smithy' => 'Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.<br><br>Does not affect Gnome ore or High Elf lumber costs.',
+            'smithy' => 'Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.<br><br>Does not affect Gnome ore costs.',
             'masonry' => 'Increases castle bonuses by 2.6% per 1% owned.',
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Offensive power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',

@@ -42,3 +42,4 @@ units:
     power:
       offense: 6
       defense: 4
+playable: false
