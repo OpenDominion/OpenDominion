@@ -44,8 +44,8 @@ class ImprovementHelper
             'keep' => "{$improvementName}: population bonus maxes out at +30% base",
             'forges' => "{$improvementName}: offense bonus maxes out at +30% base",
             'walls' => "{$improvementName}: defense bonus maxes out at +30% base",
-            'spires' => "{$improvementName}: wizard and mana bonuses max out at +60% base, spell protection bonus is decreased by 50% and maxes out at +30% and cannot be modified",
-            'harbor' => "{$improvementName}: food bonus maxes out at +60% base, boat bonuses are increased by 25% and max out at +75%",
+            'spires' => "{$improvementName}: wizard power and mana bonuses max out at +60% base<br><br>Protection: spell protection bonus is increased by 50%, maxes out at +50%, and cannot be modified by masonries",
+            'harbor' => "{$improvementName}: food bonus maxes out at +60% base<br><br>Protection: boat bonuses are increased by 50%, max out at +50%, and cannot be modified by masonries",
         ];
 
         return $helpStrings[$improvementType] ?: null;

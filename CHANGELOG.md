@@ -35,7 +35,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Burning: new status effect (spell) with 24 hour duration, unmodded population growth is fixed at 6% of your vulnerable peasant population, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
 - Rejuvenation: new status effect (spell) with 48 hour duration, increases population growth by 200%, reduces spell damage by 75%, immune to Burning, cancelled if target's realm declares war
 - Up to 50% of your vulnerable peasant population and castle improvements are protected by defensive WPA (remains as damage reduction for all other ops), scaling changed to be more impactful early and less so as you approach the cap (formula in wiki)
-- Spires: now protects up to 30% of your vulnerable peasant population and castle improvements (from up to 60% spell damage reduction), protection not affected by Masonries
+- Spires: now protects up to 50% of your vulnerable peasant population and castle improvements (from up to 60% spell damage reduction), multiplicative with WPA protection
+- Spires and Harbor: protection bonuses increase at 1.5x the rate of the primary bonuses (from 1.25x for Harbor), capped at +50%, and cannot be modified by masonries
 - Energy Mirror: now reduces enemy spell damage by 15% and enemy spell duration by 2 hours (was 20% chance to reflect)
 - Aquaponics (tech): now reduces duration of Burning by 4 hours (was -10% fireball damage)
 - Wizard resilience removed

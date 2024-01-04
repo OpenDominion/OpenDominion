@@ -39,16 +39,15 @@ class ImprovementCalculator
         $multiplier = $this->getImprovementMaximum($improvementType)
             * (1 - exp(-$improvementPoints / ($this->getImprovementCoefficient($improvementType) * $totalLand + 15000)));
 
-        // Ignore Masonries
-        if (!($secondary && $improvementType == 'spires')) {
+        // Ignores Masonries for Protection
+        if (!($secondary && ($improvementType == 'spires' || $improvementType == 'harbor'))) {
             $multiplier *= $this->getImprovementMultiplier($dominion);
         }
 
+        // Bonus and Cap for Protection
         if ($secondary) {
-            if ($improvementType == 'spires') {
-                $multiplier *= 0.5;
-            } elseif ($improvementType == 'harbor') {
-                $multiplier *= 1.25;
+            if ($improvementType == 'spires' || $improvementType == 'harbor') {
+                $multiplier = min(0.5, $multiplier * 1.5);
             }
         }
 

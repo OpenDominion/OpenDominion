@@ -510,7 +510,7 @@ class OpsCalculator
         $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
         $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
 
-        return min(0.8, $ratioProtection + $spiresProtection);
+        return (1 - $ratioProtection) * (1 - $spiresProtection);
     }
 
     /*
@@ -539,7 +539,7 @@ class OpsCalculator
         $vulnerabilityModifier = $this->getPeasantVulnerabilityByDayModifier($dominion);
         $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
 
-        return $vulnerabilityModifier * (1 - $protectionModifier);
+        return $vulnerabilityModifier * $protectionModifier;
     }
 
     /*
@@ -608,7 +608,7 @@ class OpsCalculator
         $vulnerabilityModifier = $this->getImprovementVulnerablilityByDayModifier($dominion);
         $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
 
-        return $vulnerabilityModifier * (1 - $protectionModifier);
+        return $vulnerabilityModifier * $protectionModifier;
     }
 
     /*
@@ -620,7 +620,7 @@ class OpsCalculator
     public function getImprovementsProtected(Dominion $dominion): int
     {
         $vulnerabilityModifier = $this->getImprovementVulnerablilityModifier($dominion);
-        $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->impprovement_harbor);
+        $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor);
 
         return round($vulnerableInvestments * (1 - $vulnerabilityModifier));
     }
@@ -658,7 +658,7 @@ class OpsCalculator
     public function getImprovementsUnprotected(Dominion $dominion, ?string $improvementType = null): int
     {
         $protectedImprovements = $this->getImprovementsProtected($dominion);
-        $destroyableImprovements = $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->impprovement_harbor;
+        $destroyableImprovements = $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor;
 
         if ($destroyableImprovements == 0) {
             return 0;
