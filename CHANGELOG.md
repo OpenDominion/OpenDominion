@@ -40,9 +40,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Aquaponics (tech): now reduces duration of Burning by 4 hours (was -10% fireball damage)
 - Wizard resilience removed
 - Forest Havens removed
+- Damage scaling by day in round removed from Disband Spies, Lightning Bolt, and Assassinate Wizards
 - Fireball mana cost reduced to 3x (from 3.3x)
 - Lightning Bolt mana cost reduced to 3.25x (from 3.5x)
 - Disband Spies mana cost reduced to 3.5x (from 4.3x)
+- Miasma duration increased to 8 hours (from 6)
 - Success chances for ops are now modified by you and your target's current spy/wizard strength by 1% per 10% difference (ranging from -10% to +10%)
 - Infamy and Mastery gains have been reduced by 2/3 (gains unchanged in mutual war and between Shadow League members)
 - Application, wait, and leave times for the Shadow League reduced to 12 hours each (was 24/24/12, respectively)
