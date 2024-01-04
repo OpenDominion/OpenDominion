@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
@@ -48,7 +49,6 @@ class MagicController extends AbstractDominionController
                 $request->get('spell'),
                 ($request->has('target_dominion') ? Dominion::findOrFail($request->get('target_dominion')) : null)
             );
-
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
@@ -66,8 +66,13 @@ class MagicController extends AbstractDominionController
 
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
 
+        $bountyRedirect = null;
+        if (Str::contains($request->session()->previousUrl(), 'bounty-board')) {
+            $bountyRedirect = route('dominion.bounty-board');
+        }
+
         return redirect()
-            ->to($result['redirect'] ?? route('dominion.magic'))
+            ->to($bountyRedirect ?? $result['redirect'] ?? route('dominion.magic'))
             ->with('target_dominion', $request->get('target_dominion'));
     }
 }

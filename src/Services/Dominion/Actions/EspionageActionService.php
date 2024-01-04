@@ -21,6 +21,7 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
+use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -32,6 +33,9 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class EspionageActionService
 {
     use DominionGuardsTrait;
+
+    /** @var BountyService */
+    protected $bountyService;
 
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -92,6 +96,7 @@ class EspionageActionService
      */
     public function __construct()
     {
+        $this->bountyService = app(BountyService::class);
         $this->buildingHelper = app(BuildingHelper::class);
         $this->espionageHelper = app(EspionageHelper::class);
         $this->governmentService = app(GovernmentService::class);
@@ -181,15 +186,16 @@ class EspionageActionService
         }
 
         $result = null;
+        $bountyMessage = '';
+        $xpMessage = '';
 
-        DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
+        DB::transaction(function () use ($dominion, $target, $operationKey, &$result, &$bountyMessage, &$xpMessage) {
             $xpGain = 0;
 
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $xpGain = 2;
+                $xpGain = 1;
                 $spyStrengthLost = 2;
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-                    $xpGain = 1.5;
                     $spyStrengthLost = 1;
                 }
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
@@ -221,12 +227,25 @@ class EspionageActionService
 
             if ($result['success']) {
                 $dominion->stat_espionage_success += 1;
+                // Bounty result
+                if (isset($result['bounty']) && $result['bounty']) {
+                    $bountyRewardString = '';
+                    $rewards = $result['bounty'];
+                    if ($rewards) {
+                        $xpGain += 1;
+                    }
+                    if (isset($rewards['resource']) && isset($rewards['amount'])) {
+                        $dominion->{$rewards['resource']} += $rewards['amount'];
+                        $bountyRewardString = sprintf(' awarding %d %s', $rewards['amount'], dominion_attr_display($rewards['resource'], $rewards['amount']));
+                    }
+                    $bountyMessage = sprintf('You collected a bounty%s.', $bountyRewardString);
+                }
                 // Hero Experience
                 if ($dominion->hero && $xpGain) {
                     $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpGain);
                     $dominion->hero->experience += $xpGain;
                     $dominion->hero->save();
-                    $result['message'] .=  sprintf(' You gain %.3g XP.', $xpGain);
+                    $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);
                 }
             } else {
                 $dominion->stat_espionage_failure += 1;
@@ -252,7 +271,7 @@ class EspionageActionService
         $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
         return [
-                'message' => $result['message'],
+                'message' => sprintf('%s %s %s', $result['message'], $bountyMessage, $xpMessage),
                 'data' => [
                     'operation' => $operationKey,
                 ],
@@ -283,7 +302,7 @@ class EspionageActionService
             throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -359,12 +378,14 @@ class EspionageActionService
                 ->sendNotifications($target, 'irregular_dominion');
         }
 
+        $bountyRewards = $this->bountyService->collectBounty($dominion, $target, $operationKey);
+
         $infoOp->save();
 
         return [
             'success' => true,
             'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
-            'redirect' => route('dominion.op-center.show', $target),
+            'bounty' => $bountyRewards
         ];
     }
 
@@ -393,7 +414,7 @@ class EspionageActionService
             throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -509,7 +530,6 @@ class EspionageActionService
                 number_format($amountStolen),
                 $resource
             ),
-            'redirect' => route('dominion.op-center.show', $target),
         ];
     }
 
@@ -601,7 +621,7 @@ class EspionageActionService
             throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
         }
 
-        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa);
+        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -640,9 +660,6 @@ class EspionageActionService
         $damageDealt = [];
         $totalDamage = 0;
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
-        if (isset($operationInfo['scale_by_day']) && $operationInfo['scale_by_day'] == 1) {
-            $baseDamage *= (1.625 - 0.025 * clamp($dominion->round->daysInRound(), 10, 40));
-        }
         $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'spy');
 
         // Techs
@@ -678,7 +695,7 @@ class EspionageActionService
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damage = max(floor($target->{$attr}) - $boatsProtected, 0) * $baseDamage;
+                    $damage = max(0, floor($target->{$attr}) - $boatsProtected) * $baseDamage;
                 }
 
                 // Check for immortal wizards
@@ -755,7 +772,6 @@ class EspionageActionService
                 $warRewardsString
             ),
             'damage' => $totalDamage,
-            'redirect' => route('dominion.op-center.show', $target),
         ];
     }
 
@@ -860,13 +876,6 @@ class EspionageActionService
             $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'spy');
         } else {
             $resilienceGain = 0;
-        }
-
-        // Mutual War
-        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
-        if ($mutualWarDeclared) {
-            $infamyGain = round(1.2 * $infamyGain);
-            $resilienceGain = round(0.5 * $resilienceGain);
         }
 
         if ($dominion->infamy + $infamyGain > 1000) {

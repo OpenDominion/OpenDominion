@@ -52,7 +52,7 @@ class RealmFinderService
      */
     public function findRealm(Round $round, Race $race, User $user, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
-        if (now() < $round->start_date->subHours(static::ASSIGNMENT_HOURS_BEFORE_START)) {
+        if (now() < $round->start_date->copy()->subHours(static::ASSIGNMENT_HOURS_BEFORE_START)) {
             return $round->realms()->where('number', 0)->first();
         }
 

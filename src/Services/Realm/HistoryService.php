@@ -11,6 +11,10 @@ class HistoryService
     public const EVENT_ACTION_REALM_UPDATED = 'updated realm';
     public const EVENT_ACTION_DECLARE_WAR = 'declare war';
     public const EVENT_ACTION_CANCEL_WAR = 'cancel war';
+    public const EVENT_ACTION_APPOINT_GENERAL = 'appointed general';
+    public const EVENT_ACTION_APPOINT_MAGISTER = 'appointed magister';
+    public const EVENT_ACTION_APPOINT_MAGE = 'appointed mage';
+    public const EVENT_ACTION_APPOINT_JESTER = 'appointed jester';
 
     /**
      * Records history changes in delta of a realm.
@@ -25,8 +29,13 @@ class HistoryService
             return;
         }
 
+        $monarchId = $realm->monarch_dominion_id;
+        if (isset($deltaAttributes['monarch_dominion_id'])) {
+            $monarchId = $deltaAttributes['monarch_dominion_id'];
+        }
+
         $realm->history()->create([
-            'dominion_id' => $realm->monarch_dominion_id,
+            'dominion_id' => $monarchId,
             'event' => $event,
             'delta' => $deltaAttributes,
         ]);
@@ -87,6 +96,10 @@ class HistoryService
                 'id',
                 'round_id',
                 'monarch_dominion_id',
+                'general_dominion_id',
+                'magister_dominion_id',
+                'mage_dominion_id',
+                'jester_dominion_id',
                 'alignment',
                 'number',
                 'created_at',

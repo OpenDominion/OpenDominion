@@ -127,7 +127,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
             ],
             'forest' => [
                 'lumberyard',
-                'forest_haven',
+                //'forest_haven',
             ],
             'hill' => [
                 'factory',

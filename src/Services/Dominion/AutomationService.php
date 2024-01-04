@@ -19,9 +19,12 @@ use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\TickService;
+use OpenDominion\Traits\DominionGuardsTrait;
 
 class AutomationService
 {
+    use DominionGuardsTrait;
+
     public const DAILY_ACTIONS = 2;
 
     /** @var BankActionService */
@@ -189,6 +192,8 @@ class AutomationService
 
     public function setConfig(Dominion $dominion, array $data)
     {
+        $this->guardLockedDominion($dominion);
+
         $actionsAllowed = static::DAILY_ACTIONS;
         $currentTick = $dominion->round->getTick();
 

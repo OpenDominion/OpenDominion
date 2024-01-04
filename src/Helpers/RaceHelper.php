@@ -67,6 +67,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'ore investment';
                 break;
+            case 'lumber_decay':
+                $negativeBenefit = true;
+                $description = 'lumber rot';
+                break;
             case 'lumber_production':
                 $negativeBenefit = false;
                 $description = 'lumber production';
@@ -103,7 +107,7 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'rezone cost';
                 break;
-            case 'spy_strength':
+            case 'spy_power':
                 $negativeBenefit = false;
                 $description = 'spy power';
                 break;
@@ -115,7 +119,7 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'research point gains from invasion';
                 break;
-            case 'wizard_strength':
+            case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'wizard power';
                 break;
@@ -204,6 +208,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Ore investment';
                 break;
+            case 'lumber_decay':
+                $negativeBenefit = true;
+                $description = 'Lumber rot';
+                break;
             case 'lumber_production':
                 $negativeBenefit = false;
                 $description = 'Lumber production';
@@ -240,7 +248,7 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'Rezone cost';
                 break;
-            case 'spy_strength':
+            case 'spy_power':
                 $negativeBenefit = false;
                 $description = 'Spy power';
                 break;
@@ -252,7 +260,7 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Research point gains from invasion';
                 break;
-            case 'wizard_strength':
+            case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'Wizard power';
                 break;

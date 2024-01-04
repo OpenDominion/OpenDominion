@@ -440,7 +440,6 @@ class DominionFactory
 
             'discounted_land' => 0,
             'highest_land_achieved' => 250,
-            'highest_improvement_total' => 0,
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
             'black_guard_active_at' => null,
@@ -527,9 +526,9 @@ class DominionFactory
 
             'resource_platinum' => 0,
             'resource_food' => 100 * $landSize,
-            'resource_lumber' => 5 * $landSize,
-            'resource_mana' => 0,
-            'resource_ore' => 0,
+            'resource_lumber' => 100 * $landSize,
+            'resource_mana' => 100 * $landSize,
+            'resource_ore' => 100 * $landSize,
             'resource_gems' => 0,
             'resource_tech' => 0,
             'resource_boats' => 0,
@@ -579,7 +578,7 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
 
-            'royal_guard_active_at' => $realm->round->start_date->addDays(6),
+            'royal_guard_active_at' => (clone $realm)->round->start_date->addDays(6),
             'protection_ticks_remaining' => 0,
         ]);
 
@@ -708,6 +707,9 @@ class DominionFactory
                 $startingBuildings['building_ore_mine'] += min(100, $landAvailable);
             } else {
                 $startingBuildings['building_ore_mine'] += 20;
+                if ($race->name == 'Troll') {
+                    $startingBuildings['building_ore_mine'] += 20;
+                }
             }
             $landAvailable -= $startingBuildings['building_ore_mine'];
         }

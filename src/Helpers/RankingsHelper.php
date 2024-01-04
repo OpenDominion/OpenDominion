@@ -74,6 +74,14 @@ class RankingsHelper
                 'title_icon' => 'ra-demolish',
             ],
             [
+                'name' => 'Most Bounties Collected',
+                'key' => 'bounties-collected',
+                'stat' => 'stat_bounties_collected',
+                'stat_label' => 'Bounties Collected',
+                'title' => 'the Bounty Hunter',
+                'title_icon' => 'ra-target-poster',
+            ],
+            [
                 'name' => 'Most Masterful Spies',
                 'key' => 'spy-mastery',
                 'stat' => 'spy_mastery',

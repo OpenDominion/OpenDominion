@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
+use OpenDominion\Models\Bounty;
 use OpenDominion\Models\MessageBoard;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
@@ -88,26 +89,16 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum('posts_count');
             $view->with('forumUnreadCount', $forumUnreadCount);
 
-            $activeSpells = DB::table('dominion_spells')
-                ->where('dominion_id', $selectedDominion->id)
-                ->where('duration', '>', 0)
-                ->get([
-                    'cast_by_dominion_id'
-                ]);
-
-            $activeSelfSpells = 0;
-            $activeHostileSpells = 0;
-            foreach($activeSpells as $activeSpell) {
-                if($activeSpell->cast_by_dominion_id === $selectedDominion->id) {
-                    $activeSelfSpells++;
-                }
-                else {
-                    $activeHostileSpells++;
-                }
-            }
-
+            $activeSelfSpells = $selectedDominion->spells->where('category', 'self')->count();
+            $activeHostileSpells = $selectedDominion->spells->filter(function ($spell) {
+                return $spell->isHarmful();
+            })->count();
+            $activeFriendlySpells = $selectedDominion->spells->filter(function ($spell) {
+                return !$spell->isHarmful() && $spell->category !== 'self';
+            })->count();
             $view->with('activeSelfSpells', $activeSelfSpells);
             $view->with('activeHostileSpells', $activeHostileSpells);
+            $view->with('activeFriendlySpells', $activeFriendlySpells);
 
             // Show icon for techs
             $techCalculator = app(TechCalculator::class);
@@ -115,23 +106,27 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $unlockableTechCount = floor($selectedDominion->resource_tech / $techCost);
             $view->with('unlockableTechCount', $unlockableTechCount);
 
+            // Show barren land count
             $landCalculator = app(LandCalculator::class);
-
             $barrenLand = $landCalculator->getTotalBarrenLand($selectedDominion);
             $view->with('barrenLand', $barrenLand);
+
+            $activeBounties = Bounty::active()
+                ->where('source_realm_id', $selectedDominion->realm_id)
+                ->where('source_dominion_id', '!=', $selectedDominion->id)
+                ->count();
+            $view->with('activeBounties', $activeBounties);
 
             $unseenWonders = DB::table('round_wonders')
                 ->where('round_id', $selectedDominion->round_id)
                 ->where('created_at', '>', $selectedDominion->wonders_last_seen ?? $selectedDominion->round->created_at)
                 ->count();
-
             $view->with('unseenWonders', $unseenWonders);
 
             $unseenGameEvents = DB::table('game_events')
                 ->where('round_id', $selectedDominion->round_id)
                 ->where('created_at', '>', $selectedDominion->town_crier_last_seen ?? $selectedDominion->round->created_at)
                 ->count();
-
             $view->with('unseenGameEvents', $unseenGameEvents);
         });
 

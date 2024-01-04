@@ -99,7 +99,7 @@ class SpellHelper
 
     public function isOffensiveSpell(Spell $spell): bool
     {
-        return $spell->category !== 'self';
+        return !in_array($spell->category, ['self', 'friendly']);
     }
 
     public function isInfoOpSpell(Spell $spell): bool
@@ -107,9 +107,14 @@ class SpellHelper
         return $spell->category == 'info';
     }
 
+    public function isFriendlySpell(Spell $spell): bool
+    {
+        return $spell->category == 'friendly';
+    }
+
     public function isHostileSpell(Spell $spell): bool
     {
-        return !in_array($spell->category, ['info', 'self']);
+        return !in_array($spell->category, ['info', 'self', 'friendly']);
     }
 
     public function isBlackOpSpell(Spell $spell): bool
@@ -133,13 +138,13 @@ class SpellHelper
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
             'conversion_rate' => '%+g%% conversion rate',
             'conversions_range' => 'Conversions increased by %d%% against dominions in The Graveyard under 75%% of your size',
-            'conversions_necromancer' => 'Necromancers now convert enemy peasants into Death Knights instead of Ghouls',
             'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
             'kills_immortal' => 'Can kill spirits and the undead',
             'ignore_draftees' => 'Enemy draftees do not participate in battle',
             'sacrifice_peasants' => 'Sacrifice %g%% of your peasants',
             'spreads_plague' => 'afflicts your enemies with Plague',
             'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades (75%%+ range only)',
+            'upgrade_specs' => 'Sacrifice Skeletons and Ghouls to summon Death Knights and Necromancers (2 plus 1 per 1000 acres, hourly)',
 
             // Casualties related
             'casualties' => '%d%% casualties',
@@ -166,14 +171,18 @@ class SpellHelper
             'platinum_production_raw' => '%+d alchemy platinum production',
 
             // Wizard related
-            'energy_mirror' => '20%% chance to reflect incoming offensive spells',
+            'energy_mirror' => '%d%% chance to reflect incoming offensive spells',
+            'enemy_spell_damage' => '%+g%% enemy spell damage',
+            'enemy_spell_duration' => '%+g enemy spell duration',
+            'spell_reflect' => 'Reflects the next incoming Black Op or War spell',
             'fools_gold' => 'Platinum theft protection',
             'surreal_perception' => 'Reveals the dominion casting spells or committing spy ops against you',
             'self_spell_cost' => 'Increases the mana cost of your next non-cooldown self spell by %d%%',
             'self_spell_duration' => 'but increases duration by %d%%',
             'convert_military_spies_to_military_draftees' => 'Turns %g%% of enemy spies into draftees',
             'convert_peasants_to_self_military_unit3' => 'Kills %g%% of enemy peasants, converting 5%% into Progeny',
-            'destroy_peasants' => 'Kills %g%% peasants',
+            'apply_burning' => '%g%% chance to inflict Burning if at war',
+            'destroy_peasants' => 'Kills %g%% unprotected peasants',
             'destroy_resource_food' => 'Destroys %g%% crops',
             'destroy_improvement_science' => 'Destroys %g%% science',
             'destroy_improvement_keep' => 'Destroys %g%% keep',
@@ -183,11 +192,21 @@ class SpellHelper
             'food_decay' => '%+g%% food decay',
             'lumber_decay' => '%+g%% lumber rot',
             'mana_decay' => '%+g%% mana drain',
-            'wizard_strength' => '%+g%% wizard power',
+            'spy_losses' => '%s%% spy losses on failed operations',
+            'spy_power' => '%+g%% spy power',
+            'spy_power_defense' => '%+g%% defensive spy power',
+            'wizard_power' => '%+g%% wizard power',
+            'wizard_power_defense' => '%+g%% defensive wizard power',
             'wonder_damage' => 'Deals damage to wonders',
-            'scale_by_day' => 'Scales by day in round from 137.5%% to 62.5%%',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
+            'fixed_population_growth' => 'Population growth is fixed at %g%% of your vulnerable peasant population',
+            'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
+            'immune_burning' => 'Immune to Burning',
+            'war_cancels' => 'Cancelled if this realm declares war',
+            'cancels_gaias_light' => 'Cancels and cancelled by Gaia\'s Light',
+            'cancels_gaias_shadow' => 'Cancels and cancelled by Gaia\'s Shadow',
+            'cancels_midas_touch' => 'Cancels and cancelled by Midas Touch',
         ];
     }
 
@@ -223,10 +242,12 @@ class SpellHelper
     public function getCategoryString(string $category) {
         $categories = [
             'info' => 'Information',
-            'self' => 'Self',
+            'friendly' => 'Friendly',
             'hostile' => 'Offensive',
             'war' => 'War',
             'wonder' => 'Wonder',
+            'self' => 'Self',
+            'effect' => 'Status Effect',
         ];
 
         return $categories[$category];

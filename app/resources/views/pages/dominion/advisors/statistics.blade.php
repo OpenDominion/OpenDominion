@@ -389,7 +389,7 @@
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th>Energy Mirror</th>
+                                        <th>Spell Reflect</th>
                                         <th>Offense</th>
                                         <th>Defense</th>
                                     </tr>
@@ -402,6 +402,55 @@
                                         </td>
                                         <td>
                                             <strong>{{ number_format($target->stat_spells_reflected) }}</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table">
+                                <colgroup>
+                                    <col width="75%">
+                                    <col width="25%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Vulnerability</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Fireball:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getPeasantVulnerablilityModifier($target) * 100, 2) }}%</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Peasants Protected:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getPeasantsProtected($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Peasants Vulnerable:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getPeasantsVulnerable($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lightning Bolt:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getImprovementVulnerablilityModifier($target) * 100, 2) }}%</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Improvements Protected:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getImprovementsProtected($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Improvements Vulnerable:</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getImprovementsVulnerable($target)) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -491,6 +540,38 @@
                                                 <td>Wonders destroyed:</td>
                                                 <td>
                                                     <strong>{{ number_format($target->stat_wonders_destroyed) }}</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">Other</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <table class="table">
+                                        <colgroup>
+                                            <col width="50%">
+                                            <col width="50%">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Bounties Collected:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->stat_bounties_collected) }}</strong>
                                                 </td>
                                             </tr>
                                         </tbody>

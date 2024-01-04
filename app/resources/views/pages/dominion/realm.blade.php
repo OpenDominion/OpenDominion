@@ -53,8 +53,11 @@
                                     <tr>
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
-                                            @if ($dominion->isMonarch())
-                                                <i class="ra ra-queen-crown ra-lg text-red" title="Monarch" data-toggle="tooltip"></i>
+                                            @if ($dominion->isCourtMember())
+                                                @php
+                                                    $role = $governmentHelper->getCourtAppointment($dominion->getCourtSeat());
+                                                @endphp
+                                                <i class="{{ $role['icon'] }} ra-lg text-{{ $role['icon-color'] }}" title="{{ $role['name'] }}" data-toggle="tooltip"></i>
                                             @endif
 
                                             @if ($protectionService->isUnderProtection($dominion))

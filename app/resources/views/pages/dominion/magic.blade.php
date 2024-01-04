@@ -40,17 +40,25 @@
                                                 <label for="target_dominion">Select a target</label>
                                                 <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
-                                                    @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true) as $dominion)
-                                                        <option value="{{ $dominion->id }}"
-                                                                data-race="{{ $dominion->race->name }}"
-                                                                data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
-                                                                data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}"
-                                                                data-war="{{ $governmentService->isAtWar($selectedDominion->realm, $dominion->realm) ? 1 : 0 }}"
-                                                                data-revenge="{{ in_array($dominion->id, $recentlyInvadedByDominionIds) ? 1 : 0 }}"
-                                                                data-guard="{{ $guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion) ? 1 : 0 }}"
-                                                            >
-                                                            {{ $dominion->name }} (#{{ $dominion->realm->number }})
-                                                        </option>
+                                                    @php
+                                                        $courtMember = ($selectedDominion->isMagister() || $selectedDominion->isMage());
+                                                        $isBlackGuard = $guardMembershipService->isBlackGuardMember($selectedDominion);
+                                                        $includeFriendly = ($courtMember || $isBlackGuard);
+                                                    @endphp
+                                                    @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true, $includeFriendly) as $dominion)
+                                                        @if ($selectedDominion->realm_id !== $dominion->realm_id || $courtMember || ($isBlackGuard && $guardMembershipService->isBlackGuardMember($dominion)))
+                                                            <option value="{{ $dominion->id }}"
+                                                                    data-race="{{ $dominion->race->name }}"
+                                                                    data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
+                                                                    data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}"
+                                                                    data-war="{{ $governmentService->isAtWar($selectedDominion->realm, $dominion->realm) ? 1 : 0 }}"
+                                                                    data-revenge="{{ in_array($dominion->id, $recentlyInvadedByDominionIds) ? 1 : 0 }}"
+                                                                    data-guard="{{ $guardMembershipService->isBlackGuardMember($dominion) && $guardMembershipService->isBlackGuardMember($selectedDominion) ? 1 : 0 }}"
+                                                                    data-friendly="{{ $includeFriendly && ($selectedDominion->realm_id == $dominion->realm_id) }}"
+                                                                >
+                                                                {{ $dominion->name }} (#{{ $dominion->realm->number }})
+                                                            </option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -105,7 +113,7 @@
                                                         <button type="submit"
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
-                                                                class="btn btn-primary btn-block"
+                                                                class="btn btn-primary btn-block hostile-spell"
                                                                 {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
                                                             {{ $spell->name }}
                                                         </button>
@@ -156,6 +164,40 @@
                                                             @endif
                                                             @if (!empty($spell->races))
                                                                 Racial<br/>
+                                                            @endif
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label>Friendly Spells</label>
+                                        </div>
+                                    </div>
+
+                                    @foreach ($spellHelper->getSpells($selectedDominion->race, 'friendly')->chunk(4) as $spells)
+                                        <div class="row">
+                                            @foreach ($spells as $spell)
+                                                @php
+                                                    $canCast = $spellCalculator->canCast($selectedDominion, $spell);
+                                                @endphp
+                                                <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                                    <div class="form-group">
+                                                        <button type="submit"
+                                                                name="spell"
+                                                                value="{{ $spell->key }}"
+                                                                class="btn btn-primary btn-block friendly-spell disabled"
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $spell->name }}
+                                                        </button>
+                                                        <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
+                                                        <small>
+                                                            Mana cost: <span class="text-{{ $canCast ? 'success' : 'danger' }}">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                            @if ($spell->duration)
+                                                                Lasts {{ $spell->duration }} hours<br/>
                                                             @endif
                                                         </small>
                                                     </div>
@@ -239,7 +281,8 @@
                     <p>Self spells last for <b>12 hours</b>, unless stated otherwise while Black Op spells last for <b>8 hours</b> outside of war, <b>10 hours</b> when at war, and <b>12 hours</b> when at mutual war.</p>
                     <p>Any obtained data after successfully casting an information gathering spell gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
                     <p>War and black ops cannot be performed until the 4th day of the round.<p>
-                    <p>Casting spells spends some wizard strength (2% for info, otherwise 5%), but it regenerates 4% every hour. You may only cast spells at or above 30% strength.</p>
+                    <p><b>Friendly spells</b> can only be cast by your realm's Grand Magister or Court Mage.</p>
+                    <p>Casting spells spends some wizard strength (2% for info, 4% for friendly, otherwise 5%), but it regenerates 4% every hour. You may only cast spells at or above 30% strength.</p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ sprintf("%.4g", $selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>
             </div>
@@ -267,10 +310,18 @@
                 var warStatus = $(this).find(":selected").data('war');
                 var revengeStatus = $(this).find(":selected").data('revenge');
                 var guardStatus = $(this).find(":selected").data('guard');
-                if (warStatus == 1 || revengeStatus == 1 || guardStatus == 1) {
+                var friendlyStatus = $(this).find(":selected").data('friendly');
+                if (!friendlyStatus && (warStatus == 1 || revengeStatus == 1 || guardStatus == 1)) {
                     $('.war-spell').removeClass('disabled');
                 } else {
                     $('.war-spell').addClass('disabled');
+                }
+                if (friendlyStatus) {
+                    $('.friendly-spell').removeClass('disabled');
+                    $('.hostile-spell').addClass('disabled');
+                } else {
+                    $('.friendly-spell').addClass('disabled');
+                    $('.hostile-spell').removeClass('disabled');
                 }
             });
             @if ($targetDominion)
@@ -292,6 +343,7 @@
             const war = state.element.dataset.war;
             const revenge = state.element.dataset.revenge;
             const guard = state.element.dataset.guard;
+            const friendly = state.element.dataset.friendly;
             let difficultyClass;
 
             if (percentage >= 133) {
@@ -305,7 +357,9 @@
             }
 
             warStatus = '';
-            if (war == 1) {
+            if (friendly == 1) {
+                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-green">FRIENDLY</span></div>';
+            } else if (war == 1) {
                 warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">WAR</span></div>';
             } else if (guard == 1) {
                 warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">SHADOW LEAGUE</span></div>';

@@ -225,7 +225,7 @@ class ProductionCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('food_production');
 
         // Spells
-        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'food_production');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'food_production') / 100;
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
@@ -421,6 +421,9 @@ class ProductionCalculator
         // Values
         $lumberDecay = 1;
 
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('lumber_decay');
+
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('lumber_decay');
 
@@ -539,7 +542,7 @@ class ProductionCalculator
         $manaDecay = 2;
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('mana_decay');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'mana_decay') / 100;
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('mana_decay');
@@ -630,7 +633,7 @@ class ProductionCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('ore_production');
 
         // Spells
-        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'ore_production');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'ore_production') / 100;
 
         return $multiplier;
     }
@@ -702,7 +705,7 @@ class ProductionCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('gem_production');
 
         // Spells
-        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'gem_production');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'gem_production') / 100;
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'gem_production');
@@ -830,7 +833,7 @@ class ProductionCalculator
         $multiplier += $dominion->getTechPerkMultiplier('boat_production');
 
         // Spells
-        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'boat_production');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'boat_production') / 100;
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25;

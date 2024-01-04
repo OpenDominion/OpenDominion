@@ -23,7 +23,7 @@
                                 <tr>
                                     <th>Part</th>
                                     <th>Rating</th>
-                                    <th class="text-center">Invested <span class="text-muted small">(Incoming)</span></th>
+                                    <th class="text-center">Invested<!-- <span class="text-muted small">(Incoming)</span>--></th>
                                     <th class="text-center">Invest</th>
                                 </tr>
                             </thead>
@@ -35,11 +35,11 @@
                                             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
                                         </td>
                                         <td>
-                                            {{ sprintf(
+                                            {!! sprintf(
                                                 $improvementHelper->getImprovementRatingString($improvementType),
                                                 number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType) * 100, 2),
-                                                number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType) * 100 * 1.25, 2)
-                                            ) }}
+                                                number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType, true) * 100, 2)
+                                            ) !!}
                                         </td>
                                         <td class="text-center">
                                             {{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}
@@ -51,17 +51,20 @@
                                             <div class="input-group">
                                                 <input type="number" name="improve[{{ $improvementType }}]" data-type="{{ $improvementType }}" class="form-control text-center" placeholder="0" min="0" value="{{ old('improve.' . $improvementType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-primary improve-max" data-type="{{ $improvementType }}" type="button">Max</button>
+                                                    <button class="btn btn-primary improve-max" data-type="{{ $improvementType }}" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                        Max
+                                                    </button>
                                                 </span>
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
+                                @php $currentTotal = $improvementCalculator->getImprovementTotal($selectedDominion); @endphp
                                 <tr>
                                     <td>Total</td>
                                     <td></td>
                                     <td class="text-center">
-                                        {{ number_format($improvementCalculator->getImprovementTotal($selectedDominion)) }}
+                                        {{ number_format($currentTotal) }}
                                     </td>
                                     <td></td>
                                 </tr>
@@ -97,6 +100,9 @@
                     <p>Invest resources in your castle to improve certain parts of your dominion. Improving processes <b>instantly</b>.</p>
                     <p>Resources are converted to points. Each gem is worth 12 points, lumber and ore are worth 2 points and platinum is worth 1 point.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_lumber) }} lumber, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->resource_gems) }} {{ str_plural('gem', $selectedDominion->resource_gems) }}.</p>
+                    @if ($selectedDominion->stat_lightning_bolt_damage_received !== 0)
+                        <p>{{ number_format(($selectedDominion->stat_total_investment - $currentTotal) / $selectedDominion->stat_total_investment * 100, 2) }}% of your improvements have been destroyed by lightning bolts: {{ number_format($selectedDominion->stat_total_investment - $currentTotal) }} out of {{ number_format($selectedDominion->stat_total_investment) }} invested.</p>
+                    @endif
                     @if ($selectedDominion->building_masonry > 0)
                         <p>Masonries are increasing your castle improvements by {{ number_format(($improvementCalculator->getImprovementMultiplier($selectedDominion) - 1) * 100, 2) }}%</p>
                     @endif

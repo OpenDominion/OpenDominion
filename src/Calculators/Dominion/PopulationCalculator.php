@@ -116,6 +116,17 @@ class PopulationCalculator
     }
 
     /**
+     * Returns the Dominion's maximum peasant population.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getMaxPeasantPopulation(Dominion $dominion): int
+    {
+        return $this->getMaxPopulation($dominion) - $this->getPopulationMilitary($dominion);
+    }
+
+    /**
      * Returns the Dominion's max population.
      *
      * @param Dominion $dominion
@@ -253,8 +264,18 @@ class PopulationCalculator
      */
     public function getPopulationBirth(Dominion $dominion): int
     {
+        $peasantBirth = $this->getPopulationBirthRaw($dominion);
         $multiplier = $this->getPopulationBirthMultiplier($dominion);
-        return round($this->getPopulationBirthRaw($dominion) * $multiplier);
+
+        // Special case for Burning
+        $fixedGrowth = $this->spellCalculator->resolveSpellPerk($dominion, 'fixed_population_growth') / 100;
+        if ($fixedGrowth) {
+            $opsCalculator = app(OpsCalculator::class);
+            $peasants = $opsCalculator->getPeasantsVulnerable($dominion);
+            $peasantBirth = round($peasants * $fixedGrowth);
+        }
+
+        return round($peasantBirth * $multiplier);
     }
 
     /**
@@ -301,7 +322,7 @@ class PopulationCalculator
         $multiplier += $dominion->getTechPerkMultiplier('population_growth');
 
         // Spells
-        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'population_growth');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'population_growth') / 100;
 
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);
@@ -320,9 +341,6 @@ class PopulationCalculator
         $maximumPeasantDeath = round((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion));
         $roomForPeasants = ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion));
         $currentPopulationChange = ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion));
-
-        // Wizard resilience
-        $currentPopulationChange += round($roomForPeasants * $dominion->wizard_resilience / 125 / 100);
 
         $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
         return max($maximumPeasantDeath, $maximumPopulationChange);
@@ -418,11 +436,13 @@ class PopulationCalculator
                 + $dominion->building_school
                 + $dominion->building_lumberyard
                 + $dominion->building_forest_haven
-                + $dominion->building_factory
                 + $dominion->building_guard_tower
                 + $dominion->building_shrine
                 + $dominion->building_dock
         ));
+
+        // Factories
+        $totalJobs += (25 * $dominion->building_factory);
 
         // Wonders
         $totalJobs *= (1 + $dominion->getWonderPerkMultiplier('employment'));

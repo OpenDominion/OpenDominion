@@ -14,7 +14,7 @@ namespace OpenDominion\Models;
  * @property-read \OpenDominion\Models\Dominion $dominion
  * @property-read \OpenDominion\Models\Spell $spell
  */
-class DominionSpell extends AbstractModel
+class DominionSpell extends AbstractPivot
 {
     protected $table = 'dominion_spells';
 

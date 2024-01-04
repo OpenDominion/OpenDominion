@@ -22,7 +22,7 @@ class BuildingHelper
             'diamond_mine',
             'school',
             'lumberyard',
-            'forest_haven',
+            //'forest_haven',
             'factory',
             'guard_tower',
             'shrine',
@@ -62,7 +62,7 @@ class BuildingHelper
             ],
             'forest' => [
                 'lumberyard',
-                'forest_haven',
+                //'forest_haven',
             ],
             'hill' => [
                 'factory',
@@ -85,24 +85,24 @@ class BuildingHelper
     public function getBuildingHelpString(string $buildingType): ?string
     {
         $helpStrings = [
-            'home' => 'Houses 30 people.',
+            'home' => 'Houses 30 people.<br><br>Does not employ peasants.',
             'alchemy' => 'Produces 45 platinum per hour.',
-            'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of a bushel of food per hour.',
-            'smithy' => 'Reduces specialist and elite military unit training costs (except Gnome ore costs).<br><br>Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.',
+            'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of one bushel of food per hour.',
+            'smithy' => 'Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.<br><br>Does not affect Gnome ore costs.',
             'masonry' => 'Increases castle bonuses by 2.6% per 1% owned.',
             'ore_mine' => 'Produces 60 ore per hour.',
-            'gryphon_nest' => 'Increases offensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
+            'gryphon_nest' => 'Offensive power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',
             'wizard_guild' => 'Spy, Assassin, Wizard, and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.<br>Spy and Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 1% at 10% owned.<br>Losses on failed black ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.',
-            'temple' => 'Increases population growth and reduces defensive bonuses of dominions you invade.<br><br>Population growth increased by 6% per 1% owned.<br>Defensive bonuses reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.67% owned.',
+            'temple' => 'Population growth increased by 6% per 1% owned.<br>Defensive bonuses reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.67% owned.',
             'diamond_mine' => 'Produces 15 gems per hour.',
             'school' => 'Produces (1 - (Schools / Total Land)) research points per hour (minimum of 0.5). Limited to 50% of your total land.',
             'lumberyard' => 'Produces 50 lumber per hour.',
-            'forest_haven' => 'Produces 25 lumber per hour.<br>Fireball damage reduced by 10% per 1% owned, up to a maximum of 80% at 8% owned.<br>Disband Spies and Assassinate Wizards damage reduced by 10% per 1% owned, up to a maximum of 50% at 5% owned.',
-            'factory' => 'Reduces construction and land rezoning costs.<br><br>Construction costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.<br>Rezoning costs reduced by 4% per 1% owned, up to a maximum of 60% at 15% owned.',
-            'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
+            //'forest_haven' => 'Produces 25 lumber per hour.<br>Protects 6.25% of your vulnerable peasant population from Fireball per 1% owned, up to a maximum of 50% at 8% owned.',
+            'factory' => 'Construction costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Rezoning costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Employs 25 peasants (instead of 20).',
+            'guard_tower' => 'Defensive power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'shrine' => 'Increases Hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.',
-            'barracks' => 'Houses 36 trained or training military units.<br><br>Does not increase in capacity for population bonuses.',
+            'barracks' => 'Houses 36 trained or training military units.<br><br>Does not employ peasants or increase in capacity due to population bonuses.',
             'dock' => 'Produces 1 boat every 20 hours on average.<br>Each dock prevents 2.25 of your boats from being sunk (increases by 0.05 each day of the round).<br>Produces 40 bushels of food per hour.',
         ];
 

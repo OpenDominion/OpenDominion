@@ -95,7 +95,7 @@ class TrainingCalculator
                     if ($ore > 0) {
                         $cost['ore'] = $ore;
 
-                        if ($dominion->race->name !== 'Gnome') {
+                        if ($dominion->race->key !== 'gnome') {
                             $cost['ore'] = (int)ceil($ore * $this->getSpecialistEliteCostMultiplier($dominion));
                         }
                     }
@@ -105,7 +105,11 @@ class TrainingCalculator
                     }
 
                     if ($lumber > 0) {
-                        $cost['lumber'] = (int)ceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion));
+                        $cost['lumber'] = $lumber;
+
+                        if ($dominion->race->key !== 'wood-elf-rework') {
+                            $cost['lumber'] = (int)ceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion));
+                        }
                     }
 
                     if ($gems > 0) {

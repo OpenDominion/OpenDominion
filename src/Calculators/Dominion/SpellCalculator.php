@@ -135,10 +135,9 @@ class SpellCalculator
     }
 
     /**
-     * Returns whether a particular spell is affecting $dominion right now.
+     * Returns all active spells for a dominion.
      *
      * @param Dominion $dominion
-     * @param Spell $spell
      * @return bool
      */
     public function getActiveSpells(Dominion $dominion): Collection
@@ -204,18 +203,12 @@ class SpellCalculator
      */
     public function resolveSpellPerk(Dominion $dominion, string $key): float
     {
-        $damageMultiplier = 1;
-        $selfPerkValue = $dominion->getSpellPerkValue($key, false);
-        $hostilePerkValue = $dominion->getSpellPerkValue($key, true);
+        $selfPerkValue = $dominion->getSpellPerkValue($key, ['self']);
+        $hostilePerkValue = $dominion->getSpellPerkValue($key, ['hostile']);
+        $warPerkValue = $dominion->getSpellPerkValue($key, ['war']);
+        $friendlyPerkValue = $dominion->getSpellPerkValue($key, ['friendly']);
+        $statusEffectPerkValue = $dominion->getSpellPerkValue($key, ['effect']);
 
-        if ($hostilePerkValue) {
-            // Damage reductions from self spells
-            $protectionPerk = $dominion->getSpellPerkValue("{$key}_damage");
-            if ($protectionPerk) {
-                $damageMultiplier += ($protectionPerk / 100);
-            }
-        }
-
-        return ($selfPerkValue + ($hostilePerkValue * max(0, $damageMultiplier))) / 100;
+        return ($selfPerkValue + $hostilePerkValue + $warPerkValue + $friendlyPerkValue + $statusEffectPerkValue);
     }
 }

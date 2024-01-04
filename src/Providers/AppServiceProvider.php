@@ -52,6 +52,7 @@ use OpenDominion\Services\Dominion\Actions\TechActionService;
 use OpenDominion\Services\Dominion\Actions\WonderActionService;
 use OpenDominion\Services\Dominion\AIService;
 use OpenDominion\Services\Dominion\AutomationService;
+use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -149,6 +150,7 @@ class AppServiceProvider extends AbstractServiceProvider
         // Dominion Services
         $this->app->singleton(AIService::class);
         $this->app->singleton(AutomationService::class);
+        $this->app->singleton(BountyService::class);
         $this->app->singleton(GovernmentService::class);
         $this->app->singleton(GuardMembershipService::class);
         $this->app->singleton(HistoryService::class);

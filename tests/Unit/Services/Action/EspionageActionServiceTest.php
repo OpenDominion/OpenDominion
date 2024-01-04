@@ -31,7 +31,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $user = $this->createAndImpersonateUser();
-        $this->round = $this->createRound('last week');
+        $this->round = $this->createRound('-3 days midnight');
 
         $this->dominion = $this->createDominion($user, $this->round, Race::where('name', 'Halfling')->firstOrFail());
         $this->dominion->protection_ticks_remaining = 0;
@@ -45,7 +45,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService = $this->app->make(EspionageActionService::class);
 
         global $mockRandomChance;
-        $mockRandomChance = true;
+        $mockRandomChance = false;
     }
 
     public function testPerformOperation_SameSpa_LoseQuarterPercent()

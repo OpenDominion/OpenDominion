@@ -144,6 +144,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'clear_sight'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="spell" value="clear_sight">
                                 <button type="submit" class="btn btn-sm btn-primary">Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('clear_sight'))) }} mana)</button>
@@ -261,10 +265,10 @@
 
                     <table class="table">
                         <colgroup>
-                            <col width="150">
+                            <col width="20%">
                             <col>
-                            <col width="100">
-                            <col width="200">
+                            <col width="10%">
+                            <col width="25%">
                         </colgroup>
                         <thead>
                             <tr>
@@ -275,16 +279,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $spells = $spellHelper->getSpells()->keyBy('key');
-                            @endphp
                             @foreach ($latestRevelation->data as $activeSpell)
                                 @php
-                                    $spell = $spells[$activeSpell['spell']];
+                                    $spell = $spellHelper->getSpellByKey($activeSpell['spell']);
                                 @endphp
                                 <tr>
-                                    <td>{{ $spell->name }}</td>
-                                    <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
+                                    <td>
+                                        {{ $spell->name }}
+                                    </td>
+                                    <td>
+                                        <div data-toggle="tooltip" data-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
+                                            {{ $spellHelper->getSpellDescription($spell) }}
+                                        </div>
+                                    </td>
                                     <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                     <td class="text-center">
                                         @php
@@ -330,6 +337,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'revelation'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="spell" value="revelation">
                                 <button type="submit" class="btn btn-sm btn-primary">Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('revelation'))) }} mana)</button>
@@ -380,6 +391,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'castle_spy'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="operation" value="castle_spy">
                                 <button type="submit" class="btn btn-sm btn-primary">Castle Spy</button>
@@ -433,6 +448,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'barracks_spy'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="operation" value="barracks_spy">
                                 <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
@@ -504,6 +523,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'survey_dominion'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="operation" value="survey_dominion">
                                 <button type="submit" class="btn btn-sm btn-primary">Survey Dominion</button>
@@ -573,6 +596,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'land_spy'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="operation" value="land_spy">
                                 <button type="submit" class="btn btn-sm btn-primary">Land Spy</button>
@@ -643,6 +670,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'vision'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="spell" value="vision">
                                 <button type="submit" class="btn btn-sm btn-primary">Vision ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('vision'))) }} mana)</button>
@@ -742,6 +773,10 @@
                         <div class="pull-right">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
+                                @include('partials.dominion.bounty.show-item', [
+                                    'bounties' => $bounties,
+                                    'opType' => 'disclosure'
+                                ])
                                 <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                 <input type="hidden" name="spell" value="disclosure">
                                 <button type="submit" class="btn btn-sm btn-primary">Disclosure ({{ number_format($spellCalculator->getManaCost($selectedDominion, $infoSpells->get('disclosure'))) }} mana)</button>

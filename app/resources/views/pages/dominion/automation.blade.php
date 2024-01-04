@@ -15,9 +15,14 @@
                         <div class="col-sm-12 col-md-6">
                             @php
                                 $currentTick = $selectedDominion->round->getTick();
+                                if ($selectedDominion->round->hasStarted()) {
+                                    $actionStartDate = now()->startOfHour();
+                                } else {
+                                    $actionStartDate = $selectedDominion->round->start_date;
+                                }
                             @endphp
                             <h4>Current Tick</h4>
-                            <div>
+                            <div style="margin-bottom: 20px;">
                                 Day {{ $selectedDominion->round->daysInRound() }}, Hour {{ $selectedDominion->round->hoursInDay() }}
                             </div>
                             <h4>Configured Actions</h4>
@@ -41,8 +46,8 @@
                                         @foreach ($selectedDominion->ai_config as $tick => $config)
                                             @php
                                                 $hours = $tick - $currentTick;
-                                                $day = $selectedDominion->round->daysInRound(now()->addHours($hours));
-                                                $hour = $selectedDominion->round->hoursInDay(now()->addHours($hours));
+                                                $day = $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours));
+                                                $hour = $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours));
                                             @endphp
                                             @foreach ($config as $index => $item)
                                                 <tr>
@@ -76,7 +81,7 @@
                                                             @csrf
                                                             <input type="hidden" name="tick" value="{{ $tick }}" />
                                                             <input type="hidden" name="key" value="{{ $index }}" />
-                                                            <button class="btn btn-link no-padding pull-right" type="submit">
+                                                            <button class="btn btn-link no-padding pull-right" type="submit" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                                 <i class="fa fa-trash text-danger"></i>
                                                             </button>
                                                         </form>
@@ -94,11 +99,11 @@
                                 @csrf
                                 <div class="form-group">
                                     Tick:
-                                    <select class="form-control" name="tick">
+                                    <select class="form-control" name="tick" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @foreach (range(1, 8) as $hours)
                                             <option value="{{ $currentTick + $hours }}">
-                                                Day {{ $selectedDominion->round->daysInRound(now()->addHours($hours)) }},
-                                                Hour {{ $selectedDominion->round->hoursInDay(now()->addHours($hours)) }}
+                                                Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours)) }},
+                                                Hour {{ $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours)) }}
                                                 (+{{ $hours }})
                                             </option>
                                         @endforeach
@@ -106,7 +111,7 @@
                                 </div>
                                 <div class="form-group">
                                     Action:
-                                    <select class="form-control" name="action">
+                                    <select class="form-control" name="action" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option value="train">Train Military</option>
                                         <option value="construct">Construct Buildings</option>
                                         <option value="explore">Explore Land</option>
@@ -115,7 +120,8 @@
                                 </div>
                                 <div class="form-group action-options train">
                                     Unit:
-                                    <select class="form-control" name="key">
+                                    <select class="form-control" name="key" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                        <option></option>
                                         @foreach ($unitTypes as $unitType)
                                             <option value="{{ $unitType }}">
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
@@ -126,6 +132,7 @@
                                 <div class="form-group action-options construct" style="display: none;">
                                     Building:
                                     <select class="form-control" name="key" disabled>
+                                        <option></option>
                                         @foreach ($buildings as $building)
                                             <option value="{{ $building }}">
                                                 {{ $buildingHelper->getBuildingName($building) }}
@@ -136,6 +143,7 @@
                                 <div class="form-group action-options explore" style="display: none;">
                                     Land Type:
                                     <select class="form-control" name="key" disabled>
+                                        <option></option>
                                         @foreach ($landTypes as $landType)
                                             <option value="{{ $landType }}">
                                                 {{ ucwords($landType) }}
@@ -145,11 +153,12 @@
                                 </div>
                                 <div class="form-group action-options train construct explore">
                                     Amount:
-                                    <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" />
+                                    <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
                                 </div>
                                 <div class="form-group action-options spell" style="display: none;">
                                     Spell:
                                     <select class="form-control" name="key" disabled>
+                                        <option></option>
                                         @foreach ($spells as $spell)
                                             <option value="{{ $spell->key }}">
                                                 {{ $spell->name }}
@@ -157,7 +166,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                                <button type="submit" class="btn btn-primary pull-right" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    Save
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -171,10 +182,10 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>You can perform two automated actions per day, which resets with your daily bonuses.</p>
+                    <p>You can perform {{ $allowedActions }} automated actions per day, which reset with your daily bonuses.</p>
                     <p>Actions cannot be scheduled more than 8 hours in advance and are performed ~30 minutes into the hour.</p>
                     <p>In the event that you do not have enough resources to perform the action, it will instead use the max that you can afford.</p>
-                    <p>You have used <b>{{ $allowedActions - $selectedDominion->daily_actions }}</b> actions today.</p>
+                    <p>You have <b>{{ $selectedDominion->daily_actions }}</b> action(s) remaining today.</p>
                 </div>
             </div>
         </div>

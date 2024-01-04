@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PrestigeCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
@@ -44,6 +45,9 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|QueueService */
     protected $queueService;
 
+    /** @var Mock|SpellCalculator */
+    protected $spellCalculator;
+
     /** @var Mock|SpellHelper */
     protected $spellHelper;
 
@@ -65,6 +69,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             $this->landCalculator = m::mock(LandCalculator::class),
             $this->prestigeCalculator = m::mock(PrestigeCalculator::class),
             $this->queueService = m::mock(QueueService::class),
+            $this->spellCalculator = m::mock(SpellCalculator::class),
             $this->spellHelper = m::mock(SpellHelper::class)
         ])->makePartial();
     }

@@ -64,7 +64,7 @@ class DailyBonusesController extends AbstractDominionController
         return redirect()->route('dominion.bonuses');
     }
 
-    public function getAutomatedActions()
+    public function getAutomatedActions(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $buildingHelper = app(BuildingHelper::class);
@@ -94,6 +94,10 @@ class DailyBonusesController extends AbstractDominionController
     public function postAutomatedActions(AutomationActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
+        if ($dominion->protection_ticks_remaining) {
+            $request->session()->flash('alert-danger', 'You cannot schedule any actions while you have protection ticks remaining.');
+            return redirect()->route('dominion.bonuses.actions');
+        }
         $automationService = app(AutomationService::class);
 
         $config = [

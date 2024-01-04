@@ -48,4 +48,4 @@ units:
       defense: 3
     perks:
       immortal: 1
-      conversion: 2,15 # slot 3, one per 15 sent
+      conversion: 3,15 # slot 3, one per 15 sent

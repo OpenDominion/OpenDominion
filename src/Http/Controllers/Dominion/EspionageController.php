@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\EspionageCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -43,13 +44,11 @@ class EspionageController extends AbstractDominionController
         $espionageActionService = app(EspionageActionService::class);
 
         try {
-            /** @noinspection PhpParamsInspection */
             $result = $espionageActionService->performOperation(
                 $dominion,
                 $request->get('operation'),
                 Dominion::findOrFail($request->get('target_dominion'))
             );
-
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
@@ -66,8 +65,13 @@ class EspionageController extends AbstractDominionController
 
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
 
+        $bountyRedirect = null;
+        if (Str::contains($request->session()->previousUrl(), 'bounty-board')) {
+            $bountyRedirect = route('dominion.bounty-board');
+        }
+
         return redirect()
-            ->to($result['redirect'] ?? route('dominion.espionage'))
+            ->to($bountyRedirect ?? $result['redirect'] ?? route('dominion.espionage'))
             ->with('target_dominion', $request->get('target_dominion'));
     }
 }

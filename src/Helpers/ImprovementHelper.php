@@ -9,9 +9,9 @@ class ImprovementHelper
         return [
             'science',
             'keep',
-            'spires',
             'forges',
             'walls',
+            'spires',
             'harbor',
         ];
     }
@@ -26,10 +26,10 @@ class ImprovementHelper
         $ratingStrings = [
             'science' => '+%s%% platinum production',
             'keep' => '+%s%% max population',
-            'spires' => '+%s%% offensive wizard power, mana production, spell damage reduction',
             'forges' => '+%s%% offensive power',
             'walls' => '+%s%% defensive power',
-            'harbor' => '+%s%% food production, +%s%% boat production & protection',
+            'spires' => '+%s%% offensive wizard power & mana production<br>+%s%% protection from spells',
+            'harbor' => '+%s%% food production<br>+%s%% boat production & protection',
         ];
 
         return $ratingStrings[$improvementType] ?: null;
@@ -40,12 +40,12 @@ class ImprovementHelper
         $improvementName = $this->getImprovementName($improvementType);
 
         $helpStrings = [
-            'science' => "Improvements to {$improvementName} increase your platinum production.<br><br>Max +20% base {$improvementName}.",
-            'keep' => "Improvements to your {$improvementName} increase your maximum population.<br><br>Max +30% base {$improvementName}.",
-            'spires' => "Improvements to your {$improvementName} increase your offensive wizard power, mana production, and reduce damage from harmful spells.<br><br>Max +60% base {$improvementName}.",
-            'forges' => "Improvements to your {$improvementName} increase your offensive power.<br><br>Max +30% base {$improvementName}.",
-            'walls' => "Improvements to your {$improvementName} increase your defensive power.<br><br>Max +30% base {$improvementName}.",
-            'harbor' => "Improvements to your {$improvementName} improve your food production, boat production, and boat protection.<br><br>Max +60% base {$improvementName}.",
+            'science' => "{$improvementName}: platinum bonus maxes out at +20% base",
+            'keep' => "{$improvementName}: population bonus maxes out at +30% base",
+            'forges' => "{$improvementName}: offense bonus maxes out at +30% base",
+            'walls' => "{$improvementName}: defense bonus maxes out at +30% base",
+            'spires' => "{$improvementName}: wizard power and mana bonuses max out at +60% base<br><br>Protection: spell protection bonus is increased by 50%, maxes out at +50%, and cannot be modified by masonries",
+            'harbor' => "{$improvementName}: food bonus maxes out at +60% base<br><br>Protection: boat bonuses are increased by 50%, max out at +50%, and cannot be modified by masonries",
         ];
 
         return $helpStrings[$improvementType] ?: null;

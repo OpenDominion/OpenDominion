@@ -213,9 +213,15 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
             $router->get('op-center/{dominion}/{type}')->uses('Dominion\OpCenterController@getDominionArchive')->name('op-center.archive');
 
+            // Bounty Board
+            $router->get('bounty-board')->uses('Dominion\BountyController@getBountyBoard')->name('bounty-board');
+            $router->get('bounty-board/{target}/{type}')->uses('Dominion\BountyController@getCreateBounty')->name('bounty-board.create');
+            $router->get('bounty-board/{target}/{type}/delete')->uses('Dominion\BountyController@getDeleteBounty')->name('bounty-board.delete');
+
             // Government
             $router->get('government')->uses('Dominion\GovernmentController@getIndex')->name('government');
             $router->post('government/monarch')->uses('Dominion\GovernmentController@postMonarch')->name('government.monarch');
+            $router->post('government/appointments')->uses('Dominion\GovernmentController@postAppointments')->name('government.appointments');
             $router->post('government/realm')->uses('Dominion\GovernmentController@postRealm')->name('government.realm');
             $router->post('government/royal-guard/join')->uses('Dominion\GovernmentController@postJoinRoyalGuard')->name('government.royal-guard.join');
             $router->post('government/elite-guard/join')->uses('Dominion\GovernmentController@postJoinEliteGuard')->name('government.elite-guard.join');

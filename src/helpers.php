@@ -83,7 +83,7 @@ if (!function_exists('dominion_attr_display')) {
             'resource_lumber' => 'lumber',
             'resource_mana' => 'mana',
             'resource_ore' => 'ore',
-            'resource_tech' => 'tech',
+            'resource_tech' => 'research points',
             'land_water' => 'water',
         ];
 
@@ -221,8 +221,8 @@ if (!function_exists('random_chance')) {
     function random_chance(float $chance): bool
     {
         global $mockRandomChance;
-        if ($mockRandomChance === true) {
-            return false;
+        if ($mockRandomChance === true || $mockRandomChance === false) {
+            return $mockRandomChance;
         }
 
         return ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $chance);

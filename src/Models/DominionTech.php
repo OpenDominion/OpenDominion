@@ -12,7 +12,7 @@ namespace OpenDominion\Models;
  * @property-read \OpenDominion\Models\Dominion $dominion
  * @property-read \OpenDominion\Models\Tech $tech
  */
-class DominionTech extends AbstractModel
+class DominionTech extends AbstractPivot
 {
     protected $table = 'dominion_techs';
 

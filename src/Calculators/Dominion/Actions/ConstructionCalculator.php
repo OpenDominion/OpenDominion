@@ -99,8 +99,8 @@ class ConstructionCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('construction_cost');
 
-        // Cap at -75%
-        return max($multiplier, 0.25);
+        // Cap at -80%
+        return max($multiplier, 0.2);
     }
 
     /**
@@ -247,8 +247,8 @@ class ConstructionCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $factoryReduction = 4;
-        $factoryReductionMax = 60;
+        $factoryReduction = 5;
+        $factoryReductionMax = 50;
 
         // Factories
         $multiplier -= min(

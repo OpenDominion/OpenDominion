@@ -74,8 +74,8 @@ class RezoningCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $factoryReduction = 4;
-        $factoryReductionMax = 60;
+        $factoryReduction = 5;
+        $factoryReductionMax = 50;
 
         // Factories
         $multiplier -= min(

@@ -19,6 +19,7 @@
                 <li class="header">GENERAL</li>
                 <li class="{{ Route::is('dominion.status') ? 'active' : null }}"><a href="{{ route('dominion.status') }}"><i class="fa fa-bar-chart fa-fw"></i> <span>Status</span></a></li>
                 <li class="{{ Route::is('dominion.advisors.*') ? 'active' : null }}"><a href="{{ route('dominion.advisors') }}"><i class="fa fa-question-circle fa-fw"></i> <span>Advisors</span></a></li>
+                <li class="{{ Route::is('dominion.bonuses.actions') ? 'active' : null }}"><a href="{{ route('dominion.bonuses.actions') }}"><i class="ra ra-robot-arm ra-fw"></i> <span>Automation</span></a></li>
                 <li class="{{ Route::is('dominion.bonuses') ? 'active' : null }}">
                     <a href="{{ route('dominion.bonuses') }}">
                         <i class="fa fa-plus fa-fw"></i>
@@ -104,6 +105,7 @@
                             <span class="pull-right-container">
                                 {!! $activeSelfSpells > 0 ? ('<small class="label pull-right bg-blue">' . $activeSelfSpells . '</small>') : null !!}
                                 {!! $activeHostileSpells > 0 ? ('<small class="label pull-right bg-red">' . $activeHostileSpells . '</small>') : null !!}
+                                {!! $activeFriendlySpells > 0 ? ('<small class="label pull-right bg-green">' . $activeFriendlySpells . '</small>') : null !!}
                             </span>
                         @endif
 
@@ -111,6 +113,16 @@
                 </li>
                 <li class="{{ Route::is('dominion.espionage') ? 'active' : null }}"><a href="{{ route('dominion.espionage') }}"><i class="fa fa-user-secret fa-fw"></i> <span>Espionage</span></a></li>
                 <li class="{{ Route::is('dominion.op-center*') ? 'active' : null }}"><a href="{{ route('dominion.op-center') }}"><i class="fa fa-globe fa-fw"></i> <span>Op Center</span></a></li>
+                <li class="{{ Route::is('dominion.bounty-board') ? 'active' : null }}">
+                    <a href="{{ route('dominion.bounty-board') }}">
+                        <i class="ra ra-hanging-sign ra-fw"></i> <span>Bounty Board</span>
+                        @if ($activeBounties > 0)
+                            <span class="pull-right-container">
+                                <small class="label label-primary pull-right">{{ $activeBounties }}</small>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.calculations') ? 'active' : null }}"><a href="{{ route('dominion.calculations') }}"><i class="fa fa-calculator fa-fw"></i> <span>Calculators</span></a></li>
 
                 <li class="header">RELATIONS</li>

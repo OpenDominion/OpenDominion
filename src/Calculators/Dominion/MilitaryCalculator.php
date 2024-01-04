@@ -54,6 +54,9 @@ class MilitaryCalculator
     /** @var QueueService */
     protected $queueService;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /** @var SpellHelper */
     protected $spellHelper;
 
@@ -70,6 +73,7 @@ class MilitaryCalculator
      * @param LandCalculator $landCalculator
      * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
+     * @param SpellCalculator $spellCalculator
      * @param SpellHelper $spellHelper
      */
     public function __construct(
@@ -80,6 +84,7 @@ class MilitaryCalculator
         LandCalculator $landCalculator,
         PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
+        SpellCalculator $spellCalculator,
         SpellHelper $spellHelper
     )
     {
@@ -90,6 +95,7 @@ class MilitaryCalculator
         $this->landCalculator = $landCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
+        $this->spellCalculator = $spellCalculator;
         $this->spellHelper = $spellHelper;
     }
 
@@ -799,8 +805,7 @@ class MilitaryCalculator
         if (isset($dominion->calc['cull_the_weak'])) {
             $powerFromPerk = $power;
         } else {
-            $spellCalculator = app(SpellCalculator::class);
-            if ($spellCalculator->isSpellActive($dominion, $spellKey)) {
+            if ($this->spellCalculator->isSpellActive($dominion, $spellKey)) {
                 $powerFromPerk = $power;
             }
         }
@@ -947,16 +952,22 @@ class MilitaryCalculator
         $multiplier = 1;
 
         // Racial bonus
-        $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
+        $multiplier += $dominion->race->getPerkMultiplier('spy_power');
+
+        // Spells
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_power') / 100;
+        if ($type == 'defense') {
+            $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_power_defense') / 100;
+        }
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
+        $multiplier += $dominion->getTechPerkMultiplier('spy_power');
         if ($type == 'defense') {
-            $multiplier += $dominion->getTechPerkMultiplier('spy_strength_defense');
+            $multiplier += $dominion->getTechPerkMultiplier('spy_power_defense');
         }
 
         // Wonders
-        $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');
+        $multiplier += $dominion->getWonderPerkMultiplier('spy_power');
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'spy_power');
@@ -1035,16 +1046,19 @@ class MilitaryCalculator
         $multiplier = 1;
 
         // Racial bonus
-        $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
+        $multiplier += $dominion->race->getPerkMultiplier('wizard_power');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('wizard_strength');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_power') / 100;
+        if ($type == 'defense') {
+            $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_power_defense') / 100;
+        }
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('wizard_strength');
+        $multiplier += $dominion->getTechPerkMultiplier('wizard_power');
 
         // Wonders
-        $multiplier += $dominion->getWonderPerkMultiplier('wizard_strength');
+        $multiplier += $dominion->getWonderPerkMultiplier('wizard_power');
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_power');
@@ -1118,7 +1132,7 @@ class MilitaryCalculator
         $boatsProtected = $dominion->building_dock * (static::BOATS_PROTECTED_PER_DOCK + (0.05 * $dominion->round->daysInRound()));
 
         // Habor
-        $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25);
+        $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor', true));
 
         return ceil($boatsProtected);
     }

@@ -31,14 +31,25 @@ class ImprovementCalculator
      * @param string $improvementType
      * @return float
      */
-    public function getImprovementMultiplierBonus(Dominion $dominion, string $improvementType): float
+    public function getImprovementMultiplierBonus(Dominion $dominion, string $improvementType, bool $secondary = false): float
     {
         $improvementPoints = $dominion->{'improvement_' . $improvementType};
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $multiplier = $this->getImprovementMaximum($improvementType)
-            * (1 - exp(-$improvementPoints / ($this->getImprovementCoefficient($improvementType) * $totalLand + 15000)))
-            * $this->getImprovementMultiplier($dominion);
+            * (1 - exp(-$improvementPoints / ($this->getImprovementCoefficient($improvementType) * $totalLand + 15000)));
+
+        // Ignores Masonries for Protection
+        if (!($secondary && ($improvementType == 'spires' || $improvementType == 'harbor'))) {
+            $multiplier *= $this->getImprovementMultiplier($dominion);
+        }
+
+        // Bonus and Cap for Protection
+        if ($secondary) {
+            if ($improvementType == 'spires' || $improvementType == 'harbor') {
+                $multiplier = min(0.5, $multiplier * 1.5);
+            }
+        }
 
         return round($multiplier, 4);
     }

@@ -279,7 +279,7 @@
                             </tr>
                             <tr>
                                 <td>Peasants:</td>
-                                <td>{{ number_format($target->peasants) }} / {{ number_format($populationCalculator->getMaxPopulation($target) - $populationCalculator->getPopulationMilitary($target)) }}</td>
+                                <td>{{ number_format($target->peasants) }} / {{ number_format($populationCalculator->getMaxPeasantPopulation($target)) }}</td>
                             </tr>
                             <tr>
                                 <td>Peasant Change:</td>

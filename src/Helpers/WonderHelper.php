@@ -50,7 +50,7 @@ class WonderHelper
             'enemy_espionage_chance' => '%d%% chance of causing hostile spy operations to fail',
             'enemy_sabotage_boats_damage' => 'Boats cannot be sabotaged',
             'spy_losses' => '%+g%% spy losses on failed operations',
-            'spy_strength' => '%+g%% spy power',
+            'spy_power' => '%+g%% spy power',
 
             // Wizard related
             'clear_sight_accuracy' => 'Clear sights against this realm are only %d%% accurate',
@@ -59,7 +59,7 @@ class WonderHelper
             'spell_cost' => '%+g%% cost of spells',
             'spell_duration' => '%s hour self spell duration',
             'surreal_perception' => 'Grants the effects of Surreal Perception',
-            'wizard_strength' => '%+g%% wizard power',
+            'wizard_power' => '%+g%% wizard power',
 
             // Resource related
             'food_production' => '%+g%% food production',

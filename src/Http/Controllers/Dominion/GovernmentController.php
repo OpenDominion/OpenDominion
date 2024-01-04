@@ -7,8 +7,10 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\GovernmentHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\GovernmentActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\GuardMembershipActionRequest;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Actions\GovernmentActionService;
 use OpenDominion\Services\Dominion\Actions\GuardMembershipActionService;
 use OpenDominion\Services\Dominion\GovernmentService;
@@ -59,6 +61,7 @@ class GovernmentController extends AbstractDominionController
             'hoursBeforeLeaveEliteGuard' => $guardMembershipService->getHoursBeforeLeaveEliteGuard($dominion),
             'hoursBeforeLeaveBlackGuard' => $guardMembershipService->getHoursBeforeLeaveBlackGuard($dominion),
             'hoursBeforeLeavingBlackGuard' => $guardMembershipService->getHoursBeforeLeavingBlackGuard($dominion),
+            'governmentHelper' => app(GovernmentHelper::class),
             'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
@@ -67,7 +70,7 @@ class GovernmentController extends AbstractDominionController
         ]);
     }
 
-    public function postMonarch(GovernmentActionRequest $request)
+    public function postMonarch(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $governmentActionService = app(GovernmentActionService::class);
@@ -79,7 +82,7 @@ class GovernmentController extends AbstractDominionController
         return redirect()->route('dominion.government');
     }
 
-    public function postRealm(GovernmentActionRequest $request)
+    public function postRealm(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $governmentActionService = app(GovernmentActionService::class);
@@ -97,6 +100,27 @@ class GovernmentController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', 'Your realm has been updated!');
+        return redirect()->route('dominion.government');
+    }
+
+    public function postAppointments(GovernmentActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $governmentActionService = app(GovernmentActionService::class);
+
+        $appointee = Dominion::find($request->get('appointee'));
+        $role = $request->get('role');
+
+        try {
+            $governmentActionService->setAppointments($dominion, $appointee, $role);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Your appointments have been updated!');
         return redirect()->route('dominion.government');
     }
 
@@ -226,7 +250,7 @@ class GovernmentController extends AbstractDominionController
         return redirect()->route('dominion.government');
     }
 
-    public function postDeclareWar(GovernmentActionRequest $request)
+    public function postDeclareWar(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $governmentActionService = app(GovernmentActionService::class);
@@ -246,7 +270,7 @@ class GovernmentController extends AbstractDominionController
         return redirect()->route('dominion.government');
     }
 
-    public function postCancelWar(GovernmentActionRequest $request)
+    public function postCancelWar(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $governmentActionService = app(GovernmentActionService::class);

@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 
@@ -11,7 +13,7 @@ class OpsCalculator
     /**
      * @var float Base amount of infamy lost each hour
      */
-    protected const INFAMY_DECAY_BASE = -20;
+    protected const INFAMY_DECAY_BASE = -15;
 
     /**
      * @var float Base amount of resilience lost each hour
@@ -25,25 +27,72 @@ class OpsCalculator
     protected const SPY_RESILIENCE_GAIN = 10;
     protected const WIZARD_RESILIENCE_GAIN = 10;
 
+    /** @var GovernmentService */
+    protected $governmentService;
+
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
+
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
+
+    /** @var LandCalculator */
+    private $landCalculator;
+
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var PopulationCalculator */
+    protected $populationCalculator;
+
+    /** @var RangeCalculator */
+    protected $rangeCalculator;
+
+    /** @var SpellHelper */
+    protected $spellHelper;
+
     /**
      * OpsCalculator constructor.
      *
+     * @param GovernmentService $governmentService
+     * @param GuardMembershipService $guardMembershipService
+     * @param ImprovementCalculator $improvementCalculator
+     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
+     * @param PopulationCalculator $populationCalculator
      * @param RangeCalculator $rangeCalculator
+     * @param SpellHelper $spellHelper
      */
     public function __construct(
         GovernmentService $governmentService,
         GuardMembershipService $guardMembershipService,
+        ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
-        RangeCalculator $rangeCalculator
+        PopulationCalculator $populationCalculator,
+        RangeCalculator $rangeCalculator,
+        SpellHelper $spellHelper
     )
     {
         $this->governmentService = $governmentService;
         $this->guardMembershipService = $guardMembershipService;
+        $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+        $this->populationCalculator = $populationCalculator;
         $this->rangeCalculator = $rangeCalculator;
+        $this->spellHelper = $spellHelper;
+    }
+
+    /**
+     * Returns the success modifier based on relative strength.
+     *
+     * @param float $selfStrength
+     * @param float $targetStrength
+     * @return float
+     */
+    public function getSuccessModifier(float $selfStrength, float $targetStrength) {
+        return ($selfStrength - $targetStrength) / 1000;
     }
 
     /**
@@ -53,7 +102,7 @@ class OpsCalculator
      * @param float $targetRatio
      * @return float
      */
-    public function infoOperationSuccessChance(float $selfRatio, float $targetRatio): float
+    public function infoOperationSuccessChance(float $selfRatio, float $targetRatio, float $selfStrength, float $targetStrength): float
     {
         if (!$targetRatio) {
             return 1;
@@ -61,6 +110,7 @@ class OpsCalculator
 
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.8 ** (2 / (($relativeRatio * 1.4) ** 1.2));
+        $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.98);
     }
 
@@ -71,7 +121,7 @@ class OpsCalculator
      * @param float $targetRatio
      * @return float
      */
-    public function theftOperationSuccessChance(float $selfRatio, float $targetRatio): float
+    public function theftOperationSuccessChance(float $selfRatio, float $targetRatio, float $selfStrength, float $targetStrength): float
     {
         if (!$targetRatio) {
             return 1;
@@ -79,6 +129,7 @@ class OpsCalculator
 
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
+        $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.97);
     }
 
@@ -89,7 +140,7 @@ class OpsCalculator
      * @param float $targetRatio
      * @return float
      */
-    public function blackOperationSuccessChance(float $selfRatio, float $targetRatio): float
+    public function blackOperationSuccessChance(float $selfRatio, float $targetRatio, float $selfStrength, float $targetStrength): float
     {
         if (!$targetRatio) {
             return 1;
@@ -97,6 +148,7 @@ class OpsCalculator
 
         $relativeRatio = $selfRatio / $targetRatio;
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
+        $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.97);
     }
 
@@ -139,6 +191,9 @@ class OpsCalculator
             (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildSpyCasualtyReduction),
             ($guildSpyCasualtyReductionMax / 100)
         ));
+
+        // Spells
+        $spiesKilledMultiplier += $dominion->getSpellPerkMultiplier('spy_losses');
 
         // Techs
         $spiesKilledMultiplier += $dominion->getTechPerkMultiplier('spy_losses');
@@ -234,14 +289,18 @@ class OpsCalculator
         if ($type == 'spy') {
             $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
             $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
+            $selfStrength = $dominion->spy_strength;
+            $targetStrength = $target->spy_strength;
         } elseif ($type == 'wizard') {
             $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
             $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
+            $selfStrength = $dominion->wizard_strength;
+            $targetStrength = $target->wizard_strength;
         } else {
             return 0;
         }
 
-        $successRate = $this->blackOperationSuccessChance($selfRatio, $targetRatio);
+        $successRate = $this->blackOperationSuccessChance($selfRatio, $targetRatio, $selfStrength, $targetStrength);
         if ($successRate < 0.7 && $successRate >= 0.6) {
             $infamy += 15;
         } elseif ($successRate < 0.6 && $successRate >= 0.5) {
@@ -257,6 +316,13 @@ class OpsCalculator
             $infamy += 10;
         }
 
+        // Reduced outside of Shadow League or Mutual War
+        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
+        if (!($blackGuard || $mutualWarDeclared)) {
+            $infamy = $infamy / 3;
+        }
+
         return round($infamy * $modifier);
     }
 
@@ -269,12 +335,6 @@ class OpsCalculator
     public function getInfamyDecay(Dominion $dominion): int
     {
         $decay = static::INFAMY_DECAY_BASE;
-
-        if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-            $decay += 5;
-        }
-
-        // TODO: Placeholder for tech perk
 
         $masteryCombined = min($dominion->spy_mastery, 500) + min($dominion->wizard_mastery, 500);
         $minInfamy = floor($masteryCombined / 100) * 50;
@@ -358,11 +418,12 @@ class OpsCalculator
             return 0;
         }
 
-        // Scale ratio required from 0.5 at Day 4 to 1.0 at Day 24, to 1.5 at Day 44
+        // Scale ratio required from 0.5 at Day 4, to 1.0 at Day 24, to 1.5 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
         $daysModifier = (0.025 * $days) + 0.5;
+        $modifiedRatio = $ratio / $daysModifier;
 
-        return min(0.5, $ratio / $daysModifier / 2);
+        return min(0.5, 0.72 * log(1 + 4 * $modifiedRatio, 10));
     }
 
     /**
@@ -436,5 +497,178 @@ class OpsCalculator
         }
 
         return $mastery;
+    }
+
+    /*
+     * Returns the spell vulnerability protection modifier
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getSpellVulnerablilityProtectionModifier(Dominion $dominion): float
+    {
+        $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
+        $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+
+        return (1 - $ratioProtection) * (1 - $spiresProtection);
+    }
+
+    /*
+     * Returns the base percentage of max peasants that are vulnerable to fireball damage
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getPeasantVulnerabilityByDayModifier(Dominion $dominion): float
+    {
+        // Scale vulnerability from 0.2 at Day 4, to 0.25 at Day 24, to 0.3 at Day 44
+        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
+        $daysModifier = (0.0025 * $days) + 0.3;
+
+        return $daysModifier;
+    }
+
+    /*
+     * Returns the final percentage of peasants that are vulnerable to fireball
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantVulnerablilityModifier(Dominion $dominion): float
+    {
+        $vulnerabilityModifier = $this->getPeasantVulnerabilityByDayModifier($dominion);
+        $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
+
+        return $vulnerabilityModifier * $protectionModifier;
+    }
+
+    /*
+     * Returns the raw number of max peasants that are protected from fireball damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsProtected(Dominion $dominion): int
+    {
+        $vulnerabilityModifier = $this->getImprovementVulnerablilityModifier($dominion);
+        $vulnerablePeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+
+        return round($vulnerablePeasants * (1 - $vulnerabilityModifier));
+    }
+
+    /*
+     * Returns the raw number of peasants that are not protected from fireball damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsVulnerable(Dominion $dominion): int
+    {
+        $protectedPeasants = $this->getPeasantsProtected($dominion);
+
+        return max(0, $dominion->peasants - $protectedPeasants);
+    }
+
+    /*
+     * Returns the raw number of peasants that can be killed by fireball
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsUnprotected(Dominion $dominion): int
+    {
+        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+
+        return max(0, $maxPeasants - $this->getPeasantsProtected($dominion));
+    }
+
+    /*
+     * Returns the base percentage of total investment that is vulnerable to lightning damage
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getImprovementVulnerablilityByDayModifier(Dominion $dominion): float
+    {
+        // Scale vulnerability from 0.3 at Day 4, to 0.25 at Day 24, to 0.2 at Day 44
+        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
+        $daysModifier = 0.3 - (0.0025 * $days);
+
+        return $daysModifier;
+    }
+
+    /*
+     * Returns the final percentage of improvements that are vulnerable to lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementVulnerablilityModifier(Dominion $dominion): float
+    {
+        $vulnerabilityModifier = $this->getImprovementVulnerablilityByDayModifier($dominion);
+        $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
+
+        return $vulnerabilityModifier * $protectionModifier;
+    }
+
+    /*
+     * Returns the raw amount of total improvements that are protected from lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsProtected(Dominion $dominion): int
+    {
+        $vulnerabilityModifier = $this->getImprovementVulnerablilityModifier($dominion);
+        $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor);
+
+        return round($vulnerableInvestments * (1 - $vulnerabilityModifier));
+    }
+
+    /*
+     * Returns the raw amount of current improvements that are not protected from lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsVulnerable(Dominion $dominion, ?string $improvementType = null): int
+    {
+        $protectedImprovements = $this->getImprovementsProtected($dominion);
+        $currentImprovements = $this->improvementCalculator->getImprovementTotal($dominion);
+        $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;
+
+        if ($destroyableImprovements == 0) {
+            return 0;
+        }
+
+        $modifier = 1;
+        if ($improvementType !== null) {
+            $modifier = max(0, $dominion->{$improvementType} / $destroyableImprovements);
+        }
+
+        return max(0, round(($destroyableImprovements - $protectedImprovements) * $modifier));
+    }
+
+    /*
+     * Returns the raw amount of current improvements that can be destroyed by lightning damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsUnprotected(Dominion $dominion, ?string $improvementType = null): int
+    {
+        $protectedImprovements = $this->getImprovementsProtected($dominion);
+        $destroyableImprovements = $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor;
+
+        if ($destroyableImprovements == 0) {
+            return 0;
+        }
+
+        $modifier = 1;
+        if ($improvementType !== null) {
+            $modifier = max(0, $dominion->{$improvementType} / $destroyableImprovements);
+        }
+
+        return max(0, round(($destroyableImprovements - $protectedImprovements) * $modifier));
     }
 }

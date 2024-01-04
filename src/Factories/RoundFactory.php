@@ -35,28 +35,19 @@ class RoundFactory
         $number = ($this->getLastRoundNumber($league) + 1);
         $endDate = (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS);
 
-        $invasionEndHours = [
-            9,
-            10,
-            11,
-            12,
-            13,
-            13,
-            14,
-            14,
-            15,
-            15,
-            16,
-            16,
-            17,
-            17,
-        ];
-
-        $hoursBeforeRoundEnd = array_random($invasionEndHours);
-        $secondsBeforeRoundEnd = rand(0, 3599);
-
+        /**
+         * Random Disable - Skewed Distribution
+         * Hour 10 - 30.6%
+         * Hour 11 - 25%
+         * Hour 12 - 19.4%
+         * Hour 13 - 13.9%
+         * Hour 14 - 8.3%
+         * Hour 15 - 2.8%
+        */
+        $hoursBeforeRoundEnd = 14 - skewed_distribution(0, 6);
+        $secondsBeforeRoundEnd = rand(1, 3599);
         $offensiveActionsEndDate =
-            (clone $endDate)->addHours(-$hoursBeforeRoundEnd)->addSeconds(-$secondsBeforeRoundEnd);
+            (clone $endDate)->subHours($hoursBeforeRoundEnd)->subSeconds($secondsBeforeRoundEnd);
 
         $round = Round::create([
             'round_league_id' => $league->id,

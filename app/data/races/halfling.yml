@@ -12,7 +12,6 @@ perks:
   max_population: 5
   extra_barren_max_population: 5
   defense: 10
-  spy_strength: 25
   food_consumption: -30
 units:
   - name: Slinger
@@ -45,3 +44,5 @@ units:
     power:
       offense: 5
       defense: 3
+    perks:
+      casualties_offense: -40

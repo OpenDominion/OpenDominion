@@ -166,6 +166,11 @@ class NotificationHelper
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'ra ra-fairy-wand text-green',
             ],
+            'received_friendly_spell' => [
+                'label' => 'Friendly spell received',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-fairy-wand text-green',
+            ],
 //            'scripted' => [
 //                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
 //                'defaults' => ['email' => false, 'ingame' => true],
@@ -597,6 +602,9 @@ class NotificationHelper
 
                     case 'fireball':
                         $resultString = "A great fireball has crashed into our keep, burning {$data['damageString']}.";
+                        if ($data['statusEffect'] == 'Burning') {
+                            $resultString .= 'The flames begin to spread.';
+                        }
                         break;
 
                     case 'lightning_bolt':
@@ -639,12 +647,25 @@ class NotificationHelper
 
             case 'irregular_dominion.reflected_hostile_spell':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+                $protectedDominion = Dominion::with('realm')->findOrFail($data['protectedDominionId']);
 
                 return sprintf(
-                    'The energy mirror protecting our dominion has reflected a %s spell back at %s (#%s).',
+                    'The spell protecting %s (%s) has reflected a %s spell back at %s (#%s).',
+                    $protectedDominion->name,
+                    $protectedDominion->realm->number,
                     $data['spellName'],
                     $sourceDominion->name,
                     $sourceDominion->realm->number
+                );
+
+            case 'irregular_dominion.received_friendly_spell':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                return sprintf(
+                    '%s (%s) has cast %s on our dominion.',
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number,
+                    $data['spellName']
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':

@@ -8,6 +8,7 @@ use OpenDominion\Models\AbstractModel;
  * OpenDominion\Models\Realm\History
  *
  * @property int $id
+ * @property int $realm_id
  * @property int $dominion_id
  * @property string $event
  * @property array $delta

@@ -10,8 +10,8 @@ converter_difficulty: 1
 overall_difficulty: 1
 home_land_type: forest
 perks:
-  wizard_strength: 10
-  spy_strength: 10
+  wizard_power: 10
+  spy_power: 10
   max_population: -5
   lumber_production: 10
   rezone_cost: 10

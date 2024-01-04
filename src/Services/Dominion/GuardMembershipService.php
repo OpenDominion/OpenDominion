@@ -12,7 +12,8 @@ class GuardMembershipService
     public const GUARD_JOIN_DELAY_IN_HOURS = 24;
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
 
-    public const BLACK_GUARD_LEAVE_WAIT_IN_HOURS = 24;
+    public const BLACK_GUARD_JOIN_DELAY_IN_HOURS = 12;
+    public const BLACK_GUARD_LEAVE_WAIT_IN_HOURS = 12;
     public const BLACK_GUARD_LEAVE_DELAY_IN_HOURS = 12;
 
     public const ROYAL_GUARD_RANGE = 0.6;
@@ -215,7 +216,7 @@ class GuardMembershipService
             return 0;
         }
 
-        $leaveDate = $dominion->royal_guard_active_at->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
+        $leaveDate = $dominion->royal_guard_active_at->copy()->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
             return $leaveDate->diffInHours(now()->startOfHour());
@@ -236,7 +237,7 @@ class GuardMembershipService
             return 0;
         }
 
-        $leaveDate = $dominion->elite_guard_active_at->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
+        $leaveDate = $dominion->elite_guard_active_at->copy()->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
             return $leaveDate->diffInHours(now()->startOfHour());
@@ -257,7 +258,7 @@ class GuardMembershipService
             return 0;
         }
 
-        $leaveDate = $dominion->black_guard_active_at->addHours(self::BLACK_GUARD_LEAVE_WAIT_IN_HOURS);
+        $leaveDate = $dominion->black_guard_active_at->copy()->addHours(self::BLACK_GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
             return $leaveDate->diffInHours(now()->startOfHour());
@@ -319,7 +320,7 @@ class GuardMembershipService
      */
     public function joinBlackGuard(Dominion $dominion): void
     {
-        $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_DELAY_IN_HOURS);
+        $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::BLACK_GUARD_JOIN_DELAY_IN_HOURS);
         $dominion->black_guard_inactive_at = null;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_BLACK_GUARD]);
     }

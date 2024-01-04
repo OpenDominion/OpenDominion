@@ -100,7 +100,6 @@
                     <p>The Platinum Bonus instantly gives you 4 platinum per peasant (currently {{ number_format($selectedDominion->peasants * 4) }}) and 350 research points.</p>
                     <p>The Land Bonus instantly gives you 20 acres of {{ str_plural($selectedDominion->race->home_land_type) }}.</p>
                     <p>Both bonuses can be claimed once per day.</p>
-                    <p>You can also <a href="{{ route('dominion.bonuses.actions') }}">automate</a> up to {{ $allowedActions }} actions per day.</p>
                 </div>
             </div>
         </div>

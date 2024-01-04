@@ -63,6 +63,7 @@
                 </div>
                 <div class="box-body">
                     <p>Construction will let you construct additional buildings and will take <b>12 hours</b> to process.</p>
+                    <p>Each building houses 15 people and employs 20 peasants unless noted otherwise. Barren land houses 5 people.</p>
                     <p>Construction per building will come at a cost of 1 acre of barren land of the building type, {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
                     <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} {{ str_plural('acre', $landCalculator->getTotalBarrenLand($selectedDominion)) }} of barren land, {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->resource_lumber) }} lumber.</p>
                     @if ($selectedDominion->discounted_land)

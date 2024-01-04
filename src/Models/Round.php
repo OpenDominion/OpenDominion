@@ -167,7 +167,7 @@ class Round extends AbstractModel
     {
         $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_BEFORE_START;
 
-        return $this->start_date->subHours($assignmentHours);
+        return $this->start_date->copy()->subHours($assignmentHours);
     }
 
     /**
@@ -264,7 +264,7 @@ class Round extends AbstractModel
             return false;
         }
 
-        return now()->diffInHours($this->end_date) < 18;
+        return now()->diffInHours($this->end_date) < 15;
     }
 
     /**
@@ -321,7 +321,10 @@ class Round extends AbstractModel
         if ($datetime == null) {
             $datetime = now();
         }
-        $hoursInDay = $datetime->hour - $this->end_date->hour + 1;
+        if ($datetime < $this->start_date) {
+            return 1;
+        }
+        $hoursInDay = $datetime->hour - $this->start_date->hour + 1;
         if ($hoursInDay < 1) {
             $hoursInDay += 24;
         }
@@ -338,10 +341,10 @@ class Round extends AbstractModel
         if ($datetime == null) {
             $datetime = now();
         }
-        if ($this->start_date > now()) {
-            return 0;
+        if ($datetime < $this->start_date) {
+            return 1;
         }
-        return $this->start_date->subDays(1)->diffInDays($datetime);
+        return $this->start_date->copy()->subDays(1)->diffInDays($datetime);
     }
 
     /**
@@ -361,6 +364,9 @@ class Round extends AbstractModel
      */
     public function getTick()
     {
+        if (!$this->hasStarted()) {
+            return 1;
+        }
         return (24 * ($this->daysInRound() - 1)) + ($this->hoursInDay() - 1);
     }
 }

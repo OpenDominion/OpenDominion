@@ -39,7 +39,9 @@
                                         <div class="input-group">
                                             <input type="number" name="release[draftees]" class="form-control text-center" placeholder="0" min="0" max="{{ $selectedDominion->military_draftees }}" value="{{ old('release.draftees') }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             <span class="input-group-btn">
-                                                <button class="btn btn-danger release-max" type="button">Max</button>
+                                                <button class="btn btn-danger release-max" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                    Max
+                                                </button>
                                             </span>
                                         </div>
                                     </td>
@@ -76,7 +78,7 @@
                 <div class="box-body">
                     <p><b>Warning</b>: You are about to release your troops.</p>
                     <p>Draftees will release into the peasantry. Other troops into draftees.</p>
-                    <p>Any platinum, ore and wizards used to train any released unit <b>will be lost</b>.</p>
+                    <p>Any resources (including spies and wizards) used to train any released unit <b>will be lost</b>.</p>
                     <p>Releasing troops processes <b>instantly</b>.</p>
                 </div>
             </div>

@@ -21,7 +21,7 @@ tech_7_1:
   name: Aquaponics
   perks:
     food_production: 7.5
-    enemy_fireball_damage: -10
+    enemy_burning_duration: -4
   requires:
     - tech_5_1
     - tech_9_1
@@ -108,7 +108,7 @@ tech_6_3:
 tech_8_3:
   name: Miser's Grasp
   perks:
-    spy_strength_defense: 10
+    spy_power_defense: 10
     theft_losses: -25
   requires:
     - tech_7_1
@@ -189,7 +189,7 @@ tech_9_5:
   name: Dark Pact
   perks:
     mana_production: 10
-    wizard_strength: 5
+    wizard_power: 5
   requires:
     - tech_7_5
     - tech_8_3
@@ -317,7 +317,7 @@ tech_11_9:
   name: Avatar of Ares
   perks:
     offense: 2.5
-    wizard_strength: 7.5
+    wizard_power: 7.5
   requires:
     - tech_12_11
 tech_13_9:
@@ -344,9 +344,10 @@ tech_17_9:
     - tech_15_9
     - tech_16_11
 tech_6_11:
-  name: Urban Planner
+  name: Visionary Expansionist
   perks:
-    max_population: 1.5
+    max_population: 1
+    extra_barren_max_population: 1
   requires:
     - tech_5_9
     - tech_7_13
@@ -375,10 +376,9 @@ tech_12_11:
     - tech_11_9
     - tech_13_13
 tech_14_11:
-  name: Visionary Expansionist
+  name: Urban Planner
   perks:
-    max_population: 1
-    population_growth: 15
+    max_population: 1.5
   requires:
     - tech_13_9
     - tech_15_13
@@ -653,7 +653,7 @@ magical_weaponry:
   name: Magical Weaponry
   perks:
     offense: 5
-    wizard_strength: 15
+    wizard_power: 15
   requires:
     - master_of_magi
     - military_genius
