@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.38.0] - 2024-01-04
 ### Added
 - Automated Actions
   - You may now schedule up to 2 actions in advance, resets each day
@@ -2053,7 +2055,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.37.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.0...HEAD
+[1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.37.2...1.38.0
 [1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.37.1...1.37.2
 [1.37.1]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...1.37.1
 [1.37.0]: https://github.com/OpenDominion/OpenDominion/compare/1.36.0...1.37.0
