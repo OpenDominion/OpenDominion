@@ -174,7 +174,7 @@ class SpellHelper
             'energy_mirror' => '%d%% chance to reflect incoming offensive spells',
             'enemy_spell_damage' => '%+g%% enemy spell damage',
             'enemy_spell_duration' => '%+g enemy spell duration',
-            'spell_reflect' => 'Reflects the next incoming Fireball or Lightning Bolt spell',
+            'spell_reflect' => 'Reflects the next incoming Black Op or War spell',
             'fools_gold' => 'Platinum theft protection',
             'surreal_perception' => 'Reveals the dominion casting spells or committing spy ops against you',
             'self_spell_cost' => 'Increases the mana cost of your next non-cooldown self spell by %d%%',

@@ -205,9 +205,10 @@ class SpellCalculator
     {
         $selfPerkValue = $dominion->getSpellPerkValue($key, ['self']);
         $hostilePerkValue = $dominion->getSpellPerkValue($key, ['hostile']);
+        $warPerkValue = $dominion->getSpellPerkValue($key, ['war']);
         $friendlyPerkValue = $dominion->getSpellPerkValue($key, ['friendly']);
         $statusEffectPerkValue = $dominion->getSpellPerkValue($key, ['effect']);
 
-        return ($selfPerkValue + $hostilePerkValue + $friendlyPerkValue + $statusEffectPerkValue);
+        return ($selfPerkValue + $hostilePerkValue + $warPerkValue + $friendlyPerkValue + $statusEffectPerkValue);
     }
 }

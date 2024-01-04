@@ -54,6 +54,9 @@ class MilitaryCalculator
     /** @var QueueService */
     protected $queueService;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /** @var SpellHelper */
     protected $spellHelper;
 
@@ -70,6 +73,7 @@ class MilitaryCalculator
      * @param LandCalculator $landCalculator
      * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
+     * @param SpellCalculator $spellCalculator
      * @param SpellHelper $spellHelper
      */
     public function __construct(
@@ -80,6 +84,7 @@ class MilitaryCalculator
         LandCalculator $landCalculator,
         PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
+        SpellCalculator $spellCalculator,
         SpellHelper $spellHelper
     )
     {
@@ -90,6 +95,7 @@ class MilitaryCalculator
         $this->landCalculator = $landCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
+        $this->spellCalculator = $spellCalculator;
         $this->spellHelper = $spellHelper;
     }
 
@@ -799,8 +805,7 @@ class MilitaryCalculator
         if (isset($dominion->calc['cull_the_weak'])) {
             $powerFromPerk = $power;
         } else {
-            $spellCalculator = app(SpellCalculator::class);
-            if ($spellCalculator->isSpellActive($dominion, $spellKey)) {
+            if ($this->spellCalculator->isSpellActive($dominion, $spellKey)) {
                 $powerFromPerk = $power;
             }
         }
@@ -950,9 +955,9 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('spy_power');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('spy_power');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_power') / 100;
         if ($type == 'defense') {
-            $multiplier += $dominion->getSpellPerkMultiplier('spy_power_defense');
+            $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_power_defense') / 100;
         }
 
         // Techs
@@ -1044,9 +1049,9 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('wizard_power');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('wizard_power');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_power') / 100;
         if ($type == 'defense') {
-            $multiplier += $dominion->getSpellPerkMultiplier('wizard_power_defense');
+            $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_power_defense') / 100;
         }
 
         // Techs

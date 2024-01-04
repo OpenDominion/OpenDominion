@@ -637,7 +637,7 @@ class SpellActionService
 
         $spellReflected = false;
         $spellReflect = $target->getSpellPerkValue('spell_reflect');
-        if ($spellReflect && ($spell->key == 'fireball' || $spell->key == 'lightning_bolt')) {
+        if ($spellReflect) {
             $spellReflected = true;
             $friendlySpell = $target->spells->where('key', 'spell_reflect')->first();
             $reflectedBy = $friendlySpell->pivot->castByDominion;

@@ -2,10 +2,6 @@
 
 @section('page-header', 'Bounty Board')
 
-@php
-    //$infoSpells = $spellHelper->getSpells($dominion->race, 'info');
-@endphp
-
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">

@@ -422,7 +422,7 @@ miasma:
   category: war
   cost_mana: 3
   cost_strength: 5
-  duration: 6
+  duration: 8
   races:
     - nox
   perks:
@@ -431,7 +431,7 @@ miasma:
 necromantic_ritual:
   name: Necromantic Ritual
   category: war
-  cost_mana: 4.5
+  cost_mana: 5
   cost_strength: 5
   races:
     - undead

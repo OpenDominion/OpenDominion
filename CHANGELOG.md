@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - The Court Jester can change the realm name
 - Friendly Spells
   - Beneficial duration spells that can only be cast on realmies, available to the Grand Magister and Court Mage of a realm or between Shadow League members in the same realm
-  - Spell Reflect: 100% chance to reflect the next fireball or lightning bolt, 3 hour duration, 3 hour cooldown
+  - Spell Reflect: 100% chance to reflect the next black op or war spell, 3 hour duration, 3 hour cooldown
   - Arcane Ward: +10% defensive wizard power, 6 hour duration, 3 hour cooldown
   - Illumination: +10% defensive spy power, 6 hour duration, 3 hour cooldown
 - Bounty Board
@@ -40,6 +40,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Aquaponics (tech): now reduces duration of Burning by 4 hours (was -10% fireball damage)
 - Wizard resilience removed
 - Forest Havens removed
+- Fireball mana cost reduced to 3x (from 3.3x)
+- Lightning Bolt mana cost reduced to 3.25x (from 3.5x)
+- Disband Spies mana cost reduced to 3.5x (from 4.3x)
 - Success chances for ops are now modified by you and your target's current spy/wizard strength by 1% per 10% difference (ranging from -10% to +10%)
 - Infamy and Mastery gains have been reduced by 2/3 (gains unchanged in mutual war and between Shadow League members)
 - Application, wait, and leave times for the Shadow League reduced to 12 hours each (was 24/24/12, respectively)

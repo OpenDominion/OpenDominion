@@ -542,7 +542,7 @@ class ProductionCalculator
         $manaDecay = 2;
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('mana_decay');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'mana_decay') / 100;
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('mana_decay');
