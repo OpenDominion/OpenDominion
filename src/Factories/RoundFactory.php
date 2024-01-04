@@ -44,10 +44,8 @@ class RoundFactory
          * Hour 14 - 8.3%
          * Hour 15 - 2.8%
         */
-
         $hoursBeforeRoundEnd = 14 - skewed_distribution(0, 6);
         $secondsBeforeRoundEnd = rand(1, 3599);
-
         $offensiveActionsEndDate =
             (clone $endDate)->subHours($hoursBeforeRoundEnd)->subSeconds($secondsBeforeRoundEnd);
 
