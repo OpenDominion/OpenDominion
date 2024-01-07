@@ -26,7 +26,7 @@ class Ticker {
             setInterval(() => self.tick(), 1000);
         }
 
-        if(this.tickerNextRoundElement !== null) {
+        if (this.tickerNextRoundElement !== null) {
             this.nextRoundStartDate = new Date(this.tickerNextRoundElement.dataset.value);
         }
     }
@@ -59,10 +59,10 @@ class Ticker {
                 var htmlElement = document.getElementsByTagName("html")[0];
                 htmlElement.classList.add("hourchange");
             }
-        } else if(this.tickerNextRoundElement !== null){
+        } else if (this.tickerNextRoundElement !== null){
             const diffDate = (this.nextRoundStartDate - new Date());
 
-            if(diffDate > 0) {
+            if (diffDate > 0) {
                 this.tickerNextRoundElement.innerHTML = Ticker.hms(diffDate);
             }
         }

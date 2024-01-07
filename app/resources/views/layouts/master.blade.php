@@ -49,7 +49,6 @@
                             @yield('page-subheader')
                         </small>
                     @endif
-
                     @include('partials.tickers')
                 </h1>
             </div>
