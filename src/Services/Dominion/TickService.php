@@ -695,7 +695,7 @@ class TickService
                 $dominionSpells = DominionSpell::whereIn('spell_id', $spellIds)->whereIn('dominion_id', $dominionIds)->get();
                 foreach ($dominionSpells as $dominionSpell) {
                     $totalLand = $this->landCalculator->getTotalLand($dominionSpell->dominion);
-                    $conversions = $baseConversion + ($totalLand * $landMultiplier);
+                    $conversions = floor($baseConversion + ($totalLand * $landMultiplier));
                     $unit1 = min($conversions, $dominionSpell->dominion->military_unit1);
                     $unit2 = min($conversions, $dominionSpell->dominion->military_unit2);
                     // Queue elites
