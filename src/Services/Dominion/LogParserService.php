@@ -491,6 +491,7 @@ class LogParserService
                         return Str::startsWith($key, 'military_');
                     }, ARRAY_FILTER_USE_KEY)
                 );
+                $militaryTotal = 0;
                 $militaryTransformed = [];
                 foreach ($military as $key => $value) {
                     if  (Str::startsWith($key, 'military_unit')) {
@@ -503,6 +504,18 @@ class LogParserService
                         $militaryTransformed[$unitName] = $value;
                     } else {
                         $militaryTransformed[$key] = $value;
+                    }
+                    if ($key !== 'military_draftees') {
+                        $militaryTotal += $value;
+                    }
+                }
+                if (isset($militaryTransformed['military_draftees'])) {
+                    if ($militaryTransformed['military_draftees'] == $militaryTotal) {
+                        unset($militaryTransformed['military_draftees']);
+                    } else {
+                        $militaryTransformed['military_draftees'] = abs(
+                            $militaryTransformed['military_draftees'] - $militaryTotal
+                        );
                     }
                 }
                 return sprintf(
