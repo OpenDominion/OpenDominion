@@ -84,6 +84,10 @@ class ProtectionController extends AbstractDominionController
             $automationService = app(AutomationService::class);
             $automationService->processLog($dominion, $protection);
         } catch (GameException $e) {
+            if ($dominion->protection_ticks_remaining == 0) {
+                return redirect()->route('dominion.status')
+                    ->withErrors([$e->getMessage(), 'You can manually perform the actions for this hour']);
+            }
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage(), 'You can manually perform the actions for this hour and reimport the remaining hours']);
