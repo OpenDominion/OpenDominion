@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.38.1] - 2024-01-09
+### Fixed
+- Hour change indicator will no appear when round is not active
+- Units released in protection history will no longer increase the displayed draftee count
+- Errors occurring on Hour 73 when importing a log will no longer result in a redirect loop
+
 ## [1.38.0] - 2024-01-04
 ### Added
 - Automated Actions
@@ -47,6 +53,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fireball mana cost reduced to 3x (from 3.3x)
 - Lightning Bolt mana cost reduced to 3.25x (from 3.5x)
 - Disband Spies mana cost reduced to 3.5x (from 4.3x)
+- Disband Spies damage increased to 2% (from 1.5%)
+- Assassinate Wizards damage decreased to 1.5% (from 2%)
 - Miasma duration increased to 8 hours (from 6)
 - Success chances for ops are now modified by you and your target's current spy/wizard strength by 1% per 10% difference (ranging from -10% to +10%)
 - Infamy and Mastery gains have been reduced by 2/3 (gains unchanged in mutual war and between Shadow League members)
@@ -2055,7 +2063,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.1...HEAD
+[1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.38.0...1.38.1
 [1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.37.2...1.38.0
 [1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.37.1...1.37.2
 [1.37.1]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...1.37.1
