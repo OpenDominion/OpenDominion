@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Fixed
+- Bounties collected after the first 12 will now properly award double XP
+- Added a slight delay between automated actions to reduce the chances of failure
+- Daily actions will now properly reset when finishing protection
 
 ## [1.38.1] - 2024-01-09
 ### Fixed
