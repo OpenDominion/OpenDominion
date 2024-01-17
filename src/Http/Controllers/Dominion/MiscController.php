@@ -16,6 +16,7 @@ use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
+use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\TickService;
@@ -385,6 +386,7 @@ class MiscController extends AbstractDominionController
             }
             $dominion->daily_platinum = false;
             $dominion->daily_land = false;
+            $dominion->daily_actions = AutomationService::DAILY_ACTIONS;
         }
         $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
 
