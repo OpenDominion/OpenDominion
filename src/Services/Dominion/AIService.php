@@ -148,6 +148,7 @@ class AIService
             foreach ($dominions as $dominion) {
                 try {
                     $this->performActions($dominion);
+                    usleep(200 * 1000);
                 } catch (Exception $e) {
                     continue;
                 }
