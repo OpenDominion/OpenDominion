@@ -229,11 +229,9 @@ class EspionageActionService
                 $dominion->stat_espionage_success += 1;
                 // Bounty result
                 if (isset($result['bounty']) && $result['bounty']) {
+                    $xpGain *= 2;
                     $bountyRewardString = '';
                     $rewards = $result['bounty'];
-                    if ($rewards) {
-                        $xpGain += 1;
-                    }
                     if (isset($rewards['resource']) && isset($rewards['amount'])) {
                         $dominion->{$rewards['resource']} += $rewards['amount'];
                         $bountyRewardString = sprintf(' awarding %d %s', $rewards['amount'], dominion_attr_display($rewards['resource'], $rewards['amount']));
