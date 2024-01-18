@@ -562,7 +562,7 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getPeasantsVulnerable(Dominion $dominion): int
+    public function getPeasantsUnprotected(Dominion $dominion): int
     {
         $protectedPeasants = $this->getPeasantsProtected($dominion);
 
@@ -575,7 +575,7 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getPeasantsUnprotected(Dominion $dominion): int
+    public function getPeasantsVulnerable(Dominion $dominion): int
     {
         $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
 
@@ -631,7 +631,7 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getImprovementsVulnerable(Dominion $dominion, ?string $improvementType = null): int
+    public function getImprovementsUnprotected(Dominion $dominion, ?string $improvementType = null): int
     {
         $protectedImprovements = $this->getImprovementsProtected($dominion);
         $currentImprovements = $this->improvementCalculator->getImprovementTotal($dominion);
@@ -655,7 +655,7 @@ class OpsCalculator
      * @param Dominion $dominion
      * @return int
      */
-    public function getImprovementsUnprotected(Dominion $dominion, ?string $improvementType = null): int
+    public function getImprovementsVulnerable(Dominion $dominion, ?string $improvementType = null): int
     {
         $protectedImprovements = $this->getImprovementsProtected($dominion);
         $destroyableImprovements = $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor;

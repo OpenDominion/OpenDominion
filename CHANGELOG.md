@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Fixed
+- Burning regen now correctly based on max pop rather than current pop
 - Bounties collected after the first 12 will now properly award double XP
 - Added a slight delay between automated actions to reduce the chances of failure
 - Daily actions will now properly reset when finishing protection

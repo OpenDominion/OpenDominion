@@ -818,17 +818,17 @@ class SpellActionService
                 $attrValue = $target->{$attr};
                 if ($attr == 'peasants') {
                     // Account for peasants protected from Fireball
-                    $peasantsVulnerable = $this->opsCalculator->getPeasantsVulnerable($target);
-                    if ($peasantsVulnerable == 0) {
+                    $peasantsUnprotected = $this->opsCalculator->getPeasantsUnprotected($target);
+                    if ($peasantsUnprotected == 0) {
                         throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to burn.");
                     }
-                    $attrValue = $this->opsCalculator->getPeasantsUnprotected($target);
+                    $attrValue = $this->opsCalculator->getPeasantsVulnerable($target);
                 } elseif (Str::startsWith($attr, 'improvement_')) {
-                    $improvementsVulnerable = $this->opsCalculator->getImprovementsVulnerable($target);
-                    if ($improvementsVulnerable == 0) {
+                    $improvementsUnprotected = $this->opsCalculator->getImprovementsUnprotected($target);
+                    if ($improvementsUnprotected == 0) {
                         throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to destroy.");
                     }
-                    $attrValue = $this->opsCalculator->getImprovementsUnprotected($target, $attr);
+                    $attrValue = $this->opsCalculator->getImprovementsVulnerable($target, $attr);
                 } else {
                     $damageReductionMultiplier -= $this->opsCalculator->getDamageReduction($target, 'wizard');
                 }
@@ -843,11 +843,11 @@ class SpellActionService
 
                 if ($attr == 'peasants') {
                     // Cap Fireball damage by protection
-                    $damage = min($damage, $peasantsVulnerable);
+                    $damage = min($damage, $peasantsUnprotected);
                 } elseif (Str::startsWith($attr, 'improvement_')) {
                     // Cap Lightning Bolt damage by protection
-                    $improvementVulnerable = $this->opsCalculator->getImprovementsVulnerable($target, $attr);
-                    $damage = min($damage, $improvementVulnerable);
+                    $improvementUnprotected = $this->opsCalculator->getImprovementsUnprotected($target, $attr);
+                    $damage = min($damage, $improvementUnprotected);
                 }
 
                 // Temporary lightning damage

@@ -200,7 +200,7 @@ class SpellHelper
             'wonder_damage' => 'Deals damage to wonders',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
-            'fixed_population_growth' => 'Population growth is fixed at %g%% of your vulnerable peasant population',
+            'fixed_population_growth' => 'Base population growth is fixed at %g%% of your vulnerable peasant population',
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',
             'war_cancels' => 'Cancelled if this realm declares war',
