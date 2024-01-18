@@ -162,11 +162,18 @@ class BountyService
                 // Check limits
                 $bountiesCollected = $this->getBountiesCollected($dominion);
 
-                if (!($latestOp && !$latestOp->isStale()) && $bountiesCollected < static::DAILY_LIMIT) {
-                    $bountyRewards = [
-                        'resource' => static::REWARD_RESOURCE,
-                        'amount' => static::REWARD_AMOUNT,
-                    ];
+                if (!($latestOp && !$latestOp->isStale())) {
+                    if ($bountiesCollected < static::DAILY_LIMIT) {
+                        $bountyRewards = [
+                            'resource' => static::REWARD_RESOURCE,
+                            'amount' => static::REWARD_AMOUNT,
+                            'xp' => 2
+                        ];
+                    } else {
+                        $bountyRewards = [
+                            'xp' => 2
+                        ];
+                    }
                 }
             }
 
