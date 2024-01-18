@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.38.2] - 2024-01-18
 ### Fixed
 - Burning regen now correctly based on max pop rather than current pop
 - Bounties collected after the first 12 will now properly award double XP
@@ -2068,9 +2070,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.1...HEAD
-[1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.38.0...1.38.1
-[1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.37.2...1.38.0
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.2...HEAD
+[1.38.2]: https://github.com/OpenDominion/OpenDominion/compare/1.38.1...1.38.2
+[1.38.1]: https://github.com/OpenDominion/OpenDominion/compare/1.38.0...1.38.1
+[1.38.0]: https://github.com/OpenDominion/OpenDominion/compare/1.37.2...1.38.0
 [1.37.2]: https://github.com/OpenDominion/OpenDominion/compare/1.37.1...1.37.2
 [1.37.1]: https://github.com/OpenDominion/OpenDominion/compare/1.37.0...1.37.1
 [1.37.0]: https://github.com/OpenDominion/OpenDominion/compare/1.36.0...1.37.0
