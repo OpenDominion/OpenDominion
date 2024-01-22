@@ -22,7 +22,7 @@
                     {!! sprintf(
                         $improvementHelper->getImprovementRatingString($improvementType),
                         number_format((array_get($data, "{$improvementType}.rating") * 100), 2),
-                        number_format((array_get($data, "{$improvementType}.rating", true) * 100), 2)
+                        number_format((array_get($data, "{$improvementType}.rating_secondary", array_get($data, "{$improvementType}.rating") * 1.5) * 100), 2)
                     ) !!}
                 </td>
                 <td class="text-center">

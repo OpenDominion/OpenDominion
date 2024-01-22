@@ -197,6 +197,13 @@ class InfoMapper
                 "{$type}.rating",
                 $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type)
             );
+            if ($type == 'spires' || $type == 'harbor') {
+                array_set(
+                    $data,
+                    "{$type}.rating_secondary",
+                    $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type, true)
+                );
+            }
             array_set(
                 $data,
                 "{$type}.incoming",
