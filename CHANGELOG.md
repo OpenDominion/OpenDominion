@@ -4,6 +4,9 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Fixed
+- Automated actions are now sorted chronologically
+- Spires and Harbor protection bonuses now properly displayed on op center pages
 
 ## [1.38.2] - 2024-01-18
 ### Fixed

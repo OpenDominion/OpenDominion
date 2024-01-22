@@ -249,6 +249,7 @@ class AutomationService
         }
 
         // Save updated AI config
+        ksort($config);
         $dominion->ai_config = $config;
         $dominion->ai_enabled = true;
         $dominion->save();
