@@ -209,6 +209,14 @@ class SpellCalculator
         $friendlyPerkValue = $dominion->getSpellPerkValue($key, ['friendly']);
         $statusEffectPerkValue = $dominion->getSpellPerkValue($key, ['effect']);
 
+        if ($hostilePerkValue) {
+            // Damage reductions from self spells
+            $protectionPerk = $dominion->getSpellPerkValue("{$key}_damage");
+            if ($protectionPerk) {
+                $hostilePerkValue *= (1 + ($protectionPerk / 100));
+            }
+        }
+
         return ($selfPerkValue + $hostilePerkValue + $warPerkValue + $friendlyPerkValue + $statusEffectPerkValue);
     }
 }
