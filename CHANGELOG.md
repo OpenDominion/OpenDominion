@@ -4,7 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.38.3] - 2024-01-23
 ### Fixed
+- Miner's Sight now properly cancels earthquake ore production penalty
 - Automated actions are now sorted chronologically
 - Spires and Harbor protection bonuses now properly displayed on op center pages
 
@@ -2073,7 +2076,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.3...HEAD
+[1.38.3]: https://github.com/OpenDominion/OpenDominion/compare/1.38.2...1.38.3
 [1.38.2]: https://github.com/OpenDominion/OpenDominion/compare/1.38.1...1.38.2
 [1.38.1]: https://github.com/OpenDominion/OpenDominion/compare/1.38.0...1.38.1
 [1.38.0]: https://github.com/OpenDominion/OpenDominion/compare/1.37.2...1.38.0
