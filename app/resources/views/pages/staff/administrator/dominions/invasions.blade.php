@@ -1,12 +1,12 @@
 @extends('layouts.staff')
 
-@section('page-header', 'Dominions')
+@section('page-header', 'Anti-Cheat')
 
 @section('content')
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">
-                Dominions - {{ $round->name }}
+                Invasions - {{ $round->name }}
             </h3>
             <select id="round-select" class="form-control pull-right">
                 @foreach ($rounds as $roundOption)
@@ -19,51 +19,27 @@
         <div class="box-body table-responsive">
             <table class="table table-hover" id="dominions-table">
                 <colgroup>
-                    <col width="50">
                     <col>
-                    <col width="200">
-                    <col width="100">
+                    <col>
                     <col width="100">
                     <col width="200">
                 </colgroup>
                 <thead>
                     <tr>
-                        <th class="text-center">ID</th>
-                        <th>Name</th>
-                        <th class="text-center">User</th>
-                        <th class="text-center">Land</th>
-                        <th class="text-center">Networth</th>
+                        <th>Source</th>
+                        <th>Target</th>
+                        <th class="text-center">Ops</th>
                         <th class="text-center">Created</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($dominions as $dominion)
-                        @php
-                        $land = $landCalculator->getTotalLand($dominion);
-                        $networth = $networthCalculator->getDominionNetworth($dominion);
-                        @endphp
+                    @foreach ($invasions as $invasion)
                         <tr>
-                            <td class="text-center" data-search="">{{ $dominion->id }}</td>
-                            <td>
-                                <a href="{{ route('staff.administrator.dominions.show', $dominion) }}">{{ $dominion->name }}</a>
-                            </td>
-                            <td class="text-center">
-                                @if ($dominion->user)
-                                    <a href="{{ route('staff.administrator.users.show', $dominion->user) }}" data-toggle="tooltip" title="{{ $dominion->user->display_name }}">
-                                        Human Player
-                                    </a>
-                                @else
-                                    Bot
-                                @endif
-                            </td>
-                            <td class="text-center" data-order="{{ $land }}" data-search="">
-                                {{ number_format($land) }}
-                            </td>
-                            <td class="text-center" data-order="{{ $networth }}" data-search="">
-                                {{ number_format($networth) }}
-                            </td>
-                            <td class="text-center" data-order="{{ $dominion->created_at->getTimestamp() }}" data-search="">
-                                <span title="{{ $dominion->created_at }}">{{ $dominion->created_at->diffForHumans() }}</span>
+                            <td>{{ $invasion->source_name }}</td>
+                            <td>{{ $invasion->target_name }}</td>
+                            <td class="text-center" data-search="">{{ $invasion->ops_count }}</td>
+                            <td class="text-center" data-order="{{ $invasion->created_at->getTimestamp() }}" data-search="">
+                                <span title="{{ $invasion->created_at }}">{{ $invasion->created_at->diffForHumans() }}</span>
                             </td>
                         </tr>
                     @endforeach
@@ -94,7 +70,7 @@
 
             $('#round-select').select2({ width: '225px' }).change(function() {
                 var selectedRound = $(this).val();
-                window.location.href = "{!! route('staff.administrator.dominions.index') !!}/?round=" + selectedRound;
+                window.location.href = "{!! route('staff.administrator.invasions') !!}/?round=" + selectedRound;
             });
             $('#round-select + .select2-container').addClass('pull-right');
         })(jQuery);

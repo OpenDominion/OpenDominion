@@ -7,16 +7,19 @@
     <li class="{{ Route::is('staff.audit') ? 'active' : null }}"><a href="{{ route('staff.audit') }}">Audit Log</a></li>
 
     @if ($user->hasRole('Administrator'))
+        <li class="header">Anti-Cheat</li>
+        <li class="{{ Route::is('staff.administrator.crosslogs') ? 'active' : null }}"><a href="{{ route('staff.administrator.crosslogs') }}">Crosslogs</a>
+        <li class="{{ Route::is('staff.administrator.invasions') ? 'active' : null }}"><a href="{{ route('staff.administrator.invasions') }}">Invasions</a>
+        <li class="{{ Route::is('staff.administrator.theft') ? 'active' : null }}"><a href="{{ route('staff.administrator.theft') }}">Theft</a>
+
         <li class="header">Administrator</li>
-        {{--<li><a href="#">Council</a></li>--}}
         <li class="{{ Route::is('staff.administrator.dominions.*') ? 'active' : null }}"><a href="{{ route('staff.administrator.dominions.index') }}">Dominions</a></li>
-        {{--<li><a href="#">Realms</a></li>--}}
         <li class="{{ Route::is('staff.administrator.users.*') ? 'active' : null }}"><a href="{{ route('staff.administrator.users.index') }}">Users</a></li>
     @endif
 
     @if ($user->hasRole('Developer'))
         <li class="header">Developer</li>
-        {{--<li><a href="#">Simulate</a></li>--}}
+        <li><a href="#">Error Logs</a></li>
     @endif
 
     @if ($user->hasRole('Moderator'))

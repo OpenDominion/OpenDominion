@@ -325,13 +325,14 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 
     $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], static function (Router $router) {
 
-        $router->resource('dominions', 'Staff\Administrator\DominionController');
+        // Anti-Cheat
+        $router->get('crosslogs', 'Staff\Administrator\DominionController@getCrosslogs')->name('crosslogs');
+        $router->get('invasions', 'Staff\Administrator\DominionController@getInvasions')->name('invasions');
+        $router->get('theft', 'Staff\Administrator\DominionController@getTheft')->name('theft');
 
+        $router->resource('dominions', 'Staff\Administrator\DominionController');
         $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');
         $router->resource('users', 'Staff\Administrator\UserController');
-
-        // view all users
-        // view all council boards
 
     });
 
@@ -341,9 +342,7 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 //
 //        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
 //
-//        // simulate dominion by state string
-//        // take over dominion & traverse state history
-//        // set dominion state/attributes?
+//        // parse laravel error logs
 //
 //    });
 

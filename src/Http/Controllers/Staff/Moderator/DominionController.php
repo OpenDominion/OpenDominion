@@ -106,7 +106,7 @@ class DominionController extends AbstractController
             ->whereIn('id', $otherDominionsHistory)
             ->pluck('user_id');
 
-        $otherUserCount = $otherUserLogins->merge($otherUsersHistory)->unique()->count();
+        $otherUserCount = $otherUserLogins->merge($otherUsersHistory)->unique()->count() - 1;
 
         return view('pages.staff.moderator.dominions.show', [
             'dominion' => $dominion,
