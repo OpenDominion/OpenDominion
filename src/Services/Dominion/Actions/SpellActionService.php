@@ -138,7 +138,7 @@ class SpellActionService
         }
 
         if ($dominion->wizard_strength < 30) {
-            throw new GameException("Your wizards to not have enough strength to cast {$spell->name}");
+            throw new GameException("Your wizards do not have enough strength to cast {$spell->name}");
         }
 
         $manaCost = $this->spellCalculator->getManaCost($dominion, $spell);

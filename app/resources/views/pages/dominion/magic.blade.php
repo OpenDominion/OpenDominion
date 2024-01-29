@@ -183,6 +183,7 @@
                                             @foreach ($spells as $spell)
                                                 @php
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
+                                                    $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
@@ -190,7 +191,7 @@
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
                                                                 class="btn btn-primary btn-block friendly-spell disabled"
-                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || $cooldownHours || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
                                                             {{ $spell->name }}
                                                         </button>
                                                         <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
@@ -198,6 +199,9 @@
                                                             Mana cost: <span class="text-{{ $canCast ? 'success' : 'danger' }}">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
                                                             @if ($spell->duration)
                                                                 Lasts {{ $spell->duration }} hours<br/>
+                                                            @endif
+                                                            @if ($cooldownHours)
+                                                                (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>
                                                             @endif
                                                         </small>
                                                     </div>
@@ -237,26 +241,24 @@
                                                         {{ $spell->name }}
                                                     </button>
                                                     <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
-                                                    <p>
-                                                        <small>
-                                                            @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
-                                                            @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
-                                                            @endif
-                                                            @if ($isActive)
-                                                                ({{ $spellCalculator->getSpellDurationRemaining($selectedDominion, $spell) }} hours remaining)<br/>
-                                                            @else
-                                                                Lasts {{ $spellCalculator->getSpellDuration($selectedDominion, $spell) }} hours<br/>
-                                                            @endif
-                                                            @if ($cooldownHours)
-                                                                (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>
-                                                            @endif
-                                                            @if (!empty($spell->races))
-                                                                Racial<br/>
-                                                            @endif
-                                                        </small>
-                                                    </p>
+                                                    <small>
+                                                        @if ($canCast)
+                                                            Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                        @else
+                                                            Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                        @endif
+                                                        @if ($isActive)
+                                                            ({{ $spellCalculator->getSpellDurationRemaining($selectedDominion, $spell) }} hours remaining)<br/>
+                                                        @else
+                                                            Lasts {{ $spellCalculator->getSpellDuration($selectedDominion, $spell) }} hours<br/>
+                                                        @endif
+                                                        @if ($cooldownHours)
+                                                            (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>
+                                                        @endif
+                                                        @if (!empty($spell->races))
+                                                            Racial<br/>
+                                                        @endif
+                                                    </small>
                                                 </div>
                                             </div>
                                         @endforeach
