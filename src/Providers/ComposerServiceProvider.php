@@ -117,6 +117,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->count();
             $view->with('activeBounties', $activeBounties);
 
+            $postedBounties = Bounty::active()
+                ->where('source_realm_id', $selectedDominion->realm_id)
+                ->where('source_dominion_id', '=', $selectedDominion->id)
+                ->count();
+            $view->with('postedBounties', $postedBounties);
+
             $unseenWonders = DB::table('round_wonders')
                 ->where('round_id', $selectedDominion->round_id)
                 ->where('created_at', '>', $selectedDominion->wonders_last_seen ?? $selectedDominion->round->created_at)

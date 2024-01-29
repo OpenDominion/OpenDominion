@@ -66,7 +66,9 @@
                         <i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span>
                         @if ($barrenLand > 0)
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right">{{ $barrenLand }}</span>
+                                <span class="label label-primary pull-right">
+                                    {{ $barrenLand }}
+                                </span>
                             </span>
                         @endif
                     </a>
@@ -79,7 +81,9 @@
                         <i class="fa fa-flask fa-fw"></i> <span>Technology</span>
                         @if ($unlockableTechCount > 0)
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right">{{ $unlockableTechCount }}</span>
+                                <span class="label label-primary pull-right">
+                                    {{ $unlockableTechCount }}
+                                </span>
                             </span>
                         @endif
                     </a>
@@ -103,9 +107,21 @@
                         <i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span>
                         @if ($activeSelfSpells > 0 || $activeHostileSpells > 0)
                             <span class="pull-right-container">
-                                {!! $activeSelfSpells > 0 ? ('<small class="label pull-right bg-blue">' . $activeSelfSpells . '</small>') : null !!}
-                                {!! $activeHostileSpells > 0 ? ('<small class="label pull-right bg-red">' . $activeHostileSpells . '</small>') : null !!}
-                                {!! $activeFriendlySpells > 0 ? ('<small class="label pull-right bg-green">' . $activeFriendlySpells . '</small>') : null !!}
+                                @if ($activeSelfSpells > 0)
+                                    <small class="label pull-right bg-blue">
+                                        {{ $activeSelfSpells }}
+                                    </small>
+                                @endif
+                                @if ($activeHostileSpells > 0)
+                                    <small class="label pull-right bg-red">
+                                        {{ $activeHostileSpells }}
+                                    </small>
+                                @endif
+                                @if ($activeFriendlySpells > 0)
+                                    <small class="label pull-right bg-green">
+                                        {{ $activeFriendlySpells }}
+                                    </small>
+                                @endif
                             </span>
                         @endif
 
@@ -116,9 +132,18 @@
                 <li class="{{ Route::is('dominion.bounty-board') ? 'active' : null }}">
                     <a href="{{ route('dominion.bounty-board') }}">
                         <i class="ra ra-hanging-sign ra-fw"></i> <span>Bounty Board</span>
-                        @if ($activeBounties > 0)
+                        @if ($activeBounties > 0 || $postedBounties > 0)
                             <span class="pull-right-container">
-                                <small class="label label-primary pull-right">{{ $activeBounties }}</small>
+                                @if ($activeBounties > 0)
+                                    <small class="label label-primary pull-right">
+                                        {{ $activeBounties }}
+                                    </small>
+                                @endif
+                                @if ($postedBounties > 0)
+                                    <small class="label pull-right bg-blue">
+                                        {{ $postedBounties }}
+                                    </small>
+                                @endif
                             </span>
                         @endif
                     </a>
