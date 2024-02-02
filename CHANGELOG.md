@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.38.4] - 2024-02-02
+### Added
+- The Bounty Board link in the sidebar will now show a green indicator with the number of bounties you have posted
+
+### Fixed
+- Spires will now apply the proper bonus to boat production
+- Friendly spells will now show realmies who they were cast by
+- Friendly spells will now properly display their current cooldown time on the magic page
+
 ## [1.38.3] - 2024-01-23
 ### Fixed
 - Miner's Sight now properly cancels earthquake ore production penalty
@@ -2076,7 +2085,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.3...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.38.4...HEAD
+[1.38.4]: https://github.com/OpenDominion/OpenDominion/compare/1.38.3...1.38.4
 [1.38.3]: https://github.com/OpenDominion/OpenDominion/compare/1.38.2...1.38.3
 [1.38.2]: https://github.com/OpenDominion/OpenDominion/compare/1.38.1...1.38.2
 [1.38.1]: https://github.com/OpenDominion/OpenDominion/compare/1.38.0...1.38.1
