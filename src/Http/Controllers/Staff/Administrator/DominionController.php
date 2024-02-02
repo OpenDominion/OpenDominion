@@ -104,10 +104,10 @@ class DominionController extends AbstractController
             $round = $rounds->first();
         }
 
-        $invasions = GameEvent::selectRaw('game_events.*, source.name AS source_name, target.name AS target_name, count(game_events.id) as ops_count')
+        $invasions = GameEvent::selectRaw('game_events.*, source.name AS source_name, target.name AS target_name, COUNT(info_ops.source_realm_id) AS ops_count')
             ->join('dominions AS source', 'game_events.source_id', '=', 'source.id')
             ->join('dominions AS target', 'game_events.target_id', '=', 'target.id')
-            ->join('info_ops', function (JoinClause $join) {
+            ->leftJoin('info_ops', function (JoinClause $join) {
                 $join->on('target.id', '=', 'info_ops.target_dominion_id')
                     ->where('info_ops.created_at', '<', DB::raw('game_events.created_at'))
                     ->where('info_ops.created_at', '>', DB::raw('DATE_SUB(game_events.created_at, INTERVAL 12 HOUR)'));
