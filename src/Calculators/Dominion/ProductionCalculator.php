@@ -836,7 +836,7 @@ class ProductionCalculator
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'boat_production') / 100;
 
         // Improvement: Harbor
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25;
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor', true);
 
         return $multiplier;
     }
