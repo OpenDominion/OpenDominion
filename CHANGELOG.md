@@ -4,13 +4,15 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Fixed
+- The blank space in the header no longer linkts to the homepage
 
 ## [1.38.4] - 2024-02-02
 ### Added
-- The Bounty Board link in the sidebar will now show a green indicator with the number of bounties you have posted
+- The Bounty Board link in the sidebar will now show a blue indicator with the number of bounties you have posted
 
 ### Fixed
-- Spires will now apply the proper bonus to boat production
+- Harbor will now apply the proper bonus to boat production
 - Friendly spells will now show realmies who they were cast by
 - Friendly spells will now properly display their current cooldown time on the magic page
 
