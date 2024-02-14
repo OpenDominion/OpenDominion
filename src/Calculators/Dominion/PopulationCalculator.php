@@ -271,8 +271,11 @@ class PopulationCalculator
         $fixedGrowth = $this->spellCalculator->resolveSpellPerk($dominion, 'fixed_population_growth') / 100;
         if ($fixedGrowth) {
             $opsCalculator = app(OpsCalculator::class);
-            $peasants = $opsCalculator->getPeasantsVulnerable($dominion);
-            $peasantBirth = round($peasants * $fixedGrowth);
+            $peasantsVulnerable = $opsCalculator->getPeasantsVulnerable($dominion);
+            $peasantsProtected = $opsCalculator->getPeasantsProtected($dominion);
+            if ($dominion->peasants >= $peasantsProtected) {
+                $peasantBirth = round($peasantsVulnerable * $fixedGrowth);
+            }
         }
 
         return round($peasantBirth * $multiplier);
