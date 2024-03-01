@@ -5,7 +5,7 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">{{ ucwords(str_replace('-', ' ', $type)) }} in round {{ number_format($round->number) }}: {{ $round->name }}</h3>
+            <h3 class="box-title">{{ ucwords(str_replace('-', ' ', $type)) }} in {{ $round->name }}</h3>
         </div>
 
         @if (!$data->isEmpty())

@@ -143,6 +143,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-explored']) }}">Largest Exploring Realms</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-prestige']) }}">Most Prestigious Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-prestige']) }}">Most Prestigious Realms</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-bounties-collected']) }}">Most Bounties Collected</a><br>
                 </div>
             </div>
 
