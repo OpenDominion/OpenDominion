@@ -14,6 +14,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -559,5 +560,23 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
                 )
             );
         }
+    }
+
+    /**
+     * @covers ::getWizardStrengthRegen
+     */
+    public function testGetWizardStrengthRegen()
+    {
+        /** @var Mock|Dominion $dominion */
+        $dominion = m::mock(Dominion::class);
+
+        $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(1000)->byDefault();
+        $dominion->shouldReceive('getTechPerkValue')->with('wizard_strength_recovery')->andReturn(1)->byDefault();
+        $dominion->shouldReceive('getCourtSeat')->andReturn('mage')->byDefault();
+        $dominion->shouldReceive('isActive')->andReturn(true)->byDefault();
+        $dominion->shouldReceive('getAttribute')->with('building_wizard_guild')->andReturn(10)->byDefault();
+        $dominion->shouldReceive('getAttribute')->with('wizard_strength')->andReturn(50)->byDefault();
+
+        $this->assertEquals(5.3, $this->sut->getWizardStrengthRegen($dominion));
     }
 }
