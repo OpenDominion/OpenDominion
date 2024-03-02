@@ -896,11 +896,7 @@ class TickService
         }
 
         // Morale
-        if ($dominion->morale < 80) {
-            $tick->morale = 6;
-        } elseif ($dominion->morale < 100) {
-            $tick->morale = min(3, 100 - $dominion->morale);
-        }
+        $tick->morale = $dominion->getMoraleGain();
 
         // Infamy
         $tick->infamy = $this->opsCalculator->getInfamyDecay($dominion);

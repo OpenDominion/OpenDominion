@@ -192,7 +192,10 @@
                                             {{ $appointment['name'] }}
                                         </td>
                                         <td>{{ $appointmentRelation == null ? '--' : $appointmentRelation->name }}</td>
-                                        <td>{{ $appointment['description']}}</td>
+                                        <td>
+                                            {{ $appointment['description'] }}<br/>
+                                            {{ $governmentHelper->getCourtPerkHelpString($appointment['key']) }}
+                                        </td>
                                     </tr>
                                 @endforeach
                             </table>
@@ -262,11 +265,12 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The monarch of a realm may appoint fellow dominions to their royal court, who are then granted access to special abilities.</p>
+                    <p>The monarch of a realm may appoint fellow dominions to their royal court, who are then granted access to special perks and responsibilities.</p>
                     <p>The <b>General</b> has the power to cancel and declare wars.</p>
+                    <p>The <b>Spymaster</b> can post recurring and black op bounties.</p>
                     <p>The <b>Grand Magister</b> and <b>Court Mage</b> can wield additional spells to protect the realm.</p>
                     <p>The <b>Jester</b> can change the realm name and message.</p>
-                    <p>Appointments can only be changed once every five days.</p>
+                    <p>Appointments can only be changed once every five days. Bonuses do not apply during protection.</p>
                 </div>
             </div>
         </div>

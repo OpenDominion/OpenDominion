@@ -503,6 +503,17 @@ class Dominion extends AbstractModel
     }
 
     /**
+     * Returns whether this Dominion is the spymaster for its realm.
+     *
+     * @return bool
+     */
+    public function isSpymaster()
+    {
+        $spymaster = $this->realm->spymaster;
+        return ($spymaster !== null && $this->id == $spymaster->id);
+    }
+
+    /**
      * Returns whether this Dominion is the magister for its realm.
      *
      * @return bool
@@ -545,6 +556,7 @@ class Dominion extends AbstractModel
         return (
             $this->isMonarch() ||
             $this->isGeneral() ||
+            $this->isSpymaster() ||
             $this->isMagister() ||
             $this->isMage() ||
             $this->isJester()
@@ -564,6 +576,9 @@ class Dominion extends AbstractModel
         if ($this->isGeneral()) {
             return 'general';
         }
+        if ($this->isSpymaster()) {
+            return 'spymaster';
+        }
         if ($this->isMagister()) {
             return 'magister';
         }
@@ -573,6 +588,33 @@ class Dominion extends AbstractModel
         if ($this->isJester()) {
             return 'jester';
         }
+    }
+
+    /**
+     * Return a boolean whether or not the dominion has protection ticks remaining.
+     */
+    public function isActive(): bool
+    {
+        return $this->protection_ticks_remaining == 0;
+    }
+
+    /**
+     * Returns the amount of morale gained per hour.
+     */
+    public function getMoraleGain(): int
+    {
+        $moraleGain = 3;
+
+        if ($this->morale < 80) {
+            $moraleGain = 6;
+        }
+
+        // Royal Court: +1%
+        if ($this->isActive() && $this->getCourtSeat() == 'jester') {
+            $moraleGain += 1;
+        }
+
+        return min($moraleGain, 100 - $this->morale);
     }
 
     /**

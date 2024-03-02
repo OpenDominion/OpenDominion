@@ -307,6 +307,11 @@ class EspionageActionService
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
+        // Royal Court: +5%
+        if ($dominion->isActive() && $dominion->getCourtSeat() == 'spymaster') {
+            $successRate += 0.05;
+        }
+
         if (!random_chance($successRate)) {
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
 

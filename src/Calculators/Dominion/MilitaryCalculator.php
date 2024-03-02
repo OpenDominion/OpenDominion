@@ -1093,6 +1093,11 @@ class MilitaryCalculator
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
 
+        // Royal Court: +0.2%
+        if ($dominion->isActive() && $dominion->getCourtSeat() == 'mage') {
+            $regen += 0.2;
+        }
+
         // Resilience bonus when snared
         if ($dominion->wizard_strength < 30) {
             $regen += ($dominion->spy_resilience / 100);

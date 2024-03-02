@@ -12,6 +12,7 @@ use OpenDominion\Services\Realm\HistoryService;
  * @property int $round_id
  * @property int|null $monarch_dominion_id
  * @property int|null $general_dominion_id
+ * @property int|null $spymaster_dominion_id
  * @property int|null $magister_dominion_id
  * @property int|null $mage_dominion_id
  * @property int|null $jester_dominion_id
@@ -33,6 +34,7 @@ use OpenDominion\Services\Realm\HistoryService;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm\History[] $history
  * @property-read \OpenDominion\Models\Dominion $monarch
  * @property-read \OpenDominion\Models\Dominion $general
+ * @property-read \OpenDominion\Models\Dominion $spymaster
  * @property-read \OpenDominion\Models\Dominion $magister
  * @property-read \OpenDominion\Models\Dominion $mage
  * @property-read \OpenDominion\Models\Dominion $jester
@@ -86,6 +88,11 @@ class Realm extends AbstractModel
     public function general()
     {
         return $this->hasOne(Dominion::class, 'id', 'general_dominion_id');
+    }
+
+    public function spymaster()
+    {
+        return $this->hasOne(Dominion::class, 'id', 'spymaster_dominion_id');
     }
 
     public function magister()
@@ -179,6 +186,7 @@ class Realm extends AbstractModel
             $extraAttributes = [
                 'monarch_dominion_id',
                 'general_dominion_id',
+                'spymaster_dominion_id',
                 'magister_dominion_id',
                 'mage_dominion_id',
                 'jester_dominion_id',
