@@ -253,7 +253,6 @@
                                 <div class="col-xs-3 text-left">
                                     @if ($racialSpell)
                                         <input type="checkbox"
-                                                step="any"
                                                 name="calc[{{ $racialSpell->key }}]"
                                                 checked />
                                     @endif
@@ -304,11 +303,10 @@
 
                         <div class="form-group row">
                             <div class="col-xs-3 text-right">
-                                    Ares Call
+                                Ares Call
                             </div>
                             <div class="col-xs-3 text-left">
                                 <input type="checkbox"
-                                        step="any"
                                         name="calc[ares_call]"
                                         checked />
                             </div>
@@ -340,7 +338,12 @@
                                             min="0"
                                             max="16.67" />
                                     <span class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary load-temples" data-temples="{{ round($selectedDominion->building_temple / $landCalculator->getTotalLand($selectedDominion) * 100, 6) }}" type="button">Load</button>
+                                        <button class="btn btn-sm btn-primary load-temples"
+                                                data-temples="{{ round($selectedDominion->building_temple / $landCalculator->getTotalLand($selectedDominion) * 100, 6) }}"
+                                                data-temple-of-the-damned="{{ $selectedDominion->realm->hasWonder('temple_of_the_damned') }}"
+                                                type="button">
+                                            Load
+                                        </button>
                                     </span>
                                 </div>
                             </div>
@@ -358,6 +361,34 @@
                                         value="{{ ($targetDominion !== null && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.guard_tower") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 6) : null }}" />
                             </div>
                         </div>
+
+                        @if (isset($wonders['temple_of_the_damned']))
+                            <div class="form-group row">
+                                @php $attackerPerk = $wonders['temple_of_the_damned']->perks->where('key', 'enemy_defense')->first(); @endphp
+                                <div class="col-xs-3 text-right">
+                                    Temple of the Damned (Attacker)
+                                </div>
+                                <div class="col-xs-3 text-left">
+                                    <input type="hidden"
+                                            name="calc[wonder_enemy_defense]"
+                                            value="{{ $attackerPerk->pivot->value }}" />
+                                    <input type="checkbox"
+                                            name="calc[temple_of_the_damned_attacker]" />
+                                </div>
+                                @php $targetPerk = $wonders['temple_of_the_damned']->perks->where('key', 'defense')->first(); @endphp
+                                <div class="col-xs-3 text-right">
+                                    Temple of the Damned (Target)
+                                </div>
+                                <div class="col-xs-3 text-left">
+                                    <input type="hidden"
+                                            name="calc[wonder_defense]"
+                                            value="{{ $targetPerk->pivot->value }}" />
+                                    <input type="checkbox"
+                                            name="calc[temple_of_the_damned_defender]"
+                                            {{ $targetDominion->realm->hasWonder('temple_of_the_damned') ? 'checked' : null }} />
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="row">
                             <div class="col-xs-9 text-right">
@@ -700,7 +731,6 @@
                                 <div class="col-xs-3 text-left">
                                     @if ($racialSpell)
                                         <input type="checkbox"
-                                                step="any"
                                                 name="calc[{{ $racialSpell->key }}]"
                                                 checked />
                                     @endif
@@ -1060,6 +1090,8 @@
             $('.load-temples').click(function(e) {
                 var temples = $(this).data('temples');
                 $('input[name=calc\\[temple_percent\\]]').val(temples);
+                var templeOfTheDamned = $(this).data('temple-of-the-damned');
+                $('input[name=calc\\[temple_of_the_damned_attacker\\]]').prop('checked', templeOfTheDamned);
             });
         })(jQuery);
     </script>

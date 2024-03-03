@@ -94,7 +94,7 @@ class BuildingHelper
             'gryphon_nest' => 'Offensive power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',
             'wizard_guild' => 'Spy, Assassin, Wizard, and Archmage training costs reduced by 3.5% per 1% owned, up to a maximum of 35% at 10% owned.<br>Spy and Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 1% at 10% owned.<br>Losses on failed black ops reduced by 2.5% per 1% owned, up to a maximum of 25% at 10% owned.',
-            'temple' => 'Population growth increased by 6% per 1% owned.<br>Defensive bonuses reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.67% owned.',
+            'temple' => 'Population growth increased by 6% per 1% owned.<br>Enemy defensive power reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.67% owned.',
             'diamond_mine' => 'Produces 15 gems per hour.',
             'school' => 'Produces (1 - (Schools / Total Land)) research points per hour (minimum of 0.5). Limited to 50% of your total land.',
             'lumberyard' => 'Produces 50 lumber per hour.',

@@ -20,6 +20,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\Tech;
 use OpenDominion\Services\Dominion\QueueService;
@@ -127,6 +128,13 @@ class CalculationsController extends AbstractDominionController
         } else {
             $race = $targetDominion->race()->with(['units', 'units.perks'])->first();
         }
+        $wonders = RoundWonder::with('wonder.perks')
+            ->where('round_id', $dominion->round_id)
+            ->get()
+            ->map(function ($roundWonder) {
+                return $roundWonder->wonder;
+            })
+            ->keyBy('key');
 
         if ($dominion->inRealmAndSharesAdvisors($targetDominion)) {
             $targetInfoOps = collect([
@@ -182,6 +190,7 @@ class CalculationsController extends AbstractDominionController
             'targetInfoOps' => $targetInfoOps,
             'race' => $race,
             'races' => $races,
+            'wonders' => $wonders,
             'buildingHelper' => app(BuildingHelper::class),
             'spellHelper' => app(SpellHelper::class),
             'unitHelper' => app(UnitHelper::class),

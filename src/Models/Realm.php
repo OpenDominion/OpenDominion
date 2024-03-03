@@ -170,6 +170,11 @@ class Realm extends AbstractModel
         }) + $this->dominions->count();
     }
 
+    public function hasWonder(string $wonderKey): bool
+    {
+        return $this->wonders->keyBy('key')->has($wonderKey);
+    }
+
     // todo: move to eloquent events, see $dispatchesEvents
     public function save(array $options = [])
     {

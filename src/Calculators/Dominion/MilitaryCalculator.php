@@ -465,8 +465,13 @@ class MilitaryCalculator
         $multiplier += $dominion->getTechPerkMultiplier('defense');
 
         // Wonders
-        // TODO: add to calc if this is implemented
-        $multiplier += $dominion->getWonderPerkMultiplier('defense');
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
+            if (isset($dominion->calc['temple_of_the_damned_defender'])) {
+                $multiplier += ($dominion->calc['wonder_defense'] / 100);
+            }
+        } else {
+            $multiplier += $dominion->getWonderPerkMultiplier('defense');
+        }
 
         // Improvement: Walls
         $multiplier += $this->getDefensivePowerMultiplierFromImprovements($dominion);
@@ -609,6 +614,15 @@ class MilitaryCalculator
                     ($templeMaxDpReduction / 100)
                 );
             }
+        }
+
+        // Wonders
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
+            if (isset($dominion->calc['temple_of_the_damned_attacker'])) {
+                $dpMultiplierReduction -= ($dominion->calc['wonder_enemy_defense'] / 100);
+            }
+        } else {
+            $dpMultiplierReduction -= $dominion->getWonderPerkMultiplier('enemy_defense');
         }
 
         return $dpMultiplierReduction;

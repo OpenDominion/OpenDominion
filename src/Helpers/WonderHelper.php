@@ -17,6 +17,7 @@ class WonderHelper
         $perkTypeStrings = [
             // Military related
             'defense' => '%+g%% defensive power',
+            'enemy_defense' => '%+g%% enemy defensive power',
             'offense' => '%+g%% offensive power',
             'faster_return' => 'Units return %s hours faster from battle',
             'guard_tax' => '%+g%% platinum tax from Royal Guard',

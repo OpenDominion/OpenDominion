@@ -16,6 +16,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Grand Magister: -2.5% spell mana costs
   - Court Mage: +0.2 wizard strength recovery per hour
   - Jester: +1 morale recovery per hour
+- New Wonder: Temple of the Damned
+  - Defensive power reduced by 2.5% (minimum of 0%)
+  - Enemy defensive power reduced by 5% (minimum of 0%)
 
 ### Fixed
 - The blank space in the header no longer linkts to the homepage

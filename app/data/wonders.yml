@@ -171,15 +171,10 @@ altar_of_heroes:
     hero_experience: 5
   power: 75000
   active: true
-magical_ley_lines:
-  name: Magical Ley Lines
+temple_of_the_damned:
+  name: Temple of the Damned
   perks:
-    spell_duration: 13
-  power: 75000
-  active: false
-yurts_of_the_wayfarer:
-  name: Yurts of the Wayfarer
-  perks:
-    extra_barren_max_population: 10
+    enemy_defense: -5
+    defense: -2.5
   power: 150000
-  active: false
+  active: true
