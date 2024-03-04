@@ -63,7 +63,7 @@ class GovernmentHelper
                 'perk_type' => 'morale_regen',
                 'perk_value' => 1
             ]
-        ])->keyBy('key');;
+        ])->keyBy('key');
     }
 
     public function getCourtAppointment(string $key): array
