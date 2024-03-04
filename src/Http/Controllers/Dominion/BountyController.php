@@ -21,11 +21,12 @@ class BountyController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
 
         $bountyService = app(BountyService::class);
-        $bounties = $bountyService->getBounties($dominion);
+        $bounties = $bountyService->getBounties($dominion->realm);
         $bountiesCollected = $bountyService->getBountiesCollected($dominion);
 
         return view('pages.dominion.bounty-board', [
-            'bounties' => $bounties,
+            'bountiesActive' => $bounties->where('active', true),
+            'bountiesInactive' => $bounties->where('active', false),
             'bountiesCollected' => $bountiesCollected,
             'bountyService' => $bountyService,
             'landCalculator' => app(LandCalculator::class),

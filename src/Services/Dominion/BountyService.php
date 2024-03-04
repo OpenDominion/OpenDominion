@@ -6,6 +6,8 @@ use DB;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Bounty;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\InfoOp;
+use OpenDominion\Models\Realm;
 
 class BountyService
 {
@@ -14,22 +16,58 @@ class BountyService
     public const REWARD_AMOUNT = 10;
 
     /**
-     * Get bounties for a realm, excluding the selected dominion
+     * Get bounties for a realm
      *
-     * @param Dominion $dominion
+     * @param Realm $realm
      */
-    public function getBounties(Dominion $dominion)
+    public function getBounties(Realm $realm)
     {
         $activeBounties = Bounty::active()
-            ->with(['sourceDominion', 'targetDominion'])
-            ->where('source_realm_id', $dominion->realm_id)
+            ->with('sourceDominion')
+            ->where('source_realm_id', $realm->id)
             ->get()
             ->groupBy('target_dominion_id')
             ->map(function ($bounties) {
                 return $bounties->keyBy('type');
             });
 
-        return $activeBounties;
+        $recentlyBountied = Dominion::with('race', 'realm')
+            ->whereExists(function ($query) use ($realm) {
+                $query->select(DB::raw(1))
+                    ->from('bounties')
+                    ->whereColumn('bounties.target_dominion_id', 'dominions.id')
+                    ->where('source_realm_id', $realm->id)
+                    ->where('created_at', '>', now()->subHours(240));
+            })
+            ->get();
+
+        $recentInfoOps = InfoOp::query()
+            ->where('latest', true)
+            ->where('source_realm_id', $realm->id)
+            ->whereIn('target_dominion_id', $recentlyBountied->pluck('id'))
+            ->get()
+            ->groupBy('target_dominion_id')
+            ->map(function ($infoOps) {
+                return $infoOps->keyBy('type');
+            });
+
+        return $recentlyBountied->map(function ($dominion) use ($activeBounties, $recentInfoOps) {
+            $dominion->bounties = collect();
+            $dominion->info_ops = collect();
+            $dominion->active = false;
+
+            if (isset($activeBounties[$dominion->id])) {
+                $dominion->bounties = $activeBounties[$dominion->id];
+            }
+            if (isset($recentInfoOps[$dominion->id])) {
+                $dominion->info_ops = $recentInfoOps[$dominion->id];
+            }
+            if (!$dominion->bounties->isEmpty()) {
+                $dominion->active = true;
+            }
+
+            return $dominion;
+        });
     }
 
     /**
