@@ -37,7 +37,7 @@ class BountyService
                     ->from('bounties')
                     ->whereColumn('bounties.target_dominion_id', 'dominions.id')
                     ->where('source_realm_id', $realm->id)
-                    ->where('created_at', '>', now()->subHours(240));
+                    ->where('created_at', '>', now()->subHours(24));
             })
             ->get();
 
@@ -99,6 +99,14 @@ class BountyService
      */
     public function createBounty(Dominion $dominion, Dominion $target, string $type): array
     {
+        if (!$dominion->round->hasStarted()) {
+            throw new GameException('You cannot post bounties before the round has started.');
+        }
+
+        if ($dominion->realm_id == $target->realm_id) {
+            throw new GameException('You cannot post bounties against your own realm.');
+        }
+
         $bountiesCreated = Bounty::active()
             ->where('source_dominion_id', $dominion->id)
             ->count();
