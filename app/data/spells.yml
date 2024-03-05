@@ -493,7 +493,7 @@ spell_reflect:
 arcane_ward:
   name: Arcane Ward
   category: friendly
-  cost_mana: 3
+  cost_mana: 1.5
   cost_strength: 4
   duration: 6
   cooldown: 3
@@ -502,7 +502,7 @@ arcane_ward:
 illumination:
   name: Illumination
   category: friendly
-  cost_mana: 3
+  cost_mana: 1.5
   cost_strength: 4
   duration: 6
   cooldown: 3

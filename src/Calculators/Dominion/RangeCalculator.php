@@ -59,6 +59,11 @@ class RangeCalculator
         $selfModifier = $this->getRangeModifier($self);
         $targetModifier = $this->getRangeModifier($target);
 
+        if ($self->realm_id == $target->realm_id) {
+            $selfModifier = self::MINIMUM_RANGE;
+            $targetModifier = self::MINIMUM_RANGE;
+        }
+
         return (
             ($targetLand >= ($selfLand * $selfModifier)) &&
             ($targetLand <= ($selfLand / $selfModifier)) &&
