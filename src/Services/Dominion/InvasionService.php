@@ -265,6 +265,21 @@ class InvasionService
     }
 
     /**
+     * Gets the amount of hours for land and other resources to return home.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getResourceReturnHours(Dominion $dominion) {
+        $hours = 12;
+
+        // Wonders
+        $hours -= $dominion->getWonderPerkValue('faster_return');
+
+        return $hours;
+    }
+
+    /**
      * Apply a spell to a target dominion with given duration
      *
      * @param Dominion $dominion

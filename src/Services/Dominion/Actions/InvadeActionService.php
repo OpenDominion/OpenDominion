@@ -900,7 +900,8 @@ class InvadeActionService
         $this->queueService->queueResources(
             'invasion',
             $dominion,
-            $queueData
+            $queueData,
+            $this->invasionService->getResourceReturnHours($dominion)
         );
     }
 
