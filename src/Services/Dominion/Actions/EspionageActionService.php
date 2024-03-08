@@ -827,8 +827,8 @@ class EspionageActionService
             if ($assassinsKilled > 1) {
                 if ($blackGuard) {
                     $this->queueService->queueResources('training', $dominion, ['military_assassins' => floor(0.75 * $assassinsKilled)]);
-                } elseif ($type == 'hostile') {
-                    $this->queueService->queueResources('training', $dominion, ['military_spies' => floor(0.25 * $assassinsKilled)]);
+                } else {
+                    $this->queueService->queueResources('training', $dominion, ['military_spies' => floor(0.50 * $assassinsKilled)]);
                 }
             }
         }

@@ -14,7 +14,7 @@ units:
   - name: Savage
     cost:
       platinum: 385
-      ore: 25
+      lumber: 30
     power:
       offense: 4
       defense: 0
@@ -27,7 +27,7 @@ units:
       defense: 3
   - name: Voodoo Mage
     cost:
-      platinum: 975
+      platinum: 965
       ore: 0
     power:
       offense: 0
@@ -37,9 +37,9 @@ units:
   - name: Bone Breaker
     cost:
       platinum: 1150
-      ore: 100
+      lumber: 120
     power:
       offense: 4
       defense: 3
     perks:
-      offense_from_prestige: 333,3 # amount, max
+      offense_from_prestige: 300,3 # amount, max

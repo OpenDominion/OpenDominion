@@ -23,14 +23,14 @@ units:
       faster_return: 3
   - name: Crossbowman
     cost:
-      platinum: 300
+      platinum: 285
       ore: 15
     power:
       offense: 0
       defense: 3
   - name: Blademaster
     cost:
-      platinum: 980
+      platinum: 1000
       ore: 25
     power:
       offense: 2

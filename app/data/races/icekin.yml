@@ -32,7 +32,7 @@ units:
       reduce_combat_losses: 1
   - name: FrostMage # Leave the space out, for nostalgic reasons
     cost:
-      platinum: 950
+      platinum: 965
       ore: 100
     power:
       offense: 3

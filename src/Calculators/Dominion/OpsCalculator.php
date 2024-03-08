@@ -523,7 +523,7 @@ class OpsCalculator
     {
         // Scale vulnerability from 0.2 at Day 4, to 0.25 at Day 24, to 0.3 at Day 44
         $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
-        $daysModifier = (0.0025 * $days) + 0.3;
+        $daysModifier = (0.0025 * $days) + 0.35;
 
         return $daysModifier;
     }

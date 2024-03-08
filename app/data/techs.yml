@@ -344,10 +344,9 @@ tech_17_9:
     - tech_15_9
     - tech_16_11
 tech_6_11:
-  name: Visionary Expansionist
+  name: Urban Planner
   perks:
-    max_population: 1
-    extra_barren_max_population: 1
+    max_population: 1.5
   requires:
     - tech_5_9
     - tech_7_13
@@ -376,9 +375,10 @@ tech_12_11:
     - tech_11_9
     - tech_13_13
 tech_14_11:
-  name: Urban Planner
+  name: Visionary Expansionist
   perks:
-    max_population: 1.5
+    max_population: 1
+    population_growth: 15
   requires:
     - tech_13_9
     - tech_15_13

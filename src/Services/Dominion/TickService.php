@@ -690,7 +690,7 @@ class TickService
             $upgradePerk = SpellPerkType::where('key', 'upgrade_specs')->first();
             if ($upgradePerk !== null) {
                 $baseConversion = 2;
-                $landMultiplier = 1/1000;
+                $landMultiplier = 1/750;
                 $spellIds = $upgradePerk->spells->pluck('id');
                 $dominionSpells = DominionSpell::whereIn('spell_id', $spellIds)->whereIn('dominion_id', $dominionIds)->get();
                 foreach ($dominionSpells as $dominionSpell) {
