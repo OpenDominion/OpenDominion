@@ -177,4 +177,4 @@ temple_of_the_damned:
     enemy_defense: -5
     defense: -2.5
   power: 150000
-  active: true
+  active: false

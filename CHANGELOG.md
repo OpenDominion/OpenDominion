@@ -11,14 +11,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Can post black op bounties
 - Royal Court perks (not active during protection)
   - Monarch: +2% food production
-  - General: +2 prestige gained against player targets (as opposed to bots)
+  - General: +2% prestige gains
   - Spymaster: +5% spy success chance
   - Grand Magister: -2.5% spell mana costs
   - Court Mage: +0.2 wizard strength recovery per hour
   - Jester: +1 morale recovery per hour
-- New Wonder: Temple of the Damned
-  - Defensive power reduced by 2.5% (minimum of 0%)
-  - Enemy defensive power reduced by 5% (minimum of 0%)
+
+### Changed
+- Icekin FrostMage: +15p (from 950p)
+- Nomad Crossbowman: -15p (from 300p)
+- Nomad Blademaster: +20p (from 980p)
+- Orc Savage: -25r, +30 lumber
+- Orc Voodoo Mage: -10p
+- Orc Bone Breaker: -100r, +120 lumber, +1 OP per 300 prestige (from +1 OP per 333 prestige)
+- Undead: Cull the Weak converts increased to 2 plus one per 750 acres (from 2 plus one per 1000 acres)
+- Visionary Expansionist (tech): now grants +15% population growth (was +1 population from barren land)
+- Visionary Expansionist swaps places with Urban Planner
+- Minimum RP gained on attack reduced to 250 (from 750)
+- Prestige formula changed to min(200x[RATIO]-115, 70) + max([LAND]-750, 0)/100 (from min(100x[RATIO]-40, 60) + [LAND]/150)
+- Fireball vulnerability increased by 5% to 35-45% (from 30%-40%)
+- Burning will now trigger after 10 spells in a 24 hour period (from a 10-20% random chance on each cast)
+- Burning pop growth changed to 3% of vulnerable + 0.5% of maximum peasant population (from 6% of vulnerable)
+-Assassins now retrain as spies on all failed operations at a rate of 50% (from 25% for black ops only)
+- Arcane Ward and Illumination mana costs reduced to 1.5x (from 3x)
+- Friendly spells are no longer prevented due to guard status (40%-250% still applies)
 
 ### Fixed
 - The blank space in the header no longer linkts to the homepage
@@ -817,8 +833,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Temples: DP reduction reduced to 1.35x per 1% owned up to a maximum of 25% at 18.5% owned (from 1.5x per 1% owned, max 25% at 16.7% owned)
 - Factories: Construction cost reduction now capped at 60% at 15% owned (from 75% at 18.75%), rezone cost reduction increased to 4x per 1% owned up to a maximum of 60% at 15% owned (from 3x per 1%, max 75% at 25% owned)
 - Wizard Guilds: No longer excludes Dark Elf from wizard power bonus
-- Orc: Savage +25o (from 0o)
-- Orc: Guard -25o (from 25o)
+- Orc: Savage +25r (from 0r)
+- Orc: Guard -25r (from 25r)
 - Orc: Voodoo Magi changed to flat 5 DP for 975p (from 3 +1 per 600 prestige for 830p)
 - Orc: Bone Breaker changed to 5 +1 per 625 prestige (max +2) for 1150p (from 7 -1 per 10% GT of target for 1075p)
 - Wood Elf: Druid +25p (from 1075p)
@@ -829,9 +845,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dark Elf: Spirit Warrior loses bonus +0.5 OP vs 95%
 - Dark Elf: wizard power racial removed (was +10%)
 - Halfling: Spy power bonus reduced to +25% (from +30%)
-- Nox Fiend: -25o, +12 mana
-- Nox Nightshade: -60o, +25 mana
-- Sylvan Centaur: -35o, +20 lumber
+- Nox Fiend: -25r, +12 mana
+- Nox Nightshade: -60r, +25 mana
+- Sylvan Centaur: -35r, +20 lumber
 - New Wonder: Fountain of Youth +2.5% maximum population
 - New Wonder: Golden Throne +15% attacking prestige gains
 - New Wonder: Ruby Monolith -7.5% casualties on offense and defense
@@ -1586,7 +1602,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Gnome: Racial spell changed back to Mechanical Genius (from Miner's Sight)
 - Merfolk: Added +5% offense racial
-- Sylvan Centaur: -20o, casualty reduction increased to -25% (from -15%)
+- Sylvan Centaur: -20r, casualty reduction increased to -25% (from -15%)
 - Nox: Added +15% research point generation
 - Info ops spy/wizard strength cost reduced to 1% (from 2%)
 - Additional discounted land added when constructed buildings are lost to invasion
