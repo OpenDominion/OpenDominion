@@ -9,13 +9,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - New role in the Royal Court
   - Can post recurring bounties
   - Can post black op bounties
-- Royal Court perks (not active during protection)
-  - Monarch: +2% food production
-  - General: +2% prestige gains
-  - Spymaster: +5% spy success chance
-  - Grand Magister: -2.5% spell mana costs
-  - Court Mage: +0.2 wizard strength recovery per hour
-  - Jester: +1 morale recovery per hour
 
 ### Changed
 - Icekin FrostMage: +15p (from 950p)

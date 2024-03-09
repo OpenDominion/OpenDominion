@@ -236,11 +236,6 @@ class ProductionCalculator
         // Prestige Bonus
         $multiplier += ($this->prestigeCalculator->getPrestigeMultiplier($dominion) * (1 + $dominion->getTechPerkMultiplier('food_production_prestige')));
 
-        // Royal Court: +2%
-        if ($dominion->isActive() && $dominion->getCourtSeat() == 'monarch') {
-            $multiplier += 0.02;
-        }
-
         return $multiplier;
     }
 

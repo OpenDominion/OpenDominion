@@ -609,11 +609,6 @@ class Dominion extends AbstractModel
             $moraleGain = 6;
         }
 
-        // Royal Court: +1%
-        if ($this->isActive() && $this->getCourtSeat() == 'jester') {
-            $moraleGain += 1;
-        }
-
         return min($moraleGain, 100 - $this->morale);
     }
 

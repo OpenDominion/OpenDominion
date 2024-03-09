@@ -59,11 +59,6 @@ class SpellCalculator
         // Wonders
         $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
 
-        // Royal Court: -2.5%
-        if ($dominion->isActive() && $dominion->getCourtSeat() == 'magister') {
-            $successRate += -0.025;
-        }
-
         $manaCost = round($spell->cost_mana * $totalLand * $spellCostMultiplier);
 
         // Amplify Magic

@@ -193,8 +193,7 @@
                                         </td>
                                         <td>{{ $appointmentRelation == null ? '--' : $appointmentRelation->name }}</td>
                                         <td>
-                                            {{ $appointment['description'] }}<br/>
-                                            {{ $governmentHelper->getCourtPerkHelpString($appointment['key']) }}
+                                            {{ $appointment['description'] }}
                                         </td>
                                     </tr>
                                 @endforeach
