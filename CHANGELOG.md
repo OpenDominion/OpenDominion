@@ -31,7 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Friendly spells are no longer prevented due to guard status (40%-250% still applies)
 
 ### Fixed
-- The blank space in the header no longer linkts to the homepage
+- The blank space in the header no longer links to the homepage
 
 ## [1.38.4] - 2024-02-02
 ### Added
