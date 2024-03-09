@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Burning pop growth changed to 3% of vulnerable + 0.5% of maximum peasant population (from 6% of vulnerable)
 -Assassins now retrain as spies on all failed operations at a rate of 50% (from 25% for black ops only)
 - Arcane Ward and Illumination mana costs reduced to 1.5x (from 3x)
+- Friendly spells now cost 3% wizard strength to cast (was 4%)
 - Friendly spells are no longer prevented due to guard status (40%-250% still applies)
 
 ### Fixed
