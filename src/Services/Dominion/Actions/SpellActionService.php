@@ -795,7 +795,7 @@ class SpellActionService
                 } elseif (Str::startsWith($perk->key, 'apply_')) {
                     $statusEffectKey = str_replace('apply_', '', $perk->key);
                     $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", ['self', 'friendly', 'effect']);
-                    if (!$immunity && !$spellReflected && $warDeclared && random_chance($perk->pivot->value)) {
+                    if (!$immunity && !$spellReflected && $warDeclared && $target->wizard_resilience >= $perk->pivot->value) {
                         $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
                         $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);
                         if ($statusEffectActiveSpell == null) {
@@ -1194,13 +1194,19 @@ class SpellActionService
         $damageDealtString = '';
         $warRewardsString = '';
 
-        // Infamy Gains
+        // Infamy and Resilience Gains
         $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
+        if ($spellKey == 'fireball' || $spellKey == 'lightning_bolt') {
+            $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
+        } else {
+            $resilienceGain = 0;
+        }
 
         if ($dominion->infamy + $infamyGain > 1000) {
             $infamyGain = max(0, 1000 - $dominion->infamy);
         }
         $dominion->infamy += $infamyGain;
+        $target->wizard_resilience += $resilienceGain;
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);

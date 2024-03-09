@@ -273,8 +273,9 @@ class PopulationCalculator
             $opsCalculator = app(OpsCalculator::class);
             $peasantsVulnerable = $opsCalculator->getPeasantsVulnerable($dominion);
             $peasantsProtected = $opsCalculator->getPeasantsProtected($dominion);
+            $maxPeasants = $this->getMaxPeasantPopulation($dominion);
             if ($dominion->peasants >= $peasantsProtected) {
-                $peasantBirth = round($peasantsVulnerable * $fixedGrowth);
+                $peasantBirth = round($peasantsVulnerable * $fixedGrowth) + round($maxPeasants * $fixedGrowth / 10);
             }
         }
 

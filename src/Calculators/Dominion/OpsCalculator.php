@@ -19,13 +19,13 @@ class OpsCalculator
      * @var float Base amount of resilience lost each hour
      */
     protected const SPY_RESILIENCE_DECAY = -8;
-    protected const WIZARD_RESILIENCE_DECAY = -8;
+    protected const WIZARD_RESILIENCE_DECAY = -5;
 
     /**
      * @var float Base amount of resilience gained per op
      */
     protected const SPY_RESILIENCE_GAIN = 10;
-    protected const WIZARD_RESILIENCE_GAIN = 10;
+    protected const WIZARD_RESILIENCE_GAIN = 12;
 
     /** @var GovernmentService */
     protected $governmentService;

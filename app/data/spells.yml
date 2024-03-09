@@ -74,7 +74,7 @@ fireball:
   perks:
     destroy_peasants: 5
     destroy_resource_food: 2
-    apply_burning: 20
+    apply_burning: 120
 lightning_bolt:
   name: Lightning Bolt
   category: war
@@ -85,7 +85,7 @@ lightning_bolt:
     destroy_improvement_keep: 1
     destroy_improvement_forges: 1
     destroy_improvement_walls: 1
-    apply_burning: 10
+    apply_burning: 240
 cyclone:
   name: Cyclone
   category: wonder
@@ -468,7 +468,7 @@ burning:
   cost_strength: 0
   duration: 24
   perks:
-    fixed_population_growth: 6
+    fixed_population_growth: 3
     apply_rejuvenation: 1
 rejuvenation:
   name: Rejuvenation
