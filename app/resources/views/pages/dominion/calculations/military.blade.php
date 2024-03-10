@@ -339,7 +339,7 @@
                                             max="16.67" />
                                     <span class="input-group-btn">
                                         <button class="btn btn-sm btn-primary load-temples"
-                                                data-temples="{{ round($selectedDominion->building_temple / $landCalculator->getTotalLand($selectedDominion) * 100, 6) }}"
+                                                data-temples-attacker="{{ round($selectedDominion->building_temple / $landCalculator->getTotalLand($selectedDominion) * 100, 6) }}"
                                                 data-temple-of-the-damned="{{ $selectedDominion->realm->hasWonder('temple_of_the_damned') }}"
                                                 type="button">
                                             Load
@@ -421,6 +421,10 @@
                             <tr style="font-weight: bold;">
                                 <td>Total Defense:</td>
                                 <td id="dp">--</td>
+                            </tr>
+                            <tr>
+                                <td>vs Temples:</td>
+                                <td id="dp-temples">--</td>
                             </tr>
                             <tr>
                                 <td>Defensive Multiplier:</td>
@@ -917,6 +921,12 @@
                                 <td id="op">--</td>
                             </tr>
                             <tr>
+                                <td>Temples:</td>
+                                <td id="op-temples">
+                                  {{ $targetInfoOps->has('survey_dominion') ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.temple") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 3) : 0 }}%
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Offensive Multiplier:</td>
                                 <td id="op-multiplier">--</td>
                             </tr>
@@ -977,6 +987,7 @@
         (function ($) {
             // DEFENSE CALCULATOR
             var DPTotalElement = $('#dp');
+            var DPTemplesElement = $('#dp-temples');
             var DPMultiplierElement = $('#dp-multiplier');
             var DPRawElement = $('#dp-raw');
 
@@ -996,6 +1007,7 @@
                             });
                             // Update DP display
                             DPTotalElement.text(response.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            DPTemplesElement.text(($('input[name=calc\\[temple_percent\\]]').val() || 0) + '%');
                             DPMultiplierElement.text(response.dp_multiplier.toLocaleString(undefined, {maximumFractionDigits: 2}) + '%');
                             DPRawElement.text(response.dp_raw.toLocaleString(undefined, {maximumFractionDigits: 2}));
                         }
@@ -1088,7 +1100,7 @@
             }
 
             $('.load-temples').click(function(e) {
-                var temples = $(this).data('temples');
+                var temples = $(this).data('temples-attacker');
                 $('input[name=calc\\[temple_percent\\]]').val(temples);
                 var templeOfTheDamned = $(this).data('temple-of-the-damned');
                 $('input[name=calc\\[temple_of_the_damned_attacker\\]]').prop('checked', templeOfTheDamned);

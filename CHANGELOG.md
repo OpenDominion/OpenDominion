@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - New role in the Royal Court
   - Can post recurring bounties
   - Can post black op bounties
+- Current temple percentage will now be shown in the military calculator
 
 ### Changed
 - Icekin FrostMage: +15p (from 950p)
