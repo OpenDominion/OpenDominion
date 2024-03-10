@@ -76,6 +76,9 @@
                                                         @elseif ($item['action'] == 'spell')
                                                             Cast
                                                             {{ $spellHelper->getSpellByKey($item['key'])->name }}
+                                                        @elseif ($item['action'] == 'draft_rate')
+                                                            Set Draft Rate
+                                                            {{ $item['amount'] }}%
                                                         @endif
                                                         <form action="{{ route('dominion.bonuses.actions.delete') }}" method="post" class="inline">
                                                             @csrf
@@ -116,6 +119,7 @@
                                         <option value="construct">Construct Buildings</option>
                                         <option value="explore">Explore Land</option>
                                         <option value="spell">Cast Spell</option>
+                                        <option value="draft_rate">Set Draft Rate</option>
                                     </select>
                                 </div>
                                 <div class="form-group action-options train">
@@ -151,7 +155,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options train construct explore">
+                                <div class="form-group action-options train construct explore draft_rate">
                                     Amount:
                                     <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
                                 </div>

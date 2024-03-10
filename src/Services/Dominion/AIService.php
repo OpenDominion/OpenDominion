@@ -26,6 +26,7 @@ use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
+use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
@@ -42,6 +43,9 @@ class AIService
 
     /** @var BuildingCalculator */
     protected $buildingCalculator;
+
+    /** @var ChangeDraftRateActionService */
+    protected $changeDraftRateActionService;
 
     /** @var ConstructActionService */
     protected $constructActionService;
@@ -121,6 +125,7 @@ class AIService
         $this->queueService = app(QueueService::class);
 
         // Action Services
+        $this->changeDraftRateActionService = app(ChangeDraftRateActionService::class);
         $this->constructActionService = app(ConstructActionService::class);
         $this->exploreActionService = app(ExploreActionService::class);
         $this->improveActionService = app(ImproveActionService::class);
@@ -191,6 +196,9 @@ class AIService
                                     $this->constructionCalculator->getMaxAfford($dominion)
                                 );
                                 $this->constructActionService->construct($dominion, ['building_' . $instruction['key'] => $maxAfford]);
+                                break;
+                            case 'draft_rate':
+                                $this->changeDraftRateActionService->changeDraftRate($dominion, $instruction['amount']);
                                 break;
                             case 'explore':
                                 $maxAfford = min(
