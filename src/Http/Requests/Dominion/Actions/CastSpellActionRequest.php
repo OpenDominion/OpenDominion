@@ -4,7 +4,7 @@ namespace OpenDominion\Http\Requests\Dominion\Actions;
 
 use OpenDominion\Http\Requests\Dominion\AbstractDominionRequest;
 
-class CastSpellRequest extends AbstractDominionRequest
+class CastSpellActionRequest extends AbstractDominionRequest
 {
     /**
      * {@inheritdoc}

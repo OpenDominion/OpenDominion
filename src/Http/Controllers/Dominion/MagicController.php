@@ -10,7 +10,7 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\SpellHelper;
-use OpenDominion\Http\Requests\Dominion\Actions\CastSpellRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\CastSpellActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
@@ -38,7 +38,7 @@ class MagicController extends AbstractDominionController
         ]);
     }
 
-    public function postMagic(CastSpellRequest $request)
+    public function postMagic(CastSpellActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
         $spellActionService = app(SpellActionService::class);
