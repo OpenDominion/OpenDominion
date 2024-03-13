@@ -295,7 +295,6 @@ class DiscordService
             'json' => [
                 'name' => 'Voice Chat',
                 'type' => 2,
-                'topic' => 'Voice channel for Realm ' . $realm->number,
                 'permission_overwrites' => [
                     [
                         'id' => $realm->discord_role_id,
