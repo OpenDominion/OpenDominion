@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\InfoHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\BountyActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\ObserveActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -63,6 +64,25 @@ class BountyController extends AbstractDominionController
             $target = Dominion::findOrFail($target);
             $this->guardLockedDominion($dominion);
             $result = $bountyService->deleteBounty($dominion, $target, $type);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-' . ($result['alert-type'] ?? 'success'), $result['message']);
+        return redirect()->back();
+    }
+
+    public function getToggleObservation(ObserveActionRequest $request, int $target)
+    {
+        $dominion = $this->getSelectedDominion();
+        $bountyService = app(BountyService::class);
+
+        try {
+            $target = Dominion::findOrFail($target);
+            $this->guardLockedDominion($dominion);
+            $result = $bountyService->toggleObservation($dominion, $target);
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

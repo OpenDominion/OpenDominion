@@ -1,5 +1,5 @@
 @if ($bounties->has($opType))
-    @if ($bounties->get($opType)->source_dominion_id == $selectedDominion->id)
+    @if ($bounties->get($opType)->source_dominion_id == $selectedDominion->id || $selectedDominion->isMonarch() || $selectedDominion->isSpymaster())
         <a href="{{ route('dominion.bounty-board.delete', [$dominion->id, $opType]) }}" data-toggle="tooltip" title="Cancel Bounty">
             <i class="fa fa-star text-yellow" style="margin-right: 10px;"></i>
         </a>

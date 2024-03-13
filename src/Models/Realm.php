@@ -20,6 +20,7 @@ use OpenDominion\Services\Realm\HistoryService;
  * @property int $number
  * @property string|null $name
  * @property int $rating
+ * @property array|null $settings
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
@@ -46,6 +47,10 @@ use OpenDominion\Services\Realm\HistoryService;
  */
 class Realm extends AbstractModel
 {
+    protected $casts = [
+        'settings' => 'array',
+    ];
+
     public function councilThreads()
     {
         return $this->hasMany(Council\Thread::class);
@@ -173,6 +178,15 @@ class Realm extends AbstractModel
     public function hasWonder(string $wonderKey): bool
     {
         return $this->wonders->keyBy('key')->has($wonderKey);
+    }
+
+    public function getSetting(string $key)
+    {
+        if (!array_has($this->settings, $key)) {
+            return null;
+        }
+
+        return array_get($this->settings, $key);
     }
 
     // todo: move to eloquent events, see $dispatchesEvents

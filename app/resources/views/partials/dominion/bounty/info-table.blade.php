@@ -40,6 +40,21 @@
             @foreach ($bounties as $targetDominion)
                 <tr>
                     <td>
+                        @if ($selectedDominion->isMonarch() || $selectedDominion->isSpymaster())
+                            @if (in_array($targetDominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
+                                <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-toggle="tooltip" title="Cancel Observation">
+                                    <i class="fa fa-eye-slash text-red" style="margin-right: 5px;"></i>
+                                </a>
+                            @else
+                                <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-toggle="tooltip" title="Mark for Observation">
+                                    <i class="fa fa-eye text-aqua" style="margin-right: 5px;"></i>
+                                </a>
+                            @endif
+                        @else
+                            <span data-toggle="tooltip" title="Marked for Observation">
+                                <i class="fa fa-eye" style="margin-right: 5px;"></i>
+                            </span>
+                        @endif
                         <a href="{{ route('dominion.op-center.show', $targetDominion->id) }}">
                             {{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})
                         </a>

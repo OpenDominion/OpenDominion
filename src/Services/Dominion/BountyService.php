@@ -22,6 +22,8 @@ class BountyService
      */
     public function getBounties(Realm $realm)
     {
+        $observeDominionIds = $realm->getSetting('observeDominionIds') ?? [];
+
         $activeBounties = Bounty::active()
             ->with('sourceDominion')
             ->where('source_realm_id', $realm->id)
@@ -39,6 +41,7 @@ class BountyService
                     ->where('source_realm_id', $realm->id)
                     ->where('created_at', '>', now()->subHours(24));
             })
+            ->orWhereIn('id', $observeDominionIds)
             ->get();
 
         $recentInfoOps = InfoOp::query()
@@ -48,12 +51,13 @@ class BountyService
             ->get()
             ->groupBy('target_dominion_id')
             ->map(function ($infoOps) {
-                return $infoOps->keyBy('type');
+                return $infoOps->sortByDesc('created_at')->keyBy('type');
             });
 
         return $recentlyBountied->map(function ($dominion) use ($activeBounties, $recentInfoOps) {
             $dominion->bounties = collect();
             $dominion->info_ops = collect();
+            $dominion->latest_info_at = now()->subDays(24);
             $dominion->active = false;
 
             if (isset($activeBounties[$dominion->id])) {
@@ -61,13 +65,14 @@ class BountyService
             }
             if (isset($recentInfoOps[$dominion->id])) {
                 $dominion->info_ops = $recentInfoOps[$dominion->id];
+                $dominion->latest_info_at = $dominion->info_ops->first()->created_at;
             }
             if (!$dominion->bounties->isEmpty()) {
                 $dominion->active = true;
             }
 
             return $dominion;
-        });
+        })->sortByDesc('latest_info_at');
     }
 
     /**
@@ -152,11 +157,15 @@ class BountyService
      */
     public function deleteBounty(Dominion $dominion, Dominion $target, string $type): array
     {
-        $bountiesDeleted = Bounty::active()
-            ->where('source_dominion_id', $dominion->id)
+        $deleteBounties = Bounty::active()
             ->where('target_dominion_id', $target->id)
-            ->where('type', $type)
-            ->delete();
+            ->where('type', $type);
+
+        if (!($dominion->isMonarch() || $dominion->isSpymaster())) {
+            $deleteBounties = $deleteBounties->where('source_dominion_id', $dominion->id);
+        }
+
+        $bountiesDeleted = $deleteBounties->delete();
 
         if ($bountiesDeleted) {
             return [
@@ -185,14 +194,32 @@ class BountyService
 
         $activeBounties = Bounty::active()
             ->where('source_realm_id', $dominion->realm_id)
-            ->where('source_dominion_id', '!=', $dominion->id)
             ->where('target_dominion_id', $target->id)
             ->where('type', $type)
             ->get()
             ->keyBy('id');
 
-        if (!$activeBounties->isEmpty()) {
-            $activeBounty = $activeBounties->first();
+        $observeDominionIds = $dominion->realm->getSetting('observeDominionIds') ?? [];
+        $isMarked = in_array($target->id, $observeDominionIds);
+
+        $activeBounty = $activeBounties->first();
+        // Create placeholder bounty
+        if ($activeBounty == null && $isMarked) {
+            $activeBounty = new Bounty([
+                'round_id' => $dominion->round_id,
+                'source_realm_id' => $dominion->realm->id,
+                'source_dominion_id' => $dominion->id,
+                'target_dominion_id' => $target->id,
+                'type' => $type
+            ]);
+        }
+
+        if ($activeBounty !== null) {
+            // Delete when collecting own bounty
+            if (!$isMarked && ($activeBounty->source_dominion_id == $dominion->id)) {
+                $activeBounty->delete();
+                return $bountyRewards;
+            }
 
             // Delete any duplicates
             $activeBounties->forget($activeBounty->id);
@@ -220,17 +247,69 @@ class BountyService
                             'xp' => 2
                         ];
                     }
+                    if ($activeBounty->id == null) {
+                        $activeBounty->save();
+                    }
                 }
             }
 
             // Set collected by
-            $activeBounty->update([
-                'collected_by_dominion_id' => $dominion->id,
-                'reward' => !empty($bountyRewards)
-            ]);
-            $dominion->stat_bounties_collected += 1;
+            if ($activeBounty->id !== null) {
+                $activeBounty->update([
+                    'collected_by_dominion_id' => $dominion->id,
+                    'reward' => !empty($bountyRewards)
+                ]);
+                $dominion->stat_bounties_collected += 1;
+            }
         }
 
         return $bountyRewards;
+    }
+
+    /**
+     * Toggle realm observation for a dominion
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @return array
+     */
+    public function toggleObservation(Dominion $dominion, Dominion $target)
+    {
+        if (!$dominion->round->hasStarted()) {
+            throw new GameException('You cannot observe dominions before the round has started.');
+        }
+
+        if ($dominion->realm_id == $target->realm_id) {
+            throw new GameException('You cannot observe dominions in your own realm.');
+        }
+
+        if (!($dominion->isMonarch() || $dominion->isSpymaster())) {
+            throw new GameException('Only the monarch or spymaster can mark dominions for observation.');
+        }
+
+        $realm = $dominion->realm;
+        $settings = ($realm->settings ?? []);
+        $dominionIds = $realm->getSetting('observeDominionIds') ?? [];
+        if (in_array($target->id, $dominionIds)) {
+            array_splice($dominionIds, array_search($target->id, $dominionIds), 1);
+            $result = [
+                'message' => 'Target removed from observation.',
+                'alert-type' => 'success'
+            ];
+        } else {
+            if (count($dominionIds) >= 10) {
+                throw new GameException('Only 10 dominions can be marked for observation at a time.');
+            }
+            $dominionIds[] = $target->id;
+            $result = [
+                'message' => 'Target marked for observation.',
+                'alert-type' => 'success'
+            ];
+        }
+        $settings['observeDominionIds'] = $dominionIds;
+        $realm->settings = $settings;
+        $realm->save();
+
+        return $result;
     }
 }

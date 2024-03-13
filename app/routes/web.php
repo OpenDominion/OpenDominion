@@ -215,6 +215,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Bounty Board
             $router->get('bounty-board')->uses('Dominion\BountyController@getBountyBoard')->name('bounty-board');
+            $router->get('bounty-board/observe/{target}')->uses('Dominion\BountyController@getToggleObservation')->name('bounty-board.observe');
             $router->get('bounty-board/{target}/{type}')->uses('Dominion\BountyController@getCreateBounty')->name('bounty-board.create');
             $router->get('bounty-board/{target}/{type}/delete')->uses('Dominion\BountyController@getDeleteBounty')->name('bounty-board.delete');
 

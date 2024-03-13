@@ -104,6 +104,7 @@ class HistoryService
                 'jester_dominion_id',
                 'alignment',
                 'number',
+                'settings',
                 'created_at',
                 'updated_at',
             ])->keys()->toArray();
