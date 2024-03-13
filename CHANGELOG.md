@@ -35,6 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - The blank space in the header no longer links to the homepage
 - Joining the realm Discord for the first time no longer throws an error
+- Automations scheduled prior to round start will now run on the correct hour
 
 ## [1.38.4] - 2024-02-02
 ### Added

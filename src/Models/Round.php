@@ -365,7 +365,7 @@ class Round extends AbstractModel
     public function getTick()
     {
         if (!$this->hasStarted()) {
-            return 1;
+            return 0;
         }
         return (24 * ($this->daysInRound() - 1)) + ($this->hoursInDay() - 1);
     }
