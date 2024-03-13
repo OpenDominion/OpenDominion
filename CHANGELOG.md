@@ -5,11 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
-- Spymaster
-  - New role in the Royal Court
-  - Can post recurring bounties
-  - Can post black op bounties
-- Current temple percentage to the military calculator
+- New Government Role: Spymaster
+  - Can cancel any bounty
+  - Can mark up to 10 dominions for observation
+  - Dominions under observation provide bounty rewards for any stale info op
+- Current temple percentage now shown on the military calculator
 - Automated action to set draft rate
 
 ### Changed
@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - The blank space in the header no longer links to the homepage
+- Joining the realm Discord for the first time no longer throws an error
 
 ## [1.38.4] - 2024-02-02
 ### Added
