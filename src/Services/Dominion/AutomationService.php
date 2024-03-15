@@ -117,6 +117,7 @@ class AutomationService
                                 }
                                 $dominion->daily_platinum = false;
                                 $dominion->daily_land = false;
+                                $dominion->daily_actions = static::DAILY_ACTIONS;
                             }
                             $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
 
