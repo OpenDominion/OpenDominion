@@ -92,7 +92,7 @@ class HistoryService
     protected function getChangedAttributeKeys(Realm $realm): array
     {
         return collect($realm->getAttributes())
-            ->diffAssoc(collect($realm->getOriginal()))
+            ->diffAssoc(collect($realm->getOriginal())->except(['settings']))
             ->except([
                 'id',
                 'round_id',

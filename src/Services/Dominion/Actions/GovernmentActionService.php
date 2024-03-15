@@ -119,7 +119,7 @@ class GovernmentActionService
      *
      * @param Dominion $dominion
      * @param Dominion $appointee
-     * @param string $roles
+     * @param string $role
      * @throws GameException
      * @throws RuntimeException
      */
