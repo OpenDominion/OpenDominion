@@ -390,6 +390,7 @@
 }
 
 .skin-classic a,
+.skin-classic .main-header a,
 .skin-classic .alert-link {
     color: #d5e3e6;
 }
