@@ -239,6 +239,21 @@
                                         title="Espionage" data-toggle="tooltip">
                                         <i class="fa fa-user-secret"></i>
                                     </a>
+                                    @if ($selectedDominion->isMonarch() || $selectedDominion->isSpymaster())
+                                        @if (in_array($dominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
+                                            <a href="{{ route('dominion.bounty-board.observe', $dominion->id) }}"
+                                                class="btn btn-danger" style="font-size: 20px; padding: 3px 6px 0px;"
+                                                title="Cancel Observation" data-toggle="tooltip">
+                                                <i class="fa fa-eye-slash"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('dominion.bounty-board.observe', $dominion->id) }}"
+                                              class="btn btn-info" style="font-size: 20px; padding: 3px 6px 0px;"
+                                              title="Mark for Observation" data-toggle="tooltip">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        @endif
+                                    @endif
                                 </div>
                             @endif
                         </div>
