@@ -11,7 +11,7 @@ use OpenDominion\Models\Realm;
 
 class BountyService
 {
-    public const DAILY_LIMIT = 12;
+    public const DAILY_LIMIT = 8;
     public const REWARD_RESOURCE = 'resource_tech';
     public const REWARD_AMOUNT = 10;
 

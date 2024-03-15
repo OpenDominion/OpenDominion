@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Arcane Ward and Illumination mana costs reduced to 1.5x (from 3x)
 - Friendly spells now cost 3% wizard strength to cast (was 4%)
 - Friendly spells are no longer prevented due to guard status (40%-250% still applies)
+- Bounty rewards are now limited to 8 per day (was 12)
 
 ### Fixed
 - The blank space in the header no longer links to the homepage
