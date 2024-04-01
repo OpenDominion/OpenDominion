@@ -437,40 +437,36 @@
                         @else
                             @slot('noPadding', true)
 
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
-                                    <table class="table">
-                                        <colgroup>
-                                            <col>
-                                            <col>
-                                        </colgroup>
-                                        <tbody>
-                                            @foreach ($infoOp->data as $hero)
-                                                <tr>
-                                                    <td class="text-right">Name</td>
-                                                    <td class="text-left">{{ $hero['name'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-right">Class</td>
-                                                    <td class="text-left">{{ ucwords($hero['class']) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-right">Level</td>
-                                                    <td class="text-left">{{ $hero['level'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-right">Experience</td>
-                                                    <td class="text-left">{{ $hero['experience'] }} / {{ $hero['next_level_xp'] }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-right">{{ ucwords(str_replace('_', ' ', $heroHelper->getTradePerkType($hero['class']))) }}</td>
-                                                    <td class="text-left">{{ number_format($hero['bonus'], 4) }}%</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            <table class="table">
+                                <colgroup>
+                                    <col width="25%">
+                                    <col width="75%">
+                                </colgroup>
+                                <tbody>
+                                    @foreach ($infoOp->data as $hero)
+                                        <tr>
+                                            <td class="text-right">Name</td>
+                                            <td class="text-left">{{ $hero['name'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Class</td>
+                                            <td class="text-left">{{ ucwords($hero['class']) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Level</td>
+                                            <td class="text-left">{{ $hero['level'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Experience</td>
+                                            <td class="text-left">{{ $hero['experience'] }} / {{ $hero['next_level_xp'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">{{ ucwords(str_replace('_', ' ', $heroHelper->getTradePerkType($hero['class']))) }}</td>
+                                            <td class="text-left">{{ number_format($hero['bonus'], 4) }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         @endif
 
                         @slot('boxFooter')
