@@ -15,13 +15,13 @@ use OpenDominion\Models\Wonder;
 
 class GameEventService
 {
-    public function getTownCrier(Dominion $dominion, Realm $realm = null): array
+    public function getTownCrier(Dominion $dominion, Realm $realm = null, string $type = 'all'): array
     {
         if ($realm === null) {
-            return $this->getGameEventsforRound($dominion, now());
+            return $this->getGameEventsforRound($dominion, now(), $type);
         }
 
-        return $this->getGameEventsForRealm($realm, now());
+        return $this->getGameEventsForRealm($realm, now(), $type);
     }
 
     public function getGameEventsForDominion(Dominion $dominion): Collection
@@ -64,7 +64,7 @@ class GameEventService
         return $this->getGameEventsForRealm($realm, $clairvoyanceCreatedAt);
     }
 
-    private function getGameEventsForRealm(Realm $realm, Carbon $createdBefore): array
+    private function getGameEventsForRealm(Realm $realm, Carbon $createdBefore, string $type = 'all'): array
     {
         $dominionIds = $realm->dominions
             ->pluck('id')
@@ -109,6 +109,15 @@ class GameEventService
             })
             ->where('round_id', $realm->round->id)
             ->where('created_at', '<', $createdBefore)
+            ->where(function ($query) use ($type) {
+                if ($type == 'invasions') {
+                    $query->whereIn('type', ['invasion']);
+                } elseif ($type == 'wars') {
+                    $query->whereIn('type', ['war_declared', 'war_canceled']);
+                } elseif ($type == 'wonders') {
+                    $query->whereIn('type', ['wonder_attacked', 'wonder_destroyed', 'wonder_spawned']);
+                }
+            })
             ->orderBy('created_at', 'desc')
             ->orderBy('type', 'desc')
             ->paginate(100);
@@ -119,7 +128,7 @@ class GameEventService
         ];
     }
 
-    private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore): array
+    private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore, string $type = 'all'): array
     {
         $dominionIds = $dominion->realm->dominions
             ->pluck('id')
@@ -141,6 +150,15 @@ class GameEventService
             }])
             ->where('round_id', $dominion->round_id)
             ->where('created_at', '<', $createdBefore)
+            ->where(function ($query) use ($type) {
+                if ($type == 'invasions') {
+                    $query->whereIn('type', ['invasion']);
+                } elseif ($type == 'wars') {
+                    $query->whereIn('type', ['war_declared', 'war_canceled']);
+                } elseif ($type == 'wonders') {
+                    $query->whereIn('type', ['wonder_attacked', 'wonder_destroyed', 'wonder_spawned']);
+                }
+            })
             ->orderBy('created_at', 'desc')
             ->orderBy('type', 'desc')
             ->paginate(100);

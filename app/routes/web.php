@@ -239,11 +239,11 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
 
             // Realm
-            $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->name('realm');
+            $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->where('realmNumber', '[0-9]+')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
             // Town Crier
-            $router->get('town-crier/{realmNumber?}')->uses('Dominion\TownCrierController@getIndex')->name('town-crier');
+            $router->get('town-crier/{realmNumber?}')->uses('Dominion\TownCrierController@getIndex')->where('realmNumber', '[0-9]+')->name('town-crier');
 
             // Misc
             $router->get('misc/abandon')->uses('Dominion\MiscController@getAbandonDominion')->name('misc.abandon');

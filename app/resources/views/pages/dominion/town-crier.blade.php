@@ -25,7 +25,7 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-striped">
                             <colgroup>
-                                <col width="140">
+                                <col width="150">
                                 <col>
                                 <col width="50">
                             </colgroup>
@@ -231,6 +231,18 @@
                                     #{{ $i }} {{ $selectedDominion->realm->number == $i ? '(My Realm)' : null }}
                                 </option>
                             @endfor
+                            <option value="wars">Wars</option>
+                            <option value="wonders">Wonders</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="realm-select">Event Types:</label>
+                        <select id="event-select" class="form-control">
+                            @foreach ($typeChoices as $typeChoice)
+                                <option value="{{ $typeChoice }}" {{ $type == $typeChoice ? 'selected' : null }}>
+                                    {{ ucwords($typeChoice) }}
+                                </option>
+                            @endforeach
                         </select>
                     </p>
                     @endif
@@ -245,8 +257,21 @@
     <script type="text/javascript">
         (function ($) {
             $('#realm-select').change(function() {
+                url = "";
+
                 var selectedRealm = $(this).val();
-                window.location.href = "{!! route('dominion.town-crier') !!}/" + selectedRealm;
+                if (selectedRealm) {
+                    url = selectedRealm + "/";
+                }
+                var selectedType = $('#event-select').val();
+                if (selectedType) {
+                    url += "?type=" + selectedType;
+                }
+                window.location.href = "{!! route('dominion.town-crier') !!}/" + url;
+            });
+            $('#event-select').change(function() {
+                var selectedType = $(this).val();
+                window.location.href = "{!! route('dominion.town-crier', $realm->number ?? null) !!}/?type=" + selectedType;
             });
         })(jQuery);
     </script>

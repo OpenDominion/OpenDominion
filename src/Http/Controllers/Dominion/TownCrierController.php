@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use DB;
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -10,8 +11,14 @@ use OpenDominion\Services\GameEventService;
 
 class TownCrierController extends AbstractDominionController
 {
-    public function getIndex(int $realmNumber = null)
+    public function getIndex(Request $request, int $realmNumber = null)
     {
+        $type = $request->input('type');
+        $typeChoices = ['all', 'invasions', 'wars', 'wonders'];
+        if (!in_array($type, $typeChoices)) {
+            $type = 'all';
+        }
+
         $gameEventService = app(GameEventService::class);
 
         $dominion = $this->getSelectedDominion();
@@ -26,7 +33,7 @@ class TownCrierController extends AbstractDominionController
             $realm = null;
         }
 
-        $townCrierData = $gameEventService->getTownCrier($dominion, $realm);
+        $townCrierData = $gameEventService->getTownCrier($dominion, $realm, $type);
 
         $latestEventTime = $townCrierData['gameEvents']->max('created_at');
         if ($latestEventTime !== null && $latestEventTime > $dominion->town_crier_last_seen) {
@@ -44,7 +51,9 @@ class TownCrierController extends AbstractDominionController
             'gameEvents',
             'realm',
             'realmCount',
-            'rangeCalculator'
+            'rangeCalculator',
+            'type',
+            'typeChoices'
         ))->with('fromOpCenter', false);
     }
 
