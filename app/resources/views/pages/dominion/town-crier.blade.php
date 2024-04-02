@@ -231,8 +231,6 @@
                                     #{{ $i }} {{ $selectedDominion->realm->number == $i ? '(My Realm)' : null }}
                                 </option>
                             @endfor
-                            <option value="wars">Wars</option>
-                            <option value="wonders">Wonders</option>
                         </select>
                     </p>
                     <p>
