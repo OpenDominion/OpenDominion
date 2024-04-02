@@ -833,7 +833,7 @@
                                     $sourceTextColor = 'text-light-blue';
                                     if ($invasionEvent->source->realm_id == $selectedDominion->realm_id) {
                                         $sourceTextColor = 'text-green';
-                                    } else if ($invasionEvent->target->realm_id == $selectedDominion->realm_id) {
+                                    } elseif ($invasionEvent->target->realm_id == $selectedDominion->realm_id) {
                                         $sourceTextColor = 'text-red';
                                     }
                                 @endphp

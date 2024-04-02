@@ -16,7 +16,6 @@
 @section('content')
     @include('partials.dominion.advisor-selector')
     <div class="row">
-
         <div class="col-md-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -53,7 +52,6 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            {{-- todo: self-cast magic system --}}
                         </tbody>
                     </table>
                 </div>
@@ -70,7 +68,49 @@
                 </div>
             </div>
         </div>
-
     </div>
 
+    @if ($selectedDominion->id === $target->id)
+        <div class="row">
+            <div class="col-md-12 col-md-9">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="ra ra-lightning-trio"></i> Spells affecting other dominions</h3>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <colgroup>
+                                <col width="150">
+                                <col>
+                                <col width="100">
+                                <col width="200">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Spell</th>
+                                    <th>Effect</th>
+                                    <th class="text-center">Duration</th>
+                                    <th class="text-center">Target</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($spellCalculator->getActiveHostileSpells($target) as $hostileSpell)
+                                    <tr>
+                                        <td>{{ $hostileSpell->spell->name }}</td>
+                                        <td>{{ $spellHelper->getSpellDescription($hostileSpell->spell) }}</td>
+                                        <td class="text-center">{{ $hostileSpell->duration }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ route('dominion.op-center.show', $hostileSpell->dominion->id) }}">
+                                                {{ $hostileSpell->dominion->name }} (#{{ $hostileSpell->dominion->realm->number }})
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection

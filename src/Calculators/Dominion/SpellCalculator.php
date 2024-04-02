@@ -110,7 +110,7 @@ class SpellCalculator
      *
      * @param Dominion $dominion
      * @param string $spell
-     * @return bool
+     * @return int
      */
     public function getSpellCooldown(Dominion $dominion, Spell $spell): int
     {
@@ -138,11 +138,32 @@ class SpellCalculator
      * Returns all active spells for a dominion.
      *
      * @param Dominion $dominion
-     * @return bool
+     * @return Collection
      */
     public function getActiveSpells(Dominion $dominion): Collection
     {
-        return DominionSpell::with(['castByDominion', 'spell'])->where('dominion_id', $dominion->id)->where('duration', '>', 0)->get();
+        return DominionSpell::with(['castByDominion', 'spell'])
+            ->where('dominion_id', $dominion->id)
+            ->where('duration', '>', 0)
+            ->orderByDesc('duration')
+            ->get();
+    }
+
+    /**
+     * Returns all active hostile spells cast by a dominion.
+     *
+     * @param Dominion $dominion
+     * @return Collection
+     */
+    public function getActiveHostileSpells(Dominion $dominion): Collection
+    {
+        return DominionSpell::with(['dominion', 'spell'])
+            ->where('dominion_id', '!=', $dominion->id)
+            ->where('cast_by_dominion_id', $dominion->id)
+            ->where('duration', '>', 0)
+            ->orderByDesc('duration')
+            ->get()
+            ->where('spell.category', '!=', 'effect');
     }
 
     /**

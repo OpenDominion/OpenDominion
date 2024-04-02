@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Added
 - Town Crier can now be filtered by event types
+- Active spells are now shown on the magic page
+- Spells cast on other players are now shown on the Magic Advisor page
 
 ## [1.39.0] - 2024-03-15
 ### Added
