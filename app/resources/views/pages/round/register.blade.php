@@ -41,7 +41,7 @@
                                 </div>
                                 @php($i = 0)
                                 @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'good'; }) as $race)
-                                    @if($i % 2 == 0)
+                                    @if ($i % 2 == 0)
                                         <div class="row">
                                     @endif
                                             <div class="col-md-6">
@@ -87,7 +87,7 @@
                                                     </div>
                                                 </label>
                                             </div>
-                                    @if($i % 2)
+                                    @if ($i % 2)
                                         </div>
                                     @endif
                                     @php($i++)
@@ -101,7 +101,7 @@
                                 </div>
                                 @php($i = 0)
                                 @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; }) as $race)
-                                    @if($i % 2 == 0)
+                                    @if ($i % 2 == 0)
                                         <div class="row">
                                     @endif
                                             <div class="col-md-6">
@@ -147,7 +147,7 @@
                                                     </div>
                                                 </label>
                                             </div>
-                                            @if($i % 2)
+                                            @if ($i % 2)
                                         </div>
                                     @endif
                                     @php($i++)

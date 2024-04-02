@@ -17,7 +17,7 @@
     </span>
     @if ($selectedDominion && !$selectedDominion->round->hasEnded())
         <span class="badge">
-            @if($secondsUntilStart > 0)
+            @if ($secondsUntilStart > 0)
                 Round: <span id="ticker-next-round" data-value="{{ $roundStart->format('Y-m-d H:i:s T') }}">00:00:00</span>
             @else
                 Tick: <span id="ticker-next-tick">00:00:00</span>

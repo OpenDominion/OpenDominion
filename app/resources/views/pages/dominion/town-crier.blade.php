@@ -35,7 +35,7 @@
                                     $firstLoop = true;
                                 @endphp
                                 @foreach ($gameEvents as $gameEvent)
-                                    @if($previousDate != $gameEvent->created_at->startOfDay())
+                                    @if ($previousDate != $gameEvent->created_at->startOfDay())
                                         <tr>
                                             <td colspan="3" class="text-center text-bold border-left border-right">
                                                 News from {{ $gameEvent->created_at->toDateString() }}

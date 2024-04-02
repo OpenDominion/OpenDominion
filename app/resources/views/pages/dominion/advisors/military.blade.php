@@ -3,7 +3,7 @@
 @php
     $target = $selectedDominion;
     $pageHeader = 'Military Advisor';
-    if($targetDominion != null) {
+    if ($targetDominion != null) {
         $target = $targetDominion;
         $pageHeader .= ' for '.$target->name;
     }

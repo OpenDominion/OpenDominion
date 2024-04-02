@@ -51,7 +51,7 @@
                     </td>
                 @endfor
                 <td class="text-center">
-                    @if(array_has($data, "units.home.{$unitType}"))
+                    @if (array_has($data, "units.home.{$unitType}"))
                         @php
                             $unitsAtHome = (int)array_get($data, "units.home.{$unitType}");
                         @endphp

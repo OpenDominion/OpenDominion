@@ -45,7 +45,7 @@
                                         {{ $buildingHelper->getBuildingName($buildingType) }}
                                     </td>
                                     <td>
-                                        @if($landType !== NULL)
+                                        @if ($landType !== NULL)
                                             {!! $landHelper->getLandTypeIconHtml($landType) !!} {{ ucfirst($landType) }}
                                         @else
                                             Race dependant

@@ -68,7 +68,7 @@
                                         @if ($tech->prerequisites)
                                             @foreach ($tech->prerequisites as $prereq)
                                                 @if (isset($techs[$prereq]))
-                                                    {{ $techs[$prereq]->name }}@if(!$loop->last),<br/>@endif
+                                                    {{ $techs[$prereq]->name }}@if (!$loop->last),<br/>@endif
                                                 @endif
                                             @endforeach
                                         @else

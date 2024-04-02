@@ -167,7 +167,7 @@
                                         {{ $dominion->ruler_name }} of <strong>{{ $dominion->name }}</strong>
                                     @endif
 
-                                    @if($dominion->ruler_name !== $dominion->user->display_name)
+                                    @if ($dominion->ruler_name !== $dominion->user->display_name)
                                         ({{ $dominion->user->display_name }})
                                     @endif
                                 </li>

@@ -4,7 +4,7 @@
     $target = $selectedDominion;
     $pageHeader = 'Magic Advisor';
     $boxTitle = 'Spells affecting your dominion';
-    if($targetDominion != null) {
+    if ($targetDominion != null) {
         $target = $targetDominion;
         $pageHeader .= ' for '.$target->name;
         $boxTitle = 'Spells affecting '.$target->name;

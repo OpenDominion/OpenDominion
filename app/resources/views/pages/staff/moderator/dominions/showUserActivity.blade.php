@@ -90,7 +90,7 @@
             $('#dominion-select').select2({ width: '225px' }).change(function() {
                 var selectedDominion = $(this).val();
 
-                if(selectedDominion) {
+                if (selectedDominion) {
                     window.location.href = "{!! route('staff.moderator.dominion.activity', [$dominion->id]) !!}/?dominion=" + selectedDominion;
                 }
                 else {

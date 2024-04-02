@@ -394,7 +394,7 @@
                 $.get(
                     "{{ route('api.dominion.invasion') }}?" + $('#invade_form').serialize(), {},
                     function(response) {
-                        if(response.result == 'success') {
+                        if (response.result == 'success') {
                             $.each(response.units, function(slot, stats) {
                                 // Update unit stats data attributes
                                 $('#unit\\['+slot+'\\]').data('dp', stats.dp);

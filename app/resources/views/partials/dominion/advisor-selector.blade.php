@@ -1,7 +1,7 @@
 @php
     $title = 'Consult advisor';
     $baseRoute = 'dominion.advisors.';
-    if($targetDominion != null) {
+    if ($targetDominion != null) {
         $baseRoute = 'dominion.realm.advisors.';
         $title .= ' for '.$targetDominion->name;
     }

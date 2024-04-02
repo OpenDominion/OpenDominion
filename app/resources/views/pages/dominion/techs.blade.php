@@ -81,7 +81,7 @@
                             @foreach ($techs as $tech)
                                 <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }}{{ in_array($tech->key, $unlockedTechs) ? ' text-green' : null }} {{ empty($tech->prerequisites) && !in_array($tech->key, $unlockedTechs) ? 'active' : null }}">
                                     <td class="text-center">
-                                        @if(in_array($tech->key, $unlockedTechs))
+                                        @if (in_array($tech->key, $unlockedTechs))
                                             <i class="fa fa-check"></i>
                                         @else
                                             <input type="radio" name="key" id="tech_{{ $tech->key }}" value="{{ $tech->key }}" {{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? null : 'disabled' }}>
@@ -100,7 +100,7 @@
                                     <td>
                                         @if ($tech->prerequisites)
                                             @foreach ($tech->prerequisites as $key)
-                                                {{ $techs[$key]->name }}@if(!$loop->last),<br/>@endif
+                                                {{ $techs[$key]->name }}@if (!$loop->last),<br/>@endif
                                             @endforeach
                                         @else
                                             -

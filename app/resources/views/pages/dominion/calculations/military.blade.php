@@ -1000,7 +1000,7 @@
                 $.get(
                     "{{ route('api.calculator.defense') }}?" + $('#calculate-defense-form').serialize(), {},
                     function(response) {
-                        if(response.result == 'success') {
+                        if (response.result == 'success') {
                             $.each(response.units, function(slot, stats) {
                                 // Update unit stats display
                                 $('#defense .unit'+slot+'_stats span.dp').text(stats.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
@@ -1085,7 +1085,7 @@
                 $.get(
                     "{{ route('api.calculator.offense') }}?" + $('#calculate-offense-form').serialize(), {},
                     function(response) {
-                        if(response.result == 'success') {
+                        if (response.result == 'success') {
                             $.each(response.units, function(slot, stats) {
                                 // Update unit stats display
                                 $('#offense .unit'+slot+'_stats span.op').text(stats.op.toLocaleString(undefined, {maximumFractionDigits: 2}));

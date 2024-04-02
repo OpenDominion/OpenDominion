@@ -23,7 +23,7 @@
                     <td>Land:</td>
                     <td>
                         {{ number_format($data['land']) }}
-                        @if(isset($range) && isset($rangeClass))
+                        @if (isset($range) && isset($rangeClass))
                             <span class="{{ $rangeClass }}">
                                 ({{ round($range, 2) }}%)
                             </span>

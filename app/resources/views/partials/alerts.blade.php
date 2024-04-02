@@ -13,7 +13,7 @@
     @elseif (now()->diffInHours($selectedDominion->round->end_date) < 24)
         <div class="alert alert-warning">
             <p><i class="icon fa fa-warning"></i> The round will end in {{ now()->longAbsoluteDiffForHumans($selectedDominion->round->end_date, 2) }}.
-                @if($selectedDominion->round->offensiveActionsAreEnabledButCanBeDisabled())
+                @if ($selectedDominion->round->offensiveActionsAreEnabledButCanBeDisabled())
                     Offensive actions can be disabled at any time.
                 @elseif ($selectedDominion->round->hasOffensiveActionsDisabled())
                     Offensive actions have been disabled.

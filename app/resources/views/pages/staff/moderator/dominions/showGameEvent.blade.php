@@ -43,7 +43,7 @@
                         $markedOlderOps = false;
                     @endphp
                     @foreach ($infoOps as $infoOp)
-                        @if(!$markedOlderOps && $infoOp->created_at < $lastDay)
+                        @if (!$markedOlderOps && $infoOp->created_at < $lastDay)
                         @php
                             $markedOlderOps = true;
                         @endphp
@@ -85,7 +85,7 @@
             $('#realm-select').select2({ width: '225px' }).change(function() {
                 var selectedRound = $(this).val();
 
-                if(selectedRound) {
+                if (selectedRound) {
                     window.location.href = "{!! route('staff.moderator.dominion.event', [$dominion->id, $gameEvent->id]) !!}/?realm=" + selectedRound;
                 }
                 else {

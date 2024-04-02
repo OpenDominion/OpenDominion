@@ -5,7 +5,7 @@
 @php
 
     use Carbon\Carbon;
-    if(!isset($inRealm)) {
+    if (!isset($inRealm)) {
         $inRealm = false;
         $targetDominion = null;
     }
@@ -32,7 +32,7 @@
 
     $now = Carbon::now();
 
-    if($latestClearSight != null) {
+    if ($latestClearSight != null) {
         $infoOps['status'] = $latestClearSight->data;
         $infoOps['status']['race_name'] = $dominion->race->name;
         $infoOps['status']['created_at'] = isset($latestClearSight->created_at) ? $latestClearSight->created_at : $now;
@@ -41,38 +41,38 @@
         unset($infoOps['status']['race_id']);
     }
 
-    if($latestRevelation != null) {
+    if ($latestRevelation != null) {
         $infoOps['revelation'] = [];
         $infoOps['revelation']['spells'] = $latestRevelation->data;
         $infoOps['revelation']['created_at'] = isset($latestRevelation->created_at) ? $latestRevelation->created_at : $now;
     }
 
-    if($latestCastle != null) {
+    if ($latestCastle != null) {
         $infoOps['castle'] = $latestCastle->data;
         $infoOps['castle']['created_at'] = isset($latestCastle->created_at) ? $latestCastle->created_at : $now;
     }
 
-    if($latestBarracks != null) {
+    if ($latestBarracks != null) {
         $infoOps['barracks'] = $latestBarracks->data;
         $infoOps['barracks']['created_at'] = isset($latestBarracks->created_at) ? $latestBarracks->created_at : $now;
     }
 
-    if($latestSurvey != null) {
+    if ($latestSurvey != null) {
         $infoOps['survey'] = $latestSurvey->data;
         $infoOps['survey']['created_at'] = isset($latestSurvey->created_at) ? $latestSurvey->created_at : $now;
     }
 
-    if($latestLand != null) {
+    if ($latestLand != null) {
         $infoOps['land'] = $latestLand->data;
         $infoOps['land']['created_at'] = isset($latestLand->created_at) ? $latestLand->created_at : $now;
     }
 
-    if($latestVision != null) {
+    if ($latestVision != null) {
         $infoOps['vision'] = $latestVision->data;
         $infoOps['vision']['created_at'] = isset($latestVision->created_at) ? $latestVision->created_at : $now;
     }
 
-    if($latestDisclosure != null) {
+    if ($latestDisclosure != null) {
         $infoOps['disclosure'] = $latestDisclosure->data;
         $infoOps['disclosure']['created_at'] = isset($latestDisclosure->created_at) ? $latestDisclosure->created_at : $now;
     }
@@ -82,7 +82,7 @@
 @endphp
 
 @section('content')
-    @if($inRealm)
+    @if ($inRealm)
         @include('partials.dominion.advisor-selector')
     @endif
     <div class="row">
@@ -125,7 +125,7 @@
                     @endif
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestClearSight !== null)
@@ -171,7 +171,7 @@
                             <h3 class="box-title">Information</h3>
                         </div>
                         <div class="box-body">
-                            @if(!$inRealm)
+                            @if (!$inRealm)
                                 <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
 
                                 <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
@@ -222,7 +222,7 @@
                                 </tbody>
                             </table>
 
-                            @if(!$inRealm)
+                            @if (!$inRealm)
                                 <div class="text-center">
                                     <a href="{{ route('dominion.invade') }}?dominion={{ $dominion->id }}"
                                         class="btn btn-danger" style="font-size: 20px; padding: 3px 6px 0px;"
@@ -333,7 +333,7 @@
                     </table>
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestRevelation !== null)
@@ -387,7 +387,7 @@
                     @include('partials.dominion.info.improvements-table', ['data' => $latestCastle->data])
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestCastle !== null)
@@ -444,7 +444,7 @@
                     @include('partials.dominion.info.military-training-table', ['data' => $latestBarracks->data, 'isOp' => true, 'race' => $dominion->race ])
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestBarracks !== null)
@@ -519,7 +519,7 @@
                     @include('partials.dominion.info.construction-constructed-table', ['data' => $latestSurvey->data])
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestSurvey !== null)
@@ -592,7 +592,7 @@
                     @include('partials.dominion.info.land-table', ['data' => $latestLand->data, 'race' => $dominion->race])
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestLand !== null)
@@ -666,7 +666,7 @@
                     @include('partials.dominion.info.techs-table', ['data' => $latestVision->data['techs']])
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestVision !== null)
@@ -769,7 +769,7 @@
                     </table>
                 @endif
 
-                @if(!$inRealm)
+                @if (!$inRealm)
                     @slot('boxFooter')
                         <div class="pull-left">
                             @if ($latestDisclosure !== null)
@@ -831,9 +831,9 @@
                                     $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
 
                                     $sourceTextColor = 'text-light-blue';
-                                    if($invasionEvent->source->realm_id == $selectedDominion->realm_id) {
+                                    if ($invasionEvent->source->realm_id == $selectedDominion->realm_id) {
                                         $sourceTextColor = 'text-green';
-                                    } else if($invasionEvent->target->realm_id == $selectedDominion->realm_id) {
+                                    } else if ($invasionEvent->target->realm_id == $selectedDominion->realm_id) {
                                         $sourceTextColor = 'text-red';
                                     }
                                 @endphp

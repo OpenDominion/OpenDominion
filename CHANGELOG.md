@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Town Crier can now be filtered by event types
 
 ## [1.39.0] - 2024-03-15
 ### Added
