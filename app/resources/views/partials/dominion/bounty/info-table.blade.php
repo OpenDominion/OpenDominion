@@ -50,7 +50,7 @@
                                     <i class="fa fa-eye text-aqua" style="margin-right: 5px;"></i>
                                 </a>
                             @endif
-                        @else
+                        @elseif (in_array($targetDominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
                             <span data-toggle="tooltip" title="Marked for Observation">
                                 <i class="fa fa-eye" style="margin-right: 5px;"></i>
                             </span>
