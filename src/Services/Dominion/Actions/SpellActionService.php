@@ -832,7 +832,7 @@ class SpellActionService
                     }
                     $attrValue = $this->opsCalculator->getImprovementsVulnerable($target, $attr);
                 } else {
-                    $damageReductionMultiplier -= $this->opsCalculator->getDamageReduction($target, 'wizard');
+                    $damageReductionMultiplier += $this->opsCalculator->getDamageReduction($target, 'wizard');
                 }
 
                 // Cap damage reduction at 80%
