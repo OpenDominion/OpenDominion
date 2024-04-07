@@ -137,7 +137,7 @@ class InvadeCalculationService
         if (!isset($calc['wonder'])) {
             $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
         } else {
-            $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->calculationResult['op_multiplier'] * $this->militaryCalculator->getMoraleMultiplier($dominion);
+            $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->calculationResult['op_multiplier'];
         }
 
         $unitsHome = [
