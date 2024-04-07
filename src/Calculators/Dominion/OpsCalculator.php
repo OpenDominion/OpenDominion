@@ -550,7 +550,7 @@ class OpsCalculator
      */
     public function getPeasantsProtected(Dominion $dominion): int
     {
-        $vulnerabilityModifier = $this->getImprovementVulnerablilityModifier($dominion);
+        $vulnerabilityModifier = $this->getPeasantVulnerablilityModifier($dominion);
         $vulnerablePeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
 
         return round($vulnerablePeasants * (1 - $vulnerabilityModifier));
