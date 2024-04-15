@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -70,9 +71,12 @@ class CalculationsController extends AbstractDominionController
         $techs = $request->input('techs');
 
         $buildingHelper = app(BuildingHelper::class);
+        $improvementHelper = app(ImprovementHelper::class);
         $populationCalculator = app(PopulationCalculator::class);
 
+        $selectedDominion = $this->getSelectedDominion();
         $dominion = new Dominion($attrs);
+        $dominion->setRelation('round', $selectedDominion->round);
         $dominion->setRelation('realm', new Realm());
         $dominion->race->load(['units.perks']);
         if ($spells) {
@@ -93,6 +97,9 @@ class CalculationsController extends AbstractDominionController
                 }
             }
         }
+        foreach ($improvementHelper->getImprovementTypes() as $improvementType) {
+            $dominion->stat_total_investment += $dominion->{"improvement_$improvementType"};
+        }
 
         $maxPopulation = $populationCalculator->getMaxPopulation($dominion);
         $militaryPopulation = $populationCalculator->getPopulationMilitary($dominion);
@@ -102,6 +109,7 @@ class CalculationsController extends AbstractDominionController
             'targetDominion' => $dominion,
             'improvementCalculator' => app(ImprovementCalculator::class),
             'landCalculator' => app(LandCalculator::class),
+            'opsCalculator' => app(OpsCalculator::class),
             'populationCalculator' => $populationCalculator,
             'productionCalculator' => app(ProductionCalculator::class),
             'buildingHelper' => $buildingHelper,

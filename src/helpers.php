@@ -195,7 +195,7 @@ if (!function_exists('class_method_display')) {
         $parts = preg_split('/(?=[A-Z])/', str_replace('get', '', $method));
         $label = ucwords(implode(' ', $parts));
         $value = $class->$method($dominion, ...$optionalArgs);
-        if (in_array('Multiplier', $parts)) {
+        if (in_array('Modifier', $parts) || in_array('Multiplier', $parts)) {
             $value = (float) $value * 100;
             $display = number_format($value, 2) . '%';
         } elseif (in_array('Percentage', $parts)) {
