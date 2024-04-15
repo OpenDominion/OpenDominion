@@ -157,7 +157,6 @@ class AdvisorsController extends AbstractDominionController
             'bankingCalculator' => app(BankingCalculator::class),
             'constructionCalculator' => app(ConstructionCalculator::class),
             'explorationCalculator' => app(ExplorationCalculator::class),
-            'heroCalculator' => app(HeroCalculator::class),
             'improvementCalculator' => app(ImprovementCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
@@ -233,6 +232,7 @@ class AdvisorsController extends AbstractDominionController
         }
 
         return view('pages.dominion.advisors.statistics', [
+            'heroCalculator' => app(HeroCalculator::class),
             'landCalculator' => app(LandCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'opsCalculator' => app(OpsCalculator::class),

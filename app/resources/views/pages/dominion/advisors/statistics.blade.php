@@ -574,6 +574,12 @@
                                                     <strong>{{ number_format($target->stat_bounties_collected) }}</strong>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td>Hero XP Gain:</td>
+                                                <td>
+                                                    {!! bonus_display(($heroCalculator->getExperienceMultiplier($target) - 1) * 100) !!}
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

@@ -8,7 +8,7 @@ namespace OpenDominion\Models;
  * @property int $id
  * @property int $unit_id
  * @property int $unit_perk_type_id
- * @property float|null $value
+ * @property string|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\UnitPerkType $type
@@ -21,7 +21,7 @@ namespace OpenDominion\Models;
 class UnitPerk extends AbstractModel
 {
     protected $casts = [
-        'value' => 'float',
+        'value' => 'string',
     ];
 
     public function unit()
