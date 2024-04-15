@@ -118,8 +118,9 @@ class UnitHelper
         // todo: refactor this. very inefficient
         $perkTypeStrings = [
             // Conversions
-            'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$g sent on attack).',
+            'conversion' => 'Converts enemy peasants into %1$s (up to 1 for every %2$g sent on attack).',
             'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$g%%+ of your size.',
+            'upgrade_casualties' => 'Casualties are converted into %1$s (1 for every %2$g killed).',
             'upgrade_survivors' => '%2$g%% of survivors return from battle as %1$s against dominions 75%%+ of your size.',
 
             // OP/DP related
@@ -129,8 +130,8 @@ class UnitHelper
             'defense_from_land' => 'Defense increased by 1 for every %2$g%% %1$ss (max +%3$g).',
             'offense_from_land' => 'Offense increased by 1 for every %2$g%% %1$ss (max +%3$g).',
 
-            'defense_from_pairing' => 'Defense increased by %2$g when paired with %3$g %1$s at home.',
-            'offense_from_pairing' => 'Offense increased by %2$g when paired with %3$g %1$s on attack.',
+            'defense_from_pairing' => 'Defense increased by %3$g when paired with %2$g %1$s at home.',
+            'offense_from_pairing' => 'Offense increased by %3$g when paired with %2$g %1$s on attack.',
 
             'defense_from_prestige' => 'Defense increased by 1 for every %1$g prestige (max +%2$g).',
             'offense_from_prestige' => 'Offense increased by 1 for every %1$g prestige (max +%2$g).',
@@ -166,6 +167,7 @@ class UnitHelper
 
             'immortal' => 'Almost never dies.',
             'immortal_except_vs' => 'Almost never dies, except vs %s.',
+            'immortal_from_pairing' => 'Immortal when paired with %2$g %1$s on attack against dominions 75%%+ of your size.',
             'immortal_vs_land_range' => 'Almost never dies when attacking dominions %g%%+ of your size.',
 
             'kills_immortal' => 'Can kill spirits and the undead.',
@@ -238,22 +240,20 @@ class UnitHelper
                 }
 
                 // Special case for pairings
-                if ($perk->key === 'defense_from_pairing' || $perk->key === 'offense_from_pairing') {
+                if ($perk->key === 'defense_from_pairing' || $perk->key === 'offense_from_pairing' || $perk->key === 'immortal_from_pairing') {
                     $slot = (int)$perkValue[0];
                     $pairedUnit = $race->units->filter(static function ($unit) use ($slot) {
                         return ($unit->slot === $slot);
                     })->first();
 
                     $perkValue[0] = $pairedUnit->name;
-                    if (isset($perkValue[2]) && $perkValue[2] > 1) {
+                    if ($perkValue[1] > 1) {
                         $perkValue[0] = str_plural($perkValue[0]);
-                    } else {
-                        $perkValue[2] = 1;
                     }
                 }
 
                 // Special case for conversions
-                if ($perk->key === 'conversion' || $perk->key === 'upgrade_survivors') {
+                if ($perk->key === 'conversion' || $perk->key === 'upgrade_casualties' || $perk->key === 'upgrade_survivors') {
                     $slot = (int)$perkValue[0];
                     $amount = (int)$perkValue[1];
 

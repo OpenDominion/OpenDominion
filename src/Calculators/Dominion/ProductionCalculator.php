@@ -523,6 +523,9 @@ class ProductionCalculator
         // Improvement: Spires
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires');
 
+        // Spells
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'mana_production') / 100;
+
         return $multiplier;
     }
 

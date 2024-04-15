@@ -159,8 +159,6 @@ class CasualtiesCalculator
 
             $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
 
-            // todo: Troll/Orc unit perks, possibly other perks elsewhere too
-
             // Apply to multiplier (multiplicative)
             $multiplier *= (1 - $unitBonusMultiplier);
         }

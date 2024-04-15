@@ -549,51 +549,37 @@ class InvadeActionService
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
         $offensiveUnitsLost = [];
+        $totalUnitsSent = array_sum($units);
+        $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
+        $unitsNeededToBreakTarget = round($targetDP / $averageOPPerUnitSent);
 
-        if ($isInvasionSuccessful) {
-            $totalUnitsSent = array_sum($units);
+        foreach ($units as $slot => $amount) {
+            $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
+            if ($fixedCasualtiesPerk) {
+                $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
+                $offensiveUnitsLost[$slot] = (int)ceil($amount * $fixedCasualtiesRatio);
+                continue;
+            }
 
-            $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
-            $unitsNeededToBreakTarget = round($targetDP / $averageOPPerUnitSent);
-
-            $totalUnitsLeftToKill = (int)ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage);
-
-            foreach ($units as $slot => $amount) {
+            if ($isInvasionSuccessful) {
                 $slotTotalAmountPercentage = ($amount / $totalUnitsSent);
+                $unitCount = round($unitsNeededToBreakTarget * $slotTotalAmountPercentage);
+            } else {
+                $unitCount = $amount;
+            }
 
-                if ($slotTotalAmountPercentage === 0) {
-                    continue;
-                }
-
-                $unitsToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage * $slotTotalAmountPercentage);
-                $offensiveUnitsLost[$slot] = $unitsToKill;
-
-                if ($totalUnitsLeftToKill < $unitsToKill) {
-                    $unitsToKill = $totalUnitsLeftToKill;
-                }
-
-                $totalUnitsLeftToKill -= $unitsToKill;
-
-                $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if ($fixedCasualtiesPerk) {
-                    $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
-                    $unitsActuallyKilled = (int)ceil($amount * $fixedCasualtiesRatio);
-                    $offensiveUnitsLost[$slot] = $unitsActuallyKilled;
+            $immortalFromPairingPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_from_pairing');
+            if ($immortalFromPairingPerk) {
+                $pairedUnitSlot = $immortalFromPairingPerk[0];
+                $numberRequired = $immortalFromPairingPerk[1];
+                if (isset($units[$pairedUnitSlot]) && $units[$pairedUnitSlot] > 0) {
+                    $pairedUnitCount = $units[$pairedUnitSlot];
+                    $immortalCount = min($pairedUnitCount / $numberRequired, $unitCount);
+                    $unitCount -= $immortalCount;
                 }
             }
-        } else {
-            foreach ($units as $slot => $amount) {
-                $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if ($fixedCasualtiesPerk) {
-                    $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
-                    $unitsToKill = (int)ceil($amount * $fixedCasualtiesRatio);
-                    $offensiveUnitsLost[$slot] = $unitsToKill;
-                    continue;
-                }
 
-                $unitsToKill = (int)ceil($amount * $offensiveCasualtiesPercentage);
-                $offensiveUnitsLost[$slot] = $unitsToKill;
-            }
+            $offensiveUnitsLost[$slot] = (int)ceil($unitCount * $offensiveCasualtiesPercentage);
         }
 
         foreach ($offensiveUnitsLost as $slot => &$amount) {
@@ -997,15 +983,19 @@ class InvadeActionService
             $convertedUnits[$convertingUnit['convertSlot']] += $converts;
         }
 
-        // Special case for Ascendance
+        // Special case for Upgrades
         foreach ($dominion->race->units as $unit) {
-            $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_survivors');
-            if (!$perkValue || $this->invasionResult['result']['range'] < 75 || !array_key_exists($unit->slot, $survivingUnits) || ($survivingUnits[$unit->slot] === 0)) {
-                continue;
+            $casualtiesPerkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_casualties');
+            if ($casualtiesPerkValue && array_key_exists($unit->slot, $units) && $this->invasionResult['attacker']['unitsLost'][$unit->slot] !== 0) {
+                $upgradedUnits = floor($this->invasionResult['attacker']['unitsLost'][$unit->slot] * $casualtiesPerkValue[1] / 100);
+                $convertedUnits[$survivorsPerkValue[0]] += $upgradedUnits;
             }
-            $upgradedUnits = floor($survivingUnits[$unit->slot] * $perkValue[1] / 100);
-            $convertedUnits[$unit->slot] -= $upgradedUnits;
-            $convertedUnits[$perkValue[0]] += $upgradedUnits;
+            $survivorsPerkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_survivors');
+            if ($survivorsPerkValue && $this->invasionResult['result']['range'] >= 75 && array_key_exists($unit->slot, $survivingUnits) && $survivingUnits[$unit->slot] !== 0) {
+                $upgradedUnits = floor($survivingUnits[$unit->slot] * $survivorsPerkValue[1] / 100);
+                $convertedUnits[$unit->slot] -= $upgradedUnits;
+                $convertedUnits[$survivorsPerkValue[0]] += $upgradedUnits;
+            }
         }
 
         if (!isset($this->invasionResult['attacker']['conversion']) && $convertedUnits !== array_fill(1, 4, 0)) {

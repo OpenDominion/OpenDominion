@@ -158,6 +158,7 @@ class SpellHelper
             'vision' => 'Reveal technology',
 
             // Logistics
+            'military_cost_elite' => '%+g%% elite military training cost',
             'population_growth' => '%+g%% population growth',
             'rezone_cost' => '%+g%% rezoning platinum cost',
 
@@ -166,6 +167,7 @@ class SpellHelper
             'food_production' => '%+g%% food production',
             'gem_production' => '%+g%% gem production',
             'lumber_production' => '%+g%% lumber production',
+            'mana_production' => '%+g%% mana production',
             'ore_production' => '%+g%% ore production',
             'platinum_production' => '%+g%% platinum production',
             'platinum_production_raw' => '%+d alchemy platinum production',
