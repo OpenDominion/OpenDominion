@@ -642,10 +642,10 @@ class MilitaryCalculator
         $unitPower += $this->getUnitPowerFromBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromPrestigePerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromSpellPerk($dominion, $landRatio, $unit, $powerType);
 
         if ($landRatio !== null) {
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
-            $unitPower += $this->getUnitPowerFromSpellPerk($dominion, $landRatio, $unit, $powerType);
         }
 
         $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);

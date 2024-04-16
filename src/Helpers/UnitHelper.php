@@ -146,7 +146,7 @@ class UnitHelper
             'defense_vs_wood_elf' => 'Defense increased by %g against wood elves.',
             'offense_vs_wood_elf' => 'Offense increased by %g against wood elves.',
 
-            'offense_from_spell' => 'Offense increased by %2$g (while %1$s is active).',
+            'offense_from_spell' => 'Offense increased by %2$g while %1$s is active.',
             'offense_staggered_land_range' => 'Offense increased by %2$g against dominions %1$g%%+ of your size.',
 
             'offense_raw_wizard_ratio' => 'Offense increased by %1$g * Raw Wizard Ratio (max +%2$g).',

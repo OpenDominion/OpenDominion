@@ -988,7 +988,7 @@ class InvadeActionService
             $casualtiesPerkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_casualties');
             if ($casualtiesPerkValue && array_key_exists($unit->slot, $units) && $this->invasionResult['attacker']['unitsLost'][$unit->slot] !== 0) {
                 $upgradedUnits = floor($this->invasionResult['attacker']['unitsLost'][$unit->slot] * $casualtiesPerkValue[1] / 100);
-                $convertedUnits[$survivorsPerkValue[0]] += $upgradedUnits;
+                $convertedUnits[$casualtiesPerkValue[0]] += $upgradedUnits;
             }
             $survivorsPerkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_survivors');
             if ($survivorsPerkValue && $this->invasionResult['result']['range'] >= 75 && array_key_exists($unit->slot, $survivingUnits) && $survivingUnits[$unit->slot] !== 0) {
