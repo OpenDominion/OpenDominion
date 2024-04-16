@@ -1030,8 +1030,9 @@ class InvadeActionService
             } elseif ($range < 75) {
                 $researchPointsGained = $researchPointsGained / 2;
             } else {
-                $this->queueService->dequeueResource('invasion', $target, 'resource_tech', $researchPointsGained);
-                $this->invasionResult['defender']['researchPoints'] = -$researchPointsGained;
+                $researchPointsLost = max(2.5 * $this->invasionResult['defender']['landLost'], static::TECH_CHANGE_BASE);
+                $this->queueService->dequeueResource('invasion', $target, 'resource_tech', $researchPointsLost);
+                $this->invasionResult['defender']['researchPoints'] = -$researchPointsLost;
             }
 
             $multiplier = 1;
