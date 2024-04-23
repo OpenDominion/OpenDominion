@@ -530,3 +530,14 @@ gaias_shadow:
   perks:
     spy_power: 15
     cancels_gaias_light: 1
+ritual_of_summoning:
+  name: Ritual of Summoning
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - undead-v3
+  perks:
+    mana_production: -20
+    military_cost_elite: -5
