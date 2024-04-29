@@ -6,9 +6,11 @@ use OpenDominion\Models\Tech;
 
 class TechHelper
 {
-    public function getTechs()
+    public const CURRENT_VERSION = 2;
+
+    public function getTechs(int $version = self::CURRENT_VERSION)
     {
-        return Tech::with('perks')->active()->get()->keyBy('key');
+        return Tech::with('perks')->where('version', $version)->get()->keyBy('key');
     }
 
     public function getTechPerkStrings()
@@ -109,24 +111,6 @@ class TechHelper
         }
 
         return implode($separator, $perkStrings);
-    }
-
-    public function getX(Tech $tech): int
-    {
-        $parts = explode('_', $tech->key);
-        if (isset($parts[1])) {
-            return 10 * $parts[1];
-        }
-        return 0;
-    }
-
-    public function getY(Tech $tech): int
-    {
-        $parts = explode('_', $tech->key);
-        if (isset($parts[2])) {
-            return 10 * $parts[2];
-        }
-        return 0;
     }
 
     public function getTechPerkJSON(Tech $tech): string

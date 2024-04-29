@@ -95,7 +95,16 @@ class ScribesController extends AbstractController
     public function getTechs()
     {
         return view('pages.scribes.techs', [
-            'techHelper' => app(TechHelper::class)
+            'techHelper' => app(TechHelper::class),
+            'legacy' => false
+        ]);
+    }
+
+    public function getLegacyTechs()
+    {
+        return view('pages.scribes.techs', [
+            'techHelper' => app(TechHelper::class),
+            'legacy' => true
         ]);
     }
 

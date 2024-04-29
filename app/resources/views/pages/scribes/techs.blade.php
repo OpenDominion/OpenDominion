@@ -1,6 +1,15 @@
 @extends('layouts.topnav')
 
 @section('content')
+    @php
+        if ($legacy) {
+            $techVersion = 1;
+        } else {
+            $techVersion = $techHelper::CURRENT_VERSION;
+        }
+        $techs = $techHelper->getTechs($techVersion);
+    @endphp
+
     @include('partials.scribes.nav')
     <div class="box box-primary">
         <div class="box-header with-border">
@@ -18,26 +27,37 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Technological Advances</h3>
-        </div>
-        <div class="box-body table-responsive">
-            <div class="row">
-                <div class="col-md-6">
-                    @include('partials.dominion.tech-tree')
-                </div>
-                <div class="col-md-6">
-                    <h5>Techs Selected: <span id="tech-total">0</span></h5>
-                    <h5 style="margin-top: 20px;">Total Bonuses</h5>
-                    <table class="table table-condensed">
-                        <tbody id="tech-bonuses"></tbody>
-                    </table>
-                </div>
+        <div class="box-footer">
+            <div class="pull-right">
+                @if ($legacy)
+                    <a href="{{ route('scribes.techs') }}">View Latest Techs</a>
+                @else
+                    <a href="{{ route('scribes.legacy-techs') }}">View Legacy Techs</a>
+                @endif
             </div>
         </div>
     </div>
+    @if ($techVersion !== 1)
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Technological Advances</h3>
+            </div>
+            <div class="box-body table-responsive">
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('partials.dominion.tech-tree', ['version' => $techVersion])
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Techs Selected: <span id="tech-total">0</span></h5>
+                        <h5 style="margin-top: 20px;">Total Bonuses</h5>
+                        <table class="table table-condensed">
+                            <tbody id="tech-bonuses"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">Technological Advances</h3>
@@ -59,7 +79,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $techs = $techHelper->getTechs(); @endphp
                             @foreach ($techs as $tech)
                                 <tr>
                                     <td>{{ $tech->name }}</td>
