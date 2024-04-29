@@ -3,6 +3,7 @@
 namespace OpenDominion\Factories;
 
 use Carbon\Carbon;
+use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundLeague;
@@ -31,7 +32,7 @@ class RoundFactory
         int $packSize,
         int $playersPerRace,
         bool $mixedAlignment,
-        int $techVersion
+        int $techVersion = TechHelper::CURRENT_VERSION
     ): Round {
         $number = ($this->getLastRoundNumber($league) + 1);
         $endDate = (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS);

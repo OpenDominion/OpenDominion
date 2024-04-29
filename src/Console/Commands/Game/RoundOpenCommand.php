@@ -72,7 +72,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         $packSize = $this->option('pack-size');
         $playersPerRace = $this->option('playersPerRace');
         $mixedAlignments = $this->option('mixedAlignment');
-        $techVersion = $this->option('techVersion') ?? TechHelper::CURRENT_VERSION;
+        $techVersion = $this->option('techVersion');
         $discordEnabled = $this->option('discordEnabled');
 
         if ($now && (app()->environment() === 'production')) {
@@ -136,7 +136,7 @@ class RoundOpenCommand extends Command implements CommandInterface
             $packSize,
             $playersPerRace,
             $mixedAlignments,
-            $techVersion
+            $techVersion ?? TechHelper::CURRENT_VERSION
         );
 
         if ($discordEnabled == true) {
