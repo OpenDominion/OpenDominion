@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Factories\RoundFactory;
+use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Models\RoundLeague;
 use OpenDominion\Services\DiscordService;
 use RuntimeException;
@@ -23,6 +24,7 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--pack-size=5 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
                              {--mixedAlignment=true : Allows for mixed alignments}
+                             {--techVersion= : Select which version of the tech system}
                              {--discordEnabled=false : Triggers creation of Discord guild for round}';
 
     /** @var string The console command description. */
@@ -70,6 +72,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         $packSize = $this->option('pack-size');
         $playersPerRace = $this->option('playersPerRace');
         $mixedAlignments = $this->option('mixedAlignment');
+        $techVersion = $this->option('techVersion') ?? TechHelper::CURRENT_VERSION;
         $discordEnabled = $this->option('discordEnabled');
 
         if ($now && (app()->environment() === 'production')) {
@@ -132,7 +135,8 @@ class RoundOpenCommand extends Command implements CommandInterface
             $realmSize,
             $packSize,
             $playersPerRace,
-            $mixedAlignments
+            $mixedAlignments,
+            $techVersion
         );
 
         if ($discordEnabled == true) {

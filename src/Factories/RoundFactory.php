@@ -30,7 +30,8 @@ class RoundFactory
         int $realmSize,
         int $packSize,
         int $playersPerRace,
-        bool $mixedAlignment
+        bool $mixedAlignment,
+        int $techVersion
     ): Round {
         $number = ($this->getLastRoundNumber($league) + 1);
         $endDate = (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS);
@@ -59,7 +60,8 @@ class RoundFactory
             'realm_size' => $realmSize,
             'pack_size' => $packSize,
             'players_per_race' => $playersPerRace,
-            'mixed_alignment' => $mixedAlignment
+            'mixed_alignment' => $mixedAlignment,
+            'tech_version' => $techVersion
         ]);
 
         // Create special realm for realm assignment and inactives
