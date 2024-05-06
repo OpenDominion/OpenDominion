@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Added
 - Black ops stats added to calculator
-- Title icons now link to their Rankings page
+- Rankings advisor now shows all titles/icons
+- Title icons on realm page now link to their Rankings page
 
 ## [1.39.1] - 2024-04-01
 ### Added

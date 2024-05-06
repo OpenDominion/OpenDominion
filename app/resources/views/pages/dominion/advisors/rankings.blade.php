@@ -43,6 +43,7 @@
                             @foreach ($rankingsHelper->getRankings() as $ranking)
                                 <tr>
                                     <td>
+                                        <i class="ra ra-fw {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $ranking['name'] }}"></i>
                                         <a href="{{ route('dominion.rankings', $ranking['key']) }}">
                                             {{ $ranking['name'] }}
                                         </a>
@@ -101,7 +102,7 @@
 
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Titles</h3>
+                    <h3 class="box-title">Titles Held</h3>
                 </div>
                 <div class="box-body">
                     <p style="font-size: 16px; line-height: 26px;">
