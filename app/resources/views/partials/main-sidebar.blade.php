@@ -105,7 +105,7 @@
                 <li class="{{ Route::is('dominion.magic') ? 'active' : null }}">
                     <a href="{{ route('dominion.magic') }}">
                         <i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span>
-                        @if ($activeSelfSpells > 0 || $activeHostileSpells > 0)
+                        @if ($activeSelfSpells > 0 || $activeHostileSpells > 0 || $activeFriendlySpells > 0)
                             <span class="pull-right-container">
                                 @if ($activeSelfSpells > 0)
                                     <small class="label pull-right bg-blue">
