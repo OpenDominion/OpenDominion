@@ -5,9 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
-- Black ops stats added to calculator
+- Notifications for changing realm roles
+- Calculator page now shows black ops stats
 - Rankings advisor now shows all titles/icons
-- Title icons on realm page now link to their Rankings page
+- Title icons on realm page now link to their rankings pages
 
 ## [1.39.1] - 2024-04-01
 ### Added

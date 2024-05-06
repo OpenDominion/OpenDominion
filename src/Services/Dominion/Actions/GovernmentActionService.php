@@ -133,7 +133,6 @@ class GovernmentActionService
         }
 
         if ($appointee->id == $dominion->id) {
-            // TODO: Should we clear appointments when monarchy changes?
             throw new GameException('You cannot appoint yourself to a seat on the royal court.');
         }
 
@@ -181,6 +180,21 @@ class GovernmentActionService
             'monarch_dominion_id' => $dominion->id,
             $roleAttr => $appointee->id
         ]);
+
+        // Send notifications
+        if ($currentDominionId !== null && $currentDominionId !== $dominion->id) {
+            $currentDominion = Dominion::find($currentDominionId);
+            $this->notificationService
+                ->queueNotification('realm_role_removed', [
+                    'role' => $appointments[$role]['name']
+                ])
+                ->sendNotifications($currentDominion, 'irregular_dominion');
+        }
+        $this->notificationService
+            ->queueNotification('realm_role_added', [
+                'role' => $appointments[$role]['name']
+            ])
+            ->sendNotifications($appointee, 'irregular_dominion');
     }
 
     /**
