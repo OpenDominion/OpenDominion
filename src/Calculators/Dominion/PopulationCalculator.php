@@ -251,7 +251,7 @@ class PopulationCalculator
         // Unit Perk
         foreach ($dominion->race->units as $unit) {
             if ($unit->getPerkValue('unit_housing')) {
-                $unitHousingPerk = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "unit_housing", null);
+                $unitHousingPerk = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'unit_housing', null);
                 $unitHousingSlot = $unitHousingPerk[0];
                 $unitHousingAmount = $unitHousingPerk[1];
 
