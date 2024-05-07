@@ -363,7 +363,6 @@ parasitic_hunger:
   perks:
     conversion_rate: 20
     spreads_plague: 1
-  active: false
 feral_hunger:
   name: Feral Hunger
   category: self
@@ -457,10 +456,9 @@ raise_the_dead:
   cost_strength: 5
   duration: 12
   races:
-    - undead-rework
+    - undead-v3
   perks:
     conversions_range: 60
-  active: false
 burning:
   name: Burning
   category: effect
@@ -530,14 +528,3 @@ gaias_shadow:
   perks:
     spy_power: 15
     cancels_gaias_light: 1
-ritual_of_summoning:
-  name: Ritual of Summoning
-  category: self
-  cost_mana: 5
-  cost_strength: 5
-  duration: 12
-  races:
-    - undead-v3
-  perks:
-    mana_production: -20
-    military_cost_elite: -5

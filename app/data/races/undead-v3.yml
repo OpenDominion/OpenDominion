@@ -1,5 +1,5 @@
 key: undead-v3
-name: Undead
+name: Zombie
 alignment: evil
 description: >-
   <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, mysterious necromancers and their fearsome death knight creations. This eclectic union has one thing in common: a loathing of life. They will seize every opportunity to snuff it out or drag it kicking and screaming into the shadow of undeath.</p>
@@ -15,37 +15,32 @@ perks:
 units:
   - name: Zombie
     cost:
-      platinum: 225
+      platinum: 150
       mana: 50
     power:
-      offense: 3
+      offense: 1
       defense: 0
-    perks:
-      upgrade_casualties: 4,5 # slot 4, 10%
     no_boat: true
-  - name: Revenant
+  - name: Crypt Lord
     cost:
       platinum: 300
-      mana: 10
     power:
       offense: 0
       defense: 3
-  - name: Crypt Lord
-    cost:
-      platinum: 835
-      mana: 0
-    power:
-      offense: 0
-      defense: 4.5
     perks:
-      offense_from_spell: ritual_of_summoning,2
+      unit_housing: 1,1 # slot, amount
+  - name: Acolyte
+    cost:
+      platinum: 900
+    power:
+      offense: 2
+      defense: 5
   - name: Abomination
     cost:
-      platinum: 1250
-      mana: 50
+      platinum: 950
     power:
-      offense: 6
-      defense: 4
+      offense: 5
+      defense: 3
     perks:
       immortal_from_pairing: 1,2 # slot, num required
-playable: false
+playable: true

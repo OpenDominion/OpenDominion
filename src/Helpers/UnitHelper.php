@@ -187,6 +187,7 @@ class UnitHelper
             'flavor_basher' => 'BASH!',
             'flavor_smasher' => 'SMASH!',
             'flavor_tunneler' => 'You no take candle!',
+            'unit_housing' => 'Provides housing for %2$g %1$s (trained or in training).'
         ];
 
         $unitHelpString = $helpStrings[$unitType];
@@ -253,7 +254,7 @@ class UnitHelper
                 }
 
                 // Special case for conversions
-                if ($perk->key === 'conversion' || $perk->key === 'upgrade_casualties' || $perk->key === 'upgrade_survivors') {
+                if ($perk->key === 'conversion' || $perk->key === 'upgrade_casualties' || $perk->key === 'upgrade_survivors' || $perk->key === 'unit_housing') {
                     $slot = (int)$perkValue[0];
                     $amount = (int)$perkValue[1];
 
@@ -261,8 +262,11 @@ class UnitHelper
                         return ($unit->slot === $slot);
                     })->first();
 
-                    $perkValue[0] = str_plural($unitToConvertTo->name);
+                    $perkValue[0] = $unitToConvertTo->name;
                     $perkValue[1] = $amount;
+                    if ($perkValue[1] > 1) {
+                        $perkValue[0] = str_plural($perkValue[0]);
+                    }
                 }
 
                 // Special case for spells
