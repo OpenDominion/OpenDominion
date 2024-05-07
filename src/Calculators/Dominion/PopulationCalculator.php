@@ -3,7 +3,6 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Helpers\BuildingHelper;
-use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
 
@@ -30,9 +29,6 @@ class PopulationCalculator
     /** @var SpellCalculator */
     protected $spellCalculator;
 
-    /** @var UnitHelper */
-    protected $unitHelper;
-
     /** @var bool */
     protected $forTick = false;
 
@@ -46,7 +42,6 @@ class PopulationCalculator
      * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
-     * @param UnitHelper $unitHelper
      */
     public function __construct(
         BuildingHelper $buildingHelper,
@@ -55,8 +50,7 @@ class PopulationCalculator
         MilitaryCalculator $militaryCalculator,
         PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
-        SpellCalculator $spellCalculator,
-        UnitHelper $unitHelper
+        SpellCalculator $spellCalculator
     )
     {
         $this->buildingHelper = $buildingHelper;
@@ -66,7 +60,6 @@ class PopulationCalculator
         $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
-        $this->unitHelper = $unitHelper;
     }
 
     /**
@@ -250,10 +243,26 @@ class PopulationCalculator
         // Wonders
         $troopsPerBarracks += $dominion->getWonderPerkValue('barracks_housing');
 
-        return min(
+        $militaryHousing = min(
             ($this->getPopulationMilitary($dominion) - $dominion->military_draftees),
             round($dominion->building_barracks * $troopsPerBarracks)
         );
+
+        // Unit Perk
+        foreach ($dominion->race->units as $unit) {
+            if ($unit->getPerkValue('unit_housing')) {
+                $unitHousingPerk = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "unit_housing", null);
+                $unitHousingSlot = $unitHousingPerk[0];
+                $unitHousingAmount = $unitHousingPerk[1];
+
+                $militaryHousing += min(
+                    $unitHousingAmount * $this->militaryCalculator->getTotalUnitsForSlot($dominion, $unit->slot),
+                    $dominion->{"military_unit{$unitHousingSlot}"} + $this->queueService->getTrainingQueueTotalByResource($dominion, $unitHousingSlot)
+                );
+            }
+        }
+
+        return $militaryHousing;
     }
 
     /**
