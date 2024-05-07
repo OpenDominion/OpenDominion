@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Rankings advisor now shows all titles/icons
 - Title icons on realm page now link to their rankings pages
 
+### Fixed
+- Spell reflect stats are now properly attributed to the dominion that cast the friendly spell
+
 ## [1.39.1] - 2024-04-01
 ### Added
 - Town Crier can now be filtered by event types
