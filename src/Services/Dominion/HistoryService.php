@@ -23,6 +23,7 @@ class HistoryService
     public const EVENT_ACTION_RELEASE = 'release';
     public const EVENT_ACTION_CAST_SPELL = 'cast spell';
     public const EVENT_ACTION_RECEIVE_SPELL = 'received spell';
+    public const EVENT_ACTION_REFLECT_SPELL = 'reflected spell';
     public const EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION = 'perform espionage operation';
     public const EVENT_ACTION_RECEIVE_ESPIONAGE_OPERATION = 'received espionage operation';
     public const EVENT_ACTION_INVADE = 'invade';

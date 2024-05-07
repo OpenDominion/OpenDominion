@@ -642,10 +642,10 @@ class MilitaryCalculator
         $unitPower += $this->getUnitPowerFromBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromPrestigePerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromSpellPerk($dominion, $landRatio, $unit, $powerType);
 
         if ($landRatio !== null) {
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
-            $unitPower += $this->getUnitPowerFromSpellPerk($dominion, $landRatio, $unit, $powerType);
         }
 
         $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
@@ -852,12 +852,8 @@ class MilitaryCalculator
         }
 
         $unitSlot = (int)$pairingPerkData[0];
-        $amount = (int)$pairingPerkData[1];
-        if (isset($pairingPerkData[2])) {
-            $numRequired = (int)$pairingPerkData[2];
-        } else {
-            $numRequired = 1;
-        }
+        $numRequired = (int)$pairingPerkData[1];
+        $amount = (int)$pairingPerkData[2];
 
         $powerFromPerk = 0;
         $numberPaired = 0;

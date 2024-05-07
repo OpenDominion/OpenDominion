@@ -101,6 +101,18 @@ class NotificationHelper
     public function getIrregularDominionTypes(): array
     {
         return [
+            'realm_role_added' => [
+                'label' => 'Promoted in realm',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.realm'),
+                'iconClass' => 'ra ra-circle-of-circles text-green',
+            ],
+            'realm_role_removed' => [
+                'label' => 'Demoted in realm',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.realm'),
+                'iconClass' => 'ra ra-circle-of-circles text-red',
+            ],
             'hero_level' => [
                 'label' => 'Your hero gained a level',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -258,7 +270,7 @@ class NotificationHelper
                 $acres = array_sum($data);
 
                 return sprintf(
-                    'Exploration for %s %s of land completed',
+                    'Exploration for %s %s of land completed.',
                     number_format($acres),
                     str_plural('acre', $acres)
                 );
@@ -267,7 +279,7 @@ class NotificationHelper
                 $buildings = array_sum($data);
 
                 return sprintf(
-                    'Construction of %s %s completed',
+                    'Construction of %s %s completed.',
                     number_format($buildings),
                     str_plural('building', $buildings)
                 );
@@ -276,7 +288,7 @@ class NotificationHelper
                 $units = array_sum($data);
 
                 return sprintf(
-                    'Training of %s %s completed',
+                    'Training of %s %s completed.',
                     number_format($units),
                     str_plural('unit', $units)
                 );
@@ -293,7 +305,7 @@ class NotificationHelper
 
                 if ($units > 0) {
                     return sprintf(
-                        '%s %s returned from battle',
+                        '%s %s returned from battle.',
                         number_format($units),
                         str_plural('unit', $units)
                     );
@@ -305,7 +317,7 @@ class NotificationHelper
                 $effects = count($data);
 
                 return sprintf(
-                    '%s beneficial magic %s dissipated',
+                    '%s beneficial magic %s dissipated.',
                     number_format($effects),
                     str_plural('effect', $effects)
                 );
@@ -314,7 +326,7 @@ class NotificationHelper
                 $effects = count($data);
 
                 return sprintf(
-                    '%s harmful magic %s dissipated',
+                    '%s harmful magic %s dissipated.',
                     number_format($effects),
                     str_plural('effect', $effects)
                 );
@@ -323,9 +335,21 @@ class NotificationHelper
                 $units = array_sum($data);
 
                 return sprintf(
-                    '%s %s died due to starvation',
+                    '%s %s died due to starvation.',
                     number_format($units),
                     str_plural('unit', $units)
+                );
+
+            case 'irregular_dominion.realm_role_added':
+                return sprintf(
+                    'You were promoted to %s.',
+                    $data['role']
+                );
+
+            case 'irregular_dominion.realm_role_removed':
+                return sprintf(
+                    'You were demoted from %s.',
+                    $data['role']
                 );
 
             case 'irregular_dominion.hero_level':
@@ -398,7 +422,7 @@ class NotificationHelper
                         break;
 
                     default:
-                        throw new LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented");
+                        throw new LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented.");
                 }
 
                 if ($sourceDominion) {
@@ -616,7 +640,7 @@ class NotificationHelper
                         break;
 
                     default:
-                        throw new LogicException("Received hostile spell notification for operation key {$data['spellKey']} not yet implemented");
+                        throw new LogicException("Received hostile spell notification for operation key {$data['spellKey']} not yet implemented.");
                 }
 
                 if ($sourceDominion) {

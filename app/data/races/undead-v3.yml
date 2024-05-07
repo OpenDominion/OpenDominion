@@ -1,0 +1,46 @@
+key: undead-v3
+name: Zombie
+alignment: evil
+description: >-
+  <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, mysterious necromancers and their fearsome death knight creations. This eclectic union has one thing in common: a loathing of life. They will seize every opportunity to snuff it out or drag it kicking and screaming into the shadow of undeath.</p>
+  <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with fresh corpses. They tend to inhabit putrid swamps, where the dense, humid atmosphere obscures the stench of decay and provides cover for their unscrupulous activities.</p>
+attacker_difficulty: 1
+explorer_difficulty: 3
+converter_difficulty: 3
+home_land_type: swamp
+perks:
+  max_population: 10
+  food_consumption: -50
+  mana_production: 20
+units:
+  - name: Zombie
+    cost:
+      platinum: 150
+      mana: 50
+    power:
+      offense: 1
+      defense: 0
+    no_boat: true
+  - name: Crypt Lord
+    cost:
+      platinum: 300
+    power:
+      offense: 0
+      defense: 3
+    perks:
+      unit_housing: 1,1 # slot, amount
+  - name: Acolyte
+    cost:
+      platinum: 900
+    power:
+      offense: 2
+      defense: 5
+  - name: Abomination
+    cost:
+      platinum: 950
+    power:
+      offense: 5
+      defense: 3
+    perks:
+      immortal_from_pairing: 1,2 # slot, num required
+playable: true

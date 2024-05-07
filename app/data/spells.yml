@@ -363,7 +363,6 @@ parasitic_hunger:
   perks:
     conversion_rate: 20
     spreads_plague: 1
-  active: false
 feral_hunger:
   name: Feral Hunger
   category: self
@@ -457,10 +456,9 @@ raise_the_dead:
   cost_strength: 5
   duration: 12
   races:
-    - undead-rework
+    - undead-v3
   perks:
     conversions_range: 60
-  active: false
 burning:
   name: Burning
   category: effect

@@ -129,10 +129,22 @@ class DataSyncCommand extends Command implements CommandInterface
             $race->perks()->sync($racePerksToSync);
 
             // Units
+            $defaultUnitTypes = [
+                1 => 'offensive_specialist',
+                2 => 'defensive_specialist',
+                3 => 'defensive_elite',
+                4 => 'offensive_elite'
+            ];
+
             foreach (object_get($data, 'units', []) as $slot => $unitData) {
                 $slot++; // Because array indices start at 0
 
                 $unitName = object_get($unitData, 'name');
+                $unitType = object_get($unitData, 'type');
+
+                if ($unitType === null) {
+                    $unitType = $defaultUnitTypes[$slot];
+                }
 
                 $this->info("Unit {$slot}: {$unitName}", OutputInterface::VERBOSITY_VERBOSE);
 
@@ -157,7 +169,7 @@ class DataSyncCommand extends Command implements CommandInterface
                     'power_offense' => object_get($unitData, 'power.offense', 0),
                     'power_defense' => object_get($unitData, 'power.defense', 0),
                     'need_boat' => (int)object_get($unitData, 'need_boat', true),
-                    'type' => object_get($unitData, 'type'),
+                    'type' => $unitType,
                 ]);
 
                 if ($unit->exists) {

@@ -37,7 +37,7 @@ units:
       offense: 0
       defense: 3
     perks:
-      defense_from_pairing: 4,2,1 # slot, amount, num required
+      defense_from_pairing: 4,1,2 # slot, num required, amount
   - name: Overlord
     cost:
       platinum: 875
@@ -46,5 +46,5 @@ units:
       offense: 3
       defense: 2
     perks:
-      offense_from_pairing: 1,2,1 # slot, amount, num required
+      offense_from_pairing: 1,1,2 # slot, num required, amount
 playable: false

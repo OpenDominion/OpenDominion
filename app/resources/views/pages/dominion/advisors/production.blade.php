@@ -568,9 +568,15 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Specialist & Elite Training:</td>
+                                        <td>Specialist Training:</td>
                                         <td>
-                                            {!! bonus_display(($trainingCalculator->getSpecialistEliteCostMultiplier($target) - 1) * 100, false) !!}
+                                            {!! bonus_display(($trainingCalculator->getSpecialistEliteCostMultiplier($target, 'specialist') - 1) * 100, false) !!}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Elite Training:</td>
+                                        <td>
+                                            {!! bonus_display(($trainingCalculator->getSpecialistEliteCostMultiplier($target, 'elite') - 1) * 100, false) !!}
                                         </td>
                                     </tr>
                                     <tr>
@@ -583,12 +589,6 @@
                                         <td>Wizard & Archmage Training:</td>
                                         <td>
                                             {!! bonus_display(($trainingCalculator->getWizardCostMultiplier($target) - 1) * 100, false) !!}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Hero XP Gain:</td>
-                                        <td>
-                                            {!! bonus_display(($heroCalculator->getExperienceMultiplier($target) - 1) * 100) !!}
                                         </td>
                                     </tr>
                                 </tbody>

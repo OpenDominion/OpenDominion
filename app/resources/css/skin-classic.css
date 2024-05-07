@@ -299,6 +299,7 @@
 }
 .skin-classic .select2-container--default .select2-results__option--highlighted[aria-selected] {
     background-color: #006C81;
+    color: white;
 }
 
 .skin-classic .table > thead > tr > th {

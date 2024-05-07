@@ -4,6 +4,7 @@ namespace OpenDominion\Calculators\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 
@@ -15,6 +16,9 @@ class TrainingCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /** @var UnitHelper */
     protected $unitHelper;
 
@@ -25,6 +29,7 @@ class TrainingCalculator
     {
         $this->heroCalculator = app(HeroCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
+        $this->spellCalculator = app(SpellCalculator::class);
         $this->unitHelper = app(UnitHelper::class);
     }
 
@@ -87,33 +92,34 @@ class TrainingCalculator
                     $mana = $units[$unitSlot]->cost_mana;
                     $lumber = $units[$unitSlot]->cost_lumber;
                     $gems = $units[$unitSlot]->cost_gems;
+                    list($type, $proficiency) = explode('_', $units[$unitSlot]->type);
 
                     if ($platinum > 0) {
-                        $cost['platinum'] = (int)ceil($platinum * $this->getSpecialistEliteCostMultiplier($dominion));
+                        $cost['platinum'] = (int)ceil($platinum * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                     }
 
                     if ($ore > 0) {
                         $cost['ore'] = $ore;
 
                         if ($dominion->race->key !== 'gnome') {
-                            $cost['ore'] = (int)ceil($ore * $this->getSpecialistEliteCostMultiplier($dominion));
+                            $cost['ore'] = (int)ceil($ore * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                         }
                     }
 
                     if ($mana > 0) {
-                        $cost['mana'] = (int)ceil($mana * $this->getSpecialistEliteCostMultiplier($dominion));
+                        $cost['mana'] = (int)ceil($mana * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                     }
 
                     if ($lumber > 0) {
                         $cost['lumber'] = $lumber;
 
                         if ($dominion->race->key !== 'wood-elf-rework') {
-                            $cost['lumber'] = (int)ceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion));
+                            $cost['lumber'] = (int)ceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                         }
                     }
 
                     if ($gems > 0) {
-                        $cost['gems'] = (int)ceil($gems * $this->getSpecialistEliteCostMultiplier($dominion));
+                        $cost['gems'] = (int)ceil($gems * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                     }
 
                     $cost['draftees'] = 1;
@@ -167,9 +173,10 @@ class TrainingCalculator
      * Returns the Dominion's training cost multiplier.
      *
      * @param Dominion $dominion
+     * @param string $proficiency
      * @return float
      */
-    public function getSpecialistEliteCostMultiplier(Dominion $dominion): float
+    public function getSpecialistEliteCostMultiplier(Dominion $dominion, string $proficiency): float
     {
         $multiplier = 1;
 
@@ -188,6 +195,11 @@ class TrainingCalculator
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'military_cost');
+
+        // Spells
+        if ($proficiency === 'elite') {
+            $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'military_cost_elite') / 100;
+        }
 
         return $multiplier;
     }

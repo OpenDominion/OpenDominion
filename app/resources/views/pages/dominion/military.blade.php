@@ -60,13 +60,13 @@
                                                 })->count() > 0;
                                             @endphp
                                             <td class="text-center">
-                                                @if ($offensivePower === 0)
+                                                @if ($offensivePower == 0)
                                                     <span class="text-muted">0</span>
                                                 @else
                                                     {{ (strpos($offensivePower, '.') !== false) ? number_format($offensivePower, 1) : number_format($offensivePower) }}{{ $hasDynamicOffensivePower ? '*' : null }}
                                                 @endif
                                                 /
-                                                @if ($defensivePower === 0)
+                                                @if ($defensivePower == 0)
                                                     <span class="text-muted">0</span>
                                                 @else
                                                     {{ (strpos($defensivePower, '.') !== false) ? number_format($defensivePower, 1) : number_format($defensivePower) }}{{ $hasDynamicDefensivePower ? '*' : null }}

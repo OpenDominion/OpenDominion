@@ -102,7 +102,7 @@ class BuildingHelper
             'factory' => 'Construction costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Rezoning costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Employs 25 peasants (instead of 20).',
             'guard_tower' => 'Defensive power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'shrine' => 'Increases Hero experience gain by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.',
-            'barracks' => 'Houses 36 trained or training military units.<br><br>Does not employ peasants or increase in capacity due to population bonuses.',
+            'barracks' => 'Houses 36 trained or in training military units.<br><br>Does not employ peasants or increase in capacity due to population bonuses.',
             'dock' => 'Produces 1 boat every 20 hours on average.<br>Each dock prevents 2.25 of your boats from being sunk (increases by 0.05 each day of the round).<br>Produces 40 bushels of food per hour.',
         ];
 

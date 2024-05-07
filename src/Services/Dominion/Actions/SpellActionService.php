@@ -723,6 +723,14 @@ class SpellActionService
                 ->sendNotifications($target, 'irregular_dominion');
 
             if ($spellReflected) {
+                // Record stats for caster
+                if ($reflectedBy->isDirty()) {
+                    $reflectedBy->save([
+                        'event' => HistoryService::EVENT_ACTION_REFLECT_SPELL,
+                        'action' => 'spell_reflect'
+                    ]);
+                }
+
                 // Notification for spell reflection
                 $this->notificationService
                     ->queueNotification('reflected_hostile_spell', [
@@ -947,6 +955,14 @@ class SpellActionService
                 ->sendNotifications($target, 'irregular_dominion');
 
             if ($spellReflected) {
+                // Record stats for caster
+                if ($reflectedBy->isDirty()) {
+                    $reflectedBy->save([
+                        'event' => HistoryService::EVENT_ACTION_REFLECT_SPELL,
+                        'action' => 'spell_reflect'
+                    ]);
+                }
+
                 // Notification for spell reflection
                 $this->notificationService
                     ->queueNotification('reflected_hostile_spell', [

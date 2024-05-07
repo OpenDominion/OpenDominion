@@ -4,6 +4,14 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Notifications for changing realm roles
+- Calculator page now shows black ops stats
+- Rankings advisor now shows all titles/icons
+- Title icons on realm page now link to their rankings pages
+
+### Fixed
+- Spell reflect stats are now properly attributed to the dominion that cast the friendly spell
 
 ## [1.39.1] - 2024-04-01
 ### Added

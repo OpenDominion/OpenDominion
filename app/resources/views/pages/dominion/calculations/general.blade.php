@@ -92,7 +92,9 @@
                                                 />
                                     </div>
                                 @endforeach
-                                @if ($loop->last)
+                            </div>
+                            @if ($loop->last)
+                                <div class="form-group row">
                                     <div class="col-xs-3 text-right">
                                         Barren
                                     </div>
@@ -104,8 +106,8 @@
                                                 min="0"
                                                 value="{{ $landCalculator->getTotalBarrenLand($targetDominion) }}" />
                                     </div>
-                                @endif
-                            </div>
+                                </div>
+                            @endif
                         @endforeach
 
                         <div class="form-group row">
@@ -179,26 +181,40 @@
                             <div class="col-xs-3 text-right">
                                 <b>Spells</b>
                             </div>
+                            <div class="col-xs-9">
+                                <a
+                                   class="text-bold"
+                                   href="#spell-wrapper"
+                                   data-toggle="collapse"
+                                   data-target="#spell-wrappper"
+                                   aria-expanded="false"
+                                   aria-controls="tech-wrappper"
+                                >
+                                    Show/Hide
+                                </a>
+                            </div>
                         </div>
 
-                        @php
-                            $activeSpells = $targetDominion->spells->keyBy('key')->keys();
-                        @endphp
-                        @foreach ($spellHelper->getSpells($targetDominion->race, 'self')->chunk(2) as $chunk)
-                            <div class="form-group row">
-                                @foreach ($chunk as $spell)
-                                    <div class="col-xs-3 text-right">
-                                        {{ $spell->name }}
-                                    </div>
-                                    <div class="col-xs-3 text-left">
-                                        <input type="checkbox"
-                                                step="any"
-                                                name="spells[{{ $spell->key }}]"
-                                                {{ $activeSpells->contains($spell->key) ? 'checked' : null }} />
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endforeach
+                        <div id="spell-wrappper" class="collapse">
+                            @php
+                                $activeSpells = $targetDominion->spells->keyBy('key')->keys();
+                            @endphp
+                            @foreach ($spellHelper->getSpells($targetDominion->race, 'self')->chunk(2) as $chunk)
+                                <div class="form-group row">
+                                    @foreach ($chunk as $spell)
+                                        <div class="col-xs-3 text-right">
+                                            {{ $spell->name }}
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <input type="checkbox"
+                                                    step="any"
+                                                    name="spells[{{ $spell->key }}]"
+                                                    {{ $activeSpells->contains($spell->key) ? 'checked' : null }} />
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
 
                         @php
                             $unlockedTechs = $targetDominion->techs->keyBy('key')->keys();
@@ -207,23 +223,43 @@
                             <div class="col-xs-3 text-right">
                                 <b>Techs</b>
                             </div>
+                            <div class="col-xs-9">
+                                <a
+                                   class="text-bold"
+                                   href="#tech-wrapper"
+                                   data-toggle="collapse"
+                                   data-target="#tech-wrappper"
+                                   aria-expanded="false"
+                                   aria-controls="tech-wrappper"
+                                >
+                                    Show/Hide
+                                </a>
+                            </div>
                         </div>
 
-                        @foreach ($techHelper->getTechs()->chunk(2) as $chunk)
-                            <div class="form-group row">
-                                @foreach ($chunk as $tech)
-                                    <div class="col-xs-3 text-right">
-                                        {{ $tech->name }}
-                                    </div>
-                                    <div class="col-xs-3 text-left">
-                                        <input type="checkbox"
-                                                step="any"
-                                                name="techs[{{ $tech->key }}]"
-                                                {{ $unlockedTechs->contains($tech->key) ? 'checked' : null }} />
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endforeach
+                        <div id="tech-wrappper" class="collapse">
+                            @foreach ($techHelper->getTechs()->chunk(2) as $chunk)
+                                <div class="form-group row">
+                                    @foreach ($chunk as $tech)
+                                        <div class="col-xs-3 text-right">
+                                            {{ $tech->name }}
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <input type="checkbox"
+                                                    step="any"
+                                                    name="techs[{{ $tech->key }}]"
+                                                    {{ $unlockedTechs->contains($tech->key) ? 'checked' : null }} />
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- TODO: Hero -->
+
+                        <!-- TODO: Wonders -->
+
+                        <!-- TODO: Day In Round -->
 
                         <div class="row">
                             <div class="col-xs-9 text-right">
@@ -301,6 +337,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-sm-6">
                 <div class="box">
                     <div class="box-header with-border">
@@ -370,6 +407,51 @@
                                 <td>{{ $result['label'] }}:</td>
                                 <td>{{ $result['value'] }}</td>
                             </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                &nbsp;
+            </div>
+
+            <div class="col-sm-6">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Black Ops</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-condensed">
+                            <tr>
+                                <td>Damage Reduction (spy):</td>
+                                <td>{{ round($opsCalculator->getDamageReduction($targetDominion, 'spy') * 100, 2) }}%</td>
+                            </tr>
+                            <tr>
+                                <td>Damage Reduction (wizard):</td>
+                                <td>{{ round($opsCalculator->getDamageReduction($targetDominion, 'wizard') * 100, 2) }}%</td>
+                            </tr>
+                            @foreach ([
+                                'getSpellVulnerablilityProtectionModifier',
+                                'getPeasantVulnerabilityByDayModifier',
+                                'getPeasantVulnerablilityModifier',
+                                'getPeasantsProtected',
+                                'getPeasantsVulnerable',
+                                'getImprovementVulnerablilityByDayModifier',
+                                'getImprovementVulnerablilityModifier',
+                                'getImprovementsProtected',
+                                'getImprovementsVulnerable'
+                            ] as $method)
+                                @php
+                                    $result = class_method_display($opsCalculator, $method, $targetDominion)
+                                @endphp
+                                <tr>
+                                    <td>{{ $result['label'] }}:</td>
+                                    <td>{{ $result['value'] }}</td>
+                                </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>
