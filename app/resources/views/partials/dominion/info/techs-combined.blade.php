@@ -11,7 +11,11 @@
     </thead>
     <tbody>
         @php
-            $allTechs = OpenDominion\Models\Tech::with('perks')->get();
+            if (isset($version)) {
+                $allTechs = $techHelper->getTechs($version);
+            } else {
+                $allTechs = $techHelper->getTechs();
+            }
             $techPerkStrings = $techHelper->getTechPerkStrings();
             $techBonuses = [];
             foreach ($data as $techKey => $techName) {

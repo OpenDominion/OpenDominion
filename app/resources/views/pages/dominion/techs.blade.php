@@ -3,7 +3,11 @@
 @section('page-header', 'Technological Advances')
 
 @section('content')
-    @php($unlockedTechs = $selectedDominion->techs->pluck('key')->all())
+    @php
+        $techVersion = $selectedDominion->round->tech_version;
+        $techs = $techHelper->getTechs($techVersion);
+        $unlockedTechs = $selectedDominion->techs->pluck('key')->all()
+    @endphp
 
     <form action="{{ route('dominion.techs') }}" method="post" role="form">
     @csrf
@@ -16,11 +20,13 @@
                     </div>
                     <div class="box-body no-padding">
                         <div class="row">
-                            <div class="col-md-6">
-                                @include('partials.dominion.tech-tree')
-                            </div>
-                            <div class="col-md-6">
-                                @include('partials.dominion.info.techs-combined', ['data' => $selectedDominion->techs->pluck('name', 'key')])
+                            @if ($techVersion !== 1)
+                                <div class="col-md-6">
+                                    @include('partials.dominion.tech-tree', ['version' => $techVersion])
+                                </div>
+                            @endif
+                            <div class="{{ $techVersion == 1 ? 'col-md-12' : 'col-md-6' }}">
+                                @include('partials.dominion.info.techs-combined', ['data' => $selectedDominion->techs->pluck('name', 'key'), 'version' => $techVersion])
                             </div>
                         </div>
                     </div>

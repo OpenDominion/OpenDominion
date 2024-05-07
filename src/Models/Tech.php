@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $key
  * @property string $name
  * @property array $prerequisites
+ * @property int $version
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\TechPerkType[] $perks
@@ -21,6 +22,7 @@ class Tech extends AbstractModel
 
     protected $casts = [
         'prerequisites' => 'array',
+        'version' => 'integer',
     ];
 
     public function scopeActive(Builder $query): Builder
