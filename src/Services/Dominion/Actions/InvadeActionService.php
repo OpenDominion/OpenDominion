@@ -570,13 +570,17 @@ class InvadeActionService
 
             $immortalFromPairingPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_from_pairing');
             if ($immortalFromPairingPerk) {
-                $pairedUnitSlot = $immortalFromPairingPerk[0];
-                $numberRequired = $immortalFromPairingPerk[1];
-                if (isset($units[$pairedUnitSlot]) && $units[$pairedUnitSlot] > 0) {
+                $pairedUnitSlot = (int)$immortalFromPairingPerk[0];
+                $numberRequired = (int)$immortalFromPairingPerk[1];
+                $pairedUnit = $dominion->race->units[$pairedUnitSlot - 1];
+                $pairedUnitCount = 0;
+                if ($pairedUnit->power_offense == 0) {
+                    $pairedUnitCount = $dominion->{"military_unit{$pairedUnitSlot}"};
+                } elseif (isset($units[$pairedUnitSlot]) && $units[$pairedUnitSlot] > 0) {
                     $pairedUnitCount = $units[$pairedUnitSlot];
-                    $immortalCount = min($pairedUnitCount / $numberRequired, $unitCount);
-                    $unitCount -= $immortalCount;
                 }
+                $immortalCount = min($pairedUnitCount / $numberRequired, $unitCount);
+                $unitCount -= $immortalCount;
             }
 
             $offensiveUnitsLost[$slot] = (int)ceil($unitCount * $offensiveCasualtiesPercentage);

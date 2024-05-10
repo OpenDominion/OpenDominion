@@ -167,7 +167,7 @@ class UnitHelper
 
             'immortal' => 'Almost never dies.',
             'immortal_except_vs' => 'Almost never dies, except vs %s.',
-            'immortal_from_pairing' => 'Immortal when paired with %2$g %1$s on attack against dominions 75%%+ of your size.',
+            'immortal_from_pairing' => 'Almost never dies when paired with %2$g %1$s.',
             'immortal_vs_land_range' => 'Almost never dies when attacking dominions %g%%+ of your size.',
 
             'kills_immortal' => 'Can kill spirits and the undead.',

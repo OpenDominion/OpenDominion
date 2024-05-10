@@ -15,32 +15,31 @@ perks:
 units:
   - name: Zombie
     cost:
-      platinum: 150
-      mana: 50
+      platinum: 200
+      mana: 25
     power:
-      offense: 1
+      offense: 3
       defense: 0
     no_boat: true
-  - name: Crypt Lord
-    cost:
-      platinum: 300
-    power:
-      offense: 0
-      defense: 3
-    perks:
-      unit_housing: 1,1 # slot, amount
   - name: Acolyte
     cost:
-      platinum: 900
+      platinum: 800
     power:
-      offense: 2
-      defense: 5
+      offense: 0
+      defense: 4
+  - name: Crypt Lord
+    cost:
+      platinum: 1100
+      mana: 25
+    power:
+      offense: 0
+      defense: 6
   - name: Abomination
     cost:
-      platinum: 950
+      platinum: 700
     power:
-      offense: 5
+      offense: 4
       defense: 3
     perks:
-      immortal_from_pairing: 1,2 # slot, num required
+      immortal_from_pairing: 2,1 # slot, num required
 playable: true
