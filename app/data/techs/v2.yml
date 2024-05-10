@@ -192,7 +192,6 @@ techs:
     name: Explorer's Intuition
     perks:
       explore_platinum_cost: -2.5
-      explore_draftee_cost: -1
     requires:
       - tech_19_1
       - tech_16_3
@@ -231,7 +230,7 @@ techs:
     y: 5
     name: Urg Smash Technique
     perks:
-      destruction_discount: 25
+      destruction_discount: 100
       lumber_production: 7.5
     requires:
       - tech_9_5
@@ -268,7 +267,6 @@ techs:
     y: 5
     name: Explorer's Guile
     perks:
-      explore_draftee_cost: -2
       explore_platinum_cost: -7.5
     requires:
       - tech_14_7
@@ -277,7 +275,7 @@ techs:
     y: 5
     name: Fearless Adventurers
     perks:
-      explore_morale_cost: -50
+      explore_draftee_cost: -2
     requires:
       - tech_18_3
       - tech_16_7

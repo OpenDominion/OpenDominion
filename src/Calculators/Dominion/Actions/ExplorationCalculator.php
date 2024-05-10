@@ -57,7 +57,13 @@ class ExplorationCalculator
         $multiplier += $dominion->race->getPerkMultiplier('explore_platinum_cost');
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('explore_platinum_cost');
+        $techBonus = $dominion->getTechPerkMultiplier('explore_platinum_cost');
+        $excludedRaces = ['firewalker', 'goblin', 'lycanthrope'];
+        if ($techBonus != 0 && in_array($dominion->race->key, $excludedRaces)) {
+            // Bonus is halved for these races
+            $techBonus *= 0.5;
+        }
+        $multiplier += $techBonus;
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('explore_platinum_cost');
@@ -135,8 +141,13 @@ class ExplorationCalculator
      */
     public function getMoraleDrop(Dominion $dominion, $amount): int
     {
-        $multiplier = (1 + $dominion->getTechPerkMultiplier('explore_morale_cost'));
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
-        return max(1, floor(($amount + 2) / 3 * $multiplier));
+        $moraleDrop = max(1, floor(($amount + 2) / 3));
+        if ($totalLand > 1000) {
+            $moraleDrop *= 2;
+        }
+
+        return $moraleDrop;
     }
 }

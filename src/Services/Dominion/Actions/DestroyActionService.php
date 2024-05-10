@@ -107,7 +107,8 @@ class DestroyActionService
             $dominion->resource_platinum += $platinumRefund;
             $dominion->resource_lumber += $lumberRefund;
         }
-        if ($dominion->getTechPerkValue('destruction_discount') != 0) {
+        $excludedRaces = ['nomad-rework', 'wood-elf'];
+        if ($dominion->getTechPerkValue('destruction_discount') != 0 && !in_array($dominion->race->key, $excludedRaces)) {
             $multiplier = $dominion->getTechPerkMultiplier('destruction_discount');
             $discountedAcres = floor($multiplier * $totalBuildingsToDestroy);
 

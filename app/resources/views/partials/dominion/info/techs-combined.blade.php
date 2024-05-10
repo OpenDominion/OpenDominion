@@ -34,11 +34,7 @@
         @endphp
         @foreach ($techBonuses as $techBonus => $techValue)
             @php
-                if ($techValue < 0) {
-                    $techPerkString = sprintf($techPerkStrings[$techBonus], $techValue);
-                } else {
-                    $techPerkString = sprintf($techPerkStrings[$techBonus], '+'.$techValue);
-                }
+                $techPerkString = sprintf($techPerkStrings[$techBonus], $techValue);
                 $techPerk = explode(' ', $techPerkString, 2);
             @endphp
             <tr>

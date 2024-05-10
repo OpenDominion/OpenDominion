@@ -928,9 +928,10 @@ class InvadeActionService
         $landRatio = min(1, $this->invasionResult['result']['range'] / 100);
         $convertedUnits = array_fill(1, 4, 0);
 
+        // todo: might want to check for conversion unit perks here, instead of hardcoded race names
         if (
             !$isInvasionSuccessful ||
-            !in_array($dominion->race->name, ['Dark Elf', 'Lycanthrope', 'Undead', 'Vampire', 'Zombie'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
+            !in_array($dominion->race->key, ['dark-elf-rework', 'lycanthrope', 'undead', 'undead-rework', 'undead-v3'], true)
         )
         {
             return $convertedUnits;

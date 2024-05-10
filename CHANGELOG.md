@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Rankings advisor now shows all titles/icons
 - Title icons on realm page now link to their rankings pages
 
+### Changed
+- Exploring morale cost doubled for dominions larger than 1000 acres
+- Fearless Adventures now reduces exploring draftee cost (was -50% morale cost)
+- Exploring platinum cost tech perks are now halved for Firewalker/Goblin/Lycanthrope, draftee cost reductions removed
+- Urg Smash discount awarded for all buildings destroyed (from 25%), now excludes Nomad/Wood Elf
+
 ### Fixed
 - Spell reflect stats are now properly attributed to the dominion that cast the friendly spell
 
