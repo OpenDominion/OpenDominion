@@ -11,6 +11,12 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 class OpsCalculator
 {
     /**
+     * @var float Base amount of resilience gained per op
+     */
+    protected const PEASANT_VULNERABILITY = 50 / 100;
+    protected const IMPROVEMENT_VULNERABILITY = 25 / 100;
+
+    /**
      * @var float Base amount of resilience lost each hour
      */
     protected const SPY_RESILIENCE_DECAY = -8;
@@ -400,21 +406,6 @@ class OpsCalculator
     }
 
     /*
-     * Returns the base percentage of max peasants that are vulnerable to fireball damage
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getPeasantVulnerabilityByDayModifier(Dominion $dominion): float
-    {
-        // Scale vulnerability from 0.2 at Day 4, to 0.25 at Day 24, to 0.3 at Day 44
-        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
-        $daysModifier = (0.0025 * $days) + 0.35;
-
-        return $daysModifier;
-    }
-
-    /*
      * Returns the final percentage of peasants that are vulnerable to fireball
      *
      * @param Dominion $dominion
@@ -422,10 +413,9 @@ class OpsCalculator
      */
     public function getPeasantVulnerablilityModifier(Dominion $dominion): float
     {
-        $vulnerabilityModifier = $this->getPeasantVulnerabilityByDayModifier($dominion);
         $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
 
-        return $vulnerabilityModifier * $protectionModifier;
+        return $protectionModifier * static::PEASANT_VULNERABILITY;
     }
 
     /*
@@ -469,21 +459,6 @@ class OpsCalculator
     }
 
     /*
-     * Returns the base percentage of total investment that is vulnerable to lightning damage
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getImprovementVulnerablilityByDayModifier(Dominion $dominion): float
-    {
-        // Scale vulnerability from 0.3 at Day 4, to 0.25 at Day 24, to 0.2 at Day 44
-        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
-        $daysModifier = 0.3 - (0.0025 * $days);
-
-        return $daysModifier;
-    }
-
-    /*
      * Returns the final percentage of improvements that are vulnerable to lightning damage
      *
      * @param Dominion $dominion
@@ -491,10 +466,9 @@ class OpsCalculator
      */
     public function getImprovementVulnerablilityModifier(Dominion $dominion): float
     {
-        $vulnerabilityModifier = $this->getImprovementVulnerablilityByDayModifier($dominion);
         $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
 
-        return $vulnerabilityModifier * $protectionModifier;
+        return $protectionModifier * static::IMPROVEMENT_VULNERABILITY;
     }
 
     /*
