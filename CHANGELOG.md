@@ -20,6 +20,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Firewalker Salamander: casualty reduction increased to -50% (from -45%)
 - Human Cavalry: +10p (from 1240p)
 - Orc: added +10% prestige gains
+- Infamy removed
+- Spy mastery now increases spy strength recovery by 0.2% (max 2%) and reduces spy losses by 5% (max 50%) per 100 mastery
+- Wizard mastery now increases wizard strength recovery by 0.2% (max 2%) and reduces spell mana costs by 2% (max 20%) per 100 mastery
 
 ### Fixed
 - Spell reflect stats are now properly attributed to the dominion that cast the friendly spell

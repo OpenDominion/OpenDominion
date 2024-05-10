@@ -11,11 +11,6 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 class OpsCalculator
 {
     /**
-     * @var float Base amount of infamy lost each hour
-     */
-    protected const INFAMY_DECAY_BASE = -15;
-
-    /**
      * @var float Base amount of resilience lost each hour
      */
     protected const SPY_RESILIENCE_DECAY = -8;
@@ -198,10 +193,17 @@ class OpsCalculator
         // Techs
         $spiesKilledMultiplier += $dominion->getTechPerkMultiplier('spy_losses');
 
+        // Mastery
+        $maxMasteryBonus = -50;
+        $spiesKilledMultiplier += $dominion->spy_mastery / 1000 * $maxMasteryBonus / 100;
+
         // Mutual War
         if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
             $spiesKilledMultiplier *= 0.8;
         }
+
+        // Cap at -80%
+        $spiesKilledMultiplier = max(0.2, $spiesKilledMultiplier);
 
         return ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
     }
@@ -272,77 +274,6 @@ class OpsCalculator
     public function getArchmageLosses(Dominion $dominion, Dominion $target, string $type): float
     {
         return $this->getWizardLosses($dominion, $target, $type) / 10;
-    }
-
-    /**
-     * Returns the amount of infamy gained by a Dominion.
-     *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param string $type
-     * @param float $modifier
-     * @return int
-     */
-    public function getInfamyGain(Dominion $dominion, Dominion $target, string $type, float $modifier = 1): int
-    {
-        $infamy = 5;
-        if ($type == 'spy') {
-            $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
-            $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
-            $selfStrength = $dominion->spy_strength;
-            $targetStrength = $target->spy_strength;
-        } elseif ($type == 'wizard') {
-            $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
-            $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
-            $selfStrength = $dominion->wizard_strength;
-            $targetStrength = $target->wizard_strength;
-        } else {
-            return 0;
-        }
-
-        $successRate = $this->blackOperationSuccessChance($selfRatio, $targetRatio, $selfStrength, $targetStrength);
-        if ($successRate < 0.7 && $successRate >= 0.6) {
-            $infamy += 15;
-        } elseif ($successRate < 0.6 && $successRate >= 0.5) {
-            $infamy += 30;
-        } elseif ($successRate < 0.5 && $successRate >= 0.4) {
-            $infamy += 40;
-        } elseif ($successRate < 0.4) {
-            $infamy += 50;
-        }
-
-        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
-        if ($range >= 75) {
-            $infamy += 10;
-        }
-
-        // Reduced outside of Shadow League or Mutual War
-        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
-        $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
-        if (!($blackGuard || $mutualWarDeclared)) {
-            $infamy = $infamy / 3;
-        }
-
-        return round($infamy * $modifier);
-    }
-
-    /**
-     * Returns the Dominion's hourly infamy decay.
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getInfamyDecay(Dominion $dominion): int
-    {
-        $decay = static::INFAMY_DECAY_BASE;
-
-        $masteryCombined = min($dominion->spy_mastery, 500) + min($dominion->wizard_mastery, 500);
-        $minInfamy = floor($masteryCombined / 100) * 50;
-        if ($dominion->infamy + $decay < $minInfamy) {
-            return $minInfamy - $dominion->infamy;
-        }
-
-        return max($decay, -$dominion->infamy);
     }
 
     /**
@@ -427,15 +358,14 @@ class OpsCalculator
     }
 
     /**
-     * Returns the amount of mastery gained by a Dominion.
+     * Returns the change in mastery between two Dominions.
      *
      * @param Dominion $dominion
      * @param Dominion $target
      * @param string $type
-     * @param float $modifier
      * @return int
      */
-    public function getMasteryGain(Dominion $dominion, Dominion $target, string $type, float $modifier = 1): int
+    public function getMasteryChange(Dominion $dominion, Dominion $target, string $type): int
     {
         if ($type == 'spy') {
             $selfMastery = $dominion->spy_mastery;
@@ -447,56 +377,12 @@ class OpsCalculator
             return 0;
         }
 
-        $mastery = round($this->getInfamyGain($dominion, $target, $type, $modifier) / 10);
-        $masteryDifference = $selfMastery - $targetMastery;
-
-        if ($masteryDifference > 500) {
-            return 0;
-        }
-        if (abs($masteryDifference) <= 100) {
-            $mastery += 1;
-        }
-        if ($targetMastery > $selfMastery) {
-            $mastery += 1;
+        $masteryDifference = clamp($targetMastery - $selfMastery, -500, 500);
+        if ($masteryDifference == -500) {
+            $masteryDifference -= 1;
         }
 
-        return $mastery;
-    }
-
-    /**
-     * Returns the amount of mastery lost by a Dominion.
-     *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param string $type
-     * @return int
-     */
-    public function getMasteryLoss(Dominion $dominion, Dominion $target, string $type): int
-    {
-        if ($type == 'spy') {
-            $selfMastery = $dominion->spy_mastery;
-            $targetMastery = $target->spy_mastery;
-        } elseif ($type == 'wizard') {
-            $selfMastery = $dominion->wizard_mastery;
-            $targetMastery = $target->wizard_mastery;
-        } else {
-            return 0;
-        }
-
-        $mastery = 0;
-        $masteryDifference = $selfMastery - $targetMastery;
-
-        if ($targetMastery <= 100) {
-            return 0;
-        }
-        if (abs($masteryDifference) <= 100) {
-            $mastery += 1;
-        }
-        if ($targetMastery > $selfMastery) {
-            $mastery += 1;
-        }
-
-        return $mastery;
+        return max(0, round(3 + $masteryDifference / 200));
     }
 
     /*

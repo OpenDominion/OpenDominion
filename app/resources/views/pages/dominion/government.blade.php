@@ -443,9 +443,9 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 4th day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
+                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 4th day of the round. Successful war operations increase your masteries, which increase your ops capabilities.</p>
                     <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains, which remain active for 12 hours after war is cancelled. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
-                    <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, negative status effects are extended by 6 hours, and infamy gains are tripled.</p>
+                    <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, negative status effects are extended by 6 hours.</p>
                 </div>
             </div>
         </div>
@@ -530,7 +530,6 @@
                             </h4>
                             <ul class="text-left" style="padding: 0 30px;">
                                 <li>Enables war operations between members.</li>
-                                <li>Infamy gains between members are tripled.</li>
                                 <li>75% of casualties suffered due to failed operations between members are automatically re-trained.</li>
                                 <li>Info op strength costs are halved.</li>
                             </ul>

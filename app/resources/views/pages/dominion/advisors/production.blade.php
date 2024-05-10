@@ -250,13 +250,6 @@
 
                     </div>
                 </div>
-                @if ($target->infamy > 0)
-                    <div class="box-footer text-center">
-                        @if ($target->infamy > 0)
-                            <p>You have <b>{{ $target->infamy }}</b> infamy, which is increasing your platinum production by {{ number_format(10 * $productionCalculator->getInfamyBonus($target), 2) }}% and gem/lumber/mana/ore production by {{ number_format(4 * $productionCalculator->getInfamyBonus($target), 2) }}%.</p>
-                        @endif
-                    </div>
-                @endif
             </div>
         </div>
 

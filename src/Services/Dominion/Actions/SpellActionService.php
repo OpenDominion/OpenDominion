@@ -1210,29 +1210,23 @@ class SpellActionService
         $damageDealtString = '';
         $warRewardsString = '';
 
-        // Infamy and Resilience Gains
-        $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard', $modifier);
+        // Resilience Gains
         if ($spellKey == 'fireball' || $spellKey == 'lightning_bolt') {
             $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
         } else {
             $resilienceGain = 0;
         }
-
-        if ($dominion->infamy + $infamyGain > 1000) {
-            $infamyGain = max(0, 1000 - $dominion->infamy);
-        }
-        $dominion->infamy += $infamyGain;
         $target->wizard_resilience += $resilienceGain;
 
         // Mastery Gains
-        $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard', $modifier);
+        $masteryGain = $this->opsCalculator->getMasteryChange($dominion, $target, 'wizard', $modifier);
         $dominion->wizard_mastery += $masteryGain;
 
         // Mastery Loss
-        $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'wizard'), $target->wizard_mastery);
+        $masteryLoss = min($this->opsCalculator->getMasteryChange($dominion, $target, 'wizard'), $target->wizard_mastery);
         $target->wizard_mastery -= $masteryLoss;
 
-        $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
+        $warRewardsString = "You gained {$masteryGain} wizard mastery.";
         if ($masteryLoss > 0) {
             $damageDealtString = "{$masteryLoss} wizard mastery";
         }

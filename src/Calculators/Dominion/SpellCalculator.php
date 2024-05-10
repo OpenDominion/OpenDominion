@@ -59,6 +59,10 @@ class SpellCalculator
         // Wonders
         $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
 
+        // Mastery
+        $maxMasteryBonus = -20;
+        $spellCostMultiplier += $dominion->wizard_mastery / 1000 * $maxMasteryBonus / 100;
+
         $manaCost = round($spell->cost_mana * $totalLand * $spellCostMultiplier);
 
         // Amplify Magic

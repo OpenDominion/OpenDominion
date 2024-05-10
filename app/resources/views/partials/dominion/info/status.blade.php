@@ -64,14 +64,6 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("infamy") }}">
-                            Infamy:
-                        </span>
-                    </td>
-                    <td>{{ number_format(array_get($data, 'infamy', 0)) }}</td>
-                </tr>
-                <tr>
-                    <td>
                         <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("spy_mastery") }}">
                             Spy Mastery:
                         </span>

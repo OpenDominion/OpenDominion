@@ -870,18 +870,12 @@ class EspionageActionService
         $damageDealtString = '';
         $warRewardsString = '';
 
-        // Infamy and Resilience Gains
-        $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'spy', $modifier);
+        // Resilience Gains
         if ($operationKey == 'magic_snare') {
             $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'spy');
         } else {
             $resilienceGain = 0;
         }
-
-        if ($dominion->infamy + $infamyGain > 1000) {
-            $infamyGain = max(0, 1000 - $dominion->infamy);
-        }
-        $dominion->infamy += $infamyGain;
         $target->spy_resilience += $resilienceGain;
 
         // Mastery Gains
@@ -892,7 +886,7 @@ class EspionageActionService
         $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'spy'), $target->spy_mastery);
         $target->spy_mastery -= $masteryLoss;
 
-        $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} spy mastery.";
+        $warRewardsString = "You gained and {$masteryGain} spy mastery.";
         if ($masteryLoss > 0) {
             $damageDealtString = "{$masteryLoss} spy mastery";
         }

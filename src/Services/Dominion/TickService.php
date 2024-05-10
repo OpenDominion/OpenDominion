@@ -214,7 +214,6 @@ class TickService
                     'dominions.peasants' => DB::raw('dominions.peasants + dominion_tick.peasants'),
                     'dominions.peasants_last_hour' => DB::raw('dominion_tick.peasants'),
                     'dominions.morale' => DB::raw('dominions.morale + dominion_tick.morale'),
-                    'dominions.infamy' => DB::raw('dominions.infamy + dominion_tick.infamy'),
                     'dominions.spy_strength' => DB::raw('dominions.spy_strength + dominion_tick.spy_strength'),
                     'dominions.wizard_strength' => DB::raw('dominions.wizard_strength + dominion_tick.wizard_strength'),
                     'dominions.spy_resilience' => DB::raw('dominions.spy_resilience + dominion_tick.spy_resilience'),
@@ -897,9 +896,6 @@ class TickService
 
         // Morale
         $tick->morale = $dominion->getMoraleGain();
-
-        // Infamy
-        $tick->infamy = $this->opsCalculator->getInfamyDecay($dominion);
 
         // Spy Strength
         if ($dominion->spy_strength < 100) {

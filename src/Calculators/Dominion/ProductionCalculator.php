@@ -120,10 +120,6 @@ class ProductionCalculator
 
         // Values
         $guardTax = 2;
-        $maxInfamyBonus = 10;
-
-        // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
@@ -385,12 +381,6 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values
-        $maxInfamyBonus = 4;
-
-        // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
-
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('lumber_production');
 
@@ -505,12 +495,6 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values
-        $maxInfamyBonus = 4;
-
-        // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
-
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('mana_production');
 
@@ -620,12 +604,6 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Values
-        $maxInfamyBonus = 4;
-
-        // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
-
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('ore_production');
 
@@ -691,12 +669,6 @@ class ProductionCalculator
     public function getGemProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 1;
-
-        // Values
-        $maxInfamyBonus = 4;
-
-        // Infamy
-        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
@@ -842,21 +814,6 @@ class ProductionCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor', true);
 
         return $multiplier;
-    }
-
-    /**
-     * Returns the infamy bonus multiplier for a dominion.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getInfamyBonus(Dominion $dominion): float
-    {
-        if ($dominion->infamy == 0) {
-            return 0;
-        }
-
-        return (1 + error_function(0.00452 * ($dominion->infamy - 385))) / 2;
     }
 
     //</editor-fold>

@@ -53,17 +53,6 @@
                                         min="0"
                                         value="{{ $targetDominion->prestige }}" />
                             </div>
-                            <div class="col-xs-3 text-right">
-                                Infamy
-                            </div>
-                            <div class="col-xs-3 text-left">
-                                <input type="number"
-                                        name="attrs[infamy]"
-                                        class="form-control text-center"
-                                        placeholder="250"
-                                        min="0"
-                                        value="{{ $targetDominion->infamy }}" />
-                            </div>
                         </div>
 
                         <div class="form-group row">

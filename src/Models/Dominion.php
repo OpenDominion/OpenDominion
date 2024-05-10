@@ -25,7 +25,6 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $peasants_last_hour
  * @property int $draft_rate
  * @property int $morale
- * @property int $infamy
  * @property float $spy_strength
  * @property float $wizard_strength
  * @property int $spy_resilience
@@ -129,7 +128,6 @@ class Dominion extends AbstractModel
         'peasants_last_hour' => 'integer',
         'draft_rate' => 'integer',
         'morale' => 'integer',
-        'infamy' => 'integer',
         'spy_strength' => 'float',
         'wizard_strength' => 'float',
         'spy_resilience' => 'integer',

@@ -1007,6 +1007,10 @@ class MilitaryCalculator
         // Techs
         $regen += $dominion->getTechPerkValue('spy_strength_recovery');
 
+        // Mastery
+        $maxMasteryBonus = 2;
+        $regen += $dominion->spy_mastery / 1000 * $maxMasteryBonus;
+
         return $regen;
     }
 
@@ -1102,6 +1106,10 @@ class MilitaryCalculator
 
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
+
+        // Mastery
+        $maxMasteryBonus = 2;
+        $regen += $dominion->wizard_mastery / 1000 * $maxMasteryBonus;
 
         // Resilience bonus when snared
         if ($dominion->wizard_strength < 30) {
