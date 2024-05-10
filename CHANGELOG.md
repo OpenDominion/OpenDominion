@@ -15,6 +15,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fearless Adventures now reduces exploring draftee cost (was -50% morale cost)
 - Exploring platinum cost tech perks are now halved for Firewalker/Goblin/Lycanthrope, draftee cost reductions removed
 - Urg Smash discount awarded for all buildings destroyed (from 25%), now excludes Nomad/Wood Elf
+- Firewalker: explore penalty removed (was +5%)
+- Firewalker: Alchemist Flame reduced to 13 platinum (from 15)
+- Firewalker Salamander: casualty reduction increased to -50% (from -45%)
 
 ### Fixed
 - Spell reflect stats are now properly attributed to the dominion that cast the friendly spell

@@ -13,7 +13,6 @@ perks:
   lumber_production: -10
   gem_production: 15
   construction_cost: -10
-  explore_platinum_cost: 5
 units:
   - name: Fire Sprite
     cost:
@@ -46,4 +45,4 @@ units:
       offense: 5
       defense: 3
     perks:
-      casualties_offense: -45
+      casualties_offense: -50
