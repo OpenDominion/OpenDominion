@@ -37,7 +37,7 @@ units:
       casualties: -25
   - name: Cavalry
     cost:
-      platinum: 1240
+      platinum: 1250
       ore: 100
     power:
       offense: 6
