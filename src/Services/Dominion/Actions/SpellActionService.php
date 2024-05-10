@@ -599,6 +599,9 @@ class SpellActionService
 
         $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa, $dominion->wizard_strength, $target->wizard_strength);
 
+        // Spells
+        $successRate -= $target->getSpellPerkValue('enemy_spell_chance');
+
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 

@@ -623,6 +623,9 @@ class EspionageActionService
 
         $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
+        // Spells
+        $successRate -= $target->getSpellPerkValue('enemy_espionage_chance');
+
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
