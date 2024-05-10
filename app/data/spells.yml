@@ -222,7 +222,7 @@ alchemist_flame:
   races:
     - firewalker
   perks:
-    platinum_production_raw: 15
+    platinum_production_raw: 13
 erosion:
   name: Erosion
   category: self

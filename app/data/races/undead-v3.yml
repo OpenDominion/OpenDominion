@@ -20,6 +20,8 @@ units:
     power:
       offense: 3
       defense: 0
+    perks:
+      casualties: 20
     no_boat: true
   - name: Acolyte
     cost:
