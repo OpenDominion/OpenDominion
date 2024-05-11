@@ -278,10 +278,8 @@ class AIService
 
         // Explore
         try {
-            if ($dominion->round->daysInRound() > 1 || $dominion->round->hoursInDay() >= 3) {
-                if ($incomingLand < 96 && $totalLand < $config['max_land']) {
-                    $this->exploreLand($dominion->refresh(), $config, $totalLand);
-                }
+            if ($incomingLand < 120 && $totalLand < $config['max_land']) {
+                $this->exploreLand($dominion->refresh(), $config, $totalLand);
             }
         } catch (GameException $e) {
             // Come never here again! Leave your barrow empty!
@@ -364,7 +362,7 @@ class AIService
     public function exploreLand(Dominion $dominion, array $config, int $totalLand) {
         // TODO: calcuate actual percentages needed for farms, towers, etc
         $landToExplore = [];
-        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 16);
+        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 24);
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (
@@ -474,8 +472,13 @@ class AIService
     }
 
     public function releaseDraftees(Dominion $dominion, array $config) {
-        if ($dominion->military_draftees > 0) {
-            $this->releaseActionService->release($dominion, ['draftees' => $dominion->military_draftees]);
+        $amount = $dominion->military_draftees;
+        if ($dominion->resource_platinum > 200000) {
+            // Keep draftees in reserve if unable to spend platinum
+            $amount = max(0, $dominion->military_draftees - 800);
+        }
+        if ($amount > 0) {
+            $this->releaseActionService->release($dominion, ['draftees' => $amount]);
         }
     }
 }
