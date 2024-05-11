@@ -49,3 +49,4 @@ units:
     perks:
       immortal: 1
       conversion: 3,15 # slot 3, one per 15 sent
+playable: false

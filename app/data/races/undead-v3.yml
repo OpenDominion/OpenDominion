@@ -9,7 +9,7 @@ explorer_difficulty: 3
 converter_difficulty: 3
 home_land_type: swamp
 perks:
-  max_population: 10
+  max_population: 5
   food_consumption: -50
   mana_production: 20
 units:
@@ -23,7 +23,7 @@ units:
     perks:
       casualties: 20
     no_boat: true
-  - name: Acolyte
+  - name: Necromancer
     cost:
       platinum: 800
     power:
@@ -32,7 +32,7 @@ units:
   - name: Crypt Lord
     cost:
       platinum: 1100
-      mana: 25
+      mana: 30
     power:
       offense: 0
       defense: 6

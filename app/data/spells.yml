@@ -456,9 +456,10 @@ raise_the_dead:
   cost_strength: 5
   duration: 12
   races:
-    - undead-v3
+    - undead
   perks:
     conversions_range: 60
+  active: false
 burning:
   name: Burning
   category: effect

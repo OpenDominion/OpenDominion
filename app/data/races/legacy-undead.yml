@@ -1,5 +1,5 @@
 key: undead
-name: Vampire
+name: Undead (Legacy)
 alignment: evil
 description: >-
   <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, bloodthirsty vampires and their hideous mutant progeny. This rag-tag alliance share one thing in common: a hatred of life. They will seize every opportunity to snuff it out, or drag it kicking and screaming into the shadow of undeath.</p>
@@ -9,50 +9,45 @@ explorer_difficulty: 2
 converter_difficulty: 3
 home_land_type: swamp
 perks:
-  max_population: 15
+  max_population: 7.5
   food_consumption: -75
-  mana_production: 10
+  mana_production: 20
   immortal_wizards: 1
 units:
   - name: Dire Bat
     cost:
-      platinum: 225
-      ore: 0
+      platinum: 275
+      mana: 15
     power:
-      offense: 2.5
+      offense: 3
       defense: 0
-    perks:
-      immortal: 1
     need_boat: false
   - name: Ghoul
     cost:
-      platinum: 225
-      ore: 0
+      platinum: 275
+      mana: 0
     power:
       offense: 0
-      defense: 2.5
-    perks:
-      casualties: -75
+      defense: 3
   - name: Progeny
     cost:
-      platinum: 835
-      ore: 0
+      platinum: 1000
+      mana: 0
     power:
       offense: 2
-      defense: 4
+      defense: 5
     perks:
-      casualties: -75
-      conversion: 2,18 # slot 2, one per 18 sent
+      casualties: -50
     need_boat: false
   - name: Vampire
     cost:
       platinum: 1000
-      ore: 0
+      mana: 0
     power:
       offense: 4
       defense: 3
     perks:
       immortal: 1
-      conversion: 3,18 # slot 3, one per 18 sent
+      conversion: 3,22 # slot 3, one per 18 sent
     need_boat: false
 playable: true
