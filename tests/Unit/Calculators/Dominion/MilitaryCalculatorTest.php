@@ -574,8 +574,9 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getTechPerkValue')->with('wizard_strength_recovery')->andReturn(1)->byDefault();
         $dominion->shouldReceive('isActive')->andReturn(true)->byDefault();
         $dominion->shouldReceive('getAttribute')->with('building_wizard_guild')->andReturn(10)->byDefault();
+        $dominion->shouldReceive('getAttribute')->with('wizard_mastery')->andReturn(100)->byDefault();
         $dominion->shouldReceive('getAttribute')->with('wizard_strength')->andReturn(50)->byDefault();
 
-        $this->assertEquals(5.1, $this->sut->getWizardStrengthRegen($dominion));
+        $this->assertEquals(5.3, $this->sut->getWizardStrengthRegen($dominion));
     }
 }

@@ -27,10 +27,10 @@ class TickTest extends AbstractBrowserKitTestCase
         $tickService = app(TickService::class);
 
         $dominion->protection_ticks_remaining = 0;
-        $dominion->morale = 74;
+        $dominion->morale = 71;
         $dominion->save();
 
-        // Test +6 morale below 80
+        // Test +9 morale below 80
         $tickService->performTick($round);
         $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 80]);
 
