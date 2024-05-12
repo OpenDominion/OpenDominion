@@ -12,6 +12,7 @@ perks:
   max_population: 5
   food_consumption: -50
   mana_production: 20
+  boat_capacity: 5
 units:
   - name: Zombie
     cost:

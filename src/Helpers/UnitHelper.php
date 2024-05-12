@@ -165,12 +165,12 @@ class UnitHelper
             'casualties_offense' => '%+d%% offensive casualties.',
             'fixed_casualties' => 'ALWAYS suffers %g%% casualties.',
 
-            'immortal' => 'Almost never dies.',
-            'immortal_except_vs' => 'Almost never dies, except vs %s.',
-            'immortal_from_pairing' => 'Almost never dies when paired with %2$g %1$s.',
-            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %g%%+ of your size.',
+            'immortal' => 'Immortal.',
+            'immortal_except_vs' => 'Immortal, except vs %s.',
+            'immortal_from_pairing' => 'Immortal on attack when paired with %2$g %1$s at home.',
+            'immortal_vs_land_range' => 'Immortal when attacking dominions %g%%+ of your size.',
 
-            'kills_immortal' => 'Can kill spirits and the undead.',
+            'kills_immortal' => 'Can kill all immortal units.',
             'reduce_combat_losses' => 'Reduces combat losses.',
             'rebirth' => 'Reborn %g hours after death.',
 

@@ -192,6 +192,7 @@ techs:
     name: Explorer's Intuition
     perks:
       explore_platinum_cost: -2.5
+      explore_draftee_cost: -1
     requires:
       - tech_19_1
       - tech_16_3
@@ -268,14 +269,15 @@ techs:
     name: Explorer's Guile
     perks:
       explore_platinum_cost: -7.5
+      explore_draftee_cost: -2
     requires:
       - tech_14_7
   tech_17_5:
     x: 17
     y: 5
-    name: Fearless Adventurers
+    name: Deep Pockets
     perks:
-      explore_draftee_cost: -2
+      theft_gains: 15
     requires:
       - tech_18_3
       - tech_16_7

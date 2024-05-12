@@ -13,8 +13,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Bots can now explore immediately (was prevented until hour 3) for up to 20 acres per hour (from 16)
 - Exploring morale cost doubled for dominions larger than 1000 acres
-- Fearless Adventures now reduces exploring draftee cost (was -50% morale cost)
-- Exploring platinum cost tech perks are now halved for Firewalker/Goblin/Lycanthrope, draftee cost reductions removed
+- Fearless Adventures (-50% morale cost) replaced with Deep Pockets (+15% gains from theft)
+- Exploring platinum cost tech perks are now halved for Firewalker/Goblin/Lycanthrope
 - Urg Smash discount awarded for all buildings destroyed (from 25%), now excludes Nomad/Wood Elf
 - Firewalker: explore penalty removed (was +5%)
 - Firewalker: Alchemist Flame reduced to 13 platinum (from 15)

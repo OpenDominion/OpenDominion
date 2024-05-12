@@ -175,6 +175,7 @@ class SpellHelper
             // Spy/Wizard related
             'energy_mirror' => '%d%% chance to reflect incoming offensive spells',
             'enemy_espionage_chance' => '%+g%% chance of causing hostile spy operations to fail',
+            'enemy_fireball_damage' => '%+g%% enemy fireball damage',
             'enemy_spell_chance' => '%+g%% chance of causing hostile spells to fail',
             'enemy_spell_damage' => '%+g%% enemy spell damage',
             'enemy_spell_duration' => '%+g enemy spell duration',
