@@ -23,7 +23,7 @@ units:
       defense: 0
     perks:
       casualties: 20
-    no_boat: true
+    need_boat: false
   - name: Necromancer
     cost:
       platinum: 800
