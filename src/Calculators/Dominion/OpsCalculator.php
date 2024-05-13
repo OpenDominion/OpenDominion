@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
@@ -19,14 +19,16 @@ class OpsCalculator
     /**
      * @var float Base amount of resilience lost each hour
      */
-    protected const SPY_RESILIENCE_DECAY = -8;
-    protected const WIZARD_RESILIENCE_DECAY = -5;
+    protected const RESILIENCE_DECAY = -8;
+    protected const FIREBALL_METER_DECAY = -4;
+    protected const LIGHTNING_BOLT_METER_DECAY = -4;
 
     /**
      * @var float Base amount of resilience gained per op
      */
-    protected const SPY_RESILIENCE_GAIN = 10;
-    protected const WIZARD_RESILIENCE_GAIN = 12;
+    protected const RESILIENCE_GAIN = 10;
+    protected const FIREBALL_METER_GAIN = 10;
+    protected const LIGHTNING_BOLT_METER_GAIN = 10;
 
     /** @var GovernmentService */
     protected $governmentService;
@@ -49,8 +51,8 @@ class OpsCalculator
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
-    /** @var SpellHelper */
-    protected $spellHelper;
+    /** @var SpellCalculator */
+    protected $spellCalculator;
 
     /**
      * OpsCalculator constructor.
@@ -62,7 +64,7 @@ class OpsCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param PopulationCalculator $populationCalculator
      * @param RangeCalculator $rangeCalculator
-     * @param SpellHelper $spellHelper
+     * @param SpellCalculator $spellCalculator
      */
     public function __construct(
         GovernmentService $governmentService,
@@ -72,7 +74,7 @@ class OpsCalculator
         MilitaryCalculator $militaryCalculator,
         PopulationCalculator $populationCalculator,
         RangeCalculator $rangeCalculator,
-        SpellHelper $spellHelper
+        SpellCalculator $spellCalculator
     )
     {
         $this->governmentService = $governmentService;
@@ -82,7 +84,7 @@ class OpsCalculator
         $this->militaryCalculator = $militaryCalculator;
         $this->populationCalculator = $populationCalculator;
         $this->rangeCalculator = $rangeCalculator;
-        $this->spellHelper = $spellHelper;
+        $this->spellCalculator = $spellCalculator;
     }
 
     /**
@@ -286,27 +288,14 @@ class OpsCalculator
      * Returns the amount of resilience gained by a Dominion.
      *
      * @param Dominion $dominion
-     * @param string $type
      * @return int
      */
-    public function getResilienceGain(Dominion $dominion, string $type): int
+    public function getResilienceGain(Dominion $dominion): int
     {
-        if ($type == 'spy') {
-            $resilience = static::SPY_RESILIENCE_GAIN;
-            if ($dominion->spy_resilience + $resilience > 1000) {
-                return 1000 - $dominion->spy_resilience;
-            }
-        } elseif ($type == 'wizard') {
-            $resilience = static::WIZARD_RESILIENCE_GAIN;
-            if ($dominion->wizard_resilience + $resilience > 1000) {
-                return 1000 - $dominion->wizard_resilience;
-            }
-        } else {
-            return 0;
+        $resilience = static::RESILIENCE_GAIN;
+        if ($dominion->resilience + $resilience > 1000) {
+            return 1000 - $dominion->resilience;
         }
-
-        // TODO: Placeholder for tech perk
-
         return $resilience;
     }
 
@@ -314,24 +303,65 @@ class OpsCalculator
      * Returns the Dominion's hourly resilience decay.
      *
      * @param Dominion $dominion
+     * @return int
+     */
+    public function getResilienceDecay(Dominion $dominion): int
+    {
+        $decay = static::RESILIENCE_DECAY;
+        $resilience = $dominion->resilience;
+        return max($decay, -$resilience);
+    }
+
+    /**
+     * Returns the amount of spell meter gained by a Dominion.
+     *
+     * @param Dominion $dominion
      * @param string $type
      * @return int
      */
-    public function getResilienceDecay(Dominion $dominion, string $type): int
+    public function getSpellMeterGain(Dominion $dominion, string $type): int
     {
-        if ($type == 'spy') {
-            $decay = static::SPY_RESILIENCE_DECAY;
-            $resilience = $dominion->spy_resilience;
-        } elseif ($type == 'wizard') {
-            $decay = static::WIZARD_RESILIENCE_DECAY;
-            $resilience = $dominion->wizard_resilience;
+        if ($type == 'fireball') {
+            $gained = static::FIREBALL_METER_GAIN;
+            if ($dominion->fireball_meter + $gained > 1000) {
+                return 1000 - $dominion->fireball_meter;
+            }
+        } elseif ($type == 'lightning_bolt') {
+            $gained = static::LIGHTNING_BOLT_METER_GAIN;
+            if ($dominion->lightning_bolt_meter + $gained > 1000) {
+                return 1000 - $dominion->lightning_bolt_meter;
+            }
         } else {
             return 0;
         }
 
-        // TODO: Placeholder for tech perk
+        return $gained;
+    }
 
-        return max($decay, -$resilience);
+    /**
+     * Returns the Dominion's hourly spell meter decay.
+     *
+     * @param Dominion $dominion
+     * @param string $type
+     * @return int
+     */
+    public function getSpellMeterDecay(Dominion $dominion, string $type): int
+    {
+        if ($type == 'fireball') {
+            $decay = static::FIREBALL_METER_DECAY;
+            $meter = $dominion->fireball_meter;
+        } elseif ($type == 'lightning_bolt') {
+            $decay = static::LIGHTNING_BOLT_METER_DECAY;
+            $meter = $dominion->lightning_bolt_meter;
+        } else {
+            return 0;
+        }
+
+        if ($this->spellCalculator->isSpellActive($dominion, 'rejuvenation')) {
+            $decay *= 2;
+        }
+
+        return max($decay, -$meter);
     }
 
     /**

@@ -875,18 +875,18 @@ class EspionageActionService
 
         // Resilience Gains
         if ($operationKey == 'magic_snare') {
-            $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'spy');
+            $resilienceGain = $this->opsCalculator->getResilienceGain($target);
         } else {
             $resilienceGain = 0;
         }
-        $target->spy_resilience += $resilienceGain;
+        $target->resilience += $resilienceGain;
 
         // Mastery Gains
-        $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'spy', $modifier);
+        $masteryGain = $this->opsCalculator->getMasteryChange($dominion, $target, 'spy');
         $dominion->spy_mastery += $masteryGain;
 
         // Mastery Loss
-        $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'spy'), $target->spy_mastery);
+        $masteryLoss = min($this->opsCalculator->getMasteryChange($dominion, $target, 'spy'), $target->spy_mastery);
         $target->spy_mastery -= $masteryLoss;
 
         $warRewardsString = "You gained and {$masteryGain} spy mastery.";

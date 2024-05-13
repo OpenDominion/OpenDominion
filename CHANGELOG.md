@@ -27,6 +27,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Arcane Ward and Illuminate now increase chance of failure by 10% (was +10% defensive ratios)
 - Peasant vulnerabilty to fireball set to 50% all round (was 35-45% by day)
 - Improvement vulnerability to lightning set to 25% all round (was 30-20% by day)
+- Lightning Storm: new status effect (spell) with 24 hour duration, increases lightning bolt damage by 50%, immune to Burning while active, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
+- Burning now increases fireball damage by 100% (was fixed pop growth) and grants immunity to Lightning Storm
+- Burning and Lightning Storm are triggered by 20 successes of the matching spell (in a single hour or up to 30 over a 24 hour period)
 
 ### Fixed
 - Spell reflect stats are now properly attributed to the dominion that cast the friendly spell

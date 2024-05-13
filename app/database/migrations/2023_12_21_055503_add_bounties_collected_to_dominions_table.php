@@ -14,7 +14,7 @@ class AddBountiesCollectedToDominionsTable extends Migration
     public function up()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->integer('stat_bounties_collected')->after('stat_wonders_destroyed')->default(0);
+            $table->unsignedInteger('stat_bounties_collected')->after('stat_wonders_destroyed')->default(0);
         });
     }
 

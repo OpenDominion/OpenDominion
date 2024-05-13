@@ -28,8 +28,7 @@ class MiscHelper
             'morale' => 'Morale below 100% gives a defensive penalty.<br>Morale is lowered by exploring and invading.',
             'spy_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery awards +0.2% spy strength recovery (max +2%) and -5% spy losses (max -50%).',
             'wizard_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery awards +0.2% wizard strength recovery (max +2%) and -2% spell mana costs (max -20%).',
-            'spy_resilience' => 'Gained by victims of the magic snare operation.<br>Increases wizard strength recovery while under 30% by 1% per 100 resilience.',
-            'wizard_resilience' => 'Gained by victims of the lighting bolt spell.<br>Repairs 1% of lightning damage per 40 resilience after 12 hours.',
+            'resilience' => 'Gained by victims of the magic snare operation.<br>Increases wizard strength recovery while under 30% by 1% per 100 resilience.',
             'wpa' => 'Raw Wizard Ratio.<br>Used to calculate offense of Ice Elementals.',
         ];
 

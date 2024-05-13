@@ -13,7 +13,6 @@ class ResourceHelper
             'platinum' => 'Platinum',
             'gems' => 'Gems',
             'mana' => 'Mana',
-            'wizard_resilience' => 'Wizard Resilience',
         ];
     }
 }

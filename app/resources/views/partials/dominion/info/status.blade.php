@@ -159,15 +159,15 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("spy_resilience") }}">
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("resilience") }}">
                             Resilience:
                         </span>
                     </td>
                     <td>
-                        {{ number_format(array_get($data, 'spy_resilience', 0)) }}
-                        @if (array_get($data, 'spy_resilience', 0) > 0)
+                        {{ number_format(array_get($data, 'resilience', 0)) }}
+                        @if (array_get($data, 'resilience', 0) > 0)
                             <small class="text-muted">
-                                ({{ number_format(array_get($data, 'spy_resilience', 0) / 100, 2) }}%)
+                                ({{ number_format(array_get($data, 'resilience', 0) / 100, 2) }}%)
                             </small>
                         @endif
                     </td>

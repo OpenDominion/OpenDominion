@@ -807,7 +807,7 @@ class SpellActionService
                 } elseif (Str::startsWith($perk->key, 'apply_')) {
                     $statusEffectKey = str_replace('apply_', '', $perk->key);
                     $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", ['self', 'friendly', 'effect']);
-                    if (!$immunity && !$spellReflected && $warDeclared && $target->wizard_resilience >= $perk->pivot->value) {
+                    if (!$immunity && !$spellReflected && $warDeclared && $target->{"{$spellKey}_meter"} >= $perk->pivot->value) {
                         $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
                         $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);
                         if ($statusEffectActiveSpell == null) {
@@ -1216,14 +1216,14 @@ class SpellActionService
 
         // Resilience Gains
         if ($spellKey == 'fireball' || $spellKey == 'lightning_bolt') {
-            $resilienceGain = $this->opsCalculator->getResilienceGain($target, 'wizard');
+            $meterGain = $this->opsCalculator->getSpellMeterGain($target, $spellKey);
         } else {
-            $resilienceGain = 0;
+            $meterGain = 0;
         }
-        $target->wizard_resilience += $resilienceGain;
+        $target->{"{$spellKey}_meter"} += $meterGain;
 
         // Mastery Gains
-        $masteryGain = $this->opsCalculator->getMasteryChange($dominion, $target, 'wizard', $modifier);
+        $masteryGain = $this->opsCalculator->getMasteryChange($dominion, $target, 'wizard');
         $dominion->wizard_mastery += $masteryGain;
 
         // Mastery Loss

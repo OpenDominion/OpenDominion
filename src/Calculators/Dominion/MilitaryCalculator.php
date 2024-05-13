@@ -1113,7 +1113,7 @@ class MilitaryCalculator
 
         // Resilience bonus when snared
         if ($dominion->wizard_strength < 30) {
-            $regen += ($dominion->spy_resilience / 100);
+            $regen += ($dominion->resilience / 100);
         }
 
         return $regen;

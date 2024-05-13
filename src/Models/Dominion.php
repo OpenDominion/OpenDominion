@@ -27,10 +27,11 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $morale
  * @property float $spy_strength
  * @property float $wizard_strength
- * @property int $spy_resilience
- * @property int $wizard_resilience
  * @property int $spy_mastery
  * @property int $wizard_mastery
+ * @property int $resilience
+ * @property int $fireball_meter
+ * @property int $lightning_bolt_meter
  * @property bool $daily_platinum
  * @property bool $daily_land
  * @property int $daily_actions
@@ -130,10 +131,9 @@ class Dominion extends AbstractModel
         'morale' => 'integer',
         'spy_strength' => 'float',
         'wizard_strength' => 'float',
-        'spy_resilience' => 'integer',
-        'wizard_resilience' => 'integer',
         'spy_mastery' => 'integer',
         'wizard_mastery' => 'integer',
+        'resilience' => 'integer',
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
         'daily_actions' => 'integer',
