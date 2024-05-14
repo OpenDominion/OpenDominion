@@ -663,7 +663,7 @@ class EspionageActionService
         $damageDealt = [];
         $totalDamage = 0;
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
-        $baseDamageReductionMultiplier = $this->opsCalculator->getDamageReduction($target, 'spy');
+        $baseDamageReductionMultiplier = 0;
 
         // Techs
         $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage");

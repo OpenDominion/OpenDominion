@@ -186,15 +186,6 @@ class OpsCalculator
         $spyLossSpaRatio = ($targetRatio / $selfRatio);
         $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, $min, $max);
 
-        // Guilds
-        $guildSpyCasualtyReduction = 2.5;
-        $guildSpyCasualtyReductionMax = 25;
-
-        $spiesKilledMultiplier = (1 - min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildSpyCasualtyReduction),
-            ($guildSpyCasualtyReductionMax / 100)
-        ));
-
         // Spells
         $spiesKilledMultiplier += $dominion->getSpellPerkMultiplier('spy_losses');
 
@@ -253,15 +244,6 @@ class OpsCalculator
 
         $wizardLossSpaRatio = ($targetRatio / $selfRatio);
         $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, $min, $max);
-
-        // Guilds
-        $guildCasualtyReduction = 2.5;
-        $guildWizardCasualtyReductionMax = 25;
-
-        $wizardsKilledMultiplier = (1 - min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildCasualtyReduction),
-            ($guildWizardCasualtyReductionMax / 100)
-        ));
 
         // Mutual War
         if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
@@ -365,35 +347,6 @@ class OpsCalculator
     }
 
     /**
-     * Returns the damage reduction from defensive ratio.
-     *
-     * @param Dominion $dominion
-     * @param string $type
-     * @return float
-     */
-    public function getDamageReduction(Dominion $dominion, string $type): float
-    {
-        $ratio = 0;
-
-        if ($type == 'spy') {
-            $ratio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
-        } elseif ($type == 'wizard') {
-            $ratio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
-        }
-
-        if ($ratio == 0) {
-            return 0;
-        }
-
-        // Scale ratio required from 0.5 at Day 4, to 1.0 at Day 24, to 1.5 at Day 44
-        $days = clamp($dominion->round->daysInRound() - 4, 0, 40);
-        $daysModifier = (0.025 * $days) + 0.5;
-        $modifiedRatio = $ratio / $daysModifier;
-
-        return min(0.5, 0.72 * log(1 + 4 * $modifiedRatio, 10));
-    }
-
-    /**
      * Returns the change in mastery between two Dominions.
      *
      * @param Dominion $dominion
@@ -429,10 +382,12 @@ class OpsCalculator
      */
     public function getSpellVulnerablilityProtectionModifier(Dominion $dominion): float
     {
-        $ratioProtection = $this->getDamageReduction($dominion, 'wizard');
+        $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
+        $ratioProtection = min(0.8, 1.6 * $wizardRatio);
+
         $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
 
-        return (1 - $ratioProtection) * (1 - $spiresProtection);
+        return min(0.8, $ratioProtection + $spiresProtection);
     }
 
     /*

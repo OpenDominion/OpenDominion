@@ -995,15 +995,6 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // Guilds
-        $spyStrengthPerGuild = 0.1;
-        $spyStrengthPerGuildMax = 1;
-
-        $regen += min(
-            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerGuild),
-            $spyStrengthPerGuildMax
-        );
-
         // Techs
         $regen += $dominion->getTechPerkValue('spy_strength_recovery');
 
@@ -1094,15 +1085,6 @@ class MilitaryCalculator
     public function getWizardStrengthRegen(Dominion $dominion): float
     {
         $regen = 4;
-
-        // Guilds
-        $wizardStrengthPerGuild = 0.1;
-        $wizardStrengthPerGuildMax = 1;
-
-        $regen += min(
-            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerGuild),
-            $wizardStrengthPerGuildMax
-        );
 
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');

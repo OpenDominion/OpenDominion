@@ -53,6 +53,7 @@ class LogParserService
         'Barracks' => 'barracks',
         'Factories' => 'factory',
         'Guilds' => 'wizard_guild',
+        'Wizard Guilds' => 'wizard_guild',
         'Lumber Yards' => 'lumberyard',
         'Lumberyards' => 'lumberyard',
         'Masonries' => 'masonry',

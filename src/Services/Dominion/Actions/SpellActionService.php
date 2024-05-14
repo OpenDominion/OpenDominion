@@ -843,8 +843,6 @@ class SpellActionService
                         throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to destroy.");
                     }
                     $attrValue = $this->opsCalculator->getImprovementsVulnerable($target, $attr);
-                } else {
-                    $damageReductionMultiplier += $this->opsCalculator->getDamageReduction($target, 'wizard');
                 }
 
                 // Cap damage reduction at 80%

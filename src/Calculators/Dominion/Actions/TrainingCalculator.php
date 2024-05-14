@@ -214,16 +214,6 @@ class TrainingCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $guildReduction = 3.5;
-        $guildReductionMax = 35;
-
-        // Guilds
-        $multiplier -= min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildReduction),
-            ($guildReductionMax / 100)
-        );
-
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('spy_cost');
 
@@ -239,16 +229,6 @@ class TrainingCalculator
     public function getWizardCostMultiplier(Dominion $dominion): float
     {
         $multiplier = 1;
-
-        // Values (percentages)
-        $guildReduction = 3.5;
-        $guildReductionMax = 35;
-
-        // Guilds
-        $multiplier -= min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildReduction),
-            ($guildReductionMax / 100)
-        );
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('wizard_cost');
