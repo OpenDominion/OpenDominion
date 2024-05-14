@@ -169,6 +169,31 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(42196, $this->target->peasants);
     }
 
+    public function testCastSpell_Fireball_MaxWizardGuildProtection()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+        $populationCalculator = app(PopulationCalculator::class);
+
+        // Arrange
+        RealmWar::create([
+            'source_realm_id' => $this->dominion->realm_id,
+            'target_realm_id' => $this->target->realm_id
+        ]);
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+        $this->target->military_wizards = 0;
+        $this->target->building_wizard_guild = 1000;
+        $this->target->peasants = $populationCalculator->getMaxPeasantPopulation($this->target);
+        $this->assertEquals(62659, $this->target->peasants);
+
+        // Act
+        $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
+
+        // Assert
+        $this->assertEquals(62345, $this->target->peasants);
+    }
+
     public function testCastSpell_Fireball_DamageCap()
     {
         global $mockRandomChance;

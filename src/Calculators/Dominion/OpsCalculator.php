@@ -384,12 +384,22 @@ class OpsCalculator
      */
     public function getSpellVulnerablilityProtectionModifier(Dominion $dominion): float
     {
+        // WPA
         $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
         $ratioProtection = min(0.8, 1.6 * $wizardRatio);
 
+        // Guilds
+        $guildReduction = 10;
+        $guildReductionMax = 80;
+        $wizardGuildProtection = min(
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildReduction),
+            ($guildReductionMax / 100)
+        );
+
+        // Spires
         $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
 
-        return min(0.8, $ratioProtection + $spiresProtection);
+        return min(0.8, $ratioProtection + $wizardGuildProtection + $spiresProtection);
     }
 
     /*
