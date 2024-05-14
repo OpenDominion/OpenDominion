@@ -166,7 +166,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
         // Assert
-        $this->assertEquals(41878, $this->target->peasants);
+        $this->assertEquals(42196, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_DamageCap()
@@ -241,8 +241,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'lightning_bolt', $this->target);
 
         // Assert
-        $this->assertEquals(99875, $this->target->improvement_keep);
-        $this->assertEquals(49937, $this->target->improvement_walls);
+        $this->assertEquals(99950, $this->target->improvement_keep);
+        $this->assertEquals(49975, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_DamageCap()
@@ -260,7 +260,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->dominion->military_wizards = 5000;
         $this->target->military_wizards = 0;
         $this->target->improvement_keep = 100000;
-        $this->target->stat_total_investment = 143000;
+        $this->target->stat_total_investment = 133000;
 
         // Act
         $this->expectException(GameException::class);

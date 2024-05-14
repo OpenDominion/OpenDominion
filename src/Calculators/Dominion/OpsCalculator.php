@@ -185,6 +185,7 @@ class OpsCalculator
 
         $spyLossSpaRatio = ($targetRatio / $selfRatio);
         $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, $min, $max);
+        $spiesKilledMultiplier = 1;
 
         // Spells
         $spiesKilledMultiplier += $dominion->getSpellPerkMultiplier('spy_losses');
@@ -244,6 +245,7 @@ class OpsCalculator
 
         $wizardLossSpaRatio = ($targetRatio / $selfRatio);
         $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, $min, $max);
+        $wizardsKilledMultiplier = 1;
 
         // Mutual War
         if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
@@ -398,7 +400,7 @@ class OpsCalculator
      */
     public function getPeasantVulnerablilityModifier(Dominion $dominion): float
     {
-        $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
+        $protectionModifier = 1 - $this->getSpellVulnerablilityProtectionModifier($dominion);
 
         return $protectionModifier * static::PEASANT_VULNERABILITY;
     }
@@ -451,7 +453,7 @@ class OpsCalculator
      */
     public function getImprovementVulnerablilityModifier(Dominion $dominion): float
     {
-        $protectionModifier = $this->getSpellVulnerablilityProtectionModifier($dominion);
+        $protectionModifier = 1 - $this->getSpellVulnerablilityProtectionModifier($dominion);
 
         return $protectionModifier * static::IMPROVEMENT_VULNERABILITY;
     }

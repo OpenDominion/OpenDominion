@@ -807,7 +807,7 @@ class SpellActionService
                 } elseif (Str::startsWith($perk->key, 'apply_')) {
                     $statusEffectKey = str_replace('apply_', '', $perk->key);
                     $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", ['self', 'friendly', 'effect']);
-                    if (!$immunity && !$spellReflected && $warDeclared && $target->{"{$spellKey}_meter"} >= $perk->pivot->value) {
+                    if (!$immunity && !$spellReflected && $warDeclared && $target->{"{$spell->key}_meter"} >= $perk->pivot->value) {
                         $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
                         $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);
                         if ($statusEffectActiveSpell == null) {
