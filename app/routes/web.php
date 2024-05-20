@@ -245,6 +245,9 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Town Crier
             $router->get('town-crier/{realmNumber?}')->uses('Dominion\TownCrierController@getIndex')->where('realmNumber', '[0-9]+')->name('town-crier');
 
+            // World
+            $router->get('world')->uses('Dominion\WorldController@getIndex')->name('world');
+
             // Misc
             $router->get('misc/abandon')->uses('Dominion\MiscController@getAbandonDominion')->name('misc.abandon');
             $router->post('misc/abandon')->uses('Dominion\MiscController@postAbandonDominion');

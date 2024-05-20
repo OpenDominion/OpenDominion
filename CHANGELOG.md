@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Calculator page now shows black ops stats
 - Rankings advisor now shows all titles/icons
 - Title icons on realm page now link to their rankings pages
+- The World page lists all realms with their war status, wonders, and statistics
 
 ### Changed
 - Bots can now explore immediately (was prevented until hour 3) for up to 20 acres per hour (from 16)
