@@ -414,21 +414,11 @@
                     </div>
                     <div class="box-body">
                         <table class="table table-condensed">
-                            <tr>
-                                <td>Damage Reduction (spy):</td>
-                                <td>{{ round($opsCalculator->getDamageReduction($targetDominion, 'spy') * 100, 2) }}%</td>
-                            </tr>
-                            <tr>
-                                <td>Damage Reduction (wizard):</td>
-                                <td>{{ round($opsCalculator->getDamageReduction($targetDominion, 'wizard') * 100, 2) }}%</td>
-                            </tr>
                             @foreach ([
                                 'getSpellVulnerablilityProtectionModifier',
-                                'getPeasantVulnerabilityByDayModifier',
                                 'getPeasantVulnerablilityModifier',
                                 'getPeasantsProtected',
                                 'getPeasantsVulnerable',
-                                'getImprovementVulnerablilityByDayModifier',
                                 'getImprovementVulnerablilityModifier',
                                 'getImprovementsProtected',
                                 'getImprovementsVulnerable'
