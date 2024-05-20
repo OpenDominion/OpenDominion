@@ -386,10 +386,10 @@ class OpsCalculator
     {
         // WPA
         $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
-        $ratioProtection = min(0.8, 1.6 * $wizardRatio);
+        $ratioProtection = min(0.8, 0.8 * $wizardRatio);
 
         // Guilds
-        $guildReduction = 10;
+        $guildReduction = 16;
         $guildReductionMax = 80;
         $wizardGuildProtection = min(
             (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildReduction),

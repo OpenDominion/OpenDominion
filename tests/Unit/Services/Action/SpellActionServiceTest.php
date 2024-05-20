@@ -158,15 +158,15 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->dominion->resource_mana = 100000;
         $this->dominion->military_wizards = 5000;
-        $this->target->military_wizards = 10000;
+        $this->target->military_wizards = 11000;
         $this->target->peasants = $populationCalculator->getMaxPeasantPopulation($this->target);
-        $this->assertEquals(42409, $this->target->peasants);
+        $this->assertEquals(41409, $this->target->peasants);
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
         // Assert
-        $this->assertEquals(42196, $this->target->peasants);
+        $this->assertEquals(41201, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_MaxWizardGuildProtection()
@@ -256,7 +256,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->dominion->resource_mana = 100000;
         $this->dominion->military_wizards = 5000;
-        $this->target->military_wizards = 10000;
+        $this->target->military_wizards = 11000;
         $this->target->improvement_keep = 100000;
         $this->target->improvement_walls = 50000;
         $this->target->improvement_harbor = 10000;

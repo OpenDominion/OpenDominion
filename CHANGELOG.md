@@ -29,8 +29,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Improvement vulnerability to lightning set to 25% all round (was 30-20% by day)
 - Damage reduction from SPA/WPA removed
 - Sabotage Boats damage reduced to 2.3% (from 2.5%)
-- Wizards now reduce vulnerability to fireball and lightning by 16% per 0.1 WPA up to a maximum of 80%
-- Wizard Guilds now reduce vulnerability to fireball and lightning Bolt by 10% per 1% owned up to a maximum of 80% (was spy and wizard cost/losses/recovery)
+- Wizards now reduce vulnerability to fireball and lightning by 8% per 0.1 WPA up to a maximum of 80% at 1 WPA
+- Wizard Guilds now reduce vulnerability to fireball and lightning Bolt by 16% per 1% owned up to a maximum of 80% at 5% owned (was spy and wizard cost/losses/recovery)
 - Lightning Storm: new status effect (spell) with 24 hour duration, increases lightning bolt damage by 50%, immune to Burning while active, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
 - Burning now increases fireball damage by 100% (was fixed pop growth) and grants immunity to Lightning Storm
 - Burning and Lightning Storm are triggered by 20 successes of the matching spell (in a single hour or up to 30 over a 24 hour period)
