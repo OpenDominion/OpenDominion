@@ -600,7 +600,7 @@ class SpellActionService
         $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa, $dominion->wizard_strength, $target->wizard_strength);
 
         // Spells
-        $successRate -= $target->getSpellPerkValue('enemy_spell_chance');
+        $successRate -= ($target->getSpellPerkValue('enemy_spell_chance') / 100);
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
@@ -650,7 +650,7 @@ class SpellActionService
                 'dominion_id' => $target->id,
             ])->delete();
         }
-        $energyMirrorChance = $target->getSpellPerkValue('energy_mirror');
+        $energyMirrorChance = ($target->getSpellPerkValue('energy_mirror') / 100);
         if ($energyMirrorChance && random_chance($energyMirrorChance)) {
             $spellReflected = true;
             $reflectedBy = $target;
@@ -1215,10 +1215,8 @@ class SpellActionService
         // Resilience Gains
         if ($spellKey == 'fireball' || $spellKey == 'lightning_bolt') {
             $meterGain = $this->opsCalculator->getSpellMeterGain($target, $spellKey);
-        } else {
-            $meterGain = 0;
+            $target->{"{$spellKey}_meter"} += $meterGain;
         }
-        $target->{"{$spellKey}_meter"} += $meterGain;
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryChange($dominion, $target, 'wizard');
