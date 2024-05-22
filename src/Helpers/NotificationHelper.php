@@ -627,12 +627,15 @@ class NotificationHelper
                     case 'fireball':
                         $resultString = "A great fireball has crashed into our keep, burning {$data['damageString']}.";
                         if ($data['statusEffect'] == 'Burning') {
-                            $resultString .= 'The flames begin to spread.';
+                            $resultString .= ' The flames begin to spread.';
                         }
                         break;
 
                     case 'lightning_bolt':
                         $resultString = "A great lightning bolt crashed into our castle, destroying {$data['damageString']}.";
+                        if ($data['statusEffect'] == 'Lightning Storm') {
+                            $resultString .= ' A massive thundercloud is forming overhead.';
+                        }
                         break;
 
                     case 'necromantic_ritual':

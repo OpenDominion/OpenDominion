@@ -16,11 +16,11 @@ class WorldController extends AbstractDominionController
         $realms = $dominion->round->realms()
             ->with([
                 'dominions',
-                'warsIncoming' => function($q) {
+                'warsIncoming' => function ($q) {
                     $q->active();
                 },
                 'warsIncoming.sourceRealm',
-                'warsOutgoing' => function($q) {
+                'warsOutgoing' => function ($q) {
                     $q->active();
                 },
                 'warsOutgoing.targetRealm',
