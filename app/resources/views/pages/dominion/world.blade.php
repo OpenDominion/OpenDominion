@@ -45,13 +45,13 @@
                                         @if (!$realm->warsIncoming->isEmpty() || !$realm->warsOutgoing->isEmpty())
                                             @if (!$realm->warsIncoming->isEmpty() && !$realm->warsOutgoing->isEmpty())
                                                 <i class="ra ra-crossed-axes ra-lg" style="display: inline-block; margin-right: 10px;"></i>
-                                                {{ $realm->warsIncoming->map(function ($war) { return $war->sourceRealm->number; })->merge($realm->warsOutgoing->map(function ($war) { return $war->targetRealm->number; }))->unique()->implode(', ') }}
+                                                {{ $realm->warsIncoming->map(function ($war) { return '#'.$war->sourceRealm->number; })->merge($realm->warsOutgoing->map(function ($war) { return '#'.$war->targetRealm->number; }))->unique()->implode(', ') }}
                                             @elseif (!$realm->warsIncoming->isEmpty())
                                                 <i class="ra ra-axe-swing ra-lg ra-flip-horizontal" style="display: inline-block; margin-right: 10px;"></i>
-                                                {{ $realm->warsIncoming->map(function ($war) { return $war->sourceRealm->number; })->implode(', ') }}
+                                                {{ $realm->warsIncoming->map(function ($war) { return '#'.$war->sourceRealm->number; })->implode(', ') }}
                                             @else
                                                 <i class="ra ra-axe-swing  ra-lg" style="display: inline-block; margin-right: 10px;"></i>
-                                                {{ $realm->warsOutgoing->map(function ($war) { return $war->targetRealm->number; })->implode(', ') }}
+                                                {{ $realm->warsOutgoing->map(function ($war) { return '#'.$war->targetRealm->number; })->implode(', ') }}
                                             @endif
                                         @endif
                                     </td>
