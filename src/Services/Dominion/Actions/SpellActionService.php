@@ -783,7 +783,7 @@ class SpellActionService
 
             // Spells
             $damageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, 'enemy_spell_damage') / 100;
-            $damageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($dominion, "enemy_{$spell->key}_damage") / 100;
+            $damageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, "enemy_{$spell->key}_damage") / 100;
 
             // Techs
             $damageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$spell->key}_damage");
