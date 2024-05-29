@@ -1227,7 +1227,7 @@ class SpellActionService
      * @param bool $mutualWarDeclared
      * @return string
      */
-    protected function handleStatusEffects(Dominion $dominion, Dominion $target, Spell $spell, bool $ignoreMeter, bool $mutualWarDeclared): string
+    protected function handleStatusEffects(Dominion $dominion, Dominion $target, Spell $spell, bool $ignoreMeter, bool $mutualWarDeclared): ?string
     {
         $statusEffect = null;
         if (in_array($spell->key, ['fireball', 'lightning_bolt'])) {
