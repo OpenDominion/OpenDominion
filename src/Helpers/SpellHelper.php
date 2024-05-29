@@ -206,7 +206,6 @@ class SpellHelper
             'wonder_damage' => 'Deals damage to wonders',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
-            'fixed_population_growth' => 'Population growth is slowed based on your vulnerability to fireball',
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',
             'immune_lightning_storm' => 'Immune to Lightning Storm',

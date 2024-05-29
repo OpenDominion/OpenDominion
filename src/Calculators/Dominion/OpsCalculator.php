@@ -307,13 +307,13 @@ class OpsCalculator
     {
         if ($type == 'fireball') {
             $gained = static::FIREBALL_METER_GAIN;
-            if ($dominion->fireball_meter + $gained > 1000) {
-                return 1000 - $dominion->fireball_meter;
+            if ($dominion->fireball_meter + $gained > 200) {
+                return 200 - $dominion->fireball_meter;
             }
         } elseif ($type == 'lightning_bolt') {
             $gained = static::LIGHTNING_BOLT_METER_GAIN;
-            if ($dominion->lightning_bolt_meter + $gained > 1000) {
-                return 1000 - $dominion->lightning_bolt_meter;
+            if ($dominion->lightning_bolt_meter + $gained > 200) {
+                return 200 - $dominion->lightning_bolt_meter;
             }
         } else {
             return 0;

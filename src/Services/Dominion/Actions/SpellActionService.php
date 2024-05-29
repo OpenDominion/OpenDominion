@@ -703,8 +703,7 @@ class SpellActionService
                 $this->spellHelper->isWarSpell($spell) ||
                 ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
             )) {
-                $modifier = min(1, $durationAdded / 9);
-                $results = $this->handleWarResults($dominion, $target, $spell->key, $durationAdded / 9);
+                $results = $this->handleWarResults($dominion, $target, $spell->key);
                 $warRewardsString = $results['warRewards'];
                 if ($results['damageDealt'] !== '') {
                     $damageDealtString = "Your target lost {$results['damageDealt']}.";
@@ -779,7 +778,7 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $damageReductionMultiplier = 0;
-            $statusEffect = null;
+            $applyBurning = false;
 
             // Spells
             $damageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, 'enemy_spell_damage') / 100;
@@ -792,38 +791,14 @@ class SpellActionService
             $damageReductionMultiplier -= $target->getWonderPerkMultiplier('enemy_spell_damage');
 
             foreach ($spell->perks as $perk) {
-                $perksToIgnore = collect(
-                    'fixed_population_growth',
-                    'war_cancels'
-                );
+                $perksToIgnore = collect(['war_cancels']);
                 if (Str::startsWith($perk->key, 'destroy_')) {
                     $attr = str_replace('destroy_', '', $perk->key);
                     $convertAttr = null;
                 } elseif (Str::startsWith($perk->key, 'convert_')) {
                     $components = Str::of($perk->key)->replace('convert_', '')->explode('_to_');
                     list($attr, $convertAttr) = $components;
-                } elseif ($perksToIgnore->has($perk->key) || Str::startsWith($perk->key, 'immune_')) {
-                    continue;
-                } elseif (Str::startsWith($perk->key, 'apply_')) {
-                    $statusEffectKey = str_replace('apply_', '', $perk->key);
-                    $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", ['self', 'friendly', 'effect']);
-                    if (!$immunity && !$spellReflected && $warDeclared && $target->{"{$spell->key}_meter"} >= $perk->pivot->value) {
-                        $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
-                        $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);
-                        if ($statusEffectActiveSpell == null) {
-                            $statusEffect = $statusEffectSpell->name;
-                            $duration = $statusEffectSpell->duration + $target->getTechPerkValue("enemy_{$statusEffectKey}_duration");
-                            if ($mutualWarDeclared) {
-                                $duration += 6;
-                            }
-                            DominionSpell::insert([
-                                'dominion_id' => $target->id,
-                                'spell_id' => $statusEffectSpell->id,
-                                'duration' => $duration,
-                                'cast_by_dominion_id' => $dominion->id,
-                            ]);
-                        }
-                    }
+                } elseif ($perksToIgnore->has($perk->key) || Str::startsWith($perk->key, 'apply_') || Str::startsWith($perk->key, 'immune_')) {
                     continue;
                 } else {
                     throw new GameException("Unrecognized perk {$perk->key}.");
@@ -856,6 +831,9 @@ class SpellActionService
                 if ($attr == 'peasants') {
                     // Cap Fireball damage by protection
                     $damage = min($damage, $peasantsUnprotected);
+                    if ($damage == $peasantsUnprotected) {
+                        $applyBurning = true;
+                    }
                 } elseif (Str::startsWith($attr, 'improvement_')) {
                     // Cap Lightning Bolt damage by protection
                     $improvementUnprotected = $this->opsCalculator->getImprovementsUnprotected($target, $attr);
@@ -941,9 +919,13 @@ class SpellActionService
 
             $damageString = generate_sentence_from_array($damageDealt);
 
+            // Apply Status Effects
             $statusEffectString = '';
-            if ($statusEffect !== null) {
-                $statusEffectString = "You inflicted {$statusEffect}.";
+            if (!$spellReflected && $warDeclared) {
+                $statusEffect = $this->handleStatusEffects($dominion, $target, $spell, $applyBurning, $mutualWarDeclared);
+                if ($statusEffect !== '') {
+                    $statusEffectString = "You inflicted {$statusEffect}.";
+                }
             }
 
             $this->notificationService
@@ -1203,17 +1185,16 @@ class SpellActionService
      * @param Dominion $dominion
      * @param Dominion $target
      * @param string $spellKey
-     * @param float $modifier
      * @return array
      * @throws Exception
      */
-    protected function handleWarResults(Dominion $dominion, Dominion $target, string $spellKey, float $modifier = 1): array
+    protected function handleWarResults(Dominion $dominion, Dominion $target, string $spellKey): array
     {
         $damageDealtString = '';
         $warRewardsString = '';
 
         // Resilience Gains
-        if ($spellKey == 'fireball' || $spellKey == 'lightning_bolt') {
+        if (in_array($spellKey, ['fireball', 'lightning_bolt'])) {
             $meterGain = $this->opsCalculator->getSpellMeterGain($target, $spellKey);
             $target->{"{$spellKey}_meter"} += $meterGain;
         }
@@ -1235,5 +1216,44 @@ class SpellActionService
             'damageDealt' => $damageDealtString,
             'warRewards' => $warRewardsString,
         ];
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param Spell $spell
+     * @param bool $ignoreMeter
+     * @param bool $mutualWarDeclared
+     * @return string
+     */
+    protected function handleStatusEffects(Dominion $dominion, Dominion $target, Spell $spell, bool $ignoreMeter, bool $mutualWarDeclared): string
+    {
+        $statusEffect = '';
+        if (in_array($spell->key, ['fireball', 'lightning_bolt'])) {
+            foreach ($spell->perks as $perk) {
+                if (Str::startsWith($perk->key, 'apply_')) {
+                    $statusEffectKey = str_replace('apply_', '', $perk->key);
+                    $immunity = $target->getSpellPerkValue("immune_{$statusEffectKey}", ['self', 'friendly', 'effect']);
+                    if (!$immunity && ($target->{"{$spell->key}_meter"} >= $perk->pivot->value || $ignoreMeter)) {
+                        $statusEffectSpell = $this->spellHelper->getSpellByKey($statusEffectKey);
+                        $statusEffectActiveSpell = $target->spells->find($statusEffectSpell->id);
+                        if ($statusEffectActiveSpell == null) {
+                            $statusEffect = $statusEffectSpell->name;
+                            $duration = $statusEffectSpell->duration + $target->getTechPerkValue("enemy_{$statusEffectKey}_duration");
+                            if ($mutualWarDeclared) {
+                                $duration += 6;
+                            }
+                            DominionSpell::insert([
+                                'dominion_id' => $target->id,
+                                'spell_id' => $statusEffectSpell->id,
+                                'duration' => $duration,
+                                'cast_by_dominion_id' => $dominion->id,
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        return $statusEffect;
     }
 }

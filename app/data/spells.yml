@@ -74,7 +74,7 @@ fireball:
   perks:
     destroy_peasants: 5
     destroy_resource_food: 2
-    apply_burning: 190
+    apply_burning: 200
 lightning_bolt:
   name: Lightning Bolt
   category: war
@@ -85,7 +85,7 @@ lightning_bolt:
     destroy_improvement_keep: 1
     destroy_improvement_forges: 1
     destroy_improvement_walls: 1
-    apply_lightning_storm: 190
+    apply_lightning_storm: 200
 cyclone:
   name: Cyclone
   category: wonder
