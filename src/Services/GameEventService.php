@@ -102,6 +102,10 @@ class GameEventService
                         $query->where('source_type', Realm::class)
                             ->where('source_id', $realm->id);
                     })
+                    ->orWhere(function (Builder $query) use ($realm) {
+                        $query->where('target_type', Realm::class)
+                            ->where('target_id', $realm->id);
+                    })
                     ->orWhere(function (Builder $query) use ($realmWarIds) {
                         $query->where('target_type', RealmWar::class)
                             ->whereIn('target_id', $realmWarIds);
