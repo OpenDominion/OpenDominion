@@ -176,7 +176,7 @@ class TrainingCalculator
      * @param string $proficiency
      * @return float
      */
-    public function getSpecialistEliteCostMultiplier(Dominion $dominion, string $proficiency): float
+    public function getSpecialistEliteCostMultiplier(Dominion $dominion, string $proficiency = 'elite'): float
     {
         $multiplier = 1;
 

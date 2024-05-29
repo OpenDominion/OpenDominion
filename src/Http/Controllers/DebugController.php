@@ -67,7 +67,7 @@ class DebugController extends AbstractDominionController
                 $value = $class->$method();
                 $label = ('[REFACTOR] ' . $label);
 
-            } elseif (in_array($reflectionMethod->getName(), ['getOffensivePower', 'getOffensivePowerRaw', 'getOffensivePowerMultiplier', 'getDefensivePower', 'getDefensivePowerRaw', 'getDefensivePowerMultiplier', 'getSpyRatio', 'getSpyRatioMultiplier', 'getSpyRatioRaw', 'getWizardRatio', 'getWizardRatioMultiplier', 'getWizardRatioRaw', 'getRecentlyInvadedCount'])) {
+            } elseif (in_array($reflectionMethod->getName(), ['getOffensivePower', 'getOffensivePowerRaw', 'getOffensivePowerMultiplier', 'getDefensivePower', 'getDefensivePowerRaw', 'getDefensivePowerMultiplier', 'getSpyRatio', 'getSpyRatioMultiplier', 'getSpyRatioRaw', 'getWizardRatio', 'getWizardRatioMultiplier', 'getWizardRatioRaw', 'getRecentlyInvadedCount', 'getSpecialistEliteCostMultiplier'])) {
                 // Exception for methods which have more than 1 arguments
                 $value = $class->$method(static::$selectedDominion);
 
