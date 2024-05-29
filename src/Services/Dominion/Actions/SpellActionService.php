@@ -920,6 +920,7 @@ class SpellActionService
             $damageString = generate_sentence_from_array($damageDealt);
 
             // Apply Status Effects
+            $statusEffect = null;
             $statusEffectString = '';
             if (!$spellReflected && $warDeclared) {
                 $statusEffect = $this->handleStatusEffects($dominion, $target, $spell, $applyBurning, $mutualWarDeclared);
@@ -1228,7 +1229,7 @@ class SpellActionService
      */
     protected function handleStatusEffects(Dominion $dominion, Dominion $target, Spell $spell, bool $ignoreMeter, bool $mutualWarDeclared): string
     {
-        $statusEffect = '';
+        $statusEffect = null;
         if (in_array($spell->key, ['fireball', 'lightning_bolt'])) {
             foreach ($spell->perks as $perk) {
                 if (Str::startsWith($perk->key, 'apply_')) {
