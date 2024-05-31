@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - The World page lists all realms with their war status, wonders, and statistics
 
 ### Changed
+- Recent invasions now reduce maximum offense:defense ratio (5:4 rule) by 0.125 per invasion after the fourth in a three day period (was second in a five day period), down to a minimum of 1 (was 0.75)
 - Bots can now explore immediately (was prevented until hour 3) for up to 20 acres per hour (from 16)
 - Fearless Adventures (-50% morale cost) replaced with Deep Pockets (+15% gains from theft)
 - Exploring platinum cost tech perks are now halved for Firewalker/Goblin/Lycanthrope
