@@ -604,7 +604,7 @@ class Dominion extends AbstractModel
         $moraleGain = 3;
 
         if ($this->morale < 80) {
-            $moraleGain = 9;
+            $moraleGain = 6;
         }
 
         return min($moraleGain, 100 - $this->morale);

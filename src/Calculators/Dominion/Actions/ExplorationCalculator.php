@@ -144,9 +144,6 @@ class ExplorationCalculator
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $moraleDrop = max(1, floor(($amount + 2) / 3));
-        if ($totalLand > 1000) {
-            $moraleDrop *= 2;
-        }
 
         return $moraleDrop;
     }
