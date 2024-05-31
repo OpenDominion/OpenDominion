@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Infamy removed
 - Spy mastery now increases spy strength recovery by 0.2% (max 2%) and reduces spy losses by 5% (max 50%) per 100 mastery
 - Wizard mastery now increases wizard strength recovery by 0.2% (max 2%) and reduces spell mana costs by 2% (max 20%) per 100 mastery
-- Arcane Ward and Illuminate now increase chance of failure by 10% (was +10% defensive ratios)
+- Arcane Ward and Illuminate now increase chance of failure by 5% (was +10% defensive ratios)
 - Peasant vulnerability to fireball set to 50% all round (was 35-45% by day)
 - Improvement vulnerability to lightning set to 25% all round (was 30-20% by day)
 - Damage reduction from SPA/WPA removed

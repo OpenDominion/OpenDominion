@@ -509,7 +509,7 @@ arcane_ward:
   duration: 6
   cooldown: 3
   perks:
-    enemy_spell_chance: 10
+    enemy_spell_chance: 5
 illumination:
   name: Illumination
   category: friendly
@@ -518,7 +518,7 @@ illumination:
   duration: 6
   cooldown: 3
   perks:
-    enemy_espionage_chance: 10
+    enemy_espionage_chance: 5
 gaias_light:
   name: Gaia's Light
   category: self
