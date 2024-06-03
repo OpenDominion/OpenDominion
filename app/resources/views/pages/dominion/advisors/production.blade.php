@@ -170,6 +170,9 @@
                                         <td>
                                             @if ($foodDecay = $productionCalculator->getFoodDecay($target))
                                                 <span class="text-red">-{{ number_format($foodDecay) }}</span>
+                                                @if ($productionCalculator->getFoodDecayMultiplier($target) != 1)
+                                                    <small class="text-muted">({{ number_format(($productionCalculator->getFoodDecayMultiplier($target) - 1) * 100, 2) }}%)</small>
+                                                @endif
                                             @else
                                                 <span class="text-green">+0</span>
                                             @endif
@@ -180,6 +183,9 @@
                                         <td>
                                             @if ($lumberDecay = $productionCalculator->getLumberDecay($target))
                                                 <span class="text-red">-{{ number_format($lumberDecay) }}</span>
+                                                @if ($productionCalculator->getLumberDecayMultiplier($target) != 1)
+                                                    <small class="text-muted">({{ number_format(($productionCalculator->getLumberDecayMultiplier($target) - 1) * 100, 2) }}%)</small>
+                                                @endif
                                             @else
                                                 <span class="text-green">+0</span>
                                             @endif
@@ -190,6 +196,9 @@
                                         <td>
                                             @if ($manaDecay = $productionCalculator->getManaDecay($target))
                                                 <span class="text-red">-{{ number_format($manaDecay) }}</span>
+                                                @if ($productionCalculator->getManaDecayMultiplier($target) != 1)
+                                                    <small class="text-muted">({{ number_format(($productionCalculator->getManaDecayMultiplier($target) - 1) * 100, 2) }}%)</small>
+                                                @endif
                                             @else
                                                 <span class="text-green">+0</span>
                                             @endif

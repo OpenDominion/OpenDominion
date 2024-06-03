@@ -300,10 +300,23 @@ class ProductionCalculator
      */
     public function getFoodDecay(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = $this->getFoodDecayMultiplier($dominion);
 
-        // Values (percentages)
+        // Values
         $foodDecay = 1;
+
+        return floor($dominion->resource_food * ($foodDecay * $multiplier / 100));
+    }
+
+    /**
+     * Returns the Dominion's food decay multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getFoodDecayMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
 
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('food_decay');
@@ -311,7 +324,7 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('food_decay');
 
-        return $dominion->resource_food * ($foodDecay * $multiplier / 100);
+        return $multiplier;
     }
 
     /**
@@ -406,10 +419,23 @@ class ProductionCalculator
      */
     public function getLumberDecay(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = $this->getLumberDecayMultiplier($dominion);
 
         // Values
         $lumberDecay = 1;
+
+        return floor($dominion->resource_lumber * ($lumberDecay * $multiplier / 100));
+    }
+
+    /**
+     * Returns the Dominion's lumber decay multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getLumberDecayMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('lumber_decay');
@@ -420,7 +446,7 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('lumber_decay');
 
-        return $dominion->resource_lumber * ($lumberDecay * $multiplier / 100);
+        return $multiplier;
     }
 
     /**
@@ -524,10 +550,23 @@ class ProductionCalculator
      */
     public function getManaDecay(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = $this->getManaDecayMultiplier($dominion);
 
         // Values
         $manaDecay = 2;
+
+        return floor($dominion->resource_mana * ($manaDecay * $multiplier / 100));
+    }
+
+    /**
+     * Returns the Dominion's mana decay multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getManaDecayMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'mana_decay') / 100;
@@ -535,7 +574,7 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('mana_decay');
 
-        return $dominion->resource_mana * ($manaDecay * $multiplier / 100);
+        return $multiplier;
     }
 
     /**
