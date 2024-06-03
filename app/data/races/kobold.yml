@@ -33,7 +33,7 @@ units:
       flavor_tunneler: 1
   - name: Taskmaster
     cost:
-      platinum: 1375
+      platinum: 1350
       ore: 0
     power:
       offense: 3

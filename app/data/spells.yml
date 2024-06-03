@@ -160,7 +160,7 @@ energy_mirror:
   duration: 12
   perks:
     enemy_spell_damage: -15
-    enemy_spell_duration: -2
+    enemy_spell_duration: -1
 amplify_magic:
   name: Amplify Magic
   category: self

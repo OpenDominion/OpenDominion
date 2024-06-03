@@ -30,9 +30,9 @@ class TickTest extends AbstractBrowserKitTestCase
         $dominion->morale = 71;
         $dominion->save();
 
-        // Test +9 morale below 80
+        // Test +6 morale below 80
         $tickService->performTick($round);
-        $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 80]);
+        $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 77]);
 
         // Test +3 morale above 80
         $tickService->performTick($round);

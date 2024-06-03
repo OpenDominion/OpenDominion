@@ -91,7 +91,7 @@ class BuildingHelper
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Offensive power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',
-            'wizard_guild' => 'Increases protection from spells by 16% per 1% owned, up to a maximum of 80% at 5% owned.',
+            'wizard_guild' => 'Produces 5 mana per hour.<br><br>Increases protection from spells by 16% per 1% owned, up to a maximum of 80% at 5% owned.',
             'temple' => 'Population growth increased by 6% per 1% owned.<br>Enemy defensive power reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.67% owned.',
             'diamond_mine' => 'Produces 15 gems per hour.',
             'school' => 'Produces (1 - (Schools / Total Land)) research points per hour (minimum of 0.5). Limited to 50% of your total land.',

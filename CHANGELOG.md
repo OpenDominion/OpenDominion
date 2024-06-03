@@ -18,9 +18,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Exploring platinum cost tech perks are now halved for Firewalker/Goblin/Lycanthrope
 - Urg Smash discount awarded for all buildings destroyed (from 25%), now excludes Nomad/Wood Elf
 - Firewalker: explore penalty removed (was +5%)
-- Firewalker: Alchemist Flame reduced to 13 platinum (from 15)
+- Firewalker: Alchemist Flame reduced to 12 platinum (from 15)
 - Firewalker Salamander: casualty reduction increased to -50% (from -45%)
 - Human Cavalry: +10p (from 1240p)
+- Kobold Taskmaster: -25p (from 1375p)
 - Orc: added +10% prestige gains
 - Infamy removed
 - Spy mastery now increases spy strength recovery by 0.2% (max 2%) and reduces spy losses by 5% (max 50%) per 100 mastery
@@ -31,7 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Damage reduction from SPA/WPA removed
 - Sabotage Boats damage reduced to 2.3% (from 2.5%)
 - Wizards now reduce vulnerability to fireball and lightning by 8% per 0.1 WPA up to a maximum of 80% at 1 WPA
-- Wizard Guilds now reduce vulnerability to fireball and lightning Bolt by 16% per 1% owned up to a maximum of 80% at 5% owned (was spy and wizard cost/losses/recovery)
+- Wizard Guilds now produce 5 mana and reduce vulnerability to fireball and lightning Bolt by 16% per 1% owned up to a maximum of 80% at 5% owned (was spy and wizard cost/losses/recovery)
 - Lightning Storm: new status effect (spell) with 24 hour duration, increases lightning bolt damage by 50%, immune to Burning while active, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
 - Burning now increases fireball damage by 100% (was fixed pop growth) and grants immunity to Lightning Storm
 - Burning and Lightning Storm are triggered by 20 successes of the matching spell (in a single hour or up to 30 over a 24 hour period)
