@@ -214,7 +214,7 @@
                     if (techBonuses[techPerks[key]] > 0) techHtml += '+';
                     techHtml += techBonuses[techPerks[key]];
                     techHtml += "</td><td>";
-                    techHtml += techPerkStrings[techPerks[key]].replace('%s ', '').replace('%s%', '');
+                    techHtml += techPerkStrings[techPerks[key]].replace('%g%', '').replace('%+g%', '').replace('%+g', '');
                     techHtml += "</td></tr>";
                 }
                 $('#tech-bonuses').html(techHtml);
