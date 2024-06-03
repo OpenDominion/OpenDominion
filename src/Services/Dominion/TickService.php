@@ -698,7 +698,7 @@ class TickService
                     $conversions = floor($baseConversion + ($totalLand * $landMultiplier));
                     $unit1 = min($conversions, $dominionSpell->dominion->military_unit1);
                     $unit2 = min($conversions, $dominionSpell->dominion->military_unit2);
-                    // Queue elites
+                    // Queue units
                     $units = [
                         'military_unit3' => $unit2,
                         'military_unit4' => $unit1,
@@ -707,6 +707,23 @@ class TickService
                     // Save dominion
                     $dominionSpell->dominion->military_unit1 -= $unit1;
                     $dominionSpell->dominion->military_unit2 -= $unit2;
+                    $dominionSpell->dominion->save();
+                }
+            }
+
+            // Special case for Death and Decay
+            $convertPerk = SpellPerkType::where('key', 'convert_peasants_to_self_military_unit1')->first();
+            if ($convertPerk !== null) {
+                $spellIds = $convertPerk->spells->pluck('id');
+                $dominionSpells = DominionSpell::whereIn('spell_id', $spellIds)->whereIn('dominion_id', $dominionIds)->get();
+                foreach ($dominionSpells as $dominionSpell) {
+                    $perk = $dominionSpell->spell->perks()->where('key', 'convert_peasants_to_self_military_unit1')->first();
+                    $conversions = $dominionSpell->dominion->peasants * ($perk->pivot->value / 100);
+                    // Queue units
+                    $units = ['military_unit1' => $conversions];
+                    $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
+                    // Save dominion
+                    $dominionSpell->dominion->peasants -= $conversions;
                     $dominionSpell->dominion->save();
                 }
             }

@@ -541,3 +541,16 @@ gaias_shadow:
   perks:
     spy_power: 15
     cancels_gaias_light: 1
+death_and_decay:
+  name: Death and Decay
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 6
+  cooldown: 48
+  races:
+    - undead-v3
+  perks:
+    food_decay: 100
+    lumber_decay: 100
+    convert_peasants_to_self_military_unit1: 1

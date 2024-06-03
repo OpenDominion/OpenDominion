@@ -187,6 +187,7 @@ class SpellHelper
             'self_spell_duration' => 'but increases duration by %d%%',
             'convert_military_spies_to_military_draftees' => 'Turns %g%% of enemy spies into draftees',
             'convert_peasants_to_self_military_unit3' => 'Kills %g%% of enemy peasants, converting 5%% into Progeny',
+            'convert_peasants_to_self_military_unit1' => '%g%% of peasants die from disease each hour and return as Zombies',
             'apply_burning' => 'chance to inflict Burning if at war',
             'destroy_peasants' => 'Kills %g%% unprotected peasants',
             'destroy_resource_food' => 'Destroys %g%% crops',
