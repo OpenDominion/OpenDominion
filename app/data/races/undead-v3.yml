@@ -26,14 +26,15 @@ units:
     need_boat: false
   - name: Necromancer
     cost:
-      platinum: 800
+      platinum: 780
+      mana: 10
     power:
       offense: 0
       defense: 4
   - name: Crypt Lord
     cost:
-      platinum: 1100
-      mana: 30
+      platinum: 1130
+      mana: 15
     power:
       offense: 0
       defense: 6
