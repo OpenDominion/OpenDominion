@@ -465,7 +465,7 @@ burning:
   category: effect
   cost_mana: 0
   cost_strength: 0
-  duration: 24
+  duration: 20
   perks:
     enemy_fireball_damage: 100
     apply_rejuvenation: 1
@@ -475,7 +475,7 @@ lightning_storm:
   category: effect
   cost_mana: 0
   cost_strength: 0
-  duration: 24
+  duration: 20
   perks:
     enemy_lightning_bolt_damage: 50
     apply_rejuvenation: 1
@@ -554,3 +554,4 @@ death_and_decay:
     food_decay: 100
     lumber_decay: 100
     convert_peasants_to_self_military_unit1: 1
+    invalid_protection: 1

@@ -924,7 +924,7 @@ class SpellActionService
             $statusEffectString = '';
             if (!$spellReflected && $warDeclared) {
                 $statusEffect = $this->handleStatusEffects($dominion, $target, $spell, $applyBurning, $mutualWarDeclared);
-                if ($statusEffect !== '') {
+                if ($statusEffect !== null) {
                     $statusEffectString = "You inflicted {$statusEffect}.";
                 }
             }
@@ -1241,6 +1241,8 @@ class SpellActionService
                         if ($statusEffectActiveSpell == null) {
                             $statusEffect = $statusEffectSpell->name;
                             $duration = $statusEffectSpell->duration + $target->getTechPerkValue("enemy_{$statusEffectKey}_duration");
+                            // Extend duration
+                            $duration += clamp(floor(($target->round->daysInRound() - 4) / 4), 0, 10);
                             if ($mutualWarDeclared) {
                                 $duration += 6;
                             }

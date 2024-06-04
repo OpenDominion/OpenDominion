@@ -35,7 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wizard Guilds now produce 5 mana and reduce vulnerability to fireball and lightning Bolt by 16% per 1% owned up to a maximum of 80% at 5% owned (was spy and wizard cost/losses/recovery)
 - Lightning Storm: new status effect (spell) with 24 hour duration, increases lightning bolt damage by 50%, immune to Burning while active, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
 - Burning now increases fireball damage by 100% (was fixed pop growth) and grants immunity to Lightning Storm
-- Burning and Lightning Storm are triggered by 20 successes of the matching spell (in a single hour or up to 30 over a 24 hour period)
+- Burning and Lightning Storm are triggered by 20 successes of the matching spell (in a single hour or up to 30 over a 24 hour period), duration set to 20 hours +1 every 4 days from Day 4 to Day 44 (max 30)
 
 ### Fixed
 - Spell reflect stats are now properly attributed to the dominion that cast the friendly spell
