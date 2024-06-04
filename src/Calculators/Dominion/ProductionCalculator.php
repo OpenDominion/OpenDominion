@@ -305,7 +305,7 @@ class ProductionCalculator
         // Values
         $foodDecay = 1;
 
-        return floor($dominion->resource_food * ($foodDecay * $multiplier / 100));
+        return round($dominion->resource_food * ($foodDecay * $multiplier / 100));
     }
 
     /**
@@ -424,7 +424,7 @@ class ProductionCalculator
         // Values
         $lumberDecay = 1;
 
-        return floor($dominion->resource_lumber * ($lumberDecay * $multiplier / 100));
+        return round($dominion->resource_lumber * ($lumberDecay * $multiplier / 100));
     }
 
     /**
@@ -555,7 +555,7 @@ class ProductionCalculator
         // Values
         $manaDecay = 2;
 
-        return floor($dominion->resource_mana * ($manaDecay * $multiplier / 100));
+        return round($dominion->resource_mana * ($manaDecay * $multiplier / 100));
     }
 
     /**
