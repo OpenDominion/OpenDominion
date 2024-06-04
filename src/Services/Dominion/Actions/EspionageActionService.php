@@ -702,7 +702,7 @@ class EspionageActionService
                 }
 
                 // Check for immortal wizards
-                if ($target->race->getPerkValue('immortal_wizards') != 0 && $attr == 'military_wizards') {
+                if ($attr == 'military_wizards' && $target->race->getPerkValue('immortal_wizards') != 0) {
                     $damage = 0;
                 }
 
