@@ -6,7 +6,7 @@ description: >-
   <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with fresh corpses. They tend to inhabit putrid swamps, where the dense, humid atmosphere obscures the stench of decay and provides cover for their unscrupulous activities.</p>
 attacker_difficulty: 1
 explorer_difficulty: 3
-converter_difficulty: 3
+converter_difficulty: 2
 home_land_type: swamp
 perks:
   max_population: 5
@@ -26,7 +26,7 @@ units:
     need_boat: false
   - name: Necromancer
     cost:
-      platinum: 780
+      platinum: 750
       mana: 10
     power:
       offense: 0
