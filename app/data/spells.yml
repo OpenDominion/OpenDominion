@@ -444,7 +444,7 @@ cull_the_weak:
   cost_strength: 5
   duration: 12
   races:
-    - undead-rework
+    - undead
   perks:
     upgrade_specs: 1
     cancels_midas_touch: 1
@@ -549,7 +549,7 @@ death_and_decay:
   duration: 6
   cooldown: 48
   races:
-    - undead-v3
+    - undead-rework
   perks:
     food_decay: 100
     lumber_decay: 100
@@ -562,7 +562,7 @@ feast_of_blood:
   cost_strength: 5
   duration: 12
   races:
-    - undead
+    - vampire
   perks:
     cancels_immortal: 1
     convert_vampires: 8.5
