@@ -359,7 +359,7 @@ parasitic_hunger:
   cost_strength: 5
   duration: 12
   races:
-    - undead
+    - spirit
   perks:
     conversion_rate: 20
     spreads_plague: 1
@@ -555,3 +555,14 @@ death_and_decay:
     lumber_decay: 100
     convert_peasants_to_self_military_unit1: 1
     invalid_protection: 1
+feast_of_blood:
+  name: Feast of Blood
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - undead
+  perks:
+    cancels_immortal: 1
+    convert_vampires: 8.5

@@ -39,10 +39,9 @@ class CasualtiesCalculator
      * @param int $slot
      * @param array $units Units being sent out on invasion
      * @param float $landRatio
-     * @param bool $isOverwhelmed
      * @return float
      */
-    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $target, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
+    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $target, int $slot, array $units, float $landRatio): float
     {
         $multiplier = 1;
 
@@ -59,43 +58,35 @@ class CasualtiesCalculator
         // Then check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
         // casualties will then always be 0 anyway
 
-        // Immortality never triggers upon being overwhelmed
-        if (!$isOverwhelmed) {
-            // Global immortality
-            if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-                // Contrary to Dominion Classic, invading SPUDs are always immortal in OD, even when invading a HuNo
-                // with Crusade active
+        // Global immortality
+        if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+            $multiplier = 0;
+        }
 
-                // This is to help the smaller OD player base (compared to DC) by not excluding HuNo as potential
-                // invasion targets
-                $multiplier = 0;
+        if ($multiplier == 0) {
+            // Unit Perk: Kills Immortal
+            $unitsAtHomePerSlot = [];
+            $unitsAtHomeKISlot = null;
+            $totalUnitsAtHome = 0;
+
+            // todo: inefficient to do run this code per slot. needs refactoring
+            foreach ($target->race->units as $unit) {
+                $slot = $unit->slot;
+                $unitKey = "military_unit{$slot}";
+
+                $unitsAtHomePerSlot[$slot] = $target->{$unitKey};
+                if ($unit->power_defense > 0) {
+                    $totalUnitsAtHome += $target->{$unitKey};
+                }
+
+                if ($unit->getPerkValue('kills_immortal') !== 0) {
+                    $unitsAtHomeKISlot = $slot;
+                }
             }
 
-            if ($multiplier == 0) {
-                // Unit Perk: Kills Immortal
-                $unitsAtHomePerSlot = [];
-                $unitsAtHomeKISlot = null;
-                $totalUnitsAtHome = 0;
-
-                // todo: inefficient to do run this code per slot. needs refactoring
-                foreach ($target->race->units as $unit) {
-                    $slot = $unit->slot;
-                    $unitKey = "military_unit{$slot}";
-
-                    $unitsAtHomePerSlot[$slot] = $target->{$unitKey};
-                    if ($unit->power_defense > 0) {
-                        $totalUnitsAtHome += $target->{$unitKey};
-                    }
-
-                    if ($unit->getPerkValue('kills_immortal') !== 0) {
-                        $unitsAtHomeKISlot = $slot;
-                    }
-                }
-
-                // We have a unit with KI!
-                if ($unitsAtHomeKISlot !== null && $totalUnitsAtHome > 0) {
-                    $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
-                }
+            // We have a unit with KI!
+            if ($unitsAtHomeKISlot !== null && $totalUnitsAtHome > 0) {
+                $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
             }
 
             // Range-based immortality
@@ -109,6 +100,11 @@ class CasualtiesCalculator
             if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target, $slot)) {
                 $multiplier = 0;
             }
+        }
+
+        // Spells
+        if ($dominion->getSpellPerkValue('cancels_immortal')) {
+            $multiplier = 1;
         }
 
         // Wonders
@@ -191,13 +187,10 @@ class CasualtiesCalculator
         if ($slot !== null) {
             // Global immortality
             if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-                // Note: At the moment only SPUDs have the global 'immortal' perk. If we ever add global immortality to
-                // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
-                // additional race-based checks in here for any new units. So always assume we're running SPUD at the
-                // moment
-
                 // Spells
-                $multiplier = $attacker->getSpellPerkValue('kills_immortal');
+                if ($attacker->getSpellPerkValue('kills_immortal') || $dominion->getSpellPerkValue('cancels_immortal')) {
+                    $multiplier = 1;
+                }
             }
 
             if ($multiplier == 0) {

@@ -500,10 +500,9 @@ class InvadeActionService
 
         $attackerPrestigeChange = (int)round($attackerPrestigeChange);
         if ($attackerPrestigeChange !== 0) {
-            if (!$isInvasionSuccessful) {
-                // Unsuccessful invasions (bounces) give negative prestige immediately
+            if ($attackerPrestigeChange < 0) {
+                // Unsuccessful invasions (bounces) and invasions under 60% range give negative prestige immediately
                 $dominion->prestige += $attackerPrestigeChange;
-
             } else {
                 // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, prestige gets returned after 12 hrs, since $units is input, not surviving units. fix?
                 $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
@@ -542,7 +541,6 @@ class InvadeActionService
     protected function handleOffensiveCasualties(Dominion $dominion, Dominion $target, array $units): array
     {
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
-        $isOverwhelmed = $this->invasionResult['result']['overwhelmed'];
         $landRatio = $this->invasionResult['result']['range'] / 100;
         $attackingForceOP = $this->invasionResult['attacker']['op'];
         $targetDP = $this->invasionResult['defender']['dp'];
@@ -588,7 +586,7 @@ class InvadeActionService
 
         foreach ($offensiveUnitsLost as $slot => &$amount) {
             // Reduce amount of units to kill by further multipliers
-            $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $target, $slot, $units, $landRatio, $isOverwhelmed);
+            $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $target, $slot, $units, $landRatio);
 
             if ($unitsToKillMultiplier !== 1) {
                 $amount = (int)ceil($amount * $unitsToKillMultiplier);
@@ -1000,6 +998,26 @@ class InvadeActionService
                 $upgradedUnits = floor($survivingUnits[$unit->slot] * $survivorsPerkValue[1] / 100);
                 $convertedUnits[$unit->slot] -= $upgradedUnits;
                 $convertedUnits[$survivorsPerkValue[0]] += $upgradedUnits;
+            }
+        }
+
+        // Special case for Vampires
+        if ($dominion->getSpellPerkValue('convert_vampires')) {
+            $unitSlotFrom = 4;
+            $unitSlotTo = 3;
+
+            if (isset($units[$unitSlotFrom]) && $units[$unitSlotFrom] > 0) {
+                $attackingForceOP = $this->invasionResult['attacker']['op'];
+                $targetDP = $this->invasionResult['defender']['dp'];
+
+                $totalUnitsSent = array_sum($units);
+                $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
+                $unitsNeededToBreakTarget = round($targetDP / $averageOPPerUnitSent);
+                $slotTotalAmountPercentage = ($units[$unitSlotFrom] / $totalUnitsSent);
+                $unitCount = round($unitsNeededToBreakTarget * $slotTotalAmountPercentage);
+
+                $conversionRate = $dominion->getSpellPerkMultiplier('convert_vampires');
+                $convertedUnits[$unitSlotTo] += floor($unitCount * $conversionRate);
             }
         }
 
