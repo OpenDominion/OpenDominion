@@ -2,8 +2,8 @@ key: vampire
 name: Vampire
 alignment: evil
 description: >-
-  <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, bloodthirsty vampires and their hideous mutant progeny. This rag-tag alliance share one thing in common: a hatred of life. They will seize every opportunity to snuff it out, or drag it kicking and screaming into the shadow of undeath.</p>
-  <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with more corpses. The Undead tend to live in fetid swamps, where the cloying humid air acts a natural preservative, protecting the skin from rot. Vampires are a vain lot.</p>
+  <p>Bathed in darkness, the Vampires are immortal predators fueled by an unquenchable thirst for the life essence of mortals. They are masters of the night, commanding legions of minions and wielding power that stretches beyond mortal comprehension.</p>
+  <p>While some perceive them as cursed, others are drawn to the allure of immortality and power that the Vampires offer. But those who dare to indulge their desires do so at their own peril, for once bitten, there is no escape from their embrace.</p>
 attacker_difficulty: 2
 explorer_difficulty: 1
 converter_difficulty: 2
