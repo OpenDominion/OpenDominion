@@ -565,4 +565,4 @@ feast_of_blood:
     - vampire
   perks:
     cancels_immortal: 1
-    convert_vampires: 8.5
+    convert_vampires: 9
