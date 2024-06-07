@@ -130,9 +130,7 @@ class InfoMapper
         }
 
         //$data['spa'] = $this->militaryCalculator->getSpyRatioRaw($dominion);
-        if ($dominion->race->key == 'icekin') {
-            $data['wpa'] = $this->militaryCalculator->getWizardRatioRaw($dominion);
-        }
+        $data['wpa'] = $this->militaryCalculator->getWizardRatioRaw($dominion, 'defense');
 
         $military_draftees = $dominion->military_draftees;
         $military_unit1 = $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1);

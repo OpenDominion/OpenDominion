@@ -172,17 +172,15 @@
                         @endif
                     </td>
                 </tr>
-                @if ($race->name == 'Icekin')
-                    @php $wpa = array_get($data, 'wpa', -1); @endphp
-                    <tr>
-                        <td>
-                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("wpa") }}">
-                                Wizard Ratio:
-                            </span>
-                        </td>
-                        <td>{{ $wpa == -1 ? '???' : round($wpa, 3) }}</td>
-                    </tr>
-                @endif
+                @php $wpa = array_get($data, 'wpa', -1); @endphp
+                <tr>
+                    <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("wpa") }}">
+                            Wizard Ratio:
+                        </span>
+                    </td>
+                    <td>{{ $wpa == -1 ? '???' : round($wpa, 3) }}</td>
+                </tr>
             </tbody>
         </table>
     </div>
