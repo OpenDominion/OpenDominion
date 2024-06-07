@@ -73,7 +73,7 @@ class AIHelper
             ];
         }
 
-        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead'];
+        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead', 'Vampire'];
         if (!in_array($race->name, $racesWithoutOre)) {
             $oreMinePercentage = 0.06;
             if ($race->name == 'Troll') {

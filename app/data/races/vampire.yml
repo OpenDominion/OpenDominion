@@ -11,7 +11,6 @@ home_land_type: swamp
 perks:
   max_population: 7.5
   food_consumption: -75
-  mana_production: 20
   immortal_wizards: 1
 units:
   - name: Dire Bat
@@ -29,7 +28,7 @@ units:
     power:
       offense: 0
       defense: 3
-  - name: Progeny
+  - name: Kindred
     cost:
       platinum: 1000
       mana: 0
@@ -39,7 +38,7 @@ units:
     perks:
       casualties: -50
     need_boat: false
-  - name: Vampire
+  - name: Bloodreaver
     cost:
       platinum: 1000
       mana: 0
@@ -48,5 +47,5 @@ units:
       defense: 3
     perks:
       immortal: 1
-      conversion: 3,18 # slot 3, one per 18 sent
+      conversion: 3,22 # slot 3, one per 22 sent
     need_boat: false

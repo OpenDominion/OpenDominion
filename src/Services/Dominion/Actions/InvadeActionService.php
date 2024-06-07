@@ -929,7 +929,7 @@ class InvadeActionService
         // todo: might want to check for conversion unit perks here, instead of hardcoded race names
         if (
             !$isInvasionSuccessful ||
-            !in_array($dominion->race->key, ['dark-elf-rework', 'lycanthrope', 'undead', 'undead-rework', 'undead-v3'], true)
+            !in_array($dominion->race->key, ['dark-elf-rework', 'lycanthrope', 'undead', 'undead-rework', 'vampire'], true)
         )
         {
             return $convertedUnits;
