@@ -223,6 +223,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
     {
         global $mockRandomChance;
         $mockRandomChance = true;
+        $opsCalculator = app(OpsCalculator::class);
         $populationCalculator = app(PopulationCalculator::class);
 
         // Arrange
@@ -233,25 +234,27 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->dominion->resource_mana = 100000;
         $this->dominion->military_wizards = 5000;
         $this->target->military_wizards = 0;
-        $this->target->improvement_science = 1000;
+        $this->target->improvement_science = 10000;
         $this->target->improvement_keep = 100000;
         $this->target->improvement_walls = 50000;
         $this->target->improvement_harbor = 10000;
-        $this->target->stat_total_investment = 161000;
+        $this->target->stat_total_investment = 170000;
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'lightning_bolt', $this->target);
 
         // Assert
-        $this->assertEquals(997, $this->target->improvement_science);
+        $this->assertEquals(1, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt'));
+        $this->assertEquals(9975, $this->target->improvement_science);
         $this->assertEquals(99750, $this->target->improvement_keep);
         $this->assertEquals(49875, $this->target->improvement_walls);
     }
 
-    public function testCastSpell_Lightning_MaxWpaProtection()
+    public function testCastSpell_Lightning_HalfProtection()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
+        $opsCalculator = app(OpsCalculator::class);
         $populationCalculator = app(PopulationCalculator::class);
 
         // Arrange
@@ -261,7 +264,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->dominion->resource_mana = 100000;
         $this->dominion->military_wizards = 5000;
-        $this->target->military_wizards = 11000;
+        $this->target->building_wizard_guild = 525;
         $this->target->improvement_keep = 100000;
         $this->target->improvement_walls = 50000;
         $this->target->improvement_harbor = 10000;
@@ -271,6 +274,37 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'lightning_bolt', $this->target);
 
         // Assert
+        $this->assertEquals(0.5, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt'));
+        $this->assertEquals(99875, $this->target->improvement_keep);
+        $this->assertEquals(49937, $this->target->improvement_walls);
+    }
+
+    public function testCastSpell_Lightning_MaxProtection()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+        $opsCalculator = app(OpsCalculator::class);
+        $populationCalculator = app(PopulationCalculator::class);
+
+        // Arrange
+        RealmWar::create([
+            'source_realm_id' => $this->dominion->realm_id,
+            'target_realm_id' => $this->target->realm_id
+        ]);
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+        $this->target->building_wizard_guild = 525;
+        $this->target->improvement_keep = 100000;
+        $this->target->improvement_walls = 50000;
+        $this->target->improvement_spires = 100000000;
+        $this->target->improvement_harbor = 10000;
+        $this->target->stat_total_investment = 100160000;
+
+        // Act
+        $this->spellActionService->castSpell($this->dominion, 'lightning_bolt', $this->target);
+
+        // Assert
+        $this->assertEquals(0.2, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt'));
         $this->assertEquals(99950, $this->target->improvement_keep);
         $this->assertEquals(49975, $this->target->improvement_walls);
     }
