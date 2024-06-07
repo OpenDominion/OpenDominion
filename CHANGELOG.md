@@ -27,12 +27,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spy mastery now increases spy strength recovery by 0.2% (max 2%) and reduces spy losses by 5% (max 50%) per 100 mastery
 - Wizard mastery now increases wizard strength recovery by 0.2% (max 2%) and reduces spell mana costs by 2% (max 20%) per 100 mastery
 - Arcane Ward and Illuminate now increase chance of failure by 5% (was +10% defensive ratios)
-- Peasant vulnerability to fireball set to 50% all round (was 35-45% by day)
-- Improvement vulnerability to lightning set to 25% all round (was 30-20% by day)
 - Damage reduction from SPA/WPA removed
 - Sabotage Boats damage reduced to 2.3% (from 2.5%)
-- Wizards now reduce vulnerability to fireball and lightning by 8% per 0.1 WPA up to a maximum of 80% at 1 WPA
-- Wizard Guilds now produce 5 mana and reduce vulnerability to fireball and lightning Bolt by 16% per 1% owned up to a maximum of 80% at 5% owned (was spy and wizard cost/losses/recovery)
+- Magic Snare damage reduced to 3.5% of current strength, min 1.5 (from 2 flat)
+- Resilience decay increased to 20 (from 8)
+- Peasant vulnerability to fireball set to 50% all round (was 35-45% by day)
+- Wizards protect 6 peasants from fireball
+- Wizard Guilds now produce 5 mana, increase the protection provided by 5 wizards to 24, and reduce lightning bolt damage by 10% per 1% owned up to a maximum of 50% at 5% owned (was spy and wizard cost/losses/recovery)
+- Improvement vulnerability to lightning set to 25% all round (was 30-20% by day)
 - Lightning Storm: new status effect (spell) with 24 hour duration, increases lightning bolt damage by 50%, immune to Burning while active, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
 - Burning now increases fireball damage by 100% (was fixed pop growth) and grants immunity to Lightning Storm
 - Burning and Lightning Storm are triggered by 20 successes of the matching spell (in a single hour or up to 30 over a 24 hour period), duration set to 20 hours +1 every 4 days from Day 4 to Day 44 (max 30)

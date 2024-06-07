@@ -4,6 +4,7 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -145,10 +146,11 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(51098, $this->target->peasants);
     }
 
-    public function testCastSpell_Fireball_MaxWpaProtection()
+    public function testCastSpell_Fireball_MaxWizardProtection()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
+        $opsCalculator = app(OpsCalculator::class);
         $populationCalculator = app(PopulationCalculator::class);
 
         // Arrange
@@ -158,15 +160,18 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->dominion->resource_mana = 100000;
         $this->dominion->military_wizards = 5000;
-        $this->target->military_wizards = 11000;
+        $this->target->military_wizards = 2550;
         $this->target->peasants = $populationCalculator->getMaxPeasantPopulation($this->target);
-        $this->assertEquals(41409, $this->target->peasants);
+        $this->assertEquals(49859, $this->target->peasants);
+        $this->assertEquals(0.5, $opsCalculator->getPeasantVulnerablilityModifier($this->target));
+        $this->assertEquals(39887, $opsCalculator->getPeasantsProtected($this->target));
+        $this->assertEquals(9972, $opsCalculator->getPeasantsUnprotected($this->target));
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
         // Assert
-        $this->assertEquals(41201, $this->target->peasants);
+        $this->assertEquals(49360, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_MaxWizardGuildProtection()
@@ -182,16 +187,16 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->dominion->resource_mana = 100000;
         $this->dominion->military_wizards = 5000;
-        $this->target->military_wizards = 0;
-        $this->target->building_wizard_guild = 1000;
+        $this->target->military_wizards = 700;
+        $this->target->building_wizard_guild = 140;
         $this->target->peasants = $populationCalculator->getMaxPeasantPopulation($this->target);
-        $this->assertEquals(62659, $this->target->peasants);
+        $this->assertEquals(53144, $this->target->peasants);
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
         // Assert
-        $this->assertEquals(62345, $this->target->peasants);
+        $this->assertEquals(52612, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_DamageCap()

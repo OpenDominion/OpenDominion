@@ -149,10 +149,10 @@ class EspionageHelper
             ],
             [
                 'name' => 'Magic Snare',
-                'description' => 'Reduces wizard strength by 2%',
+                'description' => 'Reduces wizard strength by 3.5% (min 1.5)',
                 'key' => 'magic_snare',
                 'decreases' => ['wizard_strength'],
-                'percentage' => 2,
+                'percentage' => 3.5,
             ],
             [
                 'name' => 'Sabotage Boats',

@@ -19,7 +19,7 @@ class OpsCalculator
     /**
      * @var float Base amount of resilience lost each hour
      */
-    protected const RESILIENCE_DECAY = -8;
+    protected const RESILIENCE_DECAY = -20;
     protected const FIREBALL_METER_DECAY = -4;
     protected const LIGHTNING_BOLT_METER_DECAY = -4;
 
@@ -410,9 +410,12 @@ class OpsCalculator
      */
     public function getPeasantVulnerablilityModifier(Dominion $dominion): float
     {
-        $protectionModifier = 1 - $this->getSpellVulnerablilityProtectionModifier($dominion);
+        $modifier = 1;
 
-        return $protectionModifier * static::PEASANT_VULNERABILITY;
+        // Spires
+        $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+
+        return $modifier * static::PEASANT_VULNERABILITY;
     }
 
     /*
@@ -423,10 +426,26 @@ class OpsCalculator
      */
     public function getPeasantsProtected(Dominion $dominion): int
     {
+        // Base Vulnerability + Spires
         $vulnerabilityModifier = $this->getPeasantVulnerablilityModifier($dominion);
         $vulnerablePeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+        $totalProtected = round($vulnerablePeasants * (1 - $vulnerabilityModifier));
 
-        return round($vulnerablePeasants * (1 - $vulnerabilityModifier));
+        // Values
+        $peasantsPerWizard = 6;
+        $peasantsPerWizardGuild = 18;
+        $wizardsPerGuild = 5;
+
+        // Wizard Protection
+        $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion, 'defense');
+        $rawWizards = $wizardRatio * $this->landCalculator->getTotalLand($dominion);
+        $totalProtected += $rawWizards * $peasantsPerWizard;
+        $totalProtected += min(
+            ($dominion->building_wizard_guild * $wizardsPerGuild),
+            $rawWizards
+        ) * $peasantsPerWizardGuild;
+
+        return min($totalProtected, $vulnerablePeasants * 0.8);
     }
 
     /*
