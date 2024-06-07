@@ -14,7 +14,7 @@ class OpsCalculator
      * @var float Base amount of resilience gained per op
      */
     protected const PEASANT_VULNERABILITY = 50 / 100;
-    protected const IMPROVEMENT_VULNERABILITY = 25 / 100;
+    protected const IMPROVEMENT_VULNERABILITY = 20 / 100;
 
     /**
      * @var float Base amount of resilience lost each hour
@@ -377,29 +377,39 @@ class OpsCalculator
     }
 
     /*
-     * Returns the spell vulnerability protection modifier
+     * Returns the spell damage multiplier
      *
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpellVulnerablilityProtectionModifier(Dominion $dominion): float
+    public function getSpellDamageMultiplier(Dominion $dominion, string $spellKey = ''): float
     {
-        // WPA
-        $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
-        $ratioProtection = min(0.8, 0.8 * $wizardRatio);
+        $modifier = 1;
 
-        // Guilds
-        $guildReduction = 16;
-        $guildReductionMax = 80;
-        $wizardGuildProtection = min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $guildReduction),
-            ($guildReductionMax / 100)
-        );
+        if ($spellKey == 'lightning_bolt') {
+            // Guilds
+            $wizardGuildReduction = 10;
+            $wizardGuildReductionMax = 50;
+            $modifier -= min(
+                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildReduction),
+                ($wizardGuildReductionMax / 100)
+            );
+        }
 
         // Spires
-        $spiresProtection = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+        $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
 
-        return min(0.8, $ratioProtection + $wizardGuildProtection + $spiresProtection);
+        // Spells
+        $modifier += $this->spellCalculator->resolveSpellPerk($dominion, 'enemy_spell_damage') / 100;
+        $modifier += $this->spellCalculator->resolveSpellPerk($dominion, "enemy_{$spellKey}_damage") / 100;
+
+        // Techs
+        $modifier += $dominion->getTechPerkMultiplier("enemy_{$spellKey}_damage");
+
+        // Wonders
+        $modifier += $dominion->getWonderPerkMultiplier('enemy_spell_damage');
+
+        return max(0.2, $modifier);
     }
 
     /*
@@ -410,12 +420,7 @@ class OpsCalculator
      */
     public function getPeasantVulnerablilityModifier(Dominion $dominion): float
     {
-        $modifier = 1;
-
-        // Spires
-        $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
-
-        return $modifier * static::PEASANT_VULNERABILITY;
+        return static::PEASANT_VULNERABILITY;
     }
 
     /*
@@ -475,76 +480,19 @@ class OpsCalculator
     }
 
     /*
-     * Returns the final percentage of improvements that are vulnerable to lightning damage
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getImprovementVulnerablilityModifier(Dominion $dominion): float
-    {
-        $protectionModifier = 1 - $this->getSpellVulnerablilityProtectionModifier($dominion);
-
-        return $protectionModifier * static::IMPROVEMENT_VULNERABILITY;
-    }
-
-    /*
-     * Returns the raw amount of total improvements that are protected from lightning damage
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getImprovementsProtected(Dominion $dominion): int
-    {
-        $vulnerabilityModifier = $this->getImprovementVulnerablilityModifier($dominion);
-        $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor);
-
-        return round($vulnerableInvestments * (1 - $vulnerabilityModifier));
-    }
-
-    /*
-     * Returns the raw amount of current improvements that are not protected from lightning damage
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getImprovementsUnprotected(Dominion $dominion, ?string $improvementType = null): int
-    {
-        $protectedImprovements = $this->getImprovementsProtected($dominion);
-        $currentImprovements = $this->improvementCalculator->getImprovementTotal($dominion);
-        $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;
-
-        if ($destroyableImprovements == 0) {
-            return 0;
-        }
-
-        $modifier = 1;
-        if ($improvementType !== null) {
-            $modifier = max(0, $dominion->{$improvementType} / $destroyableImprovements);
-        }
-
-        return max(0, round(($destroyableImprovements - $protectedImprovements) * $modifier));
-    }
-
-    /*
      * Returns the raw amount of current improvements that can be destroyed by lightning damage
      *
      * @param Dominion $dominion
      * @return int
      */
-    public function getImprovementsVulnerable(Dominion $dominion, ?string $improvementType = null): int
+    public function getImprovementsVulnerable(Dominion $dominion): int
     {
-        $protectedImprovements = $this->getImprovementsProtected($dominion);
-        $destroyableImprovements = $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor;
+        $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor);
+        $protectedImprovements = round($vulnerableInvestments * (1 - static::IMPROVEMENT_VULNERABILITY));
 
-        if ($destroyableImprovements == 0) {
-            return 0;
-        }
+        $currentImprovements = $this->improvementCalculator->getImprovementTotal($dominion);
+        $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;
 
-        $modifier = 1;
-        if ($improvementType !== null) {
-            $modifier = max(0, $dominion->{$improvementType} / $destroyableImprovements);
-        }
-
-        return max(0, round(($destroyableImprovements - $protectedImprovements) * $modifier));
+        return max(0, $destroyableImprovements - $protectedImprovements);
     }
 }

@@ -415,12 +415,10 @@
                     <div class="box-body">
                         <table class="table table-condensed">
                             @foreach ([
-                                'getSpellVulnerablilityProtectionModifier',
+                                'getSpellDamageMultiplier',
                                 'getPeasantVulnerablilityModifier',
                                 'getPeasantsProtected',
                                 'getPeasantsVulnerable',
-                                'getImprovementVulnerablilityModifier',
-                                'getImprovementsProtected',
                                 'getImprovementsVulnerable'
                             ] as $method)
                                 @php

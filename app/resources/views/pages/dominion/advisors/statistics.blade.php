@@ -436,21 +436,21 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Lightning Bolt:</td>
-                                        <td>
-                                            <strong>{{ number_format($opsCalculator->getImprovementVulnerablilityModifier($target) * 100, 2) }}%</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Improvements Protected:</td>
-                                        <td>
-                                            <strong>{{ number_format($opsCalculator->getImprovementsProtected($target)) }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <td>Improvements Vulnerable:</td>
                                         <td>
                                             <strong>{{ number_format($opsCalculator->getImprovementsVulnerable($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lightning Damage Reduction:</td>
+                                        <td>
+                                            <strong>{{ number_format((1 - $opsCalculator->getSpellDamageMultiplier($target, 'lightning_bolt')) * 100, 2) }}%</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spell Damage Reduction:</td>
+                                        <td>
+                                            <strong>{{ number_format((1 - $opsCalculator->getSpellDamageMultiplier($target)) * 100, 2) }}%</strong>
                                         </td>
                                     </tr>
                                 </tbody>

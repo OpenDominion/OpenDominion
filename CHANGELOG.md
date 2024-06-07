@@ -34,7 +34,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Peasant vulnerability to fireball set to 50% all round (was 35-45% by day)
 - Wizards protect 6 peasants from fireball
 - Wizard Guilds now produce 5 mana, increase the protection provided by 5 wizards to 24, and reduce lightning bolt damage by 10% per 1% owned up to a maximum of 50% at 5% owned (was spy and wizard cost/losses/recovery)
-- Improvement vulnerability to lightning set to 25% all round (was 30-20% by day)
+- Maximum lightning damage set to 20% of total investment (from 20-30% by day)
+- Lightning bolt damage changed to 0.25% of current improvements (from 1% of vulnerable based on total investment)
 - Lightning Storm: new status effect (spell) with 24 hour duration, increases lightning bolt damage by 50%, immune to Burning while active, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
 - Burning now increases fireball damage by 100% (was fixed pop growth) and grants immunity to Lightning Storm
 - Burning and Lightning Storm are triggered by 20 successes of the matching spell (in a single hour or up to 30 over a 24 hour period), duration set to 20 hours +1 every 4 days from Day 4 to Day 44 (max 30)

@@ -777,18 +777,8 @@ class SpellActionService
             // Cast spell instantly
             $damageDealt = [];
             $totalDamage = 0;
-            $damageReductionMultiplier = 0;
             $applyBurning = false;
-
-            // Spells
-            $damageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, 'enemy_spell_damage') / 100;
-            $damageReductionMultiplier -= $this->spellCalculator->resolveSpellPerk($target, "enemy_{$spell->key}_damage") / 100;
-
-            // Techs
-            $damageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$spell->key}_damage");
-
-            // Wonders
-            $damageReductionMultiplier -= $target->getWonderPerkMultiplier('enemy_spell_damage');
+            $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($target, $spell->key);
 
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(['war_cancels']);
@@ -813,20 +803,15 @@ class SpellActionService
                     }
                     $attrValue = $this->opsCalculator->getPeasantsVulnerable($target);
                 } elseif (Str::startsWith($attr, 'improvement_')) {
-                    $improvementsUnprotected = $this->opsCalculator->getImprovementsUnprotected($target);
-                    if ($improvementsUnprotected == 0) {
+                    $improvementsVulnerable = $this->opsCalculator->getImprovementsVulnerable($target);
+                    if ($improvementsVulnerable == 0) {
                         throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to destroy.");
                     }
-                    $attrValue = $this->opsCalculator->getImprovementsVulnerable($target, $attr);
                 }
 
                 // Cap damage reduction at 80%
                 $baseDamage = $perk->pivot->value / 100;
-                $damage = ceil(
-                    $attrValue *
-                    $baseDamage *
-                    (1 - min(0.8, $damageReductionMultiplier))
-                );
+                $damage = ceil($attrValue * $baseDamage * $damageMultiplier);
 
                 if ($attr == 'peasants') {
                     // Cap Fireball damage by protection
@@ -834,10 +819,6 @@ class SpellActionService
                     if ($damage == $peasantsUnprotected) {
                         $applyBurning = true;
                     }
-                } elseif (Str::startsWith($attr, 'improvement_')) {
-                    // Cap Lightning Bolt damage by protection
-                    $improvementUnprotected = $this->opsCalculator->getImprovementsUnprotected($target, $attr);
-                    $damage = min($damage, $improvementUnprotected);
                 }
 
                 // Temporary lightning damage
