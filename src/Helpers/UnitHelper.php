@@ -112,7 +112,7 @@ class UnitHelper
             'spies' => 'Used for espionage.',
             'assassins' => 'Used for espionage.<br><br>Twice as strong as spies and cannot be disbanded.<br>50% of losses are retrained as spies.',
             'wizards' => 'Used for casting offensive spells.',
-            'archmages' => 'Used for casting offensive spells.<br><br>Twice as strong as wizards and cannot be assassinated.<br>Black ops losses reduced by 90%.',
+            'archmages' => 'Used for casting offensive spells.<br><br>Counts as two wizards and cannot be assassinated.<br>Black ops losses reduced by 90%.',
         ];
 
         // todo: refactor this. very inefficient

@@ -424,7 +424,13 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Peasants Protected:</td>
+                                        <td>Peasants Protected (Wizards):</td>
+                                        <td>
+                                            <strong>{{ number_format($opsCalculator->getPeasantWizardProtection($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Peasants Protected (Total):</td>
                                         <td>
                                             <strong>{{ number_format($opsCalculator->getPeasantsProtected($target)) }}</strong>
                                         </td>

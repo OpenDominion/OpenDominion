@@ -424,17 +424,14 @@ class OpsCalculator
     }
 
     /*
-     * Returns the raw number of max peasants that are protected from fireball damage
+     * Returns the raw number of peasants that are protected by wizards and guilds
      *
      * @param Dominion $dominion
      * @return int
      */
-    public function getPeasantsProtected(Dominion $dominion): int
+    public function getPeasantWizardProtection(Dominion $dominion): int
     {
-        // Base Vulnerability + Spires
-        $vulnerabilityModifier = $this->getPeasantVulnerablilityModifier($dominion);
-        $vulnerablePeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
-        $totalProtected = round($vulnerablePeasants * (1 - $vulnerabilityModifier));
+        $protected = 0;
 
         // Values
         $peasantsPerWizard = 6;
@@ -444,12 +441,29 @@ class OpsCalculator
         // Wizard Protection
         $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion, 'defense');
         $rawWizards = $wizardRatio * $this->landCalculator->getTotalLand($dominion);
-        $totalProtected += $rawWizards * $peasantsPerWizard;
-        $totalProtected += min(
+        $protected += $rawWizards * $peasantsPerWizard;
+        $protected += min(
             ($dominion->building_wizard_guild * $wizardsPerGuild),
             $rawWizards
         ) * $peasantsPerWizardGuild;
 
+        return $protected;
+    }
+
+    /*
+     * Returns the raw number of max peasants that are protected from fireball damage
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsProtected(Dominion $dominion): int
+    {
+        // Base Vulnerability
+        $vulnerabilityModifier = $this->getPeasantVulnerablilityModifier($dominion);
+        $vulnerablePeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+        $totalProtected = round($vulnerablePeasants * (1 - $vulnerabilityModifier));
+
+        $totalProtected += $this->getPeasantWizardProtection($dominion);
         return min($totalProtected, $vulnerablePeasants * 0.8);
     }
 

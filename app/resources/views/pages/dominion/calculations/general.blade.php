@@ -417,6 +417,7 @@
                             @foreach ([
                                 'getSpellDamageMultiplier',
                                 'getPeasantVulnerablilityModifier',
+                                'getPeasantWizardProtection',
                                 'getPeasantsProtected',
                                 'getPeasantsVulnerable',
                                 'getImprovementsVulnerable'
