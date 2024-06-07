@@ -2,12 +2,12 @@
 [
     {
         "attributes": {
-            "peasants": 11993,
+            "peasants": 10794,
             "draft_rate": 60,
             "resource_platinum": 360000,
             "resource_food": 50000,
             "resource_lumber": 20000,
-            "resource_mana": 8500,
+            "resource_mana": 15000,
             "resource_ore": 0,
             "resource_gems": 0,
             "resource_tech": 1602,
@@ -19,21 +19,21 @@
             "military_unit4": 0,
             "military_spies": 25,
             "military_wizards": 25,
-            "land_plain": 355,
+            "land_plain": 335,
             "land_mountain": 0,
-            "land_swamp": 180,
+            "land_swamp": 200,
             "land_cavern": 50,
             "land_forest": 20,
             "land_hill": 45,
             "land_water": 0,
             "building_home": 130,
-            "building_alchemy": 220,
+            "building_alchemy": 200,
             "building_farm": 18,
             "building_smithy": 117,
             "building_masonry": 0,
             "building_ore_mine": 0,
             "building_gryphon_nest": 0,
-            "building_tower": 25,
+            "building_tower": 45,
             "building_wizard_guild": 0,
             "building_temple": 25,
             "building_diamond_mine": 0,
@@ -48,7 +48,7 @@
             "stat_total_platinum_production": 360000,
             "stat_total_food_production": 50000,
             "stat_total_lumber_production": 20000,
-            "stat_total_mana_production": 8500,
+            "stat_total_mana_production": 15000,
             "stat_total_ore_production": 0,
             "stat_total_gem_production": 0,
             "stat_total_tech_production": 0,
@@ -67,7 +67,7 @@
     },
     {
         "attributes": {
-            "peasants": 10384,
+            "peasants": 10508,
             "draft_rate": 60,
             "resource_platinum": 231400,
             "resource_food": 50000,
@@ -79,26 +79,26 @@
             "resource_boats": 0,
             "military_draftees": 525,
             "military_unit1": 0,
-            "military_unit2": 1009,
-            "military_unit3": 505,
+            "military_unit2": 537,
+            "military_unit3": 600,
             "military_unit4": 0,
             "military_spies": 25,
             "military_wizards": 25,
-            "land_plain": 355,
+            "land_plain": 335,
             "land_mountain": 0,
-            "land_swamp": 180,
+            "land_swamp": 200,
             "land_cavern": 50,
             "land_forest": 20,
             "land_hill": 45,
             "land_water": 0,
             "building_home": 130,
-            "building_alchemy": 218,
+            "building_alchemy": 198,
             "building_farm": 20,
             "building_smithy": 117,
             "building_masonry": 0,
             "building_ore_mine": 0,
             "building_gryphon_nest": 0,
-            "building_tower": 25,
+            "building_tower": 55,
             "building_wizard_guild": 0,
             "building_temple": 25,
             "building_diamond_mine": 0,
@@ -157,7 +157,7 @@
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 150
+                        "amount": 110
                     }
                 ],
                 [],
@@ -165,7 +165,7 @@
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 150
+                        "amount": 112
                     }
                 ],
                 [],
@@ -173,7 +173,7 @@
                 [
                     {
                         "resource": "military_unit3",
-                        "amount": 181
+                        "amount": 150
                     }
                 ],
                 [],
