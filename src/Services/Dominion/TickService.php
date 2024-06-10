@@ -635,8 +635,7 @@ class TickService
             }
 
             // Reset Daily Bonuses
-            // toBase required to prevent ambiguous updated_at column in query
-            $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
+            $round->activeDominions()->where('protection_ticks_remaining', 0)->update([
                 'daily_platinum' => false,
                 'daily_land' => false,
                 'daily_actions' => AutomationService::DAILY_ACTIONS,

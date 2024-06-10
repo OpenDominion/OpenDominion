@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Daily land and platinum bonuses can now be automated (doesn't count against daily action limit)
 
 ## [1.40.0] - 2024-06-07
 ### Added

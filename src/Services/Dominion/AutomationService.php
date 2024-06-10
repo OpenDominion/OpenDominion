@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use Arr;
 use DB;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -220,7 +221,11 @@ class AutomationService
             $config[$data['tick']] = [];
         }
         array_push($config[$data['tick']], $data['value']);
-        $countCollection = collect($config);
+        $countCollection = collect($config)->map(function ($tick) {
+            return Arr::where($tick, function ($action) {
+                return $action['action'] !== 'daily_bonus';
+            });
+        });
 
         $totalCount = $countCollection->sum(function ($actions) {
             return count($actions);

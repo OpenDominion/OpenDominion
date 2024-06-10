@@ -79,6 +79,9 @@
                                                         @elseif ($item['action'] == 'draft_rate')
                                                             Set Draft Rate
                                                             {{ $item['amount'] }}%
+                                                        @elseif ($item['action'] == 'daily_bonus')
+                                                            Daily Bonus
+                                                            {{ ucwords($item['key']) }}
                                                         @endif
                                                         <form action="{{ route('dominion.bonuses.actions.delete') }}" method="post" class="inline">
                                                             @csrf
@@ -120,6 +123,7 @@
                                         <option value="explore">Explore Land</option>
                                         <option value="spell">Cast Spell</option>
                                         <option value="draft_rate">Set Draft Rate</option>
+                                        <option value="daily_bonus">Daily Bonus</option>
                                     </select>
                                 </div>
                                 <div class="form-group action-options train">
@@ -170,6 +174,14 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="form-group action-options daily_bonus" style="display: none;">
+                                    Bonus:
+                                    <select class="form-control" name="key" disabled>
+                                        <option></option>
+                                        <option value="land">Land</option>
+                                        <option value="platinum">Platinum</option>
+                                    </select>
+                                </div>
                                 <button type="submit" class="btn btn-primary pull-right" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     Save
                                 </button>
@@ -187,6 +199,7 @@
                 </div>
                 <div class="box-body">
                     <p>You can perform {{ $allowedActions }} automated actions per day, which reset with your daily bonuses.</p>
+                    <p>Taking your daily land and platinum bonuses will not count toward your daily action limit.</p>
                     <p>Actions cannot be scheduled more than 8 hours in advance and are performed ~30 minutes into the hour.</p>
                     <p>In the event that you do not have enough resources to perform the action, it will instead use the max that you can afford.</p>
                     <p>You have <b>{{ $selectedDominion->daily_actions }}</b> action(s) remaining today.</p>

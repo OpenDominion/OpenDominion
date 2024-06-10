@@ -24,6 +24,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
+use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
@@ -52,6 +53,9 @@ class AIService
 
     /** @var ConstructionCalculator */
     protected $constructionCalculator;
+
+    /** @var DailyBonusesActionService */
+    protected $dailyBonusesActionService;
 
     /** @var ExploreActionService */
     protected $exploreActionService;
@@ -127,6 +131,7 @@ class AIService
         // Action Services
         $this->changeDraftRateActionService = app(ChangeDraftRateActionService::class);
         $this->constructActionService = app(ConstructActionService::class);
+        $this->dailyBonusesActionService = app(DailyBonusesActionService::class);
         $this->exploreActionService = app(ExploreActionService::class);
         $this->improveActionService = app(ImproveActionService::class);
         $this->releaseActionService = app(ReleaseActionService::class);
@@ -196,6 +201,15 @@ class AIService
                                     $this->constructionCalculator->getMaxAfford($dominion)
                                 );
                                 $this->constructActionService->construct($dominion, ['building_' . $instruction['key'] => $maxAfford]);
+                                break;
+                            case 'daily_bonus':
+                                if ($instruction['key'] === 'land') {
+                                    $this->dailyBonusesActionService->claimLand($dominion);
+                                }
+                                if ($instruction['key'] === 'platinum') {
+                                    $this->dailyBonusesActionService->claimPlatinum($dominion);
+                                }
+                                $actionsTaken--;
                                 break;
                             case 'draft_rate':
                                 $this->changeDraftRateActionService->changeDraftRate($dominion, $instruction['amount']);
