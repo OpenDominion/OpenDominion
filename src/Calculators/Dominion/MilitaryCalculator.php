@@ -642,10 +642,10 @@ class MilitaryCalculator
         $unitPower += $this->getUnitPowerFromBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromPrestigePerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromSpellPerk($dominion, $landRatio, $unit, $powerType);
 
         if ($landRatio !== null) {
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
-            $unitPower += $this->getUnitPowerFromSpellPerk($dominion, $landRatio, $unit, $powerType);
         }
 
         $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
@@ -852,12 +852,8 @@ class MilitaryCalculator
         }
 
         $unitSlot = (int)$pairingPerkData[0];
-        $amount = (int)$pairingPerkData[1];
-        if (isset($pairingPerkData[2])) {
-            $numRequired = (int)$pairingPerkData[2];
-        } else {
-            $numRequired = 1;
-        }
+        $numRequired = (int)$pairingPerkData[1];
+        $amount = (int)$pairingPerkData[2];
 
         $powerFromPerk = 0;
         $numberPaired = 0;
@@ -999,17 +995,12 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // Guilds
-        $spyStrengthPerGuild = 0.1;
-        $spyStrengthPerGuildMax = 1;
-
-        $regen += min(
-            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerGuild),
-            $spyStrengthPerGuildMax
-        );
-
         // Techs
         $regen += $dominion->getTechPerkValue('spy_strength_recovery');
+
+        // Mastery
+        $maxMasteryBonus = 2;
+        $regen += $dominion->spy_mastery / 1000 * $maxMasteryBonus;
 
         return $regen;
     }
@@ -1095,21 +1086,16 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // Guilds
-        $wizardStrengthPerGuild = 0.1;
-        $wizardStrengthPerGuildMax = 1;
-
-        $regen += min(
-            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerGuild),
-            $wizardStrengthPerGuildMax
-        );
-
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
 
+        // Mastery
+        $maxMasteryBonus = 2;
+        $regen += $dominion->wizard_mastery / 1000 * $maxMasteryBonus;
+
         // Resilience bonus when snared
         if ($dominion->wizard_strength < 30) {
-            $regen += ($dominion->spy_resilience / 100);
+            $regen += ($dominion->resilience / 100);
         }
 
         return $regen;
