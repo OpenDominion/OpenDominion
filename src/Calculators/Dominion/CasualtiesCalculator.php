@@ -59,7 +59,18 @@ class CasualtiesCalculator
         // casualties will then always be 0 anyway
 
         // Global immortality
-        if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+        if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal') !== 0) {
+            $multiplier = 0;
+        }
+
+        // Range-based immortality
+        $immortalVsLandRange = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range');
+        if ($immortalVsLandRange !== 0 && $landRatio >= ($immortalVsLandRange / 100)) {
+            $multiplier = 0;
+        }
+
+        // Race perk-based immortality
+        if ($this->isImmortalVersusRacePerk($dominion, $target, $slot)) {
             $multiplier = 0;
         }
 
@@ -87,18 +98,6 @@ class CasualtiesCalculator
             // We have a unit with KI!
             if ($unitsAtHomeKISlot !== null && $totalUnitsAtHome > 0) {
                 $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
-            }
-
-            // Range-based immortality
-            if (($multiplier !== 0) && (($immortalVsLandRange = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) !== 0)) {
-                if ($landRatio >= ($immortalVsLandRange / 100)) {
-                    $multiplier = 0;
-                }
-            }
-
-            // Race perk-based immortality
-            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target, $slot)) {
-                $multiplier = 0;
             }
         }
 
@@ -187,6 +186,8 @@ class CasualtiesCalculator
         if ($slot !== null) {
             // Global immortality
             if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                $multiplier = 0;
+
                 // Spells
                 if ($attacker->getSpellPerkValue('kills_immortal') || $dominion->getSpellPerkValue('cancels_immortal')) {
                     $multiplier = 1;

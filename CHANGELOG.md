@@ -4,8 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.40.1] - 2024-06-14
 ### Added
 - Daily land and platinum bonuses can now be automated (doesn't count against daily action limit)
+
+### Fixed
+- Units with immortality now behave as expected
 
 ## [1.40.0] - 2024-06-07
 ### Added
@@ -2168,7 +2173,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.40.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.40.1...HEAD
+[1.40.1]: https://github.com/OpenDominion/OpenDominion/compare/1.40.0...1.40.1
 [1.40.0]: https://github.com/OpenDominion/OpenDominion/compare/1.39.1...1.40.0
 [1.39.1]: https://github.com/OpenDominion/OpenDominion/compare/1.39.0...1.39.1
 [1.39.0]: https://github.com/OpenDominion/OpenDominion/compare/1.38.4...1.39.0

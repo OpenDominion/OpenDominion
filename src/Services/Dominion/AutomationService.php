@@ -160,7 +160,7 @@ class AutomationService
 
     protected function processDraftrate(Dominion $dominion, int $data)
     {
-        $this->changeDraftRateActionService->changeDraftRate($dominion, $data);
+        $this->changeDraftRateActionService->changeDraftRate($dominion, min($data, 90));
     }
 
     protected function processExplore(Dominion $dominion, array $data)
