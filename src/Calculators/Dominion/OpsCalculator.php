@@ -460,11 +460,12 @@ class OpsCalculator
     {
         // Base Vulnerability
         $vulnerabilityModifier = $this->getPeasantVulnerablilityModifier($dominion);
-        $vulnerablePeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
-        $totalProtected = round($vulnerablePeasants * (1 - $vulnerabilityModifier));
+        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+        $totalProtected = round($maxPeasants * (1 - $vulnerabilityModifier));
 
         $totalProtected += $this->getPeasantWizardProtection($dominion);
-        return min($totalProtected, $vulnerablePeasants * 0.8);
+        $protectionCap = 1 - ((1 - $vulnerabilityModifier) * (1 - 0.8));
+        return min($totalProtected, $maxPeasants * $protectionCap);
     }
 
     /*
