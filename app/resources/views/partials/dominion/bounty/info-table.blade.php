@@ -43,17 +43,24 @@
                         @if ($selectedDominion->isMonarch() || $selectedDominion->isSpymaster())
                             @if (in_array($targetDominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
                                 <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-toggle="tooltip" title="Cancel Observation">
-                                    <i class="fa fa-eye-slash text-red" style="margin-right: 5px;"></i>
+                                    <i class="fa fa-eye-slash text-red"></i>
                                 </a>
                             @else
                                 <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-toggle="tooltip" title="Mark for Observation">
-                                    <i class="fa fa-eye text-aqua" style="margin-right: 5px;"></i>
+                                    <i class="fa fa-eye text-aqua"></i>
                                 </a>
                             @endif
                         @elseif (in_array($targetDominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
                             <span data-toggle="tooltip" title="Marked for Observation">
-                                <i class="fa fa-eye" style="margin-right: 5px;"></i>
+                                <i class="fa fa-eye"></i>
                             </span>
+                        @endif
+                        @if ($guardMembershipService->isEliteGuardMember($targetDominion))
+                            <i class="ra ra-heavy-shield ra-fw text-yellow" title="Elite Guard" data-toggle="tooltip"></i>
+                        @elseif ($guardMembershipService->isRoyalGuardMember($targetDominion))
+                            <i class="ra ra-heavy-shield ra-fw text-green" title="Royal Guard" data-toggle="tooltip"></i>
+                        @else
+                            <i class="ra ra-shield ra-fw" title="No Guard" data-toggle="tooltip"></i>
                         @endif
                         <a href="{{ route('dominion.op-center.show', $targetDominion->id) }}">
                             {{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})

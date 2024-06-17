@@ -11,6 +11,7 @@ use OpenDominion\Http\Requests\Dominion\Actions\BountyActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\ObserveActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\BountyService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class BountyController extends AbstractDominionController
@@ -30,6 +31,7 @@ class BountyController extends AbstractDominionController
             'bountiesInactive' => $bounties->where('active', false),
             'bountiesCollected' => $bountiesCollected,
             'bountyService' => $bountyService,
+            'guardMembershipService' => app(GuardMembershipService::class),
             'landCalculator' => app(LandCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class)
         ]);
