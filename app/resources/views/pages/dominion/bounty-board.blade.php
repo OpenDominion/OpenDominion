@@ -40,6 +40,7 @@
                         <div class="box-body">
                             <p>Info ops that you have requested to be collected by your realmies appear here.</p>
                             <p>Each bounty collected will award double XP and the first {{ $bountyService::DAILY_LIMIT }} bounties per day will award {{ $bountyService::REWARD_AMOUNT }} research points.</p>
+                            <p>Any info op on a dominion that has been marked for observation will count as a bounty. There are currently <b>{{ count($selectedDominion->realm->getSetting('observeDominionIds') ?? []) }}</b> dominions under observation.</p>
                             <p>Bounties collected from bots or ops that have already been taken for the current tick will earn no rewards. You cannot collect your own bounties.</p>
                             <p>You have {{ number_format($selectedDominion->resource_mana) }} mana, {{ sprintf("%.4g", $selectedDominion->wizard_strength) }}% wizard strength, and {{ sprintf("%.4g", $selectedDominion->spy_strength) }}% spy strength.</p>
                             <p>You have collected <b>{{ $bountiesCollected }}</b> rewards from bounties today.</p>

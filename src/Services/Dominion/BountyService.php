@@ -297,8 +297,8 @@ class BountyService
                 'alert-type' => 'success'
             ];
         } else {
-            if (count($dominionIds) >= 10) {
-                throw new GameException('Only 10 dominions can be marked for observation at a time.');
+            if (count($dominionIds) >= 15) {
+                throw new GameException('Only 15 dominions can be marked for observation at a time.');
             }
             $dominionIds[] = $target->id;
             $result = [
