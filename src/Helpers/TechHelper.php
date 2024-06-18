@@ -39,7 +39,7 @@ class TechHelper
             'destruction_refund' => '%+g%% refund when destroying buildings',
             'exchange_bonus' => '%+g%% better exchange rates',
             'explore_draftee_cost' => '%+g draftee per acre explore cost (min 6)',
-            'explore_platinum_cost' => '%g%% exploring platinum cost (halved for Firewalker, Goblin, Lycanthrope)',
+            'explore_platinum_cost' => '%g%% exploring platinum cost (halved for Firewalker, Goblin, Lycanthrope, Vampire)',
             'extra_barren_max_population' => '%+g population from barren land',
             'max_population' => '%+g%% maximum population',
             'population_growth' => '%+g%% population growth',
