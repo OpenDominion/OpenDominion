@@ -400,8 +400,7 @@ class OpsCalculator
         $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
 
         // Spells
-        $modifier += $this->spellCalculator->resolveSpellPerk($dominion, 'enemy_spell_damage') / 100;
-        $modifier += $this->spellCalculator->resolveSpellPerk($dominion, "enemy_{$spellKey}_damage") / 100;
+        $modifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['self', 'friendly', 'hostile', 'war']) / 100;
 
         // Techs
         $modifier += $dominion->getTechPerkMultiplier("enemy_{$spellKey}_damage");
@@ -409,7 +408,13 @@ class OpsCalculator
         // Wonders
         $modifier += $dominion->getWonderPerkMultiplier('enemy_spell_damage');
 
-        return max(0.2, $modifier);
+        // Status Effects (multiplicative)
+        $spellModifier = 1;
+        $spellModifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
+        $spellModifier += $dominion->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
+
+        // Capped at 80% reduction
+        return max(0.2, $modifier * $spellModifier);
     }
 
     /*

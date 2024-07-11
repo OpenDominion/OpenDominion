@@ -8,9 +8,13 @@ use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\RoundWonder;
+use OpenDominion\Models\Spell;
+use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -329,5 +333,51 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->expectException(GameException::class);
         $this->spellActionService->castSpell($this->dominion, 'lightning_bolt', $this->target);
+    }
+
+    public function testSpellModifiers()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+        $opsCalculator = app(OpsCalculator::class);
+        $populationCalculator = app(PopulationCalculator::class);
+
+        // Arrange
+        RealmWar::create([
+            'source_realm_id' => $this->dominion->realm_id,
+            'target_realm_id' => $this->target->realm_id
+        ]);
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+        $this->target->military_wizards = 0;
+        $this->target->peasants = $populationCalculator->getMaxPeasantPopulation($this->target);
+        $this->assertEquals(52409, $this->target->peasants);
+
+        // Standard Fireball
+        $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
+        $this->assertEquals(51098, $this->target->peasants);
+
+        // Burning Fireball
+        $burningSpell = Spell::where('key', 'burning')->first();
+        DominionSpell::create([
+            'dominion_id' => $this->target->id,
+            'spell_id' => $burningSpell->id,
+            'duration' => 20
+        ]);
+        $this->target->refresh();
+        $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
+        $this->assertEquals(48477, $this->target->peasants);
+
+        // Wizard Academy + Burning Fireball
+        $wizardAcademy = Wonder::where('key', 'wizard_academy')->first();
+        RoundWonder::create([
+            'round_id' => $this->target->round_id,
+            'wonder_id' => $wizardAcademy->id,
+            'realm_id' => $this->target->realm_id,
+            'power' => 250000
+        ]);
+        $this->target->refresh();
+        $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
+        $this->assertEquals(47166, $this->target->peasants);
     }
 }
