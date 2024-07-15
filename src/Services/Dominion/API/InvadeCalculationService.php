@@ -166,8 +166,8 @@ class InvadeCalculationService
 
         $ratio = 1.25;
         $recentInvasions = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 5 * 24, true);
-        if ($recentInvasions > 2) {
-            $ratio = 1.25 - min(0.5, ($recentInvasions - 2) * 0.125);
+        if ($recentInvasions > 4) {
+            $ratio = 1.25 - min(0.25, ($recentInvasions - 4) * 0.125);
         }
 
         $this->calculationResult['max_op'] = $this->calculationResult['home_defense'] * $ratio;
