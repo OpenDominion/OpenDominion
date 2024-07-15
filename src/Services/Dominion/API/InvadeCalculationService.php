@@ -165,7 +165,7 @@ class InvadeCalculationService
         $homeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
 
         $ratio = 1.25;
-        $recentInvasions = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 5 * 24, true);
+        $recentInvasions = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 3 * 24, true);
         if ($recentInvasions > 4) {
             $ratio = 1.25 - min(0.25, ($recentInvasions - 4) * 0.125);
         }
