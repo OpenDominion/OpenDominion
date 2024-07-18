@@ -672,12 +672,13 @@ class TickService
         DB::transaction(function () use ($dominionIds) {
             // Convert status effects
             $burningSpell = Spell::where('key', 'burning')->first();
+            $lightningStormSpell = Spell::where('key', 'lightning_storm')->first();
             $rejuvenationSpell = Spell::where('key', 'rejuvenation')->first();
 
-            if ($burningSpell && $rejuvenationSpell) {
+            if (($burningSpell || $lightningStormSpell) && $rejuvenationSpell) {
                 DB::table('dominion_spells')
                     ->whereIn('dominion_id', $dominionIds)
-                    ->where('spell_id', $burningSpell->id)
+                    ->whereIn('spell_id', [$burningSpell->id, $lightningStormSpell->id])
                     ->where('duration', '<=', 0)
                     ->update([
                         'spell_id' => $rejuvenationSpell->id,
