@@ -14,7 +14,6 @@ class HeroCreateActionRequest extends AbstractDominionRequest
         return [
             'name' => 'required|min:3|max:32',
             'class' => 'required',
-            'trade' => 'required',
         ];
     }
 }

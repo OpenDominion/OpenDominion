@@ -62,71 +62,71 @@ class HeroCalculator
     }
 
     /**
-     * Returns the Dominion's trade multiplier.
+     * Returns the Dominion's passive hero perk multiplier.
      *
      * @param Dominion $dominion
      * @param string $perkType
      * @return float
      */
-    public function getHeroPerkMultiplier(Dominion $dominion, string $perkType): float
+    public function getPassiveMultiplier(Dominion $dominion, string $perkType): float
     {
         if (!$dominion->hero) {
             return 0;
         }
 
-        $heroPerk = $this->heroHelper->getTradePerkType($dominion->hero->trade);
+        $heroPerk = $this->heroHelper->getPassivePerkType($dominion->hero->class);
         if ($heroPerk !== $perkType) {
             return 0;
         }
 
-        $tradeBonus = $this->getTradeBonus($dominion->hero, $perkType) / 100;
-        $tradeBonus *= (1 + $this->getTradeBonusMultiplier($dominion));
+        $classBonus = $this->getPassiveBonus($dominion->hero, $perkType) / 100;
+        $classBonus *= (1 + $this->getPassiveBonusMultiplier($dominion));
 
-        return $tradeBonus;
+        return $classBonus;
     }
 
     /**
-     * Returns the Hero's trade bonus.
+     * Returns the passive hero perk bonus.
      *
      * @param Hero $hero
      * @param string $perkType
      * @return float
      */
-    public function getTradeBonus(Hero $hero, ?string $perkType = null): float
+    public function getPassiveBonus(Hero $hero, ?string $perkType = null): float
     {
         if (!$perkType) {
-            $perkType = $this->heroHelper->getTradePerkType($hero->trade);
+            $perkType = $this->heroHelper->getPassivePerkType($hero->class);
         }
         $level = $this->getHeroLevel($hero);
 
-        return $this->calculateTradeBonus($perkType, $level);
+        return $this->calculatePassiveBonus($perkType, $level);
     }
 
     /**
-     * Calculates a level trade bonus.
+     * Calculates the passive hero perk by level.
      *
-     * @param Hero $hero
      * @param string $perkType
+     * @param int $level
      * @return float
      */
-    public function calculateTradeBonus(string $perkType, int $level)
+    public function calculatePassiveBonus(string $perkType, int $level)
     {
         if ($level == 0) {
             return 0;
         }
 
-        $coefficient = $this->getTradeCoefficient($perkType);
+        $coefficient = $this->getPassiveCoefficient($perkType);
 
         return $coefficient * $level;
     }
 
     /**
-     * Returns the Dominion's trade bonus multiplier.
+     * Returns the Dominion's passive hero perk multiplier.
      *
      * @param Dominion $dominion
      * @return float
      */
-    public function getTradeBonusMultiplier(Dominion $dominion): float
+    public function getPassiveBonusMultiplier(Dominion $dominion): float
     {
         $multiplier = 0;
 
@@ -249,34 +249,34 @@ class HeroCalculator
     }
 
     /**
-     * Returns the trade coefficient.
+     * Returns the passive hero perk coefficient.
      *
      * @param string $perkType
      * @return float
      */
-    protected function getTradeCoefficient(string $perkType): float
+    protected function getPassiveCoefficient(string $perkType): float
     {
-        $trades = $this->heroHelper->getTrades()->keyBy('perk_type');
+        $classes = $this->heroHelper->getClasses()->keyBy('perk_type');
 
-        if (isset($trades[$perkType])) {
-            return $trades[$perkType]['coefficient'];
+        if (isset($classes[$perkType])) {
+            return $classes[$perkType]['coefficient'];
         }
 
         return 0;
     }
 
     /**
-     * Returns the HTML description of the trade bonus.
+     * Returns the HTML description of the passive hero perk bonus.
      *
-     * @param string $perkType
+     * @param Hero $hero
      * @return float
      */
-    public function getTradeDescription(Hero $hero): string
+    public function getPassiveDescription(Hero $hero): string
     {
-        $perkType = $this->heroHelper->getTrades()[$hero->trade]['perk_type'];
-        $perkValue = $this->getTradeBonus($hero, $perkType);
+        $perkType = $this->heroHelper->getClasses()[$hero->class]['perk_type'];
+        $perkValue = $this->getPassiveBonus($hero, $perkType);
         $helpString = sprintf(
-            $this->heroHelper->getTradeHelpString($hero->trade),
+            $this->heroHelper->getPassiveHelpString($hero->class),
             number_format($perkValue, 2)
         );
 

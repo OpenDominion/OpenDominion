@@ -16,10 +16,10 @@
                 </div>
                 <div class="col-md-6">
                     <table class="table table-striped">
-                        @foreach ($heroHelper->getTrades() as $trade)
+                        @foreach ($heroHelper->getClasses() as $class)
                             <tr>
-                                <td class="text-right text-bold">{{ $trade['name'] }}</td>
-                                <td>{{ ucwords(str_replace('_', ' ', $trade['perk_type'])) }}</td>
+                                <td class="text-right text-bold">{{ $class['name'] }}</td>
+                                <td>{{ ucwords(str_replace('_', ' ', $class['perk_type'])) }}</td>
                             </tr>
                         @endforeach
                     </table>
@@ -40,8 +40,8 @@
                     <tr>
                         <th>Level</th>
                         <th>XP</th>
-                        @foreach ($heroHelper->getTrades() as $trade)
-                            <th>{{ $trade['name'] }}</th>
+                        @foreach ($heroHelper->getClasses() as $class)
+                            <th>{{ $class['name'] }}</th>
                         @endforeach
                     </tr>
                 </thead>
@@ -51,8 +51,8 @@
                             <tr>
                                 <td>{{ $level['level'] }}</td>
                                 <td>{{ $level['xp'] }}</td>
-                                @foreach ($heroHelper->getTrades() as $trade)
-                                    <th>{{ number_format($heroCalculator->calculateTradeBonus($trade['perk_type'], $level['level']), 2) }}%</th>
+                                @foreach ($heroHelper->getClasses() as $class)
+                                    <th>{{ number_format($heroCalculator->calculatePassiveBonus($class['perk_type'], $level['level']), 2) }}%</th>
                                 @endforeach
                             </tr>
                         @endif

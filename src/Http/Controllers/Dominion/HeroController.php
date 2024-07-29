@@ -41,8 +41,7 @@ class HeroController extends AbstractDominionController
 
             $dominion->heroes()->create([
                 'name' => $request->get('name'),
-                'class' => $request->get('class'),
-                'trade' => $request->get('trade')
+                'class' => $request->get('class')
             ]);
         } catch (GameException $e) {
             return redirect()->back()
@@ -82,7 +81,6 @@ class HeroController extends AbstractDominionController
             $dominion->hero()->update([
                 'name' => $request->get('name'),
                 'class' => $request->get('class'),
-                'trade' => $request->get('trade'),
                 'experience' => (int) min($dominion->hero->experience, 10000) / 2
             ]);
         } catch (GameException $e) {

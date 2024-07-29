@@ -681,7 +681,7 @@ class ValhallaController extends AbstractController
                     '#' => null,
                     'dominion' => $dominion->name,
                     'hero' => $dominion->hero->name,
-                    'class' => ucwords($dominion->hero->trade),
+                    'class' => ucwords($dominion->hero->class),
                     'player' => $player,
                     'race' => $dominion->race->name,
                     'realm' => $dominion->realm->number,

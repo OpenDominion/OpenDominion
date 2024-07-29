@@ -18,17 +18,11 @@ class CreateHeroesTable extends Migration
             $table->integer('dominion_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('class')->nullable();
-            //$table->integer('class_id')->unsigned()->nullable();
             $table->string('trade')->nullable();
-            //$table->integer('trade_id')->unsigned()->nullable();
             $table->float('experience')->default(0);
-            //$table->integer('level')->default(0);
-            //$table->timestamp('returning_at')->nullable();
             $table->timestamps();
 
             $table->foreign('dominion_id')->references('id')->on('dominions');
-            //$table->foreign('class_id')->references('id')->on('hero_classes');
-            //$table->foreign('trade_id')->references('id')->on('hero_trades');
         });
     }
 

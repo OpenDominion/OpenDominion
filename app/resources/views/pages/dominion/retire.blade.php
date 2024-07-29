@@ -26,25 +26,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group hidden">
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Class</label>
                                     <div class="col-sm-9">
                                         <select name="class" class="form-control">
                                             @foreach ($heroHelper->getClasses() as $class)
                                                 <option value="{{ $class['key'] }}">
-                                                    {{ $class['name'] }} - Gains double XP from {{ $class['xp_bonus_type'] }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Class</label>
-                                    <div class="col-sm-9">
-                                        <select name="trade" class="form-control">
-                                            @foreach ($heroHelper->getTrades() as $trade)
-                                                <option value="{{ $trade['key'] }}">
-                                                    {{ $trade['name'] }} - {{ str_replace('_', ' ', $trade['perk_type']) }}
+                                                    {{ $class['name'] }} - {{ str_replace('_', ' ', $class['perk_type']) }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -57,13 +45,13 @@
                                         {{ $hero->name }}
                                     </div>
                                     <div class="text-center">
-                                        Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getTradeDisplayName($hero->trade) }}
+                                        Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }}
                                     </div>
                                     <div class="text-center">
                                         {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
                                     </div>
                                     <div class="text-center">
-                                        {{ $heroCalculator->getTradeDescription($hero) }}
+                                        {{ $heroCalculator->getPassiveDescription($hero) }}
                                     </div>
                                 @endforeach
                             </div>
