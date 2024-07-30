@@ -7,6 +7,8 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Helpers\TechHelper;
+use OpenDominion\Models\HeroBonus;
+use OpenDominion\Models\HeroBonusPerk;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RacePerk;
 use OpenDominion\Models\RacePerkType;
@@ -58,6 +60,7 @@ class DataSyncCommand extends Command implements CommandInterface
             $this->syncSpells();
             $this->syncTechs();
             $this->syncWonders();
+            $this->syncHeroes();
         });
     }
 
@@ -413,6 +416,81 @@ class DataSyncCommand extends Command implements CommandInterface
             }
 
             $wonder->perks()->sync($wonderPerksToSync);
+        }
+    }
+
+    /**
+     * Syncs hero perk data from .yml file to the database.
+     */
+    protected function syncHeroes()
+    {
+        $fileContents = $this->filesystem->get(base_path('app/data/heroes.yml'));
+
+        $data = Yaml::parse($fileContents, Yaml::PARSE_OBJECT_FOR_MAP);
+
+        foreach ($data as $heroBonusKey => $heroBonusData) {
+            // Hero
+            $heroBonus = HeroBonus::firstOrNew(['key' => $heroBonusKey])
+                ->fill([
+                    'name' => $heroBonusData->name,
+                    'type' => $heroBonusData->type,
+                    'level' => object_get($heroBonusData, 'level', 0),
+                    'classes' => object_get($heroBonusData, 'classes', []),
+                    'active' => object_get($heroBonusData, 'active', true),
+                ]);
+
+            if (!$heroBonus->exists) {
+                $this->info("Adding hero bonus {$heroBonusData->name}");
+            } else {
+                $this->info("Processing hero bonus {$heroBonusData->name}");
+
+                $newValues = $heroBonus->getDirty();
+
+                foreach ($newValues as $key => $newValue) {
+                    $originalValue = $heroBonus->getOriginal($key);
+
+                    if ($originalValue != $newValue) {
+                        $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    }
+                }
+            }
+
+            $heroBonus->save();
+            $heroBonus->refresh();
+
+            // Hero Perks
+            $heroBonusPerksToSync = [];
+            $heroBonusPerks = object_get($heroBonusData, 'perks', []);
+
+            foreach ($heroBonusPerks as $perk => $value) {
+                $value = (float)$value;
+
+                $heroBonusPerksToSync[$perk] = [
+                    'hero_bonus_id' => $heroBonus->id,
+                    'key' => $perk,
+                    'value' => $value
+                ];
+
+                $heroBonusPerk = HeroBonusPerk::query()
+                    ->where('hero_bonus_id', $heroBonus->id)
+                    ->where('key', $perk)
+                    ->first();
+
+                if ($heroBonusPerk === null) {
+                    $this->info("[Add Hero Perk] {$perk}: {$value}");
+                } elseif ($heroBonusPerk->value != $value) {
+                    $this->info("[Change Hero Perk] {$perk}: {$heroBonusPerk->value} -> {$value}");
+                }
+            }
+
+            $heroBonus->perks()->upsert(
+                $heroBonusPerksToSync,
+                ['hero_bonus_id', 'key'],
+                ['value']
+            );
+
+            $heroBonusPerkTypes = array_keys(get_object_vars($heroBonusPerks));
+            $heroBonus->perks()->whereNotIn('key', $heroBonusPerkTypes)->delete();
         }
     }
 }

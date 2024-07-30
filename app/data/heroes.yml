@@ -1,5 +1,40 @@
 iron_dagger:
   name: Iron Dagger
   level: 2
+  type: item
   perks:
-    assassinate_draftees_damage: 25
+    assassinate_draftees_damage: 10
+kings_banner:
+  name: King's Banner
+  level: 2
+  type: item
+  perks:
+    invasion_morale: 1
+tome_of_knowledge:
+  name: Tome of Knowledge
+  level: 2
+  type: item
+  perks:
+    invasion_tech_gains: 100
+spyglass:
+  name: Spyglass
+  level: 2
+  type: item
+  perks:
+    land_spy_strength_cost: -1
+martyrdom:
+  name: Martyrdom
+  level: 0
+  type: status_effect
+  perks:
+    martyrdom: 1
+  classes:
+    - scion
+special_forces:
+  name: Special Forces
+  level: 0
+  type: training
+  perks:
+    prestige_ops: 1
+  classes:
+    - scion

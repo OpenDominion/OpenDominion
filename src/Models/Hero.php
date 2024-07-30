@@ -9,12 +9,13 @@ use OpenDominion\Services\NotificationService;
  * OpenDominion\Models\Hero
  *
  * @property int $id
+ * @property int $dominion_id
  * @property string $name
  * @property string $class
- * @property string $vocation
  * @property int $experience
- * @property int $level
- * @property \Illuminate\Support\Carbon|null $returning_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \OpenDominion\Models\Dominion $dominion
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero query()
@@ -22,7 +23,7 @@ use OpenDominion\Services\NotificationService;
  */
 class Hero extends AbstractModel
 {
-    protected $dates = ['returning_at', 'created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at'];
 
     public function dominion()
     {

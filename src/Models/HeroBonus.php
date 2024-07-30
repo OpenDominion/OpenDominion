@@ -11,13 +11,20 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $key
  * @property string $name
  * @property int $level
+ * @property string $type
+ * @property array $classes
+ * @property bool $active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroBonusPerkType[] $bonuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroBonusPerks[] $perks
  */
 class HeroBonus extends AbstractModel
 {
     protected $table = 'hero_bonuses';
+
+    protected $casts = [
+        'classes' => 'array',
+    ];
 
     public function scopeActive(Builder $query): Builder
     {
@@ -26,24 +33,17 @@ class HeroBonus extends AbstractModel
 
     public function perks()
     {
-        return $this->belongsToMany(
-            HeroBonusPerkType::class,
-            HeroBonusPerk::class
-        )
-        ->withPivot('value')
-        ->withTimestamps();
+        return $this->hasMany(HeroBonusPerk::class);
     }
 
     public function getPerkValue(string $key)
     {
-        $perks = $this->perks->filter(static function (HeroBonusPerkType $heroBonusPerkType) use ($key) {
-            return ($heroBonusPerkType->key === $key);
-        });
+        $perk = $this->perks->where('key', $key)->first();
 
-        if ($perks->isEmpty()) {
-            return 0; // todo: change to null instead, also add return type and docblock(s)
+        if ($perk === null) {
+            return 0;
         }
 
-        return $perks->first()->pivot->value;
+        return $perk->value;
     }
 }
