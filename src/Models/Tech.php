@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $name
  * @property array $prerequisites
  * @property int $version
+ * @property int $x
+ * @property int $y
+ * @property bool $active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\TechPerkType[] $perks
