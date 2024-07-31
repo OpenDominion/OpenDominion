@@ -15,7 +15,7 @@ class HeroHelper
                 'class_type' => 'basic',
                 'perk_type' => 'platinum_production',
                 'coefficient' => 0.2,
-                'icon' => 'ra ra-gold-bar'
+                'icon' => 'ra-gold-bar'
             ],
             [
                 'name' => 'Architect',
@@ -23,7 +23,7 @@ class HeroHelper
                 'class_type' => 'basic',
                 'perk_type' => 'construction_cost',
                 'coefficient' => -1.2,
-                'icon' => 'ra ra-quill-ink'
+                'icon' => 'ra-quill-ink'
             ],
             [
                 'name' => 'Blacksmith',
@@ -31,7 +31,7 @@ class HeroHelper
                 'class_type' => 'basic',
                 'perk_type' => 'military_cost',
                 'coefficient' => -0.25,
-                'icon' => 'ra ra-anvil'
+                'icon' => 'ra-anvil'
             ],
             [
                 'name' => 'Engineer',
@@ -39,7 +39,7 @@ class HeroHelper
                 'class_type' => 'basic',
                 'perk_type' => 'invest_bonus',
                 'coefficient' => 0.6,
-                'icon' => 'ra ra-hammer'
+                'icon' => 'ra-hammer'
             ],
             [
                 'name' => 'Healer',
@@ -47,7 +47,7 @@ class HeroHelper
                 'class_type' => 'basic',
                 'perk_type' => 'casualties',
                 'coefficient' => -1,
-                'icon' => 'ra ra-apothecary'
+                'icon' => 'ra-apothecary'
             ],
             [
                 'name' => 'Infiltrator',
@@ -55,7 +55,7 @@ class HeroHelper
                 'class_type' => 'basic',
                 'perk_type' => 'spy_power',
                 'coefficient' => 2,
-                'icon' => 'ra ra-hood'
+                'icon' => 'ra-hood'
             ],
             [
                 'name' => 'Sorcerer',
@@ -63,7 +63,7 @@ class HeroHelper
                 'class_type' => 'basic',
                 'perk_type' => 'wizard_power',
                 'coefficient' => 2,
-                'icon' => 'ra ra-pointy-hat'
+                'icon' => 'ra-pointy-hat'
             ],
             [
                 'name' => 'Scion',
@@ -72,7 +72,7 @@ class HeroHelper
                 'perk_type' => 'explore_cost',
                 'coefficient' => -1,
                 'perks' => ['martyrdom', 'special_forces'],
-                'icon' => 'ra ra-test'
+                'icon' => 'ra-ankh'
             ]
         ])->keyBy('key');
     }
@@ -85,49 +85,6 @@ class HeroHelper
     public function getBasicClasses()
     {
         return $this->getClasses()->where('class_type', 'basic');
-    }
-
-    public function getHeroPerks()
-    {
-        return collect([
-            [
-                'name' => 'King\'s Banner',
-                'key' => 'kings_banner',
-                'level' => 4,
-                'description' => 'Invasions no longer cause morale loss'
-            ],
-            [
-                'name' => 'Tome of Knowledge',
-                'key' => 'tome_of_knowledge',
-                'level' => 4,
-                'description' => 'Research points gained on invasion increased by 100'
-            ],
-            [
-                'name' => 'Short Dagger',
-                'key' => 'short_dagger',
-                'level' => 4,
-                'description' => 'Assassination damage increased by 10%'
-            ],
-            [
-                'name' => 'Spyglass',
-                'key' => 'spyglass',
-                'level' => 4,
-                'description' => 'Land Spy and Survey Dominion now cost 1% spy strength'
-            ],
-
-            [
-                'name' => 'Martyrdom',
-                'key' => 'martyrdom',
-                'level' => 0,
-                'description' => 'Reduces the cost of construction, rezoning, spy training, and wizard training for 48 hours after selecting Scion'
-            ],
-            [
-                'name' => 'Special Forces',
-                'key' => 'special_forces',
-                'level' => 0,
-                'description' => 'Prestige now modifies spy and wizard power instead of offensive power'
-            ]
-        ]);
     }
 
     public function getClassDisplayName(string $key)
@@ -188,7 +145,7 @@ class HeroHelper
         ];
     }
 
-    public function getHeroBonusDescription(HeroBonus $heroBonus, string $separator = ', '): string
+    public function getBonusDescription(HeroBonus $heroBonus, string $separator = ', '): string
     {
         $perkTypeStrings = $this->getHeroBonusPerkStrings();
 
@@ -201,6 +158,24 @@ class HeroHelper
         }
 
         return implode($separator, $perkStrings);
+    }
+
+    public function getBonusIcon(int $level, ?HeroBonus $bonus)
+    {
+        if ($bonus === null) {
+            return sprintf(
+                '<i class="hero-icon fa fa-fw fa-lock" title="Level %s: Locked" data-toggle="tooltip"></i>',
+                $level
+            );
+        }
+
+        return sprintf(
+            '<i class="hero-icon ra ra-fw %s" title="Level %s: %s<br>(%s)" data-toggle="tooltip"></i>',
+            $bonus->icon,
+            $level,
+            $bonus->name,
+            ucwords($bonus->type)
+        );
     }
 
     /**

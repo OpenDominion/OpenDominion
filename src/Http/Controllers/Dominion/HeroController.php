@@ -5,9 +5,9 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
+use OpenDominion\Http\Requests\Dominion\Actions\HeroBonusActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
-use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\Actions\HeroActionService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class HeroController extends AbstractDominionController
@@ -19,41 +19,57 @@ class HeroController extends AbstractDominionController
         $heroCalculator = app(HeroCalculator::class);
         $heroHelper = app(HeroHelper::class);
 
-        $heroes = $this->getSelectedDominion()->heroes;
+        $hero = $this->getSelectedDominion()->hero;
 
         return view('pages.dominion.heroes', compact(
             'heroCalculator',
             'heroHelper',
-            'heroes'
+            'hero'
         ));
     }
 
-    public function postCreateHero(HeroCreateActionRequest $request)
+    public function postHeroes(HeroBonusActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
+        $heroActionService = app(HeroActionService::class);
 
         try {
-            $this->guardLockedDominion($dominion);
-
-            if (!$dominion->heroes->isEmpty()) {
-                throw new GameException('You can only have one hero at a time.');
-            }
-
-            $dominion->heroes()->create([
-                'name' => $request->get('name'),
-                'class' => $request->get('class')
-            ]);
+            $result = $heroActionService->unlock(
+                $dominion,
+                $request->get('key')
+            );
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
-        $request->session()->flash('alert-success', 'Your hero has been created!');
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.heroes');
     }
 
-    public function getRetireHeroes()
+    public function postCreateHero(HeroCreateActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $heroActionService = app(HeroActionService::class);
+
+        try {
+            $result = $heroActionService->create(
+                $dominion,
+                $request->get('name'),
+                $request->get('class')
+            );
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', $result['message']);
+        return redirect()->route('dominion.heroes');
+    }
+
+    public function getRetireHero()
     {
         $heroCalculator = app(HeroCalculator::class);
         $heroHelper = app(HeroHelper::class);
@@ -67,29 +83,24 @@ class HeroController extends AbstractDominionController
         ));
     }
 
-    public function postRetireHeroes(HeroCreateActionRequest $request)
+    public function postRetireHero(HeroCreateActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
+        $heroActionService = app(HeroActionService::class);
 
         try {
-            $this->guardLockedDominion($dominion);
-
-            if ($dominion->heroes->isEmpty()) {
-                throw new GameException('You do not have a hero to retire.');
-            }
-
-            $dominion->hero()->update([
-                'name' => $request->get('name'),
-                'class' => $request->get('class'),
-                'experience' => (int) min($dominion->hero->experience, 10000) / 2
-            ]);
+            $result = $heroActionService->retire(
+                $dominion,
+                $request->get('name'),
+                $request->get('class')
+            );
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
-        $request->session()->flash('alert-success', 'Your hero has been retired!');
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.heroes');
     }
 }

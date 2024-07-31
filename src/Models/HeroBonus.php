@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $name
  * @property int $level
  * @property string $type
+ * @property string $icon
  * @property array $classes
  * @property bool $active
  * @property \Illuminate\Support\Carbon|null $created_at

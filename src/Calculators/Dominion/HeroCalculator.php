@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
+use OpenDominion\Models\HeroBonus;
 
 class HeroCalculator
 {
@@ -68,7 +69,7 @@ class HeroCalculator
      * @param string $perkType
      * @return float
      */
-    public function getPassiveMultiplier(Dominion $dominion, string $perkType): float
+    public function getHeroPerkMultiplier(Dominion $dominion, string $perkType): float
     {
         if (!$dominion->hero) {
             return 0;
@@ -281,5 +282,38 @@ class HeroCalculator
         );
 
         return $helpString;
+    }
+
+    public function getUnlockableBonusCount(?Hero $hero): int
+    {
+        if ($hero === null) {
+            return 0;
+        }
+
+        $heroLevel = $this->getHeroLevel($hero);
+        $bonusLevels = $hero->bonuses->pluck('level')->all();
+
+        if ($heroLevel > 1) {
+            if ($heroLevel < 4) {
+                $evenLevels = [2];
+            } else {
+                $evenLevels = range(2, $heroLevel, 2);
+            }
+            return count(array_diff($evenLevels, $bonusLevels));
+        }
+
+        return 0;
+    }
+
+    public function canUnlockBonus(Hero $hero, HeroBonus $bonus): bool
+    {
+        if (count($bonus->classes) && !in_array($hero->class, $bonus->classes)) {
+            return false;
+        }
+
+        $heroLevel = $this->getHeroLevel($hero);
+        $levelsUnlocked = $hero->bonuses->pluck('level')->all();
+
+        return $heroLevel >= $bonus->level && !in_array($bonus->level, $levelsUnlocked);
     }
 }

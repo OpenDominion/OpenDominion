@@ -6,7 +6,7 @@
     @php
         $techVersion = $selectedDominion->round->tech_version;
         $techs = $techHelper->getTechs($techVersion);
-        $unlockedTechs = $selectedDominion->techs->pluck('key')->all()
+        $unlockedTechs = $selectedDominion->techs->pluck('key')->all();
     @endphp
 
     <form action="{{ route('dominion.techs') }}" method="post" role="form">
@@ -85,8 +85,8 @@
                                 </tr>
                             </thead>
                             @foreach ($techs as $tech)
-                                <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }}{{ in_array($tech->key, $unlockedTechs) ? ' text-green' : null }} {{ empty($tech->prerequisites) && !in_array($tech->key, $unlockedTechs) ? 'active' : null }}">
-                                    <td class="text-center">
+                                <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }} {{ empty($tech->prerequisites) && !in_array($tech->key, $unlockedTechs) ? 'active' : null }}">
+                                    <td class="text-center{{ in_array($tech->key, $unlockedTechs) ? ' text-green' : null }}">
                                         @if (in_array($tech->key, $unlockedTechs))
                                             <i class="fa fa-check"></i>
                                         @else

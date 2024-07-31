@@ -2,30 +2,35 @@ iron_dagger:
   name: Iron Dagger
   level: 2
   type: item
+  icon: ra-plain-dagger
   perks:
     assassinate_draftees_damage: 10
 kings_banner:
   name: King's Banner
   level: 2
   type: item
+  icon: ra-knight-banner
   perks:
     invasion_morale: 1
 tome_of_knowledge:
   name: Tome of Knowledge
   level: 2
   type: item
+  icon: ra-book-cover
   perks:
     invasion_tech_gains: 100
 spyglass:
   name: Spyglass
   level: 2
   type: item
+  icon: ra-spyglass
   perks:
     land_spy_strength_cost: -1
 martyrdom:
   name: Martyrdom
   level: 0
   type: status_effect
+  icon: ra-angel-wings
   perks:
     martyrdom: 1
   classes:
@@ -34,6 +39,7 @@ special_forces:
   name: Special Forces
   level: 0
   type: training
+  icon: ra-mighty-force
   perks:
     prestige_ops: 1
   classes:

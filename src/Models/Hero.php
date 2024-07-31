@@ -30,6 +30,45 @@ class Hero extends AbstractModel
         return $this->belongsTo(Dominion::class);
     }
 
+    public function bonuses()
+    {
+        return $this->belongsToMany(
+            HeroBonus::class,
+            HeroHeroBonus::class
+        )
+        ->withTimestamps();
+    }
+
+    public function getPerks() {
+        return $this->bonuses->flatMap(
+            function ($bonus) {
+                return $bonus->perks;
+            }
+        );
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getPerkValue(string $key): float
+    {
+        $perks = $this->getPerks()->groupBy('key');
+        if (isset($perks[$key])) {
+            return (float)$perks[$key]->sum('value');
+        }
+        return 0;
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getPerkMultiplier(string $key): float
+    {
+        return ($this->getPerkValue($key) / 100);
+    }
+
     public function save(array $options = [])
     {
         $original = $this->getOriginal();

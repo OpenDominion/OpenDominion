@@ -38,14 +38,6 @@ class TechController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        // todo: fire laravel event
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsEvent(
-            'dominion',
-            'tech',
-            $request->get('key')
-        ));
-
         $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.techs');
     }

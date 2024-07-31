@@ -433,8 +433,9 @@ class DataSyncCommand extends Command implements CommandInterface
             $heroBonus = HeroBonus::firstOrNew(['key' => $heroBonusKey])
                 ->fill([
                     'name' => $heroBonusData->name,
-                    'type' => $heroBonusData->type,
                     'level' => object_get($heroBonusData, 'level', 0),
+                    'type' => $heroBonusData->type,
+                    'icon' => $heroBonusData->icon,
                     'classes' => object_get($heroBonusData, 'classes', []),
                     'active' => object_get($heroBonusData, 'active', true),
                 ]);

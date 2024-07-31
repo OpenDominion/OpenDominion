@@ -11,10 +11,11 @@
                 <div class="col-md-12">
                     <p>Each dominion can select one hero that gains experience and levels up, increasing a passive bonus based on its class.</p>
                     <p>
-                        A hero gains 1 XP per acre gained from invasion, 2 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.
-                        A hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.
+                        Heroes gains 1 XP per acre gained from invasion, 2 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.
+                        Heroes loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.
                     </p>
-                    <p>A hero can be retired and replaced with another. The new hero will start with 0 XP if selecting an advanced class, otherwise it will start with XP equal to half that of its predecessor. You cannot select an advanced class until the 10th day of the round.</p>
+                    <p>Basic hero classes can be retired and replaced with another class. The new hero will start with XP equal to half that of its predecessor.</p>
+                    <p>Advanced hero classes cannot be retired. They always start with 0 XP, cannot be selected until the 10th day of the round, and unlock additional bonuses.</p>
                 </div>
                 <div class="col-md-4">
                     <h4>Basic Classes</h4>
@@ -71,7 +72,7 @@
                             <tr>
                                 <td>{{ $bonus['name'] }}</td>
                                 <td>{{ $bonus['level'] ?: '--' }}</td>
-                                <td>{{ $heroHelper->getHeroBonusDescription($bonus) }}</td>
+                                <td>{{ $heroHelper->getBonusDescription($bonus) }}</td>
                             </tr>
                         @endforeach
                     </table>

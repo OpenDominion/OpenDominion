@@ -7,6 +7,7 @@ use Cache;
 use DB;
 use Illuminate\Contracts\View\View;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
@@ -105,6 +106,11 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $techCost = $techCalculator->getTechCost($selectedDominion);
             $unlockableTechCount = floor($selectedDominion->resource_tech / $techCost);
             $view->with('unlockableTechCount', $unlockableTechCount);
+
+            // Show icon for heroes
+            $heroCalculator = app(HeroCalculator::class);
+            $unlockableHeroBonusCount = $heroCalculator->getUnlockableBonusCount($selectedDominion->hero);
+            $view->with('unlockableHeroBonusCount', $unlockableHeroBonusCount);
 
             // Show barren land count
             $landCalculator = app(LandCalculator::class);

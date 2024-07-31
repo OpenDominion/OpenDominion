@@ -19,6 +19,7 @@ class CreateHeroBonusesTable extends Migration
             $table->string('name');
             $table->unsignedInteger('level');
             $table->string('type');
+            $table->string('icon');
             $table->text('classes')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
