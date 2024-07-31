@@ -19,13 +19,10 @@ class RezoningCalculator
      *
      * @param LandCalculator $landCalculator
      */
-    public function __construct(
-        LandCalculator $landCalculator,
-        SpellCalculator $spellCalculator
-    )
+    public function __construct()
     {
-        $this->landCalculator = $landCalculator;
-        $this->spellCalculator = $spellCalculator;
+        $this->landCalculator = app(LandCalculator::class);
+        $this->spellCalculator = app(SpellCalculator::class);
     }
 
     /**
@@ -93,7 +90,7 @@ class RezoningCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('rezone_cost');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('rezone_cost');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'rezone_cost') / 100;
 
         return $multiplier;
     }

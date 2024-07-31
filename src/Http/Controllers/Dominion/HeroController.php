@@ -74,12 +74,12 @@ class HeroController extends AbstractDominionController
         $heroCalculator = app(HeroCalculator::class);
         $heroHelper = app(HeroHelper::class);
 
-        $heroes = $this->getSelectedDominion()->heroes;
+        $hero = $this->getSelectedDominion()->hero;
 
         return view('pages.dominion.retire', compact(
             'heroCalculator',
             'heroHelper',
-            'heroes'
+            'hero'
         ));
     }
 

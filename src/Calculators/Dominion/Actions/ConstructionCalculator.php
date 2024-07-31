@@ -5,6 +5,7 @@ namespace OpenDominion\Calculators\Dominion\Actions;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 
 class ConstructionCalculator
@@ -18,18 +19,18 @@ class ConstructionCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /**
      * ConstructionCalculator constructor.
      */
-    public function __construct(
-        BuildingCalculator $buildingCalculator,
-        HeroCalculator $heroCalculator,
-        LandCalculator $landCalculator
-    )
+    public function __construct()
     {
-        $this->buildingCalculator = $buildingCalculator;
-        $this->heroCalculator = $heroCalculator;
-        $this->landCalculator = $landCalculator;
+        $this->buildingCalculator = app(BuildingCalculator::class);
+        $this->heroCalculator = app(HeroCalculator::class);
+        $this->landCalculator = app(LandCalculator::class);
+        $this->spellCalculator = app(SpellCalculator::class);
     }
 
     /**
@@ -255,6 +256,9 @@ class ConstructionCalculator
             (($dominion->building_factory / $this->landCalculator->getTotalLand($dominion)) * $factoryReduction),
             ($factoryReductionMax / 100)
         );
+
+        // Spells
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'construction_cost') / 100;
 
         return $multiplier;
     }

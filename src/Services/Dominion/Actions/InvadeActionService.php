@@ -899,15 +899,20 @@ class InvadeActionService
      */
     protected function handleMoraleChanges(Dominion $dominion, Dominion $target): void
     {
+        $moraleChange = 5;
         $range = $this->invasionResult['result']['range'];
-
-        $dominion->morale -= 5;
 
         // Increased morale drops for attacking weaker targets
         if ($range < 75) {
-            $additionalMoraleChange = max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
-            $dominion->morale += $additionalMoraleChange;
+            $moraleChange -= max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
         }
+
+        // Heroes
+        if ($dominion->hero !== null && $dominion->hero->getPerkValue('invasion_morale')) {
+            $moraleChange = 0;
+        }
+
+        $dominion->morale -= $moraleChange;
     }
 
     /**
@@ -1066,6 +1071,11 @@ class InvadeActionService
 
             // Wonders
             $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
+
+            // Heroes
+            if ($dominion->hero !== null) {
+                $multiplier += $dominion->hero->getPerkMultiplier('tech_production_invasion');
+            }
 
             $researchPointsGained *= $multiplier;
 

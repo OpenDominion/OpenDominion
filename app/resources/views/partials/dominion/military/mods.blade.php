@@ -55,6 +55,13 @@
                     <td></td>
                     <td></td>
                 </tr>-->
+                @if ($target->hero && $target->hero->getPerkValue('offense'))
+                    <tr>
+                        <td>Heroes:</td>
+                        <td>{{ number_format($target->hero->getPerkValue('offense'), 2) }}%</td>
+                        <td>0%</td>
+                    </tr>
+                @endif
                 <tr>
                     <th>Total:</th>
                     <th>{{ number_format(($militaryCalculator->getOffensivePowerMultiplier($target) - 1) * 100, 2) }}%</th>

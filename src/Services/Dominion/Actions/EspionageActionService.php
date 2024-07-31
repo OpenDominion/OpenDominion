@@ -198,6 +198,12 @@ class EspionageActionService
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $spyStrengthLost = 1;
                 }
+                // Heroes
+                if ($dominion->hero !== null) {
+                    if ($operationKey == 'land_spy' && $dominion->hero->getPerkValue('land_spy_strength_cost')) {
+                        $spyStrengthLost = 1;
+                    }
+                }
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;
@@ -667,6 +673,9 @@ class EspionageActionService
 
         // Techs
         $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage");
+        if ($dominion->hero !== null) {
+            $baseDamageReductionMultiplier -= $dominion->hero->getPerkMultiplier("{$operationInfo['key']}_damage");
+        }
 
         // Wonders
         $wonderDamagePerk = $target->getWonderPerkMultiplier("enemy_{$operationKey}_damage");

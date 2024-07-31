@@ -761,7 +761,7 @@
                                     <td class="text-left">{{ $hero['experience'] }} / {{ $hero['next_level_xp'] }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-right">{{ ucwords(str_replace('_', ' ', $heroHelper->getTradePerkType($hero['class']))) }}</td>
+                                    <td class="text-right">{{ ucwords(str_replace('_', ' ', $heroHelper->getPassivePerkType($hero['class']))) }}</td>
                                     <td class="text-left">{{ number_format($hero['bonus'], 4) }}%</td>
                                 </tr>
                             @endforeach

@@ -4,13 +4,17 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use LogicException;
+use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionSpell;
+use OpenDominion\Models\DominionTech;
 use OpenDominion\Models\Hero;
 use OpenDominion\Models\HeroBonus;
 use OpenDominion\Models\HeroHeroBonus;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -64,7 +68,7 @@ class HeroActionService
         }
 
         DB::transaction(function () use ($dominion, $bonusToUnlock) {
-            HeroHeroBonus::create([
+            HeroHeroBonus::insert([
                 'hero_id' => $dominion->hero->id,
                 'hero_bonus_id' => $bonusToUnlock->id
             ]);
@@ -166,7 +170,7 @@ class HeroActionService
         }
 
         DB::transaction(function () use ($dominion, $name, $selectedClass) {
-            $dominion->hero->bonuses()->delete();
+            HeroHeroBonus::where('hero_id', $dominion->hero->id)->delete();
 
             $xp = (int) min($dominion->hero->experience, 10000) / 2;
             if ($selectedClass['class_type'] === 'advanced') {
@@ -176,12 +180,35 @@ class HeroActionService
                     return in_array($selectedClass['key'], $bonus->classes);
                 });
                 foreach ($advancedBonuses as $advancedBonus) {
-                    HeroHeroBonus::create([
+                    HeroHeroBonus::insert([
                         'hero_id' => $dominion->hero->id,
                         'hero_bonus_id' => $advancedBonus->id
                     ]);
+                    // Apply Status Effects
+                    if ($advancedBonus->type === 'effect') {
+                        $statusEffectSpell = Spell::where('key', $advancedBonus->key)->first();
+                        if ($statusEffectSpell !== null) {
+                            DominionSpell::insert([
+                                'dominion_id' => $dominion->id,
+                                'spell_id' => $statusEffectSpell->id,
+                                'duration' => $statusEffectSpell->duration,
+                                'cast_by_dominion_id' => $dominion->id,
+                            ]);
+                        }
+                    }
+                    // Apply Immediate Effects
+                    if ($advancedBonus->type === 'immediate') {
+                        $techRefundMultiplier = $advancedBonus->getPerkValue('tech_refund') / 100;
+                        if ($techRefundMultiplier) {
+                            $techCalculator = app(TechCalculator::class);
+                            $techCost = $techCalculator->getTechCost($dominion);
+                            $techCount = count($dominion->techs);
+                            $techRefund = (int) ($techCount * $techCost * $techRefundMultiplier);
+                            $dominion->resource_tech += $techRefund;
+                            DominionTech::where('dominion_id', $dominion->id)->delete();
+                        }
+                    }
                 }
-                // TODO: Activate any status effects
             }
 
             $dominion->hero()->update([

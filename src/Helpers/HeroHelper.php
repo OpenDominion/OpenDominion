@@ -69,9 +69,9 @@ class HeroHelper
                 'name' => 'Scion',
                 'key' => 'scion',
                 'class_type' => 'advanced',
-                'perk_type' => 'explore_cost',
+                'perk_type' => 'ops_power',
                 'coefficient' => -1,
-                'perks' => ['martyrdom', 'special_forces'],
+                'perks' => ['disarmament', 'martyrdom'],
                 'icon' => 'ra-ankh'
             ]
         ])->keyBy('key');
@@ -121,6 +121,7 @@ class HeroHelper
             'military_cost' => '%+.2f%% military training cost',
             'platinum_production' => '%+.2f%% platinum production',
             'tech_production' => '%+.2f%% research point production',
+            'ops_power' => '%+.2f%% spy and wizard power',
             'spy_power' => '%+.2f%% spy power',
             'wizard_power' => '%+.2f%% wizard power',
         ];
@@ -138,10 +139,11 @@ class HeroHelper
         return [
             'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
             'invasion_morale' => 'Invasions no longer reduce morale',
-            'invasion_tech_gains' => '%+g research points gained from invasion',
             'land_spy_strength_cost' => 'Land Spy and Survey Dominion now cost 1%% spy strength',
-            'martyrdom' => 'Reduces the cost of construction, rezoning, spy training, and wizard training for 48 hours after selecting Scion',
-            'prestige_ops' => 'Prestige now modifies spy and wizard power instead of offensive power',
+            'martyrdom' => 'Reduces the cost of construction, rezoning, spy training, and wizard training for 36 hours after hero is selected',
+            'offense' => '%+g%% offensive power',
+            'tech_production_invasion' => '%+g%% research point gains from invasion',
+            'tech_refund' => 'Refund %g%% of your techs immediately after hero is selected',
         ];
     }
 

@@ -89,7 +89,8 @@
                         <div class="box-body">
                             <div class="row">
                                 @php
-                                    $perkType = $heroHelper->getClasses()[$hero->class]['perk_type'];
+                                    $heroClass = $heroHelper->getClasses()[$hero->class];
+                                    $perkType = $heroClass['perk_type'];
                                     $bonuses = $hero->bonuses->where('type', '!=', 'status_effect')->keyBy('level');
                                     $unlockedBonuses = $hero->bonuses->pluck('key')->all();
                                 @endphp
@@ -113,7 +114,7 @@
                                     @endif
                                     <div class="row" style="font-size: 64px; margin-top: 20px;">
                                         <div class="col-xs-6 col-sm-4 col-sm-offset-2 text-center">
-                                            @if ($hero->type == 'advanced')
+                                            @if ($heroClass['class_type'] == 'advanced')
                                                 {!! $heroHelper->getBonusIcon(0, $bonuses[0] ?? null) !!}<br/>
                                             @else
                                                 <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i><br/>
@@ -191,7 +192,7 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                            <button type="submit" class="btn btn-primary" {{ ($heroCalculator->getUnlockableBonusCount($hero) || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
+                            <button type="submit" class="btn btn-primary" {{ (!$heroCalculator->getUnlockableBonusCount($hero) || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                         </div>
                     </div>
                 </form>

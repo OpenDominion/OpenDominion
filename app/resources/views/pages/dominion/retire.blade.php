@@ -15,6 +15,20 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
+                                <div class="text-center" style="font-size: 24px;">
+                                    {{ $hero->name }}
+                                </div>
+                                <div class="text-center">
+                                    Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }}
+                                </div>
+                                <div class="text-center">
+                                    {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
+                                </div>
+                                <div class="text-center">
+                                    {{ $heroCalculator->getPassiveDescription($hero) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Name</label>
                                     <div class="col-sm-9">
@@ -39,26 +53,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                @foreach ($heroes as $hero)
-                                    <div class="text-center" style="font-size: 24px;">
-                                        {{ $hero->name }}
-                                    </div>
-                                    <div class="text-center">
-                                        Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }}
-                                    </div>
-                                    <div class="text-center">
-                                        {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
-                                    </div>
-                                    <div class="text-center">
-                                        {{ $heroCalculator->getPassiveDescription($hero) }}
-                                    </div>
-                                @endforeach
-                            </div>
                         </div>
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-danger" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Retire Hero</button>
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-danger" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Retire Hero</button>
+                        </div>
                     </div>
                 </div>
             </form>

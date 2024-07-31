@@ -223,6 +223,11 @@ class MilitaryCalculator
             }
         }
 
+        // Heroes
+        if ($dominion->hero !== null) {
+            $multiplier += $dominion->hero->getPerkMultiplier('offense');
+        }
+
         return $multiplier;
     }
 

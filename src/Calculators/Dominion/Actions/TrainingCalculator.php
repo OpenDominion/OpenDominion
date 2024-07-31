@@ -217,6 +217,9 @@ class TrainingCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('spy_cost');
 
+        // Spells
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_cost') / 100;
+
         return $multiplier;
     }
 
@@ -232,6 +235,9 @@ class TrainingCalculator
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('wizard_cost');
+
+        // Spells
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_cost') / 100;
 
         return $multiplier;
     }

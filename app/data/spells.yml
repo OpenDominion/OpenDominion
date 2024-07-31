@@ -264,7 +264,7 @@ mechanical_genius:
   races:
     - gnome
   perks:
-    rezone_cost: 30
+    rezone_cost: -30
   active: false
 bloodrage:
   name: Bloodrage
@@ -566,3 +566,14 @@ feast_of_blood:
   perks:
     cancels_immortal: 1
     convert_vampires: 9
+martyrdom:
+  name: Martyrdom
+  category: effect
+  cost_mana: 0
+  cost_strength: 0
+  duration: 36
+  perks:
+    construction_cost: -50
+    rezone_cost: -50
+    spy_cost: -50
+    wizard_cost: -50

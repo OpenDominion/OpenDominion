@@ -160,6 +160,7 @@ class SpellHelper
             'vision' => 'Reveal technology',
 
             // Logistics
+            'construction_cost' => '%+g%% construction costs',
             'military_cost_elite' => '%+g%% elite military training cost',
             'population_growth' => '%+g%% population growth',
             'rezone_cost' => '%+g%% rezoning platinum cost',
@@ -201,9 +202,11 @@ class SpellHelper
             'food_decay' => '%+g%% food decay',
             'lumber_decay' => '%+g%% lumber rot',
             'mana_decay' => '%+g%% mana drain',
+            'spy_cost' => '%+g%% cost of spies',
             'spy_losses' => '%s%% spy losses on failed operations',
             'spy_power' => '%+g%% spy power',
             'spy_power_defense' => '%+g%% defensive spy power',
+            'wizard_cost' => '%+g%% cost of wizards',
             'wizard_power' => '%+g%% wizard power',
             'wizard_power_defense' => '%+g%% defensive wizard power',
             'wonder_damage' => 'Deals damage to wonders',

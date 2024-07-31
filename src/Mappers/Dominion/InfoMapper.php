@@ -387,7 +387,7 @@ class InfoMapper
                 'level' => $this->heroCalculator->getHeroLevel($dominion->hero),
                 'experience' => floor($dominion->hero->experience),
                 'next_level_xp' => $this->heroCalculator->getNextLevelXP($dominion->hero),
-                'bonus' => $this->heroCalculator->getTradeBonus($dominion->hero)
+                'bonus' => $this->heroCalculator->getPassiveBonus($dominion->hero)
             ]
         ];
     }
