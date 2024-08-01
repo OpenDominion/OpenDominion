@@ -12,7 +12,6 @@ perks:
   max_population: 5
   food_consumption: -50
   mana_production: 20
-  boat_capacity: 5
 units:
   - name: Zombie
     cost:
@@ -40,9 +39,9 @@ units:
       defense: 6
   - name: Abomination
     cost:
-      platinum: 700
+      platinum: 875
     power:
-      offense: 4
+      offense: 5
       defense: 3
     perks:
       immortal_from_pairing: 2,1 # slot, num required
