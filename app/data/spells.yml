@@ -284,6 +284,7 @@ unholy_ghost:
   cost_strength: 5
   duration: 12
   races:
+    - spirit-legacy
     - spirit-rework
   perks:
     ignore_draftees: 1
@@ -360,6 +361,7 @@ parasitic_hunger:
   duration: 12
   races:
     - spirit
+    - undead
   perks:
     conversion_rate: 20
     spreads_plague: 1
@@ -433,7 +435,7 @@ necromantic_ritual:
   cost_mana: 5
   cost_strength: 5
   races:
-    - undead
+    - undead-legacy
   perks:
     convert_peasants_to_self_military_unit3: 2
   active: false
@@ -444,7 +446,7 @@ cull_the_weak:
   cost_strength: 5
   duration: 12
   races:
-    - undead
+    - undead-legacy
   perks:
     upgrade_specs: 1
     cancels_midas_touch: 1
@@ -456,7 +458,7 @@ raise_the_dead:
   cost_strength: 5
   duration: 12
   races:
-    - undead
+    - undead-legacy
   perks:
     conversions_range: 60
   active: false

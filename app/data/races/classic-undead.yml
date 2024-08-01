@@ -1,0 +1,57 @@
+key: undead
+name: Undead (Classic)
+alignment: evil
+description: >-
+  <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, bloodthirsty vampires and their hideous mutant progeny. This rag-tag alliance share one thing in common: a hatred of life. They will seize every opportunity to snuff it out, or drag it kicking and screaming into the shadow of undeath.</p>
+  <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with more corpses. The Undead tend to live in fetid swamps, where the cloying humid air acts a natural preservative, protecting the skin from rot. Vampires are a vain lot.</p>
+attacker_difficulty: 2
+explorer_difficulty: 2
+converter_difficulty: 3
+home_land_type: swamp
+perks:
+  max_population: 15
+  food_consumption: -75
+  mana_production: 10
+  immortal_wizards: 1
+units:
+  - name: Skeleton
+    cost:
+      platinum: 225
+      ore: 0
+    power:
+      offense: 2.5
+      defense: 0
+    perks:
+      immortal: 1
+  - name: Ghoul
+    cost:
+      platinum: 225
+      ore: 0
+    power:
+      offense: 0
+      defense: 2.5
+    perks:
+      fewer_casualties: 75
+  - name: Progeny
+    cost:
+      platinum: 860
+      ore: 0
+    power:
+      offense: 2
+      defense: 4
+    perks:
+      fewer_casualties: 75
+      conversion: 2,20 # slot 2, one per 20 sent
+    need_boat: false
+  - name: Vampire
+    cost:
+      platinum: 1000
+      ore: 0
+    power:
+      offense: 4
+      defense: 3
+    perks:
+      immortal: 1
+      conversion: 3,20 # slot 3, one per 20 sent
+    need_boat: false
+playable: false
