@@ -47,11 +47,16 @@ class CasualtiesCalculator
 
         // Check if unit has fixed casualties first, so we can skip all other checks
         if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties') !== 0) {
-            return 1;
+            return $multiplier;
         }
 
         // Wonders
         if ($target->getWonderPerkValue('max_casualties_offense')) {
+            return $multiplier;
+        }
+
+        // Spells
+        if ($dominion->getSpellPerkValue('cancels_immortal')) {
             return $multiplier;
         }
 
@@ -99,11 +104,6 @@ class CasualtiesCalculator
             if ($unitsAtHomeKISlot !== null && $totalUnitsAtHome > 0) {
                 $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
             }
-        }
-
-        // Spells
-        if ($dominion->getSpellPerkValue('cancels_immortal')) {
-            $multiplier = 1;
         }
 
         // Wonders
@@ -179,6 +179,11 @@ class CasualtiesCalculator
             return $multiplier;
         }
 
+        // Spells
+        if ($dominion->getSpellPerkValue('cancels_immortal')) {
+            return $multiplier;
+        }
+
         // First check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
         // casualties will then always be 0 anyway
 
@@ -189,7 +194,7 @@ class CasualtiesCalculator
                 $multiplier = 0;
 
                 // Spells
-                if ($attacker->getSpellPerkValue('kills_immortal') || $dominion->getSpellPerkValue('cancels_immortal')) {
+                if ($attacker->getSpellPerkValue('kills_immortal')) {
                     $multiplier = 1;
                 }
             }

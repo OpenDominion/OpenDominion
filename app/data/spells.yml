@@ -569,7 +569,7 @@ feast_of_blood:
     - vampire
   perks:
     cancels_immortal: 1
-    convert_vampires: 9
+    convert_vampires: 9.5
 martyrdom:
   name: Martyrdom
   category: effect
