@@ -179,6 +179,7 @@ crusade:
   duration: 12
   races:
     - human
+    - nomad
   perks:
     offense: 10
 favorable_terrain:
@@ -284,6 +285,7 @@ unholy_ghost:
   cost_strength: 5
   duration: 12
   races:
+    - dark-elf
     - spirit-legacy
     - spirit-rework
   perks:
