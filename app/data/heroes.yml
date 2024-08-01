@@ -29,10 +29,19 @@ spyglass:
 disarmament:
   name: Disarmament
   level: 0
-  type: immediate
+  type: directive
   icon: ra-drop-weapon
   perks:
     offense: -100
+    raze_mod_building_discount: 1
+  classes:
+    - scion
+revised_strategy:
+  name: Revised Strategy
+  level: 0
+  type: immediate
+  icon: ra-book
+  perks:
     tech_refund: 50
   classes:
     - scion

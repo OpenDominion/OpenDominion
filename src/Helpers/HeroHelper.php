@@ -70,9 +70,13 @@ class HeroHelper
                 'key' => 'scion',
                 'class_type' => 'advanced',
                 'perk_type' => 'ops_power',
-                'coefficient' => -1,
-                'perks' => ['disarmament', 'martyrdom'],
-                'icon' => 'ra-ankh'
+                'coefficient' => 1,
+                'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
+                'icon' => 'ra-ankh',
+                'requirement_stat' => 'stat_attacking_success',
+                'requirement_value' => 10,
+                'starting_xp_stat' => 'prestige',
+                'starting_xp_coefficient' => 1
             ]
         ])->keyBy('key');
     }
@@ -131,20 +135,53 @@ class HeroHelper
 
     public function getHeroBonuses()
     {
-        return HeroBonus::active()->with('perks')->get()->keyBy('key');
+        return HeroBonus::active()->with('perks')->get()->sortBy(['level', 'name'])->keyBy('key');
+    }
+
+    public function getHeroBonusesByName(array $keys)
+    {
+        return HeroBonus::active()->whereIn('key', $keys)->get()->sortBy('name');
+    }
+
+    public function getHeroBonusesByClass(string $class)
+    {
+        return $this->getHeroBonuses()->filter(function ($bonus) use ($class) {
+            return $bonus->classes === [] || in_array($class, $bonus->classes);
+        });
     }
 
     public function getHeroBonusPerkStrings()
     {
         return [
             'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
-            'invasion_morale' => 'Invasions no longer reduce morale',
-            'land_spy_strength_cost' => 'Land Spy and Survey Dominion now cost 1%% spy strength',
-            'martyrdom' => 'Reduces the cost of construction, rezoning, spy training, and wizard training for 36 hours after hero is selected',
+            'invasion_morale' => 'Invasion no longer reduces morale (75%%+ range only)',
+            'land_spy_strength_cost' => 'Land Spy now costs 1%% spy strength',
+            'martyrdom' => 'Reduces the cost of spy and wizard training for 48 hours',
             'offense' => '%+g%% offensive power',
+            'raze_mod_building_discount' => 'Destroying military buildings (Gryphon Nests, Guard Towers, and Temples) awards discounted land',
             'tech_production_invasion' => '%+g%% research point gains from invasion',
-            'tech_refund' => 'Refund %g%% of your techs immediately after hero is selected',
+            'tech_refund' => 'Reallocate techs (100%% refund for first five and and %g%% of remaining)',
         ];
+    }
+
+    public function getRequirementDisplay(array $class) {
+        $stat = str_replace('_', ' ', str_replace('stat_', '', $class['requirement_stat']));
+        $value = $class['requirement_value'];
+
+        return sprintf('%s %s',
+            $value,
+            str_plural($stat, $value)
+        );
+    }
+
+    public function getStartingExperienceDisplay(array $class) {
+        $stat = str_replace('_', '', str_replace('stat_', '', $class['starting_xp_stat']));
+        $coefficient = $class['starting_xp_coefficient'];
+
+        return sprintf('%s%% of %s',
+            $coefficient * 100,
+            $stat
+        );
     }
 
     public function getBonusDescription(HeroBonus $heroBonus, string $separator = ', '): string
@@ -188,7 +225,7 @@ class HeroHelper
      */
     public function getNamesByRace(string $race): array
     {
-        $race = str_replace('-rework', '', $race);
+        $race = str_replace('-legacy', '', str_replace('-rework', '', $race));
         $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
         try {
             $names_json = json_decode($filesystem->get(base_path("app/data/heroes/{$race}.json")));

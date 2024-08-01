@@ -577,7 +577,5 @@ martyrdom:
   cost_strength: 0
   duration: 36
   perks:
-    construction_cost: -50
-    rezone_cost: -50
     spy_cost: -50
     wizard_cost: -50

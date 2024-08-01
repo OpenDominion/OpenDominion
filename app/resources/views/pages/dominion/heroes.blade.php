@@ -49,7 +49,7 @@
 
                     <div class="box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Hero Bonuses</h3>
+                            <h3 class="box-title">Hero Level Bonuses</h3>
                         </div>
                         <div class="box-body table-responsive">
                             <table class="table">
@@ -91,7 +91,7 @@
                                 @php
                                     $heroClass = $heroHelper->getClasses()[$hero->class];
                                     $perkType = $heroClass['perk_type'];
-                                    $bonuses = $hero->bonuses->where('type', '!=', 'status_effect')->keyBy('level');
+                                    $bonuses = $hero->bonuses->whereNotIn('type', ['effect', 'immediate'])->keyBy('level');
                                     $unlockedBonuses = $hero->bonuses->pluck('key')->all();
                                 @endphp
                                 <div class="col-md-6">
@@ -162,7 +162,7 @@
                                                 <th>Description</th>
                                             </tr>
                                         </thead>
-                                        @foreach ($heroHelper->getHeroBonuses() as $bonus)
+                                        @foreach ($heroHelper->getHeroBonusesByClass($hero->class) as $bonus)
                                             <tr class="{{ $heroCalculator->canUnlockBonus($hero, $bonus) ? 'text-default' : 'text-muted' }}">
                                                 <td class="text-center{{ in_array($bonus->key, $unlockedBonuses) ? ' text-green' : null }}">
                                                     @if (in_array($bonus->key, $unlockedBonuses))

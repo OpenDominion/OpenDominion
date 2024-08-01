@@ -74,6 +74,12 @@ class DestroyActionService
 
         foreach ($data as $buildingType => $amount) {
             $dominion->{'building_' . $buildingType} -= $amount;
+            // Heroes
+            if ($dominion->hero !== null) {
+                if ($dominion->hero->getPerkValue('raze_mod_building_discount') && in_array($buildingType, ['gryphon_nest', 'guard_tower', 'temple'])) {
+                    $dominion->discounted_land += $amount;
+                }
+            }
         }
 
         // Check for excessive DP reduction

@@ -908,7 +908,7 @@ class InvadeActionService
         }
 
         // Heroes
-        if ($dominion->hero !== null && $dominion->hero->getPerkValue('invasion_morale')) {
+        if ($dominion->hero !== null && $dominion->hero->getPerkValue('invasion_morale') && $range >= 75) {
             $moraleChange = 0;
         }
 

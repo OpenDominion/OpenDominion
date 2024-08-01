@@ -290,19 +290,24 @@ class HeroCalculator
             return 0;
         }
 
-        $heroLevel = $this->getHeroLevel($hero);
-        $bonusLevels = $hero->bonuses->pluck('level')->all();
+        $maxUnlockLevel = 2;
+        $heroLevel = min($this->getHeroLevel($hero), $maxUnlockLevel);
+        $heroType = $this->heroHelper->getClasses()[$hero->class]['class_type'];
+        $bonusLevels = $hero->bonuses->where('type', '!=', 'directive')->pluck('level')->all();
 
-        if ($heroLevel > 1) {
-            if ($heroLevel < 4) {
-                $evenLevels = [2];
-            } else {
-                $evenLevels = range(2, $heroLevel, 2);
-            }
-            return count(array_diff($evenLevels, $bonusLevels));
+        if ($heroLevel < 2) {
+            $evenLevels = [];
+        } elseif ($heroLevel < 4) {
+            $evenLevels = [2];
+        } else {
+            $evenLevels = range(2, $heroLevel, 2);
         }
 
-        return 0;
+        if ($heroType === 'advanced') {
+            $evenLevels[] = 0;
+        }
+
+        return count(array_diff($evenLevels, $bonusLevels));
     }
 
     public function canUnlockBonus(Hero $hero, HeroBonus $bonus): bool
@@ -312,7 +317,7 @@ class HeroCalculator
         }
 
         $heroLevel = $this->getHeroLevel($hero);
-        $levelsUnlocked = $hero->bonuses->pluck('level')->all();
+        $levelsUnlocked = $hero->bonuses->where('type', '!=', 'directive')->pluck('level')->all();
 
         return $heroLevel >= $bonus->level && !in_array($bonus->level, $levelsUnlocked);
     }

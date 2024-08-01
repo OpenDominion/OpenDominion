@@ -55,34 +55,63 @@ class HeroActionService
         }
 
         // Get the bonus information
-        $bonusToUnlock = HeroBonus::query()
+        $bonus = HeroBonus::query()
             ->where('key', $key)
             ->first();
-        if ($bonusToUnlock == null) {
+        if ($bonus == null) {
             throw new LogicException('Failed to find hero bonus ' . $key);
         }
 
         // Check prerequisites
-        if (!$this->heroCalculator->canUnlockBonus($dominion->hero, $bonusToUnlock)) {
+        if (!$this->heroCalculator->canUnlockBonus($dominion->hero, $bonus)) {
             throw new GameException('You do not meet the requirements to unlock this hero bonus.');
         }
 
-        DB::transaction(function () use ($dominion, $bonusToUnlock) {
+        DB::transaction(function () use ($dominion, $bonus) {
             HeroHeroBonus::insert([
                 'hero_id' => $dominion->hero->id,
-                'hero_bonus_id' => $bonusToUnlock->id
+                'hero_bonus_id' => $bonus->id
             ]);
+
+            // Apply Status Effects
+            if ($bonus->type === 'effect') {
+                $statusEffectSpell = Spell::where('key', $bonus->key)->first();
+                if ($statusEffectSpell !== null) {
+                    DominionSpell::insert([
+                        'dominion_id' => $dominion->id,
+                        'spell_id' => $statusEffectSpell->id,
+                        'duration' => $statusEffectSpell->duration,
+                        'cast_by_dominion_id' => $dominion->id,
+                    ]);
+                }
+            }
+
+            // Apply Immediate Effects
+            if ($bonus->type === 'immediate') {
+                // Special case for tech refund
+                $techRefundMultiplier = $bonus->getPerkValue('tech_refund') / 100;
+                if ($techRefundMultiplier) {
+                    $techCalculator = app(TechCalculator::class);
+                    $techCost = $techCalculator->getTechCost($dominion);
+                    $techCount = count($dominion->techs);
+                    $fullRefundCount = min($techCount, 5);
+                    $partialRefundCount = $techCount - $fullRefundCount;
+                    $techRefund = (int) ($techCost * ($fullRefundCount + ($partialRefundCount * $techRefundMultiplier)));
+                    $dominion->resource_tech += $techRefund;
+                    DominionTech::where('dominion_id', $dominion->id)->delete();
+                }
+            }
 
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_HERO,
-                'action' => $bonusToUnlock->key
+                'action' => $bonus->key
             ]);
         });
 
         return [
             'message' => sprintf(
                 'You have unlocked %s.',
-                $bonusToUnlock->name
+                $bonus->name
             )
         ];
     }
@@ -163,8 +192,7 @@ class HeroActionService
             if ($dominion->round->daysInRound() < 10) {
                 throw new GameException('You cannot select an advanced hero class until the 10th day of the round.');
             }
-            // TODO: Dynamic Requirements
-            if ($dominion->stat_attacking_success < 10) {
+            if ($dominion->{$selectedClass['requirement_stat']} < $selectedClass['requirement_value']) {
                 throw new GameException('You do not meet the requirements to select this hero class.');
             }
         }
@@ -172,42 +200,24 @@ class HeroActionService
         DB::transaction(function () use ($dominion, $name, $selectedClass) {
             HeroHeroBonus::where('hero_id', $dominion->hero->id)->delete();
 
+            // Starting XP
             $xp = (int) min($dominion->hero->experience, 10000) / 2;
             if ($selectedClass['class_type'] === 'advanced') {
-                $xp = 0;
+                $xp = $dominion->{$selectedClass['starting_xp_stat']} * $selectedClass['starting_xp_coefficient'];
+
                 // Advanced Class Bonuses
-                $advancedBonuses = HeroBonus::where('level', 0)->get()->filter(function ($bonus) use ($selectedClass) {
-                    return in_array($selectedClass['key'], $bonus->classes);
-                });
+                $advancedBonuses = HeroBonus::query()
+                    ->where('level', 0)
+                    ->where('type', 'directive')
+                    ->get()
+                    ->filter(function ($bonus) use ($selectedClass) {
+                        return in_array($selectedClass['key'], $bonus->classes);
+                    });
                 foreach ($advancedBonuses as $advancedBonus) {
                     HeroHeroBonus::insert([
                         'hero_id' => $dominion->hero->id,
                         'hero_bonus_id' => $advancedBonus->id
                     ]);
-                    // Apply Status Effects
-                    if ($advancedBonus->type === 'effect') {
-                        $statusEffectSpell = Spell::where('key', $advancedBonus->key)->first();
-                        if ($statusEffectSpell !== null) {
-                            DominionSpell::insert([
-                                'dominion_id' => $dominion->id,
-                                'spell_id' => $statusEffectSpell->id,
-                                'duration' => $statusEffectSpell->duration,
-                                'cast_by_dominion_id' => $dominion->id,
-                            ]);
-                        }
-                    }
-                    // Apply Immediate Effects
-                    if ($advancedBonus->type === 'immediate') {
-                        $techRefundMultiplier = $advancedBonus->getPerkValue('tech_refund') / 100;
-                        if ($techRefundMultiplier) {
-                            $techCalculator = app(TechCalculator::class);
-                            $techCost = $techCalculator->getTechCost($dominion);
-                            $techCount = count($dominion->techs);
-                            $techRefund = (int) ($techCount * $techCost * $techRefundMultiplier);
-                            $dominion->resource_tech += $techRefund;
-                            DominionTech::where('dominion_id', $dominion->id)->delete();
-                        }
-                    }
                 }
             }
 
