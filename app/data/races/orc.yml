@@ -34,7 +34,7 @@ units:
       offense: 0
       defense: 5
     perks:
-      reduce_combat_losses: 1
+      casualties_defense: -50
   - name: Bone Breaker
     cost:
       platinum: 1150

@@ -29,7 +29,7 @@ units:
       offense: 0
       defense: 3
     perks:
-      reduce_combat_losses: 1
+      casualties_defense: -50
   - name: FrostMage # Leave the space out, for nostalgic reasons
     cost:
       platinum: 965
