@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
@@ -69,12 +70,17 @@ class HeroController extends AbstractDominionController
         return redirect()->route('dominion.heroes');
     }
 
-    public function getRetireHero()
+    public function getRetireHero(Request $request)
     {
         $heroCalculator = app(HeroCalculator::class);
         $heroHelper = app(HeroHelper::class);
 
         $hero = $this->getSelectedDominion()->hero;
+
+        if ($hero === null) {
+            $request->session()->flash('alert-warning', 'You do not have a hero to retire.');
+            return redirect()->back();
+        }
 
         return view('pages.dominion.retire', compact(
             'heroCalculator',

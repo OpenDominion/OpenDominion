@@ -160,7 +160,7 @@ class HeroHelper
             'offense' => '%+g%% offensive power',
             'raze_mod_building_discount' => 'Destroying military buildings (Gryphon Nests, Guard Towers, and Temples) awards discounted land',
             'tech_production_invasion' => '%+g%% research point gains from invasion',
-            'tech_refund' => 'Reallocate techs (100%% refund for first five and and %g%% of remaining)',
+            'tech_refund' => 'Reallocate techs (100%% refund for up to 5 techs and %g%% refund for remaining)',
         ];
     }
 
