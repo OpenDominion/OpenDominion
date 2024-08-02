@@ -454,7 +454,7 @@ class OpsCalculator
         $protected = 0;
 
         // Values
-        $peasantsPerWizard = 6;
+        $peasantsPerWizard = 5;
         $peasantsPerWizardGuild = 18;
         $wizardsPerGuild = 5;
 
