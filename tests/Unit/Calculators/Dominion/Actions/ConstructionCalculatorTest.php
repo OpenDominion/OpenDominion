@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -29,6 +30,9 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
+    /** @var Mock|SpellCalculator */
+    protected $spellCalculator;
+
     /** @var Mock|ConstructionCalculator */
     protected $sut;
 
@@ -43,6 +47,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
             $this->buildingCalculator = m::mock(BuildingCalculator::class),
             $this->heroCalculator = m::mock(HeroCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
+            $this->spellCalculator = m::mock(SpellCalculator::class),
         ])->makePartial();
     }
 
