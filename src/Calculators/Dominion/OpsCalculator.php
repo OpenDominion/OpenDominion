@@ -356,14 +356,16 @@ class OpsCalculator
      * @param string $type
      * @return int
      */
-    public function getMasteryChange(Dominion $dominion, Dominion $target, string $type): int
+    public function getMasteryChange(Dominion $dominion, Dominion $target, string $type, bool $loss = false): int
     {
         if ($type == 'spy') {
             $selfMastery = $dominion->spy_mastery;
             $targetMastery = $target->spy_mastery;
+            $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
         } elseif ($type == 'wizard') {
             $selfMastery = $dominion->wizard_mastery;
             $targetMastery = $target->wizard_mastery;
+            $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
         } else {
             return 0;
         }
@@ -373,7 +375,20 @@ class OpsCalculator
             $masteryDifference -= 1;
         }
 
-        return max(0, round(3 + $masteryDifference / 200));
+        // Amount based on relative mastery (from 0 to 6, 3 when equal)
+        $masteryChange = 3 + ($masteryDifference / 200);
+
+        // Halved for mastery loss (from 0 to 3)
+        if ($loss) {
+            $masteryChange = $masteryChange / 2;
+        }
+
+        // Gain up to 4 more based on target's ratio (if within 500 pts)
+        if (!$loss && $masteryDifference > -500) {
+            $masteryChange += min(4, $targetRatio * 4);
+        }
+
+        return round($masteryChange);
     }
 
     /*

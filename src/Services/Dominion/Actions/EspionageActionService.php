@@ -895,7 +895,7 @@ class EspionageActionService
         $dominion->spy_mastery += $masteryGain;
 
         // Mastery Loss
-        $masteryLoss = min($this->opsCalculator->getMasteryChange($dominion, $target, 'spy'), $target->spy_mastery);
+        $masteryLoss = min($this->opsCalculator->getMasteryChange($dominion, $target, 'spy', true), $target->spy_mastery);
         $target->spy_mastery -= $masteryLoss;
 
         $warRewardsString = "You gained {$masteryGain} spy mastery.";
