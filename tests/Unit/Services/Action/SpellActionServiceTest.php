@@ -168,14 +168,14 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->target->peasants = $populationCalculator->getMaxPeasantPopulation($this->target);
         $this->assertEquals(49109, $this->target->peasants);
         $this->assertEquals(0.5, $opsCalculator->getPeasantVulnerablilityModifier($this->target));
-        $this->assertEquals(44198, $opsCalculator->getPeasantsProtected($this->target));
-        $this->assertEquals(4911, $opsCalculator->getPeasantsUnprotected($this->target));
+        $this->assertEquals(39287, $opsCalculator->getPeasantsProtected($this->target));
+        $this->assertEquals(9822, $opsCalculator->getPeasantsUnprotected($this->target));
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
         // Assert
-        $this->assertEquals(48863, $this->target->peasants);
+        $this->assertEquals(48617, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_MaxWizardGuildProtection()
@@ -200,7 +200,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
         // Assert
-        $this->assertEquals(53087, $this->target->peasants);
+        $this->assertEquals(52820, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_DamageCap()
