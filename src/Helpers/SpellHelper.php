@@ -215,6 +215,7 @@ class SpellHelper
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',
             'immune_lightning_storm' => 'Immune to Lightning Storm',
+            'lightning_storm' => 'Lightning Bolt deals an additional %g%% temporary damage (until this expires)',
             'war_cancels' => 'Cancelled if this realm declares war',
             'cancels_gaias_light' => 'Cancels and cancelled by Gaia\'s Light',
             'cancels_gaias_shadow' => 'Cancels and cancelled by Gaia\'s Shadow',

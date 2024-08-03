@@ -51,7 +51,7 @@
                                         <td>{{ $spell->name }}</td>
                                         <td>{{ $spellHelper->getSpellRaces($spell) ? $spellHelper->getSpellRaces($spell) : '--' }}</td>
                                         <td>{{ $spell->cost_mana ? $spell->cost_mana . 'x' : '--' }}</td>
-                                        <td>{{ $spell->duration ? $spell->duration : '--' }}</td>
+                                        <td>{{ $spell->duration ? $spell->duration : '--' }}{{ in_array($spell->key, ['burning', 'lightning_storm']) ? '-30' : null }}</td>
                                         <td>{{ $spellHelper->getSpellDescription($spell) }}</td>
                                     </tr>
                                 @endforeach

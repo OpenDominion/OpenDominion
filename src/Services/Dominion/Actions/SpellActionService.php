@@ -822,19 +822,23 @@ class SpellActionService
                 }
 
                 // Temporary lightning damage
-                /*
-                if (Str::startsWith($attr, 'improvement_')) {
-                    $amount = round($damage / 2);
-                    if ($amount > 0) {
-                        $this->queueService->queueResources(
-                            'operations',
-                            $target,
-                            [$attr => $amount],
-                            12
-                        );
+                if (Str::startsWith($attr, 'improvement_') && $damage > 0) {
+                    $lightningStormSpell = $target->spells->where('key', 'lightning_storm')->first();
+                    if ($lightningStormSpell !== null) {
+                        $lightningPerkValue = $target->getSpellPerkValue('lightning_storm', ['effect']) / 100;
+                        $amount = round($damage * $lightningPerkValue);
+                        $duration = $lightningStormSpell->duration;
+                        if ($amount > 0) {
+                            $this->queueService->queueResources(
+                                'operations',
+                                $target,
+                                [$attr => $amount],
+                                $duration
+                            );
+                            $damage += $amount;
+                        }
                     }
                 }
-                */
 
                 // Immortal Wizards
                 if ($attr == 'military_wizards' && $target->race->getPerkValue('immortal_wizards') != 0) {

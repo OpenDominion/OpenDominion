@@ -481,7 +481,7 @@ lightning_storm:
   cost_strength: 0
   duration: 20
   perks:
-    enemy_lightning_bolt_damage: 50
+    lightning_storm: 50
     apply_rejuvenation: 1
     immune_burning: 1
 rejuvenation:
