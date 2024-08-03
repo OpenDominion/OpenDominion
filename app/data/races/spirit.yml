@@ -48,4 +48,5 @@ units:
       defense: 0
     perks:
       casualties_offense: -75
+      offense_staggered_land_range: 95;0.5
     need_boat: false
