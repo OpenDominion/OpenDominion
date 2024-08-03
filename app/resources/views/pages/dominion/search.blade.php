@@ -12,9 +12,9 @@
                 </div>
                 <div class="box-body" id="dominion-search">
                     <div class="row no-margin">
-                        <div class="col-sm-6 col-md-4 form-horizontal">
+                        <div class="col-sm-6 col-lg-4 form-horizontal">
                             <div class="form-group">
-                                <label class="col-sm-6 control-label text-right">Race:</label>
+                                <label class="col-sm-6 control-label">Race:</label>
                                 <div class="col-sm-6">
                                     <select class="form-control" name="race">
                                         <option value="">All</option>
@@ -25,7 +25,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label text-right">Limit:</label>
+                                <label class="col-sm-6 control-label">Limit:</label>
                                 <div class="col-sm-6">
                                     <select class="form-control" name="range">
                                         <option value="">No Limit</option>
@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label text-right">Bots:</label>
+                                <label class="col-sm-6 control-label">Bots:</label>
                                 <div class="col-sm-6">
                                     <select class="form-control" name="bots">
                                         <option value="">Include</option>
@@ -44,42 +44,61 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-4 form-horizontal">
+                        <div class="col-sm-6 col-lg-4 form-horizontal">
                             <div class="form-group">
-                                <label class="col-sm-6 control-label text-right">Land Min:</label>
+                                <label class="col-sm-6 control-label">Land Min:</label>
                                 <div class="col-sm-6">
                                     <input type="number" name="landMin" class="form-control input-sm" min="0" placeholder="0" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label text-right">Land Max:</label>
+                                <label class="col-sm-6 control-label">Land Max:</label>
                                 <div class="col-sm-6">
                                     <input type="number" name="landMax" class="form-control input-sm" placeholder="--" />
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-12 text-right">
-                                    <button class="btn btn-default search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.40) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.40) }}">40%</button>
-                                    <button class="btn btn-success search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.60) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.60) }}">60%</button>
-                                    <button class="btn btn-warning search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.75) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.75) }}">75%</button>
-                                </div>
-                            </div>
                         </div>
-                        <div class="col-sm-6 col-md-4 form-horizontal">
+                        <div class="col-sm-6 col-lg-4 form-horizontal">
                             <div class="form-group">
-                                <label class="col-sm-6 control-label text-right">Networth Min:</label>
+                                <label class="col-sm-6 control-label">Networth Min:</label>
                                 <div class="col-sm-6">
                                     <input type="number" name="networthMin" class="form-control input-sm" min="0" placeholder="0" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-6 control-label text-right">Networth Max:</label>
+                                <label class="col-sm-6 control-label">Networth Max:</label>
                                 <div class="col-sm-6">
                                     <input type="number" name="networthMax" class="form-control input-sm" placeholder="--" />
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-offset-1 col-lg-7 form-horizontal">
                             <div class="form-group">
-                                <div class="col-sm-6 col-sm-offset-6">
+                                <div class="col-sm-12">
+                                    <div class="row no-margin" style="padding-top: 8px">
+                                        <div class="col-md-2 text-center no-padding">
+                                            <button class="btn btn-block btn-primary search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.85) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.85) }}">85%</button>
+                                        </div>
+                                        <div class="col-md-2 text-center no-padding">
+                                            <button class="btn btn-block btn-primary search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.95) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.95) }}">95%</button>
+                                        </div>
+                                        <div class="col-md-2 text-center no-padding">
+                                            <button class="btn btn-block btn-primary search-range" data-min="{{ $landCalculator->getTotalLand($selectedDominion) }}" data-max="{{ $landCalculator->getTotalLand($selectedDominion) }}">100%</button>
+                                        </div>
+                                        <div class="col-md-2 text-center no-padding">
+                                            <button class="btn btn-block btn-info search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.40) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.40) }}">40%</button>
+                                        </div>
+                                        <div class="col-md-2 text-center no-padding">
+                                            <button class="btn btn-block btn-success search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.60) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.60) }}">60%</button>
+                                        </div>
+                                        <div class="col-md-2 text-center no-padding">
+                                            <button class="btn btn-block btn-warning search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.75) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.75) }}">75%</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group no-margin">
+                                <div class="col-sm-6 col-sm-offset-6 no-padding">
                                     <button id="dominion-search" class="btn btn-block btn-primary">Search</button>
                                 </div>
                             </div>

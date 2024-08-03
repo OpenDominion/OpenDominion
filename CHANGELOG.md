@@ -4,6 +4,9 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Search page now includes 85%, 95%, and 100% range buttons
+
 ### Changed
 - Reduce combat losses perk replaced replaced with -50% casualties for defensive units (Goblin Shaman, Icekin Snow Witch, Orc Voodoo Magi), now unique to Dwarf Cleric
 - Human Cavalry: -10p (from 1250p)
