@@ -4,6 +4,19 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Reduce combat losses perk replaced replaced with -50% casualties for defensive units (Goblin Shaman, Icekin Snow Witch, Orc Voodoo Magi), now unique to Dwarf Cleric
+- Human Cavalry: -10p (from 1250p)
+- Human Knight: +40p (from 1000p)
+- Spirit: Homeland changed to water (was swamp), mana production bonus removed (was +15%)
+- Spirit Banshee: renamed Wave Wisp
+- Spirit Geist: -50% defensive casualties (was immortal), renamed Tidewraith
+- Spirit Phantom Knight: +100p, -5m, -50% casualties on offense (from 1025p, -50% casualties on defense), renamed Stormcaller
+- Spirit Spectral Warrior: -100p, -10m, -75% casualties on offense (from 1175p, immortal), renamed Water Elemental
+- Undead Abomination: +1 OP, +175p (from 4, 700p)
+- Vampire: Feast of Blood now cancels all casualty reductions (was immortality)
+- Mastery loss halved, gains increased by up to 4 based on target's ratio
+- Peasants protected from Fireball reduced to 5 per wizard (from 6), maximum protected reduced to 80% of max peasants (was 90% of max peasants)
 
 ## [1.40.2] - 2024-07-11
 ### Fixed

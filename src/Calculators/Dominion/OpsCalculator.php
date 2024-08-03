@@ -381,6 +381,9 @@ class OpsCalculator
         // Halved for mastery loss (from 0 to 3)
         if ($loss) {
             $masteryChange = $masteryChange / 2;
+            if ($selfMastery < 100) {
+                $masteryChange = 0;
+            }
         }
 
         // Gain up to 4 more based on target's ratio (if within 500 pts)

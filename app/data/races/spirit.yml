@@ -31,7 +31,7 @@ units:
       casualties_defense: -50
   - name: Stormcaller
     cost:
-      platinum: 1050
+      platinum: 1125
       mana: 25
     power:
       offense: 3
