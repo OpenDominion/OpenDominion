@@ -21,6 +21,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Mastery loss halved, gains increased by up to 4 based on target's ratio
 - Peasants protected from Fireball reduced to 5 per wizard (from 6), maximum protected reduced to 80% of max peasants (was 90% of max peasants)
 
+### Fixed
+- The World page can no longer be accessed prior to round start
+
 ## [1.40.2] - 2024-07-11
 ### Fixed
 - Spell damage modifiers from status effects are now multiplicative with other sources

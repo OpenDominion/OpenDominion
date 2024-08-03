@@ -13,6 +13,11 @@ class WorldController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
 
+        if (!$dominion->round->hasStarted()) {
+            $request->session()->flash('alert-warning', 'You cannot view other realms before the round begins.');
+            return redirect()->back();
+        }
+
         $realms = $dominion->round->realms()
             ->with([
                 'dominions',
