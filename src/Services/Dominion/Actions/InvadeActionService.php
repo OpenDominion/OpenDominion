@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -741,6 +742,33 @@ class InvadeActionService
             }
         }
 
+        // Overpop - Excess returning military desert your army
+        $populationCalculator = app(PopulationCalculator::class);
+        $currentPopulation = $populationCalculator->getPopulation($target);
+        $maxPopulation = $populationCalculator->getMaxPopulation($target);
+        $maxPeasants = $populationCalculator->getMaxPeasantPopulation($target);
+        $unitsToKill = $currentPopulation - $maxPopulation - $maxPeasants;
+        if ($unitsToKill > 0) {
+            $unitsAway = [
+                1 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit1"),
+                2 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit2"),
+                3 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit3"),
+                4 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit4")
+            ];
+            $totalUnitsAway = array_sum($unitsAway);
+            if ($totalUnitsAway) {
+                $this->invasionResult['defender']['unitsDeserted'] = [];
+                for ($slot = 1; $slot <= 4; $slot++) {
+                    $percentage = $unitsAway[$slot] / $totalUnitsAway;
+                    if ($percentage > 0) {
+                        $amount = round($percentage * $unitsAway[$slot]);
+                        $this->invasionResult['defender']['unitsDeserted'][$slot] = $amount;
+                        $this->queueService->dequeueResource('invasion', $target, "military_unit{$slot}", $amount);
+                    }
+                }
+            }
+        }
+
         return $this->unitsLost;
     }
 
@@ -1181,17 +1209,17 @@ class InvadeActionService
      */
     protected function handleReturningUnits(Dominion $dominion, array $units, array $convertedUnits): void
     {
-        for ($i = 1; $i <= 4; $i++) {
-            $unitKey = "military_unit{$i}";
+        for ($slot = 1; $slot <= 4; $slot++) {
+            $unitKey = "military_unit{$slot}";
             $returningAmount = 0;
 
-            if (array_key_exists($i, $units)) {
-                $returningAmount += $units[$i];
-                $dominion->$unitKey -= $units[$i];
+            if (array_key_exists($slot, $units)) {
+                $returningAmount += $units[$slot];
+                $dominion->$unitKey -= $units[$slot];
             }
 
-            if (array_key_exists($i, $convertedUnits)) {
-                $returningAmount += $convertedUnits[$i];
+            if (array_key_exists($slot, $convertedUnits)) {
+                $returningAmount += $convertedUnits[$slot];
             }
 
             if ($returningAmount === 0) {
@@ -1202,7 +1230,7 @@ class InvadeActionService
                 'invasion',
                 $dominion,
                 [$unitKey => $returningAmount],
-                $this->invasionService->getUnitReturnHoursForSlot($dominion, $i)
+                $this->invasionService->getUnitReturnHoursForSlot($dominion, $slot)
             );
         }
     }
