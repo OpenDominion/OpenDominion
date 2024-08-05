@@ -124,7 +124,8 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc')
             ->orderBy('type', 'desc')
-            ->paginate(100);
+            ->paginate(100)
+            ->withQueryString();
 
         return [
             'dominionIds' => $dominionIds,
@@ -165,7 +166,8 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc')
             ->orderBy('type', 'desc')
-            ->paginate(100);
+            ->paginate(100)
+            ->withQueryString();
 
         return [
             'dominionIds' => $dominionIds,
