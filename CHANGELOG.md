@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Search page now includes 85%, 95%, and 100% range buttons
 
 ### Changed
+- Overpopulation now causes returning military to desert your army (when being invaded)
 - Reduce combat losses perk replaced replaced with -50% casualties for defensive units (Goblin Shaman, Icekin Snow Witch, Orc Voodoo Magi), now unique to Dwarf Cleric
 - Human Cavalry: -10p (from 1250p)
 - Human Knight: +40p (from 1000p)

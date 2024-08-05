@@ -4,6 +4,7 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -104,5 +105,49 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(222, $this->dominion->military_unit4);
         $this->assertEquals(9641, $this->target->military_unit2);
         $this->assertEquals(2850, $this->target->land_plain);
+    }
+
+    public function testOverpopCasualties()
+    {
+        // Arrange
+        $this->dominion->military_unit3 = 5000;
+        $this->dominion->military_unit4 = 7500;
+        $this->target->military_unit2 = 10000;
+        $this->target->military_unit4 = 5000;
+        $this->target->queues()->create([
+            'dominion_id' => $this->target->id,
+            'source' => 'invasion',
+            'resource' => 'military_unit4',
+            'hours' => 12,
+            'amount' => 1500
+        ]);
+        $this->target->queues()->create([
+            'dominion_id' => $this->target->id,
+            'source' => 'invasion',
+            'resource' => 'military_unit1',
+            'hours' => 12,
+            'amount' => 1500
+        ]);
+
+        // Assert
+        $populationCalculator = app(PopulationCalculator::class);
+        $this->assertEquals(18096, $populationCalculator->getMaxPopulation($this->target));
+        $this->assertEquals(18450, $populationCalculator->getPopulationMilitary($this->target));
+
+        // Act
+        $units = [4 => 7500];
+        $this->invadeActionService->invade($this->dominion, $this->target, $units, false);
+
+        // Get results
+        $resultProperty = new \ReflectionProperty($this->invadeActionService, 'invasionResult');
+        $resultProperty->setAccessible(true);
+        $invasionResult = $resultProperty->getValue($this->invadeActionService);
+
+        // Assert
+        $this->assertEquals(17049, $populationCalculator->getMaxPopulation($this->target));
+        $this->assertEquals(18064, $populationCalculator->getPopulationMilitary($this->target));
+        $this->assertEquals(true, $invasionResult['result']['success']);
+        $this->assertEquals(508, $invasionResult['defender']['unitsDeserted'][4]);
+        $this->assertEquals(508, $invasionResult['defender']['unitsDeserted'][4]);
     }
 }

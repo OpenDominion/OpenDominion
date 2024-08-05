@@ -302,6 +302,7 @@ class InvadeActionService
             $this->handleMoraleChanges($dominion, $target);
             $this->handleLandGrabs($dominion, $target);
             $this->handleResearchPoints($dominion, $target, $survivingUnits);
+            $this->handleOverpopulation($target);
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
@@ -742,33 +743,6 @@ class InvadeActionService
             }
         }
 
-        // Overpop - Excess returning military desert your army
-        $populationCalculator = app(PopulationCalculator::class);
-        $currentPopulation = $populationCalculator->getPopulation($target);
-        $maxPopulation = $populationCalculator->getMaxPopulation($target);
-        $maxPeasants = $populationCalculator->getMaxPeasantPopulation($target);
-        $unitsToKill = $currentPopulation - $maxPopulation - $maxPeasants;
-        if ($unitsToKill > 0) {
-            $unitsAway = [
-                1 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit1"),
-                2 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit2"),
-                3 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit3"),
-                4 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit4")
-            ];
-            $totalUnitsAway = array_sum($unitsAway);
-            if ($totalUnitsAway) {
-                $this->invasionResult['defender']['unitsDeserted'] = [];
-                for ($slot = 1; $slot <= 4; $slot++) {
-                    $percentage = $unitsAway[$slot] / $totalUnitsAway;
-                    if ($percentage > 0) {
-                        $amount = round($percentage * $unitsAway[$slot]);
-                        $this->invasionResult['defender']['unitsDeserted'][$slot] = $amount;
-                        $this->queueService->dequeueResource('invasion', $target, "military_unit{$slot}", $amount);
-                    }
-                }
-            }
-        }
-
         return $this->unitsLost;
     }
 
@@ -914,6 +888,34 @@ class InvadeActionService
             $queueData,
             $this->invasionService->getResourceReturnHours($dominion)
         );
+    }
+
+    protected function handleOverpopulation(Dominion $target): void
+    {
+        $populationCalculator = app(PopulationCalculator::class);
+        $maxPopulation = $populationCalculator->getMaxPopulation($target);
+        $currentPopulation = $populationCalculator->getPopulationMilitary($target);
+        if ($currentPopulation > $maxPopulation) {
+            $unitsToKill = $currentPopulation - $maxPopulation;
+            $unitsAway = [
+                1 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit1"),
+                2 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit2"),
+                3 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit3"),
+                4 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit4")
+            ];
+            $totalUnitsAway = array_sum($unitsAway);
+            if ($totalUnitsAway) {
+                $this->invasionResult['defender']['unitsDeserted'] = [];
+                for ($slot = 1; $slot <= 4; $slot++) {
+                    $percentage = $unitsAway[$slot] / $totalUnitsAway;
+                    if ($percentage > 0) {
+                        $amount = (int) round($percentage * $unitsToKill);
+                        $this->invasionResult['defender']['unitsDeserted'][$slot] = $amount;
+                        $this->queueService->dequeueResource('invasion', $target, "military_unit{$slot}", $amount);
+                    }
+                }
+            }
+        }
     }
 
     /**
