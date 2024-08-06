@@ -164,13 +164,7 @@ class InvadeCalculationService
         $returningForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsReturning, 0, true);
         $homeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
 
-        $ratio = 1.25;
-        $recentInvasions = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 3 * 24, true);
-        if ($recentInvasions > 4) {
-            $ratio = 1.25 - min(0.25, ($recentInvasions - 4) * 0.125);
-        }
-
-        $this->calculationResult['max_op'] = $this->calculationResult['home_defense'] * $ratio;
+        $this->calculationResult['max_op'] = $this->calculationResult['home_defense'] * 1.25;
         $this->calculationResult['min_dp'] = ($returningForcesDP + $homeForcesDP) * 0.40;
 
         $this->calculationResult['target_min_dp'] = $this->militaryCalculator->getMinimumDefense($target);
