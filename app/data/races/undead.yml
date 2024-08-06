@@ -39,9 +39,10 @@ units:
       defense: 6
   - name: Abomination
     cost:
-      platinum: 875
+      platinum: 700
     power:
-      offense: 5
+      offense: 4
       defense: 3
     perks:
       immortal_from_pairing: 2,1 # slot, num required
+    need_boat: false
