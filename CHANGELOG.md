@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Mastery loss halved, gains increased by up to 4 based on target's ratio
 - Peasants protected from Fireball reduced to 5 per wizard (from 6), maximum protected reduced to 80% of max peasants (was 90% of max peasants)
 - Bonus damage from Lightning Storm now lasts only until the effect expires
+- Fireball and Lightning Bolt damage is doubled between Shadow League members
 
 ### Fixed
 - The World page can no longer be accessed prior to round start

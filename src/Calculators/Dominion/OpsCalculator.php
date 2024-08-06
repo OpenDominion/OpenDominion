@@ -426,10 +426,16 @@ class OpsCalculator
         // Wonders
         $modifier += $dominion->getWonderPerkMultiplier('enemy_spell_damage');
 
-        // Status Effects (multiplicative)
+        // Status Effects & Shadow League (multiplicative)
         $spellModifier = 1;
         $spellModifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
         $spellModifier += $dominion->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
+        if (
+            in_array($spellKey, ['fireball', 'lightning_bolt']) &&
+            $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target)
+        ) {
+            $spellModifier += 1;
+        }
 
         // Capped at 80% reduction
         return max(0.2, $modifier * $spellModifier);

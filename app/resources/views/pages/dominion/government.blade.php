@@ -530,6 +530,7 @@
                             </h4>
                             <ul class="text-left" style="padding: 0 30px;">
                                 <li>Enables war operations between members.</li>
+                                <li>Fireball and Lightning Bolt damage is doubled between members.</li>
                                 <li>75% of casualties suffered due to failed operations between members are automatically re-trained.</li>
                                 <li>Info op strength costs are halved.</li>
                             </ul>
