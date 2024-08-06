@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit Geist: -50% defensive casualties (was immortal), renamed Tidewraith
 - Spirit Phantom Knight: +100p, -5m, -50% casualties on offense (from 1025p, -50% casualties on defense), renamed Stormcaller
 - Spirit Spectral Warrior: -100p, -10m, -75% casualties on offense (from 1175p, immortal), +0.5 OP vs 95%, renamed Water Elemental
-- Undead Abomination: +1 OP, +175p (from 4, 700p)
+- Undead Abomination: no longer needs boats
 - Vampire: Feast of Blood now cancels all casualty reductions (was immortality)
 - Mastery loss halved, gains increased by up to 4 based on target's ratio
 - Peasants protected from Fireball reduced to 5 per wizard (from 6), maximum protected reduced to 80% of max peasants (was 90% of max peasants)
