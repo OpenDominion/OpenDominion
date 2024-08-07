@@ -168,7 +168,8 @@ class HeroHelper
         $stat = str_replace('stat_', '', $class['requirement_stat']);
         $value = $class['requirement_value'];
 
-        return sprintf('%s %s',
+        return sprintf(
+            '%s %s',
             $value,
             dominion_attr_display($stat, $value)
         );
@@ -178,7 +179,8 @@ class HeroHelper
         $stat = str_replace('_', '', str_replace('stat_', '', $class['starting_xp_stat']));
         $coefficient = $class['starting_xp_coefficient'];
 
-        return sprintf('%s%% of %s',
+        return sprintf(
+            '%s%% of %s',
             $coefficient * 100,
             $stat
         );

@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
-use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
 use OpenDominion\Traits\DominionGuardsTrait;
 

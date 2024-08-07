@@ -898,10 +898,10 @@ class InvadeActionService
         if ($currentPopulation > $maxPopulation) {
             $unitsToKill = $currentPopulation - $maxPopulation;
             $unitsAway = [
-                1 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit1"),
-                2 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit2"),
-                3 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit3"),
-                4 => $this->queueService->getInvasionQueueTotalByResource($target, "military_unit4")
+                1 => $this->queueService->getInvasionQueueTotalByResource($target, 'military_unit1'),
+                2 => $this->queueService->getInvasionQueueTotalByResource($target, 'military_unit2'),
+                3 => $this->queueService->getInvasionQueueTotalByResource($target, 'military_unit3'),
+                4 => $this->queueService->getInvasionQueueTotalByResource($target, 'military_unit4')
             ];
             $totalUnitsAway = array_sum($unitsAway);
             if ($totalUnitsAway) {
