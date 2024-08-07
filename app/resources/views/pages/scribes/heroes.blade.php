@@ -53,7 +53,7 @@
                                 <td>{{ $heroHelper->getRequirementDisplay($class) }}</td>
                                 <td>{{ $heroHelper->getStartingExperienceDisplay($class) }}</td>
                                 <td>
-                                    @foreach ($heroHelper->getHeroUpgradesByName($class['perks']) as $upgrade)
+                                    @foreach ($heroHelper->getHeroUpgradesByName($class['perks'])->where('active', true) as $upgrade)
                                         {{ $upgrade->name }}
                                         @if ($upgrade->type !== 'directive')
                                             (optional)
@@ -75,7 +75,7 @@
                                 <th>Description</th>
                             </tr>
                         </thead>
-                        @foreach ($heroHelper->getHeroUpgrades() as $upgrade)
+                        @foreach ($heroHelper->getHeroUpgrades()->where('active', true) as $upgrade)
                             <tr>
                                 <td>{{ $upgrade->name }}</td>
                                 <td>{{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}</td>

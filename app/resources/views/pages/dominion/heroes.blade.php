@@ -162,7 +162,7 @@
                                                 <th>Description</th>
                                             </tr>
                                         </thead>
-                                        @foreach ($heroHelper->getHeroUpgradesByClass($hero->class) as $upgrade)
+                                        @foreach ($heroHelper->getHeroUpgradesByClass($hero->class)->where('active', true) as $upgrade)
                                             <tr class="hero-upgrade {{ $heroCalculator->canUnlockUpgrade($hero, $upgrade) ? 'text-default' : 'text-muted' }}" data-level="{{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}">
                                                 <td class="text-center{{ in_array($upgrade->key, $unlockedUpgrades) ? ' text-green' : null }}">
                                                     @if (in_array($upgrade->key, $unlockedUpgrades))

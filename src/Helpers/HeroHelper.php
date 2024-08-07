@@ -135,12 +135,12 @@ class HeroHelper
 
     public function getHeroUpgrades()
     {
-        return HeroUpgrade::active()->with('perks')->get()->sortBy(['level', 'name'])->keyBy('key');
+        return HeroUpgrade::with('perks')->get()->sortBy(['level', 'name'])->keyBy('key');
     }
 
     public function getHeroUpgradesByName(array $keys)
     {
-        return HeroUpgrade::active()->whereIn('key', $keys)->get()->sortBy('name');
+        return HeroUpgrade::whereIn('key', $keys)->get()->sortBy('name');
     }
 
     public function getHeroUpgradesByClass(string $class)

@@ -430,12 +430,13 @@ class OpsCalculator
 
         // Status Effects & Shadow League (multiplicative)
         $spellModifier = 1;
+
         $spellModifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
         $spellModifier += $dominion->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
-        if (
-            $spellKey == 'fireball' &&
-            $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target)
-        ) {
+
+        $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
+        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+        if ($spellKey == 'fireball' && !$warDeclared && $blackGuard) {
             $spellModifier += 1;
         }
 

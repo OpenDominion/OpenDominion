@@ -807,6 +807,43 @@
             @endcomponent
         </div>
 
+        <div class="col-sm-12 col-md-6">
+            @component('partials.dominion.op-center.box')
+                @slot('title', 'Hero Upgrades')
+                @slot('titleIconClass', 'ra ra-lightning-sword')
+
+                @if ($latestDisclosure === null)
+                    <p>No recent data available.</p>
+                    <p>Cast magic spell 'Disclosure' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    @foreach ($latestDisclosure->data as $hero)
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Level</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $allUpgrades = $heroHelper->getHeroUpgrades(); @endphp
+                                @foreach($hero['upgrades'] as $key => $name)
+                                    @php $upgrade = $allUpgrades[$key]; @endphp
+                                    <tr>
+                                        <td>{{ $upgrade->name }}</td>
+                                        <td>{{ $upgrade->type == 'directive' ? '--' : $upgrade->level }}</td>
+                                        <td>{{ $heroHelper->getUpgradeDescription($upgrade) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endforeach
+                @endif
+            @endcomponent
+        </div>
+
     </div>
     <div class="row">
 
