@@ -431,7 +431,7 @@ class OpsCalculator
         $spellModifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
         $spellModifier += $dominion->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
         if (
-            in_array($spellKey, ['fireball', 'lightning_bolt']) &&
+            $spellKey == 'fireball' &&
             $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target)
         ) {
             $spellModifier += 1;
@@ -464,8 +464,8 @@ class OpsCalculator
 
         // Values
         $peasantsPerWizard = 5;
-        $peasantsPerWizardGuild = 18;
-        $wizardsPerGuild = 5;
+        $peasantsPerWizardGuild = 15;
+        $wizardsPerGuild = 6;
 
         // Wizard Protection
         $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion, 'defense');

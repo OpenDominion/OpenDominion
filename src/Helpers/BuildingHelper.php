@@ -91,7 +91,7 @@ class BuildingHelper
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Offensive power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',
-            'wizard_guild' => 'Produces 5 mana per hour.<br><br>Each Wizard Guild increases the number of peasants protected from Fireball to 23 (from 4) for up to 5 wizards (max 115 per Guild).<br><br>Reduces damage from Lightning Bolt by 10% per 1% owned, up to a maximum of 50% at 5% owned.',
+            'wizard_guild' => 'Produces 5 mana per hour.<br><br>Each Wizard Guild increases the number of peasants protected from Fireball to 20 (from 5) for up to 6 wizards (max 120 per Guild).<br><br>Reduces damage from Lightning Bolt by 10% per 1% owned, up to a maximum of 50% at 5% owned.',
             'temple' => 'Population growth increased by 6% per 1% owned.<br>Enemy defensive power reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.67% owned.',
             'diamond_mine' => 'Produces 15 gems per hour.',
             'school' => 'Produces (1 - (Schools / Total Land)) research points per hour (minimum of 0.5). Limited to 50% of your total land.',
