@@ -414,6 +414,11 @@ class OpsCalculator
             );
         }
 
+        if ($spellKey !== 'fireball') {
+            // Spires
+            $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+        }
+
         // Spells
         $modifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['self', 'friendly', 'hostile', 'war']) / 100;
 
