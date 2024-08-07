@@ -9,9 +9,8 @@ explorer_difficulty: 1
 converter_difficulty: 2
 home_land_type: swamp
 perks:
-  food_consumption: -20
+  food_consumption: -25
   mana_production: 10
-  tech_production: 15
 units:
   - name: Imp
     cost:

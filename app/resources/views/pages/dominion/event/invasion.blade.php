@@ -260,6 +260,8 @@
                                     <p class="text-center text-green">
                                         @if (isset($event->data['attacker']['plunder']['mana']) && $event->data['attacker']['plunder']['mana'] > 0)
                                             {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['mana']) }} mana.
+                                        @elseif (isset($event->data['attacker']['plunder']['ore']) && $event->data['attacker']['plunder']['ore'] > 0)
+                                            {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['ore']) }} ore.
                                         @else
                                             {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems.
                                         @endif

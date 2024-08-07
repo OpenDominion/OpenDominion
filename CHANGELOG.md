@@ -11,15 +11,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Overpopulation now causes returning military to desert your army (when being invaded)
 - Scaling modifier to 5:4 rule removed (was 1:1 after several invasions in a short timeframe)
 - Reduce combat losses perk replaced replaced with -50% casualties for defensive units (Goblin Shaman, Icekin Snow Witch, Orc Voodoo Magi), now unique to Dwarf Cleric
+- Gnome: added +5% research point generation bonus
 - Human Cavalry: -10p (from 1250p)
 - Human Knight: +40p (from 1000p)
+- Nomad: increased research point gains on invasion to +100% (from +50%)
+- Nox: removed research point generation bonus (was +15%), decreaed food consumption to -20% (from -15%)
 - Spirit: Homeland changed to water (was swamp), mana production bonus removed (was +15%)
-- Spirit Banshee: renamed Wave Wisp
-- Spirit Geist: -50% defensive casualties (was immortal), renamed Tidewraith
-- Spirit Phantom Knight: +100p, -5m, -50% casualties on offense (from 1025p, -50% casualties on defense), renamed Stormcaller
-- Spirit Spectral Warrior: -100p, -10m, -75% casualties on offense (from 1175p, immortal), +0.5 OP vs 95%, renamed Water Elemental
+- Spirit Geist: -50% defensive casualties (was immortal)
+- Spirit Phantom Knight: +100p, -5m, -50% casualties on offense (from 1025p, -50% casualties on defense)
+- Spirit Spectral Warrior: -125p, -10m, -75% casualties on offense (from 1175p, immortal), +0.5 OP vs 95%
+- Spirit: reverted all unit names
+- Troll Basher: 5.5/2, 1100p, 100r, plunders 20 platinum (from duplicate of Smasher)
+- Troll Smasher: now plunders 5 ore
 - Undead Abomination: no longer needs boats
-- Vampire: Feast of Blood now cancels all casualty reductions (was immortality)
+- Vampire: Feast of Blood now cancels all casualty reductions (was just immortality), converts increased to 9.5% (from 9%)
 - Mastery loss halved, gains increased by up to 4 based on target's ratio
 - Peasants protected from Fireball reduced to 5 per wizard (from 6), maximum protected reduced to 80% of max peasants (was 90% of max peasants)
 - Bonus damage from Lightning Storm now lasts only until the effect expires

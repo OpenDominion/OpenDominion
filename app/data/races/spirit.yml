@@ -12,7 +12,7 @@ perks:
   food_consumption: -90
   immortal_wizards: 1
 units:
-  - name: Wave Wisp
+  - name: Phantom
     cost:
       platinum: 300
       mana: 10
@@ -20,7 +20,7 @@ units:
       offense: 3
       defense: 0
     need_boat: false
-  - name: Tidewraith
+  - name: Banshee
     cost:
       platinum: 300
       mana: 10
@@ -29,7 +29,7 @@ units:
       defense: 3
     perks:
       casualties_defense: -50
-  - name: Stormcaller
+  - name: Ghost
     cost:
       platinum: 1125
       mana: 25
@@ -39,7 +39,7 @@ units:
     perks:
       casualties_offense: -50
     need_boat: false
-  - name: Water Elemental
+  - name: Spectre
     cost:
       platinum: 1075
       mana: 30

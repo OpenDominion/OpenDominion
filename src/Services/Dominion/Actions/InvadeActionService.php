@@ -1142,6 +1142,7 @@ class InvadeActionService
         $plunderPlatinum = 0;
         $plunderGems = 0;
         $plunderMana = 0;
+        $plunderOre = 0;
 
         // todo: inefficient to do run this code per slot. needs refactoring
         foreach ($dominion->race->units as $unit) {
@@ -1161,21 +1162,26 @@ class InvadeActionService
             if ($unit->getPerkValue('plunder_mana') != 0) {
                 $plunderMana += $units[$slot] * (int)$unit->getPerkValue('plunder_mana');
             }
+            if ($unit->getPerkValue('plunder_ore') != 0) {
+                $plunderMana += $units[$slot] * (int)$unit->getPerkValue('plunder_ore');
+            }
         }
 
         // We have a unit with plunder!
-        if ($plunderPlatinum > 0 || $plunderGems > 0 || $plunderMana > 0) {
+        if ($plunderPlatinum > 0 || $plunderGems > 0 || $plunderMana > 0 || $plunderOre > 0) {
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
             $plunderPlatinum = min($plunderPlatinum, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
             $plunderGems = min($plunderGems, (int)floor($productionCalculator->getGemProductionRaw($target)));
             $plunderMana = min($plunderMana, (int)floor($productionCalculator->getManaProductionRaw($target)));
+            $plunderOre = min($plunderOre, (int)floor($productionCalculator->getOreProductionRaw($target)));
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
                     'platinum' => $plunderPlatinum,
                     'gems' => $plunderGems,
                     'mana' => $plunderMana,
+                    'ore' => $plunderOre,
                 ];
             }
 
@@ -1187,6 +1193,7 @@ class InvadeActionService
                     'resource_platinum' => $plunderPlatinum,
                     'resource_gems' => $plunderGems,
                     'resource_mana' => $plunderMana,
+                    'resource_ore' => $plunderOre,
                 ],
                 $slowestTroopsReturnHours
             );

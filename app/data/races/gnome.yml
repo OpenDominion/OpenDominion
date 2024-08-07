@@ -14,6 +14,7 @@ perks:
   extra_barren_max_population: 5
   food_consumption: -20
   gem_production: 5
+  tech_production: 5
 units:
   - name: Suicide Squad
     cost:
