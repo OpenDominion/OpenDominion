@@ -18,8 +18,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Nox: removed research point generation bonus (was +15%), decreaed food consumption to -20% (from -15%)
 - Spirit: Homeland changed to water (was swamp), mana production bonus removed (was +15%)
 - Spirit Geist: -50% defensive casualties (was immortal)
-- Spirit Phantom Knight: +100p, -5m, -50% casualties on offense (from 1025p, -50% casualties on defense)
-- Spirit Spectral Warrior: -125p, -10m, -75% casualties on offense (from 1175p, immortal), +0.5 OP vs 95%
+- Spirit Phantom Knight: +75p, -5m, -50% casualties on offense (from 1025p, -50% casualties on defense)
+- Spirit Spectral Warrior: -100p, -10m, -80% casualties on offense (from 1175p, immortal), +0.5 OP vs 95%
 - Spirit: reverted all unit names (Phantom/Banshee/Ghost/Spectre)
 - Troll Basher: 5.5/2, 1100p, 100r, plunders 20 platinum (from duplicate of Smasher)
 - Troll Smasher: now plunders 5 ore
@@ -28,8 +28,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Mastery loss halved, gains increased by up to 4 based on target's ratio
 - Peasants protected from Fireball reduced to 5 per wizard (from 6), maximum protected reduced to 80% of max peasants (was 90% of max peasants)
 - Wizard Guilds now increase protection from Fireball to 20 (was 24) for up to 6 wizards (was 5), max remains the same at 120 per building
-- Bonus damage from Lightning Storm now lasts only until the effect expires
+- Spires now modifies Fireball vulnerability instead of damage
 - Fireball damage is doubled between Shadow League members
+- Bonus damage from Lightning Storm now lasts only until the effect expires
 
 ### Fixed
 - The World page can no longer be accessed prior to round start

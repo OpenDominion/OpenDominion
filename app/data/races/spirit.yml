@@ -31,7 +31,7 @@ units:
       casualties_defense: -50
   - name: Ghost
     cost:
-      platinum: 1125
+      platinum: 1100
       mana: 25
     power:
       offense: 3
@@ -47,6 +47,6 @@ units:
       offense: 6
       defense: 0
     perks:
-      casualties_offense: -75
+      casualties_offense: -80
       offense_staggered_land_range: 95;0.5
     need_boat: false

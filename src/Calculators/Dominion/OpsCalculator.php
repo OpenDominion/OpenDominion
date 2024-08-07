@@ -414,9 +414,6 @@ class OpsCalculator
             );
         }
 
-        // Spires
-        $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
-
         // Spells
         $modifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['self', 'friendly', 'hostile', 'war']) / 100;
 
@@ -449,7 +446,12 @@ class OpsCalculator
      */
     public function getPeasantVulnerablilityModifier(Dominion $dominion): float
     {
-        return static::PEASANT_VULNERABILITY;
+        $modifier = 1;
+
+        // Spires
+        $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+
+        return $modifier * static::PEASANT_VULNERABILITY;
     }
 
     /*
