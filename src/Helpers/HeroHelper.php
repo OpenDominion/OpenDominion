@@ -145,8 +145,8 @@ class HeroHelper
 
     public function getHeroUpgradesByClass(string $class)
     {
-        return $this->getHeroUpgrades()->filter(function ($bonus) use ($class) {
-            return $bonus->classes === [] || in_array($class, $bonus->classes);
+        return $this->getHeroUpgrades()->filter(function ($upgrade) use ($class) {
+            return $upgrade->classes === [] || in_array($class, $upgrade->classes);
         });
     }
 
@@ -201,9 +201,9 @@ class HeroHelper
         return implode($separator, $perkStrings);
     }
 
-    public function getUpgradeIcon(int $level, ?HeroUpgrade $bonus)
+    public function getUpgradeIcon(int $level, ?HeroUpgrade $upgrade)
     {
-        if ($bonus === null) {
+        if ($upgrade === null) {
             return sprintf(
                 '<i class="hero-icon fa fa-fw fa-lock" title="Level %s: Locked" data-toggle="tooltip"></i>',
                 $level
@@ -212,10 +212,10 @@ class HeroHelper
 
         return sprintf(
             '<i class="hero-icon ra ra-fw %s" title="Level %s: %s<br>(%s)" data-toggle="tooltip"></i>',
-            $bonus->icon,
+            $upgrade->icon,
             $level,
-            $bonus->name,
-            ucwords($bonus->type)
+            $upgrade->name,
+            ucwords($upgrade->type)
         );
     }
 
