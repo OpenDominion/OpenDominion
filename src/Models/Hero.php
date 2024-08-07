@@ -30,7 +30,7 @@ class Hero extends AbstractModel
         return $this->belongsTo(Dominion::class);
     }
 
-    public function bonuses()
+    public function upgrades()
     {
         return $this->belongsToMany(
             HeroUpgrade::class,

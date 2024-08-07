@@ -78,7 +78,7 @@
                         @foreach ($heroHelper->getHeroUpgrades() as $upgrade)
                             <tr>
                                 <td>{{ $upgrade->name }}</td>
-                                <td>{{ $upgrade->level ?: '--' }}</td>
+                                <td>{{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}</td>
                                 <td>{{ count($upgrade->classes) ? ucwords(implode(', ', $upgrade->classes)) : '--' }}</td>
                                 <td>{{ $heroHelper->getUpgradeDescription($upgrade) }}</td>
                             </tr>

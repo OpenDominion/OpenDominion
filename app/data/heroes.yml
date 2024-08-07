@@ -51,6 +51,6 @@ martyrdom:
   type: effect
   icon: ra-angel-wings
   perks:
-    martyrdom: 1
+    martyrdom: 15
   classes:
     - scion

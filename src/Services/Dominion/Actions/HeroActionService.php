@@ -63,7 +63,7 @@ class HeroActionService
         }
 
         // Check prerequisites
-        if (!$this->heroCalculator->canUnlockBonus($dominion->hero, $upgrade)) {
+        if (!$this->heroCalculator->canUnlockUpgrade($dominion->hero, $upgrade)) {
             throw new GameException('You do not meet the requirements to unlock this hero upgrade.');
         }
 
@@ -205,18 +205,18 @@ class HeroActionService
             if ($selectedClass['class_type'] === 'advanced') {
                 $xp = $dominion->{$selectedClass['starting_xp_stat']} * $selectedClass['starting_xp_coefficient'];
 
-                // Advanced Class Bonuses
-                $advancedBonuses = HeroUpgrade::query()
+                // Advanced Class Upgrades
+                $advancedUpgrades = HeroUpgrade::query()
                     ->where('level', 0)
                     ->where('type', 'directive')
                     ->get()
                     ->filter(function ($upgrade) use ($selectedClass) {
                         return in_array($selectedClass['key'], $upgrade->classes);
                     });
-                foreach ($advancedBonuses as $advancedBonus) {
+                foreach ($advancedUpgrades as $advancedUpgrade) {
                     HeroHeroUpgrade::insert([
                         'hero_id' => $dominion->hero->id,
-                        'hero_upgrade_id' => $advancedBonus->id
+                        'hero_upgrade_id' => $advancedUpgrade->id
                     ]);
                 }
             }

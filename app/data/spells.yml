@@ -575,7 +575,6 @@ martyrdom:
   category: effect
   cost_mana: 0
   cost_strength: 0
-  duration: 36
+  duration: 24
   perks:
-    spy_cost: -50
-    wizard_cost: -50
+    martyrdom: 15

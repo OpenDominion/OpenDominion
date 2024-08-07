@@ -219,6 +219,12 @@ class TrainingCalculator
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_cost') / 100;
+        $martyrdomPerk = $this->spellCalculator->resolveSpellPerk($dominion, 'martyrdom');
+        if ($martyrdomPerk) {
+            // Special case for Martyrdom, cap at 50% reduction
+            $prestigeMultiplier = 1 / $martyrdomPerk / 100;
+            $multiplier -= min(0.5, $prestigeMultiplier * $dominion->prestige);
+        }
 
         return $multiplier;
     }
@@ -238,6 +244,12 @@ class TrainingCalculator
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_cost') / 100;
+        $martyrdomPerk = $this->spellCalculator->resolveSpellPerk($dominion, 'martyrdom');
+        if ($martyrdomPerk) {
+            // Special case for Martyrdom, cap at 50% reduction
+            $prestigeMultiplier = 1 / $martyrdomPerk / 100;
+            $multiplier -= min(0.5, $prestigeMultiplier * $dominion->prestige);
+        }
 
         return $multiplier;
     }

@@ -73,8 +73,8 @@ class HeroHelper
                 'coefficient' => 1,
                 'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
                 'icon' => 'ra-ankh',
-                'requirement_stat' => 'stat_attacking_success',
-                'requirement_value' => 10,
+                'requirement_stat' => 'prestige',
+                'requirement_value' => 350,
                 'starting_xp_stat' => 'prestige',
                 'starting_xp_coefficient' => 1
             ]
@@ -156,21 +156,21 @@ class HeroHelper
             'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
             'invasion_morale' => 'Invasion no longer reduces morale (75%%+ range only)',
             'land_spy_strength_cost' => 'Land Spy now costs 1%% spy strength',
-            'martyrdom' => 'Reduces the cost of spy and wizard training for 48 hours',
+            'martyrdom' => 'Reduces the cost of spy and wizard training by 1%% per %g prestige (max 50%%) for 24 hours',
             'offense' => '%+g%% offensive power',
             'raze_mod_building_discount' => 'Destroying military buildings (Gryphon Nests, Guard Towers, and Temples) awards discounted land',
             'tech_production_invasion' => '%+g%% research point gains from invasion',
-            'tech_refund' => 'Reallocate techs (100%% refund for up to 5 techs and %g%% refund for remaining)',
+            'tech_refund' => 'Reset all techs, then gain RP to unlock up to 5 techs lost plus  %g%% of the remaining techs lost',
         ];
     }
 
     public function getRequirementDisplay(array $class) {
-        $stat = str_replace('_', ' ', str_replace('stat_', '', $class['requirement_stat']));
+        $stat = str_replace('stat_', '', $class['requirement_stat']);
         $value = $class['requirement_value'];
 
         return sprintf('%s %s',
             $value,
-            str_plural($stat, $value)
+            dominion_attr_display($stat, $value)
         );
     }
 

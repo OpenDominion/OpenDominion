@@ -163,7 +163,7 @@
                                             </tr>
                                         </thead>
                                         @foreach ($heroHelper->getHeroUpgradesByClass($hero->class) as $upgrade)
-                                            <tr class="{{ $heroCalculator->canUnlockUpgrade($hero, $upgrade) ? 'text-default' : 'text-muted' }}">
+                                            <tr class="hero-upgrade {{ $heroCalculator->canUnlockUpgrade($hero, $upgrade) ? 'text-default' : 'text-muted' }}" data-level="{{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}">
                                                 <td class="text-center{{ in_array($upgrade->key, $unlockedUpgrades) ? ' text-green' : null }}">
                                                     @if (in_array($upgrade->key, $unlockedUpgrades))
                                                         <i class="fa fa-check"></i>
@@ -178,7 +178,7 @@
                                                     </label>
                                                 </td>
                                                 <td>
-                                                    {{ $upgrade->level ?: '--' }}
+                                                    {{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}
                                                 </td>
                                                 <td>
                                                     <label for="upgrade_{{ $upgrade->key }}" style="font-weight: normal;">
@@ -232,6 +232,14 @@
 
             buttonElement.click(function() {
                 randomizeName();
+            });
+
+            var upgradeRadios = $('input[type=radio][name=key]');
+            upgradeRadios.change(function() {
+                $('.hero-upgrade').removeClass('danger');
+                var level = $(this).parent().parent().data('level');
+                $('.hero-upgrade[data-level='+level+']').addClass('danger');
+                $(this).parent().parent().removeClass('danger');
             });
 
             randomizeName();
