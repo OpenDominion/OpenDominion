@@ -15,7 +15,7 @@
                         Heroes loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.
                     </p>
                     <p>Basic hero classes can be retired and replaced with another class. Basic hero classes will start with XP equal to half that of its predecessor.</p>
-                    <p>Advanced hero classes cannot be retired, cannot be selected until the 10th day of the round, and unlock additional bonuses.</p>
+                    <p>Advanced hero classes cannot be retired, cannot be selected until the 10th day of the round, and unlock additional upgrades.</p>
                 </div>
                 <div class="col-md-4">
                     <h4>Basic Classes</h4>
@@ -43,7 +43,7 @@
                                 <th>Level Bonus</th>
                                 <th>Requirement</th>
                                 <th>Starting XP</th>
-                                <th>Bonuses</th>
+                                <th>Upgrades</th>
                             </tr>
                         </thead>
                         @foreach ($heroHelper->getAdvancedClasses() as $class)
@@ -53,9 +53,9 @@
                                 <td>{{ $heroHelper->getRequirementDisplay($class) }}</td>
                                 <td>{{ $heroHelper->getStartingExperienceDisplay($class) }}</td>
                                 <td>
-                                    @foreach ($heroHelper->getHeroBonusesByName($class['perks']) as $bonus)
-                                        {{ $bonus->name }}
-                                        @if ($bonus->type !== 'directive')
+                                    @foreach ($heroHelper->getHeroUpgradesByName($class['perks']) as $upgrade)
+                                        {{ $upgrade->name }}
+                                        @if ($upgrade->type !== 'directive')
                                             (optional)
                                         @endif
                                         <br/>
@@ -65,7 +65,7 @@
                         @endforeach
                     </table>
 
-                    <h4>Hero Bonuses</h4>
+                    <h4>Hero Upgrades</h4>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -75,12 +75,12 @@
                                 <th>Description</th>
                             </tr>
                         </thead>
-                        @foreach ($heroHelper->getHeroBonuses() as $bonus)
+                        @foreach ($heroHelper->getHeroUpgrades() as $upgrade)
                             <tr>
-                                <td>{{ $bonus->name }}</td>
-                                <td>{{ $bonus->level ?: '--' }}</td>
-                                <td>{{ count($bonus->classes) ? ucwords(implode(', ', $bonus->classes)) : '--' }}</td>
-                                <td>{{ $heroHelper->getBonusDescription($bonus) }}</td>
+                                <td>{{ $upgrade->name }}</td>
+                                <td>{{ $upgrade->level ?: '--' }}</td>
+                                <td>{{ count($upgrade->classes) ? ucwords(implode(', ', $upgrade->classes)) : '--' }}</td>
+                                <td>{{ $heroHelper->getUpgradeDescription($upgrade) }}</td>
                             </tr>
                         @endforeach
                     </table>

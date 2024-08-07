@@ -49,7 +49,7 @@
 
                     <div class="box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Hero Level Bonuses</h3>
+                            <h3 class="box-title">Level Bonuses</h3>
                         </div>
                         <div class="box-body table-responsive">
                             <table class="table">
@@ -91,8 +91,8 @@
                                 @php
                                     $heroClass = $heroHelper->getClasses()[$hero->class];
                                     $perkType = $heroClass['perk_type'];
-                                    $bonuses = $hero->bonuses->whereNotIn('type', ['effect', 'immediate'])->keyBy('level');
-                                    $unlockedBonuses = $hero->bonuses->pluck('key')->all();
+                                    $upgrades = $hero->upgrades->whereNotIn('type', ['effect', 'immediate'])->keyBy('level');
+                                    $unlockedUpgrades = $hero->upgrades->pluck('key')->all();
                                 @endphp
                                 <div class="col-md-6">
                                     <div class="text-center" style="font-size: 24px;">
@@ -115,17 +115,17 @@
                                     <div class="row" style="font-size: 64px; margin-top: 20px;">
                                         <div class="col-xs-6 col-sm-4 col-sm-offset-2 text-center">
                                             @if ($heroClass['class_type'] == 'advanced')
-                                                {!! $heroHelper->getBonusIcon(0, $bonuses[0] ?? null) !!}<br/>
+                                                {!! $heroHelper->getUpgradeIcon(0, $upgrades[0] ?? null) !!}<br/>
                                             @else
                                                 <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i><br/>
                                             @endif
-                                            {!! $heroHelper->getBonusIcon(2, $bonuses[2] ?? null) !!}<br/>
-                                            {!! $heroHelper->getBonusIcon(4, $bonuses[4] ?? null) !!}<br/>
+                                            {!! $heroHelper->getUpgradeIcon(2, $upgrades[2] ?? null) !!}<br/>
+                                            {!! $heroHelper->getUpgradeIcon(4, $upgrades[4] ?? null) !!}<br/>
                                         </div>
                                         <div class="col-xs-6 col-sm-4 text-center">
-                                            {!! $heroHelper->getBonusIcon(6, $bonuses[6] ?? null) !!}<br/>
-                                            {!! $heroHelper->getBonusIcon(8, $bonuses[8] ?? null) !!}<br/>
-                                            {!! $heroHelper->getBonusIcon(10, $bonuses[10] ?? null) !!}<br/>
+                                            {!! $heroHelper->getUpgradeIcon(6, $upgrades[6] ?? null) !!}<br/>
+                                            {!! $heroHelper->getUpgradeIcon(8, $upgrades[8] ?? null) !!}<br/>
+                                            {!! $heroHelper->getUpgradeIcon(10, $upgrades[10] ?? null) !!}<br/>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +152,7 @@
                                     </table>
                                 </div>
                                 <div class="col-md-12">
-                                    <h4>Hero Bonuses</h4>
+                                    <h4>Hero Upgrades</h4>
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -162,27 +162,27 @@
                                                 <th>Description</th>
                                             </tr>
                                         </thead>
-                                        @foreach ($heroHelper->getHeroBonusesByClass($hero->class) as $bonus)
-                                            <tr class="{{ $heroCalculator->canUnlockBonus($hero, $bonus) ? 'text-default' : 'text-muted' }}">
-                                                <td class="text-center{{ in_array($bonus->key, $unlockedBonuses) ? ' text-green' : null }}">
-                                                    @if (in_array($bonus->key, $unlockedBonuses))
+                                        @foreach ($heroHelper->getHeroUpgradesByClass($hero->class) as $upgrade)
+                                            <tr class="{{ $heroCalculator->canUnlockUpgrade($hero, $upgrade) ? 'text-default' : 'text-muted' }}">
+                                                <td class="text-center{{ in_array($upgrade->key, $unlockedUpgrades) ? ' text-green' : null }}">
+                                                    @if (in_array($upgrade->key, $unlockedUpgrades))
                                                         <i class="fa fa-check"></i>
                                                     @else
-                                                        <input type="radio" name="key" id="bonus_{{ $bonus->key }}" value="{{ $bonus->key }}" {{ $heroCalculator->canUnlockBonus($hero, $bonus) ? null : 'disabled' }}>
+                                                        <input type="radio" name="key" id="upgrade_{{ $upgrade->key }}" value="{{ $upgrade->key }}" {{ $heroCalculator->canUnlockUpgrade($hero, $upgrade) ? null : 'disabled' }}>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <label for="bonus_{{ $bonus->key }}" style="font-weight: normal;">
-                                                        <i class="ra ra-fw {{ $bonus->icon }}"></i>
-                                                        {{ $bonus->name }}
+                                                    <label for="upgrade_{{ $upgrade->key }}" style="font-weight: normal;">
+                                                        <i class="ra ra-fw {{ $upgrade->icon }}"></i>
+                                                        {{ $upgrade->name }}
                                                     </label>
                                                 </td>
                                                 <td>
-                                                    {{ $bonus->level ?: '--' }}
+                                                    {{ $upgrade->level ?: '--' }}
                                                 </td>
                                                 <td>
-                                                    <label for="bonus_{{ $bonus->key }}" style="font-weight: normal;">
-                                                        {!! $heroHelper->getBonusDescription($bonus, '<br/>') !!}
+                                                    <label for="upgrade_{{ $upgrade->key }}" style="font-weight: normal;">
+                                                        {!! $heroHelper->getUpgradeDescription($upgrade, '<br/>') !!}
                                                     </label>
                                                 </td>
                                             </tr>
@@ -192,7 +192,7 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                            <button type="submit" class="btn btn-primary" {{ (!$heroCalculator->getUnlockableBonusCount($hero) || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
+                            <button type="submit" class="btn btn-primary" {{ (!$heroCalculator->getUnlockableUpgradeCount($hero) || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                         </div>
                     </div>
                 </form>

@@ -7,8 +7,8 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Helpers\TechHelper;
-use OpenDominion\Models\HeroBonus;
-use OpenDominion\Models\HeroBonusPerk;
+use OpenDominion\Models\HeroUpgrade;
+use OpenDominion\Models\HeroUpgradePerk;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RacePerk;
 use OpenDominion\Models\RacePerkType;
@@ -428,27 +428,27 @@ class DataSyncCommand extends Command implements CommandInterface
 
         $data = Yaml::parse($fileContents, Yaml::PARSE_OBJECT_FOR_MAP);
 
-        foreach ($data as $heroBonusKey => $heroBonusData) {
+        foreach ($data as $heroUpgradeKey => $heroUpgradeData) {
             // Hero
-            $heroBonus = HeroBonus::firstOrNew(['key' => $heroBonusKey])
+            $heroUpgrade = HeroUpgrade::firstOrNew(['key' => $heroUpgradeKey])
                 ->fill([
-                    'name' => $heroBonusData->name,
-                    'level' => object_get($heroBonusData, 'level', 0),
-                    'type' => $heroBonusData->type,
-                    'icon' => $heroBonusData->icon,
-                    'classes' => object_get($heroBonusData, 'classes', []),
-                    'active' => object_get($heroBonusData, 'active', true),
+                    'name' => $heroUpgradeData->name,
+                    'level' => object_get($heroUpgradeData, 'level', 0),
+                    'type' => $heroUpgradeData->type,
+                    'icon' => $heroUpgradeData->icon,
+                    'classes' => object_get($heroUpgradeData, 'classes', []),
+                    'active' => object_get($heroUpgradeData, 'active', true),
                 ]);
 
-            if (!$heroBonus->exists) {
-                $this->info("Adding hero bonus {$heroBonusData->name}");
+            if (!$heroUpgrade->exists) {
+                $this->info("Adding hero upgrade {$heroUpgradeData->name}");
             } else {
-                $this->info("Processing hero bonus {$heroBonusData->name}");
+                $this->info("Processing hero upgrade {$heroUpgradeData->name}");
 
-                $newValues = $heroBonus->getDirty();
+                $newValues = $heroUpgrade->getDirty();
 
                 foreach ($newValues as $key => $newValue) {
-                    $originalValue = $heroBonus->getOriginal($key);
+                    $originalValue = $heroUpgrade->getOriginal($key);
 
                     if ($originalValue != $newValue) {
                         $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
@@ -456,42 +456,42 @@ class DataSyncCommand extends Command implements CommandInterface
                 }
             }
 
-            $heroBonus->save();
-            $heroBonus->refresh();
+            $heroUpgrade->save();
+            $heroUpgrade->refresh();
 
             // Hero Perks
-            $heroBonusPerksToSync = [];
-            $heroBonusPerks = object_get($heroBonusData, 'perks', []);
+            $heroUpgradePerksToSync = [];
+            $heroUpgradePerks = object_get($heroUpgradeData, 'perks', []);
 
-            foreach ($heroBonusPerks as $perk => $value) {
+            foreach ($heroUpgradePerks as $perk => $value) {
                 $value = (float)$value;
 
-                $heroBonusPerksToSync[$perk] = [
-                    'hero_bonus_id' => $heroBonus->id,
+                $heroUpgradePerksToSync[$perk] = [
+                    'hero_upgrade_id' => $heroUpgrade->id,
                     'key' => $perk,
                     'value' => $value
                 ];
 
-                $heroBonusPerk = HeroBonusPerk::query()
-                    ->where('hero_bonus_id', $heroBonus->id)
+                $heroUpgradePerk = HeroUpgradePerk::query()
+                    ->where('hero_upgrade_id', $heroUpgrade->id)
                     ->where('key', $perk)
                     ->first();
 
-                if ($heroBonusPerk === null) {
+                if ($heroUpgradePerk === null) {
                     $this->info("[Add Hero Perk] {$perk}: {$value}");
-                } elseif ($heroBonusPerk->value != $value) {
-                    $this->info("[Change Hero Perk] {$perk}: {$heroBonusPerk->value} -> {$value}");
+                } elseif ($heroUpgradePerk->value != $value) {
+                    $this->info("[Change Hero Perk] {$perk}: {$heroUpgradePerk->value} -> {$value}");
                 }
             }
 
-            $heroBonus->perks()->upsert(
-                $heroBonusPerksToSync,
-                ['hero_bonus_id', 'key'],
+            $heroUpgrade->perks()->upsert(
+                $heroUpgradePerksToSync,
+                ['hero_upgrade_id', 'key'],
                 ['value']
             );
 
-            $heroBonusPerkTypes = array_keys(get_object_vars($heroBonusPerks));
-            $heroBonus->perks()->whereNotIn('key', $heroBonusPerkTypes)->delete();
+            $heroUpgradePerkTypes = array_keys(get_object_vars($heroUpgradePerks));
+            $heroUpgrade->perks()->whereNotIn('key', $heroUpgradePerkTypes)->delete();
         }
     }
 }

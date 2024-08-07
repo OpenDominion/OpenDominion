@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Helpers;
 
-use OpenDominion\Models\HeroBonus;
+use OpenDominion\Models\HeroUpgrade;
 
 class HeroHelper
 {
@@ -133,24 +133,24 @@ class HeroHelper
         return $helpStrings[$perk] ?? null;
     }
 
-    public function getHeroBonuses()
+    public function getHeroUpgrades()
     {
-        return HeroBonus::active()->with('perks')->get()->sortBy(['level', 'name'])->keyBy('key');
+        return HeroUpgrade::active()->with('perks')->get()->sortBy(['level', 'name'])->keyBy('key');
     }
 
-    public function getHeroBonusesByName(array $keys)
+    public function getHeroUpgradesByName(array $keys)
     {
-        return HeroBonus::active()->whereIn('key', $keys)->get()->sortBy('name');
+        return HeroUpgrade::active()->whereIn('key', $keys)->get()->sortBy('name');
     }
 
-    public function getHeroBonusesByClass(string $class)
+    public function getHeroUpgradesByClass(string $class)
     {
-        return $this->getHeroBonuses()->filter(function ($bonus) use ($class) {
+        return $this->getHeroUpgrades()->filter(function ($bonus) use ($class) {
             return $bonus->classes === [] || in_array($class, $bonus->classes);
         });
     }
 
-    public function getHeroBonusPerkStrings()
+    public function getHeroUpgradePerkStrings()
     {
         return [
             'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
@@ -184,12 +184,12 @@ class HeroHelper
         );
     }
 
-    public function getBonusDescription(HeroBonus $heroBonus, string $separator = ', '): string
+    public function getUpgradeDescription(HeroUpgrade $heroUpgrade, string $separator = ', '): string
     {
-        $perkTypeStrings = $this->getHeroBonusPerkStrings();
+        $perkTypeStrings = $this->getHeroUpgradePerkStrings();
 
         $perkStrings = [];
-        foreach ($heroBonus->perks as $perk) {
+        foreach ($heroUpgrade->perks as $perk) {
             if (isset($perkTypeStrings[$perk->key])) {
                 $perkValue = (float)$perk->value;
                 $perkStrings[] = sprintf($perkTypeStrings[$perk->key], $perkValue);
@@ -199,7 +199,7 @@ class HeroHelper
         return implode($separator, $perkStrings);
     }
 
-    public function getBonusIcon(int $level, ?HeroBonus $bonus)
+    public function getUpgradeIcon(int $level, ?HeroUpgrade $bonus)
     {
         if ($bonus === null) {
             return sprintf(

@@ -12,8 +12,8 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\DominionTech;
 use OpenDominion\Models\Hero;
-use OpenDominion\Models\HeroBonus;
-use OpenDominion\Models\HeroHeroBonus;
+use OpenDominion\Models\HeroUpgrade;
+use OpenDominion\Models\HeroHeroUpgrade;
 use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -38,7 +38,7 @@ class HeroActionService
     }
 
     /**
-     * Does a hero bonus unlock action for a Dominion.
+     * Does a hero upgrade unlock action for a Dominion.
      *
      * @param Dominion $dominion
      * @param string $key
@@ -54,28 +54,28 @@ class HeroActionService
             throw new GameException('You have not selected a hero.');
         }
 
-        // Get the bonus information
-        $bonus = HeroBonus::query()
+        // Get the upgrade information
+        $upgrade = HeroUpgrade::query()
             ->where('key', $key)
             ->first();
-        if ($bonus == null) {
-            throw new LogicException('Failed to find hero bonus ' . $key);
+        if ($upgrade == null) {
+            throw new LogicException('Failed to find hero upgrade ' . $key);
         }
 
         // Check prerequisites
-        if (!$this->heroCalculator->canUnlockBonus($dominion->hero, $bonus)) {
-            throw new GameException('You do not meet the requirements to unlock this hero bonus.');
+        if (!$this->heroCalculator->canUnlockBonus($dominion->hero, $upgrade)) {
+            throw new GameException('You do not meet the requirements to unlock this hero upgrade.');
         }
 
-        DB::transaction(function () use ($dominion, $bonus) {
-            HeroHeroBonus::insert([
+        DB::transaction(function () use ($dominion, $upgrade) {
+            HeroHeroUpgrade::insert([
                 'hero_id' => $dominion->hero->id,
-                'hero_bonus_id' => $bonus->id
+                'hero_upgrade_id' => $upgrade->id
             ]);
 
             // Apply Status Effects
-            if ($bonus->type === 'effect') {
-                $statusEffectSpell = Spell::where('key', $bonus->key)->first();
+            if ($upgrade->type === 'effect') {
+                $statusEffectSpell = Spell::where('key', $upgrade->key)->first();
                 if ($statusEffectSpell !== null) {
                     DominionSpell::insert([
                         'dominion_id' => $dominion->id,
@@ -87,9 +87,9 @@ class HeroActionService
             }
 
             // Apply Immediate Effects
-            if ($bonus->type === 'immediate') {
+            if ($upgrade->type === 'immediate') {
                 // Special case for tech refund
-                $techRefundMultiplier = $bonus->getPerkValue('tech_refund') / 100;
+                $techRefundMultiplier = $upgrade->getPerkValue('tech_refund') / 100;
                 if ($techRefundMultiplier) {
                     $techCalculator = app(TechCalculator::class);
                     $techCost = $techCalculator->getTechCost($dominion);
@@ -104,14 +104,14 @@ class HeroActionService
 
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_HERO,
-                'action' => $bonus->key
+                'action' => $upgrade->key
             ]);
         });
 
         return [
             'message' => sprintf(
                 'You have unlocked %s.',
-                $bonus->name
+                $upgrade->name
             )
         ];
     }
@@ -198,7 +198,7 @@ class HeroActionService
         }
 
         DB::transaction(function () use ($dominion, $name, $selectedClass) {
-            HeroHeroBonus::where('hero_id', $dominion->hero->id)->delete();
+            HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();
 
             // Starting XP
             $xp = (int) min($dominion->hero->experience, 10000) / 2;
@@ -206,17 +206,17 @@ class HeroActionService
                 $xp = $dominion->{$selectedClass['starting_xp_stat']} * $selectedClass['starting_xp_coefficient'];
 
                 // Advanced Class Bonuses
-                $advancedBonuses = HeroBonus::query()
+                $advancedBonuses = HeroUpgrade::query()
                     ->where('level', 0)
                     ->where('type', 'directive')
                     ->get()
-                    ->filter(function ($bonus) use ($selectedClass) {
-                        return in_array($selectedClass['key'], $bonus->classes);
+                    ->filter(function ($upgrade) use ($selectedClass) {
+                        return in_array($selectedClass['key'], $upgrade->classes);
                     });
                 foreach ($advancedBonuses as $advancedBonus) {
-                    HeroHeroBonus::insert([
+                    HeroHeroUpgrade::insert([
                         'hero_id' => $dominion->hero->id,
-                        'hero_bonus_id' => $advancedBonus->id
+                        'hero_upgrade_id' => $advancedBonus->id
                     ]);
                 }
             }

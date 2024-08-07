@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
-use OpenDominion\Models\HeroBonus;
+use OpenDominion\Models\HeroUpgrade;
 
 class HeroCalculator
 {
@@ -80,10 +80,10 @@ class HeroCalculator
             return 0;
         }
 
-        $classBonus = $this->getPassiveBonus($dominion->hero, $perkType) / 100;
-        $classBonus *= (1 + $this->getPassiveBonusMultiplier($dominion));
+        $bonus = $this->getPassiveBonus($dominion->hero, $perkType) / 100;
+        $bonus *= (1 + $this->getPassiveBonusMultiplier($dominion));
 
-        return $classBonus;
+        return $bonus;
     }
 
     /**
@@ -284,7 +284,7 @@ class HeroCalculator
         return $helpString;
     }
 
-    public function getUnlockableBonusCount(?Hero $hero): int
+    public function getUnlockableUpgradeCount(?Hero $hero): int
     {
         if ($hero === null) {
             return 0;
@@ -293,7 +293,7 @@ class HeroCalculator
         $maxUnlockLevel = 2;
         $heroLevel = min($this->getHeroLevel($hero), $maxUnlockLevel);
         $heroType = $this->heroHelper->getClasses()[$hero->class]['class_type'];
-        $bonusLevels = $hero->bonuses->where('type', '!=', 'directive')->pluck('level')->all();
+        $upgradeLevels = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
 
         if ($heroLevel < 2) {
             $evenLevels = [];
@@ -307,18 +307,18 @@ class HeroCalculator
             $evenLevels[] = 0;
         }
 
-        return count(array_diff($evenLevels, $bonusLevels));
+        return count(array_diff($evenLevels, $upgradeLevels));
     }
 
-    public function canUnlockBonus(Hero $hero, HeroBonus $bonus): bool
+    public function canUnlockUpgrade(Hero $hero, HeroUpgrade $upgrade): bool
     {
-        if (count($bonus->classes) && !in_array($hero->class, $bonus->classes)) {
+        if (count($upgrade->classes) && !in_array($hero->class, $upgrade->classes)) {
             return false;
         }
 
         $heroLevel = $this->getHeroLevel($hero);
-        $levelsUnlocked = $hero->bonuses->where('type', '!=', 'directive')->pluck('level')->all();
+        $levelsUnlocked = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
 
-        return $heroLevel >= $bonus->level && !in_array($bonus->level, $levelsUnlocked);
+        return $heroLevel >= $upgrade->level && !in_array($upgrade->level, $levelsUnlocked);
     }
 }

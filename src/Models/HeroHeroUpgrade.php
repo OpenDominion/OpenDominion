@@ -3,26 +3,26 @@
 namespace OpenDominion\Models;
 
 /**
- * OpenDominion\Models\HeroHeroBonus
+ * OpenDominion\Models\HeroHeroUpgrade
  *
  * @property int $hero_id
- * @property int $hero_bonus_id
+ * @property int $hero_upgrade_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Hero $hero
- * @property-read \OpenDominion\Models\HeroBonus $bonus
+ * @property-read \OpenDominion\Models\HeroUpgrade $upgrade
  */
-class HeroHeroBonus extends AbstractPivot
+class HeroHeroUpgrade extends AbstractPivot
 {
-    protected $table = 'hero_hero_bonuses';
+    protected $table = 'hero_hero_upgrades';
 
     public function hero()
     {
         return $this->belongsTo(Hero::class, 'hero_id');
     }
 
-    public function bonus()
+    public function upgrade()
     {
-        return $this->belongsTo(HeroBonus::class, 'hero_bonus_id');
+        return $this->belongsTo(HeroUpgrade::class, 'hero_upgrade_id');
     }
 }

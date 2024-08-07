@@ -91,10 +91,10 @@
                 <li class="{{ Route::is('dominion.heroes') ? 'active' : null }}">
                     <a href="{{ route('dominion.heroes') }}">
                         <i class="ra ra-knight-helmet ra-fw"></i> <span>Heroes</span>
-                        @if (!$selectedDominion->hero || $unlockableHeroBonusCount > 0)
+                        @if (!$selectedDominion->hero || $unlockableHeroUpgradeCount > 0)
                             <span class="pull-right-container">
                                 <span class="label label-primary pull-right">
-                                    {{ $unlockableHeroBonusCount ?: 1 }}
+                                    {{ $unlockableHeroUpgradeCount ?: 1 }}
                                 </span>
                             </span>
                         @endif

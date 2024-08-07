@@ -109,8 +109,8 @@ class ComposerServiceProvider extends AbstractServiceProvider
 
             // Show icon for heroes
             $heroCalculator = app(HeroCalculator::class);
-            $unlockableHeroBonusCount = $heroCalculator->getUnlockableBonusCount($selectedDominion->hero);
-            $view->with('unlockableHeroBonusCount', $unlockableHeroBonusCount);
+            $unlockableHeroUpgradeCount = $heroCalculator->getUnlockableUpgradeCount($selectedDominion->hero);
+            $view->with('unlockableHeroUpgradeCount', $unlockableHeroUpgradeCount);
 
             // Show barren land count
             $landCalculator = app(LandCalculator::class);

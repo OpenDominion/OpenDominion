@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHeroBonusesTable extends Migration
+class CreateHeroUpgradePerksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreateHeroBonusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('hero_bonuses', function (Blueprint $table) {
+        Schema::create('hero_upgrade_perks', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('hero_upgrade_id');
             $table->string('key');
-            $table->string('name');
-            $table->unsignedInteger('level');
-            $table->string('type');
-            $table->string('icon');
-            $table->text('classes')->nullable();
-            $table->boolean('active')->default(true);
+            $table->string('value')->nullable();
             $table->timestamps();
+
+            $table->foreign('hero_upgrade_id')->references('id')->on('hero_upgrades');
+            $table->unique(['hero_upgrade_id', 'key']);
         });
     }
 
@@ -33,6 +32,6 @@ class CreateHeroBonusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hero_bonuses');
+        Schema::dropIfExists('hero_upgrade_perks');
     }
 }

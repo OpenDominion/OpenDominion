@@ -33,8 +33,8 @@ class Hero extends AbstractModel
     public function bonuses()
     {
         return $this->belongsToMany(
-            HeroBonus::class,
-            HeroHeroBonus::class
+            HeroUpgrade::class,
+            HeroHeroUpgrade::class
         )
         ->withTimestamps();
     }

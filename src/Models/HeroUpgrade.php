@@ -5,7 +5,7 @@ namespace OpenDominion\Models;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * OpenDominion\Models\HeroBonus
+ * OpenDominion\Models\HeroUpgrade
  *
  * @property int $id
  * @property string $key
@@ -17,11 +17,11 @@ use Illuminate\Database\Eloquent\Builder;
  * @property bool $active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroBonusPerks[] $perks
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroUpgradePerks[] $perks
  */
-class HeroBonus extends AbstractModel
+class HeroUpgrade extends AbstractModel
 {
-    protected $table = 'hero_bonuses';
+    protected $table = 'hero_upgrades';
 
     protected $casts = [
         'classes' => 'array',
@@ -34,7 +34,7 @@ class HeroBonus extends AbstractModel
 
     public function perks()
     {
-        return $this->hasMany(HeroBonusPerk::class);
+        return $this->hasMany(HeroUpgradePerk::class);
     }
 
     public function getPerkValue(string $key)

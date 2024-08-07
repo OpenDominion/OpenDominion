@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
-use OpenDominion\Http\Requests\Dominion\Actions\HeroBonusActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -29,7 +29,7 @@ class HeroController extends AbstractDominionController
         ));
     }
 
-    public function postHeroes(HeroBonusActionRequest $request)
+    public function postHeroes(HeroUpgradeActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
         $heroActionService = app(HeroActionService::class);
