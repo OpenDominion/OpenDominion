@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
+- New Hero Upgrades: select from a list of options as you level up
+  - Divination (magic): -5% cost of info spells
+  - Illusion (magic): Failed spy ops no longer reveal your identity
+  - King's Banner (item): Invasion no longer reduces morale (75%+ range only)
+  - Scribe's Journal (item): +10% research point gains from invasion
+  - Spyglass (item): Survey Dominion and Land Spy now cost 1% spy strength
+- New Advanced Hero Class: Scion
+  - Provides both spy and wizard power at half the rate of the existing Infiltrator and Sorcerer classes
+  - In order to unlock (via retiring your current hero), you must have at least 350 prestige. The Scion will then start with XP equal to your prestige at the time of selection. Cannot be selected until Day 10.
+  - Unlocks the Disarmament upgrade: -100% offensive power, destroying mod buildings (Gryphon Nest, Guard Tower, Temple) awards discounted land credits
+  - In addition, choose ONLY ONE of the following upgrades:
+    - Revised Strategy: upon selection, reset all techs then gain RP to unlock up to 5 techs lost plus 50% of the remaining techs lost
+    - Martyrdom: upon selection, reduces cost of spy/wizard training by 1% per 15 prestige (max 50% at 750 prestige) for 24 hours
 - Search page now includes 85%, 95%, and 100% range buttons
 
 ### Changed
