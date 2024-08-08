@@ -40,9 +40,9 @@ class Hero extends AbstractModel
     }
 
     public function getPerks() {
-        return $this->bonuses->flatMap(
-            function ($bonus) {
-                return $bonus->perks;
+        return $this->upgrades->flatMap(
+            function ($upgrade) {
+                return $upgrade->perks;
             }
         );
     }

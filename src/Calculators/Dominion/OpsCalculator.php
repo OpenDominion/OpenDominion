@@ -40,7 +40,7 @@ class OpsCalculator
     protected $improvementCalculator;
 
     /** @var LandCalculator */
-    private $landCalculator;
+    protected $landCalculator;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -398,9 +398,10 @@ class OpsCalculator
      * Returns the spell damage multiplier
      *
      * @param Dominion $dominion
+     * @param Dominion $target
      * @return float
      */
-    public function getSpellDamageMultiplier(Dominion $dominion, string $spellKey = ''): float
+    public function getSpellDamageMultiplier(Dominion $dominion, Dominion $target, string $spellKey = ''): float
     {
         $modifier = 1;
 
@@ -409,32 +410,42 @@ class OpsCalculator
             $wizardGuildReduction = 10;
             $wizardGuildReductionMax = 50;
             $modifier -= min(
-                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildReduction),
+                (($target->building_wizard_guild / $this->landCalculator->getTotalLand($target)) * $wizardGuildReduction),
                 ($wizardGuildReductionMax / 100)
             );
         }
 
         if ($spellKey !== 'fireball') {
             // Spires
-            $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'spires', true);
+            $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($target, 'spires', true);
         }
 
         // Spells
-        $modifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['self', 'friendly', 'hostile', 'war']) / 100;
+        $modifier += $target->getSpellPerkValue('enemy_spell_damage', ['self', 'friendly', 'hostile', 'war']) / 100;
+        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror')) {
+            if ($target->hero !== null && $target->hero->getPerkValue('improved_energy_mirror')) {
+                $modifier -= $target->hero->getPerkMultiplier('improved_energy_mirror');
+            }
+        }
 
         // Techs
-        $modifier += $dominion->getTechPerkMultiplier("enemy_{$spellKey}_damage");
+        $modifier += $target->getTechPerkMultiplier("enemy_{$spellKey}_damage");
 
         // Wonders
-        $modifier += $dominion->getWonderPerkMultiplier('enemy_spell_damage');
+        $modifier += $target->getWonderPerkMultiplier('enemy_spell_damage');
+
+        // Heroes
+        if ($dominion->hero !== null && $dominion->hero->getPerkValue("{$spellKey}_damage")) {
+            $modifier += $dominion->hero->getPerkMultiplier("{$spellKey}_damage");
+        }
 
         // Status Effects & Shadow League (multiplicative)
         $spellModifier = 1;
 
-        $spellModifier += $dominion->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
-        $spellModifier += $dominion->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
+        $spellModifier += $target->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
+        $spellModifier += $target->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
 
-        $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
+        $warDeclared = $this->governmentService->isAtWar($target->realm, $target->realm);
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
         if ($spellKey == 'fireball' && !$warDeclared && $blackGuard) {
             $spellModifier += 1;

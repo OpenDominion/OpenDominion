@@ -67,6 +67,12 @@
 
                     <h4>Hero Upgrades</h4>
                     <table class="table table-striped">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                            <col>
+                            <col>
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th>Name</th>

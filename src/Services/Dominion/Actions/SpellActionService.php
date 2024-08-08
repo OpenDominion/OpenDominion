@@ -400,10 +400,17 @@ class SpellActionService
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
         if (!random_chance($successRate)) {
-            // Inform target that they repelled a hostile spell
+            // Inform target that they repelled a info spell
+            $sourceDominionId = $dominion->id;
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('spell_fails_hide_identity')) {
+                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                    $sourceDominionId = null;
+                }
+            }
+
             $this->notificationService
                 ->queueNotification('repelled_hostile_spell', [
-                    'sourceDominionId' => $dominion->id,
+                    'sourceDominionId' => $sourceDominionId,
                     'spellKey' => $spell->key,
                     'spellName' => $spell->name,
                     'unitsKilled' => '',
@@ -609,9 +616,16 @@ class SpellActionService
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
             // Inform target that they repelled a hostile spell
+            $sourceDominionId = $dominion->id;
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('spell_fails_hide_identity')) {
+                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                    $sourceDominionId = null;
+                }
+            }
+
             $this->notificationService
                 ->queueNotification('repelled_hostile_spell', [
-                    'sourceDominionId' => $dominion->id,
+                    'sourceDominionId' => $sourceDominionId,
                     'spellKey' => $spell->key,
                     'spellName' => $spell->name,
                     'unitsKilled' => $unitsKilledString,
@@ -778,7 +792,7 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $applyBurning = false;
-            $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($target, $spell->key);
+            $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($dominion, $target, $spell->key);
 
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(['war_cancels']);

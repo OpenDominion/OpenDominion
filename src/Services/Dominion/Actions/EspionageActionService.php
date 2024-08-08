@@ -200,7 +200,7 @@ class EspionageActionService
                 }
                 // Heroes
                 if ($dominion->hero !== null) {
-                    if ($operationKey == 'land_spy' && $dominion->hero->getPerkValue('land_spy_strength_cost')) {
+                    if (in_array($operationKey, ['land_spy', 'survey_dominion']) && $dominion->hero->getPerkValue('land_spy_strength_cost')) {
                         $spyStrengthLost = 1;
                     }
                 }
@@ -316,10 +316,17 @@ class EspionageActionService
         if (!random_chance($successRate)) {
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
 
-            // Inform target that they repelled a hostile spy operation
+            // Inform target that they repelled a info spy operation
+            $sourceDominionId = $dominion->id;
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('espionage_fails_hide_identity')) {
+                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                    $sourceDominionId = null;
+                }
+            }
+
             $this->notificationService
                 ->queueNotification('repelled_spy_op', [
-                    'sourceDominionId' => $dominion->id,
+                    'sourceDominionId' => $sourceDominionId,
                     'operationKey' => $operationKey,
                     'unitsKilled' => $unitsKilledString,
                 ])
@@ -428,9 +435,17 @@ class EspionageActionService
         if (!random_chance($successRate)) {
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'theft');
 
+            // Inform target that they repelled a theft spy operation
+            $sourceDominionId = $dominion->id;
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('espionage_fails_hide_identity')) {
+                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                    $sourceDominionId = null;
+                }
+            }
+
             $this->notificationService
                 ->queueNotification('repelled_resource_theft', [
-                    'sourceDominionId' => $dominion->id,
+                    'sourceDominionId' => $sourceDominionId,
                     'operationKey' => $operationKey,
                     'unitsKilled' => $unitsKilledString,
                 ])
@@ -638,9 +653,17 @@ class EspionageActionService
         if (!random_chance($successRate)) {
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
+            // Inform target that they repelled a hostile spy operation
+            $sourceDominionId = $dominion->id;
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('espionage_fails_hide_identity')) {
+                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                    $sourceDominionId = null;
+                }
+            }
+
             $this->notificationService
                 ->queueNotification('repelled_spy_op', [
-                    'sourceDominionId' => $dominion->id,
+                    'sourceDominionId' => $sourceDominionId,
                     'operationKey' => $operationKey,
                     'unitsKilled' => $unitsKilledString,
                 ])

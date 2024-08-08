@@ -436,7 +436,7 @@ class NotificationHelper
                 return $resultString;
 
             case 'irregular_dominion.repelled_spy_op':
-                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+                $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
 
                 switch ($data['operationKey']) {
                     case 'barracks_spy':
@@ -473,6 +473,13 @@ class NotificationHelper
 
                     default:
                         throw new LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
+                }
+
+                if (!$sourceDominion) {
+                    return sprintf(
+                        'Spies were discovered %s!',
+                        $where
+                    );
                 }
 
                 $lastPart = '';
@@ -536,7 +543,7 @@ class NotificationHelper
                 );
 
             case 'irregular_dominion.repelled_resource_theft':
-                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+                $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
 
                 switch ($data['operationKey']) {
                     case 'steal_platinum':
@@ -565,6 +572,13 @@ class NotificationHelper
 
                     default:
                         throw new LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
+                }
+
+                if (!$sourceDominion) {
+                    return sprintf(
+                        'Spies were discovered %s!',
+                        $where
+                    );
                 }
 
                 $lastPart = '';
@@ -657,7 +671,14 @@ class NotificationHelper
                 return $resultString;
 
             case 'irregular_dominion.repelled_hostile_spell':
-                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+                $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
+
+                if (!$sourceDominion) {
+                    return sprintf(
+                        'Our wizards have repelled a %s spell attempt!',
+                        $data['spellName']
+                    );
+                }
 
                 $lastPart = '!';
                 if ($data['unitsKilled']) {

@@ -25,7 +25,10 @@ class SpellCalculator
      * @param LandCalculator $landCalculator
      * @param SpellHelper $spellHelper
      */
-    public function __construct(LandCalculator $landCalculator, SpellHelper $spellHelper)
+    public function __construct(
+        LandCalculator $landCalculator,
+        SpellHelper $spellHelper
+    )
     {
         $this->landCalculator = $landCalculator;
         $this->spellHelper = $spellHelper;
@@ -58,6 +61,13 @@ class SpellCalculator
 
         // Wonders
         $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
+
+        // Heroes
+        if ($this->spellHelper->isInfoOpSpell($spell)) {
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('info_spell_cost')) {
+                $spellCostMultiplier += $dominion->hero->getPerkMultiplier("info_spell_cost");
+            }
+        }
 
         // Mastery
         $maxMasteryBonus = -20;
