@@ -22,12 +22,16 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Level Bonus</th>
                             </tr>
                         </thead>
                         @foreach ($heroHelper->getBasicClasses() as $class)
                             <tr>
+                                <td style="font-size: 24px;">
+                                    <i class="ra ra-fw {{ $heroHelper->getClassIcon($class['key']) }}"></i>
+                                </td>
                                 <td>{{ $class['name'] }}</td>
                                 <td>{{ ucwords(str_replace('_', ' ', $class['perk_type'])) }}</td>
                             </tr>
@@ -39,6 +43,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Level Bonus</th>
                                 <th>Requirement</th>
@@ -48,6 +53,9 @@
                         </thead>
                         @foreach ($heroHelper->getAdvancedClasses() as $class)
                             <tr>
+                                <td style="font-size: 24px;">
+                                    <i class="ra ra-fw {{ $heroHelper->getClassIcon($class['key']) }}"></i>
+                                </td>
                                 <td>{{ $class['name'] }}</td>
                                 <td>{{ ucwords(str_replace('_', ' ', $class['perk_type'])) }}</td>
                                 <td>{{ $heroHelper->getRequirementDisplay($class) }}</td>
@@ -68,6 +76,7 @@
                     <h4>Hero Upgrades</h4>
                     <table class="table table-striped">
                         <colgroup>
+                            <col>
                             <col width="150">
                             <col>
                             <col>
@@ -75,6 +84,7 @@
                         </colgroup>
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Level</th>
                                 <th>Classes</th>
@@ -83,6 +93,9 @@
                         </thead>
                         @foreach ($heroHelper->getHeroUpgrades()->where('active', true) as $upgrade)
                             <tr>
+                                <td style="font-size: 24px";>
+                                    <i class="ra ra-fw {{ $upgrade->icon }}" title="{{ ucwords($upgrade->type) }}" data-toggle="tooltip"></i>
+                                </td>
                                 <td>{{ $upgrade->name }}</td>
                                 <td>{{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}</td>
                                 <td>{{ count($upgrade->classes) ? ucwords(implode(', ', $upgrade->classes)) : '--' }}</td>

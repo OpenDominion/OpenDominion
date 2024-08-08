@@ -210,7 +210,7 @@ class HeroHelper
     {
         if ($upgrade === null) {
             return sprintf(
-                '<i class="hero-icon fa fa-fw fa-lock" title="Level %s: Locked" data-toggle="tooltip"></i>',
+                '<i class="hero-icon ra ra-rw ra-padlock" title="Level %s: Locked" data-toggle="tooltip"></i>',
                 $level
             );
         }

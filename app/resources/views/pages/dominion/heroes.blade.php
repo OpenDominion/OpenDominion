@@ -157,6 +157,7 @@
                                         <thead>
                                             <tr>
                                                 <th></th>
+                                                <th></th>
                                                 <th>Name</th>
                                                 <th>Level</th>
                                                 <th>Description</th>
@@ -172,8 +173,10 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    <i class="ra ra-fw {{ $upgrade->icon }}" style="font-size: 24px";></i>
+                                                </td>
+                                                <td>
                                                     <label for="upgrade_{{ $upgrade->key }}" style="font-weight: normal;">
-                                                        <i class="ra ra-fw {{ $upgrade->icon }}"></i>
                                                         {{ $upgrade->name }}
                                                     </label>
                                                 </td>

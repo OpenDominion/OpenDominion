@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@opendominion/admin-lte": "^2.4.22",
-    "@opendominion/rpg-awesome": "0.0.13",
+    "@opendominion/rpg-awesome": "0.0.15",
     "axios": "^0.21.2",
     "chart.js": "^2.9.4",
     "cross-env": "^5.2.0",

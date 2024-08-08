@@ -54,7 +54,7 @@ scribes_journal:
   name: Scribe's Journal
   level: 2
   type: item
-  icon: ra-book-cover
+  icon: ra-scroll-quill
   perks:
     tech_production_invasion: 10
 disarmament:
@@ -80,7 +80,7 @@ revised_strategy:
   name: Revised Strategy
   level: 0
   type: immediate
-  icon: ra-book
+  icon: ra-annexation
   perks:
     tech_refund: 50
   classes:
