@@ -15,15 +15,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Human Cavalry: -10p (from 1250p)
 - Human Knight: +40p (from 1000p)
 - Nomad: increased research point gains on invasion to +100% (from +50%)
-- Nox: removed research point generation bonus (was +15%), decreaed food consumption to -20% (from -15%)
+- Nox: removed research point generation bonus (was +15%), added +5 boat capacity
 - Spirit: Homeland changed to water (was swamp), mana production bonus removed (was +15%)
 - Spirit Geist: -50% defensive casualties (was immortal)
 - Spirit Phantom Knight: +75p, -5m, -50% casualties on offense (from 1025p, -50% casualties on defense)
 - Spirit Spectral Warrior: -100p, -10m, -80% casualties on offense (from 1175p, immortal), +0.5 OP vs 95%
 - Spirit: reverted all unit names (Phantom/Banshee/Ghost/Spectre)
-- Troll Basher: 5.5/2, 1100p, 100r, plunders 20 platinum (from duplicate of Smasher)
-- Troll Smasher: now plunders 5 ore
-- Undead Abomination: no longer needs boats
+- Troll Basher: now salvages 1 lumber from the battlefield on attack
+- Troll Smasher: now salvages 1 ore from the battlefield on attack
+- Undead Abomination: no longer needs boats, removed boat capacity bonus (was +5)
 - Vampire: Feast of Blood now cancels all casualty reductions (was just immortality), converts increased to 9.5% (from 9%)
 - Mastery loss halved, gains increased by up to 4 based on target's ratio
 - Peasants protected from Fireball reduced to 5 per wizard (from 6), maximum protected reduced to 80% of max peasants (was 90% of max peasants)

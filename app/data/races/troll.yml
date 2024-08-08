@@ -32,14 +32,14 @@ units:
   - name: Basher
     type: offensive_elite
     cost:
-      platinum: 1100
-      ore: 100
+      platinum: 1415
+      ore: 150
     power:
-      offense: 5.5
-      defense: 2
+      offense: 7
+      defense: 7
     perks:
       flavor_basher: 1
-      plunder_platinum: 20
+      salvage_lumber: 1
   - name: Smasher
     type: hybrid_elite
     cost:
@@ -50,4 +50,4 @@ units:
       defense: 7
     perks:
       flavor_smasher: 1
-      plunder_ore: 5
+      salvage_ore: 1
