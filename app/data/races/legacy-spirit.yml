@@ -50,3 +50,4 @@ units:
     perks:
       immortal_vs_land_range: 75
     need_boat: false
+playable: false
