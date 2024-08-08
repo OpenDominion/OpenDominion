@@ -65,7 +65,7 @@ class SpellCalculator
         // Heroes
         if ($this->spellHelper->isInfoOpSpell($spell)) {
             if ($dominion->hero !== null && $dominion->hero->getPerkValue('info_spell_cost')) {
-                $spellCostMultiplier += $dominion->hero->getPerkMultiplier("info_spell_cost");
+                $spellCostMultiplier += $dominion->hero->getPerkMultiplier('info_spell_cost');
             }
         }
 
