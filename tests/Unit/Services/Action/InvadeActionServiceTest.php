@@ -112,6 +112,7 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         // Arrange
         $this->dominion->military_unit3 = 5000;
         $this->dominion->military_unit4 = 7500;
+        $this->target->military_draftees = 0;
         $this->target->military_unit2 = 10000;
         $this->target->military_unit4 = 5000;
         $this->target->queues()->create([
@@ -132,7 +133,7 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         // Assert
         $populationCalculator = app(PopulationCalculator::class);
         $this->assertEquals(18096, $populationCalculator->getMaxPopulation($this->target));
-        $this->assertEquals(18510, $populationCalculator->getPopulationMilitary($this->target));
+        $this->assertEquals(18050, $populationCalculator->getPopulationMilitary($this->target));
 
         // Act
         $units = [4 => 7500];
@@ -145,9 +146,9 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(17049, $populationCalculator->getMaxPopulation($this->target));
-        $this->assertEquals(18122, $populationCalculator->getPopulationMilitary($this->target));
+        $this->assertEquals(17673, $populationCalculator->getPopulationMilitary($this->target));
         $this->assertEquals(true, $invasionResult['result']['success']);
-        $this->assertEquals(358, $invasionResult['defender']['unitsDeserted'][1]);
-        $this->assertEquals(715, $invasionResult['defender']['unitsDeserted'][4]);
+        $this->assertEquals(208, $invasionResult['defender']['unitsDeserted'][1]);
+        $this->assertEquals(416, $invasionResult['defender']['unitsDeserted'][4]);
     }
 }
