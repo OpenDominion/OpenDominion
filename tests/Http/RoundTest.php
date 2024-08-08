@@ -75,7 +75,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->see("Register to round {$round->name} (#{$round->number})")
             ->type('dominionname', 'dominion_name')
             ->type('rulername', 'ruler_name')
-            ->select(1, 'race')
+            ->select(6, 'race')
             ->select('random', 'realm_type')
             ->press('Register')
             ->seePageIs('dominion/status')
@@ -83,7 +83,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->seeInDatabase('dominions', [
                 'user_id' => $user->id,
                 'round_id' => $round->id,
-                'race_id' => 1,
+                'race_id' => 6,
                 'name' => 'dominionname',
             ])
             ->get("round/{$round->id}/register")
