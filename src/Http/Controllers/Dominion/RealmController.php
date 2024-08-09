@@ -36,8 +36,9 @@ class RealmController extends AbstractDominionController
         $wonderHelper = app(WonderHelper::class);
 
         $dominion = $this->getSelectedDominion();
+        $round = $dominion->round;
 
-        if ($dominion->round->realmAssignmentDate()->addMinutes(5) > now()) {
+        if ($round->realmAssignmentDate()->addMinutes(5) > now()) {
             $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
             return redirect()->back();
         }
@@ -48,7 +49,7 @@ class RealmController extends AbstractDominionController
 
         $isOwnRealm = ($realmNumber === (int)$dominion->realm->number);
 
-        if (!$dominion->round->hasStarted() && !$isOwnRealm) {
+        if ($round->start_date > now() && !$isOwnRealm) {
             $request->session()->flash('alert-warning', 'You cannot view other realms before the round begins.');
             return redirect()->route('dominion.realm', (int)$dominion->realm->number);
         }
