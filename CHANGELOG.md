@@ -2223,7 +2223,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - This CHANGELOG file
 
 [Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.0...HEAD
-[1.41.1]: https://github.com/OpenDominion/OpenDominion/compare/1.40.1...1.41.0
+[1.41.1]: https://github.com/OpenDominion/OpenDominion/compare/1.40.2...1.41.0
+[1.40.2]: https://github.com/OpenDominion/OpenDominion/compare/1.40.1...1.40.2
 [1.40.1]: https://github.com/OpenDominion/OpenDominion/compare/1.40.0...1.40.1
 [1.40.0]: https://github.com/OpenDominion/OpenDominion/compare/1.39.1...1.40.0
 [1.39.1]: https://github.com/OpenDominion/OpenDominion/compare/1.39.0...1.39.1
