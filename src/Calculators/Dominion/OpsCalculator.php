@@ -401,7 +401,7 @@ class OpsCalculator
      * @param Dominion $target
      * @return float
      */
-    public function getSpellDamageMultiplier(Dominion $dominion, Dominion $target, string $spellKey = ''): float
+    public function getSpellDamageMultiplier(Dominion $target, string $spellKey = '', Dominion $dominion = null): float
     {
         $modifier = 1;
 
@@ -435,7 +435,7 @@ class OpsCalculator
         $modifier += $target->getWonderPerkMultiplier('enemy_spell_damage');
 
         // Heroes
-        if ($dominion->hero !== null && $dominion->hero->getPerkValue("{$spellKey}_damage")) {
+        if ($dominion !== null && $dominion->hero !== null && $dominion->hero->getPerkValue("{$spellKey}_damage")) {
             $modifier += $dominion->hero->getPerkMultiplier("{$spellKey}_damage");
         }
 
@@ -445,10 +445,12 @@ class OpsCalculator
         $spellModifier += $target->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
         $spellModifier += $target->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
 
-        $warDeclared = $this->governmentService->isAtWar($target->realm, $target->realm);
-        $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
-        if ($spellKey == 'fireball' && !$warDeclared && $blackGuard) {
-            $spellModifier += 1;
+        if ($dominion !== null) {
+            $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
+            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+            if ($spellKey == 'fireball' && !$warDeclared && $blackGuard) {
+                $spellModifier += 1;
+            }
         }
 
         // Capped at 80% reduction

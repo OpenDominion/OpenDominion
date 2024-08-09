@@ -792,7 +792,7 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $applyBurning = false;
-            $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($dominion, $target, $spell->key);
+            $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($target, $spell->key, $dominion);
 
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(['war_cancels']);
