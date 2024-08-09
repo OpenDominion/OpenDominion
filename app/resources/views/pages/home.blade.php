@@ -153,46 +153,48 @@
                         <h3 class="box-title">
                             {{ $currentRound->hasStarted() && !$currentRound->hasEnded() ? 'Current' : 'Previous' }} Round Rankings
                         </h3>
-                        <div class="box-body table-responsive no-padding">
-                            @if ($currentRankings !== null && !$currentRankings->isEmpty())
-                                <table class="table">
-                                    <colgroup>
-                                        <col>
-                                        <col>
-                                        <col>
-                                        <col>
-                                    </colgroup>
-                                    <thead>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($currentRankings as $row)
-                                            <tr>
-                                                <td class="text-center">{{ $row->rank }}</td>
-                                                <td>
-                                                    {{ $row->dominion_name }} (#{{ $row->realm_number }})
-                                                </td>
-                                                <td class="text-center">{{ number_format($row->value) }}</td>
-                                                <td class="text-center">
-                                                    @php
-                                                        $rankChange = (int) ($row->previous_rank - $row->rank);
-                                                    @endphp
-                                                    @if ($rankChange > 0)
-                                                        <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
-                                                    @elseif ($rankChange === 0)
-                                                        <span class="text-warning">-</span>
-                                                    @else
-                                                        <span class="text-danger"><i class="fa fa-caret-down"></i> {{ abs($rankChange) }}</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            @else
-                                No rankings recorded yet.
-                            @endif
-                        </div>
                     </div>
+                    @if ($currentRankings !== null && !$currentRankings->isEmpty())
+                        <div class="box-body table-responsive text-center no-padding">
+                            <table class="table">
+                                <colgroup>
+                                    <col>
+                                    <col>
+                                    <col>
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                </thead>
+                                <tbody>
+                                    @foreach ($currentRankings as $row)
+                                        <tr>
+                                            <td class="text-center">{{ $row->rank }}</td>
+                                            <td>
+                                                {{ $row->dominion_name }} (#{{ $row->realm_number }})
+                                            </td>
+                                            <td class="text-center">{{ number_format($row->value) }}</td>
+                                            <td class="text-center">
+                                                @php
+                                                    $rankChange = (int) ($row->previous_rank - $row->rank);
+                                                @endphp
+                                                @if ($rankChange > 0)
+                                                    <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
+                                                @elseif ($rankChange === 0)
+                                                    <span class="text-warning">-</span>
+                                                @else
+                                                    <span class="text-danger"><i class="fa fa-caret-down"></i> {{ abs($rankChange) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="box-body text-center">
+                            No rankings recorded yet.
+                        </div>
+                    @endif
                 </div>
             @endif
         </div>
