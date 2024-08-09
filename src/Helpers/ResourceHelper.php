@@ -13,6 +13,7 @@ class ResourceHelper
             'platinum' => 'Platinum',
             'gems' => 'Gems',
             'mana' => 'Mana',
+            'lumber' => 'Lumber',
             'ore' => 'Ore',
         ];
     }

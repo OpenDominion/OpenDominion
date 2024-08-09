@@ -256,7 +256,7 @@
                                         Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to Erosion.
                                     </p>
                                 @endif
-                                @if (isset($event->data['attacker']['plunder']))
+                                @if (isset($event->data['attacker']['plunder']) && array_sum($event->data['attacker']['plunder']) > 0)
                                     <p class="text-center text-green">
                                         @if (isset($event->data['attacker']['plunder']['mana']) && $event->data['attacker']['plunder']['mana'] > 0)
                                             {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['mana']) }} mana.
@@ -265,7 +265,7 @@
                                         @endif
                                     </p>
                                 @endif
-                                @if (isset($event->data['attacker']['salvage']))
+                                @if (isset($event->data['attacker']['salvage']) && array_sum($event->data['attacker']['salvage']) > 0)
                                     <p class="text-center text-green">
                                         @if (isset($event->data['attacker']['salvage']['lumber']) || isset($event->data['attacker']['salvage']['ore']))
                                             {{ $sourceName }} salvaged {{ number_format($event->data['attacker']['salvage']['lumber']) }} lumber and {{ number_format($event->data['attacker']['salvage']['ore']) }} ore.

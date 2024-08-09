@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Http;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -44,7 +45,6 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->see('Dashboard')
             ->seeElement('tr', ['class' => 'success'])
             ->see('Testing Round')
-//            ->see('(Standard league)')
             ->see('Starts in 1 day')
             ->seeInElement('a', 'Register');
     }
@@ -67,6 +67,7 @@ class RoundTest extends AbstractBrowserKitTestCase
         $this->disableActiveRounds();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
+        $race = Race::where('key', 'human')->firstOrFail();
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -75,7 +76,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->see("Register to round {$round->name} (#{$round->number})")
             ->type('dominionname', 'dominion_name')
             ->type('rulername', 'ruler_name')
-            ->select(6, 'race')
+            ->select($race->key, 'race')
             ->select('random', 'realm_type')
             ->press('Register')
             ->seePageIs('dominion/status')
@@ -83,7 +84,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->seeInDatabase('dominions', [
                 'user_id' => $user->id,
                 'round_id' => $round->id,
-                'race_id' => 6,
+                'race_id' => $race->id,
                 'name' => 'dominionname',
             ])
             ->get("round/{$round->id}/register")

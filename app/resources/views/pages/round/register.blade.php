@@ -51,7 +51,7 @@
                                                         <div class="col-lg-12">
                                                             {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
                                                             <h4>
-                                                                <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
+                                                                <input type="radio" name="race" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
                                                                 <strong>{{ $race->name }}</strong>
                                                             </h4>
                                                         </div>

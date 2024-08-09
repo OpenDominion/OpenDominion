@@ -96,7 +96,7 @@ class RoundController extends AbstractController
                     return $query->where('round_id', $round->id);
                 }),
             ],
-            'race' => 'required|exists:races,id',
+            'race' => 'required|exists:races,key',
             'realm_type' => 'in:random,join_pack,create_pack',
             'pack_name' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_password' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
@@ -119,7 +119,7 @@ class RoundController extends AbstractController
 
                 /** @var User $user */
                 $user = Auth::user();
-                $race = Race::findOrFail($request->get('race'));
+                $race = Race::where('key', $request->get('race'))->firstOrFail();
                 $pack = null;
 
                 if (!$race->playable) {

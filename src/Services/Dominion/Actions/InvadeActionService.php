@@ -1171,7 +1171,7 @@ class InvadeActionService
             }
         }
 
-        // We have a unit with plunder!
+        // We have a unit with plunder or salvage!
         if ($plunderPlatinum > 0 || $plunderGems > 0 || $plunderMana > 0 || $salvageLumber > 0 || $salvageOre > 0) {
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
