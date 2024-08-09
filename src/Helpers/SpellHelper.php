@@ -247,7 +247,9 @@ class SpellHelper
     {
         $raceStrings = [];
         foreach ($spell->races as $race) {
-            $raceStrings[] = ucwords(str_replace('-', ' ', str_replace('-rework', ' ', $race)));
+            if (!str_contains($race, '-legacy') && !in_array($race, ['dark-elf', 'kobold', 'nomad', 'spirit', 'undead'])) {
+                $raceStrings[] = ucwords(str_replace('-', ' ', str_replace('-rework', ' ', $race)));
+            }
         }
 
         return implode($separator, $raceStrings);
