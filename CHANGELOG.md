@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.41.0] - 2024-08-08
 ### Added
 - New Hero Upgrades: select from a list of options as you level up
   - Divination (magic): -5% cost of info spells
@@ -2220,7 +2222,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.40.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.0...HEAD
+[1.41.1]: https://github.com/OpenDominion/OpenDominion/compare/1.40.1...1.41.0
 [1.40.1]: https://github.com/OpenDominion/OpenDominion/compare/1.40.0...1.40.1
 [1.40.0]: https://github.com/OpenDominion/OpenDominion/compare/1.39.1...1.40.0
 [1.39.1]: https://github.com/OpenDominion/OpenDominion/compare/1.39.0...1.39.1
