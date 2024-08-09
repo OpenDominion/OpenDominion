@@ -3,7 +3,7 @@ portals_of_transportation:
   perks:
     faster_return: 3
   power: 150000
-  active: true
+  active: false
 obelisk_of_power:
   name: Obelisk of Power
   perks:
