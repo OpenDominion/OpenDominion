@@ -30,7 +30,7 @@
                 <div class="box-header with-border text-center">
                     <h3 class="box-title">Game Overview</h3>
                 </div>
-                <div class="box-body" id="scribes">
+                <div class="box-body" id="scribes" style="padding: 10px 25px;">
                     <div id="game-overview">
                         <p>Dominion is a medieval strategy persistent browser-based game. You take control of a plot of land, called a "Dominion", that is within a Realm, each with a unique identification number, called "Realm Number". The other Dominions in your realm are your allies, and the ultimate goal of Dominion is to be the biggest, strongest Realm in all of the land. Individually, you are working both towards that goal and to become the biggest, strongest Dominion. The better you coordinate your efforts with the rest of your Realm, the better of you are at completing both of those goals. In order to accomplish this, you must carefully balance the needs of your dominion and work closely with your realm mates.</p>
                         <p>Accomplishing those feats involve understanding all the facets of the game. When you create your account, you must select a race for you and your people. The good races include Humans, Dwarves, Wood Elves, Gnomes, Merfolk, Firewalkers, Sylvans and Halflings. The evil races span Icekin, Trolls, Goblins, Dark Elves, Kobolds, Lycanthropes, Lizardfolk, The Nox and the Undead. Each race has a unique set of bonuses and military units that are important to understand.</p>
@@ -81,10 +81,10 @@
                         <ul>
                             <li>Science	    - Increases platinum production up to a maximum of +20% production.</li>
                             <li>Keep		- Increases population maximum up to +30% maximum population.</li>
-                            <li>Spires		- Increases wizard power, mana production and reduces spell damage taken up to a maximum of 60% each.</li>
                             <li>Forges 	    - Increases offensive military power by up to +30%.</li>
                             <li>Walls		- Increases defensive military power by up to +30%.</li>
-                            <li>Harbor		- Increases food production from all sources and boat production and protection from docks by up to +60%.</li>
+                            <li>Spires		- Increases offensive wizard power and mana production up to a maximum of 60%. Reduces spell damage taken up to a maximum of 50% (at a factor of 1.5x).</li>
+                            <li>Harbor		- Increases food production from all sources up to a maximum of 60%. Increases boat production and protection from docks by up to 50% (at a factor of 1.5x).</li>
                         </ul>
                         <p>These bonuses can be increased by the Masonry building (no limit). Masonries provide a bonus on what has already been invested, while some races and wonders have bonuses that are applied when you are investing. Improvements never go away (unless you are the victim of Lightning Bolt spells), but as you grow larger the bonuses will diminish.</p>
                         <p>The Improvements page displays your modified castle improvements. Investing into your castle is processed and the bonuses are provided instantly. Only platinum, ore, lumber and gems may be invested into your castle at the following rates:<br/>Each platinum is worth 1 point, ore and lumber are each worth 2 points and gems are worth 12 points.</p>
@@ -93,11 +93,7 @@
                     <div id="national-bank">
                         <h4 class="text-center">National Bank</h4>
                         <p>The National Bank allows you to exchange resources with the empire. Exchanging resources processes instantly.</p>
-                        <p>
-                            Platinum, lumber and ore trade 2 for 1.<br/>
-                            Gems trade 1:2 platinum, lumber or ore.<br/>
-                            Food sells for 4 platinum, lumber or ore, or 1 gem.
-                        </p>
+                        <p>Platinum, lumber and ore trade 2 for 1. Gems trade 1:2 platinum, lumber or ore. Food sells for 4 platinum, lumber or ore, or 1 gem.</p>
                         <p>The exchange rate can be improved by the banker's friend tech and the Great Market (wonder).</p>
                     </div>
                     <div id="technology">
@@ -122,15 +118,17 @@
                     </div>
                     <div id="black-ops">
                         <h4 class="text-center">Black Ops</h4>
-                        <p>Black ops are spells and espionage operations that deal damage to other dominions. A subset of black ops, require you to be at war with the target to perform them. Black ops damage is reduced by up to 50% based on your defensive spy/wizard power per acre. Successful war operations award you with one temporary stat that decays back toward zero each hour (Infamy) and one permanent stat (Mastery). Your target also gains a temporary stat (Resilience). These are explained below.</p>
-                        <p>Infamy is a value between 0 and 1000 that boosts your resource production (platinum, gems, lumber, mana, and ore). The bonus scales up faster the more Infamy you have and maxes out at 10% for platinum and 4% for other resources. Infamy is awarded based on the relative spy/wizard power ratio between you and your target with a bonus for targets at least 75% of your size.</p>
-                        <p>Mastery is a measure of your black ops prowess over the course of the entire round and is split between Spy and Wizard. It is gained at a rate equal to 10% of your infamy gains plus a bonus based on your target's mastery level (you take 1 mastery from your target if their mastery is within 100 points of yours and 1 more if your target has more mastery than you). No mastery is gained when you have 500+ more than your target. Your total mastery sets a minimum value for your Infamy total (every 100 raises the minimum by 50). If you have 500 combined Mastery, your Infamy cannot decay below 250, making it easier to keep your bonus maxed if you commit to black ops throughout the round. Whoever has the highest Mastery at the end of the round is the de facto black ops champion.</p>
-                        <p>Resilience is a value between 0 and 1000 that reduces the recovery time from certain types of black ops (also split between Spy and Wizard), adding diminishing returns for having multiple dominions focus the same target for an extended period of time. It currently takes 125 hours for resilience to fully decay from its max of 1000.</p>
+                        <p>Black ops are spells and espionage operations that deal damage to other dominions. A subset of black ops, require you to be at war with the target to perform them. Successful war operations award you with Mastery.</p>
+                        <p>Mastery is a measure of your black ops prowess over the course of the entire round and is split between Spy and Wizard. It is gained slowly verses targets with a much higher mastery level and more quickly against targets with a much higher mastery level. Your target will also lose some mastery in the same manner. No mastery is gained when you have 500+ more than your target. Whoever has the highest Mastery at the end of the round is the de facto black ops champion.</p>
+                        <p>Spy Mastery rewards you with increased spy strength refresh rate and reduced losses. Wizard Mastery rewards you with increased wizard strength refresh rate and reduced spell costs.</p>
+                        <p>Resilience is a value between 0 and 1000 that increases wizard strength recovery time (lost from the Magic Snare operation).</p>
+                        <p>Wizards and, by extension, Wizard Guilds protect your peasants from being killed by the Fireball spell. Completely unprotected, half of your max peasant population can be killed. Successive Fireball spells cast upon you will trigger the Burning effect which further increases Fireball damage, but upon expiration Burning will apply the Rejuvination effect which reduces spell damage and increase population growth.</p>
+                        <p>Lightning Bolt causes a similar, but mutually exclusive, effect called Lightning Storm. While active, Lightning Storm deals an additional 50% damage, but that damage is queued to be restored upon expiration, after which Rejuvination is applied.</p>
                     </div>
                     <div id="shadow-league">
                         <h4 class="text-center">Shadow League</h4>
-                        <p>The Shadow League is similar to the Royal and Elite Guards, but is entirely independent. It still requires a 24 hour application period, but you can begin the process of leaving after only 24 hours (plus an additional 12 hour waiting period). Joining the Shadow League allows you to target and be targeted by other members with war operations (assuming they meet other range restrictions). It also treats non-war black ops between members as if they were war operations (awarding Infamy/Mastery/Resilience). If you choose to leave the Shadow League, it requires a 12 hour waiting period, which is reset if you use war operations against members whom you are not also at war with.</p>
-                        <p>In addition to the ability to use war operations on each other, 75% of casualties suffered due to failed operations between members are automatically re-trained. Other perks are 1% strength used for info ops (normally 2%) on all targets and hourly Infamy decay is reduced by 25%.</p>
+                        <p>The Shadow League is similar to the Royal and Elite Guards, but is entirely independent. It requires a 12 hour application period, and you can begin the process of leaving after only 12 hours (plus an additional 12 hour waiting period). Joining the Shadow League allows you to target and be targeted by other members with war operations (assuming they meet other range restrictions). It also treats non-war black ops between members as if they were war operations (awarding Mastery). If you choose to leave the Shadow League, it requires a 12 hour waiting period, which is reset if you use war operations against members whom you are not also at war with.</p>
+                        <p>In addition to the ability to use war operations on each other, 75% of casualties suffered due to failed operations between members are automatically re-trained and Fireball damage is doubled (but cannot trigger Burning or Lightning Storm). The biggest benefit is that info ops now cost only 1% strength (normally 2%) on all targets.</p>
                     </div>
                 </div>
             </div>
