@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\WonderHelper;
@@ -9,7 +10,7 @@ use OpenDominion\Services\Dominion\GovernmentService;
 
 class WorldController extends AbstractDominionController
 {
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         $dominion = $this->getSelectedDominion();
 
