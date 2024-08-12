@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+### Changed
+- Gnome Juggernaut: base offensive power changed to 6.5, +0.5 vs 85% (from 6, +0.5 vs 75% or +1 vs 85%)
+- Spirit Ghost: removed offensive casualty reduction (was -50%)
+- Spirit Spectre: reduced offensive casualties to -70% (from -80%), 75%+ range only
+
 ## [1.41.0] - 2024-08-08
 ### Added
 - New Hero Upgrades: select from a list of options as you level up

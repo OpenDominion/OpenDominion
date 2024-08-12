@@ -163,6 +163,7 @@ class UnitHelper
             'casualties' => '%+d%% casualties.',
             'casualties_defense' => '%+d%% defensive casualties.',
             'casualties_offense' => '%+d%% offensive casualties.',
+            'casualties_offense_range' => '%+d%% offensive casualties against dominions 75%%+ of your size.',
             'fixed_casualties' => 'ALWAYS suffers %g%% casualties.',
 
             'immortal' => 'Immortal.',

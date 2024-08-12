@@ -176,8 +176,7 @@ class RealmFinderService
         }
 
         // Calculations to be used later
-        $averageRating = $allPlayers->where('rating', '!=', 0)->avg('rating');
-        $averageRating = max(1, $averageRating - 200);
+        $averageRating = $allPlayers->where('rating', '!=', 0)->avg('rating') - 100;
 
         // Separate packed players
         $packs = [];

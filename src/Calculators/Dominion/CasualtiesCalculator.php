@@ -125,6 +125,9 @@ class CasualtiesCalculator
 
             // Unit Perk: Fewer Casualties
             $unitBonusMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['casualties', 'casualties_offense']) / 100);
+            if ($landRatio >= 0.75) {
+                $unitBonusMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'casualties_offense_range') / 100);
+            }
 
             // Unit Perk: Reduce Combat Losses
             $unitsSentPerSlot = [];

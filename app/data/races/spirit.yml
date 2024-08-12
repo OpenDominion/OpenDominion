@@ -36,8 +36,6 @@ units:
     power:
       offense: 3
       defense: 5
-    perks:
-      casualties_offense: -50
     need_boat: false
   - name: Spectre
     cost:
@@ -47,6 +45,6 @@ units:
       offense: 6
       defense: 0
     perks:
-      casualties_offense: -80
+      casualties_offense_range: -70
       offense_staggered_land_range: 95;0.5
     need_boat: false
