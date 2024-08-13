@@ -22,8 +22,6 @@ class RealmFactory
      */
     public function create(Round $round, ?string $alignment = null, ?Pack $pack = null): Realm
     {
-        // todo: whitelist $alignment?
-        // todo: repositories?
         $results = DB::table('realms')
             ->select(DB::raw('MAX(realms.number) AS max_realm_number'))
             ->where('round_id', $round->id)
