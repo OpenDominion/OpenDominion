@@ -934,12 +934,13 @@ class InvadeActionService
 
         // Increased morale drops for attacking weaker targets
         if ($range < 75) {
+            // TODO: Simplify to += 5 - (100 - $range) / 5;
             $moraleChange -= max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
         }
 
         // Heroes
-        if ($dominion->hero !== null && $dominion->hero->getPerkValue('invasion_morale') && $range >= 75) {
-            $moraleChange = 0;
+        if ($dominion->hero !== null) {
+            $moraleChange += $dominion->hero->getPerkValue('invasion_morale');
         }
 
         $dominion->morale -= $moraleChange;

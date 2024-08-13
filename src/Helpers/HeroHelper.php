@@ -158,7 +158,7 @@ class HeroHelper
             'fireball_damage' => '%+g%% fireball damage',
             'improved_energy_mirror' => '%+g%% damage reduction from Energy Mirror',
             'info_spell_cost' => '%+g%% cost of info spells',
-            'invasion_morale' => 'Invasion no longer reduces morale (75%%+ range only)',
+            'invasion_morale' => '%+g%% morale loss from invasion',
             'land_spy_strength_cost' => 'Survey Dominion and Land Spy now cost 1%% spy strength',
             'martyrdom' => 'Reduces the cost of spy and wizard training by 1%% per %g prestige (max 50%%) for 24 hours',
             'offense' => '%+g%% offensive power',

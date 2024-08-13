@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 
 ### Changed
+- King's Banner: now reduces invasion morale loss by 2% (from no loss)
 - Gnome Juggernaut: base offensive power changed to 6.5, +0.5 vs 85% (from 6, +0.5 vs 75% or +1 vs 85%)
 - Spirit Ghost: removed offensive casualty reduction (was -50%)
 - Spirit Spectre: reduced offensive casualties to -70% (from -80%), 75%+ range only

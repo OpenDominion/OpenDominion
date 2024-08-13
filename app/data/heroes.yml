@@ -42,7 +42,7 @@ kings_banner:
   type: item
   icon: ra-knight-banner
   perks:
-    invasion_morale: 1
+    invasion_morale: -2
 spyglass:
   name: Spyglass
   level: 2
