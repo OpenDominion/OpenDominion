@@ -175,7 +175,7 @@ class DiscordService
                     'verify' => false,
                     'headers' => ['authorization' => "Bot $botToken"],
                     'json' => [
-                        'content' => $discordUser->username . ' (' . $discordUser->user->display_name . ') has joined the chat.'
+                        'content' => '@' . $discordUser->username . ' (' . $discordUser->user->display_name . ') has joined the chat.'
                     ]
                 ]);
             }

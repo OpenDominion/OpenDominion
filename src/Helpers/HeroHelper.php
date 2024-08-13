@@ -232,7 +232,7 @@ class HeroHelper
      */
     public function getNamesByRace(string $race): array
     {
-        $race = str_replace('-legacy', '', str_replace('-rework', '', $race));
+        $race = str_replace('-', '', str_replace('-legacy', '', str_replace('-rework', '', $race)));
         $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
         try {
             $names_json = json_decode($filesystem->get(base_path("app/data/heroes/{$race}.json")));

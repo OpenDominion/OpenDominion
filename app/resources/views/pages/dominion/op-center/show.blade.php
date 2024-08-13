@@ -829,7 +829,7 @@
                             </thead>
                             <tbody>
                                 @php $allUpgrades = $heroHelper->getHeroUpgrades(); @endphp
-                                @foreach($hero['upgrades'] as $key => $name)
+                                @foreach(array_get($hero, 'upgrades', []) as $key => $name)
                                     @php $upgrade = $allUpgrades[$key]; @endphp
                                     <tr>
                                         <td>{{ $upgrade->name }}</td>
