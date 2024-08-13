@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.41.1] - 2024-08-13
 ### Changed
 - King's Banner: now reduces invasion morale loss by 2% (from no loss)
 - Gnome Juggernaut: base offensive power changed to 6.5, +0.5 vs 85% (from 6, +0.5 vs 75% or +1 vs 85%)
@@ -2228,7 +2229,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.1...HEAD
+[1.41.1]: https://github.com/OpenDominion/OpenDominion/compare/1.41.0...1.41.1
 [1.41.0]: https://github.com/OpenDominion/OpenDominion/compare/1.40.2...1.41.0
 [1.40.2]: https://github.com/OpenDominion/OpenDominion/compare/1.40.1...1.40.2
 [1.40.1]: https://github.com/OpenDominion/OpenDominion/compare/1.40.0...1.40.1
