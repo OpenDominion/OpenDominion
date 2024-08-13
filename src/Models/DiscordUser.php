@@ -16,4 +16,9 @@ namespace OpenDominion\Models;
 class DiscordUser extends AbstractModel
 {
     protected $table = 'user_discord_users';
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

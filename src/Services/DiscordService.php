@@ -159,6 +159,28 @@ class DiscordService
             $result = json_decode($joinResponse->getBody()->getContents(), true);
         }
 
+        $generalResponse = $client->get(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
+            'http_errors' => false,
+            'verify' => false,
+            'headers' => ['authorization' => "Bot $botToken"]
+        ]);
+        if ($generalResponse->getStatusCode() == 200) {
+            $result = json_decode($generalResponse->getBody()->getContents(), true);
+            $generalChannel = collect($result)
+                ->where('name', 'general')
+                ->where('parent_id', $realm->discord_category_id)
+                ->first();
+            if ($generalChannel) {
+                $client->post(DiscordHelper::BASE_URL . '/channels/' . $generalChannel['id'] . '/messages', [
+                    'verify' => false,
+                    'headers' => ['authorization' => "Bot $botToken"],
+                    'json' => [
+                        'content' => $discordUser->username . ' (' . $discordUser->user->display_name . ') has joined the chat.'
+                    ]
+                ]);
+            }
+        }
+
         return true;
     }
 
