@@ -820,6 +820,7 @@ class TickService
         }
 
         /* These calculators need to ignore queued resources for the following tick */
+        $this->casualtiesCalculator->setForTick(true);
         $this->militaryCalculator->setForTick(true);
         $this->networthCalculator->setForTick(true);
         $this->populationCalculator->setForTick(true);
@@ -953,6 +954,7 @@ class TickService
 
         $tick->save();
 
+        $this->casualtiesCalculator->setForTick(false);
         $this->militaryCalculator->setForTick(false);
         $this->networthCalculator->setForTick(false);
         $this->populationCalculator->setForTick(false);

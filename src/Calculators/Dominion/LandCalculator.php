@@ -67,7 +67,7 @@ class LandCalculator
      */
     public function getTotalLandIncoming(Dominion $dominion): int
     {
-        return(
+        return (
             $this->getTotalLand($dominion)
             + $this->queueService->getExplorationQueueTotal($dominion)
             + $this->queueService->getInvasionQueueTotalByPrefix($dominion, 'land_')

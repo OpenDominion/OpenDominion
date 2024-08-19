@@ -31,6 +31,15 @@ class CasualtiesCalculator
     }
 
     /**
+     * Toggle if this calculator should include the following hour's resources.
+     */
+    public function setForTick(bool $value)
+    {
+        $this->forTick = $value;
+        $this->populationCalculator->setForTick($value);
+    }
+
+    /**
      * Get the offensive casualty multiplier for a dominion for a specific unit
      * slot.
      *
@@ -365,7 +374,6 @@ class CasualtiesCalculator
             return [];
         }
 
-        $peasantPopPercentage = $dominion->peasants / $this->populationCalculator->getPopulation($dominion);
         $totalMilitary = (
             $dominion->military_draftees +
             $dominion->military_unit1 +
@@ -374,7 +382,7 @@ class CasualtiesCalculator
             $dominion->military_unit4
         );
 
-        $casualties = ['peasants' => (int)min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
+        $casualties = ['peasants' => (int)min($totalCasualties * 0.5, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
@@ -426,7 +434,7 @@ class CasualtiesCalculator
         }
 
         $casualties = (int)abs($foodDeficit);
-        $maxCasualties = $this->populationCalculator->getPopulation($dominion) * 0.02;
+        $maxCasualties = round($this->populationCalculator->getPopulation($dominion) * 0.02);
 
         return min($casualties, $maxCasualties);
     }
