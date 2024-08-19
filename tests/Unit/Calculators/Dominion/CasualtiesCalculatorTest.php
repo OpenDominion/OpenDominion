@@ -65,35 +65,47 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
             // -100 food scenario a
             [
                 'attributes' => [
-                    'resource_food' => -100,
+                    'resource_food' => -30,
                     'peasants' => 1300,
                     'military_draftees' => 100,
-                    'military_unit1' => 50,
-                    'military_unit2' => 150,
+                    'military_unit1' => 40,
+                    'military_unit2' => 160,
                     'military_spies' => 25,
                     'military_wizards' => 25,
                 ],
                 'expected' => [
-                    'peasants' => 27,
-                    'military_draftees' => 2,
-                    'military_unit1' => 1,
-                    'military_unit2' => 3,
+                    'peasants' => 15,
+                    'military_draftees' => 5,
+                    'military_unit1' => 2,
+                    'military_unit2' => 8,
                 ],
             ],
 
             // -100 food scenario b
             [
                 'attributes' => [
-                    'resource_food' => -100,
+                    'resource_food' => -24,
                     'peasants' => 1300,
                     'military_draftees' => 100,
                 ],
                 'expected' => [
-                    'peasants' => 26,
-                    'military_draftees' => 2,
+                    'peasants' => 12,
+                    'military_draftees' => 12,
                 ],
             ],
 
+            // -100 food scenario c
+            [
+                'attributes' => [
+                    'resource_food' => -1000,
+                    'peasants' => 1300,
+                    'military_draftees' => 100,
+                ],
+                'expected' => [
+                    'peasants' => 14,
+                    'military_draftees' => 14
+                ],
+            ],
         ];
 
         $this->dominion->shouldReceive('getAttribute')->with('id')->andReturn($this->dominion->id);

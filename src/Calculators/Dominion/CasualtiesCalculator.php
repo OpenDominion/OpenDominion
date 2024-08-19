@@ -417,7 +417,7 @@ class CasualtiesCalculator
             );
         }
 
-        return array_filter($casualties);
+        return array_filter(array_map('intval', $casualties));
     }
 
     /**
