@@ -77,13 +77,13 @@
                                 <div class="col-sm-12">
                                     <div class="row no-margin" style="padding-top: 8px">
                                         <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-primary search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.85) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.85) }}">85%</button>
+                                            <button class="btn btn-block btn-primary search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.85) }}">85%+</button>
                                         </div>
                                         <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-primary search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.95) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.95) }}">95%</button>
+                                            <button class="btn btn-block btn-primary search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.95) }}">95%+</button>
                                         </div>
                                         <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-primary search-range" data-min="{{ $landCalculator->getTotalLand($selectedDominion) }}" data-max="{{ $landCalculator->getTotalLand($selectedDominion) }}">100%</button>
+                                            <button class="btn btn-block btn-primary search-range" data-min="{{ $landCalculator->getTotalLand($selectedDominion) }}">100%+</button>
                                         </div>
                                         <div class="col-md-2 text-center no-padding">
                                             <button class="btn btn-block btn-info search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.40) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.40) }}">40%</button>
@@ -267,8 +267,12 @@
                 table.draw();
             });
             $('.search-range').click(function() {
-                $('input[name=landMin]').val($(this).data('min'));
-                $('input[name=landMax]').val($(this).data('max'));
+                if ($(this).data('min')) {
+                    $('input[name=landMin]').val($(this).data('min'));
+                }
+                if ($(this).data('max')) {
+                    $('input[name=landMax]').val($(this).data('max'));
+                }
             })
         })(jQuery);
     </script>
