@@ -21,7 +21,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
