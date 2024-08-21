@@ -131,7 +131,7 @@ class InvasionService
     public function passes50PercentRule(Dominion $dominion, Dominion $target, array $units): bool
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
-        $defendingForceDP = $this->militaryCalculator->getDefensivePower($target);
+        $defendingForceDP = $this->militaryCalculator->getDefensivePower($target, null, null, null, 0, false);
 
         return ($attackingForceOP > $defendingForceDP * rand(40, 60) / 100);
     }

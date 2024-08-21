@@ -419,7 +419,6 @@ class MilitaryCalculator
         // Military
         foreach ($dominion->race->units as $unit) {
             $powerDefense = $this->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'defense');
-
             $numberOfUnits = 0;
 
             if ($units === null) {
