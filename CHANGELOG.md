@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.41.2] - 2024-08-20
+### Fixed
+- High Cleric's Tower no longer cancels Orc Bloodrage and Undead Zombie casualty penalties
+- The 50% rule (severely outmatched) no longer includes draftee defense
+- Starvation will now correctly kill 50/50 peasants/military
+- 85%/95%/100% buttons on search page updated to only set minimum land
+
 ## [1.41.1] - 2024-08-13
 ### Changed
 - King's Banner: now reduces invasion morale loss by 2% (from no loss)
@@ -2229,7 +2236,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.2...HEAD
+[1.41.2]: https://github.com/OpenDominion/OpenDominion/compare/1.41.1...1.41.2
 [1.41.1]: https://github.com/OpenDominion/OpenDominion/compare/1.41.0...1.41.1
 [1.41.0]: https://github.com/OpenDominion/OpenDominion/compare/1.40.2...1.41.0
 [1.40.2]: https://github.com/OpenDominion/OpenDominion/compare/1.40.1...1.40.2
