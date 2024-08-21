@@ -61,6 +61,16 @@ class CasualtiesCalculator
 
         // Wonders
         if ($target->getWonderPerkValue('max_casualties_offense')) {
+            // Special case for unit casualty penalty
+            $unitPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, ['casualties', 'casualties_offense']) / 100;
+            if ($unitPerk > 0) {
+                $multiplier += $unitPerk;
+            }
+            // Special case for spell casualty penalty
+            $spellPerk = $dominion->getSpellPerkMultiplier('casualties_offense');
+            if ($spellPerk > 0) {
+                $multiplier += $spellPerk;
+            }
             return $multiplier;
         }
 
@@ -131,6 +141,22 @@ class CasualtiesCalculator
 
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;
+
+            // Special case for Undead Necromancer
+            $immortalFromPairingPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_from_pairing');
+            if ($immortalFromPairingPerk) {
+                $pairedUnitSlot = (int)$immortalFromPairingPerk[0];
+                $numberRequired = (int)$immortalFromPairingPerk[1];
+                $pairedUnit = $dominion->race->units[$pairedUnitSlot - 1];
+                $pairedUnitCount = 0;
+                if ($pairedUnit->power_offense == 0) {
+                    $pairedUnitCount = $dominion->{"military_unit{$pairedUnitSlot}"};
+                } elseif (isset($units[$pairedUnitSlot]) && $units[$pairedUnitSlot] > 0) {
+                    $pairedUnitCount = $units[$pairedUnitSlot];
+                }
+                $immortalUnitPercentage = min(1, ($pairedUnitCount / $numberRequired) / $units[$slot]);
+                $unitBonusMultiplier += $immortalUnitPercentage;
+            }
 
             // Unit Perk: Fewer Casualties
             $unitBonusMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['casualties', 'casualties_offense']) / 100);

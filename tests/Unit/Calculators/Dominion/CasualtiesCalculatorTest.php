@@ -9,6 +9,9 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Race;
+use OpenDominion\Models\RoundWonder;
+use OpenDominion\Models\Wonder;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 /**
@@ -30,6 +33,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->dominion = m::mock(Dominion::class);
+        $this->target = m::mock(Dominion::class);
 
         $this->sut = m::mock(CasualtiesCalculator::class, [
             $this->app->make(LandCalculator::class),
@@ -53,7 +57,6 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetStarvationCasualtiesByUnitType()
     {
         $tests = [
-
             // Enough food: No casualties
             [
                 'attributes' => [
@@ -139,13 +142,156 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-//    /**
-//     * @covers ::getTotalStarvationCasualties
-//     */
-//    public function testGetTotalStarvationCasualties()
-//    {
-//        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion, 100));
-//        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion, 0));
-//        $this->assertEquals(400, $this->sut->getTotalStarvationCasualties($this->dominion, -100));
-//    }
+    /**
+     * @covers ::getOffensiveCasualtiesMultiplierForUnitSlot
+     */
+    public function testGetOffensiveCasualtiesMultiplierForUnitSlot()
+    {
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound('last week');
+
+        $firewalker = $this->createDominion(
+            $user,
+            $round,
+            Race::where('key', 'firewalker')->firstOrFail(),
+            $this->createRealm($round, 'good')
+        );
+        $undead = $this->createDominion(
+            $this->createUser(),
+            $round,
+            Race::where('key', 'undead-rework')->firstOrFail(),
+            $this->createRealm($round, 'evil')
+        );
+        $vampire = $this->createDominion(
+            $this->createUser(),
+            $round,
+            Race::where('key', 'vampire')->firstOrFail(),
+            $this->createRealm($round, 'evil')
+        );
+        $goblin = $this->createDominion(
+            $this->createUser(),
+            $round,
+            Race::where('key', 'goblin')->firstOrFail(),
+            $this->createRealm($round, 'evil')
+        );
+
+        $wonder = Wonder::where('key', 'high_clerics_tower')->firstOrFail();
+        RoundWonder::create([
+            'round_id' => $round->id,
+            'realm_id' => $goblin->realm_id,
+            'wonder_id' => $wonder->id,
+            'power' => 1
+        ]);
+
+        $undead->military_unit2 = 250;
+        $casualtiesCalculator = $this->app->make(CasualtiesCalculator::class);
+
+        $tests = [
+            [
+                'attributes' => [
+                    'attacker' => $firewalker,
+                    'slot' => 1,
+                    'amount' => 1000,
+                    'target' => $undead
+                ],
+                'expected' => 1
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $firewalker,
+                    'slot' => 4,
+                    'amount' => 1000,
+                    'target' => $undead
+                ],
+                'expected' => 0.5
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $firewalker,
+                    'slot' => 4,
+                    'amount' => 1000,
+                    'target' => $goblin
+                ],
+                'expected' => 1
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $vampire,
+                    'slot' => 4,
+                    'amount' => 1000,
+                    'target' => $firewalker
+                ],
+                'expected' => 0
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $vampire,
+                    'slot' => 4,
+                    'amount' => 1000,
+                    'target' => $goblin
+                ],
+                'expected' => 1
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $undead,
+                    'slot' => 1,
+                    'amount' => 1000,
+                    'target' => $firewalker
+                ],
+                'expected' => 1.2
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $undead,
+                    'slot' => 1,
+                    'amount' => 1000,
+                    'target' => $goblin
+                ],
+                'expected' => 1.2
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $undead,
+                    'slot' => 4,
+                    'amount' => 100,
+                    'target' => $firewalker
+                ],
+                'expected' => 0
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $undead,
+                    'slot' => 4,
+                    'amount' => 1000,
+                    'target' => $firewalker
+                ],
+                'expected' => 0.75
+            ],
+            [
+                'attributes' => [
+                    'attacker' => $undead,
+                    'slot' => 4,
+                    'amount' => 1000,
+                    'target' => $goblin
+                ],
+                'expected' => 1
+            ]
+        ];
+
+        foreach ($tests as $test) {
+            $this->assertEquals(
+                $test['expected'],
+                $casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot(
+                    $test['attributes']['attacker'],
+                    $test['attributes']['target'],
+                    $test['attributes']['slot'],
+                    [
+                        $test['attributes']['slot'] => $test['attributes']['amount']
+                    ],
+                    0.75
+                )
+            );
+        }
+    }
 }
