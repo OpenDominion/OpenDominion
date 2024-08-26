@@ -985,6 +985,7 @@ class MilitaryCalculator
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'spy_power');
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'ops_power');
 
         return $multiplier;
     }
@@ -1071,6 +1072,7 @@ class MilitaryCalculator
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'wizard_power');
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'ops_power');
 
         // Improvement: Spires
         if ($type == 'offense') {
