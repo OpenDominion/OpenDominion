@@ -19,6 +19,9 @@ class CasualtiesCalculator
     /** @var UnitHelper */
     protected $unitHelper;
 
+    /** @var bool */
+    protected $forTick = false;
+
     /**
      * CasualtiesCalculator constructor.
      */
