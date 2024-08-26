@@ -281,15 +281,15 @@
                     <table class="table">
                         <colgroup>
                             <col width="20%">
-                            <col>
                             <col width="10%">
+                            <col>
                             <col width="25%">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th>Spell</th>
-                                <th>Effect</th>
                                 <th class="text-center">Duration</th>
+                                <th>Effect</th>
                                 <th class="text-center">Cast By</th>
                             </tr>
                         </thead>
@@ -302,12 +302,12 @@
                                     <td>
                                         {{ $spell->name }}
                                     </td>
+                                    <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                     <td>
                                         <div data-toggle="tooltip" data-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
                                             {{ $spellHelper->getSpellDescription($spell) }}
                                         </div>
                                     </td>
-                                    <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                     <td class="text-center">
                                         @php
                                             if (!isset($activeSpell['cast_by_dominion_name'])) {
