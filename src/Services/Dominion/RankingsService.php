@@ -19,6 +19,19 @@ class RankingsService
         return $rankings;
     }
 
+    public function getRankingsByRealm(Round $round): Collection
+    {
+        $rankings = DailyRanking::select('key', 'realm_number')
+            ->where('round_id', $round->id)
+            ->where('rank', 1)
+            ->get('realm_number')
+            ->mapToGroups(function ($ranking) {
+                return [$ranking->realm_number => $ranking->key];
+            });
+
+        return $rankings;
+    }
+
     public function getTopRankedDominions(Round $round): array
     {
         $rankings = DB::table('daily_rankings')

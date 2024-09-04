@@ -12,20 +12,16 @@
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
-                        <colgroup>
-                            <col width="5%">
-                            <col>
-                            <col width="10%">
-                            <col width="20%">
-                            <col width="10%">
-                            <col width="10%">
-                        </colgroup>
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Realm</th>
                                 <th>Wars</th>
                                 <th>Wonder</th>
+                                <th>Titles</th>
+                                <th class="text-center">
+                                    <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League" data-toggle="tooltip"></i>
+                                </th>
                                 <th>Land</th>
                                 <th>Networth</th>
                             </tr>
@@ -63,6 +59,16 @@
                                                 </a>
                                             @endforeach
                                         @endif
+                                    </td>
+                                    <td style="font-size: 20px;">
+                                        @if (isset($rankings[$realm->number]))
+                                            @foreach ($rankings[$realm->number] as $ranking)
+                                                {!! $rankingsHelper->getIconDisplay([$ranking]) !!}
+                                            @endforeach
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        {{ isset($blackGuard[$realm->id]) ? $blackGuard[$realm->id] : '--' }}
                                     </td>
                                     <td>
                                         {{ number_format($realm->dominions->map(function($dominion) use ($landCalculator) { return $landCalculator->getTotalLand($dominion); })->sum()) }}

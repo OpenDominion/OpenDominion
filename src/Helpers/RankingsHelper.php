@@ -298,7 +298,7 @@ class RankingsHelper
         if ($defaultRanking) {
             return sprintf(
                 '<a href="%s"><i class="ra %s" title="%s" data-toggle="tooltip"></i></a>',
-                route('dominion.rankings', $defaultRanking),
+                route('dominion.rankings', $defaultRanking['key']),
                 $defaultRanking['title_icon'],
                 $defaultRanking['title']
             );
