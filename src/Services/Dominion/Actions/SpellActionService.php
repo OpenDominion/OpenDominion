@@ -841,7 +841,7 @@ class SpellActionService
                     if ($lightningStormSpell !== null) {
                         $lightningPerkValue = $target->getSpellPerkValue('lightning_storm', ['effect']) / 100;
                         $amount = round($damage * $lightningPerkValue);
-                        $duration = $lightningStormSpell->duration;
+                        $duration = $lightningStormSpell->pivot->duration;
                         if ($amount > 0) {
                             $this->queueService->queueResources(
                                 'operations',
