@@ -1005,7 +1005,7 @@ class MilitaryCalculator
 
         // Mastery
         $maxMasteryBonus = 2;
-        $regen += $dominion->spy_mastery / 1000 * $maxMasteryBonus;
+        $regen += min($maxMasteryBonus, ($dominion->spy_mastery / 1000) * $maxMasteryBonus);
 
         return $regen;
     }
@@ -1097,7 +1097,7 @@ class MilitaryCalculator
 
         // Mastery
         $maxMasteryBonus = 2;
-        $regen += $dominion->wizard_mastery / 1000 * $maxMasteryBonus;
+        $regen += min($maxMasteryBonus, ($dominion->wizard_mastery / 1000) * $maxMasteryBonus);
 
         // Resilience bonus when snared
         if ($dominion->wizard_strength < 30) {
