@@ -33,6 +33,7 @@ use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
 use OpenDominion\Services\DiscordService;
+use OpenDominion\Services\JournalService;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
@@ -140,6 +141,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(AnalyticsService::class);
         $this->app->singleton(CouncilService::class);
         $this->app->singleton(DiscordService::class);
+        $this->app->singleton(JournalService::class);
         $this->app->singleton(ForumService::class);
         $this->app->singleton(GameEventService::class);
         $this->app->singleton(MessageBoardService::class);
