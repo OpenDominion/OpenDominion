@@ -107,6 +107,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Post[] $councilPosts
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion\History[] $history
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion\Journal[] $journals
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \OpenDominion\Models\Pack|null $pack
  * @property-read \OpenDominion\Models\Race $race
@@ -230,6 +231,11 @@ class Dominion extends AbstractModel
     public function events()
     {
         return $this->sourceEvents()->union($this->targetEvents());
+    }
+
+    public function journals()
+    {
+        return $this->hasMany(Journal::class);
     }
 
     public function sourceEvents()

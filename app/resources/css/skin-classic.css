@@ -196,6 +196,9 @@
 .skin-classic .timeline li .timeline-header {
     border-bottom-color: #29252a;
 }
+.skin-classic .nav-stacked > li {
+    border-bottom: none;
+}
 .skin-classic .nav-stacked > li > a {
     color: #ACB9BB;
 }

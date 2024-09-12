@@ -235,6 +235,13 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
             $router->post('government/advisors')->uses('Dominion\GovernmentController@postAdvisors')->name('government.advisors');
 
+            // Journal
+            $router->get('journal/{id?}')->uses('Dominion\JournalController@getJournal')->name('journal');
+            $router->post('journal')->uses('Dominion\JournalController@postCreate')->name('journal.create');
+            $router->post('journal/{journal}')->uses('Dominion\JournalController@postUpdate')->name('journal.update');
+            $router->get('journal/{journal}/delete')->uses('Dominion\JournalController@getDelete')->name('journal.delete');
+            $router->post('journal/{journal}/delete')->uses('Dominion\JournalController@postDelete');
+
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
 

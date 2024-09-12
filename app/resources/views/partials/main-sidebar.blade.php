@@ -100,6 +100,7 @@
                         @endif
                     </a>
                 </li>
+                <li class="{{ Route::is('dominion.journal') ? 'active' : null }}"><a href="{{ route('dominion.journal') }}"><i class="ra ra-scroll-quill ra-fw"></i> <span>Journal</span></a></li>
 
                 <li class="header">OPERATIONS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
