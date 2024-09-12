@@ -211,7 +211,7 @@ class SpellHelper
             'wizard_power' => '%+g%% wizard power',
             'wizard_power_defense' => '%+g%% defensive wizard power',
             'wonder_damage' => 'Deals damage to wonders',
-            'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery',
+            'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery (max 10%%)',
             'spell_refund' => 'Failed spells refund %d%% of their mana cost',
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',

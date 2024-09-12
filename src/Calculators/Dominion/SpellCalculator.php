@@ -71,7 +71,7 @@ class SpellCalculator
 
         // Mastery
         $maxMasteryBonus = -20;
-        $spellCostMultiplier += max($maxMasteryBonus, ($dominion->wizard_mastery / 1000) * $maxMasteryBonus) / 100;
+        $spellCostMultiplier += min(1000, $dominion->wizard_mastery) / 1000 * $maxMasteryBonus / 100;
 
         $manaCost = round($spell->cost_mana * $totalLand * $spellCostMultiplier);
 

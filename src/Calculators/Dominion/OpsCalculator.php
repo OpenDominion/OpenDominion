@@ -195,7 +195,7 @@ class OpsCalculator
 
         // Mastery
         $maxMasteryBonus = -50;
-        $spiesKilledMultiplier += max($maxMasteryBonus, ($dominion->spy_mastery / 1000) * $maxMasteryBonus) / 100;
+        $spiesKilledMultiplier += min(1000, $dominion->spy_mastery) / 1000 * $maxMasteryBonus / 100;
 
         // Mutual War
         if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
