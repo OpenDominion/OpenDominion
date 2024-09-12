@@ -4,6 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Journals page: a place to keep your notes and calculations, dated by day/hour in the round
+- Titles and Shadow League membership now visible on The World page
+
+### Fixed
+- Mastery bonuses now properly capped at 1000 mastery
+- Bonus damage from Lightning Storm now queues for the remaining duration rather than the maximum duration
 
 ## [1.41.2] - 2024-08-20
 ### Fixed
@@ -81,7 +88,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Calculator page now shows black ops stats
 - Rankings advisor now shows all titles/icons
 - Title icons on realm page now link to their rankings pages
-- The World page lists all realms with their war status, wonders, and statistics
+- The World page: lists all realms with their war status, wonders, and statistics
 
 ### Changed
 - Recent invasions now reduce maximum offense:defense ratio (5:4 rule) by 0.125 per invasion after the fourth in a three day period (was second in a five day period), down to a minimum of 1 (was 0.75)
