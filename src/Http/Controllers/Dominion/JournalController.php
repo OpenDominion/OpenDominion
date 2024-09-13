@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Journal;
