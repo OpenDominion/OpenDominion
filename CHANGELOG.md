@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.41.3] - 2024-09-12
 ### Added
 - Journals page: a place to keep your notes and calculations, dated by day/hour in the round
 - Titles and Shadow League membership now visible on The World page
@@ -2243,7 +2245,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.41.3...HEAD
+[1.41.3]: https://github.com/OpenDominion/OpenDominion/compare/1.41.2...1.41.3
 [1.41.2]: https://github.com/OpenDominion/OpenDominion/compare/1.41.1...1.41.2
 [1.41.1]: https://github.com/OpenDominion/OpenDominion/compare/1.41.0...1.41.1
 [1.41.0]: https://github.com/OpenDominion/OpenDominion/compare/1.40.2...1.41.0
