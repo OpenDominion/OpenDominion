@@ -62,6 +62,6 @@ class Spell extends AbstractModel
     }
 
     public function isHarmful() {
-        return $this->category == 'hostile' || $this->category == 'war' || $this->key == 'burning';
+        return $this->category == 'hostile' || $this->category == 'war' || $this->key == 'burning' || $this->key == 'lightning_storm';
     }
 }

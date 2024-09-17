@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [1.41.3] - 2024-09-12
 ### Added
-- Journals page: a place to keep your notes and calculations, dated by day/hour in the round
+- Journal page: a place to keep your notes and calculations, dated by day/hour in the round
 - Titles and Shadow League membership now visible on The World page
 
 ### Fixed
