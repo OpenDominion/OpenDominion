@@ -47,6 +47,7 @@ class DestroyActionService
 
         $data = array_map('\intval', $data);
 
+        $discountedAcres = 0;
         $totalBuildingsToDestroy = array_sum($data);
 
         if ($totalBuildingsToDestroy === 0) {
@@ -77,7 +78,7 @@ class DestroyActionService
             // Heroes
             if ($dominion->hero !== null) {
                 if ($dominion->hero->getPerkValue('raze_mod_building_discount') && in_array($buildingType, ['gryphon_nest', 'guard_tower', 'temple'])) {
-                    $dominion->discounted_land += $amount;
+                    $discountedAcres += $amount;
                 }
             }
         }
@@ -113,13 +114,16 @@ class DestroyActionService
             $dominion->resource_platinum += $platinumRefund;
             $dominion->resource_lumber += $lumberRefund;
         }
+
         $excludedRaces = ['nomad-rework', 'wood-elf'];
         if ($dominion->getTechPerkValue('destruction_discount') != 0 && !in_array($dominion->race->key, $excludedRaces)) {
             $multiplier = $dominion->getTechPerkMultiplier('destruction_discount');
             $discountedAcres = floor($multiplier * $totalBuildingsToDestroy);
+        }
 
-            $destructionRefundString = " {$discountedAcres} acres can now be rebuilt at a discount.";
+        if ($discountedAcres > 0) {
             $dominion->discounted_land += $discountedAcres;
+            $destructionRefundString = " {$discountedAcres} acres can now be rebuilt at a discount.";
         }
 
         $dominion->save([
