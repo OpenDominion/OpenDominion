@@ -65,7 +65,7 @@ class WonderCalculator
         }
 
         $maxPower = min(37500 * $day, 2 * $wonder->power);
-        $damageByRealm = min($this->getDamageDealtByRealm($wonder, $realm), $wonder->power);
+        $damageByRealm = $this->getDamageDealtByRealm($wonder, $realm);
         $damageContribution =  $damageByRealm / $wonder->power;
         $newPower = floor($maxPower * $damageContribution);
         return max(static::MIN_SPAWN_POWER, round($newPower, -4));
@@ -121,9 +121,11 @@ class WonderCalculator
     */
     public function getDamageDealtByRealm(RoundWonder $wonder, Realm $realm): float
     {
-        return $wonder->damage()
+        $damage = $wonder->damage()
             ->where('realm_id', $realm->id)
             ->sum('damage');
+
+        return min($damage, $wonder->power);
     }
 
     /**
@@ -145,6 +147,23 @@ class WonderCalculator
     }
 
     /**
+     * Returns the damage contribution for a dominion
+     *
+     * @param RoundWonder $wonder
+     * @param Dominion $dominion
+     * @param string $source
+     *
+     * @return float
+     */
+    public function getDamageContribution(RoundWonder $wonder, Dominion $dominion, ?string $source = null): float
+    {
+        $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
+        $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, $source);
+
+        return $attackDamageByDominion / $damageByRealm;
+    }
+
+    /**
     * Calculates prestige gain for a dominion
     *
     * @param RoundWonder $wonder
@@ -158,10 +177,7 @@ class WonderCalculator
             return 0;
         }
 
-        $damageByRealm = min($this->getDamageDealtByRealm($wonder, $dominion->realm), $wonder->power);
-        $attackDamageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'attack');
-
-        $damageContribution = $attackDamageByDominion / $damageByRealm;
+        $damageContribution = $this->getDamageContribution($wonder, $dominion, 'attack');
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
             return 0;
         }
@@ -186,10 +202,7 @@ class WonderCalculator
             return 0;
         }
 
-        $damageByRealm = min($this->getDamageDealtByRealm($wonder, $dominion->realm), $wonder->power);
-        $attackDamageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'cyclone');
-
-        $damageContribution = $attackDamageByDominion / $damageByRealm;
+        $damageContribution = $this->getDamageContribution($wonder, $dominion, 'cyclone');
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
             return 0;
         }

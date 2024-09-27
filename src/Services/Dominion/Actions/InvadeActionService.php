@@ -21,6 +21,7 @@ use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
+use OpenDominion\Services\ValorService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class InvadeActionService
@@ -321,6 +322,13 @@ class InvadeActionService
                     $xpLoss = min($target->hero->experience - $currentLevelXP, $this->invasionResult['defender']['landLost']);
                     $this->invasionResult['defender']['xpLoss'] = $xpLoss;
                 }
+            }
+
+            // Valor
+            $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
+            if ($warDeclared) {
+                $valorService = app(ValorService::class);
+                $valorService->awardValor($dominion, 'war_hit');
             }
 
             // Stat changes

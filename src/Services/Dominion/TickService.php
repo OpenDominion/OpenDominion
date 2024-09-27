@@ -1055,6 +1055,8 @@ class TickService
             );
 
             Log::debug('Daily rankings finished');
+
+            // TODO: Update valor rankings
         }
     }
 }

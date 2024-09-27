@@ -24,6 +24,7 @@ use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
+use OpenDominion\Services\ValorService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use OpenDominion\Traits\RealmGuardsTrait;
 
@@ -80,6 +81,9 @@ class WonderActionService
     /** @var SpellHelper */
     protected $spellHelper;
 
+    /** @var ValorService */
+    protected $valorService;
+
     /** @var WonderCalculator */
     protected $wonderCalculator;
 
@@ -120,6 +124,7 @@ class WonderActionService
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      * @param SpellHelper $spellHelper
+     * @param ValorService $valorService
      * @param WonderCalculator $wonderCalculator
      */
     public function __construct(
@@ -134,6 +139,7 @@ class WonderActionService
         QueueService $queueService,
         SpellCalculator $spellCalculator,
         SpellHelper $spellHelper,
+        ValorService $valorService,
         WonderCalculator $wonderCalculator
     )
     {
@@ -148,6 +154,7 @@ class WonderActionService
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->spellHelper = $spellHelper;
+        $this->valorService = $valorService;
         $this->wonderCalculator = $wonderCalculator;
     }
 
@@ -467,6 +474,7 @@ class WonderActionService
         $prestigeRewards = [];
         $masteryRewards = [];
         foreach ($friendlyDominions as $friendlyDominion) {
+            // Rewards
             $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
             $masteryGain = $this->wonderCalculator->getMasteryGainForDominion($wonder, $friendlyDominion);
             if ($friendlyDominion->id == $dominion->id) {
@@ -481,6 +489,14 @@ class WonderActionService
             }
             $prestigeRewards[$friendlyDominion->id] = $prestigeGain;
             $masteryRewards[$friendlyDominion->id] = $masteryGain;
+
+            // Valor
+            $damageContribution = $this->wonderCalculator->getDamageContribution($wonder, $friendlyDominion);
+            if ($currentRealm !== null) {
+                $valorService->awardValor($friendlyDominion, 'wonder', $damageContribution);
+            } else {
+                $valorService->awardValor($friendlyDominion, 'wonder_neutral', $damageContribution);
+            }
         }
 
         $wonder->damage()->delete();
