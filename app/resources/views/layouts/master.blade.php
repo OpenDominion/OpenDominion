@@ -18,9 +18,10 @@
     <meta name="apple-mobile-web-app-title" content="OpenDominion">
     <meta name="application-name" content="OpenDominion">
     @if (Auth::user() && Auth::user()->skin == 'skin-classic')
-        <meta name="theme-color" content="#005566">
+        <meta name="theme-color" content="#000000">
         <style type="text/css">
             :root {
+                background: #000000;
                 color-scheme: dark;
             }
         </style>
