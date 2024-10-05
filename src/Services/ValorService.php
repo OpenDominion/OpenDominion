@@ -2,7 +2,10 @@
 
 namespace OpenDominion\Services;
 
+use OpenDominion\Calculators\ValorCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\Valor;
 
 class ValorService
@@ -19,14 +22,12 @@ class ValorService
      * @param Dominion $dominion
      * @param string $source
      * @param float $amount
-     *
-     * @return bool
      */
-    public function awardValor(Dominion $dominion, string $source, float $amount = 0): bool
+    public function awardValor(Dominion $dominion, string $source, float $amount = 0)
     {
         if ($source == 'largest_hit') {
             $amount = self::BONUS_VALOR_HOTR_BASE;
-            $amount += $dominions->round->daysInRound() * self::BONUS_VALOR_HOTR_DAY_MULTIPLIER;
+            $amount += $dominion->round->daysInRound() * self::BONUS_VALOR_HOTR_DAY_MULTIPLIER;
         } elseif ($source == 'war_hit') {
             $amount = self::BONUS_VALOR_WAR_HIT;
         } elseif ($source == 'wonder') {
@@ -42,5 +43,38 @@ class ValorService
             'source' => $source,
             'amount' => $amount
         ]);
+    }
+
+    /** 
+     * Update valor statistics for a round.
+     * 
+     * @param Round $round
+     */
+    public function updateValor(Round $round)
+    {
+        $valorCalculator = app(ValorCalculator::class);
+        $valor = $valorCalculator->calculate($round);
+
+        Dominion::upsert(
+            collect($valor['dominions'])->map(function ($value, $key) {
+                return [
+                    'id' => $key,
+                    'valor' => $value,
+                ];
+            })->toArray(),
+            ['id'],
+            ['valor']
+        );
+
+        Realm::upsert(
+            collect($valor['realms'])->map(function ($value, $key) {
+                return [
+                    'id' => $key,
+                    'valor' => $value
+                ];
+            })->toArray(),
+            ['id'],
+            ['valor']
+        );
     }
 }

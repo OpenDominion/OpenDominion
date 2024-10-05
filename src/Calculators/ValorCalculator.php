@@ -34,26 +34,32 @@ class ValorCalculator
 
     public function calculate(Round $round)
     {
-        $realmValor = [];
-        $dominions = $round->activeDominions()->where('user_id', '!=', null)->get();
+        $valor = [
+            'dominions' => [],
+            'realms' => [],
+        ];
+
+        $dominions = $round->activeDominions()
+            ->where('user_id', '!=', null)
+            ->where('protection_ticks_remaining', 0)
+            ->get();
         $fixedValor = $this->calculateFixedValor($round, $dominions);
         $bonusValor = $this->calculateBonusValor($round, $dominions);
 
         $realms = $round->realms->where('number', '!=', 0);
         foreach ($realms as $realm) {
-            $realmValor[$realm->id] = 0;
+            $valor['realms'][$realm->id] = 0;
             foreach ($realm->dominions as $dominion) {
                 $individualValor = (
                     (isset($fixedValor[$dominion->id]) ? $fixedValor[$dominion->id] : 0) +
                     (isset($bonusValor[$dominion->id]) ? $bonusValor[$dominion->id] : 0)
                 );
-                $realmValor[$realm->id] += $individualValor;
-                // $dominion->valor = $individualValor;
-                // $dominion->save();
+                $valor['dominions'][$dominion->id] = $individualValor;
+                $valor['realms'][$realm->id] += $individualValor;
             }
         }
 
-        return $realmValor;
+        return $valor;
     }
 
     public function calculateFixedValor(Round $round, Collection $dominions)

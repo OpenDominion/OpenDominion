@@ -29,6 +29,7 @@ use OpenDominion\Models\SpellPerkType;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
+use OpenDominion\Services\ValorService;
 use OpenDominion\Services\WonderService;
 use Throwable;
 
@@ -1056,7 +1057,11 @@ class TickService
 
             Log::debug('Daily rankings finished');
 
-            // TODO: Update valor rankings
+            // Update Valor rankings
+            Log::debug('Valor calculation started');
+            $valorService = app(ValorService::class);
+            $valorService->updateValor($round);
+            Log::debug('Valor calculation finished');
         }
     }
 }
