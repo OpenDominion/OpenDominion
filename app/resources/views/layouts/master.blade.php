@@ -17,7 +17,17 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="apple-mobile-web-app-title" content="OpenDominion">
     <meta name="application-name" content="OpenDominion">
-    <meta name="theme-color" content="#ffffff">
+    @if (Auth::user() && Auth::user()->skin == 'skin-classic')
+        <meta name="theme-color" content="#000000">
+        <style type="text/css">
+            :root {
+                background: #000000;
+                color-scheme: dark;
+            }
+        </style>
+    @else
+        <meta name="theme-color" content="#ffffff">
+    @endif
 
     @include('partials.styles')
 
