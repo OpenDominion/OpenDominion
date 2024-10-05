@@ -19,7 +19,12 @@ use OpenDominion\Services\Realm\HistoryService;
  * @property string $alignment
  * @property int $number
  * @property string|null $name
+ * @property int|null $discord_role_id
+ * @property int|null $discord_category_id
+ * @property string|null $motd
+ * @property \Illuminate\Support\Carbon|null $motd_updated_at
  * @property int $rating
+ * @property int $valor
  * @property array|null $settings
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

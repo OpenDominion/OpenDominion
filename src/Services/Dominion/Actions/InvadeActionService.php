@@ -864,7 +864,17 @@ class InvadeActionService
             $this->invasionResult['attacker']['landGained'] += $landGenerated;
         }
 
-        $this->invasionResult['defender']['landLost'] += $acresLost;
+        $this->invasionResult['defender']['landLost'] = $acresLost;
+        // Update largest hit of the round
+        if ($acresLost > $dominion->round->largest_hit) {
+            $dominion->round->largest_hit = $acresLost;
+            $dominion->round->save();
+            // Valor
+            if ($dominion->round->daysInRound() > 1) {
+                $valorService = app(ValorService::class);
+                $valorService->awardValor($dominion, 'largest_hit');
+            }
+        }
 
         $queueData = $landGainedPerLandType;
 

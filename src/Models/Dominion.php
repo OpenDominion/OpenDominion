@@ -25,6 +25,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $peasants_last_hour
  * @property int $draft_rate
  * @property int $morale
+ * @property int $valor
  * @property float $spy_strength
  * @property float $wizard_strength
  * @property int $spy_mastery
@@ -85,6 +86,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_shrine
  * @property int $building_barracks
  * @property int $building_dock
+ * @property int $highest_land_achieved
  * @property int $calculated_networth
  * @property \Illuminate\Support\Carbon|null $council_last_read
  * @property \Illuminate\Support\Carbon|null $forum_last_read
@@ -95,6 +97,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property \Illuminate\Support\Carbon|null $black_guard_active_at
  * @property \Illuminate\Support\Carbon|null $black_guard_inactive_at
  * @property \Illuminate\Support\Carbon|null $last_tick_at
+ * @property string|null $hourly_activity
  * @property \Illuminate\Support\Carbon|null $locked_at
  * @property \Illuminate\Support\Carbon|null $abandoned_at
  * @property int $protection_ticks_remaining
@@ -130,6 +133,7 @@ class Dominion extends AbstractModel
         'peasants_last_hour' => 'integer',
         'draft_rate' => 'integer',
         'morale' => 'integer',
+        'valor' => 'integer',
         'spy_strength' => 'float',
         'wizard_strength' => 'float',
         'spy_mastery' => 'integer',
@@ -187,6 +191,7 @@ class Dominion extends AbstractModel
         'building_shrine' => 'integer',
         'building_barracks' => 'integer',
         'building_dock' => 'integer',
+        'highest_land_achieved' => 'integer',
         'calculated_networth' => 'integer',
         'council_last_read' => 'datetime',
         'forum_last_read' => 'datetime',

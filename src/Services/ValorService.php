@@ -24,7 +24,7 @@ class ValorService
      */
     public function awardValor(Dominion $dominion, string $source, float $amount = 0): bool
     {
-        if ($source == 'hotr') {
+        if ($source == 'largest_hit') {
             $amount = self::BONUS_VALOR_HOTR_BASE;
             $amount += $dominions->round->daysInRound() * self::BONUS_VALOR_HOTR_DAY_MULTIPLIER;
         } elseif ($source == 'war_hit') {
