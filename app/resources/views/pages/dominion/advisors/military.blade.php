@@ -68,9 +68,15 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>Boat Capacity:</td>
+                                        <td>
+                                            <strong>{{ number_format($militaryCalculator->getBoatCapacity($target)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>Temple Reduction:</td>
                                         <td>
-                                            <strong>{{ number_string($militaryCalculator->getTempleReduction($target) * 100, 3, true) }}%</strong>
+                                            <strong>{{ number_string($militaryCalculator->getTempleReduction($target) * 100, 3) }}%</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -118,6 +124,12 @@
                                             <strong>{{ number_string(($casualtiesCalculator->getDefensiveCasualtiesMultiplier($target) - 1) * 100, 3, true) }}%</strong>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Boats Protected:</td>
+                                        <td>
+                                            <strong>{{ number_format($militaryCalculator->getBoatsProtected($target)) }}</strong>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -160,20 +172,26 @@
                                 </tbody>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Boats</th>
+                                        <th colspan="2">Offensive Casualties</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Capacity:</td>
+                                        <td>{{ $unitHelper->getUnitName('unit1', $target->race) }}:</td>
                                         <td>
-                                            <strong>{{ number_format($militaryCalculator->getBoatCapacity($target)) }}</strong>
+                                            <strong>{{ number_format($target->stat_military_unit1_lost) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Protected:</td>
+                                        <td>{{ $unitHelper->getUnitName('unit3', $target->race) }}:</td>
                                         <td>
-                                            <strong>{{ number_format($militaryCalculator->getBoatsProtected($target)) }}</strong>
+                                            <strong>{{ number_format($target->stat_military_unit3_lost) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $unitHelper->getUnitName('unit4', $target->race) }}:</td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_military_unit4_lost) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
