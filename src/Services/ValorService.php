@@ -45,9 +45,9 @@ class ValorService
         ]);
     }
 
-    /** 
+    /**
      * Update valor statistics for a round.
-     * 
+     *
      * @param Round $round
      */
     public function updateValor(Round $round)

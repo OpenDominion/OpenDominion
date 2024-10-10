@@ -98,7 +98,7 @@ class ValorCalculator
     {
         if ($landRank == 0) {
             return 0;
-        } else if ($landRank == 1) {
+        } elseif ($landRank == 1) {
             return 1000;
         } elseif ($landRank == 2) {
             return 500;
