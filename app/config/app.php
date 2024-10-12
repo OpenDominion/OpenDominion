@@ -167,7 +167,6 @@ return [
          */
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-        Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -234,7 +233,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
-        'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Gravatar' => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,
         'Image' => Intervention\Image\Facades\Image::class,
