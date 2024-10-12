@@ -30,7 +30,6 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Services\Activity\ActivityService;
-use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
 use OpenDominion\Services\DiscordService;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
@@ -139,7 +138,6 @@ class AppServiceProvider extends AbstractServiceProvider
     {
         // Services
         $this->app->singleton(ActivityService::class);
-        $this->app->singleton(AnalyticsService::class);
         $this->app->singleton(CouncilService::class);
         $this->app->singleton(DiscordService::class);
         $this->app->singleton(JournalService::class);

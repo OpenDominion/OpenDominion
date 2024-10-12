@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Middleware;
 
-use Analytics;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,9 +35,6 @@ class Authenticate
             $request->session()->flash('alert-danger', 'Your account has not been activated yet. Check your spam folder for the activation email.');
             return redirect()->guest(route('auth.login'));
         }
-
-        // Analytics
-        Analytics::setUserId(str_pad($user->id, 6, 0, STR_PAD_LEFT));
 
         return $next($request);
     }

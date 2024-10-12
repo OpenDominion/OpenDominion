@@ -7,8 +7,6 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\TechActionRequest;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
-use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\TechActionService;
 
 class TechController extends AbstractDominionController

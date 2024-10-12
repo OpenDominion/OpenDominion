@@ -11,7 +11,6 @@ use OpenDominion\Listeners\InfoOpCreating;
 use OpenDominion\Listeners\SendUserRegistrationNotification;
 use OpenDominion\Listeners\SetUserDefaultSettings;
 use OpenDominion\Listeners\Subscribers\ActivitySubscriber;
-use OpenDominion\Listeners\Subscribers\AnalyticsSubscriber;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -40,7 +39,6 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         ActivitySubscriber::class,
-        AnalyticsSubscriber::class,
     ];
 
     /**

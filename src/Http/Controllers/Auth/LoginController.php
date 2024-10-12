@@ -10,8 +10,6 @@ use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Events\UserLoggedOutEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
-use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class LoginController extends AbstractController
