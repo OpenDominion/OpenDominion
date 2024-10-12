@@ -27,8 +27,6 @@ class UserController extends AbstractController
     {
         auth()->login($user);
 
-        // todo: disable analytics
-
         return redirect()->route('dashboard');
     }
 }

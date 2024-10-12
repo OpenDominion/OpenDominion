@@ -17,8 +17,6 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
-use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\PackService;
 use OpenDominion\Services\RealmFinderService;
@@ -201,14 +199,6 @@ class RoundController extends AbstractController
 
         $dominionSelectorService = app(SelectorService::class);
         $dominionSelectorService->selectUserDominion($dominion);
-
-        // todo: fire laravel event
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsEvent(
-            'round',
-            'register',
-            (string)$round->number
-        ));
 
         $request->session()->flash(
             'alert-success',

@@ -12,8 +12,6 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\PerformEspionageRequest;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
-use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
@@ -54,14 +52,6 @@ class EspionageController extends AbstractDominionController
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
-
-        // todo: fire laravel event
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsEvent(
-            'dominion',
-            'espionage.perform',
-            $result['data']['operation']
-        ));
 
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
 

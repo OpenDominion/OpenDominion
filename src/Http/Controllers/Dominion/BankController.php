@@ -5,8 +5,6 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\BankActionRequest;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
-use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
 
 class BankController extends AbstractDominionController
@@ -36,15 +34,6 @@ class BankController extends AbstractDominionController
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
-
-        // todo: fire laravel event
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsEvent(
-            'dominion',
-            'bank',
-            '', // todo: make null?
-            $request->get('amount')
-        ));
 
         $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.bank');

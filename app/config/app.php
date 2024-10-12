@@ -252,5 +252,6 @@ return [
     'discord_client_id' => env('DISCORD_CLIENT_ID'),
     'discord_client_secret' => env('DISCORD_CLIENT_SECRET'),
     'discord_bot_token' => env('DISCORD_BOT_TOKEN'),
+    'google_analytics_id' => env('GOOGLE_ANALYTICS_ID'),
 
 ];

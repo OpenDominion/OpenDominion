@@ -13,8 +13,6 @@ use OpenDominion\Http\Requests\Dominion\Actions\WonderActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
-use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\WonderActionService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\ProtectionService;
@@ -71,14 +69,6 @@ class WonderController extends AbstractDominionController
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
-
-        // todo: fire laravel event
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsEvent(
-            'dominion',
-            'wonder',
-            $request->get('action')
-        ));
 
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
         return redirect()

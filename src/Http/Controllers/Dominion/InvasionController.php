@@ -52,8 +52,6 @@ class InvasionController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        // analytics event
-
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
         return redirect()->to($result['redirect'] ?? route('dominion.invade'));
     }
