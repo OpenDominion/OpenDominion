@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1da187a89919f4e999148fc96459a75a",
+    "content-hash": "68e08bcb1e5717847f2f4447b456eeb3",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -2145,74 +2145,6 @@
                 }
             ],
             "time": "2022-05-21T17:30:32+00:00"
-        },
-        {
-            "name": "ipunkt/laravel-analytics",
-            "version": "4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ipunkt/laravel-analytics.git",
-                "reference": "b247c5386f8e6f5a6ede15fc322b4a9b88e194f8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ipunkt/laravel-analytics/zipball/b247c5386f8e6f5a6ede15fc322b4a9b88e194f8",
-                "reference": "b247c5386f8e6f5a6ede15fc322b4a9b88e194f8",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/config": "~5.0 || ^6.0 || ^7.0 || ^8.0",
-                "illuminate/session": "~5.0 || ^6.0 || ^7.0 || ^8.0",
-                "illuminate/support": "~5.0 || ^6.0 || ^7.0 || ^8.0",
-                "php": "^7.2 || ^8.0"
-            },
-            "require-dev": {
-                "laravel/framework": "~5.0 || ^6.0 || ^7.0 || ^8.0"
-            },
-            "suggest": {
-                "martijnc/php-csp": "For handling Content Security Policy matters"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Ipunkt\\LaravelAnalytics\\AnalyticsServiceProvider"
-                    ],
-                    "aliases": {
-                        "Analytics": "Ipunkt\\LaravelAnalytics\\AnalyticsFacade"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Ipunkt\\LaravelAnalytics\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Robert Kummer",
-                    "email": "r.kummer@ipunkt.biz"
-                }
-            ],
-            "description": "Analytics tracking for Laravel",
-            "keywords": [
-                "analytics",
-                "google analytics",
-                "javascript",
-                "laravel",
-                "php",
-                "statistics"
-            ],
-            "support": {
-                "issues": "https://github.com/ipunkt/laravel-analytics/issues",
-                "source": "https://github.com/ipunkt/laravel-analytics/archive/master.zip"
-            },
-            "abandoned": true,
-            "time": "2020-12-17T08:44:24+00:00"
         },
         {
             "name": "jaybizzle/crawler-detect",
@@ -11066,5 +10998,5 @@
         "ext-pdo_mysql": "^7.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.0.0"
 }
