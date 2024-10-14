@@ -728,6 +728,23 @@ class TickService
                     $dominionSpell->dominion->save();
                 }
             }
+
+            // Special case for Dark Elf
+            $unitProductionPerk = SpellPerkType::where('key', 'wizard_guilds_produce_military_unit3')->first();
+            if ($unitProductionPerk !== null) {
+                $spellIds = $unitProductionPerk->spells->pluck('id');
+                $dominionSpells = DominionSpell::whereIn('spell_id', $spellIds)->whereIn('dominion_id', $dominionIds)->get();
+                foreach ($dominionSpells as $dominionSpell) {
+                    $perk = $dominionSpell->spell->perks()->where('key', 'wizard_guilds_produce_military_unit3')->first();
+                    $unitsProduced = ($dominionSpell->dominion->building_wizard_guild * $perk->pivot->value) + $dominionSpell->dominion->racial_value;
+                    // Queue units
+                    $units = ['military_unit3' => (int) floor($unitsProduced)];
+                    $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
+                    // Save dominion
+                    $dominionSpell->dominion->racial_value = fmod($unitsProduced, 1);
+                    $dominionSpell->dominion->save();
+                }
+            }
         }, 5);
     }
 

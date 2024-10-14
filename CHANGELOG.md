@@ -5,6 +5,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.42.0] - 2024-10-14
+### Added
+- Offensive casualty statistics for the round are now displayed in the military advisor
+
+### Changed
+- Dark Elf: Delve into Shadow now enables Wizard Guilds to generate 0.05 Adepts per hour, exploration cost from Mastery removed
+- Dark Elf Spellblade: defensive power increased to 3 (from 2.5)
+- Spirit Ghost: offensive casualty reduction increased to 30%
+- Spirit Spectre: offensive casualty reduction increased to 80% (from 70%)
+- Undead: maximum population bonus reduced to 2.5% (from 5%), all units now require boats, boat capacity increased by 10, Death and Decay now turns 0.5% of your peasants into Zombies (from 1%) but cooldown reduced to 24 hours (from 48 hours)
+- Vampire: Feast of Blood increased to 10% (from 9.5%)
+- Vampire Bloodreaver: conversions increased to one per 20 sent (from one per 22)
+
+### Fixed
+- Mobile controls should now be black when using classic theme (dark mode)
+
 ## [1.41.3] - 2024-09-12
 ### Added
 - Journal page: a place to keep your notes and calculations, dated by day/hour in the round

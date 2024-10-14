@@ -9,9 +9,10 @@ explorer_difficulty: 2
 converter_difficulty: 2
 home_land_type: swamp
 perks:
-  max_population: 5
+  max_population: 2.5
   food_consumption: -50
   mana_production: 20
+  boat_capacity: 10
 units:
   - name: Zombie
     cost:
@@ -22,7 +23,6 @@ units:
       defense: 0
     perks:
       casualties: 20
-    need_boat: false
   - name: Necromancer
     cost:
       platinum: 750
@@ -45,4 +45,3 @@ units:
       defense: 3
     perks:
       immortal_from_pairing: 2,1 # slot, num required
-    need_boat: false

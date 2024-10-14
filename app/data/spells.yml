@@ -398,8 +398,9 @@ delve_into_shadow:
   races:
     - dark-elf-rework
   perks:
-    explore_cost_wizard_mastery: 100
     spell_refund: 50
+    wizard_guilds_produce_military_unit3: 0.05
+    invalid_protection: 1
 gaias_blessing:
   name: Gaia's Blessing
   category: self
@@ -555,13 +556,13 @@ death_and_decay:
   cost_mana: 5
   cost_strength: 5
   duration: 6
-  cooldown: 48
+  cooldown: 24
   races:
     - undead-rework
   perks:
     food_decay: 100
     lumber_decay: 100
-    convert_peasants_to_self_military_unit1: 1
+    convert_peasants_to_self_military_unit1: 0.5
     invalid_protection: 1
 feast_of_blood:
   name: Feast of Blood
@@ -573,7 +574,7 @@ feast_of_blood:
     - vampire
   perks:
     cancels_immortal: 1
-    convert_vampires: 9.5
+    convert_vampires: 10
 martyrdom:
   name: Martyrdom
   category: effect

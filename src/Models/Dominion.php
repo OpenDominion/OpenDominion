@@ -26,6 +26,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $draft_rate
  * @property int $morale
  * @property int $valor
+ * @property float $racial_value
  * @property float $spy_strength
  * @property float $wizard_strength
  * @property int $spy_mastery
@@ -134,6 +135,7 @@ class Dominion extends AbstractModel
         'draft_rate' => 'integer',
         'morale' => 'integer',
         'valor' => 'integer',
+        'racial_value' => 'float',
         'spy_strength' => 'float',
         'wizard_strength' => 'float',
         'spy_mastery' => 'integer',

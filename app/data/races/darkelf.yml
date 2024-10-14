@@ -45,7 +45,7 @@ units:
       gems: 10
     power:
       offense: 6.5
-      defense: 2.5
+      defense: 3
     perks:
       casualties: -15
       plunder_mana: 5
