@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit Ghost: offensive casualty reduction increased to 30%
 - Spirit Spectre: offensive casualty reduction increased to 80% (from 70%)
 - Undead: maximum population bonus reduced to 2.5% (from 5%), all units now require boats, boat capacity increased by 10, Death and Decay now turns 0.5% of your peasants into Zombies (from 1%) but cooldown reduced to 24 hours (from 48 hours)
+- Undead Crypt Lord: +20p (from 1130p)
 - Vampire: Feast of Blood increased to 10% (from 9.5%)
 - Vampire Bloodreaver: conversions increased to one per 20 sent (from one per 22)
 

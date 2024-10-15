@@ -32,7 +32,7 @@ units:
       defense: 4
   - name: Crypt Lord
     cost:
-      platinum: 1130
+      platinum: 1150
       mana: 15
     power:
       offense: 0
