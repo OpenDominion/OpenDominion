@@ -20,6 +20,11 @@ class DominionSaved
     {
         $dominion = $event->dominion->fresh();
 
+        // Abort if round has ended
+        if ($dominion->round->hasEnded()) {
+            return;
+        }
+
         // Update networth
         $networthCalculator = app(NetworthCalculator::class);
         $networth = $networthCalculator->getDominionNetworth($dominion, true);
