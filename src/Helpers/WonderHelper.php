@@ -19,7 +19,7 @@ class WonderHelper
             'defense' => '%+g%% defensive power',
             'enemy_defense' => '%+g%% enemy defensive power',
             'offense' => '%+g%% offensive power',
-            'faster_return' => 'Units, land, and resources return %s hours faster from battle',
+            'faster_return' => 'Units, land, and resources return %d hours faster from battle',
             'guard_tax' => '%+g%% platinum tax from Royal Guard',
             'prestige_gains' => ' %+g%% attacking prestige gains',
             'barracks_housing' => '%s barracks housing',
