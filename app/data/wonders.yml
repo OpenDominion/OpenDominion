@@ -178,3 +178,9 @@ temple_of_the_damned:
     defense: -2.5
   power: 150000
   active: false
+urg:
+  name: Urg, the Devourer
+  perks:
+    sentient: 1
+  power: 1000000
+  active: false

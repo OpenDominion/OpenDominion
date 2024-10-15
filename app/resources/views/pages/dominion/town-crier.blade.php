@@ -173,6 +173,19 @@
                                                 @else
                                                     has been destroyed!
                                                 @endif
+                                            @elseif ($gameEvent->type === 'wonder_invasion')
+                                                @php
+                                                    $targetRange = round($rangeCalculator->getDominionRange($selectedDominion, $gameEvent->target), 2);
+                                                    $targetRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $gameEvent->target);
+                                                    $targetRaceName = $gameEvent->target->race->name;
+                                                    $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
+                                                @endphp
+                                                <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->wonder->name }}</span></a>
+                                                conquered
+                                                <span class="{{ in_array($gameEvent->target_id, $dominionIds, true) ? 'text-red' : 'text-orange' }} text-bold">{{ number_format($gameEvent->data['landLost']) }}</span>
+                                                land from
+                                                <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ in_array($gameEvent->target_id, $dominionIds, true) ? 'text-green' : 'text-light-blue' }}" data-toggle="tooltip" data-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
+                                                <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                                             @elseif ($gameEvent->type == 'abandoned')
                                                 <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
                                                 <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>

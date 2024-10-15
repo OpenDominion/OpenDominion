@@ -660,6 +660,9 @@ class TickService
                     ]);
             }
 
+            // Sentient Wonders
+            $this->wonderService->handleSentience($round);
+
             // Spawn Wonders
             $day = $round->daysInRound();
             if ($day > 1 && $day % 2 == 0) {

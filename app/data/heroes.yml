@@ -85,3 +85,19 @@ revised_strategy:
     tech_refund: 50
   classes:
     - scion
+blade_of_sundering:
+  name: Blade of Sundering
+  level: 4
+  type: item
+  icon: ra-relic-blade
+  perks:
+    wonder_attack_damage: 100
+  active: false
+staff_of_stormcaller:
+  name: Staff of the Stormcaller
+  level: 4
+  type: item
+  icon: ra-wizard-staff
+  perks:
+    cyclone_damage: 100
+  active: false

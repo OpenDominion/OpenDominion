@@ -3,11 +3,17 @@
 namespace OpenDominion\Services;
 
 use Carbon\Carbon;
+use DB;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
+use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class WonderService
 {
@@ -151,5 +157,103 @@ class WonderService
                 'created_at' => now()->startOfHour()
             ]);
         }
+    }
+
+    public function handleSentience(Round $round)
+    {
+        foreach ($round->wonders as $roundWonder) {
+            // Not active from Graveyard
+            if ($roundWonder->realm->number == 0) {
+                continue;
+            }
+            $wonderPerks = $roundWonder->wonder->perks->pluck('key');
+            // Find sentient wonders
+            if ($wonderPerks->contains('sentient')) {
+                // Get damage dealt today
+                $damage = $roundWonder->damage()
+                    ->where('created_at', '>', now()->subHours(24))
+                    ->get()
+                    ->groupBy('realm_id')
+                    ->map(function ($realmDamage) {
+                        return ['totalDamage' => $realmDamage->sum('damage')];
+                    });
+                $realmIds = $round->realms->where('number', '!=', 0)->pluck('id');
+                foreach ($realmIds as $realmId) {
+                    if (!isset($damage[$realmId])) {
+                        $damage[$realmId] = ['totalDamage' => 0];
+                    }
+                }
+                $realmIds->forget($roundWonder->realm_id);
+                // Select victim realms
+                $victimRealmIds = $damage->sortBy('totalDamage')->take(3)->keys();
+                foreach ($victimRealmIds as $victimRealmId) {
+                    // Select victim dominion
+                    $victims = Dominion::where('realm_id', $victimRealmId)->get()->filter(function ($dominion) {
+                        return $dominion->isActive() && !$dominion->isLocked();
+                    });
+                    $dominion = $victims->random();
+
+                    // Remove land and create event
+                    DB::transaction(function () use ($dominion, $roundWonder) {
+                        $result = $this->handleLandLoss($dominion);
+
+                        GameEvent::create([
+                            'round_id' => $roundWonder->round_id,
+                            'source_type' => RoundWonder::class,
+                            'source_id' => $roundWonder->id,
+                            'target_type' => Dominion::class,
+                            'target_id' => $dominion->id,
+                            'type' => 'wonder_invasion',
+                            'data' => $result,
+                        ]);
+                    });
+                }
+            }
+        }
+    }
+
+    public function handleLandLoss(Dominion $target)
+    {
+        $buildingCalculator = app(BuildingCalculator::class);
+        $landCalculator = app(LandCalculator::class);
+        $queueService = app(QueueService::class);
+
+        // Always treated attacks as 60%
+        $landRatio = 0.60;
+        $totalLand = $landCalculator->getTotalLand($target);
+        $acresLost = (int) ($totalLand / $landRatio) * (0.154 * $landRatio - 0.069) * 0.75;
+
+        $landLossRatio = $acresLost / $totalLand;
+        $landAndBuildingsLostPerLandType = $landCalculator->getLandLostByLandType($target, $landLossRatio);
+
+        foreach ($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
+            $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
+            $landLost = $landAndBuildingsLost['landLost'];
+            $buildingsLostForLandType = $buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
+
+            // Remove land
+            $target->{"land_$landType"} -= $landLost;
+            $target->stat_total_land_lost += $landLost;
+
+            // Add discounted land for buildings destroyed
+            $target->discounted_land += $buildingsToDestroy;
+
+            // Destroy buildings
+            foreach ($buildingsLostForLandType as $buildingType => $buildingsLost) {
+                $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
+                $resourceName = "building_{$buildingType}";
+                $target->$resourceName -= $builtBuildingsToDestroy;
+
+                $buildingsInQueueToRemove = $buildingsLost['buildingsInQueueToRemove'];
+
+                if ($buildingsInQueueToRemove !== 0) {
+                    $queueService->dequeueResource('construction', $target, $resourceName, $buildingsInQueueToRemove);
+                }
+            }
+        }
+
+        $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
+
+        return ['landLost' => $acresLost];
     }
 }

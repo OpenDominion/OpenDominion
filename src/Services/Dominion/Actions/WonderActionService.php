@@ -230,8 +230,17 @@ class WonderActionService
             $damageDealt = static::CYCLONE_DAMAGE_MULTIPLIER * $wizardRatio * $this->landCalculator->getTotalLand($dominion);
             $damageCap = static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100;
 
+            $multiplier = 1;
+
             // Techs
-            $damageDealt *= (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
+            $multiplier += $dominion->getTechPerkMultiplier('wonder_damage');
+
+            // Heroes
+            if ($dominion->hero !== null) {
+                $multiplier += $dominion->hero->getPerkMultiplier('cyclone_damage');
+            }
+
+            $damageDealt *= $multiplier;
 
             // Double damage if neutral wonder
             if ($this->attackResult['wonder']['neutral']) {
@@ -370,8 +379,17 @@ class WonderActionService
 
             $damageDealt = round($this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units));
 
+            $multiplier = 1;
+
             // Techs
-            $damageDealt *= (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
+            $multiplier += $dominion->getTechPerkMultiplier('wonder_damage');
+
+            // Heroes
+            if ($dominion->hero !== null) {
+                $multiplier += $dominion->hero->getPerkMultiplier('wonder_attack_damage');
+            }
+
+            $damageDealt *= $multiplier;
 
             $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
             $wonder->damage()->create([
@@ -469,6 +487,13 @@ class WonderActionService
         } else {
             $wonder->realm_id = null;
             $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
+        }
+
+        // Special case for Urg
+        if ($wonder->wonder->key == 'urg') {
+            $graveyard = $wonder->round->realms->where('number', 0)->first();
+            $wonder->realm_id = $graveyard->id;
+            $wonder->power = $wonder->wonder->power;
         }
 
         $prestigeRewards = [];

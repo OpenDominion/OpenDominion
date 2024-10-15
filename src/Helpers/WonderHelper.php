@@ -71,6 +71,9 @@ class WonderHelper
             'platinum_production' => '%+g%% platinum production',
             'tech_production' => '%+g%% research point production',
             'tech_production_raw' => '%+g research point production per hour',
+
+            // Special
+            'sentient' => 'Every 24 hours, Urg attacks a random dominion in each of the three realms that dealt the least damage to him that day.',
         ];
 
         $perkStrings = [];

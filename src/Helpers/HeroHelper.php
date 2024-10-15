@@ -154,6 +154,7 @@ class HeroHelper
     {
         return [
             'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
+            'cyclone_damage' => '%+g%% cylone damage',
             'espionage_fails_hide_identity' => 'Failed spy ops no longer reveal your identity',
             'fireball_damage' => '%+g%% fireball damage',
             'improved_energy_mirror' => '%+g%% damage reduction from Energy Mirror',
@@ -166,6 +167,7 @@ class HeroHelper
             'spell_fails_hide_identity' => 'Failed spells no longer reveal your identity',
             'tech_production_invasion' => '%+g%% research point gains from invasion',
             'tech_refund' => 'Reset all techs, then gain RP to unlock up to 5 techs lost plus  %g%% of the remaining techs lost',
+            'wonder_attack_damage' => '%+g%% attack damage against wonders',
         ];
     }
 
