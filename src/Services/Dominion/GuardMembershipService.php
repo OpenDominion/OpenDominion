@@ -297,7 +297,10 @@ class GuardMembershipService
     public function joinRoyalGuard(Dominion $dominion): void
     {
         $dominion->royal_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_DELAY_IN_HOURS);
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ROYAL_GUARD]);
+        $dominion->save([
+            'timestamp' => $dominion->royal_guard_active_at,
+            'event' => HistoryService::EVENT_ACTION_JOIN_ROYAL_GUARD
+        ]);
     }
 
     /**
@@ -309,7 +312,10 @@ class GuardMembershipService
     public function joinEliteGuard(Dominion $dominion): void
     {
         $dominion->elite_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_DELAY_IN_HOURS);
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ELITE_GUARD]);
+        $dominion->save([
+            'timestamp' => $dominion->elite_guard_active_at,
+            'event' => HistoryService::EVENT_ACTION_JOIN_ELITE_GUARD
+        ]);
     }
 
     /**
@@ -322,7 +328,10 @@ class GuardMembershipService
     {
         $dominion->black_guard_active_at = now()->startOfHour()->addHours(self::BLACK_GUARD_JOIN_DELAY_IN_HOURS);
         $dominion->black_guard_inactive_at = null;
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_BLACK_GUARD]);
+        $dominion->save([
+            'timestamp' => $dominion->black_guard_active_at,
+            'event' => HistoryService::EVENT_ACTION_JOIN_BLACK_GUARD
+        ]);
     }
 
     /**
@@ -334,7 +343,10 @@ class GuardMembershipService
     public function leaveRoyalGuard(Dominion $dominion): void
     {
         $dominion->royal_guard_active_at = null;
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_ROYAL_GUARD]);
+        $dominion->save([
+            'timestamp' => null,
+            'event' => HistoryService::EVENT_ACTION_LEAVE_ROYAL_GUARD
+        ]);
     }
 
     /**
@@ -346,7 +358,10 @@ class GuardMembershipService
     public function leaveEliteGuard(Dominion $dominion): void
     {
         $dominion->elite_guard_active_at = null;
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_ELITE_GUARD]);
+        $dominion->save([
+            'timestamp' => null,
+            'event' => HistoryService::EVENT_ACTION_LEAVE_ELITE_GUARD
+        ]);
     }
 
     /**
@@ -357,12 +372,17 @@ class GuardMembershipService
      */
     public function leaveBlackGuard(Dominion $dominion): void
     {
+        $timestamp = null;
         if ($dominion->black_guard_active_at > now()) {
             $dominion->black_guard_active_at = null;
         } else {
             $dominion->black_guard_inactive_at = now()->startOfHour()->addHours(self::BLACK_GUARD_LEAVE_DELAY_IN_HOURS);
+            $timestamp = $dominion->black_guard_inactive_at;
         }
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_BLACK_GUARD]);
+        $dominion->save([
+            'timestamp' => $timestamp,
+            'event' => HistoryService::EVENT_ACTION_LEAVE_BLACK_GUARD
+        ]);
     }
 
     /**
@@ -374,7 +394,10 @@ class GuardMembershipService
     public function cancelLeaveBlackGuard(Dominion $dominion): void
     {
         $dominion->black_guard_inactive_at = null;
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_CANCEL_LEAVE_BLACK_GUARD]);
+        $dominion->save([
+            'timestamp' => null,
+            'event' => HistoryService::EVENT_ACTION_CANCEL_LEAVE_BLACK_GUARD
+        ]);
     }
 
     /**
