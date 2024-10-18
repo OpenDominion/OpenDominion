@@ -491,6 +491,7 @@ class WonderActionService
             $masteryRewards[$friendlyDominion->id] = $masteryGain;
 
             // Valor
+            $valorService = app(ValorService::class);
             $damageContribution = $this->wonderCalculator->getDamageContribution($wonder, $friendlyDominion);
             if ($currentRealm !== null) {
                 $valorService->awardValor($friendlyDominion, 'wonder', $damageContribution);

@@ -160,7 +160,7 @@ class WonderCalculator
         $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
         $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, $source);
 
-        return $attackDamageByDominion / $damageByRealm;
+        return $damageByDominion / $damageByRealm;
     }
 
     /**
