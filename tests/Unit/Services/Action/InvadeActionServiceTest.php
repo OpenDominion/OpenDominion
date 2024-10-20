@@ -107,6 +107,26 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(2850, $this->target->land_plain);
     }
 
+    public function testFasterReturn()
+    {
+        // Arrange
+        $goblin = Race::where('name', 'Goblin')->firstOrFail();
+        $this->dominion->race_id = $goblin->id;
+        $this->dominion->military_unit2 = 10000;
+        $this->dominion->military_unit4 = 5000;
+        $this->dominion->resource_boats = 300;
+
+        // Act
+        $units = [
+            4 => 5000
+        ];
+        $this->invadeActionService->invade($this->dominion, $this->target, $units, false);
+        $returningUnits = $this->dominion->queues()->where('resource', 'military_unit4')->first();
+
+        // Assert
+        $this->assertEquals(9, $returningUnits->hours);
+    }
+
     public function testOverpopCasualties()
     {
         // Arrange
