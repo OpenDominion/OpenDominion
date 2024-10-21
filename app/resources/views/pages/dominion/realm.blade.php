@@ -167,7 +167,10 @@
                 </div>
                 <div class="box-body">
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
-                    <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> {{ str_plural('dominion', $dominions->count()) }} and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
+                    <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> {{ str_plural('dominion', $dominions->count()) }}, its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>, and it controls <strong>{{ number_format($landCalculator->getRealmLand($realm)) }}</strong> acres of land.</p>
+                    @if ($realm->valor)
+                        <p>This realm has earned <strong>{{ number_format($realm->valor) }}</strong> valor.</p>
+                    @endif
                     @foreach ($realm->roundWonders as $wonder)
                         <p>This realm controls the <span class="text-orange">{{ $wonder->wonder->name }}</span>.</p>
                     @endforeach

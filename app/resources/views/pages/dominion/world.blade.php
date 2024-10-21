@@ -22,6 +22,7 @@
                                 <th class="text-center">
                                     <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League" data-toggle="tooltip"></i>
                                 </th>
+                                <th>Valor</th>
                                 <th>Land</th>
                                 <th>Networth</th>
                             </tr>
@@ -71,7 +72,10 @@
                                         {{ isset($blackGuard[$realm->id]) ? $blackGuard[$realm->id] : '--' }}
                                     </td>
                                     <td>
-                                        {{ number_format($realm->dominions->map(function($dominion) use ($landCalculator) { return $landCalculator->getTotalLand($dominion); })->sum()) }}
+                                        {{ $realm->valor ? number_format($realm->valor) : '--' }}
+                                    </td>
+                                    <td>
+                                        {{ number_format($landCalculator->getRealmLand($realm)) }}
                                     </td>
                                     <td>
                                         {{ number_format($networthCalculator->getRealmNetworth($realm)) }}

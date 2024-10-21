@@ -5,6 +5,7 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\QueueService;
 
 class LandCalculator
@@ -191,5 +192,22 @@ class LandCalculator
         }
 
         return $landLostByLandType;
+    }
+
+    /**
+     * Returns the Realms's total acres of land.
+     *
+     * @param Realm $realm
+     * @return int
+     */
+    public function getRealmLand(Realm $realm): int
+    {
+        $totalLand = 0;
+
+        foreach ($realm->dominions as $dominion) {
+            $totalLand += $this->getTotalLand($dominion);
+        }
+
+        return $totalLand;
     }
 }
