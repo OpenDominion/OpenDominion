@@ -172,7 +172,11 @@
                         </div>
                         <div class="box-body">
                             @if (!$inRealm)
-                                <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
+                                <p>
+                                    This page contains the data that your realmies have gathered about dominion
+                                    @if (in_array($dominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))<i class="fa fa-eye" title="Marked for Observation" data-toggle="tooltip"></i>@endif
+                                    <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.
+                                </p>
 
                                 <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
 
