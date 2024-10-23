@@ -13,6 +13,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\NotificationService;
 use OpenDominion\Services\Dominion\QueueService;
 
 class WonderService
@@ -169,6 +170,7 @@ class WonderService
             $wonderPerks = $roundWonder->wonder->perks->pluck('key');
             // Find sentient wonders
             if ($wonderPerks->contains('sentient')) {
+                $notificationService = app(NotificationService::class);
                 // Get damage dealt today
                 $damage = $roundWonder->damage()
                     ->where('created_at', '>', now()->subHours(24))
@@ -207,6 +209,13 @@ class WonderService
                             'data' => $result,
                         ]);
                     });
+
+                    $notificationService->queueNotification('wonder_invasion', [
+                        'sourceWonderId' => $roundWonder->id,
+                        'landLost' => $result['landLost']
+                    ]);
+
+                    $notificationService->sendNotifications($dominion, 'irregular_dominion');
                 }
             }
         }

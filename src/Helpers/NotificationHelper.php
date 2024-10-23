@@ -5,6 +5,7 @@ namespace OpenDominion\Helpers;
 use LogicException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\Wonder;
 
@@ -127,9 +128,14 @@ class NotificationHelper
                 },
                 'iconClass' => 'ra ra-circle-of-circles text-green',
             ],
+            'wonder_invasion' => [
+                'label' => 'You dominion was ravaged',
+                'defaults' => ['email' => true, 'ingame' => true],
+                'iconClass' => 'ra ra-crossed-swords text-red',
+            ],
             'received_invasion' => [
-                'label' => 'Your dominion got invaded',
-                'defaults' => ['email' => false, 'ingame' => true],
+                'label' => 'Your dominion was invaded',
+                'defaults' => ['email' => true, 'ingame' => true],
                 'route' => function (array $routeParams) {
                     return route('dominion.event', $routeParams);
                 },
@@ -364,11 +370,20 @@ class NotificationHelper
                     $data['realmNumber']
                 );
 
+            case 'irregular_dominion.wonder_invasion':
+                $wonder = RoundWonder::findOrFail($data['sourceWonderId']);
+
+                return sprintf(
+                    '%s ravaged your lands, conquering %s acres!',
+                    $wonder->wonder->name,
+                    number_format($data['landLost'])
+                );
+
             case 'irregular_dominion.received_invasion':
                 $attackerDominion = Dominion::with('realm')->findOrFail($data['attackerDominionId']);
 
                 return sprintf(
-                    'An army from %s (#%s) invaded our lands, conquering %s acres of land! We lost %s units during the battle.',
+                    'An army from %s (#%s) invaded our lands, conquering %s acres! We lost %s units during the battle.',
                     $attackerDominion->name,
                     $attackerDominion->realm->number,
                     number_format($data['landLost']),
