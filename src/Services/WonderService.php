@@ -164,7 +164,7 @@ class WonderService
     {
         foreach ($round->wonders as $roundWonder) {
             // Not active from Graveyard
-            if ($roundWonder->realm->number == 0) {
+            if ($roundWonder->realm_id !== null && $roundWonder->realm->number == 0) {
                 continue;
             }
             $wonderPerks = $roundWonder->wonder->perks->pluck('key');
