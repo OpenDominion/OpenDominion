@@ -290,7 +290,7 @@ class HeroCalculator
             return 0;
         }
 
-        $maxUnlockLevel = 2;
+        $maxUnlockLevel = 4;
         $heroLevel = min($this->getHeroLevel($hero), $maxUnlockLevel);
         $heroType = $this->heroHelper->getClasses()[$hero->class]['class_type'];
         $upgradeLevels = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
