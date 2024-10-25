@@ -290,24 +290,15 @@ class HeroCalculator
             return 0;
         }
 
-        $maxUnlockLevel = 2;
-        $heroLevel = min($this->getHeroLevel($hero), $maxUnlockLevel);
         $heroType = $this->heroHelper->getClasses()[$hero->class]['class_type'];
-        $upgradeLevels = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
+        $unlockedUpgradeLevels = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
 
-        if ($heroLevel < 2) {
-            $evenLevels = [];
-        } elseif ($heroLevel < 4) {
-            $evenLevels = [2];
-        } else {
-            $evenLevels = range(2, $heroLevel, 2);
-        }
-
+        $upgradeLevels = [2, 4];
         if ($heroType === 'advanced') {
-            $evenLevels[] = 0;
+            $upgradeLevels[] = 0;
         }
 
-        return count(array_diff($evenLevels, $upgradeLevels));
+        return count(array_diff($upgradeLevels, $unlockedUpgradeLevels));
     }
 
     public function canUnlockUpgrade(Hero $hero, HeroUpgrade $upgrade): bool
