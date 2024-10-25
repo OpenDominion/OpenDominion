@@ -46,6 +46,8 @@
                                             @else
                                                 ~{{ number_format($wonderCalculator->getApproximatePower($wonder)) }}
                                             @endif
+                                        @elseif ($wonder->wonder->key == 'urg')
+                                            ~{{ number_format($wonderCalculator->getApproximatePower($wonder)) }}
                                         @else
                                             ???
                                         @endif

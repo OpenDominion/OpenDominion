@@ -13,8 +13,8 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\HistoryService;
-use OpenDominion\Services\Dominion\NotificationService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\NotificationService;
 
 class WonderService
 {
