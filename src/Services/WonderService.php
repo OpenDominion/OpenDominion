@@ -208,14 +208,14 @@ class WonderService
                             'type' => 'wonder_invasion',
                             'data' => $result,
                         ]);
+
+                        $notificationService->queueNotification('wonder_invasion', [
+                            'sourceWonderId' => $roundWonder->id,
+                            'landLost' => $result['landLost']
+                        ]);
+
+                        $notificationService->sendNotifications($dominion, 'irregular_dominion');
                     });
-
-                    $notificationService->queueNotification('wonder_invasion', [
-                        'sourceWonderId' => $roundWonder->id,
-                        'landLost' => $result['landLost']
-                    ]);
-
-                    $notificationService->sendNotifications($dominion, 'irregular_dominion');
                 }
             }
         }
