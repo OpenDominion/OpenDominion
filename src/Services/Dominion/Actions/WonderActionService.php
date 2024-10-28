@@ -289,7 +289,7 @@ class WonderActionService
 
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => 'attack',
+                'action' => 'cyclone',
                 'target_wonder_id' => $wonder->id
             ]);
             $wonder->save();
@@ -438,8 +438,11 @@ class WonderActionService
                 $this->handleWonderDestroyed($wonder, $dominion, $currentRealm);
             }
 
-            // TODO: Add target wonder id?
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_ATTACKED]);
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_WONDER_ATTACKED,
+                'action' => 'attack',
+                'target_wonder_id' => $wonder->id
+            ]);
             $wonder->save();
         });
 
