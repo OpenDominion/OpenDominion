@@ -16,7 +16,7 @@
             <li class="user-body">
                 <div class="row">
                     <div class="col-xs-4 text-center">
-                        <span class="nyi">Profile</span>
+                        <a href="{{ route('valhalla.user', Auth::user()->id) }}">Profile</a>
                     </div>
                     <div class="col-xs-4 text-center">
                         <a href="{{ route('dashboard') }}">Dashboard</a>
@@ -27,9 +27,6 @@
                 </div>
             </li>
             <li class="user-footer">
-                {{--<div class="pull-left">
-                    <a href="{{ route('dashboard') }}" class="btn btn-default btn-flat"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                </div>--}}
                 <div class="pull-right">
                     <form action="{{ route('auth.logout') }}" method="post">
                         @csrf

@@ -48,9 +48,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
     $router->get('discord/link')->uses('Auth\DiscordConnectController@discordLinkCallback')->name('discord-link-callback');
     $router->get('discord/join')->uses('Auth\DiscordConnectController@discordJoinCallback')->name('discord-join-callback');
 
-    // Profile
-    // todo
-
     // Dashboard
     $router->get('dashboard')->uses('DashboardController@getIndex')->name('dashboard');
 

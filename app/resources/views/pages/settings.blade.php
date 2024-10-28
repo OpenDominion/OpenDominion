@@ -29,8 +29,8 @@
                                 <label class="col-sm-3 control-label">Display Name</label>
                                 <div class="col-sm-9">
                                     <p class="form-control-static">{{ $user->display_name }}</p>
-                                    <p class="help-block">Visible on your <a href="#">public profile</a>.</p>
-                                    <p class="help-block">Your display name cannot be changed.</p>
+                                    <p class="help-block">Visible on your <a href="{{ route('valhalla.user', $user->id) }}">public profile</a>.</p>
+                                    <p class="help-block">Your display name can only be changed by an admin.</p>
                                 </div>
                             </div>
 
@@ -39,7 +39,7 @@
                                 <label for="email" class="col-sm-3 control-label">Email</label>
                                 <div class="col-sm-9">
                                     <input type="email" name="account_email" id="email" class="form-control" value="{{ $user->email }}" readonly>
-                                    <p class="help-block">Your email address cannot be changed at the moment.</p>
+                                    <p class="help-block">Your email address can only be changed by an admin.</p>
                                 </div>
                             </div>
 

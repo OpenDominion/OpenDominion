@@ -3,7 +3,7 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Lifetime Ranking</h3>
+            <h3 class="box-title">Achievements</h3>
         </div>
 
         <div class="box-body">
@@ -24,7 +24,12 @@
                 @endforeach
             </div>
         </div>
+    </div>
 
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Lifetime Ranking</h3>
+        </div>
         @if (!$dominions->isEmpty())
             <div class="box-body table-responsive">
                 <div class="row">
