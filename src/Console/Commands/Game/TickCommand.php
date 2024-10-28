@@ -32,8 +32,8 @@ class TickCommand extends Command implements CommandInterface
      */
     public function handle(): void
     {
-        $this->tickService->tickDaily();
         $this->tickService->tickHourly();
+        $this->tickService->tickDaily();
         $this->tickService->updateDailyRankings();
     }
 }

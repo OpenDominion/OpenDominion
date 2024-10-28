@@ -107,6 +107,17 @@ class TickService
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
+            // Reset Daily Bonuses
+            if ($round->start_date->hour == now()->hour) {
+                $round->activeDominions()->where('protection_ticks_remaining', 0)->update([
+                    'daily_platinum' => false,
+                    'daily_land' => false,
+                    'daily_actions' => AutomationService::DAILY_ACTIONS,
+                ], [
+                    'event' => 'tick',
+                ]);
+            }
+
             $this->performTick($round);
             $this->expireWars($round);
             $this->checkForAbandonedDominions($round);
@@ -634,15 +645,6 @@ class TickService
             if ($round->start_date->hour != now()->hour) {
                 continue;
             }
-
-            // Reset Daily Bonuses
-            $round->activeDominions()->where('protection_ticks_remaining', 0)->update([
-                'daily_platinum' => false,
-                'daily_land' => false,
-                'daily_actions' => AutomationService::DAILY_ACTIONS,
-            ], [
-                'event' => 'tick',
-            ]);
 
             // Move Inactive Dominions
             // toBase required to prevent ambiguous updated_at column in query
