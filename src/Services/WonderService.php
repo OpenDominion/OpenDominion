@@ -196,26 +196,24 @@ class WonderService
                     $dominion = $victims->random();
 
                     // Remove land and create event
-                    DB::transaction(function () use ($dominion, $roundWonder) {
-                        $result = $this->handleLandLoss($dominion);
+                    $result = $this->handleLandLoss($dominion);
 
-                        GameEvent::create([
-                            'round_id' => $roundWonder->round_id,
-                            'source_type' => RoundWonder::class,
-                            'source_id' => $roundWonder->id,
-                            'target_type' => Dominion::class,
-                            'target_id' => $dominion->id,
-                            'type' => 'wonder_invasion',
-                            'data' => $result,
-                        ]);
+                    GameEvent::create([
+                        'round_id' => $roundWonder->round_id,
+                        'source_type' => RoundWonder::class,
+                        'source_id' => $roundWonder->id,
+                        'target_type' => Dominion::class,
+                        'target_id' => $dominion->id,
+                        'type' => 'wonder_invasion',
+                        'data' => $result,
+                    ]);
 
-                        $notificationService->queueNotification('wonder_invasion', [
-                            'sourceWonderId' => $roundWonder->id,
-                            'landLost' => $result['landLost']
-                        ]);
+                    $notificationService->queueNotification('wonder_invasion', [
+                        'sourceWonderId' => $roundWonder->id,
+                        'landLost' => $result['landLost']
+                    ]);
 
-                        $notificationService->sendNotifications($dominion, 'irregular_dominion');
-                    });
+                    $notificationService->sendNotifications($dominion, 'irregular_dominion');
                 }
             }
         }
