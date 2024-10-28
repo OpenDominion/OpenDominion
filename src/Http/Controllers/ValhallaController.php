@@ -184,7 +184,7 @@ class ValhallaController extends AbstractController
             ->groupBy('round.round_league_id');
 
         return view('pages.valhalla.user', [
-            'player' => $user,
+            'user' => $user,
             'dominions' => $dominions,
             'leagues' => $leagues,
             'dailyRankings' => $dailyRankings,

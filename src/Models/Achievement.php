@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * OpenDominion\Models\Achievement
  *
@@ -27,5 +29,10 @@ class Achievement extends AbstractModel
             'achievement_id',
             'user_id'
         );
+    }
+
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderByDesc('created_at');
     }
 }

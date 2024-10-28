@@ -73,7 +73,7 @@ class MessageBoardController extends AbstractController
             ->whereIn('dominion_id', $userDominionIds)
             ->pluck('key');
 
-        $achievements = Achievement::all();
+        $achievements = Achievement::ordered()->get();
         $userAchievements = $user->achievements->pluck('id');
 
         $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-spades-card', 'ra-console-controller', 'ra-quill-ink', 'ra-basketball-ball', 'ra-football-ball', 'ra-soccer-ball', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
