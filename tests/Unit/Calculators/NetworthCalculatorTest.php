@@ -102,6 +102,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         /** @var Mock|Race $race */
         $race = m::mock(Race::class);
+        $race->shouldReceive('getAttribute')->with('key')->andReturn('dragon');
         $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
 
         $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
@@ -113,7 +114,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(90);
         $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
 
-        $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion, true));
+        $this->assertEquals(8700, $this->sut->getDominionNetworth($dominion, true));
     }
 
     /**
@@ -142,6 +143,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         /** @var Mock|Race $race */
         $race = m::mock(Race::class);
+        $race->shouldReceive('getAttribute')->with('key')->andReturn('dragon');
         $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
 
         $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
@@ -153,7 +155,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(90);
         $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
 
-        $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion, false));
+        $this->assertEquals(8700, $this->sut->getDominionNetworth($dominion, false));
     }
 
     /**
@@ -182,6 +184,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         /** @var Mock|Race $race */
         $race = m::mock(Race::class);
+        $race->shouldReceive('getAttribute')->with('key')->andReturn('dragon');
         $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
 
         $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
@@ -203,6 +206,11 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
     {
         $dominion = m::mock(Dominion::class);
 
+        /** @var Mock|Race $race */
+        $race = m::mock(Race::class);
+        $race->shouldReceive('getAttribute')->with('key')->andReturn('merfolk');
+        $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
+
         // Networth for units in slots 1 and 2 is always 5
 
         /** @var Mock|Unit $unit1 */
@@ -221,16 +229,16 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         /** @var Mock|Unit $unit3 */
         $unit3 = m::mock(Unit::class);
         $unit3->shouldReceive('getAttribute')->with('slot')->andReturn(3);
-        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit3, 'offense')->andReturn(2);
-        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit3, 'defense')->andReturn(6);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit3, 'offense')->andReturn(4);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit3, 'defense')->andReturn(2);
 
         /** @var Mock|Unit $unit4 */
         $unit4 = m::mock(Unit::class);
         $unit4->shouldReceive('getAttribute')->with('slot')->andReturn(4);
-        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit4, 'offense')->andReturn(6);
-        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit4, 'defense')->andReturn(3);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit4, 'offense')->andReturn(0);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit4, 'defense')->andReturn(7);
 
-        $this->assertEquals(11.7, $this->sut->getUnitNetworth($dominion, $unit3));
-        $this->assertEquals(12.15, $this->sut->getUnitNetworth($dominion, $unit4));
+        $this->assertEquals(8, $this->sut->getUnitNetworth($dominion, $unit3));
+        $this->assertEquals(14, $this->sut->getUnitNetworth($dominion, $unit4));
     }
 }
