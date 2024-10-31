@@ -122,18 +122,23 @@ class NetworthCalculator
      */
     public function getUnitNetworth(Dominion $dominion, Unit $unit): float
     {
+        $networthPerSpecialist = 5;
+        $networthPerElitePoint = 2;
+
         if (in_array($unit->slot, [1, 2], false)) {
-            return 5;
+            return $networthPerSpecialist;
         }
 
         $unitOffense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, 'offense');
         $unitDefense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, 'defense');
 
-        return round(
-            (1.8 * min(6, max($unitOffense, $unitDefense)))
-            + (0.45 * min(6, min($unitOffense, $unitDefense)))
-            + (0.2 * (max(($unitOffense - 6), 0) + max(($unitDefense - 6), 0))),
-            2
-        );
+        // Special case for kobold pairing
+        if ($dominion->race->key == 'kobold') {
+            $unitOffense += 2;
+            $unitDefense += 2;
+        }
+        $highestStat = max($unitOffense, $unitDefense);
+
+        return round($networthPerElitePoint * $highestStat, 2);
     }
 }
