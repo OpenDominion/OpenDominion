@@ -492,6 +492,9 @@ class ProductionCalculator
         $manaPerWizardGuild = 5;
         $manaPerTower = 25;
 
+        // Spells
+        $manaPerWizardGuild += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_guild_mana_production_raw');
+
         // Buildings: Tower + Wizard Guild
         $mana += ($dominion->building_tower * $manaPerTower);
         $mana += ($dominion->building_wizard_guild * $manaPerWizardGuild);

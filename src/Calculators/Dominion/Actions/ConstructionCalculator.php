@@ -177,6 +177,9 @@ class ConstructionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('construction_lumber_cost');
 
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'construction_cost');
+
         // Cap at -75%
         return max($multiplier, 0.25);
     }

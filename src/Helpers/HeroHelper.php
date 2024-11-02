@@ -38,7 +38,7 @@ class HeroHelper
                 'key' => 'engineer',
                 'class_type' => 'basic',
                 'perk_type' => 'invest_bonus',
-                'coefficient' => 0.6,
+                'coefficient' => 0.75,
                 'icon' => 'ra-hammer'
             ],
             [

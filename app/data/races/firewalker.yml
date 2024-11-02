@@ -10,7 +10,6 @@ converter_difficulty: 3
 home_land_type: cavern
 perks:
   max_population: 5
-  lumber_production: -10
   gem_production: 15
   construction_cost: -10
 units:

@@ -4,8 +4,17 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.42.1] - 2024-11-01
 ### Changed
-- Elite unit networth calculation greatly simplied to 2x the higher value between OP and DP (Kobold are units always treated as paired)
+- Elite unit networth calculation greatly simplied to 2x the higher value between OP and DP (Kobold units are always treated as paired)
+- Dark Elf spell is now Spellwright's Calling, Wizard Guilds generate 0.05 Adepts per hour and produce twice as much mana
+- Firewalker: lumber production penalty removed (was -10%)
+- Lizardfolk Lizardman: -10p (from 1090p)
+- Lightning Bolt: base damage reduced to 0.20% (from 0.25%)
+- Resilience cap increased to 2000 (from 1000)
+- Architect hero bonus now applies to lumber costs as well as platinum
+- Engineer hero bonus multiplier increased to 0.75 per level (from 0.6)
 
 ## [1.42.0] - 2024-10-14
 ### Added
@@ -2264,7 +2273,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.42.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...HEAD
+[1.42.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.0...1.42.1
 [1.42.0]: https://github.com/OpenDominion/OpenDominion/compare/1.41.3...1.42.0
 [1.41.3]: https://github.com/OpenDominion/OpenDominion/compare/1.41.2...1.41.3
 [1.41.2]: https://github.com/OpenDominion/OpenDominion/compare/1.41.1...1.41.2

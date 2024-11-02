@@ -277,8 +277,8 @@ class OpsCalculator
     public function getResilienceGain(Dominion $dominion): int
     {
         $resilience = static::RESILIENCE_GAIN;
-        if ($dominion->resilience + $resilience > 1000) {
-            return 1000 - $dominion->resilience;
+        if ($dominion->resilience + $resilience > 2000) {
+            return 2000 - $dominion->resilience;
         }
         return $resilience;
     }

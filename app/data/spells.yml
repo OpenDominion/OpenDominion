@@ -81,10 +81,10 @@ lightning_bolt:
   cost_mana: 3.25
   cost_strength: 5
   perks:
-    destroy_improvement_science: 0.25
-    destroy_improvement_keep: 0.25
-    destroy_improvement_forges: 0.25
-    destroy_improvement_walls: 0.25
+    destroy_improvement_science: 0.2
+    destroy_improvement_keep: 0.2
+    destroy_improvement_forges: 0.2
+    destroy_improvement_walls: 0.2
     apply_lightning_storm: 200
 cyclone:
   name: Cyclone
@@ -398,8 +398,20 @@ delve_into_shadow:
   races:
     - dark-elf-rework
   perks:
+    explore_cost_wizard_mastery: 100
     spell_refund: 50
+  active: false
+spellwrights_calling:
+  name: Spellwright's Calling
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - dark-elf-rework
+  perks:
     wizard_guilds_produce_military_unit3: 0.05
+    wizard_guild_mana_production_raw: 5
     invalid_protection: 1
 gaias_blessing:
   name: Gaia's Blessing

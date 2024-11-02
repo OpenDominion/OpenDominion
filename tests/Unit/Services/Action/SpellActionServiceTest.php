@@ -249,9 +249,9 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(1, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(9975, $this->target->improvement_science);
-        $this->assertEquals(99750, $this->target->improvement_keep);
-        $this->assertEquals(49875, $this->target->improvement_walls);
+        $this->assertEquals(9980, $this->target->improvement_science);
+        $this->assertEquals(99800, $this->target->improvement_keep);
+        $this->assertEquals(49900, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_HalfProtection()
@@ -279,8 +279,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(0.5, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(99875, $this->target->improvement_keep);
-        $this->assertEquals(49937, $this->target->improvement_walls);
+        $this->assertEquals(99900, $this->target->improvement_keep);
+        $this->assertEquals(49950, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_MaxProtection()
@@ -309,8 +309,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(0.2, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(99950, $this->target->improvement_keep);
-        $this->assertEquals(49975, $this->target->improvement_walls);
+        $this->assertEquals(99960, $this->target->improvement_keep);
+        $this->assertEquals(49980, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_DamageCap()

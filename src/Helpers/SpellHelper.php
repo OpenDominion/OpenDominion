@@ -175,6 +175,7 @@ class SpellHelper
             'platinum_production' => '%+g%% platinum production',
             'platinum_production_raw' => '%+d alchemy platinum production',
             'wizard_guilds_produce_military_unit3' => 'Each wizard guild produces %g Adepts per hour',
+            'wizard_guild_mana_production_raw' => '%+g mana production from wizard guilds',
 
             // Spy/Wizard related
             'energy_mirror' => '%d%% chance to reflect incoming offensive spells',
