@@ -154,7 +154,7 @@ class HeroHelper
     {
         return [
             'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
-            'cyclone_damage' => '%+g%% cylone damage',
+            'cyclone_damage' => '%+g%% cyclone damage',
             'espionage_fails_hide_identity' => 'Failed spy ops no longer reveal your identity',
             'fireball_damage' => '%+g%% fireball damage',
             'improved_energy_mirror' => '%+g%% damage reduction from Energy Mirror',

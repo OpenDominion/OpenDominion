@@ -663,7 +663,7 @@ class TickService
             }
 
             // Sentient Wonders
-            $this->wonderService->handleSentience($round);
+            // $this->wonderService->handleSentience($round);
 
             // Spawn Wonders
             $day = $round->daysInRound();

@@ -492,13 +492,6 @@ class WonderActionService
             $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
         }
 
-        // Special case for Urg
-        if ($wonder->wonder->key == 'urg') {
-            $graveyard = $wonder->round->realms->where('number', 0)->first();
-            $wonder->realm_id = $graveyard->id;
-            $wonder->power = $wonder->wonder->power;
-        }
-
         $prestigeRewards = [];
         $masteryRewards = [];
         foreach ($friendlyDominions as $friendlyDominion) {
