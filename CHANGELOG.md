@@ -5,9 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-## [1.42.1] - 2024-11-01
+## [1.42.1] - 2024-11-02
 ### Changed
-- Elite unit networth calculation greatly simplied to 2x the higher value between OP and DP (Kobold units are always treated as paired)
+- Elite unit networth calculation greatly simplified to 2x the higher value between OP and DP (Kobold units are always treated as paired)
 - Dark Elf spell is now Spellwright's Calling, Wizard Guilds generate 0.05 Adepts per hour and produce twice as much mana
 - Firewalker: lumber production penalty removed (was -10%)
 - Lizardfolk Lizardman: -10p (from 1090p)
