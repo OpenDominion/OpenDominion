@@ -73,6 +73,12 @@ class DominionFactory
             'spy_strength' => 100,
             'wizard_strength' => 100,
 
+            'daily_platinum' => $startingAttributes['daily_platinum'],
+            'daily_land' => $startingAttributes['daily_land'],
+            'daily_actions' => $startingAttributes['daily_actions'],
+            'ai_enabled' => $startingAttributes['ai_enabled'],
+            'ai_config' => $startingAttributes['ai_config'],
+
             'resource_platinum' => $startingAttributes['resource_platinum'],
             'resource_food' => $startingAttributes['resource_food'],
             'resource_lumber' => $startingAttributes['resource_lumber'],
@@ -408,9 +414,12 @@ class DominionFactory
             'morale' => 100,
             'spy_strength' => 100,
             'wizard_strength' => 100,
+
             'daily_platinum' => 0,
             'daily_land' => 0,
             'daily_actions' => AutomationService::DAILY_ACTIONS,
+            'ai_enabled' => false,
+            'ai_config' => null,
 
             'resource_platinum' => 100000,
             'resource_food' => 15000,
