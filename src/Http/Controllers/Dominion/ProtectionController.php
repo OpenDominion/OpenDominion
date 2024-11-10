@@ -19,6 +19,11 @@ class ProtectionController extends AbstractDominionController
         try {
             $this->guardLockedDominion($dominion);
 
+            // Sims cannot be loaded after the round has started
+            if ($dominion->round->hasStarted()) {
+                throw new GameException('You cannot import a log after the round has started.');
+            }
+
             if ($dominion->protection_ticks_remaining == 0) {
                 throw new GameException('You must have protection ticks remaining to use this feature.');
             }
@@ -39,6 +44,11 @@ class ProtectionController extends AbstractDominionController
 
         try {
             $this->guardLockedDominion($dominion);
+
+            // Sims cannot be loaded after the round has started
+            if ($dominion->round->hasStarted()) {
+                throw new GameException('You cannot import a log after the round has started.');
+            }
 
             if ($dominion->protection_ticks_remaining == 0) {
                 throw new GameException('You must have protection ticks remaining to use this feature.');
@@ -75,6 +85,11 @@ class ProtectionController extends AbstractDominionController
 
         try {
             $this->guardLockedDominion($dominion);
+
+            // Sims cannot be loaded after the round has started
+            if ($dominion->round->hasStarted()) {
+                throw new GameException('You cannot import a log after the round has started.');
+            }
 
             if ($dominion->protection_ticks_remaining == 0) {
                 throw new GameException('You must have protection ticks remaining to use this feature.');

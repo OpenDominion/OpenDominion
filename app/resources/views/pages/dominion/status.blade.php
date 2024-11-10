@@ -25,8 +25,10 @@
                     <div class="box-body">
                         <p>New to the game or just want to get straight to the action?</p>
                         <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Quick Start Build</a></p>
-                        <p>Already have a log from the <a href="https://github.com/Yami-10/OD-Simulator" target="_blank">Excel Simulator</a>?</p>
-                        <p><a href="{{ route('dominion.protection.import-log') }}" class="btn btn-primary">Import Log</a></p>
+                        @if (!$selectedDominion->round->hasStarted())
+                            <p>Already have a log from the <a href="https://github.com/Yami-10/OD-Simulator" target="_blank">Excel Simulator</a>?</p>
+                            <p><a href="{{ route('dominion.protection.import-log') }}" class="btn btn-primary">Import Log</a></p>
+                        @endif
                     </div>
                 </div>
                 <div class="box box-warning">
