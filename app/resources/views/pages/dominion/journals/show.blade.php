@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        {{ $journal->content }}
+                        {!! nl2br($journal->content) !!}
                     </div>
                 </div>
             @endforeach
