@@ -133,7 +133,7 @@ class NetworthCalculator
         $unitDefense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, 'defense');
 
         // Special case for kobold pairing
-        if ($dominion->race->key == 'kobold') {
+        if ($dominion->race->key == 'kobold-rework') {
             $unitOffense += 2;
             $unitDefense += 2;
         }
