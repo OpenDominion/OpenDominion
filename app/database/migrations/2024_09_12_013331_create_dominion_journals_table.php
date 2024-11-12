@@ -18,6 +18,8 @@ class CreateDominionJournalsTable extends Migration
             $table->unsignedInteger('dominion_id');
             $table->text('content');
             $table->timestamps();
+
+            $table->foreign('dominion_id')->references('id')->on('dominions');
         });
     }
 
