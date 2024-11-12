@@ -33,6 +33,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Achievement[] $achievements
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UserActivity[] $activities
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UserIdentity[] $identities
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UserOrigin[] $origins
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UserFeedback[] $feedback
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -76,6 +78,16 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     public function activities()
     {
         return $this->hasMany(UserActivity::class);
+    }
+
+    public function identities()
+    {
+        return $this->hasMany(UserIdentity::class);
+    }
+
+    public function origins()
+    {
+        return $this->hasMany(UserOrigin::class);
     }
 
     public function dominions()

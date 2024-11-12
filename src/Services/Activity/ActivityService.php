@@ -5,6 +5,9 @@ namespace OpenDominion\Services\Activity;
 use Jenssegers\Agent\Agent;
 use OpenDominion\Models\User;
 use OpenDominion\Models\UserActivity;
+use OpenDominion\Models\UserIdentity;
+use OpenDominion\Models\UserOrigin;
+use OpenDominion\Models\UserOriginLookup;
 
 class ActivityService
 {
@@ -66,5 +69,68 @@ class ActivityService
         }
 
         return $deviceString;
+    }
+
+    /**
+     * Records the identity of a user.
+     *
+     * @param User $user
+     * @param string $fingerprint
+     * @return void
+     */
+    public function recordIdentity(User $user, ?string $fingerprint, ?string $user_agent): void
+    {
+        if (!$fingerprint) {
+            return;
+        }
+
+        $identity = UserIdentity::where([
+            'user_id' => $user->id,
+            'fingerprint' => $fingerprint
+        ])->first();
+
+        if ($identity) {
+            $identity->increment('count');
+        } else {
+            UserIdentity::create([
+                'user_id' => $user->id,
+                'fingerprint' => $fingerprint,
+                'user_agent' => $user_agent
+            ]);
+        }
+    }
+
+    /**
+     * Records the origin of a user.
+     *
+     * @param User $user
+     * @param int|null $dominion_id
+     * @return void
+     */
+    public function recordOrigin(User $user, string $ip_address, int $dominion_id = null): void
+    {
+        if (!$ip_address || $ip_address == '127.0.0.1') {
+            return;
+        }
+
+        $data = [
+            'user_id' => $user->id,
+            'ip_address' => $ip_address
+        ];
+        if ($dominion_id) {
+            $data['dominion_id'] = $dominion_id;
+        }
+
+        $origin = UserOrigin::where($data)->first();
+
+        if ($origin) {
+            $origin->increment('count');
+        } else {
+            UserOriginLookup::firstOrCreate([
+                'ip_address' => $ip_address
+            ]);
+
+            UserOrigin::create($data);
+        }
     }
 }
