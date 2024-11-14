@@ -212,7 +212,7 @@ class HistoryService
             ])->keys()->toArray();
     }
 
-    protected function getPrimaryEvents()
+    public function getPrimaryEvents()
     {
         return collect([
             $this::EVENT_ACTION_EXPLORE,
