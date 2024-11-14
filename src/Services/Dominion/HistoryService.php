@@ -107,7 +107,7 @@ class HistoryService
             'device' => $activityService->getDeviceString(),
         ]);
 
-        if ($this->getPrimaryEvents()->contains($event)) {
+        if ($dominion->user_id && $this->getPrimaryEvents()->contains($event)) {
             $activityService->recordOrigin($dominion->user, $ip, $dominion->id);
             if ($fingerprint) {
                 $activityService->recordIdentity($dominion->user, $fingerprint, $userAgent);
