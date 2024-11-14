@@ -107,9 +107,11 @@ class HistoryService
             'device' => $activityService->getDeviceString(),
         ]);
 
-        $activityService->recordOrigin($dominion->user, $ip, $dominion->id);
-        if ($fingerprint) {
-            $activityService->recordIdentity($dominion->user, $fingerprint, $userAgent);
+        if ($this->getPrimaryEvents()->contains($event)) {
+            $activityService->recordOrigin($dominion->user, $ip, $dominion->id);
+            if ($fingerprint) {
+                $activityService->recordIdentity($dominion->user, $fingerprint, $userAgent);
+            }
         }
     }
 
@@ -208,5 +210,23 @@ class HistoryService
                 'created_at',
                 'updated_at',
             ])->keys()->toArray();
+    }
+
+    protected function getPrimaryEvents()
+    {
+        return collect([
+            $this::EVENT_ACTION_EXPLORE,
+            $this::EVENT_ACTION_CONSTRUCT,
+            $this::EVENT_ACTION_DESTROY,
+            $this::EVENT_ACTION_REZONE,
+            $this::EVENT_ACTION_IMPROVE,
+            $this::EVENT_ACTION_BANK,
+            $this::EVENT_ACTION_TRAIN,
+            $this::EVENT_ACTION_RELEASE,
+            $this::EVENT_ACTION_CAST_SPELL,
+            $this::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
+            $this::EVENT_ACTION_INVADE,
+            $this::EVENT_ACTION_WONDER_ATTACKED
+        ]);
     }
 }
