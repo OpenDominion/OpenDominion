@@ -95,14 +95,22 @@ class HistoryService
             return;
         }
 
+        $ip = request()->ip();
+        $userAgent = request()->userAgent();
+        $fingerprint = request()->get('client_id');
         $activityService = app(ActivityService::class);
 
         $dominion->history()->create([
             'event' => $event,
             'delta' => $deltaAttributes,
-            'ip' => request()->ip(),
+            'ip' => $ip,
             'device' => $activityService->getDeviceString(),
         ]);
+
+        $activityService->recordOrigin($dominion->user, $ip, $dominion->id);
+        if ($fingerprint) {
+            $activityService->recordIdentity($dominion->user, $fingerprint, $userAgent);
+        }
     }
 
     /**

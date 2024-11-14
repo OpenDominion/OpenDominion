@@ -12,6 +12,7 @@
                 </div>
                 <form action="{{ route('dominion.military.train') }}" method="post" role="form">
                     @csrf
+                    @include('partials.user.client-id-field')
                     <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
@@ -234,4 +235,5 @@
             });
         })(jQuery);
     </script>
+    @include('partials.user.client-id-script')
 @endpush

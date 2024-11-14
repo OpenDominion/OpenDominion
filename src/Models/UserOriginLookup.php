@@ -7,11 +7,12 @@ namespace OpenDominion\Models;
  *
  * @property int $id
  * @property string $ip_address
+ * @property string|null $isp
  * @property string|null $organization
- * @property string|null $connection_type
  * @property string|null $country
  * @property string|null $region
  * @property string|null $city
+ * @property bool|null $vpn
  * @property float|null $score
  * @property array|null $data
  * @property \Illuminate\Support\Carbon|null $created_at

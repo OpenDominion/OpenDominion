@@ -16,11 +16,12 @@ class CreateUserOriginTable extends Migration
         Schema::create('user_origin_lookups', function (Blueprint $table) {
             $table->id();
             $table->string('ip_address');
+            $table->string('isp')->nullable();
             $table->string('organization')->nullable();
-            $table->string('connection_type')->nullable();
             $table->string('country')->nullable();
             $table->string('region')->nullable();
             $table->string('city')->nullable();
+            $table->boolean('vpn')->nullable();
             $table->float('score')->nullable();
             $table->text('data')->nullable();
             $table->timestamps();

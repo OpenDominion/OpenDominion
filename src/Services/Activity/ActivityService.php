@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Activity;
 
+use GuzzleHttp\Client;
 use Jenssegers\Agent\Agent;
 use OpenDominion\Models\User;
 use OpenDominion\Models\UserActivity;
@@ -75,7 +76,8 @@ class ActivityService
      * Records the identity of a user.
      *
      * @param User $user
-     * @param string $fingerprint
+     * @param string|null $fingerprint
+     * @param string|null $user_agent
      * @return void
      */
     public function recordIdentity(User $user, ?string $fingerprint, ?string $user_agent): void
@@ -104,10 +106,11 @@ class ActivityService
      * Records the origin of a user.
      *
      * @param User $user
+     * @param string|null $ip_address
      * @param int|null $dominion_id
      * @return void
      */
-    public function recordOrigin(User $user, string $ip_address, int $dominion_id = null): void
+    public function recordOrigin(User $user, ?string $ip_address, int $dominion_id = null): void
     {
         if (!$ip_address || $ip_address == '127.0.0.1') {
             return;
@@ -131,6 +134,62 @@ class ActivityService
             ]);
 
             UserOrigin::create($data);
+        }
+    }
+
+    /**
+     * Performs a user origin lookup
+     *
+     * @param User $user
+     * @param string|null $ip_address
+     * @return void
+     */
+    public function performLookup(User $user, ?string $ip_address): void
+    {
+        if (!$ip_address || $ip_address == '127.0.0.1') {
+            return;
+        }
+
+        $origin = UserOriginLookup::where('ip_address', $ip_address)->first();
+        if ($origin && $origin->data === null) {
+            $key = config('app.ipqs_api_key');
+            if ($key) {
+                $client = new Client();
+                $lookupResponse = $client->get("https://www.ipqualityscore.com/api/json/ip/{$key}/{$ip_address}", [
+                    'verify' => false,
+                    'query' => [
+                        'userID' => $user->id,
+                        'strictness' => 1,
+                        'allow_public_access_points' => true
+                    ]
+                ]);
+                if ($lookupResponse->getStatusCode() == 200) {
+                    $result = json_decode($lookupResponse->getBody()->getContents(), true);
+                    if (isset($result['ISP'])) {
+                        $origin->isp = $result['ISP'];
+                    }
+                    if (isset($result['organization'])) {
+                        $origin->organization = $result['organization'];
+                    }
+                    if (isset($result['country_code'])) {
+                        $origin->country = $result['country_code'];
+                    }
+                    if (isset($result['region'])) {
+                        $origin->region = $result['region'];
+                    }
+                    if (isset($result['city'])) {
+                        $origin->city = $result['city'];
+                    }
+                    if (isset($result['vpn'])) {
+                        $origin->vpn = $result['vpn'];
+                    }
+                    if (isset($result['fraud_score'])) {
+                        $origin->score = $result['fraud_score'];
+                    }
+                    $origin->data = $result;
+                    $origin->save();
+                }
+            }
         }
     }
 }

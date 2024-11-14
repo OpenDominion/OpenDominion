@@ -251,5 +251,6 @@ return [
     'discord_client_secret' => env('DISCORD_CLIENT_SECRET'),
     'discord_bot_token' => env('DISCORD_BOT_TOKEN'),
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID'),
+    'ipqs_api_key' => env('IPQS_API_KEY'),
 
 ];
