@@ -153,21 +153,26 @@ class HeroHelper
     public function getHeroUpgradePerkStrings()
     {
         return [
-            'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
-            'cyclone_damage' => '%+g%% cyclone damage',
+            // Magic
             'espionage_fails_hide_identity' => 'Failed spy ops no longer reveal your identity',
             'fireball_damage' => '%+g%% fireball damage',
-            'improved_energy_mirror' => '%+g%% damage reduction from Energy Mirror',
+            'improved_energy_mirror' => '%+g%% additional damage reduction from Energy Mirror',
             'info_spell_cost' => '%+g%% cost of info spells',
+            'spell_fails_hide_identity' => 'Failed spells no longer reveal your identity',
+
+            // Items
+            'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
+            'cyclone_damage' => '%+g%% cyclone damage',
             'invasion_morale' => '%+g%% morale loss from invasion',
             'land_spy_strength_cost' => 'Survey Dominion and Land Spy now cost 1%% spy strength',
+            'tech_production_invasion' => '%+g%% research point gains from invasion',
+            'wonder_attack_damage' => '%+g%% attack damage against wonders',
+
+            // Scion
             'martyrdom' => 'Reduces the cost of spy and wizard training by 1%% per %g prestige (max 50%%) for 24 hours',
             'offense' => '%+g%% offensive power',
             'raze_mod_building_discount' => 'Destroying military buildings (Gryphon Nests, Guard Towers, and Temples) awards discounted land',
-            'spell_fails_hide_identity' => 'Failed spells no longer reveal your identity',
-            'tech_production_invasion' => '%+g%% research point gains from invasion',
             'tech_refund' => 'Reset all techs, then gain RP to unlock up to 5 techs lost plus  %g%% of the remaining techs lost',
-            'wonder_attack_damage' => '%+g%% attack damage against wonders',
         ];
     }
 
