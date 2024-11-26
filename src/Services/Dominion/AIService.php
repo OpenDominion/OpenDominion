@@ -249,7 +249,9 @@ class AIService
 
             $dominion->ai_enabled = !empty($config);
             $dominion->ai_config = $config;
-            $dominion->daily_actions -= $actionsTaken;
+            if ($actionsTaken > 0) {
+                $dominion->daily_actions -= 1;
+            }
             $dominion->save();
 
             return;

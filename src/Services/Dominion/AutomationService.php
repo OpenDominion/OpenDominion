@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Services\Dominion;
 
-use Arr;
 use DB;
+use Illuminate\Support\Arr;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Spell;
@@ -199,8 +199,8 @@ class AutomationService
         $actionsAllowed = static::DAILY_ACTIONS;
         $currentTick = $dominion->round->getTick();
 
-        if ($data['tick'] > $currentTick + 8) {
-            throw new GameException('You cannot schedule actions more than 8 hours in advance.');
+        if ($data['tick'] > $currentTick + 10) {
+            throw new GameException('You cannot schedule actions more than 10 hours in advance.');
         }
 
         if ($data['tick'] <= $currentTick) {
@@ -221,36 +221,34 @@ class AutomationService
             $config[$data['tick']] = [];
         }
         array_push($config[$data['tick']], $data['value']);
-        $countCollection = collect($config)->map(function ($tick) {
-            return Arr::where($tick, function ($action) {
+
+        $tickCount = count($config[$data['tick']]);
+        if ($tickCount > 10) {
+            throw new GameException("You cannot schedule more than 10 actions in a single hour.");
+        }
+
+        $countCollection = collect($config)->filter(function ($tick) {
+            $nonBonusActions = Arr::where($tick, function ($action) {
                 return $action['action'] !== 'daily_bonus';
             });
+            if (count($nonBonusActions)) {
+                return $nonBonusActions;
+            }
         });
-
-        $totalCount = $countCollection->sum(function ($actions) {
-            return count($actions);
-        });
-        if ($totalCount > $actionsAllowed) {
-            throw new GameException("You cannot schedule more than {$actionsAllowed} actions at a time.");
-        }
 
         $hoursUntilReset = 24 - $dominion->round->hoursInDay() + 1;
 
         $beforeResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {
             return intval($key) - $currentTick < $hoursUntilReset;
-        })->sum(function ($actions) {
-            return count($actions);
-        });
+        })->count();
         if ($dominion->daily_actions < $beforeResetCount) {
             throw new GameException('You do not have enough scheduled actions remaining.');
         }
 
         $afterResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {
             return intval($key) - $currentTick >= $hoursUntilReset;
-        })->sum(function ($actions) {
-            return count($actions);
-        });
-        if ($afterResetCount > $actionsAllowed) {
+        })->count();
+        if ($afterResetCount > max($dominion->daily_actions, $actionsAllowed)) {
             throw new GameException('You do not have enough scheduled actions remaining.');
         }
 
