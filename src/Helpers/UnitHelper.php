@@ -216,8 +216,12 @@ class UnitHelper
 
             foreach ($unit->perks as $perk) {
 
-                $hasOffensivePowerPerk = strpos($perk->key, 'offense_from') !== false;
-                $hasDefensivePowerPerk = strpos($perk->key, 'defense_from') !== false;
+                if (!$hasOffensivePowerPerk) {
+                    $hasOffensivePowerPerk = strpos($perk->key, 'offense_from') !== false;
+                }
+                if (!$hasDefensivePowerPerk) {
+                    $hasDefensivePowerPerk = strpos($perk->key, 'defense_from') !== false;
+                }
 
                 if (!array_key_exists($perk->key, $perkTypeStrings)) {
                     //\Debugbar::warning("Missing perk help text for unit perk '{$perk->key}'' on unit '{$unit->name}''.");
