@@ -105,6 +105,7 @@ class DailyBonusesController extends AbstractDominionController
             'value' => [
                 'action' => $request->get('action'),
                 'key' => $request->get('key'),
+                'key2' => $request->get('key2'),
                 'amount' => $request->get('amount')
             ]
         ];

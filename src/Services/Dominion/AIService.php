@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Log;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
@@ -30,6 +31,7 @@ use OpenDominion\Services\Dominion\Actions\ImproveActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
+use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
 use RuntimeException;
@@ -90,6 +92,12 @@ class AIService
     /** @var ReleaseActionService */
     protected $releaseActionService;
 
+    /** @var RezoneActionService */
+    protected $rezoneActionService;
+
+    /** @var RezoningCalculator */
+    protected $rezoningCalculator;
+
     /** @var SpellActionService */
     protected $spellActionService;
 
@@ -119,6 +127,7 @@ class AIService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
+        $this->rezoningCalculator = app(RezoningCalculator::class);
         $this->spellCalculator = app(SpellCalculator::class);
         $this->trainingCalculator = app(TrainingCalculator::class);
 
@@ -135,6 +144,7 @@ class AIService
         $this->exploreActionService = app(ExploreActionService::class);
         $this->improveActionService = app(ImproveActionService::class);
         $this->releaseActionService = app(ReleaseActionService::class);
+        $this->rezoneActionService = app(RezoneActionService::class);
         $this->spellActionService = app(SpellActionService::class);
         $this->trainActionService = app(TrainActionService::class);
     }
@@ -220,6 +230,13 @@ class AIService
                                     $this->explorationCalculator->getMaxAfford($dominion)
                                 );
                                 $this->exploreActionService->explore($dominion, ['land_' . $instruction['key'] => $maxAfford]);
+                                break;
+                            case 'rezone':
+                                $maxAfford = min(
+                                    $instruction['amount'],
+                                    $this->explorationCalculator->getMaxAfford($dominion)
+                                );
+                                $this->rezoneActionService->rezone($dominion, [$instruction['key'] => $maxAfford], [$instruction['key2'] => $maxAfford]);
                                 break;
                             case 'spell':
                                 $this->spellActionService->castSpell($dominion, $instruction['key']);
