@@ -124,7 +124,7 @@ class StatsCommand extends Command implements CommandInterface
             }
 
             $output = "
-**Day {$daysInRound} Statistics**
+**{$round->name} Day {$daysInRound} Statistics**
 
 Active Dominions: {$totalDominions}
 Players: {$totalPlayerDominions}
