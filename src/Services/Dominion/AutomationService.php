@@ -224,7 +224,7 @@ class AutomationService
 
         $tickCount = count($config[$data['tick']]);
         if ($tickCount > 10) {
-            throw new GameException("You cannot schedule more than 10 actions in a single hour.");
+            throw new GameException('You cannot schedule more than 10 actions in a single hour.');
         }
 
         $countCollection = collect($config)->filter(function ($tick) {
