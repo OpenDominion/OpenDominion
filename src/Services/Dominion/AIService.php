@@ -210,7 +210,9 @@ class AIService
                                     $instruction['amount'],
                                     $this->constructionCalculator->getMaxAfford($dominion)
                                 );
-                                $this->constructActionService->construct($dominion, ['building_' . $instruction['key'] => $maxAfford]);
+                                if ($maxAfford > 0) {
+                                    $this->constructActionService->construct($dominion, ['building_' . $instruction['key'] => $maxAfford]);
+                                }
                                 break;
                             case 'daily_bonus':
                                 if ($instruction['key'] === 'land') {
@@ -229,14 +231,18 @@ class AIService
                                     $instruction['amount'],
                                     $this->explorationCalculator->getMaxAfford($dominion)
                                 );
-                                $this->exploreActionService->explore($dominion, ['land_' . $instruction['key'] => $maxAfford]);
+                                if ($maxAfford > 0) {
+                                    $this->exploreActionService->explore($dominion, ['land_' . $instruction['key'] => $maxAfford]);
+                                }
                                 break;
                             case 'rezone':
                                 $maxAfford = min(
                                     $instruction['amount'],
-                                    $this->explorationCalculator->getMaxAfford($dominion)
+                                    $this->rezoningCalculator->getMaxAfford($dominion)
                                 );
-                                $this->rezoneActionService->rezone($dominion, [$instruction['key'] => $maxAfford], [$instruction['key2'] => $maxAfford]);
+                                if ($maxAfford > 0) {
+                                    $this->rezoneActionService->rezone($dominion, [$instruction['key'] => $maxAfford], [$instruction['key2'] => $maxAfford]);
+                                }
                                 break;
                             case 'spell':
                                 $this->spellActionService->castSpell($dominion, $instruction['key']);
@@ -246,7 +252,9 @@ class AIService
                                     $instruction['amount'],
                                     $this->trainingCalculator->getMaxTrainable($dominion)[$instruction['key']]
                                 );
-                                $this->trainActionService->train($dominion, ['military_' . $instruction['key'] => $maxAfford]);
+                                if ($maxAfford > 0) {
+                                    $this->trainActionService->train($dominion, ['military_' . $instruction['key'] => $maxAfford]);
+                                }
                                 break;
                         }
                         $actionsTaken++;
