@@ -199,8 +199,8 @@ class AutomationService
         $actionsAllowed = static::DAILY_ACTIONS;
         $currentTick = $dominion->round->getTick();
 
-        if ($data['tick'] > $currentTick + 10) {
-            throw new GameException('You cannot schedule actions more than 10 hours in advance.');
+        if ($data['tick'] > $currentTick + 12) {
+            throw new GameException('You cannot schedule actions more than 12 hours in advance.');
         }
 
         if ($data['tick'] <= $currentTick) {
