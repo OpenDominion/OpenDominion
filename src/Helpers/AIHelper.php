@@ -58,7 +58,7 @@ class AIHelper
             $config['invest'] = 'lumber';
         }
 
-        $racesWithManaUnits = ['Nox', 'Spirit'];
+        $racesWithManaUnits = ['Nox', 'Spirit', 'Undead'];
         if (in_array($race->name, $racesWithManaUnits)) {
             $config['build'][] = [
                 'land_type' => 'swamp',
