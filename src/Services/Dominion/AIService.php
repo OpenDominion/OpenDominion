@@ -235,6 +235,15 @@ class AIService
                                     $this->exploreActionService->explore($dominion, ['land_' . $instruction['key'] => $maxAfford]);
                                 }
                                 break;
+                            case 'release':
+                                $maxAfford = min(
+                                    $instruction['amount'],
+                                    $dominion->military_draftees
+                                );
+                                if ($maxAfford > 0) {
+                                    $this->releaseActionService->release($dominion, ['draftees' => $maxAfford]);
+                                }
+                                break;
                             case 'rezone':
                                 $maxAfford = min(
                                     $instruction['amount'],

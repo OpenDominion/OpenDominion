@@ -13,8 +13,8 @@ class AutomationActionRequest extends AbstractDominionRequest
     {
         return [
             'tick' => 'required|integer',
-            'action' => 'required|in:construct,daily_bonus,draft_rate,explore,rezone,spell,train',
-            'key' => 'required_unless:action,draft_rate',
+            'action' => 'required|in:construct,daily_bonus,draft_rate,explore,release,rezone,spell,train',
+            'key' => 'required_unless:action,draft_rate,action,release',
             'key2' => 'required_if:action,rezone',
             'amount' => 'required_unless:action,spell,action,daily_bonus|nullable|integer|max:99999',
         ];
