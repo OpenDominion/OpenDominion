@@ -710,10 +710,13 @@ class TickService
                         'military_unit4' => $unit1,
                     ];
                     $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
-                    // Save dominion
-                    $dominionSpell->dominion->military_unit1 -= $unit1;
-                    $dominionSpell->dominion->military_unit2 -= $unit2;
-                    $dominionSpell->dominion->save();
+                    // Update dominion
+                    $newUnit1 = $dominionSpell->dominion->military_unit1 - $unit1;
+                    $newUnit2 = $dominionSpell->dominion->military_unit2 - $unit2;
+                    $dominionSpell->dominion->update([
+                        'military_unit1' => $newUnit1,
+                        'military_unit2' => $newUnit2
+                    ]);
                 }
             }
 
@@ -728,9 +731,9 @@ class TickService
                     // Queue units
                     $units = ['military_unit1' => $conversions];
                     $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
-                    // Save dominion
-                    $dominionSpell->dominion->peasants -= $conversions;
-                    $dominionSpell->dominion->save();
+                    // Update dominion
+                    $newPeasants = $dominionSpell->dominion->peasants - $conversions;
+                    $dominionSpell->dominion->update(['peasants' => $newPeasants]);
                 }
             }
 
@@ -745,9 +748,8 @@ class TickService
                     // Queue units
                     $units = ['military_unit3' => (int) floor($unitsProduced)];
                     $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
-                    // Save dominion
-                    $dominionSpell->dominion->racial_value = fmod($unitsProduced, 1);
-                    $dominionSpell->dominion->save();
+                    // Update dominion
+                    $dominionSpell->dominion->update(['racial_value' => fmod($unitsProduced, 1)]);
                 }
             }
         }, 5);
