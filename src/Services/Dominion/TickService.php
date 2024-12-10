@@ -931,6 +931,10 @@ class TickService
                 $tick->{$unitType} -= $unitCasualties;
             }
 
+            if (-$tick->peasants > $dominion->peasants) {
+                $tick->peasants = -$dominion->peasants;
+            }
+
             // Decrement to zero
             $tick->resource_food = -$dominion->resource_food;
         } else {
