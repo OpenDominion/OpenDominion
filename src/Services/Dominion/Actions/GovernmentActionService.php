@@ -271,9 +271,9 @@ class GovernmentActionService
 
         $war = RealmWar::create([
             'source_realm_id' => $dominion->realm->id,
-            'source_realm_name' => $dominion->realm->name,
+            'source_realm_name_start' => $dominion->realm->name,
             'target_realm_id' => $target->id,
-            'target_realm_name' => $target->name,
+            'target_realm_name_start' => $target->name,
             'active_at' => now()->startOfHour()->addHours(GovernmentService::WAR_ACTIVE_WAIT_IN_HOURS),
         ]);
 
@@ -349,6 +349,8 @@ class GovernmentActionService
             'data' => ['monarchDominionID' => $dominion->id],
         ]);
 
+        $war->source_realm_name_end = $dominion->realm->name;
+        $war->target_realm_name_end = $war->targetRealm->name;
         $war->inactive_at = now()->addHours(GovernmentService::WAR_INACTIVE_WAIT_IN_HOURS)->startOfHour();
         $war->save();
 
