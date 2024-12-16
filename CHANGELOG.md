@@ -4,6 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Automation Updates
+  - Added an option to rezone land
+  - Added an option to release draftees
+  - Each of the two daily automations can now consist of multiple actions (for example: rezone, construct, rezone, construct, cast spell)
+- When a war is canceled, the town crier will now show the realm name from the time of cancelation (instead of from the time of declaration)
 
 ## [1.42.1] - 2024-11-02
 ### Changed
