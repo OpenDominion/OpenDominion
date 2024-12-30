@@ -455,6 +455,10 @@ class InvadeActionService
 
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_LOSS_PERCENTAGE / 100));
+            if ($range < 60) {
+                $scalingPrestigeLoss = 16 / (($range / 100) ** 2);
+                $attackerPrestigeChange = -min($dominion->prestige, max($attackerPrestigeChange, $scalingPrestigeLoss));
+            }
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = min(
                 static::PRESTIGE_RANGE_MULTIPLIER * ($range / 100) + static::PRESTIGE_CHANGE_BASE, // Gained through invading
