@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Added an option to rezone land
   - Added an option to release draftees
   - Each of the two daily automations can now consist of multiple actions (for example: rezone, construct, rezone, construct, cast spell)
+- Double XP from bounties is now limited to 32 bounties per day
+- Exploration now grants 0.25 XP per acre
+
+### Fixed
 - When a war is canceled, the town crier will now show the realm name from the time of cancelation (instead of from the time of declaration)
 
 ## [1.42.1] - 2024-11-02

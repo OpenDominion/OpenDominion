@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
@@ -18,6 +19,11 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class ExploreActionService
 {
     use DominionGuardsTrait;
+
+    /**
+     * @var float XP gain per acre explored
+     */
+    protected const XP_PER_ACRE = 0.25;
 
     /** @var ExplorationCalculator */
     protected $explorationCalculator;
@@ -156,6 +162,14 @@ class ExploreActionService
                 'event' => HistoryService::EVENT_ACTION_EXPLORE,
                 'queue' => ['exploration' => array_filter($data)]
             ]);
+
+            // Hero Experience
+            if ($dominion->hero) {
+                $heroCalculator = app(HeroCalculator::class);
+                $xpGain = $heroCalculator->getExperienceGain($dominion, $totalLandToExplore * static::XP_PER_ACRE);
+                $dominion->hero->experience += $xpGain;
+                $dominion->hero->save();
+            }
         });
 
         return [
