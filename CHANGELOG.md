@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Each of the two daily automations can now consist of multiple actions (for example: rezone, construct, rezone, construct, cast spell)
 - Double XP from bounties is now limited to 32 bounties per day
 - Exploration now grants 0.25 XP per acre
+- Rezoning costs reduced by up to 50% based on your conquered land total
 
 ### Fixed
 - When a war is canceled, the town crier will now show the realm name from the time of cancelation (instead of from the time of declaration)

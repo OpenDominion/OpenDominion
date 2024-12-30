@@ -19,10 +19,13 @@ class RezoningCalculator
      *
      * @param LandCalculator $landCalculator
      */
-    public function __construct()
+    public function __construct(
+        LandCalculator $landCalculator,
+        SpellCalculator $spellCalculator
+    )
     {
-        $this->landCalculator = app(LandCalculator::class);
-        $this->spellCalculator = app(SpellCalculator::class);
+        $this->landCalculator = $landCalculator;
+        $this->spellCalculator = $spellCalculator;
     }
 
     /**
@@ -33,17 +36,20 @@ class RezoningCalculator
      */
     public function getPlatinumCost(Dominion $dominion): int
     {
-        $platinum = 0;
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        if ($dominion->stat_total_land_lost >= $dominion->stat_total_land_conquered) {
+            $conqueredLand = 0;
+            $exploredLand = $totalLand - 250 + max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
+        } else {
+            $conqueredLand = $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
+            $exploredLand = $totalLand - 250 - $conqueredLand;
+        }
 
-        $platinum += $this->landCalculator->getTotalLand($dominion);
+        $platinum = 250 + (0.6 * $exploredLand) + (0.2 * $conqueredLand);
 
-        $platinum -= 250;
-        $platinum *= 0.6;
-        $platinum += 250;
+        $multiplier = $this->getCostMultiplier($dominion);
 
-        $platinum *= $this->getCostMultiplier($dominion);
-
-        return round($platinum);
+        return round($platinum * $multiplier);
     }
 
     /**

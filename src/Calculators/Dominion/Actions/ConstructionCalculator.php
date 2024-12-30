@@ -57,7 +57,7 @@ class ConstructionCalculator
      */
     public function getPlatinumCost(Dominion $dominion): int
     {
-        return ($this->getPlatinumCostRaw($dominion) * $this->getPlatinumCostMultiplier($dominion));
+        return floor($this->getPlatinumCostRaw($dominion) * $this->getPlatinumCostMultiplier($dominion));
     }
 
     /**
@@ -139,7 +139,7 @@ class ConstructionCalculator
      */
     public function getLumberCost(Dominion $dominion): int
     {
-        return ($this->getLumberCostRaw($dominion) * $this->getLumberCostMultiplier($dominion));
+        return floor($this->getLumberCostRaw($dominion) * $this->getLumberCostMultiplier($dominion));
     }
 
     /**
