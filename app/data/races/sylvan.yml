@@ -21,11 +21,11 @@ units:
       defense: 0
   - name: Sprite
     cost:
-      platinum: 300
+      platinum: 250
       lumber: 0
     power:
       offense: 0
-      defense: 3
+      defense: 2.5
   - name: Dryad
     cost:
       platinum: 1050
@@ -39,7 +39,7 @@ units:
       defense_from_land: forest,20,4 # land type, ratio%, max
   - name: Centaur
     cost:
-      platinum: 900
+      platinum: 960
       lumber: 20
     power:
       offense: 5.5

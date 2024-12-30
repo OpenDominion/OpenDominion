@@ -22,7 +22,7 @@ units:
       defense: 0
   - name: Miner
     cost:
-      platinum: 350
+      platinum: 335
       ore: 20
     power:
       offense: 0
@@ -32,7 +32,7 @@ units:
   - name: Cleric
     type: hybrid_elite  
     cost:
-      platinum: 835
+      platinum: 880
       ore: 0
     power:
       offense: 4

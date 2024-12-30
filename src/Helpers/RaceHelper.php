@@ -49,7 +49,11 @@ class RaceHelper
                 break;
             case 'gem_production':
                 $negativeBenefit = false;
-                $description = ' gem production';
+                $description = 'gem production';
+                break;
+            case 'hero_experience':
+                $negativeBenefit = false;
+                $description = 'hero experience gains';
                 break;
             case 'immortal_wizards':
                 $negativeBenefit = false;
@@ -190,6 +194,10 @@ class RaceHelper
             case 'gem_production':
                 $negativeBenefit = false;
                 $description = 'Gem production';
+                break;
+            case 'hero_experience':
+                $negativeBenefit = false;
+                $description = 'Hero experience gains';
                 break;
             case 'immortal_wizards':
                 $negativeBenefit = false;

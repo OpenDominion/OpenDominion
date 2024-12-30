@@ -12,6 +12,7 @@ perks:
   food_consumption: -20
   mana_production: 10
   boat_capacity: 5
+  hero_experience: 10
 units:
   - name: Imp
     cost:

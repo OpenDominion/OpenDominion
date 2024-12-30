@@ -10,7 +10,6 @@ converter_difficulty: 3
 home_land_type: forest
 perks:
   lumber_production: 50
-  prestige_gains: 10
 units:
   - name: Savage
     cost:

@@ -56,6 +56,9 @@ class HeroCalculator
             ($xpPerShrineMax / 100)
         );
 
+        // Racial
+        $multiplier += $dominion->race->getPerkMultiplier('hero_experience');
+
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('hero_experience');
 

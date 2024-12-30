@@ -433,7 +433,7 @@ nightfall:
   races:
     - nox
   perks:
-    offense: 5
+    offense: 7.5
 miasma:
   name: Miasma
   category: war
@@ -574,7 +574,7 @@ death_and_decay:
   perks:
     food_decay: 100
     lumber_decay: 100
-    convert_peasants_to_self_military_unit1: 0.5
+    convert_peasants_to_self_military_unit1: 0.6
     invalid_protection: 1
 feast_of_blood:
   name: Feast of Blood

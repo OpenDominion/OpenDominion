@@ -12,6 +12,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Double XP from bounties is now limited to 32 bounties per day
 - Exploration now grants 0.25 XP per acre
 - Rezoning costs reduced by up to 50% based on your conquered land total
+- Dwarf Cleric: +45p (from 835p)
+- Dwarf Miner: -15p (from 350p)
+- Human Cavalry: +60p (from 1240p)
+- Nox: added 10% increased hero experience gains
+- Orc: removed 10% increased prestige gain bonus
+- Spirit Spectre: +1 DP (from 0), now immortal on defense, offense vs 95% removed
+- Sylvan Centaur: +60p (from 900p)
+- Sylvan Sprite: -0.5 DP (from 3), -50p (from 300p)
+- Undead: Death and Decay increased to 0.6% of peasants (from 0.5%)
+- Wood Elf: removed
 
 ### Fixed
 - When a war is canceled, the town crier will now show the realm name from the time of cancelation (instead of from the time of declaration)
