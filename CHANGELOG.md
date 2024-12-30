@@ -13,10 +13,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Exploration now grants 0.25 XP per acre
 - Rezoning costs reduced by up to 50% based on your conquered land total
 - Scaling construction discount for conquered land changed to 0.75% per day from Day 25 to Day 45 (from 1% per day from Day 20 to Day 40)
+- Gryphon Nest: OP bonus reduced to 1.6x per 1% owned up to a maximum of 32% at 20% owned (from 1.75x per 1%, max 35% at 20% owned)
+- Guard Tower: DP bonus reduced to 1.6x per 1% owned up to a maximum of 32% at 20% owned (from 1.75x per 1%, max 35% at 20% owned)
+- Temple: DP reduction reduced to 1.35x per 1% owned up to a maximum of 27% at 20% owned (from 1.5x per 1% owned, max 25% at 16.667% owned)
 - Dwarf Cleric: +45p (from 835p)
 - Dwarf Miner: -15p (from 350p)
 - Human Cavalry: +60p (from 1240p)
 - Nox: added 10% increased hero experience gains
+- Nox: Nightfall increased to 7.5% offense (from 5%)
 - Orc: removed 10% increased prestige gain bonus
 - Spirit Spectre: +1 DP (from 0), now immortal on defense, offense vs 95% removed
 - Sylvan Centaur: +60p (from 900p)
@@ -734,7 +738,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wizard Guild: lightning bolt protection added, 6% per 1% owned up to a maximum of 60% at 10% owned
 - Gryphon Nest: OP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 32% at 20% owned)
 - Guard Tower: DP bonus increased to 1.75x per 1% owned up to a maxium of 35% at 20% owned (from 1.6x per 1%, max 32% at 20% owned)
-- Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.7% owned (from 1.35x per 1% owned, max 25% at 18.5% owned)
+- Temple: DP reduction increased to 1.5x per 1% owned up to a maximum of 25% at 16.667% owned (from 1.35x per 1% owned, max 25% at 18.5% owned)
 - Dark Elf Spellblade: -50p (from 1250p), -25r (from 75r)
 - Human Knight: -25p (from 1025p)
 - Nomad Blademaster: -15r (from 40r)
