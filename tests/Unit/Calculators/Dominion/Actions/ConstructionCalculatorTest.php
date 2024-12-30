@@ -95,6 +95,25 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
+    public function testDiscountedLandMultiplier()
+    {
+        $scenarios = [
+            ['daysInRound' => 1, 'expectedModifier' => 0.5],
+            ['daysInRound' => 10, 'expectedModifier' => 0.5],
+            ['daysInRound' => 20, 'expectedModifier' => 0.5],
+            ['daysInRound' => 30, 'expectedModifier' => 0.4625],
+            ['daysInRound' => 40, 'expectedModifier' => 0.3875],
+            ['daysInRound' => 50, 'expectedModifier' => 0.35],
+        ];
+
+        foreach ($scenarios as $scenario) {
+            $this->roundMock->shouldReceive('daysInRound')->andReturn($scenario['daysInRound'])->byDefault();
+            $this->dominionMock->shouldReceive('getAttribute')->with('round')->andReturn($this->roundMock)->byDefault();
+
+            $this->assertEquals($scenario['expectedModifier'], $this->sut->getDiscountedLandMultiplier($this->dominionMock));
+        }
+    }
+
     /**
      * @dataProvider getGetMaxAffordProvider
      */
@@ -167,7 +186,17 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
                 'stat_total_conquered_land' => 0,
                 'stat_total_land_lost' => 0,
             ],
-            // todo: add test case for discounted_land
+            [ // discounted_land, 1150p
+                'totalBuildings' => 450,
+                'totalLand' => 500,
+                'totalBarrenLand' => 50,
+                'platinum' => 10000,
+                'lumber' => 15000,
+                'discounted_land' => 10,
+                'expectedMaxAfford' => 13,
+                'stat_total_conquered_land' => 50,
+                'stat_total_land_lost' => 0,
+            ],
         ];
     }
 }

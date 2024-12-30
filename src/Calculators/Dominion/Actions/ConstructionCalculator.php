@@ -46,7 +46,8 @@ class ConstructionCalculator
      */
     public function getDiscountedLandMultiplier(Dominion $dominion): float
     {
-        return clamp(1 - (0.01 * ($dominion->round->daysInRound() + 30)), 0.30, 0.50);
+        $additionalDiscount = (0.0075 * ($dominion->round->daysInRound() + 42) - 0.0025);
+        return round(clamp(1 - $additionalDiscount, 0.35, 0.50), 4);
     }
 
     /**

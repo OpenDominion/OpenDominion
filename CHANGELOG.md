@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Double XP from bounties is now limited to 32 bounties per day
 - Exploration now grants 0.25 XP per acre
 - Rezoning costs reduced by up to 50% based on your conquered land total
+- Scaling construction discount for conquered land changed to 0.75% per day from Day 25 to Day 45 (from 1% per day from Day 20 to Day 40)
 - Dwarf Cleric: +45p (from 835p)
 - Dwarf Miner: -15p (from 350p)
 - Human Cavalry: +60p (from 1240p)
