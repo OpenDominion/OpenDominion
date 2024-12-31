@@ -50,3 +50,4 @@ units:
     perks:
       offense_from_land: forest,20,4.5 # land type, ratio%, max
       defense_from_land: forest,20,4.5 # land type, ratio%, max
+playable: false

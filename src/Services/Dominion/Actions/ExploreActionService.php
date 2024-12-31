@@ -162,15 +162,15 @@ class ExploreActionService
                 'event' => HistoryService::EVENT_ACTION_EXPLORE,
                 'queue' => ['exploration' => array_filter($data)]
             ]);
-
-            // Hero Experience
-            if ($dominion->hero) {
-                $heroCalculator = app(HeroCalculator::class);
-                $xpGain = $heroCalculator->getExperienceGain($dominion, $totalLandToExplore * static::XP_PER_ACRE);
-                $dominion->hero->experience += $xpGain;
-                $dominion->hero->save();
-            }
         });
+
+        // Hero Experience
+        if ($dominion->hero && !$this->protectionService->isUnderProtection($dominion)) {
+            $heroCalculator = app(HeroCalculator::class);
+            $xpGain = $heroCalculator->getExperienceGain($dominion, $totalLandToExplore * static::XP_PER_ACRE);
+            $dominion->hero->experience += $xpGain;
+            $dominion->hero->save();
+        }
 
         return [
             'message' => sprintf(
