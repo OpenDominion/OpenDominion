@@ -433,7 +433,7 @@ nightfall:
   races:
     - nox
   perks:
-    offense: 7.5
+    offense: 5
 miasma:
   name: Miasma
   category: war

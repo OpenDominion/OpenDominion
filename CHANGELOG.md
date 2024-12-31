@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Exploration now grants 0.25 XP per acre
 - Rezoning costs reduced by up to 50% based on your conquered land total
 - Scaling construction discount for conquered land changed to 0.75% per day from Day 25 to Day 45 (from 1% per day from Day 20 to Day 40)
-- Prestige loss when hitting below 60% increased to 5% of current prestige OR 45-100 (proportional to size) whichever is higher (was always 5% of current)
+- Prestige loss when hitting below 60% increased to 5% of current prestige OR 45-100 (proportional to size) whichever is higher (from always 5% of current)
 - Gryphon Nest: OP bonus reduced to 1.6x per 1% owned up to a maximum of 32% at 20% owned (from 1.75x per 1%, max 35% at 20% owned)
 - Guard Tower: DP bonus reduced to 1.6x per 1% owned up to a maximum of 32% at 20% owned (from 1.75x per 1%, max 35% at 20% owned)
 - Temple: DP reduction reduced to 1.35x per 1% owned up to a maximum of 27% at 20% owned (from 1.5x per 1% owned, max 25% at 16.667% owned)
@@ -22,7 +22,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dwarf Miner: -15p (from 350p)
 - Human Cavalry: +60p (from 1240p)
 - Nox: added 10% increased hero experience gains
-- Nox: Nightfall increased to 7.5% offense (from 5%)
 - Orc: removed 10% increased prestige gain bonus
 - Spirit Spectre: +1 DP (from 0), now immortal on defense, offense vs 95% removed
 - Sylvan Centaur: +60p (from 900p)
