@@ -7,8 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - New Advanced Hero Class: Scholar
   - Decreases tech costs by 0.75% per level (minimum cost is still 3750)
-  - In order to unlock (via retiring your current hero), you must have at least 10,000 research points. The Scholar will then start with XP equal to 1% of your research points at the time of selection. Cannot be selected until Day 10.
+  - In order to unlock (via retiring your current hero), you must have at least 10,000 research points
   - Unlocks the Pursuit of Knowledge upgrade: +20% research point production, -20% castle investment bonus
+  - Advanced hero classes cannot be selected until Day 5
 
 ### Changed
 - Automation Updates
@@ -99,11 +100,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Spyglass (item): Survey Dominion and Land Spy now cost 1% spy strength
 - New Advanced Hero Class: Scion
   - Provides both spy and wizard power at half the rate of the existing Infiltrator and Sorcerer classes
-  - In order to unlock (via retiring your current hero), you must have at least 350 prestige. The Scion will then start with XP equal to your prestige at the time of selection. Cannot be selected until Day 10.
+  - In order to unlock (via retiring your current hero), you must have at least 350 prestige
   - Unlocks the Disarmament upgrade: -100% offensive power, destroying mod buildings (Gryphon Nest, Guard Tower, Temple) awards discounted land credits
   - In addition, choose ONLY ONE of the following upgrades:
     - Revised Strategy: upon selection, reset all techs then gain RP to unlock up to 5 techs lost plus 50% of the remaining techs lost
     - Martyrdom: upon selection, reduces cost of spy/wizard training by 1% per 15 prestige (max 50% at 750 prestige) for 24 hours
+  - Advanced hero classes cannot be selected until Day 5
 - Search page now includes 85%, 95%, and 100% range buttons
 
 ### Changed
