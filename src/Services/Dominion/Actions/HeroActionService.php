@@ -189,8 +189,8 @@ class HeroActionService
         }
 
         if ($selectedClass['class_type'] === 'advanced') {
-            if ($dominion->round->daysInRound() < 10) {
-                throw new GameException('You cannot select an advanced hero class until the 10th day of the round.');
+            if ($dominion->round->daysInRound() < 5) {
+                throw new GameException('You cannot select an advanced hero class until the 5th day of the round.');
             }
             if ($dominion->{$selectedClass['requirement_stat']} < $selectedClass['requirement_value']) {
                 throw new GameException('You do not meet the requirements to select this hero class.');
@@ -201,9 +201,8 @@ class HeroActionService
             HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();
 
             // Starting XP
-            $xp = (int) min($dominion->hero->experience, 10000) / 2;
             if ($selectedClass['class_type'] === 'advanced') {
-                $xp = $dominion->{$selectedClass['starting_xp_stat']} * $selectedClass['starting_xp_coefficient'];
+                $xp = $dominion->hero->experience;
 
                 // Advanced Class Upgrades
                 $advancedUpgrades = HeroUpgrade::query()
@@ -219,6 +218,8 @@ class HeroActionService
                         'hero_upgrade_id' => $advancedUpgrade->id
                     ]);
                 }
+            } else {
+                $xp = (int) min($dominion->hero->experience, 10000) / 2;
             }
 
             $dominion->hero()->update([

@@ -66,6 +66,17 @@ class HeroHelper
                 'icon' => 'ra-pointy-hat'
             ],
             [
+                'name' => 'Scholar',
+                'key' => 'scholar',
+                'class_type' => 'advanced',
+                'perk_type' => 'tech_cost',
+                'coefficient' => -0.75,
+                'perks' => ['pursuit_of_knowledge'],
+                'icon' => 'ra-graduate-cap',
+                'requirement_stat' => 'resource_tech',
+                'requirement_value' => 10000
+            ],
+            [
                 'name' => 'Scion',
                 'key' => 'scion',
                 'class_type' => 'advanced',
@@ -74,9 +85,7 @@ class HeroHelper
                 'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
                 'icon' => 'ra-ankh',
                 'requirement_stat' => 'prestige',
-                'requirement_value' => 350,
-                'starting_xp_stat' => 'prestige',
-                'starting_xp_coefficient' => 1
+                'requirement_value' => 350
             ]
         ])->keyBy('key');
     }
@@ -135,7 +144,7 @@ class HeroHelper
 
     public function getHeroUpgrades()
     {
-        return HeroUpgrade::with('perks')->get()->sortBy(['level', 'name'])->keyBy('key');
+        return HeroUpgrade::with('perks')->get()->sortBy(['level', 'type', 'classes'])->keyBy('key');
     }
 
     public function getHeroUpgradesByName(array $keys)
@@ -168,10 +177,12 @@ class HeroHelper
             'tech_production_invasion' => '%+g%% research point gains from invasion',
             'wonder_attack_damage' => '%+g%% attack damage against wonders',
 
-            // Scion
+            // Advanced
+            'invest_bonus' => '%+g%% castle investment bonus',
             'martyrdom' => 'Reduces the cost of spy and wizard training by 1%% per %g prestige (max 50%%) for 24 hours',
             'offense' => '%+g%% offensive power',
             'raze_mod_building_discount' => 'Destroying military buildings (Gryphon Nests, Guard Towers, and Temples) awards discounted land',
+            'tech_production' => '%+g%% research point production',
             'tech_refund' => 'Reset all techs, then gain RP to unlock up to 5 techs lost plus  %g%% of the remaining techs lost',
         ];
     }
@@ -182,19 +193,8 @@ class HeroHelper
 
         return sprintf(
             '%s %s',
-            $value,
+            number_format($value),
             dominion_attr_display($stat, $value)
-        );
-    }
-
-    public function getStartingExperienceDisplay(array $class) {
-        $stat = str_replace('_', '', str_replace('stat_', '', $class['starting_xp_stat']));
-        $coefficient = $class['starting_xp_coefficient'];
-
-        return sprintf(
-            '%s%% of %s',
-            $coefficient * 100,
-            $stat
         );
     }
 

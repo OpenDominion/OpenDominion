@@ -4,6 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- New Advanced Hero Class: Scholar
+  - Decreases tech costs by 0.75% per level (minimum cost is still 3750)
+  - In order to unlock (via retiring your current hero), you must have at least 10,000 research points. The Scholar will then start with XP equal to 1% of your research points at the time of selection. Cannot be selected until Day 10.
+  - Unlocks the Pursuit of Knowledge upgrade: +20% research point production, -20% castle investment bonus
+
 ### Changed
 - Automation Updates
   - Added an option to rezone land

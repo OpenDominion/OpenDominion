@@ -101,3 +101,13 @@ staff_of_stormcaller:
   perks:
     cyclone_damage: 100
   active: false
+pursuit_of_knowledge:
+  name: Pursuit of Knowledge
+  level: 0
+  type: directive
+  icon: ra-archive-research
+  perks:
+    tech_production: 20
+    invest_bonus: -20
+  classes:
+    - scholar

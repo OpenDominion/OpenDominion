@@ -149,6 +149,9 @@ class ImprovementCalculator
 
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'invest_bonus');
+        if ($dominion->hero !== null) {
+            $multiplier += $dominion->hero->getPerkMultiplier('invest_bonus');
+        }
 
         // Wonder
         $multiplier += $dominion->getWonderPerkMultiplier('invest_bonus');

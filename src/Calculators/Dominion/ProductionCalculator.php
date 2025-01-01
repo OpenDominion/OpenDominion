@@ -795,6 +795,11 @@ class ProductionCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
 
+        // Heroes
+        if ($dominion->hero !== null) {
+            $multiplier += $dominion->hero->getPerkMultiplier('tech_production');
+        }
+
         return $multiplier;
     }
 

@@ -2,11 +2,25 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Tech;
 
 class TechCalculator
 {
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
+    /**
+     * TechCalculator constructor.
+     */
+    public function __construct(
+        HeroCalculator $heroCalculator
+    )
+    {
+        $this->heroCalculator = $heroCalculator;
+    }
+
     /**
      * Returns the Dominion's current research point cost to unlock a new tech.
      *
@@ -15,8 +29,14 @@ class TechCalculator
      */
     public function getTechCost(Dominion $dominion): int
     {
+        $multiplier = 1;
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'tech_cost');
+
         $techCost = (2.5 * $dominion->highest_land_achieved) + (100 * $dominion->techs->count());
-        return max(3750, round($techCost));
+
+        return max(3750, round($techCost * $multiplier));
     }
 
     /**
