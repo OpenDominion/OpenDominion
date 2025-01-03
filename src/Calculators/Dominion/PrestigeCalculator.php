@@ -60,7 +60,7 @@ class PrestigeCalculator
      */
     public function __construct(
         GovernmentService $governmentService,
-        LandCalculator $landCalculator,
+        LandCalculator $landCalculator
     )
     {
         $this->governmentService = $governmentService;
