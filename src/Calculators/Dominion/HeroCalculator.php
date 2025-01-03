@@ -293,20 +293,21 @@ class HeroCalculator
             return 0;
         }
 
-        $maxUnlockLevel = 2;
+        $maxUnlockLevel = 4;
         $heroLevel = min($this->getHeroLevel($hero), $maxUnlockLevel);
-        $heroType = $this->heroHelper->getClasses()[$hero->class]['class_type'];
         $upgradeLevels = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
 
         if ($heroLevel < 2) {
             $evenLevels = [];
         } elseif ($heroLevel < 4) {
             $evenLevels = [2];
+        } elseif ($heroLevel < 6) {
+            $evenLevels = [2, 4];
         } else {
             $evenLevels = range(2, $heroLevel, 2);
         }
 
-        if ($heroType === 'advanced') {
+        if ($hero->class === 'scion') {
             $evenLevels[] = 0;
         }
 

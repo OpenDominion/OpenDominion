@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\PrestigeCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -59,46 +60,6 @@ class InvadeActionService
     protected const OVERWHELMED_PERCENTAGE = 20.0;
 
     /**
-     * @var float Used to cap prestige gain formula
-     */
-    protected const PRESTIGE_CAP = 70;
-
-    /**
-     * @var int Land ratio multiplier for prestige when invading successfully
-     */
-    protected const PRESTIGE_RANGE_MULTIPLIER = 200;
-
-    /**
-     * @var int Base prestige when invading successfully
-     */
-    protected const PRESTIGE_CHANGE_BASE = -115;
-
-    /**
-     * @var int Denominator for prestige gain from raw land total
-     */
-    protected const PRESTIGE_LAND_FACTOR = 100;
-
-    /**
-     * @var int Base prestige gain from raw land total
-     */
-    protected const PRESTIGE_LAND_BASE = -750;
-
-    /**
-     * @var float Base prestige % change for both parties when invading
-     */
-    protected const PRESTIGE_LOSS_PERCENTAGE = 5.0;
-
-    /**
-     * @var float Additional prestige % change for defender from recent invasions
-     */
-    protected const PRESTIGE_LOSS_PERCENTAGE_PER_INVASION = 1.0;
-
-    /**
-     * @var float Maximum prestige % change for defender
-     */
-    protected const PRESTIGE_LOSS_PERCENTAGE_CAP = 15.0;
-
-    /**
      * @var int Minimum research gained on successful 75% attack
      */
     protected const TECH_CHANGE_BASE = 250;
@@ -123,6 +84,9 @@ class InvadeActionService
 
     /** @var NotificationService */
     protected $notificationService;
+
+    /** @var PrestigeCalculator */
+    protected $prestigeCalculator;
 
     /** @var ProtectionService */
     protected $protectionService;
@@ -164,6 +128,7 @@ class InvadeActionService
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
+     * @param PrestigeCalculator $prestigeCalculator
      * @param ProtectionService $protectionService
      * @param QueueService $queueService
      * @param RangeCalculator $rangeCalculator
@@ -176,6 +141,7 @@ class InvadeActionService
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
+        PrestigeCalculator $prestigeCalculator,
         ProtectionService $protectionService,
         QueueService $queueService,
         RangeCalculator $rangeCalculator
@@ -188,6 +154,7 @@ class InvadeActionService
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->protectionService = $protectionService;
         $this->queueService = $queueService;
         $this->rangeCalculator = $rangeCalculator;
@@ -235,6 +202,9 @@ class InvadeActionService
 
             // Sanitize input
             $units = array_map('intval', array_filter($units));
+
+            $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
+            $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
 
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);
             $this->invasionResult['result']['range'] = $range;
@@ -451,46 +421,12 @@ class InvadeActionService
 
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
-        $multiplier = 1;
 
         if ($isOverwhelmed || ($range < 60)) {
-            $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_LOSS_PERCENTAGE / 100));
-            if ($range < 60) {
-                $scalingPrestigeLoss = 16 / (($range / 100) ** 2);
-                $attackerPrestigeChange = -min($dominion->prestige, max($attackerPrestigeChange, $scalingPrestigeLoss));
-            }
+            $attackerPrestigeChange = $this->prestigeCalculator->getPrestigePenalty($dominion, $target);
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
-            $attackerPrestigeChange = min(
-                static::PRESTIGE_RANGE_MULTIPLIER * ($range / 100) + static::PRESTIGE_CHANGE_BASE, // Gained through invading
-                static::PRESTIGE_CAP // But capped at 100%
-            ) + (
-                max(0, $this->landCalculator->getTotalLand($target) + static::PRESTIGE_LAND_BASE) / static::PRESTIGE_LAND_FACTOR
-            ); // Bonus for land size of target
-
-            $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
-            $prestigeLossPercentage = min(
-                (static::PRESTIGE_LOSS_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $weeklyInvadedCount),
-                (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
-            );
-            $targetPrestigeChange = (int)round($target->prestige * -($prestigeLossPercentage));
-
-            // Racial Bonus
-            $multiplier += $dominion->race->getPerkMultiplier('prestige_gains');
-
-            // Techs
-            $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
-
-            // Wonders
-            $multiplier += $dominion->getWonderPerkMultiplier('prestige_gains');
-
-            // War Bonus
-            if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
-                $multiplier += 0.2;
-            } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
-                $multiplier += 0.1;
-            }
-
-            $attackerPrestigeChange *= $multiplier;
+            $attackerPrestigeChange = $this->prestigeCalculator->getPrestigeGain($dominion, $target);
+            $targetPrestigeChange = $this->prestigeCalculator->getPrestigeLoss($target);
 
             // Penalty for habitual invasions
             $habitualHits = $this->militaryCalculator->getHabitualInvasionCount($dominion, $target);
@@ -504,7 +440,10 @@ class InvadeActionService
                 $penaltyHits = max(0, $habitualHits - 1);
             }
             $this->invasionResult['attacker']['habitualInvasion'] = $penaltyHits > 0;
-            $attackerPrestigeChange *= max(0.50, (1 - $penalty * $penaltyHits));
+            if ($penaltyHits > 0) {
+                $multiplier = max(0.50, (1 - $penalty * $penaltyHits));
+                $attackerPrestigeChange = (int)round($attackerPrestigeChange * $multiplier);
+            }
 
             // Repeat Invasions award no prestige
             if ($this->invasionResult['attacker']['repeatInvasion']) {
@@ -512,7 +451,6 @@ class InvadeActionService
             }
         }
 
-        $attackerPrestigeChange = (int)round($attackerPrestigeChange);
         if ($attackerPrestigeChange !== 0) {
             if ($attackerPrestigeChange < 0) {
                 // Unsuccessful invasions (bounces) and invasions under 60% range give negative prestige immediately
@@ -754,9 +692,6 @@ class InvadeActionService
      */
     protected function handleLandGrabs(Dominion $dominion, Dominion $target): void
     {
-        $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
-        $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
-
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
 
         // Nothing to grab if invasion isn't successful :^)
@@ -778,7 +713,7 @@ class InvadeActionService
         $bonusLandRatio = $this->militaryCalculator::LAND_GEN_RATIO;
 
         $acresLost = $this->militaryCalculator->getLandLost($dominion, $target);
-        $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
+        $landLossRatio = ($acresLost / $this->invasionResult['defender']['landSize']);
         $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
         $landGainedPerLandType = [];
@@ -917,7 +852,7 @@ class InvadeActionService
                 for ($slot = 1; $slot <= 4; $slot++) {
                     $percentage = $unitsAway[$slot] / $totalUnitsAway;
                     if ($percentage > 0) {
-                        $amount = (int) round($percentage * $unitsToKill);
+                        $amount = (int)round($percentage * $unitsToKill);
                         $this->invasionResult['defender']['unitsDeserted'][$slot] = $amount;
                         $this->queueService->dequeueResource('invasion', $target, "military_unit{$slot}", $amount);
                     }

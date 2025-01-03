@@ -4,8 +4,7 @@ abjuration:
   type: magic
   icon: ra-book-cover
   perks:
-    improved_energy_mirror: 5
-  active: false
+    enemy_lightning_bolt_damage: -10
 divination:
   name: Divination
   level: 2
@@ -20,7 +19,13 @@ evocation:
   icon: ra-book-cover
   perks:
     fireball_damage: 10
-  active: false
+hammer_of_retribution:
+  name: Hammer of Retribution
+  level: 4
+  type: item
+  icon: ra-hammer-drop
+  perks:
+    retal_prestige: 5
 illusion:
   name: Illusion
   level: 2
@@ -43,6 +48,13 @@ kings_banner:
   icon: ra-knight-banner
   perks:
     invasion_morale: -2
+orb_of_detection:
+  name: Orb of Detection
+  level: 4
+  type: item
+  icon: ra-orb-wand
+  perks:
+    enemy_spy_losses: 20
 spyglass:
   name: Spyglass
   level: 2
@@ -85,9 +97,19 @@ revised_strategy:
     tech_refund: 50
   classes:
     - scion
+pursuit_of_knowledge:
+  name: Pursuit of Knowledge
+  level: 0
+  type: directive
+  icon: ra-archive-research
+  perks:
+    tech_production: 30
+    invest_bonus: -20
+  classes:
+    - scholar
 blade_of_sundering:
   name: Blade of Sundering
-  level: 4
+  level: 6
   type: item
   icon: ra-relic-blade
   perks:
@@ -95,19 +117,9 @@ blade_of_sundering:
   active: false
 staff_of_stormcaller:
   name: Staff of the Stormcaller
-  level: 4
+  level: 6
   type: item
   icon: ra-wizard-staff
   perks:
     cyclone_damage: 100
   active: false
-pursuit_of_knowledge:
-  name: Pursuit of Knowledge
-  level: 0
-  type: directive
-  icon: ra-archive-research
-  perks:
-    tech_production: 20
-    invest_bonus: -20
-  classes:
-    - scholar

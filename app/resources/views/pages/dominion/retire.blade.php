@@ -45,7 +45,7 @@
                                     <div class="col-sm-9">
                                         <select name="class" class="form-control">
                                             @foreach ($heroHelper->getClasses() as $class)
-                                                <option value="{{ $class['key'] }}">
+                                                <option value="{{ $class['key'] }}" {{ ($selectedDominion->round->daysInRound() < 5 && $class['class_type'] == 'advanced') ? 'disabled' : null }}>
                                                     {{ $class['name'] }} - {{ str_replace('_', ' ', $class['perk_type']) }}
                                                 </option>
                                             @endforeach
@@ -200,7 +200,7 @@
                     <p>Your hero gains experience and levels up, increasing a passive bonus based on its class and unlocking new upgrades.</p>
                     <p>Your hero gains 1 XP per acre gained from invasion, 1 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>
-                    <p>Basic hero classes can be retired and replaced with another class. Basic hero classes will start with XP equal to half that of its predecessor.</p>
+                    <p>Basic hero classes can be retired and replaced with another class. The new hero will start with XP equal to half that of its predecessor.</p>
                     <p>Advanced hero classes cannot be retired, cannot be selected until the 5th day of the round, and unlock additional upgrades.</p>
                 </div>
             </div>

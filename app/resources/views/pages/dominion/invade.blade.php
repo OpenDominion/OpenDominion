@@ -293,6 +293,10 @@
                                                 <td id="land-gain" data-amount="0">0</td>
                                             </tr>
                                             <tr>
+                                                <td>Prestige Gain:</td>
+                                                <td id="prestige-gain" data-amount="0">0</td>
+                                            </tr>
+                                            <tr>
                                                 <td colspan="2">
                                                     <div class="checkbox">
                                                         <label style="font-weight: normal; margin-left: 5px;">
@@ -360,6 +364,7 @@
             var homeForcesDPAElement = $('#home-forces-dpa');
             var landGain = $('#land-gain');
             var landLoss = $('#land-loss');
+            var prestigeGain = $('#prestige-gain');
 
             var invadeButtonElement = $('#invade-button');
             var allUnitInputs = $('input[name^=\'unit\']');
@@ -428,6 +433,7 @@
                             // Update land gain/loss display
                             landGain.text(response.land_gain);
                             landLoss.text(response.land_loss);
+                            prestigeGain.text(response.prestige_gain);
                             calculate();
                         }
                     }

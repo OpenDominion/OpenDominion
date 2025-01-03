@@ -290,7 +290,7 @@ class InvasionService
             $activeSpell->pivot->cast_by_dominion_id = $dominion->id;
             $activeSpell->pivot->save();
         } else {
-            DominionSpell::insert([
+            DominionSpell::create([
                 'dominion_id' => $target->id,
                 'spell_id' => $spell->id,
                 'duration' => $duration,

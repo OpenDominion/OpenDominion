@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -1252,7 +1253,7 @@ class MilitaryCalculator
      *
      * @param Dominion $dominion
      * @param int $hours
-     * @return bool
+     * @return array
      */
     public function getRecentlyInvadedBy(Dominion $dominion, int $hours = 24): array
     {
@@ -1268,6 +1269,36 @@ class MilitaryCalculator
             ->all();
 
         return $invasionEvents;
+    }
+
+    /**
+     * Returns the number of hours since the most recent invasion
+     * by a Dominion against a specific Realm.
+     *
+     * @param Dominion $dominion
+     * @param Realm $realm
+     * @return int
+     */
+    public function getRetaliationHours(Dominion $dominion, Realm $realm): ?int
+    {
+        $dominionIds = $realm->dominions->pluck('id')->all();
+
+        // todo: this touches the db. should probably be in invasion or military service instead
+        $mostRecentInvasion = GameEvent::query()
+            ->where([
+                'source_type' => Dominion::class,
+                'source_id' => $dominion->id,
+                'type' => 'invasion',
+                'target_type' => Dominion::class,
+            ])
+            ->whereIn('target_id', $dominionIds)
+            ->max('created_at');
+
+        if ($mostRecentInvasion === null) {
+            return null;
+        }
+
+        return now()->endOfHour()->diffInHours($mostRecentInvasion);
     }
 
     /**

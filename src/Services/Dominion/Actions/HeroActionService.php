@@ -68,7 +68,7 @@ class HeroActionService
         }
 
         DB::transaction(function () use ($dominion, $upgrade) {
-            HeroHeroUpgrade::insert([
+            HeroHeroUpgrade::create([
                 'hero_id' => $dominion->hero->id,
                 'hero_upgrade_id' => $upgrade->id
             ]);
@@ -77,7 +77,7 @@ class HeroActionService
             if ($upgrade->type === 'effect') {
                 $statusEffectSpell = Spell::where('key', $upgrade->key)->first();
                 if ($statusEffectSpell !== null) {
-                    DominionSpell::insert([
+                    DominionSpell::create([
                         'dominion_id' => $dominion->id,
                         'spell_id' => $statusEffectSpell->id,
                         'duration' => $statusEffectSpell->duration,
@@ -201,9 +201,9 @@ class HeroActionService
             HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();
 
             // Starting XP
-            if ($selectedClass['class_type'] === 'advanced') {
-                $xp = $dominion->hero->experience;
+            $xp = (int) min($dominion->hero->experience, 10000) / 2;
 
+            if ($selectedClass['class_type'] === 'advanced') {
                 // Advanced Class Upgrades
                 $advancedUpgrades = HeroUpgrade::query()
                     ->where('level', 0)
@@ -213,13 +213,11 @@ class HeroActionService
                         return in_array($selectedClass['key'], $upgrade->classes);
                     });
                 foreach ($advancedUpgrades as $advancedUpgrade) {
-                    HeroHeroUpgrade::insert([
+                    HeroHeroUpgrade::create([
                         'hero_id' => $dominion->hero->id,
                         'hero_upgrade_id' => $advancedUpgrade->id
                     ]);
                 }
-            } else {
-                $xp = (int) min($dominion->hero->experience, 10000) / 2;
             }
 
             $dominion->hero()->update([

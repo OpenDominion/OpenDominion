@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\API;
 use LogicException;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PrestigeCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
@@ -13,6 +14,9 @@ class InvadeCalculationService
 {
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
+
+    /** @var PrestigeCalculator */
+    protected $prestigeCalculator;
 
     /** @var RangeCalculator */
     protected $rangeCalculator;
@@ -34,6 +38,7 @@ class InvadeCalculationService
         'land_gain' => 0,
         'land_loss' => 0,
         'land_ratio' => 0.5,
+        'prestige_gain' => 0,
         'spell_bonus' => null,
         'units' => [ // home, away, raw OP, raw DP
             '1' => ['dp' => 0, 'op' => 0],
@@ -48,18 +53,21 @@ class InvadeCalculationService
      *
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
+     * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param RangeCalculator $rangeCalculator
      */
     public function __construct(
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
+        PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
         RangeCalculator $rangeCalculator
     )
     {
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->rangeCalculator = $rangeCalculator;
     }
@@ -98,6 +106,12 @@ class InvadeCalculationService
             $this->calculationResult['land_gain'] = $landLoss * (1 + $this->militaryCalculator::LAND_GEN_RATIO);
         } else {
             $landRatio = 0.5;
+        }
+
+        if ($landRatio >= 0.75) {
+            $this->calculationResult['prestige_gain'] = $this->prestigeCalculator->getPrestigeGain($dominion, $target);
+        } elseif ($landRatio < 0.6) {
+            $this->calculationResult['prestige_gain'] = $this->prestigeCalculator->getPrestigePenalty($dominion, $target);
         }
 
         // Calculate unit stats

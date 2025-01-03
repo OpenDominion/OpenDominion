@@ -14,7 +14,7 @@
                         Heroes gain 1 XP per acre gained from invasion, 2 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.
                         Heroes lose 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.
                     </p>
-                    <p>Basic hero classes can be retired and replaced with another class. Basic hero classes will start with XP equal to half that of its predecessor.</p>
+                    <p>Basic hero classes can be retired and replaced with another class. The new hero will start with XP equal to half that of its predecessor.</p>
                     <p>Advanced hero classes cannot be retired, cannot be selected until the 5th day of the round, and unlock additional upgrades.</p>
                 </div>
                 <div class="col-md-4">

@@ -8,8 +8,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Advanced Hero Class: Scholar
   - Decreases tech costs by 0.75% per level (minimum cost is still 3750)
   - In order to unlock (via retiring your current hero), you must have at least 10,000 research points
-  - Unlocks the Pursuit of Knowledge upgrade: +20% research point production, -20% castle investment bonus
+  - Unlocks the Pursuit of Knowledge upgrade: +30% research point production, -20% castle investment bonus
   - Advanced hero classes cannot be selected until Day 5
+- New Level 4 Hero Upgrades
+  - Abjuration: -10% enemy lightning bolt damage
+  - Evocation: +10% fireball damage
+  - Hammer of Retribution: +5 prestige gains from invasion if the target has attacked your realm (doubled if in the last 24 hours)
+  - Orb of Detection: +20% enemy spy losses on failed operations
 
 ### Changed
 - Automation Updates

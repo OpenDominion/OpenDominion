@@ -339,7 +339,7 @@ class SpellActionService
             $activeSpellDuration = $activeSpell->duration;
             $activeSpell->where($where)->update(['duration' => $duration]);
         } else {
-            DominionSpell::insert([
+            DominionSpell::create([
                 'dominion_id' => $dominion->id,
                 'spell_id' => $spell->id,
                 'duration' => $duration,
@@ -527,7 +527,7 @@ class SpellActionService
 
         $duration = $spell->duration;
         $duration += $dominion->getTechPerkValue('friendly_spell_duration');
-        DominionSpell::insert([
+        DominionSpell::create([
             'dominion_id' => $target->id,
             'spell_id' => $spell->id,
             'duration' => $duration,
@@ -697,7 +697,7 @@ class SpellActionService
                 $activeSpell->pivot->save();
             } else {
                 $durationAdded = $duration;
-                DominionSpell::insert([
+                DominionSpell::create([
                     'dominion_id' => $target->id,
                     'spell_id' => $spell->id,
                     'duration' => $duration,
@@ -1245,7 +1245,7 @@ class SpellActionService
                             if ($mutualWarDeclared) {
                                 $duration += 6;
                             }
-                            DominionSpell::insert([
+                            DominionSpell::create([
                                 'dominion_id' => $target->id,
                                 'spell_id' => $statusEffectSpell->id,
                                 'duration' => $duration,

@@ -48,9 +48,6 @@ class OpsCalculator
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
-    /** @var RangeCalculator */
-    protected $rangeCalculator;
-
     /** @var SpellCalculator */
     protected $spellCalculator;
 
@@ -63,7 +60,6 @@ class OpsCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param PopulationCalculator $populationCalculator
-     * @param RangeCalculator $rangeCalculator
      * @param SpellCalculator $spellCalculator
      */
     public function __construct(
@@ -73,7 +69,6 @@ class OpsCalculator
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         PopulationCalculator $populationCalculator,
-        RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator
     )
     {
@@ -83,7 +78,6 @@ class OpsCalculator
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->populationCalculator = $populationCalculator;
-        $this->rangeCalculator = $rangeCalculator;
         $this->spellCalculator = $spellCalculator;
     }
 
@@ -192,6 +186,11 @@ class OpsCalculator
 
         // Techs
         $spiesKilledMultiplier += $dominion->getTechPerkMultiplier('spy_losses');
+
+        // Heroes
+        if ($target->hero !== null && $target->hero->getPerkValue('enemy_spy_losses')) {
+            $spiesKilledMultiplier += $target->hero->getPerkMultiplier('enemy_spy_losses');
+        }
 
         // Mastery
         $maxMasteryBonus = -50;
@@ -435,6 +434,9 @@ class OpsCalculator
         $modifier += $target->getWonderPerkMultiplier('enemy_spell_damage');
 
         // Heroes
+        if ($target->hero !== null && $target->hero->getPerkValue("enemy_{$spellKey}_damage")) {
+            $modifier += $target->hero->getPerkMultiplier("enemy_{$spellKey}_damage");
+        }
         if ($dominion !== null && $dominion->hero !== null && $dominion->hero->getPerkValue("{$spellKey}_damage")) {
             $modifier += $dominion->hero->getPerkMultiplier("{$spellKey}_damage");
         }

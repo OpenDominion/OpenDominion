@@ -156,13 +156,15 @@ class HeroHelper
     {
         return $this->getHeroUpgrades()->filter(function ($upgrade) use ($class) {
             return $upgrade->classes === [] || in_array($class, $upgrade->classes);
-        });
+        })->sortBy(['level', 'name']);
     }
 
     public function getHeroUpgradePerkStrings()
     {
         return [
             // Magic
+            'enemy_lightning_bolt_damage' => '%+g%% enemy lightning bolt damage',
+            'enemy_spy_losses' => '%+g%% enemy spy losses on failed operations',
             'espionage_fails_hide_identity' => 'Failed spy ops no longer reveal your identity',
             'fireball_damage' => '%+g%% fireball damage',
             'improved_energy_mirror' => '%+g%% additional damage reduction from Energy Mirror',
@@ -174,6 +176,7 @@ class HeroHelper
             'cyclone_damage' => '%+g%% cyclone damage',
             'invasion_morale' => '%+g%% morale loss from invasion',
             'land_spy_strength_cost' => 'Survey Dominion and Land Spy now cost 1%% spy strength',
+            'retal_prestige' => '%+g prestige gains from invasion if the target has attacked your realm (doubled if in the last 24 hours)',
             'tech_production_invasion' => '%+g%% research point gains from invasion',
             'wonder_attack_damage' => '%+g%% attack damage against wonders',
 
