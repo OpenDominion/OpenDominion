@@ -91,7 +91,7 @@
                                 @php
                                     $heroClass = $heroHelper->getClasses()[$hero->class];
                                     $perkType = $heroClass['perk_type'];
-                                    $upgrades = $hero->upgrades->whereNotIn('type', ['effect', 'immediate'])->keyBy('level');
+                                    $upgrades = $hero->upgrades->groupBy('level');
                                     $unlockedUpgrades = $hero->upgrades->pluck('key')->all();
                                 @endphp
                                 <div class="col-md-6">
@@ -113,20 +113,54 @@
                                         </div>
                                     @endif
                                     <div class="row" style="font-size: 64px; margin-top: 20px;">
-                                        <div class="col-xs-6 col-sm-4 col-sm-offset-2 text-center">
-                                            @if ($heroClass['class_type'] == 'advanced')
-                                                {!! $heroHelper->getUpgradeIcon(0, $upgrades[0] ?? null) !!}<br/>
-                                            @else
+                                        @if ($heroClass['class_type'] == 'advanced')
+                                            <div class="col-xs-4 text-center">
                                                 <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i><br/>
-                                            @endif
-                                            {!! $heroHelper->getUpgradeIcon(2, $upgrades[2] ?? null) !!}<br/>
-                                            {!! $heroHelper->getUpgradeIcon(4, $upgrades[4] ?? null) !!}<br/>
-                                        </div>
-                                        <div class="col-xs-6 col-sm-4 text-center">
-                                            {!! $heroHelper->getUpgradeIcon(6, $upgrades[6] ?? null) !!}<br/>
-                                            {!! $heroHelper->getUpgradeIcon(8, $upgrades[8] ?? null) !!}<br/>
-                                            {!! $heroHelper->getUpgradeIcon(10, $upgrades[10] ?? null) !!}<br/>
-                                        </div>
+                                                @foreach ($upgrades[2] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
+                                                @endforeach
+                                                @foreach ($upgrades[4] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
+                                                @endforeach
+                                            </div>
+                                            <div class="col-xs-4 text-center">
+                                                @foreach ($upgrades[6] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(6, $upgrade) !!}<br/>
+                                                @endforeach
+                                                @foreach ($upgrades[8] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(8, $upgrade) !!}<br/>
+                                                @endforeach
+                                                @foreach ($upgrades[10] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(10, $upgrade) !!}<br/>
+                                                @endforeach
+                                            </div>
+                                            <div class="col-xs-4 text-center">
+                                                @foreach ($upgrades[0] ?? [] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(0, $upgrade) !!}<br/>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="col-xs-6 col-sm-4 col-sm-offset-2 text-center">
+                                                <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i><br/>
+                                                @foreach ($upgrades[2] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
+                                                @endforeach
+                                                @foreach ($upgrades[4] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
+                                                @endforeach
+                                            </div>
+                                            <div class="col-xs-6 col-sm-4 text-center">
+                                                @foreach ($upgrades[6] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(6, $upgrade) !!}<br/>
+                                                @endforeach
+                                                @foreach ($upgrades[8] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(8, $upgrade) !!}<br/>
+                                                @endforeach
+                                                @foreach ($upgrades[10] ?? [null] as $upgrade)
+                                                    {!! $heroHelper->getUpgradeIcon(10, $upgrade) !!}<br/>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="col-md-6 table-responsive">
