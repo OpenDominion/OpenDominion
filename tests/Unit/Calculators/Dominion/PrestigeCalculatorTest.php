@@ -134,5 +134,4 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
             [-75, 1500, 1000, 500],
         ];
     }
-
 }
