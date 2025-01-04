@@ -60,11 +60,13 @@ class PrestigeCalculator
      */
     public function __construct(
         GovernmentService $governmentService,
-        LandCalculator $landCalculator
+        LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator
     )
     {
         $this->governmentService = $governmentService;
         $this->landCalculator = $landCalculator;
+        $this->militaryCalculator = $militaryCalculator;
     }
 
     /**
@@ -91,15 +93,14 @@ class PrestigeCalculator
 
         $prestigeGain = min(
             ($range * static::PRESTIGE_RANGE_MULTIPLIER) + static::PRESTIGE_CHANGE_BASE, // Gained through invading
-            static::PRESTIGE_CAP // But capped at 100%
+            static::PRESTIGE_CAP // But capped at 92.5%
         ) + (
             max(0, $defenderLand + static::PRESTIGE_LAND_BASE) / static::PRESTIGE_LAND_FACTOR // Bonus for land size of target
         );
 
         // Heroes
         if ($dominion->hero !== null && $dominion->hero->getPerkValue('retal_prestige') && $target->realm->number != '0') {
-            $militaryCalculator = app(MilitaryCalculator::class);
-            $hoursSinceInvasion = $militaryCalculator->getRetaliationHours($target, $dominion->realm);
+            $hoursSinceInvasion = $this->militaryCalculator->getRetaliationHours($target, $dominion->realm);
             if ($hoursSinceInvasion !== null) {
                 $bonusPrestige = $dominion->hero->getPerkValue('retal_prestige');
                 if ($hoursSinceInvasion < 24) {
@@ -144,7 +145,7 @@ class PrestigeCalculator
         $prestigeLoss = ($dominion->prestige * -(static::PRESTIGE_LOSS_PERCENTAGE / 100));
         if ($range < 0.60) {
             $scalingPrestigeLoss = 16 / ($range ** 2);
-            $prestigeLoss = -min($dominion->prestige, max($prestigeLoss, $scalingPrestigeLoss));
+            $prestigeLoss = -min($dominion->prestige, max(-$prestigeLoss, $scalingPrestigeLoss));
         }
 
         return (int)round($prestigeLoss);
@@ -152,8 +153,7 @@ class PrestigeCalculator
 
     public function getPrestigeLoss(Dominion $target): int
     {
-        $militaryCalculator = app(MilitaryCalculator::class);
-        $weeklyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
+        $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
         $prestigeLossPercentage = min(
             (static::PRESTIGE_LOSS_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $weeklyInvadedCount),
             (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
