@@ -49,9 +49,6 @@ class MilitaryCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
-    /** @var PrestigeCalculator */
-    private $prestigeCalculator;
-
     /** @var QueueService */
     protected $queueService;
 
@@ -72,7 +69,6 @@ class MilitaryCalculator
      * @param HeroCalculator $heroCalculator
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
-     * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      * @param SpellHelper $spellHelper
@@ -83,7 +79,6 @@ class MilitaryCalculator
         HeroCalculator $heroCalculator,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
-        PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
         SpellCalculator $spellCalculator,
         SpellHelper $spellHelper
@@ -94,7 +89,6 @@ class MilitaryCalculator
         $this->heroCalculator = $heroCalculator;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
-        $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->spellHelper = $spellHelper;
@@ -336,7 +330,7 @@ class MilitaryCalculator
      */
     public function getOffensivePowerMultiplierFromPrestige(Dominion $dominion): float
     {
-        return $this->prestigeCalculator->getPrestigeMultiplier($dominion);
+        return ($dominion->prestige / 10000);
     }
 
     /**

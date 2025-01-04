@@ -9,7 +9,6 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
-use OpenDominion\Calculators\Dominion\PrestigeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
@@ -40,9 +39,6 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
-    /** @var Mock|PrestigeCalculator */
-    protected $prestigeCalculator;
-
     /** @var Mock|QueueService */
     protected $queueService;
 
@@ -68,7 +64,6 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             $this->heroCalculator = m::mock(HeroCalculator::class),
             $this->improvementCalculator = m::mock(ImprovementCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
-            $this->prestigeCalculator = m::mock(PrestigeCalculator::class),
             $this->queueService = m::mock(QueueService::class),
             $this->spellCalculator = m::mock(SpellCalculator::class),
             $this->spellHelper = m::mock(SpellHelper::class)
