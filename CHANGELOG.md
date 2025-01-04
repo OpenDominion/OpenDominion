@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.43.0] - 2025-01-03
 ### Added
 - New Advanced Hero Class: Scholar
   - Decreases tech costs by 0.75% per level (minimum cost is still 3750)
@@ -15,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Evocation: +10% fireball damage
   - Hammer of Retribution: +5 prestige gains from invasion if the target has attacked your realm (doubled if in the last 24 hours)
   - Orb of Detection: +20% enemy spy losses on failed operations
+- Expected prestige gain now shown on the invade page (bot penalty not included yet)
 
 ### Changed
 - Automation Updates
@@ -2313,7 +2316,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.0...HEAD
+[1.42.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.0
 [1.42.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.0...1.42.1
 [1.42.0]: https://github.com/OpenDominion/OpenDominion/compare/1.41.3...1.42.0
 [1.41.3]: https://github.com/OpenDominion/OpenDominion/compare/1.41.2...1.41.3
