@@ -120,7 +120,7 @@
                                                     {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
                                                 @endforeach
                                                 @foreach ($upgrades[4] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
+                                                    {!! $heroHelper->getUpgradeIcon(4, $upgrade) !!}<br/>
                                                 @endforeach
                                             </div>
                                             <div class="col-xs-4 text-center">
