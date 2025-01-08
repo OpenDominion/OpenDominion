@@ -61,7 +61,8 @@ class LogParserService
         'Ares Call' => 'Ares\' Call',
         'Gaias Blessing' => 'Gaia\'s Blessing',
         'Gaias Watch' => 'Gaia\'s Watch',
-        'Miners Sight' => 'Miner\'s Sight'
+        'Miners Sight' => 'Miner\'s Sight',
+        'Spellwrights Calling' => 'Spellwright\'s Calling'
     ];
 
     /**
