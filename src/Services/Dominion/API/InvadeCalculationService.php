@@ -108,10 +108,12 @@ class InvadeCalculationService
             $landRatio = 0.5;
         }
 
-        if ($landRatio >= 0.75) {
-            $this->calculationResult['prestige_gain'] = $this->prestigeCalculator->getPrestigeGain($dominion, $target);
-        } elseif ($landRatio < 0.6) {
-            $this->calculationResult['prestige_gain'] = $this->prestigeCalculator->getPrestigePenalty($dominion, $target);
+        if ($target !== null) {
+            if ($landRatio >= 0.75) {
+                $this->calculationResult['prestige_gain'] = $this->prestigeCalculator->getPrestigeGain($dominion, $target);
+            } elseif ($landRatio < 0.6) {
+                $this->calculationResult['prestige_gain'] = $this->prestigeCalculator->getPrestigePenalty($dominion, $target);
+            }
         }
 
         // Calculate unit stats
