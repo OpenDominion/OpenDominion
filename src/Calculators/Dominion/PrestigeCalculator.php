@@ -143,7 +143,7 @@ class PrestigeCalculator
         $range = ($defenderLand / $attackerLand);
 
         $prestigeLoss = ($dominion->prestige * -(static::PRESTIGE_LOSS_PERCENTAGE / 100));
-        if ($range < 0.60) {
+        if ($target->user_id !== null && $range < 0.60) {
             $scalingPrestigeLoss = 16 / ($range ** 2);
             $prestigeLoss = -min($dominion->prestige, max(-$prestigeLoss, $scalingPrestigeLoss));
         }

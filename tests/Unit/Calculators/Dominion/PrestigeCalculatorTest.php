@@ -112,6 +112,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         $this->landCalculator->shouldReceive('getTotalLand')->with($this->dominion)->atLeast($this->once())->andReturn($attackerLand)->byDefault();
         $this->landCalculator->shouldReceive('getTotalLand')->with($this->target)->atLeast($this->once())->andReturn($defenderLand)->byDefault();
         $this->dominion->shouldReceive('getAttribute')->with('prestige')->atLeast($this->once())->andReturn($attackerPrestige)->byDefault();
+        $this->target->shouldReceive('getAttribute')->with('user_id')->andReturn(1);
 
         $this->assertEquals(
             $expected,
