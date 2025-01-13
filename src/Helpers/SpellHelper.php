@@ -15,7 +15,7 @@ class SpellHelper
      * @param string $key
      * @return Spell
      */
-    public function getSpellByKey(string $key): Spell
+    public function getSpellByKey(string $key): ?Spell
     {
         return Spell::firstWhere('key', $key);
     }

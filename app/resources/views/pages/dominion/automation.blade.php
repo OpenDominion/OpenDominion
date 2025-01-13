@@ -79,8 +79,9 @@
                                                             {{ ucwords($item['key']) }} to
                                                             {{ ucwords($item['key2']) }}
                                                         @elseif ($item['action'] == 'spell')
+                                                            @php($spell = $spellHelper->getSpellByKey($item['key']))
                                                             Cast
-                                                            {{ $spellHelper->getSpellByKey($item['key'])->name }}
+                                                            {{ $spell ? $spell->name : 'Unknown Spell' }}
                                                         @elseif ($item['action'] == 'release')
                                                             Release
                                                             {{ $item['amount'] }}
