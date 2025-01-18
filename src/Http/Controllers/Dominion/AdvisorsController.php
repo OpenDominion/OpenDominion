@@ -77,9 +77,11 @@ class AdvisorsController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
+        $selectedDominion = $this->getSelectedDominion();
+
         $dominion = $target;
         if($dominion == null) {
-            $dominion = $this->getSelectedDominion();
+            $dominion = $selectedDominion;
         }
 
         $latestInfoOps = collect([
@@ -140,6 +142,7 @@ class AdvisorsController extends AbstractDominionController
             'latestInfoOps' => $latestInfoOps,
             'latestInvasionEvents' => $latestInvasionEvents,
             'inRealm' => true,
+            'selfArchive' => $dominion->round->hasEnded() && $dominion->id == $selectedDominion->id,
             'targetDominion' => $target
         ]);
     }

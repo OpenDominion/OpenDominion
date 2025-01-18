@@ -92,7 +92,7 @@ class OpCenterController extends AbstractDominionController
         }
 
         if ($selectedDominion->id == $dominion->id) {
-            return redirect()->route('dominion.status');
+            return redirect()->route('dominion.advisors.op-center');
         }
 
         if ($selectedDominion->round_id != $dominion->round_id) {
@@ -142,6 +142,7 @@ class OpCenterController extends AbstractDominionController
     public function getDominionArchive(Dominion $dominion, string $type)
     {
         $selectedDominion = $this->getSelectedDominion();
+        $roundEnded = $selectedDominion->round->hasEnded();
 
         if ($selectedDominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
@@ -151,11 +152,11 @@ class OpCenterController extends AbstractDominionController
             return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
         }
 
-        if ($selectedDominion->id == $dominion->id) {
-            return redirect()->route('dominion.status');
+        if ($selectedDominion->id == $dominion->id && !$roundEnded) {
+            return redirect()->route('dominion.advisors.op-center');
         }
 
-        if ($selectedDominion->round_id != $dominion->round_id) {
+        if ($selectedDominion->round_id != $dominion->round_id && !$roundEnded) {
             return redirect()->route('dominion.op-center');
         }
 
@@ -166,13 +167,23 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center.show', $dominion);
         }
 
-        $infoOpArchive = $this->getSelectedDominion()->realm
-            ->infoOps()
-            ->with('sourceDominion')
-            ->where('target_dominion_id', '=', $dominion->id)
-            ->where('type', '=', $type)
-            ->orderBy('created_at', 'desc')
-            ->paginate($resultsPerPage);
+        if ($selectedDominion->id == $dominion->id && $roundEnded) {
+            // After round has ended
+            // Get all info ops taken on own dominion
+            $infoOpArchive = $selectedDominion->infoOps()
+                ->with('sourceDominion')
+                ->where('type', '=', $type)
+                ->orderBy('created_at', 'desc')
+                ->paginate($resultsPerPage);
+        } else {
+            // Get info ops taken by own realm
+            $infoOpArchive = $selectedDominion->realm->infoOps()
+                ->with('sourceDominion')
+                ->where('target_dominion_id', '=', $dominion->id)
+                ->where('type', '=', $type)
+                ->orderBy('created_at', 'desc')
+                ->paginate($resultsPerPage);
+        }
 
         return view('pages.dominion.op-center.archive', [
             'buildingHelper' => app(BuildingHelper::class),

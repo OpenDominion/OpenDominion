@@ -263,7 +263,7 @@ class Dominion extends AbstractModel
 
     public function infoOps()
     {
-        return $this->hasMany(InfoOp::class, 'source_dominion_id', 'id');
+        return $this->hasMany(InfoOp::class, 'target_dominion_id', 'id');
     }
 
     public function history()
