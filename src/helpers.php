@@ -370,3 +370,29 @@ if (!function_exists('format_string')) {
         return ucwords(str_replace('_', ' ', $str));
     }
 }
+
+if (!function_exists('rceil')) {
+    /**
+     * Floating-point safe version of ceil
+     * Rounds to the nearest 10th digit before performing ceil
+     *
+     * @param float $val
+     * @return int
+     */
+    function rceil(float $val): int {
+        return ceil(round($val, 10));
+    }
+}
+
+if (!function_exists('rfloor')) {
+    /**
+     * Floating-point safe version of floor
+     * Rounds to the nearest 10th digit before performing floor
+     *
+     * @param float $val
+     * @return int
+     */
+    function rfloor(float $val): int {
+        return floor(round($val, 10));
+    }
+}
