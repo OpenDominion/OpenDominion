@@ -594,3 +594,25 @@ martyrdom:
   duration: 24
   perks:
     martyrdom: 15
+demonic_pact:
+  name: Demonic Pact
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - demon
+  perks:
+    offense_from_pairing_demon: 1
+    apply_corruption: 1
+corruption:
+  name: Corruption
+  category: effect
+  cost_mana: 0
+  cost_strength: 0
+  duration: 24
+  races:
+    - demon
+  perks:
+    platinum_production: -10
+    food_production: -10
