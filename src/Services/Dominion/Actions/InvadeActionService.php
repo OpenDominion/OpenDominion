@@ -1161,6 +1161,12 @@ class InvadeActionService
         if ($target->getSpellPerkValue('spreads_plague')) {
             $this->invasionService->applySpell($target, $dominion, $spell, 9);
         }
+
+        // Corruption from Demonic Pact
+        $spell = Spell::active()->firstWhere('key', 'corruption');
+        if ($dominion->getSpellPerkValue('apply_corruption')) {
+            $this->invasionService->applySpell($dominion, $dominion, $spell, $spell->duration);
+        }
     }
 
     /**

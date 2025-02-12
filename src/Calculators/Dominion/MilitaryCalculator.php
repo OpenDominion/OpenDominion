@@ -846,6 +846,17 @@ class MilitaryCalculator
     protected function getBonusPowerFromPairingPerk(Dominion $dominion, Unit $unit, string $powerType, array $units = null): float
     {
         $pairingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_pairing", null);
+
+        // Special Case for Demonic Pact
+        if (
+            ($powerType == 'offense' && $unit->slot == 1) && (
+                $this->spellCalculator->isSpellActive($dominion, 'demonic_pact') ||
+                ($dominion->calc !== null && !isset($dominion->calc['invasion']) && isset($dominion->calc['demonic_pact']))
+            )
+        ) {
+            $pairingPerkData = [4, 1, 1];
+        }
+
         if (!$pairingPerkData) {
             return 0;
         }
