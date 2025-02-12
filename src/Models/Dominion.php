@@ -629,27 +629,6 @@ class Dominion extends AbstractModel
         return min($moraleGain, 100 - $this->morale);
     }
 
-    /**
-     * Returns the unit production bonus for a specific resource type (across all eligible units) for this dominion.
-     *
-     * @param string $resourceType
-     * @return float
-     */
-    public function getUnitPerkProductionBonus(string $resourceType): float
-    {
-        $bonus = 0;
-
-        foreach ($this->race->units as $unit) {
-            $perkValue = $unit->getPerkValue($resourceType);
-
-            if ($perkValue !== 0) {
-                $bonus += ($this->{'military_unit' . $unit->slot} * (float)$perkValue);
-            }
-        }
-
-        return $bonus;
-    }
-
     public function getSpellPerks() {
         return $this->spells->flatMap(
             function ($spell) {

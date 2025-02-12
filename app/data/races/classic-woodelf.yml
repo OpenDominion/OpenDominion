@@ -1,51 +1,53 @@
-key: wood-elf-rework
-name: Wood Elf
+key: wood-elf
+name: Wood Elf (Classic)
 alignment: good
 description: >-
   <p>Graceful, slender and beautiful, the Wood Elves are among the eldest of the races and keenly attuned with the natural world. Some Wood Elf lives span centuries, blessing their kin with wisdom through the ages.</p>
   <p>Though peaceful by nature, Wood Elves are a versatile race, proficient in combat with their deadly archers and magically gifted druids that draw power from the very forest itself, and backed up by powerful wizards and skilled spies that excel at covert ops.</p>
-attacker_difficulty: 2
+attacker_difficulty: 3
 explorer_difficulty: 1
 converter_difficulty: 1
 overall_difficulty: 1
 home_land_type: forest
 perks:
+  wizard_power: 10
+  spy_power: 10
   max_population: -5
-  hero_experience: 25
-  tech_cost: 20
+  lumber_production: 10
+  rezone_cost: 10
+  offense: 2.5
 units:
   - name: Ranger
     cost:
-      platinum: 300
+      platinum: 275
+      ore: 25
     power:
       offense: 3
       defense: 0
-  - name: Wisp
+  - name: Longbowman
     cost:
-      platinum: 175
-      mana: 50
+      platinum: 360
+      ore: 10
     power:
       offense: 0
-      defense: 3
-    perks:
-      lumber_from_land: forest,40,1 # amount, ratio%, max
+      defense: 4
   - name: Mystic
     cost:
-      platinum: 1350
+      platinum: 1150
       ore: 0
     power:
       offense: 0
-      defense: 5
+      defense: 4
     perks:
-      defense_from_land: forest,20,2 # land type, ratio%, max
+      defense_from_land: forest,20,4.5 # land type, ratio%, max
   - name: Druid
     cost:
-      platinum: 1200
+      platinum: 1100
       ore: 0
     power:
-      offense: 4
-      defense: 2
+      offense: 3
+      defense: 1
     perks:
-      offense_from_land: forest,20,2 # land type, ratio%, max
-      defense_from_land: forest,20,2 # land type, ratio%, max
+      offense_from_land: forest,20,4.5 # land type, ratio%, max
+      defense_from_land: forest,20,4.5 # land type, ratio%, max
 playable: false

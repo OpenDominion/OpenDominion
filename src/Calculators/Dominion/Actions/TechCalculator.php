@@ -31,6 +31,9 @@ class TechCalculator
     {
         $multiplier = 1;
 
+        // Racial
+        $multiplier += $dominion->race->getPerkMultiplier('tech_cost');
+
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'tech_cost');
 

@@ -176,6 +176,7 @@ class UnitHelper
             'rebirth' => 'Reborn %g hours after death.',
 
             // Resource related
+            'lumber_from_land' => 'Each unit produces 1 lumber per hour for every %2$g%% %1$ss (max +%3$g).',
             'ore_production' => 'Each unit produces %g units of ore per hour.',
             'plunder_platinum' => 'Each unit plunders %g platinum on attack (max 1 hour of target\'s raw production).',
             'plunder_gems' => 'Each unit plunders %g gems on attack (max 1 hour of target\'s raw production).',

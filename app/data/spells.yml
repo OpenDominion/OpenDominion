@@ -546,9 +546,9 @@ gaias_light:
   races:
     - wood-elf-rework
   perks:
-    wizard_power: 15
+    wizard_power: 30
+    spy_power: -10
     cancels_gaias_shadow: 1
-  active: false
 gaias_shadow:
   name: Gaia's Shadow
   category: self
@@ -558,9 +558,9 @@ gaias_shadow:
   races:
     - wood-elf-rework
   perks:
-    spy_power: 15
+    spy_power: 30
+    wizard_power: -10
     cancels_gaias_light: 1
-  active: false
 death_and_decay:
   name: Death and Decay
   category: self
