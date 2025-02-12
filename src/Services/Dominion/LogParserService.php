@@ -468,6 +468,7 @@ class LogParserService
                 $imps = array_filter($history->delta, function ($key) {
                     return Str::startsWith($key, 'improvement_');
                 }, ARRAY_FILTER_USE_KEY);
+                // TODO: validate resource_ and improvement_ exist
                 return sprintf(
                     'You invested %s into %s.',
                     dominion_attr_sentence_from_array($resources, true),

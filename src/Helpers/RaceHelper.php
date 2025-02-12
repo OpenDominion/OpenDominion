@@ -115,6 +115,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'spy power';
                 break;
+            case 'tech_cost':
+                $negativeBenefit = true;
+                $description = 'tech cost';
+                break;
             case 'tech_production':
                 $negativeBenefit = false;
                 $description = 'research point gains';
@@ -259,6 +263,10 @@ class RaceHelper
             case 'spy_power':
                 $negativeBenefit = false;
                 $description = 'Spy power';
+                break;
+            case 'tech_cost':
+                $negativeBenefit = true;
+                $description = 'Tech cost';
                 break;
             case 'tech_production':
                 $negativeBenefit = false;
