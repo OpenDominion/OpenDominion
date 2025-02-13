@@ -166,9 +166,11 @@ class HeroHelper
             'enemy_lightning_bolt_damage' => '%+g%% enemy lightning bolt damage',
             'enemy_spy_losses' => '%+g%% enemy spy losses on failed operations',
             'espionage_fails_hide_identity' => 'Failed spy ops no longer reveal your identity',
+            'exchange_mana' => 'Mana can be converted into other resources',
             'fireball_damage' => '%+g%% fireball damage',
             'improved_energy_mirror' => '%+g%% additional damage reduction from Energy Mirror',
             'info_spell_cost' => '%+g%% cost of info spells',
+            'self_spell_strength_cost' => '%+g wizard strength cost of self spells',
             'spell_fails_hide_identity' => 'Failed spells no longer reveal your identity',
 
             // Items

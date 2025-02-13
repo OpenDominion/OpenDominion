@@ -66,6 +66,19 @@ class BankingCalculator
             ],
         ];
 
+        // Heroes
+        if ($dominion->hero !== null) {
+            $manaExchangeRate = $dominion->hero->getPerkValue('exchange_mana');
+            if ($manaExchangeRate) {
+                $resources['resource_mana'] = [
+                    'label' => 'Mana',
+                    'buy' => 0.0,
+                    'sell' => $manaExchangeRate,
+                    'max' => $dominion->resource_mana,
+                ];
+            }
+        }
+
         return $resources;
     }
 }
