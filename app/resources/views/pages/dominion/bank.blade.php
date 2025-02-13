@@ -131,12 +131,18 @@
                 var sourceOption = sourceElement.find(':selected');
                     sourceResourceType = _.get(resources, sourceOption.val()),
                     targetOption = targetElement.find(':selected'),
-                    targetResourceType = _.get(resources, targetOption.val());
+                    targetResourceType = _.get(resources, targetOption.val()),
+                    resourceMax = _.get(sourceResourceType, 'max');
                 if (reverse) {
                     var targetAmount = Math.min(parseInt(resultElement.val() || 0));
                     var sourceAmount = (Math.ceil(targetAmount / (sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }})) || 0);
+                    if (sourceAmount > resourceMax) {
+                        amountElement.val(resourceMax);
+                        updateResources(null, false);
+                        return;
+                    }
                 } else {
-                    var sourceAmount = Math.min(parseInt(amountElement.val() || 0), _.get(sourceResourceType, 'max'));
+                    var sourceAmount = Math.min(parseInt(amountElement.val() || 0), resourceMax);
                     var targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }}) || 0);
                 }
                 if (sourceAmount == 0) {
