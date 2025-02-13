@@ -187,7 +187,7 @@ class SpellActionService
 
         DB::transaction(function () use ($dominion, $target, $manaCost, $spell, &$result, &$bountyMessage, &$xpMessage) {
             $xpGain = 0;
-            $wizardStrengthLost = $spell->cost_strength;
+            $wizardStrengthLost = $this->spellCalculator->getStrengthCost($dominion, $spell);
 
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);

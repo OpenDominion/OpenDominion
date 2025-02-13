@@ -17,65 +17,65 @@
                     @csrf
                     <div class="box-body">
                         <div class="row">
-                            <div class="col-lg-6">
-                                <div class="row">
-                                    <div class="form-group col-sm-6">
-                                        <label for="source">Exchange this</label>
-                                        <select name="source" id="source" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                            @foreach ($resources as $field => $resource)
-                                                @if (!$resource['sell'])
-                                                    @continue
-                                                @endif
-                                                <option value="{{ $field }}">{{ $resource['label'] }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-sm-6">
-                                        <label for="target">Into this</label>
-                                        <select name="target" id="target" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                            @foreach ($resources as $field => $resource)
-                                                @if (!$resource['buy'])
-                                                    @continue
-                                                @endif
-                                                <option value="{{ $field }}">{{ $resource['label'] }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                            <div class="form-group col-sm-6 col-lg-5">
+                                <label for="source">Exchange this</label>
+                                <select name="source" id="source" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    @foreach ($resources as $field => $resource)
+                                        @if (!$resource['sell'])
+                                            @continue
+                                        @endif
+                                        <option value="{{ $field }}">{{ $resource['label'] }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="row">
-                                    <div class="form-group col-sm-3">
-                                        <label for="amount" id="amountLabel">{{ reset($resources)['label'] }}</label>
-                                        <input type="number"
-                                               name="amount"
-                                               id="amount"
-                                               class="form-control text-center"
-                                               value="{{ old('amount') }}"
-                                               placeholder="0"
-                                               min="0"
-                                               max="{{ reset($resources)['max'] }}"
-                                               {{ $selectedDominion->isLocked() ? 'disabled' : null }}> 
-                                    </div>
-                                    <div class="form-group col-sm-6">
-                                        <label for="amountSlider">Amount</label>
-                                        <input type="number"
-                                               id="amountSlider"
-                                               class="form-control slider"
-                                               data-slider-value="0"
-                                               data-slider-min="0"
-                                               data-slider-max="{{ reset($resources)['max'] }}"
-                                               data-slider-step="1"
-                                               data-slider-tooltip="show"
-                                               data-slider-handle="triangle"
-                                               data-slider-id="yellow"
-                                               {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                    </div>
-                                    <div class="form-group col-sm-3">
-                                        <label id="resultLabel">{{ reset($resources)['label'] }}</label>
-                                        <p id="result" class="form-control-static text-center">0</p >
-                                    </div>
-                                </div>
+                            <div class="form-group col-sm-6 col-lg-5">
+                                <label for="target">Into this</label>
+                                <select name="target" id="target" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    @foreach ($resources as $field => $resource)
+                                        @if (!$resource['buy'])
+                                            @continue
+                                        @endif
+                                        <option value="{{ $field }}">{{ $resource['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-3 col-lg-3">
+                                <label for="amount" id="amountLabel">{{ reset($resources)['label'] }}</label>
+                                <input type="number"
+                                        name="amount"
+                                        id="amount"
+                                        class="form-control text-center"
+                                        value="{{ old('amount') }}"
+                                        placeholder="0"
+                                        min="0"
+                                        max="{{ reset($resources)['max'] }}"
+                                        {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                            </div>
+                            <div class="form-group col-sm-6 col-lg-4">
+                                <label for="amountSlider">Amount</label>
+                                <input type="number"
+                                        id="amountSlider"
+                                        class="form-control slider"
+                                        data-slider-value="0"
+                                        data-slider-min="0"
+                                        data-slider-max="{{ reset($resources)['max'] }}"
+                                        data-slider-step="1"
+                                        data-slider-tooltip="show"
+                                        data-slider-handle="triangle"
+                                        data-slider-id="yellow"
+                                        {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                            </div>
+                            <div class="form-group col-sm-3 col-lg-3">
+                                <label id="resultLabel">{{ reset($resources)['label'] }}</label>
+                                <input type="number"
+                                        id="result"
+                                        class="form-control text-center"
+                                        value=""
+                                        placeholder="0"
+                                        min="0"
+                                        {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             </div>
                         </div>
                     </div>
@@ -127,15 +127,23 @@
                 resultLabelElement = $('#resultLabel'),
                 resultElement = $('#result');
 
-            function updateResources() {
-                var sourceOption = sourceElement.find(':selected'),
+            function updateResources(e, reverse = false) {
+                var sourceOption = sourceElement.find(':selected');
                     sourceResourceType = _.get(resources, sourceOption.val()),
-                    sourceAmount = Math.min(parseInt(amountElement.val() || 0), _.get(sourceResourceType, 'max')),
                     targetOption = targetElement.find(':selected'),
-                    targetResourceType = _.get(resources, targetOption.val()),
-                    targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }}) || 0);
+                    targetResourceType = _.get(resources, targetOption.val());
+                if (reverse) {
+                    var targetAmount = Math.min(parseInt(resultElement.val() || 0));
+                    var sourceAmount = (Math.ceil(targetAmount / (sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }})) || 0);
+                } else {
+                    var sourceAmount = Math.min(parseInt(amountElement.val() || 0), _.get(sourceResourceType, 'max'));
+                    var targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }}) || 0);
+                }
                 if (sourceAmount == 0) {
                     sourceAmount = '';
+                }
+                if (targetAmount == 0) {
+                    targetAmount = '';
                 }
 
                 // Change labels
@@ -153,12 +161,13 @@
                     .slider('setValue', sourceAmount);
 
                 // Update target amount
-                resultElement.text(targetAmount.toLocaleString());
+                resultElement.val(targetAmount);
             }
 
             sourceElement.on('change', updateResources);
             targetElement.on('change', updateResources);
             amountElement.on('change', updateResources);
+            resultElement.on('change', updateResources.bind(true, true, true));
 
             amountSliderElement.slider({
                 formatter: function (value) {

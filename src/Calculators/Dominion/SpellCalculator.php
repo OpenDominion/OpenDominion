@@ -86,6 +86,25 @@ class SpellCalculator
     }
 
     /**
+     * Returns the wizard strength cost of a particular spell for $dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return float
+     */
+    public function getStrengthCost(Dominion $dominion, Spell $spell): float
+    {
+        $strengthCost = $spell->cost_strength;
+
+        // Heroes
+        if ($dominion->hero !== null && $this->spellHelper->isSelfSpell($spell)) {
+            $strengthCost += $dominion->hero->getPerkValue('self_spell_strength_cost');
+        }
+
+        return $strengthCost;
+    }
+
+    /**
      * Returns whether $dominion can currently cast spell $type.
      *
      * Spells require mana and enough wizard strength to be cast.
