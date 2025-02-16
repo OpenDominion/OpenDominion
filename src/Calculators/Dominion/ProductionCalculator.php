@@ -887,9 +887,9 @@ class ProductionCalculator
                     $landType = $perkValue[0];
                     $ratio = (float)$perkValue[1];
                     $max = (float)$perkValue[2];
-        
+
                     $totalLand = $this->landCalculator->getTotalLand($dominion);
-                    $landPercentage = ($dominion->{"land_" . $landType} / $totalLand) * 100;
+                    $landPercentage = ($dominion->{'land_' . $landType} / $totalLand) * 100;
                     $amountPerUnit = min($landPercentage / $ratio, $max);
                 } else {
                     $amountPerUnit = (float)$perkValue;
