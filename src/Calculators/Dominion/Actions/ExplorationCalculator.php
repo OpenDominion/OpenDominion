@@ -127,8 +127,8 @@ class ExplorationCalculator
     public function getMaxAfford(Dominion $dominion): int
     {
         return min(
-            floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
-            floor($dominion->military_draftees / $this->getDrafteeCost($dominion))
+            rfloor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
+            rfloor($dominion->military_draftees / $this->getDrafteeCost($dominion))
         );
     }
 
@@ -143,7 +143,7 @@ class ExplorationCalculator
     {
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
-        $moraleDrop = max(1, floor(($amount + 2) / 3));
+        $moraleDrop = max(1, rfloor(($amount + 2) / 3));
 
         return $moraleDrop;
     }

@@ -53,10 +53,10 @@ class TrainingCalculator
         $wizardCostMultiplier = $this->getWizardCostMultiplier($dominion);
 
         // Values
-        $spyPlatinumCost = (int)ceil($spyBaseCost * $spyCostMultiplier);
-        $assassinPlatinumCost = (int)ceil($assassinBaseCost * $spyCostMultiplier);
-        $wizardPlatinumCost = (int)ceil($wizardBaseCost * $wizardCostMultiplier);
-        $archmagePlatinumCost = (int)ceil($archmageBaseCost * $wizardCostMultiplier);
+        $spyPlatinumCost = (int)rceil($spyBaseCost * $spyCostMultiplier);
+        $assassinPlatinumCost = (int)rceil($assassinBaseCost * $spyCostMultiplier);
+        $wizardPlatinumCost = (int)rceil($wizardBaseCost * $wizardCostMultiplier);
+        $archmagePlatinumCost = (int)rceil($archmageBaseCost * $wizardCostMultiplier);
 
         $units = $dominion->race->units;
 
@@ -95,31 +95,31 @@ class TrainingCalculator
                     list($type, $proficiency) = explode('_', $units[$unitSlot]->type);
 
                     if ($platinum > 0) {
-                        $cost['platinum'] = (int)ceil($platinum * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
+                        $cost['platinum'] = (int)rceil($platinum * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                     }
 
                     if ($ore > 0) {
                         $cost['ore'] = $ore;
 
                         if ($dominion->race->key !== 'gnome') {
-                            $cost['ore'] = (int)ceil($ore * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
+                            $cost['ore'] = (int)rceil($ore * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                         }
                     }
 
                     if ($mana > 0) {
-                        $cost['mana'] = (int)ceil($mana * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
+                        $cost['mana'] = (int)rceil($mana * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                     }
 
                     if ($lumber > 0) {
                         $cost['lumber'] = $lumber;
 
                         if ($dominion->race->key !== 'wood-elf-rework') {
-                            $cost['lumber'] = (int)ceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
+                            $cost['lumber'] = (int)rceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                         }
                     }
 
                     if ($gems > 0) {
-                        $cost['gems'] = (int)ceil($gems * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
+                        $cost['gems'] = (int)rceil($gems * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                     }
 
                     $cost['draftees'] = 1;
@@ -160,7 +160,7 @@ class TrainingCalculator
             $trainableByCost = [];
 
             foreach ($costs as $type => $value) {
-                $trainableByCost[$type] = (int)floor($dominion->{$fieldMapping[$type]} / $value);
+                $trainableByCost[$type] = (int)rfloor($dominion->{$fieldMapping[$type]} / $value);
             }
 
             $trainable[$unitType] = min($trainableByCost);

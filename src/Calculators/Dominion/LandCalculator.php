@@ -163,7 +163,7 @@ class LandCalculator
 
             $landTypeLoss = ($totalLandForType * $landLossRatio);
 
-            $totalLandTypeLoss = (int)ceil($landTypeLoss);
+            $totalLandTypeLoss = (int)rceil($landTypeLoss);
 
             if ($totalLandTypeLoss === 0) {
                 continue;

@@ -68,7 +68,7 @@ class ProductionCalculator
      */
     public function getPlatinumProduction(Dominion $dominion): int
     {
-        return floor($this->getPlatinumProductionRaw($dominion) * $this->getPlatinumProductionMultiplier($dominion));
+        return rfloor($this->getPlatinumProductionRaw($dominion) * $this->getPlatinumProductionMultiplier($dominion));
     }
 
     /**
@@ -161,7 +161,7 @@ class ProductionCalculator
      */
     public function getFoodProduction(Dominion $dominion): int
     {
-        return floor($this->getFoodProductionRaw($dominion) * $this->getFoodProductionMultiplier($dominion));
+        return rfloor($this->getFoodProductionRaw($dominion) * $this->getFoodProductionMultiplier($dominion));
     }
 
     /**
@@ -243,7 +243,7 @@ class ProductionCalculator
      */
     public function getFoodConsumption(Dominion $dominion): float
     {
-        return floor($this->getFoodConsumptionRaw($dominion) * $this->getFoodConsumptionMultiplier($dominion));
+        return rfloor($this->getFoodConsumptionRaw($dominion) * $this->getFoodConsumptionMultiplier($dominion));
     }
 
     /**
@@ -350,7 +350,7 @@ class ProductionCalculator
      */
     public function getLumberProduction(Dominion $dominion): int
     {
-        return floor($this->getLumberProductionRaw($dominion) * $this->getLumberProductionMultiplier($dominion));
+        return rfloor($this->getLumberProductionRaw($dominion) * $this->getLumberProductionMultiplier($dominion));
     }
 
     /**
@@ -475,7 +475,7 @@ class ProductionCalculator
      */
     public function getManaProduction(Dominion $dominion): int
     {
-        return floor($this->getManaProductionRaw($dominion) * $this->getManaProductionMultiplier($dominion));
+        return rfloor($this->getManaProductionRaw($dominion) * $this->getManaProductionMultiplier($dominion));
     }
 
     /**
@@ -606,7 +606,7 @@ class ProductionCalculator
      */
     public function getOreProduction(Dominion $dominion): int
     {
-        return floor($this->getOreProductionRaw($dominion) * $this->getOreProductionMultiplier($dominion));
+        return rfloor($this->getOreProductionRaw($dominion) * $this->getOreProductionMultiplier($dominion));
     }
 
     /**
@@ -677,7 +677,7 @@ class ProductionCalculator
      */
     public function getGemProduction(Dominion $dominion): int
     {
-        return floor($this->getGemProductionRaw($dominion) * $this->getGemProductionMultiplier($dominion));
+        return rfloor($this->getGemProductionRaw($dominion) * $this->getGemProductionMultiplier($dominion));
     }
 
     /**
@@ -746,7 +746,7 @@ class ProductionCalculator
      */
     public function getTechProduction(Dominion $dominion): int
     {
-        return floor($this->getTechProductionRaw($dominion) * $this->getTechProductionMultiplier($dominion));
+        return rfloor($this->getTechProductionRaw($dominion) * $this->getTechProductionMultiplier($dominion));
     }
 
     /**
@@ -771,7 +771,7 @@ class ProductionCalculator
             $schoolPercentageCap / 100,
             $dominion->building_school / $totalLand
         );
-        $tech += min($dominion->building_school, floor($totalLand / 2)) * (1 - $schoolPercentage);
+        $tech += min($dominion->building_school, rfloor($totalLand / 2)) * (1 - $schoolPercentage);
 
         // Wonders
         $tech += $dominion->getWonderPerkValue('tech_production_raw');

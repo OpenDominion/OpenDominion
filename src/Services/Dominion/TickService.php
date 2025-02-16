@@ -701,7 +701,7 @@ class TickService
                 $dominionSpells = DominionSpell::whereIn('spell_id', $spellIds)->whereIn('dominion_id', $dominionIds)->get();
                 foreach ($dominionSpells as $dominionSpell) {
                     $totalLand = $this->landCalculator->getTotalLand($dominionSpell->dominion);
-                    $conversions = floor($baseConversion + ($totalLand * $landMultiplier));
+                    $conversions = rfloor($baseConversion + ($totalLand * $landMultiplier));
                     $unit1 = min($conversions, $dominionSpell->dominion->military_unit1);
                     $unit2 = min($conversions, $dominionSpell->dominion->military_unit2);
                     // Queue units
@@ -746,7 +746,7 @@ class TickService
                     $perk = $dominionSpell->spell->perks()->where('key', 'wizard_guilds_produce_military_unit3')->first();
                     $unitsProduced = ($dominionSpell->dominion->building_wizard_guild * $perk->pivot->value) + $dominionSpell->dominion->racial_value;
                     // Queue units
-                    $units = ['military_unit3' => (int) floor($unitsProduced)];
+                    $units = ['military_unit3' => (int)rfloor($unitsProduced)];
                     $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
                     // Update dominion
                     $dominionSpell->dominion->update(['racial_value' => fmod($unitsProduced, 1)]);

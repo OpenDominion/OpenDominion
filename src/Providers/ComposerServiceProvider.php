@@ -104,7 +104,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             // Show icon for techs
             $techCalculator = app(TechCalculator::class);
             $techCost = $techCalculator->getTechCost($selectedDominion);
-            $unlockableTechCount = floor($selectedDominion->resource_tech / $techCost);
+            $unlockableTechCount = rfloor($selectedDominion->resource_tech / $techCost);
             $view->with('unlockableTechCount', $unlockableTechCount);
 
             // Show icon for heroes

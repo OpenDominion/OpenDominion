@@ -108,7 +108,7 @@ class InvasionService
             }
         }
 
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion)));
+        return ($dominion->resource_boats >= rceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion)));
     }
 
     /**
@@ -192,7 +192,7 @@ class InvasionService
             $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
         }
         $newHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
-        $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
+        $attackingForceMaxOP = (int)rceil($newHomeForcesDP * 1.25);
 
         return ($attackingForceOP <= $attackingForceMaxOP);
     }

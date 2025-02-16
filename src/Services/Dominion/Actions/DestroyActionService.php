@@ -118,7 +118,7 @@ class DestroyActionService
         $excludedRaces = ['nomad-rework', 'wood-elf'];
         if ($dominion->getTechPerkValue('destruction_discount') != 0 && !in_array($dominion->race->key, $excludedRaces)) {
             $multiplier = $dominion->getTechPerkMultiplier('destruction_discount');
-            $discountedAcres = floor($multiplier * $totalBuildingsToDestroy);
+            $discountedAcres = rfloor($multiplier * $totalBuildingsToDestroy);
         }
 
         if ($discountedAcres > 0) {

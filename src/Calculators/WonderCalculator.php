@@ -67,7 +67,7 @@ class WonderCalculator
         $maxPower = min(37500 * $day, 2 * $wonder->power);
         $damageByRealm = $this->getDamageDealtByRealm($wonder, $realm);
         $damageContribution =  $damageByRealm / $wonder->power;
-        $newPower = floor($maxPower * $damageContribution);
+        $newPower = rfloor($maxPower * $damageContribution);
         return max(static::MIN_SPAWN_POWER, round($newPower, -4));
     }
 

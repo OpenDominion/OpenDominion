@@ -102,7 +102,7 @@
                                         Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }}
                                     </div>
                                     <div class="text-center">
-                                        {{ floor($hero->experience) }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
+                                        {{ rfloor($hero->experience) }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP
                                     </div>
                                     <div class="text-center">
                                         {{ $heroCalculator->getPassiveDescription($hero) }}
