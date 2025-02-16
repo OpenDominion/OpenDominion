@@ -507,7 +507,7 @@ class InvadeActionService
             $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
             if ($fixedCasualtiesPerk) {
                 $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
-                $offensiveUnitsLost[$slot] = (int)ceil($amount * $fixedCasualtiesRatio);
+                $offensiveUnitsLost[$slot] = (int)rceil($amount * $fixedCasualtiesRatio);
                 continue;
             }
 
@@ -518,7 +518,7 @@ class InvadeActionService
                 $unitCount = $amount;
             }
 
-            $offensiveUnitsLost[$slot] = (int)ceil($unitCount * $offensiveCasualtiesPercentage);
+            $offensiveUnitsLost[$slot] = (int)rceil($unitCount * $offensiveCasualtiesPercentage);
         }
 
         foreach ($offensiveUnitsLost as $slot => &$amount) {
@@ -526,7 +526,7 @@ class InvadeActionService
             $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $target, $slot, $units, $landRatio);
 
             if ($unitsToKillMultiplier !== 1) {
-                $amount = (int)ceil($amount * $unitsToKillMultiplier);
+                $amount = (int)rceil($amount * $unitsToKillMultiplier);
             }
 
             if ($amount > 0) {
@@ -627,7 +627,7 @@ class InvadeActionService
                 ),
                 static::CASUALTIES_DEFENSIVE_MIN_PERCENTAGE / 100
             );
-            $drafteesLost = (int)floor($target->military_draftees * $finalCasualtiesPercentage);
+            $drafteesLost = (int)rfloor($target->military_draftees * $finalCasualtiesPercentage);
         }
         if ($drafteesLost > 0) {
             $target->military_draftees -= $drafteesLost;
@@ -655,7 +655,7 @@ class InvadeActionService
             } else {
                 $finalCasualtiesPercentage = $unitCasualtiesPercentage;
             }
-            $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $finalCasualtiesPercentage);
+            $slotLost = (int)rfloor($target->{"military_unit{$unit->slot}"} * $finalCasualtiesPercentage);
 
             if ($slotLost > 0) {
                 $defensiveUnitsLost[$unit->slot] = $slotLost;
@@ -773,7 +773,7 @@ class InvadeActionService
                     $landRezonePercentage = $dominion->getSpellPerkValue('auto_rezone_water');
                 }
 
-                $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
+                $landRezonedConquered = (int)rceil($landConquered * ($landRezonePercentage / 100));
                 $landRezonedGenerated = (int)round($landRezonedConquered * $bonusLandRatio);
 
                 if (!isset($landGainedPerLandType["land_{$landRezoneType}"])) {
@@ -958,10 +958,10 @@ class InvadeActionService
                 continue;
             }
 
-            $unitsNeededToBreakTarget = ceil($targetDP / ($convertingUnit['unitPower'] * $offensiveModifier));
+            $unitsNeededToBreakTarget = rceil($targetDP / ($convertingUnit['unitPower'] * $offensiveModifier));
             $convertingUnitsForSlot = min($unitsNeededToBreakTarget, $units[$convertingUnit['unitSlot']]);
             $targetDP -= ($convertingUnitsForSlot * $convertingUnit['unitPower'] * $offensiveModifier);
-            $converts = floor($convertingUnitsForSlot * $convertingUnit['conversionRate'] * $conversionMultiplier * ($landRatio ** 2));
+            $converts = rfloor($convertingUnitsForSlot * $convertingUnit['conversionRate'] * $conversionMultiplier * ($landRatio ** 2));
             $convertedUnits[$convertingUnit['convertSlot']] += $converts;
         }
 
@@ -969,12 +969,12 @@ class InvadeActionService
         foreach ($dominion->race->units as $unit) {
             $casualtiesPerkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_casualties');
             if ($casualtiesPerkValue && array_key_exists($unit->slot, $units) && $this->invasionResult['attacker']['unitsLost'][$unit->slot] !== 0) {
-                $upgradedUnits = floor($this->invasionResult['attacker']['unitsLost'][$unit->slot] * $casualtiesPerkValue[1] / 100);
+                $upgradedUnits = rfloor($this->invasionResult['attacker']['unitsLost'][$unit->slot] * $casualtiesPerkValue[1] / 100);
                 $convertedUnits[$casualtiesPerkValue[0]] += $upgradedUnits;
             }
             $survivorsPerkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'upgrade_survivors');
             if ($survivorsPerkValue && $this->invasionResult['result']['range'] >= 75 && array_key_exists($unit->slot, $survivingUnits) && $survivingUnits[$unit->slot] !== 0) {
-                $upgradedUnits = floor($survivingUnits[$unit->slot] * $survivorsPerkValue[1] / 100);
+                $upgradedUnits = rfloor($survivingUnits[$unit->slot] * $survivorsPerkValue[1] / 100);
                 $convertedUnits[$unit->slot] -= $upgradedUnits;
                 $convertedUnits[$survivorsPerkValue[0]] += $upgradedUnits;
             }
@@ -996,7 +996,7 @@ class InvadeActionService
                 $unitCount = round($unitsNeededToBreakTarget * $slotTotalAmountPercentage);
 
                 $conversionRate = $dominion->getSpellPerkMultiplier('convert_vampires');
-                $convertedUnits[$unitSlotTo] += floor($unitCount * $conversionRate);
+                $convertedUnits[$unitSlotTo] += rfloor($unitCount * $conversionRate);
             }
         }
 
@@ -1119,9 +1119,9 @@ class InvadeActionService
         if ($plunderPlatinum > 0 || $plunderGems > 0 || $plunderMana > 0 || $salvageLumber > 0 || $salvageOre > 0) {
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
-            $plunderPlatinum = min($plunderPlatinum, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
-            $plunderGems = min($plunderGems, (int)floor($productionCalculator->getGemProductionRaw($target)));
-            $plunderMana = min($plunderMana, (int)floor($productionCalculator->getManaProductionRaw($target)));
+            $plunderPlatinum = min($plunderPlatinum, (int)rfloor($productionCalculator->getPlatinumProductionRaw($target)));
+            $plunderGems = min($plunderGems, (int)rfloor($productionCalculator->getGemProductionRaw($target)));
+            $plunderMana = min($plunderMana, (int)rfloor($productionCalculator->getManaProductionRaw($target)));
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
@@ -1243,7 +1243,7 @@ class InvadeActionService
             $defenderBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($unitsThatSinkBoats / $unitsTotal);
             $targetQueuedBoats = $this->queueService->getInvasionQueueTotalByResource($target, 'resource_boats');
             $targetBoatTotal = $target->resource_boats + $targetQueuedBoats;
-            $defenderBoatsSunk = (int)floor(max(0, $targetBoatTotal - $defenderBoatsProtected) * $defenderBoatsSunkPercentage);
+            $defenderBoatsSunk = (int)rfloor(max(0, $targetBoatTotal - $defenderBoatsProtected) * $defenderBoatsSunkPercentage);
             if ($defenderBoatsSunk > $targetQueuedBoats) {
                 $this->queueService->dequeueResource('invasion', $target, 'boats', $targetQueuedBoats);
                 $target->resource_boats -= $defenderBoatsSunk - $targetQueuedBoats;
@@ -1269,12 +1269,12 @@ class InvadeActionService
 
         // Queue returning boats
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
-            $boatsByReturnHourGroup = (int)floor($amountUnits / $this->militaryCalculator->getBoatCapacity($dominion));
+            $boatsByReturnHourGroup = (int)rfloor($amountUnits / $this->militaryCalculator->getBoatCapacity($dominion));
 
             $dominion->resource_boats -= $boatsByReturnHourGroup;
 
             if ($defendingUnitsThatSinkBoats > 0) {
-                $attackerBoatsSunk = (int)ceil($boatsByReturnHourGroup * $attackerBoatsSunkPercentage);
+                $attackerBoatsSunk = (int)rceil($boatsByReturnHourGroup * $attackerBoatsSunkPercentage);
                 $attackerBoatsLost += $attackerBoatsSunk;
                 $boatsByReturnHourGroup -= $attackerBoatsSunk;
             }

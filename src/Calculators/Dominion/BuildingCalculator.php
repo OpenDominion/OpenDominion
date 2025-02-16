@@ -104,7 +104,7 @@ class BuildingCalculator
             $buildingsInQueue = $buildings['buildingsInQueue'];
 
             $totalBuildings = $constructedBuildings + $buildingsInQueue;
-            $buildingsToDestroy = (int)ceil($totalBuildings * $buildingsToDestroyRatio);
+            $buildingsToDestroy = (int)rceil($totalBuildings * $buildingsToDestroyRatio);
 
             if($buildingsToDestroy <= 0) {
                 continue;

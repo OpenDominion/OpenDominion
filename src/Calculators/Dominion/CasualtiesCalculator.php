@@ -429,7 +429,7 @@ class CasualtiesCalculator
             }
 
             $slotLostMultiplier = $slotTotal / $totalMilitary;
-            $slotLost = floor($militaryCasualties * $slotLostMultiplier);
+            $slotLost = rfloor($militaryCasualties * $slotLostMultiplier);
 
             if($slotLost > $slotTotal) {
                 $slotLost = $slotTotal;

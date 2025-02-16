@@ -243,7 +243,7 @@
                                                 <td>
                                                     <span id="invasion-force-boats" data-amount="0">0</span>
                                                     /
-                                                    {{ number_format(floor($selectedDominion->resource_boats)) }}
+                                                    {{ number_format(rfloor($selectedDominion->resource_boats)) }}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -300,8 +300,8 @@
                                             </tr>
                                             <tr>
                                                 <td>Boats:</td>
-                                                <td id="home-forces-boats" data-original="{{ floor($selectedDominion->resource_boats) }}" data-amount="0">
-                                                    {{ number_format(floor($selectedDominion->resource_boats)) }}
+                                                <td id="home-forces-boats" data-original="{{ rfloor($selectedDominion->resource_boats) }}" data-amount="0">
+                                                    {{ number_format(rfloor($selectedDominion->resource_boats)) }}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -340,7 +340,7 @@
                     @else
                         <p>You have {{ $selectedDominion->morale }}% morale.</p>
                     @endif
-                    <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ floor($selectedDominion->wizard_strength) }}% wizard strength.</p>
+                    <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ rfloor($selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>
             </div>
         </div>
@@ -473,7 +473,7 @@
 
                 Shamelessly stolen from http://www.asciiworld.com/-Boats-.html */
 
-                var hasEnoughBoats = parseInt(invasionForceBoatsElement.data('amount')) <= {{ floor($selectedDominion->resource_boats) }};
+                var hasEnoughBoats = parseInt(invasionForceBoatsElement.data('amount')) <= {{ rfloor($selectedDominion->resource_boats) }};
                 if (!hasEnoughBoats) {
                     invasionForceBoatsElement.addClass('text-danger');
                     homeForcesBoatsElement.addClass('text-danger');

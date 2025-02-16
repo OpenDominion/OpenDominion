@@ -61,7 +61,7 @@ class RezoningCalculator
     public function getMaxAfford(Dominion $dominion): int
     {
         return min(
-            floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
+            rfloor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             $this->landCalculator->getTotalBarrenLand($dominion)
         );
     }

@@ -602,7 +602,7 @@ class WonderActionService
 
         // Queue returning boats
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
-            $boatsByReturnHourGroup = (int)floor($amountUnits / $this->militaryCalculator->getBoatCapacity($dominion));
+            $boatsByReturnHourGroup = (int)rfloor($amountUnits / $this->militaryCalculator->getBoatCapacity($dominion));
 
             $dominion->resource_boats -= $boatsByReturnHourGroup;
 
@@ -632,13 +632,13 @@ class WonderActionService
         $offensiveUnitsLost = [];
 
         foreach ($units as $slot => $amount) {
-            $unitsToKill = (int)ceil($amount * $offensiveCasualtiesPercentage);
+            $unitsToKill = (int)rceil($amount * $offensiveCasualtiesPercentage);
             $offensiveUnitsLost[$slot] = $unitsToKill;
 
             $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
             if ($fixedCasualtiesPerk) {
                 $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
-                $unitsActuallyKilled = (int)ceil($amount * $fixedCasualtiesRatio);
+                $unitsActuallyKilled = (int)rceil($amount * $fixedCasualtiesRatio);
                 $offensiveUnitsLost[$slot] = $unitsActuallyKilled;
             }
         }

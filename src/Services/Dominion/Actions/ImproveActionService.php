@@ -46,7 +46,7 @@ class ImproveActionService
             }
 
             $multiplier = $improvementCalculator->getInvestmentMultiplier($dominion, $resource, $improvementType);
-            $points = floor($amount * $worth[$resource] * $multiplier);
+            $points = rfloor($amount * $worth[$resource] * $multiplier);
 
             $dominion->{"improvement_{$improvementType}"} += $points;
             $dominion->stat_total_investment += $points;

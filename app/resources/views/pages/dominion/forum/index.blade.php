@@ -46,7 +46,7 @@
                                                     {{ $thread->title }}
                                                 </a>
                                                 @php
-                                                    $pageCount = ceil($thread->posts->count() / $resultsPerPage);
+                                                    $pageCount = rceil($thread->posts->count() / $resultsPerPage);
                                                 @endphp
                                                 @if ($pageCount > 1)
                                                     <span class="small" style="margin-left: 10px;">

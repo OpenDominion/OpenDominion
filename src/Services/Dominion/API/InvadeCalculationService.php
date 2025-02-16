@@ -138,8 +138,8 @@ class InvadeCalculationService
                 $unitsThatNeedBoats += (int)$units[$unit->slot];
             }
         }
-        $this->calculationResult['boats_needed'] = ceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion));
-        $this->calculationResult['boats_remaining'] = floor($dominion->resource_boats - $this->calculationResult['boats_needed']);
+        $this->calculationResult['boats_needed'] = rceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion));
+        $this->calculationResult['boats_remaining'] = rfloor($dominion->resource_boats - $this->calculationResult['boats_needed']);
 
         // Calculate total offense and defense
         $this->calculationResult['dp_multiplier'] = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);

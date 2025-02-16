@@ -868,9 +868,9 @@ class MilitaryCalculator
         $powerFromPerk = 0;
         $numberPaired = 0;
         if ($units === null) {
-            $numberPaired = min($dominion->{'military_unit' . $unit->slot}, floor((int)$dominion->{'military_unit' . $unitSlot} / $numRequired));
+            $numberPaired = min($dominion->{'military_unit' . $unit->slot}, rfloor((int)$dominion->{'military_unit' . $unitSlot} / $numRequired));
         } elseif (isset($units[$unitSlot]) && ((int)$units[$unitSlot] !== 0)) {
-            $numberPaired = min($units[$unit->slot], floor((int)$units[$unitSlot] / $numRequired));
+            $numberPaired = min($units[$unit->slot], rfloor((int)$units[$unitSlot] / $numRequired));
         }
         $powerFromPerk = $numberPaired * $amount;
 
@@ -950,11 +950,11 @@ class MilitaryCalculator
         // Add units which count as (partial) spies (Lizardfolk Chameleon)
         foreach ($dominion->race->units as $unit) {
             if ($type === 'offense' && $unit->getPerkValue('counts_as_spy_offense')) {
-                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_offense'));
+                $spies += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_offense'));
             }
 
             if ($type === 'defense' && $unit->getPerkValue('counts_as_spy_defense')) {
-                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_defense'));
+                $spies += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_defense'));
             }
         }
 
@@ -1040,11 +1040,11 @@ class MilitaryCalculator
         // Add units which count as (partial) wizards (Dark Elf Adept)
         foreach ($dominion->race->units as $unit) {
             if ($type === 'offense' && $unit->getPerkValue('counts_as_wizard_offense')) {
-                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_offense'));
+                $wizards += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_offense'));
             }
 
             if ($type === 'defense' && $unit->getPerkValue('counts_as_wizard_defense')) {
-                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_defense'));
+                $wizards += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_defense'));
             }
         }
 
@@ -1146,7 +1146,7 @@ class MilitaryCalculator
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor', true));
 
-        return ceil($boatsProtected);
+        return rceil($boatsProtected);
     }
 
     /**
@@ -1197,7 +1197,7 @@ class MilitaryCalculator
         }
 
         $acresLost *= (static::LAND_LOSS_MULTIPLIER * $attackerLand * $multiplier);
-        return (int)max(floor($acresLost), 10);
+        return (int)max(rfloor($acresLost), 10);
     }
 
     /**

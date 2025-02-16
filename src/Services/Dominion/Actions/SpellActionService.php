@@ -825,7 +825,7 @@ class SpellActionService
 
                 // Cap damage reduction at 80%
                 $baseDamage = $perk->pivot->value / 100;
-                $damage = ceil($attrValue * $baseDamage * $damageMultiplier);
+                $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
 
                 if ($attr == 'peasants') {
                     // Cap Fireball damage by protection
@@ -1125,9 +1125,9 @@ class SpellActionService
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
 
         $unitsKilled = [];
-        $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
+        $wizardsKilled = (int)rfloor($dominion->military_wizards * $wizardsKilledPercentage);
         $wizardsKilled = round(min($wizardsKilled, $wizardsKilledCap) * $wizardsKilledModifier);
-        $archmagesKilled = (int)floor($dominion->military_archmages * $archmagesKilledPercentage);
+        $archmagesKilled = (int)rfloor($dominion->military_archmages * $archmagesKilledPercentage);
         $archmagesKilled = round(min($archmagesKilled, $archmagesKilledCap) * $wizardsKilledModifier);
 
         // Check for immortal wizards
@@ -1140,7 +1140,7 @@ class SpellActionService
             $unitsKilled['wizards'] = $wizardsKilled;
             $dominion->military_wizards -= $wizardsKilled;
             if ($blackGuard && $wizardsKilled > 1) {
-                $this->queueService->queueResources('training', $dominion, ['military_wizards' => floor(0.75 * $wizardsKilled)]);
+                $this->queueService->queueResources('training', $dominion, ['military_wizards' => rfloor(0.75 * $wizardsKilled)]);
             }
         }
 
@@ -1148,20 +1148,20 @@ class SpellActionService
             $unitsKilled['archmages'] = $archmagesKilled;
             $dominion->military_archmages -= $archmagesKilled;
             if ($blackGuard && $archmagesKilled > 1) {
-                $this->queueService->queueResources('training', $dominion, ['military_archmages' => floor(0.75 * $archmagesKilled)]);
+                $this->queueService->queueResources('training', $dominion, ['military_archmages' => rfloor(0.75 * $archmagesKilled)]);
             }
         }
 
         foreach ($dominion->race->units as $unit) {
             if ($unit->getPerkValue('counts_as_wizard_offense')) {
                 $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * $wizardsKilledPercentage;
-                $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                $unitKilled = (int)rfloor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
                 $unitKilled = round(min($unitKilled, $unitsKilledCap) * $wizardsKilledModifier);
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
                     if ($blackGuard && $unitKilled > 1) {
-                        $this->queueService->queueResources('training', $dominion, ["military_unit{$unit->slot}" => floor(0.75 * $unitKilled)]);
+                        $this->queueService->queueResources('training', $dominion, ["military_unit{$unit->slot}" => rfloor(0.75 * $unitKilled)]);
                     }
                 }
             }
@@ -1241,7 +1241,7 @@ class SpellActionService
                             $statusEffect = $statusEffectSpell->name;
                             $duration = $statusEffectSpell->duration + $target->getTechPerkValue("enemy_{$statusEffectKey}_duration");
                             // Extend duration
-                            $duration += clamp(floor(($target->round->daysInRound() - 4) / 4), 0, 10);
+                            $duration += clamp(rfloor(($target->round->daysInRound() - 4) / 4), 0, 10);
                             if ($mutualWarDeclared) {
                                 $duration += 6;
                             }

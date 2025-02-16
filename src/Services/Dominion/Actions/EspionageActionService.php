@@ -578,17 +578,17 @@ class EspionageActionService
         $maxDominion = true;
         if ($constraints['self_production'] > 0) {
             if ($resource === 'platinum') {
-                $maxDominion = floor($this->productionCalculator->getPlatinumProductionRaw($dominion) * $constraints['self_production'] / 100);
+                $maxDominion = rfloor($this->productionCalculator->getPlatinumProductionRaw($dominion) * $constraints['self_production'] / 100);
             } elseif ($resource === 'food') {
-                $maxDominion = floor($this->productionCalculator->getFoodProductionRaw($dominion) * $constraints['self_production'] / 100);
+                $maxDominion = rfloor($this->productionCalculator->getFoodProductionRaw($dominion) * $constraints['self_production'] / 100);
             } elseif ($resource === 'lumber') {
-                $maxDominion = floor($this->productionCalculator->getLumberProductionRaw($dominion) * $constraints['self_production'] / 100);
+                $maxDominion = rfloor($this->productionCalculator->getLumberProductionRaw($dominion) * $constraints['self_production'] / 100);
             } elseif ($resource === 'mana') {
-                $maxDominion = floor($this->productionCalculator->getManaProductionRaw($dominion) * $constraints['self_production'] / 100);
+                $maxDominion = rfloor($this->productionCalculator->getManaProductionRaw($dominion) * $constraints['self_production'] / 100);
             } elseif ($resource === 'ore') {
-                $maxDominion = floor($this->productionCalculator->getOreProductionRaw($dominion) * $constraints['self_production'] / 100);
+                $maxDominion = rfloor($this->productionCalculator->getOreProductionRaw($dominion) * $constraints['self_production'] / 100);
             } elseif ($resource === 'gems') {
-                $maxDominion = floor($this->productionCalculator->getGemProductionRaw($dominion) * $constraints['self_production'] / 100);
+                $maxDominion = rfloor($this->productionCalculator->getGemProductionRaw($dominion) * $constraints['self_production'] / 100);
             }
         }
 
@@ -730,7 +730,7 @@ class EspionageActionService
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damage = max(0, floor($target->{$attr}) - $boatsProtected) * $baseDamage;
+                    $damage = max(0, rfloor($target->{$attr}) - $boatsProtected) * $baseDamage;
                 }
 
                 // Check for immortal wizards
@@ -746,10 +746,10 @@ class EspionageActionService
                     }
                     $actualDamage = $damage;
                     $target->{$attr} -= $damage;
-                    $damage = floor($target->{$attr}) - floor($target->{$attr} - $damage);
+                    $damage = rfloor($target->{$attr}) - rfloor($target->{$attr} - $damage);
                 } else {
                     // Rounded up for all other damage types
-                    $damage = ceil($damage);
+                    $damage = rceil($damage);
                     $actualDamage = $damage;
                     $target->{$attr} -= $damage;
                 }
@@ -838,16 +838,16 @@ class EspionageActionService
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
 
         $unitsKilled = [];
-        $spiesKilled = (int)floor($dominion->military_spies * $spiesKilledPercentage);
+        $spiesKilled = (int)rfloor($dominion->military_spies * $spiesKilledPercentage);
         $spiesKilled = round(min($spiesKilled, $spiesKilledCap) * $spiesKilledModifier);
-        $assassinsKilled = (int)floor($dominion->military_assassins * $assassinsKilledPercentage);
+        $assassinsKilled = (int)rfloor($dominion->military_assassins * $assassinsKilledPercentage);
         $assassinsKilled = round(min($assassinsKilled, $assassinsKilledCap) * $spiesKilledModifier);
 
         if ($spiesKilled > 0) {
             $unitsKilled['spies'] = $spiesKilled;
             $dominion->military_spies -= $spiesKilled;
             if ($blackGuard && $spiesKilled > 1) {
-                $this->queueService->queueResources('training', $dominion, ['military_spies' => floor(0.75 * $spiesKilled)]);
+                $this->queueService->queueResources('training', $dominion, ['military_spies' => rfloor(0.75 * $spiesKilled)]);
             }
         }
 
@@ -856,9 +856,9 @@ class EspionageActionService
             $dominion->military_assassins -= $assassinsKilled;
             if ($assassinsKilled > 1) {
                 if ($blackGuard) {
-                    $this->queueService->queueResources('training', $dominion, ['military_assassins' => floor(0.75 * $assassinsKilled)]);
+                    $this->queueService->queueResources('training', $dominion, ['military_assassins' => rfloor(0.75 * $assassinsKilled)]);
                 } else {
-                    $this->queueService->queueResources('training', $dominion, ['military_spies' => floor(0.50 * $assassinsKilled)]);
+                    $this->queueService->queueResources('training', $dominion, ['military_spies' => rfloor(0.50 * $assassinsKilled)]);
                 }
             }
         }
@@ -866,13 +866,13 @@ class EspionageActionService
         foreach ($dominion->race->units as $unit) {
             if ($unit->getPerkValue('counts_as_spy_offense')) {
                 $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * $spiesKilledPercentage;
-                $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                $unitKilled = (int)rfloor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
                 $unitKilled = round(min($unitKilled, $unitsKilledCap) * $spiesKilledModifier);
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
                     if ($blackGuard && $unitKilled > 1) {
-                        $this->queueService->queueResources('training', $dominion, ["military_unit{$unit->slot}" => floor(0.75 * $unitKilled)]);
+                        $this->queueService->queueResources('training', $dominion, ["military_unit{$unit->slot}" => rfloor(0.75 * $unitKilled)]);
                     }
                 }
             }

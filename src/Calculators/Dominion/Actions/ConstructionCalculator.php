@@ -58,7 +58,7 @@ class ConstructionCalculator
      */
     public function getPlatinumCost(Dominion $dominion): int
     {
-        return floor($this->getPlatinumCostRaw($dominion) * $this->getPlatinumCostMultiplier($dominion));
+        return rfloor($this->getPlatinumCostRaw($dominion) * $this->getPlatinumCostMultiplier($dominion));
     }
 
     /**
@@ -126,7 +126,7 @@ class ConstructionCalculator
         $discountedAcres = min($dominion->discounted_land, $acres);
         if ($discountedAcres > 0) {
             $discountedLandMultiplier = $this->getDiscountedLandMultiplier($dominion);
-            $totalPlatinumCost -= (int)ceil($platinumCost * $discountedAcres * (1 - $discountedLandMultiplier));
+            $totalPlatinumCost -= (int)rceil($platinumCost * $discountedAcres * (1 - $discountedLandMultiplier));
         }
 
         return $totalPlatinumCost;
@@ -140,7 +140,7 @@ class ConstructionCalculator
      */
     public function getLumberCost(Dominion $dominion): int
     {
-        return floor($this->getLumberCostRaw($dominion) * $this->getLumberCostMultiplier($dominion));
+        return rfloor($this->getLumberCostRaw($dominion) * $this->getLumberCostMultiplier($dominion));
     }
 
     /**
@@ -201,7 +201,7 @@ class ConstructionCalculator
         $discountedAcres = min($dominion->discounted_land, $acres);
         if ($discountedAcres > 0) {
             $discountedLandMultiplier = $this->getDiscountedLandMultiplier($dominion);
-            $totalLumberCost -= (int)ceil($lumberCost * $discountedAcres * (1 - $discountedLandMultiplier));
+            $totalLumberCost -= (int)rceil($lumberCost * $discountedAcres * (1 - $discountedLandMultiplier));
         }
 
         return $totalLumberCost;
@@ -225,8 +225,8 @@ class ConstructionCalculator
 
         // Check for discounted acres after invasion
         if ($dominion->discounted_land > 0) {
-            $maxFromDiscountedPlatinum = (int)floor($platinumToSpend / ($platinumCost * $discountedLandMultiplier));
-            $maxFromDiscountedLumber = (int)floor($lumberToSpend / ($lumberCost * $discountedLandMultiplier));
+            $maxFromDiscountedPlatinum = (int)rfloor($platinumToSpend / ($platinumCost * $discountedLandMultiplier));
+            $maxFromDiscountedLumber = (int)rfloor($lumberToSpend / ($lumberCost * $discountedLandMultiplier));
             // Set the number of afforded discounted buildings
             $discountedBuildings = min(
                 $maxFromDiscountedPlatinum,
@@ -235,13 +235,13 @@ class ConstructionCalculator
                 $barrenLand
             );
             // Subtract discounted building cost from available resources
-            $platinumToSpend -= (int)ceil($platinumCost * $discountedBuildings * $discountedLandMultiplier);
-            $lumberToSpend -= (int)ceil($lumberCost * $discountedBuildings * $discountedLandMultiplier);
+            $platinumToSpend -= (int)rceil($platinumCost * $discountedBuildings * $discountedLandMultiplier);
+            $lumberToSpend -= (int)rceil($lumberCost * $discountedBuildings * $discountedLandMultiplier);
         }
 
         return $discountedBuildings + min(
-            floor($platinumToSpend / $platinumCost),
-            floor($lumberToSpend / $lumberCost),
+            rfloor($platinumToSpend / $platinumCost),
+            rfloor($lumberToSpend / $lumberCost),
             ($barrenLand - $discountedBuildings)
         );
     }

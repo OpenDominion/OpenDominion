@@ -388,7 +388,7 @@ class AIService
                         $buildingsToConstruct['building_' . $command['building']] = min($maxAfford, $barrenLand[$command['land_type']]);
                     } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
                         // Percentage based
-                        $buildingsToConstruct['building_' . $command['building']] = min($maxAfford, $barrenLand[$command['land_type']], ceil(($command['amount'] - $buildingPercentage) * $totalLand));
+                        $buildingsToConstruct['building_' . $command['building']] = min($maxAfford, $barrenLand[$command['land_type']], rceil(($command['amount'] - $buildingPercentage) * $totalLand));
                     } else {
                         // Limited
                         if ($buildingCount < $command['amount']) {
@@ -430,7 +430,7 @@ class AIService
                     $landToExplore['land_' . $command['land_type']] = $maxAfford;
                 } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
                     // Percentage based
-                    $landToExplore['land_' . $command['land_type']] = min($maxAfford, ceil(($command['amount'] - $buildingPercentage) * $totalLand));
+                    $landToExplore['land_' . $command['land_type']] = min($maxAfford, rceil(($command['amount'] - $buildingPercentage) * $totalLand));
                 } else {
                     // Limited
                     if ($buildingCount < $command['amount']) {

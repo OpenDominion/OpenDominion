@@ -67,7 +67,7 @@ class GovernmentService
 
         if ($leaderId == $currentMonarchId || $leaderVotes == $currentMonarchVotes) {
             return false;
-        } elseif ($leaderVotes > floor($totalVotes / 3)) {
+        } elseif ($leaderVotes > rfloor($totalVotes / 3)) {
             $this->setRealmMonarch($realm, $leaderId);
             return true;
         } else {
