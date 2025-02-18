@@ -19,9 +19,9 @@ use Carbon\Carbon;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions
+ * @property-read \OpenDominion\Models\Dominion $creatorDominion
  * @property-read \OpenDominion\Models\Realm|null $realm
  * @property-read \OpenDominion\Models\Round $round
- * @property-read \OpenDominion\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Pack newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Pack newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Pack query()
@@ -31,10 +31,10 @@ class Pack extends AbstractModel
 {
     protected $dates = ['closed_at', 'created_at', 'updated_at'];
 
-//    public function creatorDominion()
-//    {
-//        return $this->hasOne(Dominion::class); // todo
-//    }
+    public function creatorDominion()
+    {
+        return $this->belongsTo(Dominion::class, 'creator_dominion_id');
+    }
 
     public function dominions()
     {
@@ -51,9 +51,9 @@ class Pack extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasManyThrough(User::class, Dominion::class, 'pack_id', 'id', 'id', 'user_id');
     }
 
     public function sizeAllocated(): int
@@ -96,6 +96,8 @@ class Pack extends AbstractModel
         if ($this->closed_at == null) {
             $this->closed_at = now();
         }
+        $userRatings = $this->users->pluck('rating')->toArray();
+        $this->rating = root_mean_square($userRatings);
         $this->save();
     }
 }
