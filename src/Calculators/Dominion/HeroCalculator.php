@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
+use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroUpgrade;
 
 class HeroCalculator
@@ -324,5 +325,64 @@ class HeroCalculator
         $levelsUnlocked = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
 
         return $heroLevel >= $upgrade->level && !in_array($upgrade->level, $levelsUnlocked);
+    }
+
+    public function getBaseCombatStats(int $level = 0): array
+    {
+        return [
+            'health' => 40 + (5 * $level),
+            'attack' => 20,
+            'defense' => 10,
+            'evasion' => 10,
+            'focus' => 0,
+            'counter' => 0,
+            'recover' => 0,
+        ];
+    }
+
+    public function getHeroCombatStats(Hero $hero): array
+    {
+        $level = $this->getHeroLevel($hero);
+        $combatStats = $this->getBaseCombatStats($level);
+
+        foreach ($combatStats as $stat => $value) {
+            $combatStats[$stat] += $hero->getPerkValue("combat_{$stat}");
+        }
+
+        return $combatStats;
+    }
+
+    public function calculateCombatDamage(HeroCombatant $combatant, HeroCombatant $target, bool $counterAttack = false): int
+    {
+        $baseDamage = $combatant->attack;
+        $baseDefense = $target->defense;
+
+        if ($combatant->has_focus) {
+            $focusBonus = $combatant->focus / 100;
+            $baseDamage *= (1.25 + $focusBonus);
+        }
+
+        if ($target->current_action == 'defend') {
+            $baseDefense *= 2;
+        }
+
+        $damage = max(0, $baseDamage - $baseDefense);
+
+        if ($counterAttack) {
+            $counterBonus = $combatant->counter / 100;
+            $damage *= (1.5 + $counterBonus);
+        }
+    
+        return round($damage);
+    }
+
+    public function calculateCombatEvade(HeroCombatant $target): bool
+    {
+        return mt_rand(0, 100) < $target->evasion;
+    }
+
+    public function calculateCombatHeal(HeroCombatant $combatant): int
+    {
+        return round($combatant->defense + $combatant->recover);
     }
 }

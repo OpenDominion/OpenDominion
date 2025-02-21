@@ -16,6 +16,7 @@ use OpenDominion\Services\NotificationService;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroBattle[] $battles
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero query()
@@ -28,6 +29,11 @@ class Hero extends AbstractModel
     public function dominion()
     {
         return $this->belongsTo(Dominion::class);
+    }
+
+    public function battles()
+    {
+        return $this->hasManyThrough(HeroBattle::class, HeroCombatant::class, 'hero_id', 'id', 'id', 'hero_battle_id');
     }
 
     public function upgrades()

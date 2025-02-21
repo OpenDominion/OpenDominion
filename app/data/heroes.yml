@@ -33,6 +33,7 @@ hammer_of_retribution:
   icon: ra-hammer-drop
   perks:
     retal_prestige: 5
+    combat_attack: 1
 illusion:
   name: Illusion
   level: 2

@@ -93,8 +93,10 @@
                                     $perkType = $heroClass['perk_type'];
                                     $upgrades = $hero->upgrades->groupBy('level');
                                     $unlockedUpgrades = $hero->upgrades->pluck('key')->all();
+                                    $heroLevel = $heroCalculator->getHeroLevel($hero);
+                                    $baseCombatStats = $heroCalculator->getBaseCombatStats($heroLevel);
                                 @endphp
-                                <div class="col-md-6">
+                                <div class="col-sm-12 col-lg-6">
                                     <div class="text-center" style="font-size: 24px;">
                                         {{ $hero->name }}
                                     </div>
@@ -112,58 +114,81 @@
                                             {{ number_format($heroCalculator->getHeroPerkMultiplier($selectedDominion, $perkType) * 100, 2) }}% from Shrines
                                         </div>
                                     @endif
-                                    <div class="row" style="font-size: 64px; margin-top: 20px;">
-                                        @if ($heroClass['class_type'] == 'advanced')
-                                            <div class="col-xs-4 text-center">
-                                                <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i><br/>
-                                                @foreach ($upgrades[2] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
-                                                @endforeach
-                                                @foreach ($upgrades[4] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(4, $upgrade) !!}<br/>
-                                                @endforeach
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="text-center text-bold" style="margin: 7px 0 -8px 0;">
+                                                Upgrades
                                             </div>
-                                            <div class="col-xs-4 text-center">
-                                                @foreach ($upgrades[6] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(6, $upgrade) !!}<br/>
-                                                @endforeach
-                                                @foreach ($upgrades[8] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(8, $upgrade) !!}<br/>
-                                                @endforeach
-                                                @foreach ($upgrades[10] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(10, $upgrade) !!}<br/>
-                                                @endforeach
+                                            <div class="row" style="font-size: 64px; margin-top: 20px;">
+                                                <div class="col-xs-6 text-center">
+                                                    <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i>
+                                                </div>
+                                                @if (isset($upgrades[0]))
+                                                    @foreach ($upgrades[0] as $upgrade)
+                                                        <div class="col-xs-6 text-center">
+                                                            {!! $heroHelper->getUpgradeIcon($upgrade) !!}
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                                @if (isset($upgrades[2]))
+                                                    @foreach ($upgrades[2] as $upgrade)
+                                                        <div class="col-xs-6 text-center">
+                                                            {!! $heroHelper->getUpgradeIcon($upgrade) !!}
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div class="col-xs-6 text-center">
+                                                        {!! $heroHelper->getLockIcon(2) !!}
+                                                    </div>
+                                                @endif
+                                                @if (isset($upgrades[4]))
+                                                    @foreach ($upgrades[4] as $upgrade)
+                                                        <div class="col-xs-6 text-center">
+                                                            {!! $heroHelper->getUpgradeIcon($upgrade) !!}
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div class="col-xs-6 text-center">
+                                                        {!! $heroHelper->getLockIcon(4) !!}
+                                                    </div>
+                                                @endif
+                                                @if (isset($upgrades[6]))
+                                                    @foreach ($upgrades[6] as $upgrade)
+                                                        <div class="col-xs-6 text-center">
+                                                            {!! $heroHelper->getUpgradeIcon($upgrade) !!}
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div class="col-xs-6 text-center">
+                                                        {!! $heroHelper->getLockIcon(6) !!}
+                                                    </div>
+                                                @endif
                                             </div>
-                                            <div class="col-xs-4 text-center">
-                                                @foreach ($upgrades[0] ?? [] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(0, $upgrade) !!}<br/>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                            <table class="table table-condensed">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan=2 class="text-center">Combat Stats</th>
+                                                    </tr>
+                                                </thead>
+                                                @foreach ($heroCalculator->getHeroCombatStats($hero) as $stat => $value)
+                                                    <tr>
+                                                        <td>
+                                                            {{ ucwords($stat) }}
+                                                        </td>
+                                                        <td>
+                                                            <span class="{{ $baseCombatStats[$stat] != $value ? 'text-green' : null }}">
+                                                                {{ $value }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
                                                 @endforeach
-                                            </div>
-                                        @else
-                                            <div class="col-xs-6 col-sm-4 col-sm-offset-2 text-center">
-                                                <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i><br/>
-                                                @foreach ($upgrades[2] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
-                                                @endforeach
-                                                @foreach ($upgrades[4] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(2, $upgrade) !!}<br/>
-                                                @endforeach
-                                            </div>
-                                            <div class="col-xs-6 col-sm-4 text-center">
-                                                @foreach ($upgrades[6] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(6, $upgrade) !!}<br/>
-                                                @endforeach
-                                                @foreach ($upgrades[8] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(8, $upgrade) !!}<br/>
-                                                @endforeach
-                                                @foreach ($upgrades[10] ?? [null] as $upgrade)
-                                                    {!! $heroHelper->getUpgradeIcon(10, $upgrade) !!}<br/>
-                                                @endforeach
-                                            </div>
-                                        @endif
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 table-responsive">
+                                <div class="col-sm-12 col-lg-6 table-responsive">
                                     <table class="table table-condensed table-striped">
                                         <thead>
                                             <tr>
@@ -175,7 +200,7 @@
                                         <tbody>
                                             @foreach ($heroCalculator->getExperienceLevels() as $level)
                                                 @if ($level['level'] !== 0)
-                                                    <tr class="{{ $heroCalculator->getHeroLevel($hero) == $level['level'] ? 'text-bold' : null }}">
+                                                    <tr class="{{ $heroCalculator->getHeroLevel($hero) == $level['level'] ? 'active' : null }}">
                                                         <td>{{ $level['level'] }}</td>
                                                         <td>{{ $level['xp'] }}</td>
                                                         <td>{{ number_format($heroCalculator->calculatePassiveBonus($perkType, $level['level']), 2) }}%</td>
@@ -185,6 +210,8 @@
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12">
                                     <h4>Hero Upgrades</h4>
                                     <table class="table">
@@ -194,6 +221,7 @@
                                                 <th></th>
                                                 <th>Name</th>
                                                 <th>Level</th>
+                                                <th>Combat</th>
                                                 <th>Description</th>
                                             </tr>
                                         </thead>
@@ -216,6 +244,9 @@
                                                 </td>
                                                 <td>
                                                     {{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}
+                                                </td>
+                                                <td>
+                                                    {!! $heroHelper->getCombatUpgradeDescription($upgrade) !!}
                                                 </td>
                                                 <td>
                                                     <label for="upgrade_{{ $upgrade->key }}" style="font-weight: normal;">

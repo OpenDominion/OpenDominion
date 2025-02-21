@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Helpers;
 
+use Illuminate\Support\Str;
+use OpenDominion\Models\HeroBattleAction;
 use OpenDominion\Models\HeroUpgrade;
 
 class HeroHelper
@@ -218,21 +220,47 @@ class HeroHelper
         return implode($separator, $perkStrings);
     }
 
-    public function getUpgradeIcon(int $level, ?HeroUpgrade $upgrade)
+    public function getCombatUpgradeDescription(HeroUpgrade $heroUpgrade, string $separator = ', '): string
     {
-        if ($upgrade === null) {
-            return sprintf(
-                '<i class="hero-icon ra ra-rw ra-padlock" title="Level %s: Locked" data-toggle="tooltip"></i>',
-                $level
-            );
+        $perkStrings = [];
+        foreach ($heroUpgrade->perks as $perk) {
+            if (Str::startsWith($perk->key, 'combat_')) {
+                $perkValue = (float)$perk->value;
+                $stat = Str::replaceFirst('combat_', '', $perk->key);
+                $perkStrings[] = sprintf("%+g %s", $perkValue, ucwords($stat));
+            }
         }
 
+        return implode($separator, $perkStrings);
+    }
+
+    public function getCombatActions(): array
+    {
+        return [
+            'attack',
+            'defend',
+            'focus',
+            'counter',
+            'recover'
+        ];
+    }
+
+    public function getUpgradeIcon(HeroUpgrade $upgrade)
+    {
         return sprintf(
             '<i class="hero-icon ra ra-fw %s" title="Level %s: %s<br>(%s)" data-toggle="tooltip"></i>',
             $upgrade->icon,
-            $level,
+            $upgrade->level,
             $upgrade->name,
             ucwords($upgrade->type)
+        );
+    }
+
+    public function getLockIcon(int $level)
+    {
+        return sprintf(
+            '<i class="hero-icon ra ra-rw ra-padlock" title="Level %s: Locked" data-toggle="tooltip"></i>',
+            $level
         );
     }
 

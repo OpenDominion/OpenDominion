@@ -12,6 +12,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\DominionTech;
 use OpenDominion\Models\Hero;
+use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroHeroUpgrade;
 use OpenDominion\Models\HeroUpgrade;
 use OpenDominion\Models\Spell;
@@ -238,5 +239,18 @@ class HeroActionService
                 $selectedClass['name']
             )
         ];
+    }
+
+    public function action(HeroCombatant $combatant, string $action, int $turn = null)
+    {
+        // check action is valid
+        // check turn is valid
+        $actions = $combatant->actions ?? [];
+        if ($turn == null) {
+            $turn = $combatant->battle->current_turn;
+        }
+        $actions[$turn] = $action;
+        $combatant->actions = $actions;
+        $combatant->save();
     }
 }

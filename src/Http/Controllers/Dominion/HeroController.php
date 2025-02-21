@@ -8,7 +8,9 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
+use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
+use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class HeroController extends AbstractDominionController
@@ -108,5 +110,47 @@ class HeroController extends AbstractDominionController
 
         $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.heroes');
+    }
+
+    public function getBattles()
+    {
+        $heroCalculator = app(HeroCalculator::class);
+        $heroHelper = app(HeroHelper::class);
+
+        $hero = $this->getSelectedDominion()->hero;
+        $activeBattles = $hero->battles()->active()->orderByDesc('created_at')->get();
+        $inactiveBattles = $hero->battles()->inactive()->orderByDesc('created_at')->get();
+        if ($activeBattles->isEmpty() && $inactiveBattles->isNotEmpty()) {
+            $activeBattles = collect([$inactiveBattles->first()]);
+        }
+
+        return view('pages.dominion.hero-battles', compact(
+            'activeBattles',
+            'inactiveBattles',
+            'heroCalculator',
+            'heroHelper',
+            'hero',
+        ));
+    }
+
+    public function postBattles(Request $request)
+    {
+        $heroActionService = app(HeroActionService::class);
+        $heroBattleService = app(HeroBattleService::class);
+
+        try {
+            $combatant = HeroCombatant::findOrFail($request->get('combatant'));
+            $result = $heroActionService->action(
+                $combatant,
+                $request->get('action')
+            );
+            $heroBattleService->processTurn($combatant->battle);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return redirect()->route('dominion.heroes.battles');
     }
 }
