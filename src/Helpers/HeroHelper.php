@@ -245,6 +245,24 @@ class HeroHelper
         ];
     }
 
+    public function getLimitedCombatActions(): array
+    {
+        return [
+            'focus',
+            'counter',
+            'recover'
+        ];
+    }
+
+    public function getCombatStrategies(): array
+    {
+        return [
+            'balanced',
+            'aggressive',
+            'defensive',
+        ];
+    }
+
     public function getUpgradeIcon(HeroUpgrade $upgrade)
     {
         return sprintf(

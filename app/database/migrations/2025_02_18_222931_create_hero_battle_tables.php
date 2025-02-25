@@ -42,6 +42,7 @@ class CreateHeroBattleTables extends Migration
             $table->string('current_action')->nullable();
             $table->string('last_action')->nullable();
             $table->text('actions')->nullable();
+            $table->boolean('automated')->nullable();
             $table->string('strategy')->nullable();
             $table->timestamps();
 

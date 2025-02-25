@@ -101,7 +101,18 @@
                     </a>
                 </li>
                 @if ($selectedDominion->hero)
-                    <li class="{{ Route::is('dominion.heroes.battles') ? 'active' : null }}"><a href="{{ route('dominion.heroes.battles') }}"><i class="ra ra-axe ra-fw"></i> <span>Hero Battles</span></a></li>
+                    <li class="{{ Route::is('dominion.heroes.battles') ? 'active' : null }}">
+                        <a href="{{ route('dominion.heroes.battles') }}">
+                            <i class="ra ra-axe ra-fw"></i> <span>Hero Battles</span>
+                            @if ($selectedDominion->hero->combatActionRequired() > 0)
+                                <span class="pull-right-container">
+                                    <span class="label label-primary pull-right">
+                                        {{ $selectedDominion->hero->combatActionRequired() }}
+                                    </span>
+                                </span>
+                            @endif
+                        </a>
+                    </li>
                 @endif
                 <li class="{{ Route::is('dominion.journal') ? 'active' : null }}"><a href="{{ route('dominion.journal') }}"><i class="ra ra-scroll-quill ra-fw"></i> <span>Journal</span></a></li>
 

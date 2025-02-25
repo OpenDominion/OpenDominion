@@ -98,9 +98,16 @@ class HeroBattleService
 
         $combatants = $heroBattle->combatants;
 
+        // Eject if not all combatants are ready
+        foreach ($combatants as $combatant) {
+            if (!$combatant->isReady()) {
+                return;
+            }
+        }
+
         // Determine which action to take via queue or automated strategy
         foreach ($combatants as $combatant) {
-            $combatant->current_action = $this->determineAction($heroBattle->current_turn, $combatant);
+            $combatant->current_action = $this->determineAction($combatant);
         }
 
         // Perform the actions and persist results
@@ -146,13 +153,15 @@ class HeroBattleService
         }
     }
 
-    private function determineAction(int $turn, HeroCombatant $combatant): string
+    private function determineAction(HeroCombatant $combatant): string
     {
-        $queuedActions = $combatant->actions;
+        $queuedActions = $combatant->actions ?? [];
 
-        if (isset($queuedActions[$turn])) {
-            $nextAction = $queuedActions[$turn];
-            if (in_array($nextAction, ['attack', 'defend']) || $nextAction != $combatant->last_action) {
+        if (count($queuedActions) > 0) {
+            $limitedActions = $this->heroHelper->getLimitedCombatActions();
+            $nextAction = array_shift($queuedActions);
+            $combatant->actions = $queuedActions;
+            if (!in_array($nextAction, $limitedActions) || $nextAction != $combatant->last_action) {
                 return $nextAction;
             }
         }
@@ -184,7 +193,7 @@ class HeroBattleService
 
     private function randomAction(Collection $options, ?string $last_action): string
     {
-        $limitedActions = collect(['focus', 'counter', 'recover']);
+        $limitedActions = collect($this->heroHelper->getLimitedCombatActions());
 
         foreach ($limitedActions as $action) {
             if ($action == $last_action) {
@@ -257,14 +266,9 @@ class HeroBattleService
         ];
     }
 
-    private function setWinner(HeroBattle $heroBattle, HeroCombatant $combatant): void
+    private function setWinner(HeroBattle $heroBattle, ?HeroCombatant $combatant): void
     {
-        if ($heroBattle->finished) {
-            // Draw (both heroes were killed)
-            $heroBattle->winner_combatant_id = null;
-        } else {
-            $heroBattle->winner_combatant_id = $combatant->id;
-        }
+        $heroBattle->winner_combatant_id = $combatant ? $combatant->id : null;
         $heroBattle->finished = true;
         $heroBattle->save();
     }

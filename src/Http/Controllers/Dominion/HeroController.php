@@ -135,16 +135,62 @@ class HeroController extends AbstractDominionController
 
     public function postBattles(Request $request)
     {
+        $dominion = $this->getSelectedDominion();
+        $heroActionService = app(HeroActionService::class);
+
+        try {
+            $combatant = HeroCombatant::findOrFail($request->get('combatant'));
+            $result = $heroActionService->updateCombatant(
+                $dominion,
+                $combatant,
+                $request->get('strategy'),
+                $request->get('automated') == 'on'
+            );
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return redirect()->route('dominion.heroes.battles');
+    }
+
+    public function getAddCombatAction(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
         $heroActionService = app(HeroActionService::class);
         $heroBattleService = app(HeroBattleService::class);
 
         try {
             $combatant = HeroCombatant::findOrFail($request->get('combatant'));
-            $result = $heroActionService->action(
+            $result = $heroActionService->queueAction(
+                $dominion,
                 $combatant,
                 $request->get('action')
             );
             $heroBattleService->processTurn($combatant->battle);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return redirect()->route('dominion.heroes.battles');
+    }
+
+    public function getDeleteCombatAction(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $heroActionService = app(HeroActionService::class);
+        $heroBattleService = app(HeroBattleService::class);
+
+        try {
+            $combatant = HeroCombatant::findOrFail($request->get('combatant'));
+            $result = $heroActionService->dequeueAction(
+                $dominion,
+                $combatant,
+                $request->get('action')
+            );
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

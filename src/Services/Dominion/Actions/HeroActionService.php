@@ -241,15 +241,74 @@ class HeroActionService
         ];
     }
 
-    public function action(HeroCombatant $combatant, string $action, int $turn = null)
+    public function updateCombatant(Dominion $dominion, HeroCombatant $combatant, string $strategy, bool $automated)
     {
-        // check action is valid
-        // check turn is valid
-        $actions = $combatant->actions ?? [];
-        if ($turn == null) {
-            $turn = $combatant->battle->current_turn;
+        $this->guardLockedDominion($dominion);
+
+        if ($dominion->hero === null || $dominion->hero->id !== $combatant->hero_id) {
+            throw new GameException('You cannot change settings for another hero.');
         }
-        $actions[$turn] = $action;
+
+        if ($combatant->battle->finished) {
+            throw new GameException('You cannot change settings for a battle that has ended.');
+        }
+
+        $validStrategies = $this->heroHelper->getCombatStrategies();
+        if (!in_array($strategy, $validStrategies)) {
+            throw new GameException('Invalid strategy.');
+        }
+
+        $combatant->strategy = $strategy;
+        $combatant->automated = $automated;
+        $combatant->save();
+    }
+
+    public function queueAction(Dominion $dominion, HeroCombatant $combatant, string $action)
+    {
+        $this->guardLockedDominion($dominion);
+
+        if ($dominion->hero === null || $dominion->hero->id !== $combatant->hero_id) {
+            throw new GameException('You cannot queue actions for another hero.');
+        }
+
+        if ($combatant->battle->finished) {
+            throw new GameException('You cannot queue actions for a battle that has ended.');
+        }
+
+        $validActions = $this->heroHelper->getCombatActions($combatant);
+        if (!in_array($action, $validActions)) {
+            throw new GameException('Invalid action.');
+        }
+
+        $actions = $combatant->actions ?? [];
+        if (count($actions) >= 6) {
+            throw new GameException('You cannot queue more than 6 actions.');
+        }
+
+        array_push($actions, $action);
+        $combatant->actions = $actions;
+        $combatant->automated = false;
+        $combatant->save();
+    }
+
+    public function dequeueAction(Dominion $dominion, HeroCombatant $combatant, int $index)
+    {
+        $this->guardLockedDominion($dominion);
+
+        if ($dominion->hero === null || $dominion->hero->id !== $combatant->hero_id) {
+            throw new GameException('You cannot delete actions for another hero.');
+        }
+
+        if ($combatant->battle->finished) {
+            throw new GameException('You cannot delete actions for a battle that has ended.');
+        }
+
+        $actions = $combatant->actions ?? [];
+        if (!isset($actions[$index])) {
+            throw new GameException('Invalid action.');
+        }
+
+        array_splice($actions, $index, 1);
         $combatant->actions = $actions;
         $combatant->save();
     }

@@ -36,6 +36,29 @@ class Hero extends AbstractModel
         return $this->hasManyThrough(HeroBattle::class, HeroCombatant::class, 'hero_id', 'id', 'id', 'hero_battle_id');
     }
 
+    public function combatants()
+    {
+        return $this->hasMany(HeroCombatant::class);
+    }
+
+    public function combatActionRequired(): int
+    {
+        $ongoingBattles = $this->combatants()
+            ->join('hero_battles', 'hero_battles.id', '=', 'hero_combatants.hero_battle_id')
+            ->where('hero_battles.finished', false)
+            ->where('hero_combatants.updated_at', '<', now()->startOfHour())
+            ->where(function ($query) {
+                $query->where('automated', null)
+                    ->orWhere(function ($query) {
+                        $query->where('automated', false)
+                            ->whereNull('actions')
+                            ->orWhere('actions', '[]');
+                    });
+            });
+
+        return $ongoingBattles->count();
+    }
+
     public function upgrades()
     {
         return $this->belongsToMany(

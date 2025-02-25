@@ -24,6 +24,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property string|null $current_action
  * @property string|null $last_action
  * @property array|null $actions
+ * @property bool|null $automated
  * @property string|null $strategy
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -54,5 +55,12 @@ class HeroCombatant extends AbstractModel
     public function dominion()
     {
         return $this->belongsTo(Dominion::class);
+    }
+
+    public function isReady()
+    {
+        return ($this->automated == true) ||
+            ($this->automated == null && $this->battle->created_at > now()->subHours(12)->startOfHour()) ||
+            ($this->actions != null && count($this->actions) > 0);
     }
 }
