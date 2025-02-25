@@ -184,6 +184,14 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
+                                                <tr>
+                                                    <td>
+                                                        <span title="Win - Loss - Draw" data-toggle="tooltip">Record</span>
+                                                    </td>
+                                                    <td>
+                                                        {{ sprintf('%s-%s-%s', $hero->stat_combat_wins, $hero->stat_combat_losses, $hero->stat_combat_draws) }}
+                                                    </td>
+                                                </tr>
                                             </table>
                                         </div>
                                     </div>

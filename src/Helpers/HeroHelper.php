@@ -4,6 +4,7 @@ namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Str;
 use OpenDominion\Models\HeroBattleAction;
+use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroUpgrade;
 
 class HeroHelper
@@ -261,6 +262,31 @@ class HeroHelper
             'aggressive',
             'defensive',
         ];
+    }
+
+    public function canUseCombatAction(HeroCombatant $combatant, string $action): bool
+    {
+        $limitedActions = $this->getLimitedCombatActions();
+
+        $queue = $combatant->actions ?? [];
+        if (count($queue) > 0) {
+            $lastAction = end($queue);
+        } else {
+            $lastAction = $combatant->last_action;
+        }
+
+        if ($action == 'focus') {
+            if ($combatant->has_focus && count($queue) == 0) {
+                return false;
+            }
+            // TODO: check for double focus without attack in between
+        }
+
+        if (in_array($action, $limitedActions) && $action == $lastAction) {
+            return false;
+        }
+
+        return true;
     }
 
     public function getUpgradeIcon(HeroUpgrade $upgrade)

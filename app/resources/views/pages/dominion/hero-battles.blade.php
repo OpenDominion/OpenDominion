@@ -95,7 +95,9 @@
                                                         </label>
                                                         <div>
                                                             @foreach ($heroHelper->getCombatActions() as $action)
-                                                                <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'action'=>$action]) }}">
+                                                                <a class="btn btn-block btn-primary"
+                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'action'=>$action]) }}"
+                                                                    {{ !$heroHelper->canUseCombatAction($playerCombatant, $action) ? 'disabled' : null }}>
                                                                     {{ ucwords($action) }}
                                                                 </a>
                                                             @endforeach

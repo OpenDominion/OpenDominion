@@ -146,9 +146,7 @@ class HeroBattleService
             $this->setWinner($heroBattle, $livingCombatants->first());
         }
 
-        if ($heroBattle->finished) {
-            // TODO: Update hero statistics
-        } else {
+        if (!$heroBattle->finished) {
             $heroBattle->increment('current_turn');
         }
     }
@@ -271,5 +269,14 @@ class HeroBattleService
         $heroBattle->winner_combatant_id = $combatant ? $combatant->id : null;
         $heroBattle->finished = true;
         $heroBattle->save();
+        foreach ($heroBattle->combatants as $participant) {
+            if ($combatant == null) {
+                $participant->hero->increment('stat_combat_draws');
+            } elseif ($participant->id == $combatant->id) {
+                $participant->hero->increment('stat_combat_wins');
+            } else {
+                $participant->hero->increment('stat_combat_losses');
+            }
+        }
     }
 }
