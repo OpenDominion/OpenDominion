@@ -399,6 +399,8 @@ class TickService
                 'type' => 'war_canceled',
             ]);
 
+            $war->source_realm_name_end = $war->sourceRealm->name;
+            $war->target_realm_name_end = $war->targetRealm->name;
             $war->inactive_at = now()->addHours(GovernmentService::WAR_INACTIVE_WAIT_IN_HOURS)->startOfHour();
             $war->save();
         }

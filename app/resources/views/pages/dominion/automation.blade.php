@@ -117,7 +117,7 @@
                                     Tick:
                                     <select class="form-control" name="tick" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @foreach (range(1, 12) as $hours)
-                                            <option value="{{ $currentTick + $hours }}">
+                                            <option value="{{ $currentTick + $hours }}" {{ (($currentTick + $hours) == old('tick')) ? 'selected' : null }}>
                                                 Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours)) }},
                                                 Hour {{ $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours)) }}
                                                 (+{{ $hours }})

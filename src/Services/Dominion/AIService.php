@@ -192,13 +192,12 @@ class AIService
 
         // Automated player actions
         if ($dominion->user_id !== null) {
-            if ($dominion->daily_actions == 0) {
-                return;
-            }
-
             $currentTick = $dominion->round->getTick();
             if (isset($config[$currentTick])) {
                 foreach ($config[$currentTick] as $instruction) {
+                    if ($dominion->daily_actions == 0 && $instruction['action'] !== 'daily_bonus') {
+                        continue;
+                    }
                     $dominion->refresh();
                     try {
                         switch ($instruction['action']) {

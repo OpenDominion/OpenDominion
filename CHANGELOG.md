@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - After the round has ended, you can now view all ops taken on your dominion on your advisors page
 - National Bank page updated so that you can enter the amount of desired resources
 
+## [1.43.1] - 2025-02-22
+### Added
+- After scheduling an automated action, the form will remain set to the same hour so you can more easily schedule an additional action on that hour
+
+### Fixed
+- Standalone daily bonus automations will no longer fail if your daily actions are exhausted
+- Wars that are automatically canceled after reaching maximum duration will properly show the realm name in the town crier
+
 ## [1.43.0] - 2025-01-03
 ### Added
 - New Advanced Hero Class: Scholar
@@ -297,7 +305,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - A portion of your castle improvements are safeguarded from being destroyed by lightning bolts, the percentage of improvements that are vulnerable to lightning bolt starts at 30% of total investment on Day 4 and decreases by 0.25% per day to a maximum of 20% vulnerable on Day 44
 - Lightning Bolt: now kills 1% of your target's vulnerable improvements (from 0.4% of current improvements), 10% chance to apply the Burning status effect if at war
 - Burning: new status effect (spell) with 24 hour duration, unmodded population growth is fixed at 6% of your vulnerable peasant population, applies Rejuvenation upon expiration, extended by 6 hours in mutual war
-- Rejuvenation: new status effect (spell) with 48 hour duration, increases population growth by 200%, reduces spell damage by 75%, immune to Burning, cancelled if target's realm declares war
+- Rejuvenation: new status effect (spell) with 48 hour duration, increases population growth by 200%, reduces spell damage by 75%, immune to Burning, canceled if target's realm declares war
 - Up to 50% of your vulnerable peasant population and castle improvements are protected by defensive WPA (remains as damage reduction for all other ops), scaling changed to be more impactful early and less so as you approach the cap (formula in wiki)
 - Spires: now protects up to 50% of your vulnerable peasant population and castle improvements (from up to 60% spell damage reduction), multiplicative with WPA protection
 - Spires and Harbor: protection bonuses increase at 1.5x the rate of the primary bonuses (from 1.25x for Harbor), capped at +50%, and cannot be modified by masonries
@@ -325,7 +333,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Kobold Taskmaster: -25p (from 1400p)
 - Kobold Overlord: -10p (from 1000p)
 - Orc Savage: -15p (from 400p)
-- Undead: Cull the Weak now kills up to 2 Skeletons and 2 Ghouls (plus 1 each per 1000 acres) every hour, re-queueing them as Necromancers and Death Knights, cancels and is cancelled by Midas Touch
+- Undead: Cull the Weak now kills up to 2 Skeletons and 2 Ghouls (plus 1 each per 1000 acres) every hour, re-queueing them as Necromancers and Death Knights, cancels and is canceled by Midas Touch
 - Undead Necromancer: now always convert Death Knights (from Ghouls when Cull the Weak was inactive)
 - Visionary Expansionist (tech): now grants +1 population from barren land (was +15% population growth)
 - Visionary Expansionist swaps places with Urban Planner
@@ -460,7 +468,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Automated protection via importing from an Excel Log
 
 ### Changed
-- Minimum war duration changed to 48 hours (from 72), however the invasion bonuses will remain active for 12 hours after war is cancelled
+- Minimum war duration changed to 48 hours (from 72), however the invasion bonuses will remain active for 12 hours after war is canceled
 - Maximum war duration changed to 108 hours (from 120)
 - Docks now protect 2 + [0.05 x daysInRound] boats (from 2.5 + 0.05 x [daysInRound - 25] after Day 25)
 - Fireball damage reduced to 2.5% (from 2.75%)
@@ -2319,8 +2327,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.0...HEAD
-[1.42.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.0
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.1...HEAD
+[1.43.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.1
+[1.43.0]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.0
 [1.42.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.0...1.42.1
 [1.42.0]: https://github.com/OpenDominion/OpenDominion/compare/1.41.3...1.42.0
 [1.41.3]: https://github.com/OpenDominion/OpenDominion/compare/1.41.2...1.41.3
