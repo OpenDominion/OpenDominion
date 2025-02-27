@@ -4,6 +4,20 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### CHAOS
+- The Shadow League is now the Chaos League, new perks added
+  - War spells used between members are now Chaos spells
+    - Chaos Fireball - kills 6% of unprotected peasants
+    - Chaos Lightning - destroys 0.3% improvements for 12 hours
+    - Chaos Disband - turns 2% of enemy spies into random resources for yourself
+    - Chaos spells have a 25% chance for critical success, dealing 50% more damage, but increasing chance of critical failure
+    - Chaos spells have a chance for critical failure, dealing damage to yourself, chance increased by number of other Chaos League members in your realm
+  - Gain access to Delve into Shadow
+    - Cannot be cast while a member of the Royal or Elite Guard
+    - Failed Chaos spells refund 40% of their strength and mana costs
+    - Reduces exploration cost by 1% per 100 wizard mastery
+- New Spy Operation (War): Incite Chaos - increases target's chance of critical failure by 5%
+
 ### Added
 - After the round has ended, you can now view all ops taken on your dominion on your advisors page
 - National Bank page updated so that you can enter the amount of desired resources

@@ -139,7 +139,7 @@
                                                         <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                                     @endif
                                                     @if ($guardMembershipService->isBlackGuardMember($dominion) && ((isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public') || $guardMembershipService->isBlackGuardMember($selectedDominion) || ($dominion->realm_id == $selectedDominion->realm_id)))
-                                                        <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League"></i>
+                                                        <i class="ra ra-fire-shield ra-lg text-purple" title="Chaos League"></i>
                                                     @endif
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                                     @if ($dominion->locked_at !== null)
