@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - After the round has ended, you can now view all ops taken on your dominion on your advisors page
 - National Bank page updated so that you can enter the amount of desired resources
 
+### Fixed
+- Allow access to Journal page for 7 days after round end
+- Made adjustments to built-in math functions to limit floating point errors (numbers rounding up or down when they shouldn't)
+
 ## [1.43.1] - 2025-02-22
 ### Added
 - After scheduling an automated action, the form will remain set to the same hour so you can more easily schedule an additional action on that hour
