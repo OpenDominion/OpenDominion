@@ -23,13 +23,13 @@
                             class="form-control"
                             placeholder="A place for your notes, calculations, or round story..."
                             required
-                            {{ $selectedJournal == null && $selectedDominion->round->hasEnded() ? 'disabled' : null }}
+                            {{ $selectedJournal == null && $selectedDominion->round->end_date->addDays(7) < now() ? 'disabled' : null }}
                         >{{ $selectedJournal !== null ? $selectedJournal->content : null }}</textarea>
                     </div>
 
                     <div class="box-footer">
                         <div class="pull-right">
-                            <button type="submit" class="btn btn-primary" {{ $selectedDominion->round->hasEnded() ? 'disabled' : null }}>
+                            <button type="submit" class="btn btn-primary" {{ $selectedDominion->round->end_date->addDays(30) < now() ? 'disabled' : null }}>
                                 {{ $selectedJournal !== null ? 'Update Entry' : 'Create Entry' }}
                             </button>
                         </div>
