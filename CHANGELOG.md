@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.43.2] - 2025-02-27
 ### Added
 - After the round has ended, you can now view all ops taken on your dominion on your advisors page
 - National Bank page updated so that you can enter the amount of desired resources
@@ -2331,8 +2333,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.1...HEAD
-[1.43.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.1
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.2...HEAD
+[1.43.2]: https://github.com/OpenDominion/OpenDominion/compare/1.43.1...1.43.2
+[1.43.1]: https://github.com/OpenDominion/OpenDominion/compare/1.43.0...1.43.1
 [1.43.0]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.0
 [1.42.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.0...1.42.1
 [1.42.0]: https://github.com/OpenDominion/OpenDominion/compare/1.41.3...1.42.0
