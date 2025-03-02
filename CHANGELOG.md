@@ -4,6 +4,20 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Conversions formula is now static when attacking 75%+, hitting below 75% will be penalized by 1.25x LandRatio^2 (from 1x LandRatio^2)
+- Dwarf Cleric: offense reduced to 3.5 (from 4)
+- Firewalker Salamander: -10p (from 950p)
+- Goblin: gem investment bonus increased to 15% (from 10%)
+- Goblin Hobgoblin: -10p (from 1025p)
+- Human Cavalry: -20p (from 1300p)
+- Icekin Ice Elemental: +20p (from 1100p)
+- Lizardfolk Lizardman: -5p (from 1080p)
+- Lycanthrope Garou: now converts one for every 20 sent (from up to one per 15)
+- Lycanthrope Hunger: now converts one for every 20 sent (from up to one per 15)
+- Spirit Spectre: defense reduced to 0 (from 1)
+- Sylvan Sprite: +0.5 DP (from 2.5), +50p (from 250p)
+- Vampire Bloodreaver: now converts one for every 25 sent (from up to one per 20)
 
 ## [1.43.2] - 2025-02-27
 ### Added

@@ -377,7 +377,7 @@ feral_hunger:
   races:
     - lycanthrope
   perks:
-    convert_werewolves: 15
+    convert_werewolves: 20
 ascendance:
   name: Ascendance
   category: self
