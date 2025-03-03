@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Icekin Ice Elemental: +20p (from 1100p)
 - Lizardfolk Lizardman: -5p (from 1080p)
 - Lycanthrope Garou: now converts one for every 20 sent (from up to one per 15)
-- Lycanthrope Hunger: now converts one for every 20 sent (from up to one per 15)
+- Lycanthrope Feral Hunger: now converts one for every 20 sent (from up to one per 15)
 - Spirit Spectre: defense reduced to 0 (from 1)
 - Sylvan Sprite: +0.5 DP (from 2.5), +50p (from 250p)
 - Vampire Bloodreaver: now converts one for every 25 sent (from up to one per 20)
