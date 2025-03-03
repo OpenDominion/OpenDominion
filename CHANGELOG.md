@@ -4,6 +4,15 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- New Hero Upgrades
+  - Enchantment (magic): -1 wizard strength cost of self spells (Level 2)
+  - Transmutation (magic): Mana can be converted into other resources (Level 4)
+  - Blade of Sundering (item): 	+20% attack damage against wonders (Level 6)
+  - Staff of the Stormcaller (item): +20% cyclone damage (Level 6)
+- Divination: moved to Level 4, increased to -10% cost of info spells (from -5%)
+- Abjuration and Evocation: moved to Level 6
+
 ### Changed
 - Conversions formula is now static when attacking 75%+, hitting below 75% will be penalized by 1.25x LandRatio^2 (from 1x LandRatio^2)
 - Dwarf Cleric: offense reduced to 3.5 (from 4)
@@ -44,10 +53,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Unlocks the Pursuit of Knowledge upgrade: +30% research point production, -20% castle investment bonus
   - Advanced hero classes cannot be selected until Day 5
 - New Level 4 Hero Upgrades
-  - Abjuration: -10% enemy lightning bolt damage
-  - Evocation: +10% fireball damage
-  - Hammer of Retribution: +5 prestige gains from invasion if the target has attacked your realm (doubled if in the last 24 hours)
-  - Orb of Detection: +20% enemy spy losses on failed operations
+  - Abjuration (magic): -10% enemy lightning bolt damage
+  - Evocation (magic): +10% fireball damage
+  - Hammer of Retribution (item): +5 prestige gains from invasion if the target has attacked your realm (doubled if in the last 24 hours)
+  - Orb of Detection (item): +20% enemy spy losses on failed operations
 - Expected prestige gain now shown on the invade page (bot penalty not included yet)
 
 ### Changed
