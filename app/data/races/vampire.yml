@@ -47,5 +47,5 @@ units:
       defense: 3
     perks:
       immortal: 1
-      conversion: 3,25 # slot 3, one per 25 sent
+      conversion: 3,26 # slot 3, one per 26 sent
     need_boat: false
