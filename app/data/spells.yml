@@ -603,16 +603,16 @@ demonic_pact:
   races:
     - demon
   perks:
-    offense_from_pairing_demon: 1
+    offense_from_pairing_demon: 0.5
     apply_corruption: 1
 corruption:
   name: Corruption
   category: effect
   cost_mana: 0
   cost_strength: 0
-  duration: 24
+  duration: 12
   races:
     - demon
   perks:
-    platinum_production: -10
-    food_production: -10
+    platinum_production: -5
+    food_consumption: 5

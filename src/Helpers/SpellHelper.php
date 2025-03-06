@@ -169,6 +169,7 @@ class SpellHelper
 
             // Resource related
             'boat_production' => '%+g%% boat production',
+            'food_consumption' => '%+g%% food consumption',
             'food_production' => '%+g%% food production',
             'gem_production' => '%+g%% gem production',
             'lumber_production' => '%+g%% lumber production',
