@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Abjuration and Evocation: moved to Level 6
 
 ### Changed
-- Conversions formula is now static when attacking 75%+, hitting below 75% will be penalized by 1.25x LandRatio^2 (from 1x LandRatio^2)
+- Conversions formula changed to a flat [UnitsSent/UnitPerk] when attacking 75%+ (was [UnitsSent/UnitPerk x LandRatio^2]) and [1.25x LandRatio^2] when attacking below 75% (was [1x LandRatio^2])
 - Dwarf Cleric: offense reduced to 3.5 (from 4)
 - Firewalker Salamander: -10p (from 950p)
 - Goblin: gem investment bonus increased to 15% (from 10%)
@@ -25,7 +25,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lycanthrope Garou: now converts one for every 21 sent (from up to one per 15)
 - Spirit Spectre: defense reduced to 0 (from 1)
 - Sylvan Sprite: +0.5 DP (from 2.5), +50p (from 250p)
-- Vampire Bloodreaver: now converts one for every 26 sent (from up to one per 20)
+- Vampire Bloodreaver: now converts one for every 28 sent (from up to one per 20)
+- The Shadow League is now the Chaos League, new perks added
+  - War spells used between members are now Chaos spells
+    - Chaos Fireball - kills 6% of unprotected peasants
+    - Chaos Lightning - destroys 0.3% improvements for 12 hours
+    - Chaos Disband - turns 2% of enemy spies into random resources for yourself
+    - Chaos spells have a 25% chance for critical success, dealing 50% more damage, but increasing chance of critical failure
+    - Chaos spells have a chance for critical failure, dealing damage to yourself, chance increased by number of other Chaos League members in your realm
+  - Gain access to Delve into Shadow
+    - Cannot be cast while a member of the Royal or Elite Guard
+    - Failed Chaos spells refund 40% of their strength and mana costs
+    - Reduces exploration cost by 1% per 100 wizard mastery
+- New Spy Operation (War): Incite Chaos - increases target's chance of critical failure by 5%
 
 ## [1.43.2] - 2025-02-27
 ### Added

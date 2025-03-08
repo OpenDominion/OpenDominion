@@ -144,23 +144,30 @@ class EspionageHelper
                 'name' => 'Assassinate Wizards',
                 'description' => 'Kills 1.5% wizards',
                 'key' => 'assassinate_wizards',
-                'decreases' => ['military_wizards'],
+                'attrs' => ['military_wizards'],
                 'percentage' => 1.5,
             ],
             [
                 'name' => 'Magic Snare',
                 'description' => 'Reduces wizard strength by 3.5% (min 1.5)',
                 'key' => 'magic_snare',
-                'decreases' => ['wizard_strength'],
+                'attrs' => ['wizard_strength'],
                 'percentage' => 3.5,
             ],
             [
                 'name' => 'Sabotage Boats',
                 'description' => 'Destroys 2.3% boats',
                 'key' => 'sabotage_boats',
-                'decreases' => ['resource_boats'],
+                'attrs' => ['resource_boats'],
                 'percentage' => 2.3,
             ],
+            [
+                'name' => 'Incite Chaos',
+                'description' => 'Increases critical failure chance by 5%',
+                'key' => 'incite_chaos',
+                'attrs' => ['chaos'],
+                'percentage' => 5,
+            ]
         ]);
     }
 

@@ -71,7 +71,7 @@
                                             @endif
 
                                             @if ($guardMembershipService->isBlackGuardMember($dominion) && ((isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public') || $guardMembershipService->isBlackGuardMember($selectedDominion) || ($dominion->realm_id == $selectedDominion->realm_id)))
-                                                <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League" data-toggle="tooltip"></i>
+                                                <i class="ra ra-fire-shield ra-lg text-purple" title="Chaos League" data-toggle="tooltip"></i>
                                             @endif
 
                                             @if (isset($dominion->settings['show_icon']) && $dominion->settings['show_icon'] == 'on')

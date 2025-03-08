@@ -103,18 +103,18 @@ class GuardMembershipActionService
         $this->guardLockedDominion($dominion);
 
         if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
-            throw new GameException('You are already a member of the Shadow League.');
+            throw new GameException('You are already a member of the Chaos League.');
         }
 
         if ($this->guardMembershipService->isBlackGuardApplicant($dominion)) {
-            throw new GameException('You have already applied to join the Shadow League.');
+            throw new GameException('You have already applied to join the Chaos League.');
         }
 
         $this->guardMembershipService->joinBlackGuard($dominion);
 
         return [
             'message' => sprintf(
-                'You have applied to join the Shadow League.'
+                'You have applied to join the Chaos League.'
             ),
             'data' => []
         ];
@@ -206,17 +206,17 @@ class GuardMembershipActionService
         $this->guardLockedDominion($dominion);
 
         if ($this->guardMembershipService->getHoursBeforeLeaveBlackGuard($dominion)) {
-            throw new GameException('You cannot leave the Shadow League for 48 hours after joining.');
+            throw new GameException('You cannot leave the Chaos League for 48 hours after joining.');
         }
 
         if (!$this->guardMembershipService->isBlackGuardApplicant($dominion) && !$this->guardMembershipService->isBlackGuardMember($dominion)) {
-            throw new GameException('You are not a member of the Shadow League.');
+            throw new GameException('You are not a member of the Chaos League.');
         }
 
         if ($this->guardMembershipService->isBlackGuardApplicant($dominion)) {
-            $message = 'You have canceled your Shadow League application.';
+            $message = 'You have canceled your Chaos League application.';
         } else {
-            $message = 'You will leave the Shadow League in 12 hours.';
+            $message = 'You will leave the Chaos League in 12 hours.';
         }
 
         $this->guardMembershipService->leaveBlackGuard($dominion);
@@ -239,13 +239,13 @@ class GuardMembershipActionService
         $this->guardLockedDominion($dominion);
 
         if (!$this->guardMembershipService->isLeavingBlackGuard($dominion)) {
-            throw new GameException('You are not leaving the Shadow League.');
+            throw new GameException('You are not leaving the Chaos League.');
         }
 
         $this->guardMembershipService->cancelLeaveBlackGuard($dominion);
 
         return [
-            'message' => 'You will remain in the Shadow League.',
+            'message' => 'You will remain in the Chaos League.',
             'data' => []
         ];
     }

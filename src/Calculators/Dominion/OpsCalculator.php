@@ -441,19 +441,11 @@ class OpsCalculator
             $modifier += $dominion->hero->getPerkMultiplier("{$spellKey}_damage");
         }
 
-        // Status Effects & Shadow League (multiplicative)
+        // Status Effects & Chaos League (multiplicative)
         $spellModifier = 1;
 
         $spellModifier += $target->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
         $spellModifier += $target->getSpellPerkValue("enemy_{$spellKey}_damage", ['effect']) / 100;
-
-        if ($dominion !== null) {
-            $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
-            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
-            if ($spellKey == 'fireball' && !$warDeclared && $blackGuard) {
-                $spellModifier += 1;
-            }
-        }
 
         // Capped at 80% reduction
         return max(0.2, $modifier * $spellModifier);
@@ -560,5 +552,24 @@ class OpsCalculator
         $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;
 
         return max(0, $destroyableImprovements - $protectedImprovements);
+    }
+
+    public function getChaosChange(Dominion $dominion, bool $success): float
+    {
+        $realmies = $dominion->realm->dominions()
+            ->where('black_guard_active_at', '<', now())
+            ->where(function ($query) {
+                $query->where('black_guard_inactive_at', null)
+                    ->orWhere('black_guard_inactive_at', '>', now());
+            })
+            ->count();
+
+        if ($success) {
+            // Gain between 20 and 50
+            return min(50, (5 * $realmies) + 15);
+        }
+
+        // Lose between 10 and 100
+        return max(10, 110 - (10 * $realmies));
     }
 }

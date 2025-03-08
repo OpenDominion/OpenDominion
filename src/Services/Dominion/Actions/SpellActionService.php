@@ -151,8 +151,16 @@ class SpellActionService
             throw new GameException("You can only cast {$spell->name} every {$spell->cooldown} hours");
         }
 
-        if ($this->protectionService->isUnderProtection($dominion) && $spell->hasPerk('invalid_protection')) {
+        if ($spell->hasPerk('invalid_protection') && $this->protectionService->isUnderProtection($dominion)) {
             throw new GameException('You cannot cast this spell while under protection');
+        }
+
+        if ($spell->hasPerk('invalid_royal_guard') && $this->guardMembershipService->isRoyalGuardMember($dominion)) {
+            throw new GameException('You cannot cast this spell while in the Royal Guard');
+        }
+
+        if (in_array('chaos-league', $spell->races) && !$this->guardMembershipService->isBlackGuardMember($dominion)) {
+            throw new GameException('You must be a member of the Chaos League to cast this spell');
         }
 
         if ($this->spellHelper->isOffensiveSpell($spell)) {
@@ -231,9 +239,14 @@ class SpellActionService
             }
 
             // Delve into Shadow
-            $refundPerk = $dominion->getSpellPerkValue('spell_refund');
-            if ($refundPerk && !$result['success']) {
-                $manaCost = (int) $manaCost * $refundPerk / 100;
+            if ($target !== null) {
+                $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+                $chaosSpell = $blackGuard && $this->spellHelper->isWarSpell($spell);
+                $refundPerk = $dominion->getSpellPerkValue('spell_refund');
+                if ($chaosSpell && $refundPerk && !$result['success']) {
+                    $manaCost = (int) $manaCost * $refundPerk / 100;
+                    $wizardStrengthLost = $wizardStrengthLost * $refundPerk / 100;
+                }
             }
 
             $dominion->resource_mana -= $manaCost;
@@ -503,7 +516,7 @@ class SpellActionService
         if (!$dominion->isMagister() && !$dominion->isMage()) {
             $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
             if (!$blackGuard) {
-                throw new GameException('Only the Grand Magister, Court Mage, or Shadow League members can cast friendly spells');
+                throw new GameException('Only the Grand Magister, Court Mage, or Chaos League members can cast friendly spells');
             }
         }
 
@@ -584,6 +597,7 @@ class SpellActionService
         $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
         $mutualWarDeclared = $this->governmentService->isAtMutualWar($dominion->realm, $target->realm);
         $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
+        $chaosSpell = $blackGuard && $this->spellHelper->isWarSpell($spell);
         if ($this->spellHelper->isWarSpell($spell)) {
             $recentlyInvaded = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
             if (!$warDeclared && !$recentlyInvaded) {
@@ -611,8 +625,12 @@ class SpellActionService
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
+        $criticalSuccess = false;
+        $criticalFailureChance = ($dominion->chaos / 100);
+        $failure = ($criticalFailureChance >= 1) || !random_chance($successRate);
+        $criticalFailure = $failure && (($criticalFailureChance >= 1) || ($chaosSpell && random_chance($criticalFailureChance)));
 
-        if (!random_chance($successRate)) {
+        if ($failure && !$criticalFailure) {
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
             // Inform target that they repelled a hostile spell
@@ -653,28 +671,33 @@ class SpellActionService
         }
 
         $spellReflected = false;
-        $spellReflect = $target->getSpellPerkValue('spell_reflect');
-        if ($spellReflect) {
-            $spellReflected = true;
-            $friendlySpell = $target->spells->where('key', 'spell_reflect')->first();
-            $reflectedBy = $friendlySpell->pivot->castByDominion;
-            // Remove one-shot spell
-            DominionSpell::where([
-                'spell_id' => $friendlySpell->id,
-                'dominion_id' => $target->id,
-            ])->delete();
-        }
-        $energyMirrorChance = ($target->getSpellPerkValue('energy_mirror') / 100);
-        if ($energyMirrorChance && random_chance($energyMirrorChance)) {
-            $spellReflected = true;
-            $reflectedBy = $target;
-        }
-        if ($spellReflected) {
-            $protectedDominion = $target;
+        if ($criticalFailure) {
             $target = $dominion;
-            $dominion = $reflectedBy;
-            $dominion->stat_spells_reflected += 1;
-            $target->stat_spells_deflected += 1;
+            $dominion->chaos -= $opsCalculator->getChaosChange($dominion, false);
+        } else {
+            $spellReflect = $target->getSpellPerkValue('spell_reflect');
+            if ($spellReflect) {
+                $spellReflected = true;
+                $friendlySpell = $target->spells->where('key', 'spell_reflect')->first();
+                $reflectedBy = $friendlySpell->pivot->castByDominion;
+                // Remove one-shot spell
+                DominionSpell::where([
+                    'spell_id' => $friendlySpell->id,
+                    'dominion_id' => $target->id,
+                ])->delete();
+            }
+            $energyMirrorChance = ($target->getSpellPerkValue('energy_mirror') / 100);
+            if ($energyMirrorChance && random_chance($energyMirrorChance)) {
+                $spellReflected = true;
+                $reflectedBy = $target;
+            }
+            if ($spellReflected) {
+                $protectedDominion = $target;
+                $target = $dominion;
+                $dominion = $reflectedBy;
+                $dominion->stat_spells_reflected += 1;
+                $target->stat_spells_deflected += 1;
+            }
         }
 
         if ($spell->duration > 0) {
@@ -825,6 +848,28 @@ class SpellActionService
 
                 // Cap damage reduction at 80%
                 $baseDamage = $perk->pivot->value / 100;
+                // Chaos League
+                if ($blackGuard) {
+                    // Chaos Lightning
+                    if ($spell->key == 'lightning_bolt') {
+                        $baseDamage = 0.003;
+                    }
+                    // Chaos Fireball
+                    if ($spell->key == 'fireball') {
+                        if ($attr == 'peasants') {
+                            $baseDamage = 0.06;
+                        }
+                        if ($attr == 'resource_food') {
+                            $baseDamage = 0;
+                        }
+                    }
+                    // Critical Success
+                    if (!$criticalFailure && random_chance(0.25)) {
+                        $criticalSuccess = true;
+                        $damageMultiplier += 0.5;
+                        $dominion->chaos += $opsCalculator->getChaosChange($dominion, true);
+                    }
+                }
                 $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
 
                 if ($attr == 'peasants') {
@@ -837,19 +882,29 @@ class SpellActionService
 
                 // Temporary lightning damage
                 if (Str::startsWith($attr, 'improvement_') && $damage > 0) {
-                    $lightningStormSpell = $target->spells->where('key', 'lightning_storm')->first();
-                    if ($lightningStormSpell !== null) {
-                        $lightningPerkValue = $target->getSpellPerkValue('lightning_storm', ['effect']) / 100;
-                        $amount = round($damage * $lightningPerkValue);
-                        $duration = $lightningStormSpell->pivot->duration;
-                        if ($amount > 0) {
-                            $this->queueService->queueResources(
-                                'operations',
-                                $target,
-                                [$attr => $amount],
-                                $duration
-                            );
-                            $damage += $amount;
+                    if ($blackGuard) {
+                        // Chaos Lightning
+                        $this->queueService->queueResources(
+                            'operations',
+                            $target,
+                            [$attr => $damage],
+                            12
+                        );
+                    } else {
+                        $lightningStormSpell = $target->spells->where('key', 'lightning_storm')->first();
+                        if ($lightningStormSpell !== null) {
+                            $lightningPerkValue = $target->getSpellPerkValue('lightning_storm', ['effect']) / 100;
+                            $amount = round($damage * $lightningPerkValue);
+                            $duration = $lightningStormSpell->pivot->duration;
+                            if ($amount > 0) {
+                                $this->queueService->queueResources(
+                                    'operations',
+                                    $target,
+                                    [$attr => $amount],
+                                    $duration
+                                );
+                                $damage += $amount;
+                            }
                         }
                     }
                 }
@@ -874,6 +929,11 @@ class SpellActionService
                             [$convertAttr => $converted],
                             12
                         );
+                    } elseif ($blackGuard && $convertAttr == 'military_draftees') {
+                        // Chaos Disband
+                        $resource = collect(['resource_gems', 'resource_lumber', 'resource_ore'])->random();
+                        $resourceAmount = $resource == 'resource_gems' ? ($damage * 20) : ($damage * 100);
+                        $dominion->{$resource} += $resourceAmount;
                     } else {
                         $target->{$convertAttr} += $damage;
                     }
@@ -899,7 +959,7 @@ class SpellActionService
             }
 
             $warRewardsString = '';
-            if (!$spellReflected && $totalDamage > 0 && (
+            if (!$spellReflected && !$criticalFailure && $totalDamage > 0 && (
                 $this->spellHelper->isWarSpell($spell) ||
                 ($this->spellHelper->isBlackOpSpell($spell) && ($warDeclared || $blackGuard))
             )) {
@@ -921,7 +981,7 @@ class SpellActionService
             // Apply Status Effects
             $statusEffect = null;
             $statusEffectString = '';
-            if (!$spellReflected && $warDeclared) {
+            if (!$spellReflected && !$criticalFailure && $warDeclared) {
                 $statusEffect = $this->handleStatusEffects($dominion, $target, $spell, $applyBurning, $mutualWarDeclared);
                 if ($statusEffect !== null) {
                     $statusEffectString = "You inflicted {$statusEffect}.";
@@ -975,11 +1035,28 @@ class SpellActionService
                     'alert-type' => 'danger',
                     'reflected' => true
                 ];
-            } else {
+            } elseif ($criticalFailure) {
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, your target lost %s. %s %s',
+                        'Your wizards cast the spell, but it was a critical failure, you lost %s. %s %s',
+                        $damageString,
+                        $statusEffectString,
+                        $warRewardsString
+                    ),
+                    'alert-type' => 'danger',
+                    'damage' => $totalDamage
+                ];
+            } else {
+                $criticalString = '';
+                if ($criticalSuccess) {
+                    $criticalString = ' it was a critical success,';
+                }
+                return [
+                    'success' => true,
+                    'message' => sprintf(
+                        'Your wizards cast the spell successfully,%s your target lost %s. %s %s',
+                        $criticalString,
                         $damageString,
                         $statusEffectString,
                         $warRewardsString

@@ -153,6 +153,15 @@
                                             <strong>{{ number_format($target->stat_sabotage_boats_damage_received) }}</strong>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Chaos Caused:</td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_incite_chaos_damage) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_incite_chaos_damage_received) }}</strong>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

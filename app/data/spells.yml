@@ -396,11 +396,11 @@ delve_into_shadow:
   cost_strength: 5
   duration: 12
   races:
-    - dark-elf-rework
+    - chaos-league
   perks:
     explore_cost_wizard_mastery: 100
-    spell_refund: 50
-  active: false
+    spell_refund: 40
+    invalid_royal_guard: 1
 spellwrights_calling:
   name: Spellwright's Calling
   category: self
