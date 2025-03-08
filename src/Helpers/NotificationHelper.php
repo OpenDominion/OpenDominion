@@ -437,7 +437,7 @@ class NotificationHelper
                         break;
 
                     case 'incite_chaos':
-                        $resultString = "Enemy spies are causing chaos in our ranks.";
+                        $resultString = 'Enemy spies are causing chaos in our ranks.';
                         break;
 
                     default:
