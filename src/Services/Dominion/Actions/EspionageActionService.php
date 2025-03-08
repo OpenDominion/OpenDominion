@@ -881,6 +881,25 @@ class EspionageActionService
         $target->stat_spies_executed += array_sum($unitsKilled);
         $dominion->stat_spies_lost += array_sum($unitsKilled);
 
+        // Special Case for Succubus
+        if ($target->race->key == 'demon') {
+            $nonUnitSpiesKilled = $spiesKilled + $assassinsKilled;
+            if ($nonUnitSpiesKilled > 0) {
+                $totalUnits = 0;
+                $unitsWithCharm = 0;
+                foreach ($target->race->units as $unit) {
+                    $totalUnits += $target->{"military_unit{$unit->slot}"};
+                    if ($unit->getPerkValue('charm_spies')) {
+                        $unitsWithCharm += $target->{"military_unit{$unit->slot}"};
+                    }
+                }
+                $charmPercentage = $unitsWithCharm / $totalUnits;
+                $unitsCharmed = ($nonUnitSpiesKilled * $charmPercentage) + $target->racial_value;
+                $target->military_spies += rfloor($unitsCharmed);
+                $target->racial_value = fmod($unitsCharmed, 1);
+            }
+        }
+
         $unitsKilledStringParts = [];
         foreach ($unitsKilled as $name => $amount) {
             $amountLabel = number_format($amount);

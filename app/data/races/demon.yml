@@ -26,6 +26,8 @@ units:
     power:
       offense: 0
       defense: 3
+    perks:
+      charm_spies: 1
   - name: Abyssal Fiend
     cost:
       platinum: 1050

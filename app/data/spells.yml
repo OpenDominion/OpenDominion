@@ -440,9 +440,10 @@ miasma:
   cost_strength: 5
   duration: 8
   races:
+    - demon
     - nox
   perks:
-    wizard_power: -5
+    wizard_power: -10
     mana_decay: 50
 necromantic_ritual:
   name: Necromantic Ritual
@@ -594,8 +595,8 @@ martyrdom:
   duration: 24
   perks:
     martyrdom: 15
-demonic_pact:
-  name: Demonic Pact
+infernal_command:
+  name: Infernal Command
   category: self
   cost_mana: 5
   cost_strength: 5

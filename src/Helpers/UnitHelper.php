@@ -152,6 +152,7 @@ class UnitHelper
             'offense_raw_wizard_ratio' => 'Offense increased by %1$g * Raw Wizard Ratio (max +%2$g).',
 
             // Spy related
+            'charm_spies' => 'Charms captured spies into joining your army.',
             'counts_as_spy_defense' => 'Each unit counts as %.2f of a spy on defense.',
             'counts_as_spy_offense' => 'Each unit counts as %.2f of a spy on offense.',
 
