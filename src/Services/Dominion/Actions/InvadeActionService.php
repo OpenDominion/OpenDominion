@@ -961,8 +961,12 @@ class InvadeActionService
             $unitsNeededToBreakTarget = rceil($targetDP / ($convertingUnit['unitPower'] * $offensiveModifier));
             $convertingUnitsForSlot = min($unitsNeededToBreakTarget, $units[$convertingUnit['unitSlot']]);
             $targetDP -= ($convertingUnitsForSlot * $convertingUnit['unitPower'] * $offensiveModifier);
-            $converts = rfloor($convertingUnitsForSlot * $convertingUnit['conversionRate'] * $conversionMultiplier * ($landRatio ** 2));
-            $convertedUnits[$convertingUnit['convertSlot']] += $converts;
+            $converts = $convertingUnitsForSlot * $convertingUnit['conversionRate'] * $conversionMultiplier;
+            if ($landRatio < 0.75) {
+                // Penalty for bottom feeding
+                $converts *= (1.25 * $landRatio**2);
+            }
+            $convertedUnits[$convertingUnit['convertSlot']] += rfloor($converts);
         }
 
         // Special case for Upgrades

@@ -35,7 +35,7 @@ units:
       platinum: 880
       ore: 0
     power:
-      offense: 4
+      offense: 3.5
       defense: 4.5
     perks:
       reduce_combat_losses: 1

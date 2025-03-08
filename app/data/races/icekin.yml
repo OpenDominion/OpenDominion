@@ -41,7 +41,7 @@ units:
       defense_from_land: mountain,20,3 # land type, ratio%, max
   - name: Ice Elemental
     cost:
-      platinum: 1100
+      platinum: 1120
       ore: 0
     power:
       offense: 4

@@ -5,6 +5,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
+- New Hero Upgrades
+  - Enchantment (magic): -1 wizard strength cost of self spells (Level 2)
+  - Transmutation (magic): Mana can be converted into other resources (Level 4)
+  - Blade of Sundering (item): 	+20% attack damage against wonders (Level 6)
+  - Staff of the Stormcaller (item): +20% cyclone damage (Level 6)
+- Divination: moved to Level 4, increased to -10% cost of info spells (from -5%)
+- Abjuration and Evocation: moved to Level 6
+
+### Changed
+- Conversions formula is now static when attacking 75%+, hitting below 75% will be penalized by 1.25x LandRatio^2 (from 1x LandRatio^2)
+- Dwarf Cleric: offense reduced to 3.5 (from 4)
+- Firewalker Salamander: -10p (from 950p)
+- Goblin: gem investment bonus increased to 15% (from 10%)
+- Goblin Hobgoblin: -10p (from 1025p)
+- Human Cavalry: -20p (from 1300p)
+- Icekin Ice Elemental: +20p (from 1100p)
+- Lizardfolk Lizardman: -5p (from 1080p)
+- Lycanthrope Garou: now converts one for every 21 sent (from up to one per 15)
+- Spirit Spectre: defense reduced to 0 (from 1)
+- Sylvan Sprite: +0.5 DP (from 2.5), +50p (from 250p)
+- Vampire Bloodreaver: now converts one for every 26 sent (from up to one per 20)
+
+## [1.43.2] - 2025-02-27
+### Added
 - After the round has ended, you can now view all ops taken on your dominion on your advisors page
 - National Bank page updated so that you can enter the amount of desired resources
 
@@ -28,10 +52,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Unlocks the Pursuit of Knowledge upgrade: +30% research point production, -20% castle investment bonus
   - Advanced hero classes cannot be selected until Day 5
 - New Level 4 Hero Upgrades
-  - Abjuration: -10% enemy lightning bolt damage
-  - Evocation: +10% fireball damage
-  - Hammer of Retribution: +5 prestige gains from invasion if the target has attacked your realm (doubled if in the last 24 hours)
-  - Orb of Detection: +20% enemy spy losses on failed operations
+  - Abjuration (magic): -10% enemy lightning bolt damage
+  - Evocation (magic): +10% fireball damage
+  - Hammer of Retribution (item): +5 prestige gains from invasion if the target has attacked your realm (doubled if in the last 24 hours)
+  - Orb of Detection (item): +20% enemy spy losses on failed operations
 - Expected prestige gain now shown on the invade page (bot penalty not included yet)
 
 ### Changed
@@ -2331,8 +2355,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.1...HEAD
-[1.43.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.1
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.2...HEAD
+[1.43.2]: https://github.com/OpenDominion/OpenDominion/compare/1.43.1...1.43.2
+[1.43.1]: https://github.com/OpenDominion/OpenDominion/compare/1.43.0...1.43.1
 [1.43.0]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.0
 [1.42.1]: https://github.com/OpenDominion/OpenDominion/compare/1.42.0...1.42.1
 [1.42.0]: https://github.com/OpenDominion/OpenDominion/compare/1.41.3...1.42.0
