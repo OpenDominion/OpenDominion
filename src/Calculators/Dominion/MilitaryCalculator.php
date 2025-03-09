@@ -847,11 +847,11 @@ class MilitaryCalculator
     {
         $pairingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_pairing", null);
 
-        // Special Case for Demonic Pact
+        // Special Case for Infernal Command
         if (
             ($powerType == 'offense' && $unit->slot == 1) && (
-                $this->spellCalculator->isSpellActive($dominion, 'demonic_pact') ||
-                ($dominion->calc !== null && !isset($dominion->calc['invasion']) && isset($dominion->calc['demonic_pact']))
+                $this->spellCalculator->isSpellActive($dominion, 'infernal_command') ||
+                ($dominion->calc !== null && !isset($dominion->calc['invasion']) && isset($dominion->calc['infernal_command']))
             )
         ) {
             $pairingPerkData = [4, 1, 1];
