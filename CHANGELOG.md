@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.44.0] - 2025-03-08
 ### Added
 - New Hero Upgrades
   - Enchantment (magic): -1 wizard strength cost of self spells (Level 2)
@@ -2367,7 +2369,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.43.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.44.0...HEAD
+[1.44.0]: https://github.com/OpenDominion/OpenDominion/compare/1.43.2...1.44.0
 [1.43.2]: https://github.com/OpenDominion/OpenDominion/compare/1.43.1...1.43.2
 [1.43.1]: https://github.com/OpenDominion/OpenDominion/compare/1.43.0...1.43.1
 [1.43.0]: https://github.com/OpenDominion/OpenDominion/compare/1.42.1...1.43.0
