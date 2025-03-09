@@ -258,6 +258,8 @@ class SpellHelper
                 return 'Chaos Lightning';
             case 'disband_spies':
                 return 'Chaos Disband';
+            default:
+                return $spell->name;
         }
     }
 
@@ -270,6 +272,8 @@ class SpellHelper
                 return 'Temporarily destroys 0.3% science, keep, forges, walls';
             case 'disband_spies':
                 return 'Turns 2% of spies into random resources for yourself';
+            default:
+                return $this->getSpellDescription($spell);
         }
     }
 

@@ -30,6 +30,9 @@
 
                                 @php
                                     $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
+                                    $courtMember = ($selectedDominion->isMagister() || $selectedDominion->isMage());
+                                    $isBlackGuard = $guardMembershipService->isBlackGuardMember($selectedDominion);
+                                    $includeFriendly = ($courtMember || $isBlackGuard);
                                 @endphp
 
                                 <div class="box-body">
@@ -40,11 +43,6 @@
                                                 <label for="target_dominion">Select a target</label>
                                                 <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
-                                                    @php
-                                                        $courtMember = ($selectedDominion->isMagister() || $selectedDominion->isMage());
-                                                        $isBlackGuard = $guardMembershipService->isBlackGuardMember($selectedDominion);
-                                                        $includeFriendly = ($courtMember || $isBlackGuard);
-                                                    @endphp
                                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true, $includeFriendly) as $dominion)
                                                         @if ($selectedDominion->realm_id !== $dominion->realm_id || $courtMember || ($isBlackGuard && $guardMembershipService->isBlackGuardMember($dominion)))
                                                             <option value="{{ $dominion->id }}"
