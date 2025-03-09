@@ -14,6 +14,13 @@
                             <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
                         </div>
 
+                        @php
+                            $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
+                            $courtMember = ($selectedDominion->isMagister() || $selectedDominion->isMage());
+                            $isBlackGuard = $guardMembershipService->isBlackGuardMember($selectedDominion);
+                            $includeFriendly = ($courtMember || $isBlackGuard);
+                        @endphp
+
                         @if ($protectionService->isUnderProtection($selectedDominion))
                             <div class="box-body">
                                 You are currently under protection for
@@ -30,9 +37,6 @@
 
                                 @php
                                     $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
-                                    $courtMember = ($selectedDominion->isMagister() || $selectedDominion->isMage());
-                                    $isBlackGuard = $guardMembershipService->isBlackGuardMember($selectedDominion);
-                                    $includeFriendly = ($courtMember || $isBlackGuard);
                                 @endphp
 
                                 <div class="box-body">
