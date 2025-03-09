@@ -107,9 +107,12 @@
                                     <div class="text-center">
                                         {{ $heroCalculator->getPassiveDescription($hero) }}
                                     </div>
-                                    @if ($selectedDominion->building_shrine > 0)
+                                    @if ($heroCalculator->getPassiveBonusMultiplier($selectedDominion) > 1)
                                         <div class="text-center">
-                                            {{ number_format($heroCalculator->getHeroPerkMultiplier($selectedDominion, $perkType) * 100, 2) }}% from Shrines
+                                            {{ number_format($heroCalculator->getHeroPerkMultiplier($selectedDominion, $perkType) * 100, 2) }}%
+                                            after
+                                            {{ ($heroCalculator->getPassiveBonusMultiplier($selectedDominion) - 1) * 100 }}%
+                                            modifier
                                         </div>
                                     @endif
                                     <div class="row" style="font-size: 64px; margin-top: 20px;">

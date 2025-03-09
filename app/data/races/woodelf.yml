@@ -11,7 +11,7 @@ overall_difficulty: 1
 home_land_type: forest
 perks:
   max_population: -5
-  hero_experience: 20
+  hero_bonus: 100
   tech_cost: 10
 units:
   - name: Ranger

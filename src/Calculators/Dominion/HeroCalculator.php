@@ -84,7 +84,7 @@ class HeroCalculator
         }
 
         $bonus = $this->getPassiveBonus($dominion->hero, $perkType) / 100;
-        $bonus *= (1 + $this->getPassiveBonusMultiplier($dominion));
+        $bonus *= $this->getPassiveBonusMultiplier($dominion);
 
         return $bonus;
     }
@@ -132,7 +132,7 @@ class HeroCalculator
      */
     public function getPassiveBonusMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $bonusPerShrine = 50;
@@ -142,6 +142,9 @@ class HeroCalculator
             ($bonusPerShrine * $dominion->building_shrine / $this->landCalculator->getTotalLand($dominion)),
             ($bonusPerShrineMax / 100)
         );
+
+        // Racial
+        $multiplier += $dominion->race->getPerkMultiplier('hero_bonus');
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('hero_bonus');
@@ -278,10 +281,10 @@ class HeroCalculator
     public function getPassiveDescription(Hero $hero): string
     {
         $perkType = $this->heroHelper->getClasses()[$hero->class]['perk_type'];
-        $perkValue = $this->getPassiveBonus($hero, $perkType);
+        $perkValue = $this->getHeroPerkMultiplier($hero->dominion, $perkType);
         $helpString = sprintf(
             $this->heroHelper->getPassiveHelpString($hero->class),
-            number_format($perkValue, 2)
+            number_format($perkValue * 100, 2)
         );
 
         return $helpString;
