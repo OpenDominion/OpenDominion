@@ -374,7 +374,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->packs()
-            ->with(['dominions.user', 'realm', 'user']);
+            ->with(['dominions.user', 'realm']);
 
         $builder->has('dominions', '>', 1);
 
@@ -507,7 +507,7 @@ class ValhallaController extends AbstractController
         $landCalculator = app(LandCalculator::class);
 
         $builder = $round->packs()
-            ->with(['dominions.user', 'realm', 'user']);
+            ->with(['dominions.user', 'realm']);
 
         $builder->has('dominions', '>', 1);
 

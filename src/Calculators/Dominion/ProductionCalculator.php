@@ -284,6 +284,9 @@ class ProductionCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('food_consumption');
 
+        // Spells
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'food_consumption') / 100;
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('food_consumption');
 

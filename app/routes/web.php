@@ -181,6 +181,11 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
+            // Black Guard
+            $router->get('black-guard')->uses('Dominion\BlackGuardController@getBlackGuard')->name('black-guard');
+            $router->post('black-guard/spell')->uses('Dominion\BlackGuardController@postCastSpell')->name('black-guard.spell');
+            $router->post('black-guard/espionage')->uses('Dominion\BlackGuardController@postPerformEspionage')->name('black-guard.espionage');
+
             // Search
             $router->get('search')->uses('Dominion\SearchController@getSearch')->name('search');
 

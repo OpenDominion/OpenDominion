@@ -35,7 +35,7 @@
                             <span class="small">Uses your preferred title, if possible.</span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Shadow League:</label>
+                            <label class="form-label">Chaos League:</label>
                             <div class="radio">
                                 <label>
                                     <input type="radio" name="black_guard_icon" value="private" checked />

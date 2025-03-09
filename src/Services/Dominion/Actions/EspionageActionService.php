@@ -723,8 +723,8 @@ class EspionageActionService
         // Cap damage reduction at 80%
         $baseDamage *= (1 - min(0.8, $baseDamageReductionMultiplier));
 
-        if (isset($operationInfo['decreases'])) {
-            foreach ($operationInfo['decreases'] as $attr) {
+        if (isset($operationInfo['attrs'])) {
+            foreach ($operationInfo['attrs'] as $attr) {
                 $damage = $target->{$attr} * $baseDamage;
 
                 // Damage reduction from Docks / Harbor
@@ -747,6 +747,11 @@ class EspionageActionService
                     $actualDamage = $damage;
                     $target->{$attr} -= $damage;
                     $damage = rfloor($target->{$attr}) - rfloor($target->{$attr} - $damage);
+                } elseif ($attr == 'chaos') {
+                    // Flat, inverted damage
+                    $damage = ($baseDamage * 100);
+                    $actualDamage = $damage;
+                    $target->{$attr} += $damage;
                 } else {
                     // Rounded up for all other damage types
                     $damage = rceil($damage);
@@ -762,12 +767,6 @@ class EspionageActionService
                     $dominion->{"stat_{$operationInfo['key']}_damage"} += $damage;
                     $target->{"stat_{$operationInfo['key']}_damage_received"} += $damage;
                 }
-            }
-        }
-        if (isset($operationInfo['increases'])) {
-            foreach ($operationInfo['increases'] as $attr) {
-                $damage = round($target->{$attr} * $baseDamage);
-                $target->{$attr} += $damage;
             }
         }
 
@@ -799,10 +798,16 @@ class EspionageActionService
             ])
             ->sendNotifications($target, 'irregular_dominion');
 
+        $verb = 'they lost';
+        if ($operationKey == 'incite_chaos') {
+            $verb = 'causing';
+        }
+
         return [
             'success' => true,
             'message' => sprintf(
-                'Your spies infiltrate the target\'s dominion successfully, they lost %s. %s',
+                'Your spies infiltrate the target\'s dominion successfully, %s %s. %s',
+                $verb,
                 $damageString,
                 $warRewardsString
             ),
@@ -880,6 +885,25 @@ class EspionageActionService
 
         $target->stat_spies_executed += array_sum($unitsKilled);
         $dominion->stat_spies_lost += array_sum($unitsKilled);
+
+        // Special Case for Succubus
+        if ($target->race->key == 'demon') {
+            $nonUnitSpiesKilled = $spiesKilled + $assassinsKilled;
+            if ($nonUnitSpiesKilled > 0) {
+                $totalUnits = 0;
+                $unitsWithCharm = 0;
+                foreach ($target->race->units as $unit) {
+                    $totalUnits += $target->{"military_unit{$unit->slot}"};
+                    if ($unit->getPerkValue('charm_spies')) {
+                        $unitsWithCharm += $target->{"military_unit{$unit->slot}"};
+                    }
+                }
+                $charmPercentage = $unitsWithCharm / $totalUnits;
+                $unitsCharmed = ($nonUnitSpiesKilled * $charmPercentage) + $target->racial_value;
+                $target->military_spies += rfloor($unitsCharmed);
+                $target->racial_value = fmod($unitsCharmed, 1);
+            }
+        }
 
         $unitsKilledStringParts = [];
         foreach ($unitsKilled as $name => $amount) {

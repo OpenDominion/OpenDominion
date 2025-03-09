@@ -2,19 +2,19 @@ key: demon
 name: Demon
 alignment: evil
 description: >-
-  <p>Legends say that deep under the Undead swamps there exists a supernatural void; an unholy abyss absent of all light, in which unfathomable creatures skitter about in the inky dark. Among them are the Nox.</p>
-  <p>The Nox wear darkness like a cloak, dragging night into day in vast clouds that defy all reason, enveloping entire empires in an alien twilight wherever they strike. When the daylight returns, there's not a trace of their enemies left.</p>
+  <p>Demons are the embodiment of chaos and destruction. From the Abyss they rise, consumed by an insatiable hunger for conquest. The land withers beneath their tread, corrupting all living things in their smoldering wake.</p>
+  <p>Mischievous Imps sow discord with trickery and flame, while Succubi whisper irresistible temptations, bending even the strongest souls to their will. At the pinnacle of their hierarchy stand the Archdemons, nightmares made flesh, ruthlessly driving their legions to endless war.</p>
 attacker_difficulty: 2
 explorer_difficulty: 1
 converter_difficulty: 2
 home_land_type: swamp
 perks:
-  food_consumption: 20
+  offense: 5
 units:
   - name: Imp
     cost:
-      platinum: 250
-      mana: 25
+      platinum: 260
+      mana: 20
     power:
       offense: 3
       defense: 0
@@ -26,10 +26,12 @@ units:
     power:
       offense: 0
       defense: 3
+    perks:
+      charm_spies: 1
   - name: Abyssal Fiend
     cost:
-      platinum: 1100
-      mana: 20
+      platinum: 1050
+      mana: 10
     power:
       offense: 0
       defense: 5
@@ -37,9 +39,8 @@ units:
       defense_from_building: tower,10,1 # land type, ratio%, max
   - name: Archdemon
     cost:
-      platinum: 900
-      mana: 25
+      platinum: 860
+      mana: 30
     power:
       offense: 5
       defense: 2
-playable: false

@@ -29,8 +29,8 @@ class JournalService
 
     public function createJournalEntry(Dominion $dominion, string $content): Journal
     {
-        if ($dominion->round->hasEnded()) {
-            throw new GameException('You cannot add new journal entries after the round has ended');
+        if ($dominion->round->end_date->addDays(7) < now()) {
+            throw new GameException('You can only add journal entries within 7 days of the round ending');
         }
 
         return Journal::create([

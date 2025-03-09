@@ -21,11 +21,11 @@ units:
       defense: 0
   - name: Sprite
     cost:
-      platinum: 250
+      platinum: 300
       lumber: 0
     power:
       offense: 0
-      defense: 2.5
+      defense: 3
   - name: Dryad
     cost:
       platinum: 1050

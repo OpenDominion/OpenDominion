@@ -20,7 +20,7 @@
                                 <th>Wonder</th>
                                 <th>Titles</th>
                                 <th class="text-center">
-                                    <i class="ra ra-fire-shield ra-lg text-purple" title="Shadow League" data-toggle="tooltip"></i>
+                                    <i class="ra ra-fire-shield ra-lg text-purple" title="Chaos League" data-toggle="tooltip"></i>
                                 </th>
                                 <th>Valor</th>
                                 <th>Land</th>

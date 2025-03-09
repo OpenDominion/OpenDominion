@@ -138,6 +138,14 @@ class RankingsHelper
                 'title_icon' => 'ra-fire-ring',
             ],
             [
+                'name' => 'Masters of Chaos',
+                'key' => 'masters-of-chaos',
+                'stat' => 'stat_incite_chaos_damage',
+                'stat_label' => 'Chaos Caused',
+                'title' => 'the Calamity',
+                'title_icon' => 'ra-burning-embers',
+            ],
+            [
                 'name' => 'Top Platinum Thieves',
                 'key' => 'platinum-thieves',
                 'stat' => 'stat_total_platinum_stolen',

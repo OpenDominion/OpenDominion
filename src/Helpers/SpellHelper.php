@@ -33,13 +33,13 @@ class SpellHelper
             ->active()
             ->get()
             ->map(function ($spell) {
-                $spell->racial = ($spell->races !== []);
+                $spell->racial = ($spell->races !== [] && $spell->races !== ['chaos-league']);
                 return $spell;
             });
 
         if ($race !== null) {
             $spells = $spells->filter(function ($spell) use ($race) {
-                if (empty($spell->races) || in_array($race->key, $spell->races)) {
+                if (!$spell->racial || in_array($race->key, $spell->races)) {
                     return true;
                 }
                 return false;
@@ -134,8 +134,8 @@ class SpellHelper
             'defense' => '%+g%% defensive power',
             'offense' => '%+g%% offensive power',
             'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+g%%)',
-            'offense_from_pairing_demon' => 'Offense increased by 1 for each Imp and Archdemon paired on attack',
-            'apply_corruption' => 'Applies Corruption upon attack',
+            'offense_from_pairing_demon' => 'Each Imp gains %+g offense when paired with an Archdemon on attack',
+            'apply_corruption' => 'Applies Corruption upon invasion',
             'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
             'cancels_immortal' => 'Military units lose all casualty reductions (including immortality)',
@@ -169,6 +169,7 @@ class SpellHelper
 
             // Resource related
             'boat_production' => '%+g%% boat production',
+            'food_consumption' => '%+g%% food consumption',
             'food_production' => '%+g%% food production',
             'gem_production' => '%+g%% gem production',
             'lumber_production' => '%+g%% lumber production',
@@ -216,7 +217,8 @@ class SpellHelper
             'wizard_power_defense' => '%+g%% defensive wizard power',
             'wonder_damage' => 'Deals damage to wonders',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery (max 10%%)',
-            'spell_refund' => 'Failed spells refund %d%% of their mana cost',
+            'spell_refund' => 'Failed chaos spells refund %d%% of their strength and mana costs',
+            'invalid_royal_guard' => 'Cannot be cast while in the Royal Guard',
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',
             'immune_lightning_storm' => 'Immune to Lightning Storm',
@@ -245,6 +247,34 @@ class SpellHelper
         }
 
         return implode($separator, $perkStrings);
+    }
+
+    public function getChaosSpellName(Spell $spell): string
+    {
+        switch ($spell->key) {
+            case 'fireball':
+                return 'Chaos Fireball';
+            case 'lightning_bolt':
+                return 'Chaos Lightning';
+            case 'disband_spies':
+                return 'Chaos Disband';
+            default:
+                return $spell->name;
+        }
+    }
+
+    public function getChaosSpellDescription(Spell $spell): string
+    {
+        switch ($spell->key) {
+            case 'fireball':
+                return 'Kills 6% unprotected peasants';
+            case 'lightning_bolt':
+                return 'Temporarily destroys 0.3% science, keep, forges, walls';
+            case 'disband_spies':
+                return 'Turns 2% of spies into random resources for yourself';
+            default:
+                return $this->getSpellDescription($spell);
+        }
     }
 
     public function getSpellRaces(Spell $spell, string $separator = ', '): string

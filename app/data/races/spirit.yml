@@ -45,8 +45,7 @@ units:
       mana: 30
     power:
       offense: 6
-      defense: 1
+      defense: 0
     perks:
       casualties_offense_range: -80
-      casualties_defense: -100
     need_boat: false

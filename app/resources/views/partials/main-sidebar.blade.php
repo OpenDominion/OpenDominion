@@ -145,6 +145,9 @@
                     </a>
                 </li>
                 <li class="{{ Route::is('dominion.espionage') ? 'active' : null }}"><a href="{{ route('dominion.espionage') }}"><i class="fa fa-user-secret fa-fw"></i> <span>Espionage</span></a></li>
+                @if ($selectedDominion->black_guard_active_at !== null)
+                    <li class="{{ Route::is('dominion.black-guard') ? 'active' : null }}"><a href="{{ route('dominion.black-guard') }}"><i class="ra ra-fire-shield ra-fw"></i> <span>Chaos League</span></a></li>
+                @endif
                 <li class="{{ Route::is('dominion.op-center*') ? 'active' : null }}"><a href="{{ route('dominion.op-center') }}"><i class="ra ra-scroll-unfurled ra-fw"></i> <span>Op Center</span></a></li>
                 <li class="{{ Route::is('dominion.bounty-board') ? 'active' : null }}">
                     <a href="{{ route('dominion.bounty-board') }}">

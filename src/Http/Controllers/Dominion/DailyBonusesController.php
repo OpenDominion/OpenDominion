@@ -119,7 +119,7 @@ class DailyBonusesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', 'Action was successfully scheduled.');
-        return redirect()->route('dominion.bonuses.actions');
+        return redirect()->route('dominion.bonuses.actions')->withInput($request->only('tick'));
     }
 
     public function postDeleteAutomatedAction(Request $request)

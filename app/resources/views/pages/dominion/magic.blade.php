@@ -14,6 +14,13 @@
                             <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
                         </div>
 
+                        @php
+                            $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
+                            $courtMember = ($selectedDominion->isMagister() || $selectedDominion->isMage());
+                            $isBlackGuard = $guardMembershipService->isBlackGuardMember($selectedDominion);
+                            $includeFriendly = ($courtMember || $isBlackGuard);
+                        @endphp
+
                         @if ($protectionService->isUnderProtection($selectedDominion))
                             <div class="box-body">
                                 You are currently under protection for
@@ -40,11 +47,6 @@
                                                 <label for="target_dominion">Select a target</label>
                                                 <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
-                                                    @php
-                                                        $courtMember = ($selectedDominion->isMagister() || $selectedDominion->isMage());
-                                                        $isBlackGuard = $guardMembershipService->isBlackGuardMember($selectedDominion);
-                                                        $includeFriendly = ($courtMember || $isBlackGuard);
-                                                    @endphp
                                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true, $includeFriendly) as $dominion)
                                                         @if ($selectedDominion->realm_id !== $dominion->realm_id || $courtMember || ($isBlackGuard && $guardMembershipService->isBlackGuardMember($dominion)))
                                                             <option value="{{ $dominion->id }}"
@@ -144,7 +146,7 @@
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                    <div class="form-group">
+                                                    <div class="form-group war-non-chaos">
                                                         <button type="submit"
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
@@ -167,6 +169,31 @@
                                                             @endif
                                                         </small>
                                                     </div>
+                                                    @if ($isBlackGuard)
+                                                        <div class="form-group war-chaos" style="display: none;">
+                                                            <button type="submit"
+                                                                    name="spell"
+                                                                    value="{{ $spell->key }}"
+                                                                    class="btn btn-primary btn-block war-spell disabled"
+                                                                    {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                                {{ $spellHelper->getChaosSpellName($spell) }}
+                                                            </button>
+                                                            <p style="margin: 5px 0;">{{ $spellHelper->getChaosSpellDescription($spell) }}</p>
+                                                            <small>
+                                                                @if ($canCast)
+                                                                    Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                                @else
+                                                                    Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
+                                                                @endif
+                                                                @if ($spell->duration)
+                                                                    Lasts {{ $spell->duration }} hours<br/>
+                                                                @endif
+                                                                @if (!empty($spell->races))
+                                                                    Racial<br/>
+                                                                @endif
+                                                            </small>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             @endforeach
                                         </div>
@@ -237,7 +264,7 @@
                                                     $buttonStyle = ($isActive ? 'btn-success' : 'btn-primary');
                                                 @endphp
                                                 <div class="form-group">
-                                                    <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours || ($selectedDominion->protection_ticks_remaining && $spell->hasPerk('invalid_protection')) ? 'disabled' : null }}>
+                                                    <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours || ($selectedDominion->protection_ticks_remaining && $spell->hasPerk('invalid_protection')) || (!$isBlackGuard && in_array('chaos-league', $spell->races)) ? 'disabled' : null }}>
                                                         {{ $spell->name }}
                                                     </button>
                                                     <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
@@ -357,6 +384,13 @@
                 var revengeStatus = $(this).find(":selected").data('revenge');
                 var guardStatus = $(this).find(":selected").data('guard');
                 var friendlyStatus = $(this).find(":selected").data('friendly');
+                if (guardStatus == 1) {
+                    $('.war-non-chaos').hide();
+                    $('.war-chaos').show();
+                } else {
+                    $('.war-chaos').hide();
+                    $('.war-non-chaos').show();
+                }
                 if (!friendlyStatus && (warStatus == 1 || revengeStatus == 1 || guardStatus == 1)) {
                     $('.war-spell').removeClass('disabled');
                 } else {

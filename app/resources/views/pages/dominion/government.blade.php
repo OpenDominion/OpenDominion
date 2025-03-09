@@ -523,22 +523,36 @@
                                 </form>
                             @endif
                         </div>
-                        <div class="col-sm-6 text-center">
+                        <div class="col-sm-12 text-center">
                             <h4 class="text-purple">
-                                <i class="ra ra-fire-shield" title="Shadow League"></i>
-                                The Shadow League
+                                <i class="ra ra-fire-shield" title="Chaos League"></i>
+                                The Chaos League
                             </h4>
                             <ul class="text-left" style="padding: 0 30px;">
-                                <li>Enables war operations between members.</li>
-                                <li>Fireball damage is doubled between members.</li>
+                            <li>Enables all war and black operations between members.</li>
+                                <li>War spells between members are now CHAOS spells.</li>
+                                <ul>
+                                    <li>Chaos Fireball - kills 7.5% peasants.</li>
+                                    <li>Chaos Lightning - temporarily reduces castle improvements by  0.3%.</li>
+                                    <li>Chaos Disband - turns 2% of enemy spies into random resources for yourself.</li>
+                                    <li>Chance for critical success, dealing 50% more damage and increasing chance of critical failure.</li>
+                                    <li>Chance for critical failure, dealing damage to yourself.</li>
+                                    <li>Chance of critical success decreases and chance of critical failure increases based on the number of other members in your realm.</li>
+                                </ul>
+                                <li>Gain access to self spell: Delve into Shadow (cannot be used in guard).</li>
+                                <ul>
+                                    <li>Failed CHAOS spells refund 40% of their strength and mana costs.</li>
+                                    <li>Reduces exploration cost based on your wizard mastery.</li>
+                                </ul>
+                                <li>Gain access to friendly spells to use on other members in your realm.</li>
                                 <li>75% of casualties suffered due to failed operations between members are automatically re-trained.</li>
-                                <li>Info op strength costs are halved.</li>
+                                <li>Info op strength costs are halved (even against non-members).</li>
                             </ul>
                             @if ($isLeavingBlackGuard)
                                 <form action="{{ route('dominion.government.black-guard.cancel') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" class="btn btn-warning btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
-                                        Remain in Shadow League
+                                        Remain in Chaos League
                                     </button>
                                 </form>
                             @elseif ($isBlackGuardApplicant || $isBlackGuardMember)
@@ -546,7 +560,7 @@
                                     @csrf
                                     <button type="submit" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
                                         @if ($isBlackGuardMember)
-                                            Leave Shadow League
+                                            Leave Chaos League
                                         @else
                                             Cancel Application
                                         @endif
@@ -556,7 +570,7 @@
                                 <form action="{{ route('dominion.government.black-guard.join') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
-                                        Request to Join Shadow League
+                                        Request to Join Chaos League
                                     </button>
                                 </form>
                             @endif
@@ -575,7 +589,7 @@
                     <p>Joining the Royal or Elite Guard will reduce the range other dominions can perform hostile interactions against you. In turn, you also can not perform hostile interactions against wonders or dominions outside of your guard range.</p>
                     <p>Upon requesting to join a guard it takes 24 hours for your request to be accepted. If you perform any hostile operations against dominions outside of that guard range, your application is reset back to 24 hours.</p>
                     <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 3rd day of the round.</p>
-                    <p>Joining the Shadow League takes 12 hours and you cannot leave for the first 12 hours after joining. Leaving the Shadow League also requires an additional 12 hours to go into effect.</p>
+                    <p>Joining the Chaos League takes 12 hours and you cannot leave for the first 12 hours after joining. Leaving the Chaos League also requires an additional 12 hours to go into effect.</p>
 
                     @if ($isEliteGuardMember)
                         <p>You are a member of the Emperor's <span class="text-yellow"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
@@ -600,15 +614,15 @@
                     @endif
 
                     @if ($isBlackGuardMember)
-                        <p>You are a member of the <span class="text-purple"><i class="ra ra-fire-shield" title="Shadow League"></i>Shadow League</span>.</p>
+                        <p>You are a member of the <span class="text-purple"><i class="ra ra-fire-shield" title="Chaos League"></i>Chaos League</span>.</p>
                         @if ($hoursBeforeLeaveBlackGuard)
                             <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
                         @endif
                         @if ($isLeavingBlackGuard)
-                            <p>You will leave the Shadow League in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
+                            <p>You will leave the Chaos League in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
                         @endif
                     @elseif ($isBlackGuardApplicant)
-                        <p>You will become a member of the Shadow League in {{ $hoursBeforeBlackGuardMember }} hours.</p>
+                        <p>You will become a member of the Chaos League in {{ $hoursBeforeBlackGuardMember }} hours.</p>
                     @endif
                 </div>
             </div>
