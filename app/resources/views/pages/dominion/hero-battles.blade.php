@@ -79,6 +79,7 @@
                                                         <table class="table-condensed">
                                                             @foreach ($playerCombatant->actions ?? [] as $idx => $action)
                                                                 <tr>
+                                                                    <td>{{ $battle->current_turn + $idx }}</td>
                                                                     <td>{{ ucwords($action) }}</td>
                                                                     <td>
                                                                         <a href="{{ route('dominion.heroes.battles.action.delete', ['combatant'=>$playerCombatant->id, 'action'=>$idx]) }}">
