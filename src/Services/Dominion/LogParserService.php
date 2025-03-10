@@ -244,7 +244,7 @@ class LogParserService
         if (preg_match('/Your wizards successfully cast (.*) at a cost of (\d+) mana/', $line, $matches)) {
             $spellName = trim(str_replace("'", '', $matches[1]));
             if ($spellName == 'Racial Spell') {
-                $racialSpell = $this->spellHelper->getSpells($this->race, 'self')->where('races', '!=', null)->first();
+                $racialSpell = $this->spellHelper->getSpells($this->race, 'self')->where('races', '!=', null)->where('races', '!=', ['chaos-league'])->first();
                 $spell = $this->spells->firstWhere('name', $racialSpell->name);
             } else {
                 if (isset($this::ATTRIBUTE_MAP[$spellName])) {
