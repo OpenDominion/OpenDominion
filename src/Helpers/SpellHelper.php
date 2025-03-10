@@ -135,7 +135,7 @@ class SpellHelper
             'offense' => '%+g%% offensive power',
             'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+g%%)',
             'offense_from_pairing_demon' => 'Each Imp gains %+g offense when paired with an Archdemon on attack',
-            'apply_corruption' => 'Applies Corruption upon invasion',
+            'apply_corruption' => 'Applies Corruption to yourself after attacking',
             'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
             'cancels_immortal' => 'Military units lose all casualty reductions (including immortality)',
