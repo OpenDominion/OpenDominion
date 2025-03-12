@@ -162,19 +162,25 @@ class HeroController extends AbstractDominionController
         $heroBattleService = app(HeroBattleService::class);
 
         try {
+            $action = $request->get('action');
             $combatant = HeroCombatant::findOrFail($request->get('combatant'));
             $result = $heroActionService->queueAction(
                 $dominion,
                 $combatant,
-                $request->get('action')
+                $action
             );
-            $heroBattleService->processTurn($combatant->battle);
+            $turnProcessed = $heroBattleService->processTurn($combatant->battle);
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
+        if ($turnProcessed) {
+            $request->session()->flash('alert-success', "{$combatant->name} performed {$action}!");
+        } else {
+            $request->session()->flash('alert-success', "Queued action for {$combatant->name}: {$action}.");
+        }
         return redirect()->route('dominion.heroes.battles');
     }
 

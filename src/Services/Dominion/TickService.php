@@ -27,6 +27,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\SpellPerkType;
 use OpenDominion\Services\Dominion\AutomationService;
+use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\ValorService;
@@ -40,6 +41,9 @@ class TickService
 
     /** @var CasualtiesCalculator */
     protected $casualtiesCalculator;
+
+    /** @var HeroBattleService */
+    protected $heroBattleService;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -81,6 +85,7 @@ class TickService
     {
         $this->now = now();
         $this->casualtiesCalculator = app(CasualtiesCalculator::class);
+        $this->heroBattleService = app(HeroBattleService::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
@@ -121,6 +126,7 @@ class TickService
             $this->performTick($round);
             $this->expireWars($round);
             $this->checkForAbandonedDominions($round);
+            $this->heroBattleService->processBattles($round);
         }
 
         // Realm Assignment

@@ -136,7 +136,18 @@
                                 </div>
                                 <div class="col-md-6" style="max-height: {{ $battle->finished ? '250px' : '605px' }}; overflow-y: scroll;">
                                     <table class="table table-condensed">
-                                        <thead><tr><th>Combat Log</th></tr></thead>
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Combat Log
+                                                    @if (!$battle->finished && $battle->ticksUntilNextTurn() >= 0)
+                                                        <small class="pull-right">
+                                                            Next turn in {{ $battle->ticksUntilNextTurn() }} tick(s)
+                                                        </small>
+                                                    @endif
+                                                </th>
+                                            </tr>
+                                        </thead>
                                         @foreach ($battle->actions->groupBy('turn')->sortDesc() as $turn => $actions)
                                             <tr><td>Turn {{ $turn }}</td></tr>
                                             <tr><td>

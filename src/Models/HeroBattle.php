@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use \Illuminate\Support\Carbon;
 use \Illuminate\Database\Eloquent\Builder;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 
@@ -56,5 +57,37 @@ class HeroBattle extends AbstractModel
     public function scopeInactive(Builder $query): Builder
     {
         return $query->where('finished', true);
+    }
+
+    public function startTime(): Carbon
+    {
+        return $this->created_at->addHours(12)->startOfHour();
+    }
+
+    public function nextTurnTime(): Carbon
+    {
+        if (!$this->hasStarted()) {
+            return $this->startTime();
+        }
+        return $this->updated_at->addHours(1)->startOfHour();
+    }
+
+    public function ticksUntilNextTurn(): int
+    {
+        $thisTick = now()->startOfHour();
+        if ($thisTick > $this->nextTurnTime()) {
+            return -1;
+        }
+        return $this->nextTurnTime()->diffInHours($thisTick);
+    }
+
+    public function hasStarted(): bool
+    {
+        return $this->startTime() < now();
+    }
+
+    public function turnProcessed(): bool
+    {
+        return $this->nextTurnTime() > now();
     }
 }

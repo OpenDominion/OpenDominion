@@ -11,6 +11,7 @@ use OpenDominion\Models\Hero;
 use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroBattleAction;
 use OpenDominion\Models\HeroCombatant;
+use OpenDominion\Models\Round;
 
 class HeroBattleService
 {
@@ -90,18 +91,34 @@ class HeroBattleService
         ]);
     }
 
-    public function processTurn(HeroBattle $heroBattle): void
+    public function processBattles(Round $round): void
+    {
+        $battles = HeroBattle::query()
+            ->where('round_id', $round->id)
+            ->where('finished', false)
+            ->get();
+
+        foreach ($battles as $battle) {
+            if (!$battle->turnProcessed()) {
+                $this->processTurn($battle, true);
+            }
+        }
+    }
+
+    public function processTurn(HeroBattle $heroBattle, bool $forceTurn = false): bool
     {
         if ($heroBattle->finished) {
-            return;
+            return false;
         }
 
         $combatants = $heroBattle->combatants;
 
-        // Eject if not all combatants are ready
-        foreach ($combatants as $combatant) {
-            if (!$combatant->isReady()) {
-                return;
+        if (!$forceTurn) {
+            // Eject if not all combatants are ready
+            foreach ($combatants as $combatant) {
+                if (!$combatant->isReady()) {
+                    return false;
+                }
             }
         }
 
@@ -149,6 +166,9 @@ class HeroBattleService
         if (!$heroBattle->finished) {
             $heroBattle->increment('current_turn');
         }
+
+        // TODO: After time expires, automate remaining turns?
+        return true;
     }
 
     private function determineAction(HeroCombatant $combatant): string

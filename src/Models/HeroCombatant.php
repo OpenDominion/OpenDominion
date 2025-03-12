@@ -59,8 +59,9 @@ class HeroCombatant extends AbstractModel
 
     public function isReady()
     {
+        // TODO: Should this return false for queued actions?
         return ($this->automated == true) ||
-            ($this->automated == null && $this->battle->created_at > now()->subHours(12)->startOfHour()) ||
+            ($this->automated == null && $this->battle->hasStarted()) ||
             ($this->actions != null && count($this->actions) > 0);
     }
 }
