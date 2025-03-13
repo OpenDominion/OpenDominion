@@ -46,13 +46,14 @@ class Hero extends AbstractModel
         $ongoingBattles = $this->combatants()
             ->join('hero_battles', 'hero_battles.id', '=', 'hero_combatants.hero_battle_id')
             ->where('hero_battles.finished', false)
-            ->where('hero_combatants.updated_at', '<', now()->startOfHour())
             ->where(function ($query) {
                 $query->where('automated', null)
                     ->orWhere(function ($query) {
                         $query->where('automated', false)
-                            ->whereNull('actions')
-                            ->orWhere('actions', '[]');
+                            ->where(function ($query) {
+                                $query->whereNull('actions')
+                                ->orWhere('actions', '[]');
+                            });
                     });
             });
 

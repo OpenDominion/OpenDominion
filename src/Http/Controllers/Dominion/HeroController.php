@@ -118,6 +118,10 @@ class HeroController extends AbstractDominionController
         $heroHelper = app(HeroHelper::class);
 
         $hero = $this->getSelectedDominion()->hero;
+        if ($hero === null) {
+            return redirect()->route('dominion.heroes');
+        }
+
         $activeBattles = $hero->battles()->active()->orderByDesc('created_at')->get();
         $inactiveBattles = $hero->battles()->inactive()->orderByDesc('created_at')->get();
         if ($activeBattles->isEmpty() && $inactiveBattles->isNotEmpty()) {
@@ -164,12 +168,13 @@ class HeroController extends AbstractDominionController
         try {
             $action = $request->get('action');
             $combatant = HeroCombatant::findOrFail($request->get('combatant'));
+            $heroBattleService->checkTime($combatant->battle);
             $result = $heroActionService->queueAction(
                 $dominion,
                 $combatant,
                 $action
             );
-            $turnProcessed = $heroBattleService->processTurn($combatant->battle);
+            $turnProcessed = $heroBattleService->processTurn($combatant->battle->fresh());
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

@@ -253,6 +253,10 @@ class HeroActionService
             throw new GameException('You cannot change settings for a battle that has ended.');
         }
 
+        if ($combatant->time_bank <= 0 && $automated == false) {
+            throw new GameException('You ran out of time and can no longer set manual actions.');
+        }
+
         $validStrategies = $this->heroHelper->getCombatStrategies();
         if (!in_array($strategy, $validStrategies)) {
             throw new GameException('Invalid strategy.');
@@ -261,6 +265,8 @@ class HeroActionService
         $combatant->strategy = $strategy;
         $combatant->automated = $automated;
         $combatant->save();
+
+        // TODO: process turn is automated gets set to true?
     }
 
     public function queueAction(Dominion $dominion, HeroCombatant $combatant, string $action)
@@ -273,6 +279,10 @@ class HeroActionService
 
         if ($combatant->battle->finished) {
             throw new GameException('You cannot queue actions for a battle that has ended.');
+        }
+
+        if ($combatant->time_bank <= 0) {
+            throw new GameException('You ran out of time and can no longer set manual actions.');
         }
 
         $validActions = $this->heroHelper->getCombatActions($combatant);

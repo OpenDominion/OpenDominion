@@ -19,6 +19,7 @@ class CreateHeroBattleTables extends Migration
             $table->integer('current_turn')->default(1);
             $table->integer('winner_combatant_id')->unsigned()->nullable();
             $table->boolean('finished')->default(false);
+            $table->timestamp('last_processed_at')->nullable();
             $table->timestamps();
 
             $table->foreign('round_id')->references('id')->on('rounds');
@@ -39,9 +40,9 @@ class CreateHeroBattleTables extends Migration
             $table->integer('recover');
             $table->integer('current_health');
             $table->boolean('has_focus')->default(false);
-            $table->string('current_action')->nullable();
-            $table->string('last_action')->nullable();
             $table->text('actions')->nullable();
+            $table->string('last_action')->nullable();
+            $table->integer('time_bank')->default(86400);
             $table->boolean('automated')->nullable();
             $table->string('strategy')->nullable();
             $table->timestamps();

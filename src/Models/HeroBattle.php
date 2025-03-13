@@ -14,6 +14,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property int $current_turn
  * @property int|null $winner_combatant_id
  * @property bool $finished
+ * @property \Illuminate\Support\Carbon|null $last_processed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Round $round
@@ -27,7 +28,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  */
 class HeroBattle extends AbstractModel
 {
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['last_processed_at', 'created_at', 'updated_at'];
 
     public function round()
     {
@@ -57,37 +58,5 @@ class HeroBattle extends AbstractModel
     public function scopeInactive(Builder $query): Builder
     {
         return $query->where('finished', true);
-    }
-
-    public function startTime(): Carbon
-    {
-        return $this->created_at->addHours(12)->startOfHour();
-    }
-
-    public function nextTurnTime(): Carbon
-    {
-        if (!$this->hasStarted()) {
-            return $this->startTime();
-        }
-        return $this->updated_at->addHours(1)->startOfHour();
-    }
-
-    public function ticksUntilNextTurn(): int
-    {
-        $thisTick = now()->startOfHour();
-        if ($thisTick > $this->nextTurnTime()) {
-            return -1;
-        }
-        return $this->nextTurnTime()->diffInHours($thisTick);
-    }
-
-    public function hasStarted(): bool
-    {
-        return $this->startTime() < now();
-    }
-
-    public function turnProcessed(): bool
-    {
-        return $this->nextTurnTime() > now();
     }
 }

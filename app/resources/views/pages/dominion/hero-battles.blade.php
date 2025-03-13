@@ -56,6 +56,10 @@
                                                             </td>
                                                         </tr>
                                                     @endforeach
+                                                    <tr>
+                                                        <td>Time</td>
+                                                        <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
+                                                    </tr>
                                                 </table>
                                             </div>
                                         @endforeach
@@ -98,7 +102,7 @@
                                                             @foreach ($heroHelper->getCombatActions() as $action)
                                                                 <a class="btn btn-block btn-primary"
                                                                     href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'action'=>$action]) }}"
-                                                                    {{ !$heroHelper->canUseCombatAction($playerCombatant, $action) ? 'disabled' : null }}>
+                                                                    {{ !$heroHelper->canUseCombatAction($playerCombatant, $action) || $playerCombatant->time_bank <= 0 ? 'disabled' : null }}>
                                                                     {{ ucwords($action) }}
                                                                 </a>
                                                             @endforeach
@@ -134,18 +138,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="max-height: {{ $battle->finished ? '250px' : '605px' }}; overflow-y: scroll;">
+                                <div class="col-md-6" style="max-height: {{ $battle->finished ? '265px' : '645px' }}; overflow-y: scroll;">
                                     <table class="table table-condensed">
                                         <thead>
                                             <tr>
-                                                <th>
-                                                    Combat Log
-                                                    @if (!$battle->finished && $battle->ticksUntilNextTurn() >= 0)
-                                                        <small class="pull-right">
-                                                            Next turn in {{ $battle->ticksUntilNextTurn() }} tick(s)
-                                                        </small>
-                                                    @endif
-                                                </th>
+                                                <th>Combat Log</th>
                                             </tr>
                                         </thead>
                                         @foreach ($battle->actions->groupBy('turn')->sortDesc() as $turn => $actions)

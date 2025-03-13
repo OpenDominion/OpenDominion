@@ -36,6 +36,7 @@ class HeroBattleService
         $this->heroHelper = $heroHelper;
     }
 
+    public const STARTING_TIME_BANK = 24 * 60 * 60;
     public const DEFAULT_STRATEGY = 'balanced';
 
     public function createBattle(Dominion $challenger, Dominion $opponent): HeroBattle
@@ -86,6 +87,7 @@ class HeroBattleService
             'current_health' => $combatStats['health'],
             'has_focus' => false,
             'last_action' => null,
+            'time_bank' => self::STARTING_TIME_BANK,
             'actions' => null,
             'strategy' => self::DEFAULT_STRATEGY
         ]);
@@ -99,13 +101,26 @@ class HeroBattleService
             ->get();
 
         foreach ($battles as $battle) {
-            if (!$battle->turnProcessed()) {
-                $this->processTurn($battle, true);
-            }
+            $this->checkTime($heroBattle);
+            $this->processTurn($battle);
         }
     }
 
-    public function processTurn(HeroBattle $heroBattle, bool $forceTurn = false): bool
+    public function checkTime(HeroBattle $heroBattle): void
+    {
+        foreach ($heroBattle->combatants as $combatant) {
+            $combatant->time_bank -= $combatant->timeElapsed();
+            if ($combatant->time_bank <= 0) {
+                $combatant->automated = true;
+            }
+            $combatant->save();
+        }
+
+        $heroBattle->last_processed_at = now();
+        $heroBattle->save();
+    }
+
+    public function processTurn(HeroBattle $heroBattle): bool
     {
         if ($heroBattle->finished) {
             return false;
@@ -113,12 +128,10 @@ class HeroBattleService
 
         $combatants = $heroBattle->combatants;
 
-        if (!$forceTurn) {
-            // Eject if not all combatants are ready
-            foreach ($combatants as $combatant) {
-                if (!$combatant->isReady()) {
-                    return false;
-                }
+        // Eject if not all combatants are ready
+        foreach ($combatants as $combatant) {
+            if (!$combatant->isReady()) {
+                return false;
             }
         }
 
@@ -152,7 +165,7 @@ class HeroBattleService
                 $combatant->current_health = $combatant->health;
             }
             $combatant->last_action = $combatant->current_action;
-            $combatant->current_action = null;
+            unset($combatant->current_action);
             $combatant->save();
         }
 
