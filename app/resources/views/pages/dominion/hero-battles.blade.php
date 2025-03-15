@@ -35,14 +35,14 @@
                                                             </th>
                                                         </tr>
                                                     </thead>
+                                                    @php
+                                                        $heroLevel = $heroCalculator->getHeroLevel($combatant->hero);
+                                                        $baseCombatStats = $heroCalculator->getBaseCombatStats($heroLevel);
+                                                    @endphp
                                                     @foreach ($heroCalculator->getHeroCombatStats($combatant->hero) as $stat => $value)
-                                                        @php
-                                                            $heroLevel = $heroCalculator->getHeroLevel($combatant->hero);
-                                                            $baseCombatStats = $heroCalculator->getBaseCombatStats($heroLevel);
-                                                        @endphp
                                                         <tr>
                                                             <td>
-                                                                <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green': null }}">
+                                                                <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green': null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
                                                                     {{ ucwords($stat) }}
                                                                 </span>
                                                             </td>
@@ -57,7 +57,7 @@
                                                         </tr>
                                                     @endforeach
                                                     <tr>
-                                                        <td>Time</td>
+                                                        <td><span data-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
                                                         <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
                                                     </tr>
                                                 </table>
@@ -212,10 +212,10 @@
                     Each turn you can choose from one of the five following actions:<br/>
                     <ul>
                         <li>Attack: deals damage equal to your attack minus the opponent's defense (mitigated damage)</li>
-                        <li>Defend: prevents damage equal to your defense</li>
+                        <li>Defend: doubles your defense if attacked this turn</li>
                         <li>Focus: increases your attack value by 25% for your next attack action</li>
                         <li>Counter: if attacked, counter attacks for 150% mitigated damage</li>
-                        <li>Recover: heals damage equal to your defense</li>
+                        <li>Recover: heals damage equal to your defense, but cannot evade this turn</li>
                     </ul>
                     Additionally, each combatant has a chance to evade incoming attack actions, preventing all damage.
                 </div>

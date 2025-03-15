@@ -265,8 +265,6 @@ class HeroActionService
         $combatant->strategy = $strategy;
         $combatant->automated = $automated;
         $combatant->save();
-
-        // TODO: process turn is automated gets set to true?
     }
 
     public function queueAction(Dominion $dominion, HeroCombatant $combatant, string $action)

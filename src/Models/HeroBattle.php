@@ -59,4 +59,11 @@ class HeroBattle extends AbstractModel
     {
         return $query->where('finished', true);
     }
+
+    public function allReady(): bool
+    {
+        return $this->combatants()->get()->filter(function ($combatant) {
+            return !$combatant->isReady();
+        })->count() == 0;
+    }
 }

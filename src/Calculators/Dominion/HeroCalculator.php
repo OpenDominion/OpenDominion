@@ -337,9 +337,9 @@ class HeroCalculator
             'attack' => 20,
             'defense' => 10,
             'evasion' => 10,
-            'focus' => 0,
-            'counter' => 0,
-            'recover' => 0,
+            'focus' => 25,
+            'counter' => 50,
+            //'recover' => 0,
         ];
     }
 
@@ -362,7 +362,7 @@ class HeroCalculator
 
         if ($combatant->has_focus) {
             $focusBonus = $combatant->focus / 100;
-            $baseDamage *= (1.25 + $focusBonus);
+            $baseDamage *= (1 + $focusBonus);
         }
 
         if ($target->current_action == 'defend') {
@@ -373,7 +373,7 @@ class HeroCalculator
 
         if ($counterAttack) {
             $counterBonus = $combatant->counter / 100;
-            $damage *= (1.5 + $counterBonus);
+            $damage *= (1 + $counterBonus);
         }
     
         return round($damage);
@@ -381,11 +381,14 @@ class HeroCalculator
 
     public function calculateCombatEvade(HeroCombatant $target): bool
     {
+        if ($target->current_action == 'recover') {
+            return false;
+        }
         return mt_rand(0, 100) < $target->evasion;
     }
 
     public function calculateCombatHeal(HeroCombatant $combatant): int
     {
-        return round($combatant->defense + $combatant->recover);
+        return $combatant->defense;
     }
 }

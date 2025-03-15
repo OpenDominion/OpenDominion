@@ -178,9 +178,11 @@ class HeroBattleService
 
         if (!$heroBattle->finished) {
             $heroBattle->increment('current_turn');
+            if ($heroBattle->allReady()) {
+                $this->processTurn($heroBattle);
+            }
         }
 
-        // TODO: After time expires, automate remaining turns?
         return true;
     }
 

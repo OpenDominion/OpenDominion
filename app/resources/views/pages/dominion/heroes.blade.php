@@ -178,10 +178,12 @@
                                                 @foreach ($heroCalculator->getHeroCombatStats($hero) as $stat => $value)
                                                     <tr>
                                                         <td>
-                                                            {{ ucwords($stat) }}
+                                                            <span data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
+                                                                {{ ucwords($stat) }}
+                                                            </span>
                                                         </td>
                                                         <td>
-                                                            <span class="{{ $baseCombatStats[$stat] != $value ? 'text-green' : null }}">
+                                                            <span class="{{ $baseCombatStats[$stat] > $value ? 'text-green' : null }}">
                                                                 {{ $value }}
                                                             </span>
                                                         </td>

@@ -255,6 +255,21 @@ class HeroHelper
         ];
     }
 
+    public function getCombatStatTooltip(string $stat): string
+    {
+        $combatStats = [
+            'health' => 'Current and maximum health',
+            'attack' => 'Raw attack damage, reduced by defense of opponent',
+            'defense' => 'Mitigate incoming attack damage by this amount, doubled while defending',
+            'evasion' => 'Chance to evade an attack is equal to this percentage',
+            'focus' => 'Focus attack damage is increased by this percentage',
+            'counter' => 'Counter attack damage is increased by this percentage',
+            'recover' => 'Heal damage equal to your defense',
+        ];
+
+        return $combatStats[$stat];
+    }
+
     public function getCombatStrategies(): array
     {
         return [
