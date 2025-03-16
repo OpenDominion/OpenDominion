@@ -83,7 +83,7 @@ class HeroBattleService
             'evasion' => $combatStats['evasion'],
             'focus' => $combatStats['focus'],
             'counter' => $combatStats['counter'],
-            'recover' => $combatStats['recover'],
+            'recover' => 0, // $combatStats['recover'],
             'current_health' => $combatStats['health'],
             'has_focus' => false,
             'last_action' => null,

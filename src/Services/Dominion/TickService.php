@@ -28,6 +28,7 @@ use OpenDominion\Models\Spell;
 use OpenDominion\Models\SpellPerkType;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\HeroBattleService;
+use OpenDominion\Services\Dominion\HeroTournamentService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\ValorService;
@@ -44,6 +45,9 @@ class TickService
 
     /** @var HeroBattleService */
     protected $heroBattleService;
+
+    /** @var HeroTournamentService */
+    protected $heroTournamentService;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -86,6 +90,7 @@ class TickService
         $this->now = now();
         $this->casualtiesCalculator = app(CasualtiesCalculator::class);
         $this->heroBattleService = app(HeroBattleService::class);
+        $this->heroTournamentService = app(HeroTournamentService::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
@@ -127,6 +132,7 @@ class TickService
             $this->expireWars($round);
             $this->checkForAbandonedDominions($round);
             $this->heroBattleService->processBattles($round);
+            $this->heroTournamentService->processTournaments($round);
         }
 
         // Realm Assignment

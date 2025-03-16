@@ -4,7 +4,6 @@ namespace OpenDominion\Models;
 
 use \Illuminate\Support\Carbon;
 use \Illuminate\Database\Eloquent\Builder;
-use OpenDominion\Calculators\Dominion\HeroCalculator;
 
 /**
  * OpenDominion\Models\HeroBattle

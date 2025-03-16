@@ -56,6 +56,7 @@ use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HeroBattleService;
+use OpenDominion\Services\Dominion\HeroTournamentService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\InvadeService;
@@ -158,6 +159,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(GovernmentService::class);
         $this->app->singleton(GuardMembershipService::class);
         $this->app->singleton(HeroBattleService::class);
+        $this->app->singleton(HeroTournamentService::class);
         $this->app->singleton(HistoryService::class);
         $this->app->singleton(InfoOpService::class);
         $this->app->singleton(InvadeService::class);
