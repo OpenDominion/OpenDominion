@@ -54,15 +54,20 @@ class HeroTournamentService
 
     public function handleMatchups(HeroTournament $tournament): void
     {
-        // TODO: Randomize order to some extent
-        $participants = $tournament->participants()->orderByDesc('wins')->get();
+        $participants = $tournament->participants()
+            ->where('eliminated', false)
+            ->inRandomOrder()
+            ->get()
+            ->sortByDesc('wins');
 
         foreach ($participants->chunk(2) as $pairing) {
-            // TODO: handle odd number of participants
-            if ($pairing->count() != 2) {
+            $participants = $pairing->values();
+            if ($participants->count() == 1) {
+                // Bye counts as a draw
+                $participants[0]->increment('draws');
                 continue;
             }
-            $heroBattle =$this->heroBattleService->createBattle($pairing[0]->hero->dominion, $pairing[1]->hero->dominion);
+            $heroBattle = $this->heroBattleService->createBattle($participants[0]->hero->dominion, $participants[1]->hero->dominion);
             HeroTournamentBattle::create([
                 'hero_tournament_id' => $tournament->id,
                 'hero_battle_id' => $heroBattle->id,
@@ -89,7 +94,6 @@ class HeroTournamentService
             return;
         }
 
-        // TODO: Update participant stats in battle service
         $this->processEliminations($tournament);
         $finished = $this->checkTournamentEnded($tournament);
         if (!$finished) {
@@ -100,12 +104,18 @@ class HeroTournamentService
 
     public function processEliminations(HeroTournament $tournament): void
     {
-        foreach ($tournament->participants as $participant) {
+        foreach ($tournament->participants()->get() as $participant) {
             if (!$participant->eliminated && $participant->losses >= 2) {
                 $participant->eliminated = true;
                 $participant->save();
             }
         }
+
+        $participantsRemaining = $tournament->participants->where('eliminated', false)->count();
+        $tournament->participants()
+            ->where('eliminated', true)
+            ->where('standing', null)
+            ->update(['standing' => $participantsRemaining + 1]);
     }
 
     public function checkTournamentEnded(HeroTournament $tournament): bool
@@ -113,6 +123,7 @@ class HeroTournamentService
         $activeParticipants = $tournament->participants()->where('eliminated', false)->get();
         if ($activeParticipants->count() == 1) {
             $winner = $activeParticipants->first();
+            $winner->update(['standing' => 1]);
             $tournament->finished = true;
             $tournament->winner_dominion_id = $winner->hero->dominion_id;
             $tournament->save();

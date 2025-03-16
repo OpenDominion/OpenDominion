@@ -299,18 +299,34 @@ class HeroBattleService
         ];
     }
 
-    private function setWinner(HeroBattle $heroBattle, ?HeroCombatant $combatant): void
+    private function setWinner(HeroBattle $heroBattle, ?HeroCombatant $winner): void
     {
-        $heroBattle->winner_combatant_id = $combatant ? $combatant->id : null;
+        $heroBattle->winner_combatant_id = $winner ? $winner->id : null;
         $heroBattle->finished = true;
         $heroBattle->save();
-        foreach ($heroBattle->combatants as $participant) {
-            if ($combatant == null) {
-                $participant->hero->increment('stat_combat_draws');
-            } elseif ($participant->id == $combatant->id) {
-                $participant->hero->increment('stat_combat_wins');
+
+        $tournament = $heroBattle->tournaments->first();
+        foreach ($heroBattle->combatants as $combatant) {
+            $participant = null;
+            if ($tournament !== null) {
+                $participant = $tournament->participants->where('hero_id', $combatant->hero_id)->first();
+            }
+
+            if ($winner == null) {
+                $combatant->hero->increment('stat_combat_draws');
+                if ($participant !== null) {
+                    $participant->increment('draws');
+                }
+            } elseif ($combatant->id == $winner->id) {
+                $combatant->hero->increment('stat_combat_wins');
+                if ($participant !== null) {
+                    $participant->increment('wins');
+                }
             } else {
-                $participant->hero->increment('stat_combat_losses');
+                $combatant->hero->increment('stat_combat_losses');
+                if ($participant !== null) {
+                    $participant->increment('losses');
+                }
             }
         }
     }

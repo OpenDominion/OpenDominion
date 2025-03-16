@@ -41,7 +41,8 @@ class HeroTournament extends AbstractModel
 
     public function battles()
     {
-        return $this->hasManyThrough(HeroBattle::class, HeroTournamentBattle::class, 'hero_tournament_id', 'id', 'id', 'hero_battle_id');
+        return $this->belongsToMany(HeroBattle::class, HeroTournamentBattle::class)
+            ->withPivot('round_number');
     }
 
     public function participants()

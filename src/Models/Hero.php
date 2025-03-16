@@ -33,7 +33,7 @@ class Hero extends AbstractModel
 
     public function battles()
     {
-        return $this->hasManyThrough(HeroBattle::class, HeroCombatant::class, 'hero_id', 'id', 'id', 'hero_battle_id');
+        return $this->belongsToMany(HeroBattle::class, HeroCombatant::class);
     }
 
     public function combatants()

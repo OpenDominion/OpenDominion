@@ -33,6 +33,7 @@ class CreateHeroTournamentTables extends Migration
             $table->integer('wins')->default(0);
             $table->integer('losses')->default(0);
             $table->integer('draws')->default(0);
+            $table->integer('standing')->nullable();
             $table->boolean('eliminated')->default(false);
             $table->timestamps();
     

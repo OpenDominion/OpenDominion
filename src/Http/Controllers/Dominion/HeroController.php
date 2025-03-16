@@ -9,6 +9,7 @@ use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
 use OpenDominion\Models\HeroCombatant;
+use OpenDominion\Models\HeroTournament;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
 use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -209,5 +210,15 @@ class HeroController extends AbstractDominionController
         }
 
         return redirect()->route('dominion.heroes.battles');
+    }
+
+    public function getTournaments()
+    {
+        $round_id = $this->getSelectedDominion()->round_id;
+        $tournaments = HeroTournament::where('round_id', $round_id)->orderByDesc('created_at')->get();
+
+        return view('pages.dominion.hero-tournaments', compact(
+            'tournaments',
+        ));
     }
 }

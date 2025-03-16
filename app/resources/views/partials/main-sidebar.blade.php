@@ -114,6 +114,13 @@
                         </a>
                     </li>
                 @endif
+                @if ($selectedDominion->round->tournaments()->count() > 0)
+                    <li class="{{ Route::is('dominion.heroes.tournaments') ? 'active' : null }}">
+                        <a href="{{ route('dominion.heroes.tournaments') }}">
+                            <i class="fa fa-trophy fa-fw"></i> <span>Hero Tournament</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="{{ Route::is('dominion.journal') ? 'active' : null }}"><a href="{{ route('dominion.journal') }}"><i class="ra ra-scroll-quill ra-fw"></i> <span>Journal</span></a></li>
 
                 <li class="header">OPERATIONS</li>

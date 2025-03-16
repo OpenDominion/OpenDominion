@@ -20,6 +20,7 @@ use \Illuminate\Database\Eloquent\Builder;
  * @property-read \OpenDominion\Models\HeroCombatant $winner
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroBattleAction[] $actions
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroCombatant[] $combatants
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroTournament[] $tournaments
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\HeroBattle newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\HeroBattle newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\HeroBattle query()
@@ -32,6 +33,11 @@ class HeroBattle extends AbstractModel
     public function round()
     {
         return $this->belongsTo(Round::class);
+    }
+
+    public function tournaments()
+    {
+        return $this->belongsToMany(HeroTournament::class, HeroTournamentBattle::class);
     }
 
     public function winner()
