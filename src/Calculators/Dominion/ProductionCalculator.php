@@ -133,7 +133,7 @@ class ProductionCalculator
         $guardTax += $dominion->getWonderPerkValue('guard_tax');
 
         // Spells
-        $multiplier += $dominion->getSpellPerkMultiplier('platinum_production');
+        $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'platinum_production') / 100;
 
         // Improvement: Science
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
