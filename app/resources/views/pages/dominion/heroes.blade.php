@@ -183,7 +183,7 @@
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <span class="{{ $baseCombatStats[$stat] > $value ? 'text-green' : null }}">
+                                                            <span class="{{ $baseCombatStats[$stat] != $value ? 'text-green' : null }}">
                                                                 {{ $value }}
                                                             </span>
                                                         </td>
@@ -228,6 +228,14 @@
                                 <div class="col-md-12">
                                     <h4>Hero Upgrades</h4>
                                     <table class="table">
+                                        <colgroup>
+                                            <col width="25">
+                                            <col width="25">
+                                            <col width="125">
+                                            <col width="25">
+                                            <col width="175">
+                                            <col>
+                                        </colgroup>
                                         <thead>
                                             <tr>
                                                 <th></th>

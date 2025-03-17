@@ -39,7 +39,7 @@
                                                         $heroLevel = $heroCalculator->getHeroLevel($combatant->hero);
                                                         $baseCombatStats = $heroCalculator->getBaseCombatStats($heroLevel);
                                                     @endphp
-                                                    @foreach ($heroCalculator->getHeroCombatStats($combatant->hero) as $stat => $value)
+                                                    @foreach ($baseCombatStats as $stat => $value)
                                                         <tr>
                                                             <td>
                                                                 <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green': null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
@@ -50,8 +50,8 @@
                                                                 @if ($stat == 'health')
                                                                     {{ $combatant->current_health }} /
                                                                 @endif
-                                                                <span class="{{ $baseCombatStats[$stat] != $value ? 'text-green' : null }}">
-                                                                    {{ $value }}
+                                                                <span class="{{ $combatant->{$stat} != $value ? 'text-green' : null }}">
+                                                                    {{ $combatant->{$stat} }}
                                                                 </span>
                                                             </td>
                                                         </tr>

@@ -5,6 +5,7 @@ abjuration:
   icon: ra-book-cover
   perks:
     enemy_lightning_bolt_damage: -10
+    combat_defense: 1
 divination:
   name: Divination
   level: 4
@@ -12,6 +13,8 @@ divination:
   icon: ra-book-cover
   perks:
     info_spell_cost: -10
+    combat_focus: 5
+    combat_evasion: 2
 enchantment:
   name: Enchantment
   level: 2
@@ -19,6 +22,7 @@ enchantment:
   icon: ra-book-cover
   perks:
     self_spell_strength_cost: -1
+    combat_focus: 10
 evocation:
   name: Evocation
   level: 6
@@ -26,6 +30,7 @@ evocation:
   icon: ra-book-cover
   perks:
     fireball_damage: 10
+    combat_attack: 1
 hammer_of_retribution:
   name: Hammer of Retribution
   level: 4
@@ -33,7 +38,7 @@ hammer_of_retribution:
   icon: ra-hammer-drop
   perks:
     retal_prestige: 5
-    combat_attack: 1
+    combat_counter: 15
 illusion:
   name: Illusion
   level: 2
@@ -41,6 +46,7 @@ illusion:
   icon: ra-book-cover
   perks:
     espionage_fails_hide_identity: 1
+    combat_evasion: 5
 iron_dagger:
   name: Iron Dagger
   level: 4
@@ -56,6 +62,7 @@ kings_banner:
   icon: ra-knight-banner
   perks:
     invasion_morale: -2
+    combat_health: 3
 orb_of_detection:
   name: Orb of Detection
   level: 4
@@ -63,6 +70,8 @@ orb_of_detection:
   icon: ra-orb-wand
   perks:
     enemy_spy_losses: 20
+    combat_counter: 10
+    combat_evasion: 1
 spyglass:
   name: Spyglass
   level: 2
@@ -70,6 +79,8 @@ spyglass:
   icon: ra-spyglass
   perks:
     land_spy_strength_cost: 1
+    combat_counter: 5
+    combat_evasion: 3
 scribes_journal:
   name: Scribe's Journal
   level: 2
@@ -77,6 +88,7 @@ scribes_journal:
   icon: ra-scroll-quill
   perks:
     tech_production_invasion: 10
+    combat_focus: 10
 transmutation:
   name: Transmutation
   level: 4
@@ -84,6 +96,8 @@ transmutation:
   icon: ra-book-cover
   perks:
     exchange_mana: 1
+    combat_focus: 5
+    combat_health: 2
 disarmament:
   name: Disarmament
   level: 0
@@ -129,6 +143,7 @@ blade_of_sundering:
   icon: ra-relic-blade
   perks:
     wonder_attack_damage: 20
+    combat_attack: 1
 staff_of_stormcaller:
   name: Staff of the Stormcaller
   level: 6
@@ -136,3 +151,5 @@ staff_of_stormcaller:
   icon: ra-wizard-staff
   perks:
     cyclone_damage: 20
+    combat_focus: 10
+    combat_health: 5
