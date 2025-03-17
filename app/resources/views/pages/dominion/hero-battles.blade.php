@@ -138,7 +138,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="max-height: {{ $battle->finished ? '265px' : '645px' }}; overflow-y: scroll;">
+                                <div class="col-md-6" style="max-height: {{ $battle->finished ? '240px' : '615px' }}; overflow-y: scroll;">
                                     <table class="table table-condensed">
                                         <thead>
                                             <tr>
