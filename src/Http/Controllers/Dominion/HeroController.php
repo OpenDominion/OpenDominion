@@ -212,6 +212,23 @@ class HeroController extends AbstractDominionController
         return redirect()->route('dominion.heroes.battles');
     }
 
+    public function getPracticeBattle(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $heroBattleService = app(HeroBattleService::class);
+
+        try {
+            $result = $heroBattleService->createPracticeBattle($dominion);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'The battle begins!');
+        return redirect()->route('dominion.heroes.battles');
+    }
+
     public function getTournaments()
     {
         $round_id = $this->getSelectedDominion()->round_id;

@@ -41,24 +41,22 @@ class HeroBattleService
 
     public function createBattle(Dominion $challenger, Dominion $opponent): HeroBattle
     {
-        /* Move to action service
         if ($challenger->round_id !== $opponent->round_id) {
-            throw GameException('You cannot challenge a dominion in a different round');
+            throw new GameException('You cannot challenge a dominion in a different round');
         }
 
-        if ($challenger->dominion_id === $opponent->dominion_id) {
-            throw GameException('You cannot challenge yourself');
+        if ($challenger->id === $opponent->id) {
+            throw new GameException('You cannot challenge yourself');
         }
-        */
 
         $challengerHero = $challenger->heroes()->first();
         if ($challengerHero === null) {
-            throw GameException('Challanger must have a hero to battle');
+            throw new GameException('Challanger must have a hero to battle');
         }
 
         $opponentHero = $opponent->heroes()->first();
         if ($opponentHero === null) {
-            throw GameException('Opponent must have a hero to battle');
+            throw new GameException('Opponent must have a hero to battle');
         }
 
         $heroBattle = HeroBattle::create(['round_id' => $challenger->round_id]);
@@ -91,6 +89,30 @@ class HeroBattleService
             'actions' => null,
             'strategy' => self::DEFAULT_STRATEGY
         ]);
+    }
+
+    public function createPracticeBattle(Dominion $dominion): void
+    {
+        if ($dominion->hero == null) {
+            throw GameException('You must have a hero to practice');
+        }
+
+        if ($dominion->hero->battles->where('finished', false)->count() > 0) {
+            throw GameException('You already have a battle in progress');
+        }
+
+        $bot = $dominion->round->dominions()->where('user_id', null)->get()->random();
+        if ($bot !== null) {
+            $hero = $bot->hero;
+            if ($hero === null) {
+                $hero = $bot->heroes()->create([
+                    'name' => 'Punching Bag',
+                    'class' => 'alchemist',
+                ]);
+            }
+            $battle = $this->createBattle($dominion, $bot);
+            $battle->combatants()->where('hero_id', $hero->id)->update(['automated' => true]);
+        }
     }
 
     public function processBattles(Round $round): void

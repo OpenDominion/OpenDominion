@@ -217,7 +217,12 @@
                         <li>Counter: if attacked, counter attacks for 150% mitigated damage</li>
                         <li>Recover: heals damage equal to your defense, but cannot evade this turn</li>
                     </ul>
-                    Additionally, each combatant has a chance to evade incoming attack actions, preventing all damage.
+                    <p>Additionally, each combatant has a chance to evade incoming attack actions, preventing all damage.</p>
+                    @if ($activeBattles->where('finished', false)->count() == 0)
+                        <a class="btn btn-primary" href="{{ route('dominion.heroes.battles.practice') }}">
+                            Start Practice Battle
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
