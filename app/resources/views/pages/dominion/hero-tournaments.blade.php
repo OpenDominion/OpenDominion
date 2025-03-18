@@ -98,7 +98,10 @@
                         <li>Counter: if attacked, counter attacks for 150% mitigated damage</li>
                         <li>Recover: heals damage equal to your defense, but cannot evade this turn</li>
                     </ul>
-                    Additionally, each combatant has a chance to evade incoming attack actions, preventing all damage.
+                    <p>Additionally, each combatant has a chance to evade incoming attack actions, preventing all damage.</p>
+                    <p>Attack and Defend are the only two actions that can be performed twice in a row.</p>
+                    <p>When you run out of match time, your hero will take actions automatically using the selected strategy.</p>
+                    <p>Heroes gain an additional 5 health after every level up and are be granted combat bonuses with each upgrade they unlock.</p>
                 </div>
             </div>
         </div>
