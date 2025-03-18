@@ -21,7 +21,7 @@ class CreateHeroTournamentTables extends Migration
             $table->boolean('finished')->default(false);
             $table->integer('winner_dominion_id')->unsigned()->nullable();
             $table->timestamps();
-    
+
             $table->foreign('round_id')->references('id')->on('rounds');
             $table->foreign('winner_dominion_id')->references('id')->on('dominions');
         });
@@ -36,7 +36,7 @@ class CreateHeroTournamentTables extends Migration
             $table->integer('standing')->nullable();
             $table->boolean('eliminated')->default(false);
             $table->timestamps();
-    
+
             $table->foreign('hero_tournament_id')->references('id')->on('hero_tournaments');
             $table->foreign('hero_id')->references('id')->on('heroes');
         });
@@ -46,7 +46,7 @@ class CreateHeroTournamentTables extends Migration
             $table->integer('hero_tournament_id')->unsigned();
             $table->integer('hero_battle_id')->unsigned();
             $table->integer('round_number')->default(1);
-    
+
             $table->foreign('hero_tournament_id')->references('id')->on('hero_tournaments');
             $table->foreign('hero_battle_id')->references('id')->on('hero_battles');
         });

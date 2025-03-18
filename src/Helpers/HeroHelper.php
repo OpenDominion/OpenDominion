@@ -228,7 +228,7 @@ class HeroHelper
             if (Str::startsWith($perk->key, 'combat_')) {
                 $perkValue = (float)$perk->value;
                 $stat = Str::replaceFirst('combat_', '', $perk->key);
-                $perkStrings[] = sprintf("%+g %s", $perkValue, ucwords($stat));
+                $perkStrings[] = sprintf('%+g %s', $perkValue, ucwords($stat));
             }
         }
 

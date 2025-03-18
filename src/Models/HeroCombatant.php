@@ -6,7 +6,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
 
 /**
  * OpenDominion\Models\HeroCombatant
- * 
+ *
  * @property int $id
  * @property int $hero_battle_id
  * @property int $hero_id

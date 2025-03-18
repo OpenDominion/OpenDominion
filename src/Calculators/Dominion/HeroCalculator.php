@@ -375,7 +375,7 @@ class HeroCalculator
             $counterBonus = $combatant->counter / 100;
             $damage *= (1 + $counterBonus);
         }
-    
+
         return round($damage);
     }
 

@@ -225,10 +225,13 @@ class HeroBattleService
         switch ($combatant->strategy) {
             case 'aggressive':
                 $options = collect(['attack' => 5, 'focus' => 3, 'counter' => 1, 'recover' => 1]);
+                break;
             case 'defensive':
                 $options = collect(['attack' => 3, 'defend' => 1, 'counter' => 1, 'recover' => 1]);
+                break;
             default:
                 $options = collect(['attack' => 4, 'defend' => 1, 'focus' => 1, 'counter' => 1, 'recover' => 1]);
+                break;
 
             if ($combatant->has_focus) {
                 $options->forget('focus');
@@ -268,14 +271,14 @@ class HeroBattleService
                     $damageEvaded = $damage;
                     $damage = 0;
                     $description = sprintf(
-                        "%s deals %s damage, but %s evades.",
+                        '%s deals %s damage, but %s evades.',
                         $combatant->name,
                         $damageEvaded,
                         $target->name
                     );
                 } else {
                     $description = sprintf(
-                        "%s deals %s damage.",
+                        '%s deals %s damage.',
                         $combatant->name,
                         $damage
                     );
@@ -290,7 +293,7 @@ class HeroBattleService
                 if ($target->current_action == 'attack') {
                     $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target, true);
                     $description = sprintf(
-                        "%s deals %s damage.",
+                        '%s deals %s damage.',
                         $combatant->name,
                         $damage
                     );
@@ -299,7 +302,7 @@ class HeroBattleService
             case 'recover':
                 $health = $this->heroCalculator->calculateCombatHeal($combatant);
                 $description = sprintf(
-                    "%s recovers %s health.",
+                    '%s recovers %s health.',
                     $combatant->name,
                     $health
                 );
