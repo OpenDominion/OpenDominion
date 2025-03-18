@@ -172,10 +172,10 @@ class HeroController extends AbstractDominionController
             $heroBattleService->checkTime($combatant->battle);
             $result = $heroActionService->queueAction(
                 $dominion,
-                $combatant,
+                $combatant->refresh(),
                 $action
             );
-            $turnProcessed = $heroBattleService->processTurn($combatant->battle->fresh());
+            $turnProcessed = $heroBattleService->processTurn($combatant->battle->refresh());
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

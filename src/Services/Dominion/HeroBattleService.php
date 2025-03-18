@@ -36,7 +36,8 @@ class HeroBattleService
         $this->heroHelper = $heroHelper;
     }
 
-    public const STARTING_TIME_BANK = 24 * 60 * 60;
+    // TODO: Set this back to 24 hours
+    public const STARTING_TIME_BANK = 12 * 60 * 60;
     public const DEFAULT_STRATEGY = 'balanced';
 
     public function createBattle(Dominion $challenger, Dominion $opponent): HeroBattle
@@ -123,7 +124,7 @@ class HeroBattleService
             ->get();
 
         foreach ($battles as $battle) {
-            $this->checkTime($heroBattle);
+            $this->checkTime($battle);
             $this->processTurn($battle);
         }
     }
@@ -223,26 +224,19 @@ class HeroBattleService
 
         switch ($combatant->strategy) {
             case 'aggressive':
-                $options = collect(['attack', 'focus', 'counter']);
-                if ($combatant->has_focus) {
-                    return 'attack';
-                }
-                return $this->randomAction($options, $combatant->last_action);
+                $options = collect(['attack' => 5, 'focus' => 3, 'counter' => 1, 'recover' => 1]);
             case 'defensive':
-                $options = collect(['attack', 'defend', 'recover']);
-                if ($combatant->health > ($combatant->current_health - $combatant->defense)) {
-                    $options->forget('recover');
-                }
-                return $this->randomAction($options, $combatant->last_action);
+                $options = collect(['attack' => 3, 'defend' => 1, 'counter' => 1, 'recover' => 1]);
             default:
-                $options = collect(['attack', 'defend', 'focus', 'counter', 'recover']);
-                if ($combatant->has_focus) {
-                    return 'attack';
-                }
-                if ($combatant->health > ($combatant->current_health - $combatant->defense)) {
-                    $options->forget('recover');
-                }
-                return $this->randomAction($options, $combatant->last_action);
+                $options = collect(['attack' => 4, 'defend' => 1, 'focus' => 1, 'counter' => 1, 'recover' => 1]);
+
+            if ($combatant->has_focus) {
+                $options->forget('focus');
+            }
+            if ($combatant->health > ($combatant->current_health - $combatant->defense)) {
+                $options->forget('recover');
+            }
+            return $this->randomAction($options, $combatant->last_action);
         }
     }
 
@@ -256,7 +250,7 @@ class HeroBattleService
             }
         }
 
-        return $options->random();
+        return random_choice_weighted($options->toArray());
     }
 
     private function processAction(HeroCombatant $combatant, HeroCombatant $target): array
