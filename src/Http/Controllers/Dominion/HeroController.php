@@ -123,8 +123,17 @@ class HeroController extends AbstractDominionController
             return redirect()->route('dominion.heroes');
         }
 
-        $activeBattles = $hero->battles()->active()->orderByDesc('created_at')->get();
-        $inactiveBattles = $hero->battles()->inactive()->orderByDesc('created_at')->get();
+        $activeBattles = $hero->battles()
+            ->with('combatants', 'winner', 'actions.combatant')
+            ->active()
+            ->orderByDesc('created_at')
+            ->get();
+        $inactiveBattles = $hero->battles()
+            ->with('combatants', 'winner', 'actions.combatant')
+            ->inactive()
+            ->orderByDesc('created_at')
+            ->get();
+
         if ($activeBattles->isEmpty() && $inactiveBattles->isNotEmpty()) {
             $activeBattles = collect([$inactiveBattles->first()]);
         }
@@ -233,7 +242,11 @@ class HeroController extends AbstractDominionController
     public function getTournaments()
     {
         $round_id = $this->getSelectedDominion()->round_id;
-        $tournaments = HeroTournament::where('round_id', $round_id)->orderByDesc('created_at')->get();
+        $tournaments = HeroTournament::query()
+            ->with('battles.combatants', 'battles.winner', 'participants.hero.dominion.realm')
+            ->where('round_id', $round_id)
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('pages.dominion.hero-tournaments', compact(
             'tournaments',
