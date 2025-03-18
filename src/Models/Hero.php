@@ -16,6 +16,7 @@ use OpenDominion\Services\NotificationService;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroBattle[] $battles
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Hero query()
@@ -28,6 +29,35 @@ class Hero extends AbstractModel
     public function dominion()
     {
         return $this->belongsTo(Dominion::class);
+    }
+
+    public function battles()
+    {
+        return $this->belongsToMany(HeroBattle::class, HeroCombatant::class);
+    }
+
+    public function combatants()
+    {
+        return $this->hasMany(HeroCombatant::class);
+    }
+
+    public function combatActionRequired(): int
+    {
+        $ongoingBattles = $this->combatants()
+            ->join('hero_battles', 'hero_battles.id', '=', 'hero_combatants.hero_battle_id')
+            ->where('hero_battles.finished', false)
+            ->where(function ($query) {
+                $query->where('automated', null)
+                    ->orWhere(function ($query) {
+                        $query->where('automated', false)
+                            ->where(function ($query) {
+                                $query->whereNull('actions')
+                                ->orWhere('actions', '[]');
+                            });
+                    });
+            });
+
+        return $ongoingBattles->count();
     }
 
     public function upgrades()

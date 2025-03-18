@@ -265,6 +265,30 @@ if (!function_exists('skewed_distribution')) {
     }
 }
 
+if (!function_exists('random_choice_weighted')) {
+    /**
+     * Returns a random weighted selection from an array.
+     *
+     * @param array $choices Array with string keys and integer values for weighting
+     * @return string
+     * @throws Exception
+     */
+    function random_choice_weighted(array $choices): string
+    {
+        $totalWeight = array_sum($choices);
+        $randomInt = random_int(0, $totalWeight);
+
+        foreach ($choices as $choice => $weight) {
+            $randomInt -= $weight;
+            if ($randomInt < 0) {
+                return $choice;
+            }
+        }
+
+        return $choice;
+    }
+}
+
 if (!function_exists('root_mean_square')) {
     /**
      * Returns the average of a list of elements weighed by squaring each value and rooting the result.
