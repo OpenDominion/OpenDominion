@@ -18,14 +18,10 @@ class HeroTournamentService
 
     /**
      * HeroTournamentService constructor.
-     *
-     * @param HeroBattleService $heroBattleService
      */
-    public function __construct(
-        HeroBattleService $heroBattleService,
-    )
+    public function __construct()
     {
-        $this->heroBattleService = $heroBattleService;
+        $this->heroBattleService = app(HeroBattleService::class);
     }
 
     protected const DEFAULT_NAME = 'The Grand Tournament';

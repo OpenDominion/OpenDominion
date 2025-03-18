@@ -23,17 +23,11 @@ class HeroBattleService
 
     /**
      * HeroBattleService constructor.
-     *
-     * @param HeroCalculator $heroCalculator
-     * @param HeroHelper $heroHelper
      */
-    public function __construct(
-        HeroCalculator $heroCalculator,
-        HeroHelper $heroHelper,
-    )
+    public function __construct()
     {
-        $this->heroCalculator = $heroCalculator;
-        $this->heroHelper = $heroHelper;
+        $this->heroCalculator = app(HeroCalculator::class);
+        $this->heroHelper = app(HeroHelper::class);
     }
 
     // TODO: Set this back to 24 hours
