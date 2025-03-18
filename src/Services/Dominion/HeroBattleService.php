@@ -88,6 +88,8 @@ class HeroBattleService
 
     public function createPracticeBattle(Dominion $dominion): void
     {
+        // TODO: Check isUnderProtection
+
         if ($dominion->hero == null) {
             throw GameException('You must have a hero to practice');
         }
@@ -96,18 +98,21 @@ class HeroBattleService
             throw GameException('You already have a battle in progress');
         }
 
-        $bot = $dominion->round->dominions()->where('user_id', null)->get()->random();
-        if ($bot !== null) {
-            $hero = $bot->hero;
-            if ($hero === null) {
-                $hero = $bot->heroes()->create([
-                    'name' => 'Punching Bag',
-                    'class' => 'alchemist',
-                ]);
-            }
-            $battle = $this->createBattle($dominion, $bot);
-            $battle->combatants()->where('hero_id', $hero->id)->update(['automated' => true]);
+        $bots = $dominion->round->dominions()->where('user_id', null)->get();
+        if ($bots->count() == 0) {
+            throw GameException('There are no bots to practice against');
         }
+
+        $bot = $bots->random();
+        $hero = $bot->hero;
+        if ($hero === null) {
+            $hero = $bot->heroes()->create([
+                'name' => 'Punching Bag',
+                'class' => 'alchemist',
+            ]);
+        }
+        $battle = $this->createBattle($dominion, $bot);
+        $battle->combatants()->where('hero_id', $hero->id)->update(['automated' => true]);
     }
 
     public function processBattles(Round $round): void
@@ -226,15 +231,15 @@ class HeroBattleService
             default:
                 $options = collect(['attack' => 4, 'defend' => 1, 'focus' => 1, 'counter' => 1, 'recover' => 1]);
                 break;
-
-            if ($combatant->has_focus) {
-                $options->forget('focus');
-            }
-            if ($combatant->health > ($combatant->current_health - $combatant->defense)) {
-                $options->forget('recover');
-            }
-            return $this->randomAction($options, $combatant->last_action);
         }
+
+        if ($combatant->has_focus) {
+            $options->forget('focus');
+        }
+        if ($combatant->health > ($combatant->current_health - $combatant->defense)) {
+            $options->forget('recover');
+        }
+        return $this->randomAction($options, $combatant->last_action);
     }
 
     private function randomAction(Collection $options, ?string $last_action): string
