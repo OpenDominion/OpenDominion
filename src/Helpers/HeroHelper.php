@@ -2,6 +2,9 @@
 
 namespace OpenDominion\Helpers;
 
+use Illuminate\Support\Str;
+use OpenDominion\Models\HeroBattleAction;
+use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroUpgrade;
 
 class HeroHelper
@@ -218,21 +221,105 @@ class HeroHelper
         return implode($separator, $perkStrings);
     }
 
-    public function getUpgradeIcon(int $level, ?HeroUpgrade $upgrade)
+    public function getCombatUpgradeDescription(HeroUpgrade $heroUpgrade, string $separator = ', '): string
     {
-        if ($upgrade === null) {
-            return sprintf(
-                '<i class="hero-icon ra ra-rw ra-padlock" title="Level %s: Locked" data-toggle="tooltip"></i>',
-                $level
-            );
+        $perkStrings = [];
+        foreach ($heroUpgrade->perks as $perk) {
+            if (Str::startsWith($perk->key, 'combat_')) {
+                $perkValue = (float)$perk->value;
+                $stat = Str::replaceFirst('combat_', '', $perk->key);
+                $perkStrings[] = sprintf('%+g %s', $perkValue, ucwords($stat));
+            }
         }
 
+        return implode($separator, $perkStrings);
+    }
+
+    public function getCombatActions(): array
+    {
+        return [
+            'attack',
+            'defend',
+            'focus',
+            'counter',
+            'recover'
+        ];
+    }
+
+    public function getLimitedCombatActions(): array
+    {
+        return [
+            'focus',
+            'counter',
+            'recover'
+        ];
+    }
+
+    public function getCombatStatTooltip(string $stat): string
+    {
+        $combatStats = [
+            'health' => 'Current and maximum health',
+            'attack' => 'Raw attack damage, reduced by defense of opponent',
+            'defense' => 'Mitigate incoming attack damage by this amount, doubled while defending',
+            'evasion' => 'Chance to evade an attack is equal to this percentage',
+            'focus' => 'Focus attack damage is increased by this percentage',
+            'counter' => 'Counter attack damage is increased by this percentage',
+            'recover' => 'Heal damage equal to your defense',
+        ];
+
+        return $combatStats[$stat];
+    }
+
+    public function getCombatStrategies(): array
+    {
+        return [
+            'balanced',
+            'aggressive',
+            'defensive',
+        ];
+    }
+
+    public function canUseCombatAction(HeroCombatant $combatant, string $action): bool
+    {
+        $limitedActions = $this->getLimitedCombatActions();
+
+        $queue = $combatant->actions ?? [];
+        if (count($queue) > 0) {
+            $lastAction = end($queue);
+        } else {
+            $lastAction = $combatant->last_action;
+        }
+
+        if ($action == 'focus') {
+            if ($combatant->has_focus && count($queue) == 0) {
+                return false;
+            }
+            // TODO: check for double focus without attack in between
+        }
+
+        if (in_array($action, $limitedActions) && $action == $lastAction) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getUpgradeIcon(HeroUpgrade $upgrade)
+    {
         return sprintf(
             '<i class="hero-icon ra ra-fw %s" title="Level %s: %s<br>(%s)" data-toggle="tooltip"></i>',
             $upgrade->icon,
-            $level,
+            $upgrade->level,
             $upgrade->name,
             ucwords($upgrade->type)
+        );
+    }
+
+    public function getLockIcon(int $level)
+    {
+        return sprintf(
+            '<i class="hero-icon ra ra-rw ra-padlock" title="Level %s: Locked" data-toggle="tooltip"></i>',
+            $level
         );
     }
 
