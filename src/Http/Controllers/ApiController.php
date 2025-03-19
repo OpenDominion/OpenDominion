@@ -48,14 +48,24 @@ class ApiController extends Controller
             $data = $request->json()->all();
 
             $message = sprintf(
-                '<a href="%s">Error in %s version %s</a>\n%s\n%s: %s',
-                $data['error']['url'],
+                '[Error in %s version %s](%s)',
                 $data['error']['app']['releaseStage'],
                 $data['error']['app']['version'],
+                $data['error']['url'],
                 $data['error']['requestUrl'],
-                $data['error']['exceptionClass'],
-                $data['error']['message']
             );
+
+            $embed = [
+                "title" => $data['error']['exceptionClass'],
+                "description" => $data['error']['message'],
+                "color" => 15548997,
+                "fields" => [
+                    [
+                        "name" => "Page URL",
+                        "value" => $data['error']['requestUrl']
+                    ]
+                ]
+            ];
         } catch (\Throwable $e) {
             return ['error' => $e->getMessage()];
         }
@@ -63,8 +73,9 @@ class ApiController extends Controller
         $webhook = config('app.discord_bugsnag_webhook');
         if ($webhook) {
             $client = new Client();
-            $response = $client->post($webhook, ['form_params' => [
-                'content' => $message
+            $response = $client->post($webhook, ['json' => [
+                'content' => $message,
+                'embeds' => [$embed],
             ]]);
         }
         if (!$webhook || $response->getStatusCode() != 204) {
