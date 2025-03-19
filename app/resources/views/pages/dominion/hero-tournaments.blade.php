@@ -38,7 +38,7 @@
                                     <th>Record</th>
                                 </tr>
                             </thead>
-                            @foreach ($tournament->participants->sortBy([['standing', 'asc'], ['wins', 'desc'], ['losses', 'asc']]) as $participant)
+                            @foreach ($tournament->participants->sortBy([['standing', 'asc'], ['wins', 'desc'], ['losses', 'asc'], ['draws', 'desc']]) as $participant)
                                 <tr>
                                     <td>
                                         {{ $participant->standing ? $participant->standing : '--' }}
@@ -69,7 +69,7 @@
                                     <th>Winner</th>
                                 </tr>
                             </thead>
-                            @foreach ($tournament->battles->sortBy([['pivot.round_number', 'desc'], ['winner', 'desc']]) as $battle)
+                            @foreach ($tournament->battles->sortBy([['pivot.round_number', 'desc'], ['finished', 'desc'], ['winner', 'desc']]) as $battle)
                                 <tr>
                                     <td>{{ $battle->pivot->round_number }}</td>
                                     <td>{{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}</td>
