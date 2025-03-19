@@ -38,7 +38,7 @@
                                     <th>Record</th>
                                 </tr>
                             </thead>
-                            @foreach ($tournament->participants->sortByDesc('wins')->sortBy('standing') as $participant)
+                            @foreach ($tournament->participants->sortBy([['standing', 'asc'], ['wins', 'desc'], ['losses', 'asc']]) as $participant)
                                 <tr>
                                     <td>
                                         {{ $participant->standing ? $participant->standing : '--' }}
@@ -69,14 +69,20 @@
                                     <th>Winner</th>
                                 </tr>
                             </thead>
-                            @foreach ($tournament->battles->sortBy('created_at')->groupBy('pivot.round_number')->sortDesc() as $roundNumber => $battles)
-                                @foreach ($battles as $battle)
-                                    <tr>
-                                        <td>{{ $roundNumber }}</td>
-                                        <td>{{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}</td>
-                                        <td>{{ $battle->winner ? $battle->winner->name : '--' }}</td>
-                                    </tr>
-                                @endforeach
+                            @foreach ($tournament->battles->sortBy([['pivot.round_number', 'desc'], ['winner', 'desc']]) as $battle)
+                                <tr>
+                                    <td>{{ $battle->pivot->round_number }}</td>
+                                    <td>{{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}</td>
+                                    <td>
+                                        @if ($battle->winner)
+                                            {{ $battle->winner->name }}
+                                        @elseif ($battle->finished)
+                                            <span class="text-muted">Draw</span>
+                                        @else
+                                            --
+                                        @endif
+                                    </td>
+                                </tr>
                             @endforeach
                         </table>
                     </div>
