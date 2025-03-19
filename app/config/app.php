@@ -245,6 +245,7 @@ return [
     'discord_invite_link' => env('DISCORD_INVITE_LINK'),
     'patreon_pledge_link' => env('PATREON_PLEDGE_LINK'),
     'kofi_support_id' => env('KOFI_SUPPORT_ID'),
+    'discord_bugsnag_webhook' => env('DISCORD_BUGSNAG_WEBHOOK'),
     'discord_report_webhook' => env('DISCORD_REPORT_WEBHOOK'),
     'discord_stats_webhook' => env('DISCORD_STATS_WEBHOOK'),
     'discord_client_id' => env('DISCORD_CLIENT_ID'),

@@ -328,12 +328,6 @@ $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], static function (R
 
 });
 
-// Donate
-
-// Contact
-
-// Links
-
 // Staff
 
 $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator'], 'prefix' => 'staff', 'as' => 'staff.'], static function (Router $router) {
@@ -342,7 +336,6 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
     $router->get('/audit')->uses('Staff\StaffController@getAudit')->name('audit');
 
     // Administrator
-
     $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], static function (Router $router) {
 
         // Anti-Cheat
@@ -356,16 +349,6 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 
     });
 
-    // Developer
-
-//    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
-//
-//        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
-//
-//        // parse laravel error logs
-//
-//    });
-
     // Moderator
     $router->group(['middleware' => 'role:Administrator|Moderator', 'prefix' => 'moderator', 'as' => 'moderator.'], static function (Router $router) {
 
@@ -377,9 +360,4 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 
     });
 
-    // todo
-    // view flagged posts
-
 });
-
-// Misc
