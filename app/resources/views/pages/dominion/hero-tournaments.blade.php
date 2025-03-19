@@ -41,7 +41,7 @@
                             @foreach ($tournament->participants->sortByDesc('wins')->sortBy('standing') as $participant)
                                 <tr>
                                     <td>
-                                        {{ $participant->standing }}
+                                        {{ $participant->standing ? $participant->standing : '--' }}
                                     </td>
                                     <td>
                                         {{ $participant->hero->dominion->name }} (#{{ $participant->hero->dominion->realm->number }})
