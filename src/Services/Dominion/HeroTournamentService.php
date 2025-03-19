@@ -34,7 +34,7 @@ class HeroTournamentService
             'current_round_number' => 1,
         ]);
 
-        foreach ($round->activeDominions as $dominion) {
+        foreach ($round->activeDominion()->human()->get() as $dominion) {
             if ($dominion->hero !== null) {
                 HeroTournamentParticipant::create([
                     'hero_id' => $dominion->hero->id,

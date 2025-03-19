@@ -197,7 +197,7 @@ class TickService
                 }
             }
             // Generate NPD instructions
-            $npds = $round->dominions()->where('user_id', null)->get();
+            $npds = $round->dominions()->bot()->get();
             foreach ($npds as $npd) {
                 $npd->ai_enabled = true;
                 $npd->ai_config = $aiHelper->generateConfig($npd->race);

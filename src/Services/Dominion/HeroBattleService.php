@@ -98,7 +98,7 @@ class HeroBattleService
             throw GameException('You already have a battle in progress');
         }
 
-        $bots = $dominion->round->dominions()->where('user_id', null)->get();
+        $bots = $dominion->round->dominions()->bot()->get();
         if ($bots->count() == 0) {
             throw GameException('There are no bots to practice against');
         }

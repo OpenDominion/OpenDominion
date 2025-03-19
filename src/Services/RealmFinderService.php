@@ -160,7 +160,7 @@ class RealmFinderService
 
         // Fetch all registered dominions
         $registeredDominions = $round->activeDominions()
-            ->where('user_id', '!=', null)
+            ->human()
             ->where('realms.number', 0)
             ->get();
 

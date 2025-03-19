@@ -353,6 +353,16 @@ class Dominion extends AbstractModel
         });
     }
 
+    public function scopeBot(Builder $query): Builder
+    {
+        return $query->where('user_id', null);
+    }
+
+    public function scopeHuman(Builder $query): Builder
+    {
+        return $query->where('user_id', '!=', null);
+    }
+
     // Methods
 
     // todo: move to eloquent events, see $dispatchesEvents

@@ -40,7 +40,7 @@ class ValorCalculator
         ];
 
         $dominions = $round->activeDominions()
-            ->where('user_id', '!=', null)
+            ->human()
             ->where('protection_ticks_remaining', 0)
             ->get();
         $fixedValor = $this->calculateFixedValor($round, $dominions);
