@@ -120,7 +120,7 @@
                                                         </label>
                                                         <select name="strategy" class="form-control">
                                                             @foreach ($heroHelper->getCombatStrategies() as $strategy)
-                                                                <option value="{{ $strategy }}" {{ $action == $playerCombatant->strategy ? 'selected' : null }}>{{ ucwords($strategy) }}</option>
+                                                                <option value="{{ $strategy }}" {{ $strategy == $playerCombatant->strategy ? 'selected' : null }}>{{ ucwords($strategy) }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
