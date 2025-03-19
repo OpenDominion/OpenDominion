@@ -92,10 +92,10 @@
                 <div class="box-body">
                     Each turn you can choose from one of the five following actions:<br/>
                     <ul>
-                        <li>Attack: deals damage equal to your attack minus the opponent's defense (mitigated damage)</li>
+                        <li>Attack: deals damage equal to your attack minus the opponent's defense</li>
                         <li>Defend: doubles your defense if attacked this turn</li>
                         <li>Focus: increases your attack value by 25% for your next attack action</li>
-                        <li>Counter: if attacked, counter attacks for 150% mitigated damage</li>
+                        <li>Counter: if attacked, counter attacks for 150% of what your normal attack would deal after defense</li>
                         <li>Recover: heals damage equal to your defense, but cannot evade this turn</li>
                     </ul>
                     <p>Additionally, each combatant has a chance to evade incoming attack actions, preventing all damage.</p>
