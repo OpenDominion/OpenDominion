@@ -56,13 +56,13 @@ class ApiController extends Controller
             );
 
             $embed = [
-                "title" => $data['error']['exceptionClass'],
-                "description" => $data['error']['message'],
-                "color" => 15548997,
-                "fields" => [
+                'title' => $data['error']['exceptionClass'],
+                'description' => $data['error']['message'],
+                'color' => 15548997,
+                'fields' => [
                     [
-                        "name" => "Page URL",
-                        "value" => $data['error']['requestUrl']
+                        'name' => 'Page URL',
+                        'value' => $data['error']['requestUrl']
                     ]
                 ]
             ];
