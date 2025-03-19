@@ -100,11 +100,15 @@
                                                         </label>
                                                         <div>
                                                             @foreach ($heroHelper->getCombatActions() as $action)
-                                                                <a class="btn btn-block btn-primary"
-                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'action'=>$action]) }}"
-                                                                    {{ !$heroHelper->canUseCombatAction($playerCombatant, $action) || $playerCombatant->time_bank <= 0 ? 'disabled' : null }}>
-                                                                    {{ ucwords($action) }}
-                                                                </a>
+                                                                @if (!$heroHelper->canUseCombatAction($playerCombatant, $action) || $playerCombatant->time_bank <= 0)
+                                                                    <a class="btn btn-block btn-default" disabled>
+                                                                        {{ ucwords($action) }}
+                                                                    </a>
+                                                                @else
+                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'action'=>$action]) }}">
+                                                                        {{ ucwords($action) }}
+                                                                    </a>
+                                                                @endif
                                                             @endforeach
                                                         </div>
                                                     </div>

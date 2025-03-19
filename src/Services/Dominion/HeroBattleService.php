@@ -109,6 +109,7 @@ class HeroBattleService
             $hero = $bot->heroes()->create([
                 'name' => 'Punching Bag',
                 'class' => 'alchemist',
+                'experience' => $dominion->hero->experience,
             ]);
         }
         $battle = $this->createBattle($dominion, $bot);
@@ -236,8 +237,10 @@ class HeroBattleService
         if ($combatant->has_focus) {
             $options->forget('focus');
         }
-        if ($combatant->health > ($combatant->current_health - $combatant->defense)) {
-            $options->forget('recover');
+        if ($combatant->health < ($combatant->current_health + $combatant->defense)) {
+        } elseif ($combatant->current_health < 20 && isset($options['recover'])) {
+            $options->forget('focus');
+            $options['recover'] = $options['attack'] * 2;
         }
         return $this->randomAction($options, $combatant->last_action);
     }
