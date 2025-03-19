@@ -131,7 +131,7 @@ class EspionageHelper
                 'name' => 'Assassinate Draftees',
                 'description' => 'Kills 3.5% untrained draftees',
                 'key' => 'assassinate_draftees',
-                'decreases' => ['military_draftees'],
+                'attrs' => ['military_draftees'],
                 'percentage' => 3.5,
             ],
         ]);
