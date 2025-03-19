@@ -673,7 +673,7 @@ class SpellActionService
         $spellReflected = false;
         if ($criticalFailure) {
             $target = $dominion;
-            $dominion->chaos -= $opsCalculator->getChaosChange($dominion, false);
+            $dominion->chaos -= $this->opsCalculator->getChaosChange($dominion, false);
         } else {
             $spellReflect = $target->getSpellPerkValue('spell_reflect');
             if ($spellReflect) {
