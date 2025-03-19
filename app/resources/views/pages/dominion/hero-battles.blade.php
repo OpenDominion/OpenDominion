@@ -189,7 +189,7 @@
                                         <td>
                                             @if ($battle->winner !== null && $battle->winner->hero_id == $hero->id)
                                                 Win
-                                            @elseif ($battle->winner_id == null)
+                                            @elseif ($battle->winner == null)
                                                 Draw
                                             @else
                                                 Loss
