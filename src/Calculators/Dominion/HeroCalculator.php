@@ -360,7 +360,7 @@ class HeroCalculator
         $baseDamage = $combatant->attack;
         $baseDefense = $target->defense;
 
-        if ($combatant->has_focus) {
+        if (!$counterAttack && $combatant->has_focus) {
             $focusBonus = $combatant->focus / 100;
             $baseDamage *= (1 + $focusBonus);
         }
