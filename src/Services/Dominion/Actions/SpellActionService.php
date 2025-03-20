@@ -867,7 +867,7 @@ class SpellActionService
                     if (!$criticalFailure && random_chance(0.25)) {
                         $criticalSuccess = true;
                         $damageMultiplier += 0.5;
-                        $dominion->chaos += $opsCalculator->getChaosChange($dominion, true);
+                        $dominion->chaos += $this->opsCalculator->getChaosChange($dominion, true);
                     }
                 }
                 $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
