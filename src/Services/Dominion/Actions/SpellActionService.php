@@ -674,6 +674,9 @@ class SpellActionService
         if ($criticalFailure) {
             $target = $dominion;
             $dominion->chaos -= $this->opsCalculator->getChaosChange($dominion, false);
+            if ($dominion->chaos < 0) {
+                $dominion->chaos = 0;
+            }
         } else {
             $spellReflect = $target->getSpellPerkValue('spell_reflect');
             if ($spellReflect) {
