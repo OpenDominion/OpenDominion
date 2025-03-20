@@ -195,7 +195,11 @@
                                                 Loss
                                             @endif
                                         </td>
-                                        <td>{{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}</td>
+                                        <td>
+                                            <a href="{{ route('dominion.heroes.battles.report', ['battle'=>$battle->id]) }}">
+                                                {{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}
+                                            </a>
+                                        </td>
                                         <td>{{ $battle->winner ? $battle->winner->name : '--' }}</td>
                                         <td>{{ $battle->created_at }}</td>
                                     </tr>

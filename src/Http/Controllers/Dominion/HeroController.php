@@ -8,6 +8,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
+use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroTournament;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
@@ -144,6 +145,27 @@ class HeroController extends AbstractDominionController
             'heroCalculator',
             'heroHelper',
             'hero',
+        ));
+    }
+
+    public function getBattleReport(HeroBattle $battle)
+    {
+        $heroCalculator = app(HeroCalculator::class);
+        $heroHelper = app(HeroHelper::class);
+
+        $hero = $this->getSelectedDominion()->hero;
+        if ($hero === null) {
+            return redirect()->route('dominion.heroes');
+        }
+
+        if (!$battle->combatants->pluck('hero_id')->contains($hero->id)) {
+            return redirect()->route('dominion.heroes.battles');
+        }
+
+        return view('pages.dominion.hero-battle-report', compact(
+            'battle',
+            'heroCalculator',
+            'heroHelper',
         ));
     }
 
