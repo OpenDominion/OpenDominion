@@ -59,8 +59,7 @@ class HeroTournamentService
         foreach ($participants->chunk(2) as $pairing) {
             $participants = $pairing->values();
             if ($participants->count() == 1) {
-                // Bye counts as a draw
-                $participants[0]->increment('draws');
+                // Participant gets a bye
                 continue;
             }
             $heroBattle = $this->heroBattleService->createBattle($participants[0]->hero->dominion, $participants[1]->hero->dominion);
@@ -100,8 +99,9 @@ class HeroTournamentService
 
     public function processEliminations(HeroTournament $tournament): void
     {
-        foreach ($tournament->participants()->get() as $participant) {
-            if (!$participant->eliminated && $participant->losses >= 2) {
+        foreach ($tournament->participants()->where('eliminated', false) as $participant) {
+            $losses = $participant->losses + rfloor($participant->draws / 2);
+            if ($losses >= 2) {
                 $participant->eliminated = true;
                 $participant->save();
             }
