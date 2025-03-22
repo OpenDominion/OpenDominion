@@ -31,9 +31,10 @@ class BlackGuardController extends AbstractDominionController
         $guardMembershipService = app(GuardMembershipService::class);
 
         return view('pages.dominion.black-guard', [
-            'governmentService' => app(GovernmentService::class),
+            'canJoinGuards' => $guardMembershipService->canJoinGuards($dominion),
             'espionageCalculator' => app(EspionageCalculator::class),
             'espionageHelper' => app(EspionageHelper::class),
+            'governmentService' => app(GovernmentService::class),
             'guardMembershipService' => $guardMembershipService,
             'hoursBeforeBlackGuardMember' => $guardMembershipService->getHoursBeforeBlackGuardMember($dominion),
             'hoursBeforeLeaveBlackGuard' => $guardMembershipService->getHoursBeforeLeaveBlackGuard($dominion),
