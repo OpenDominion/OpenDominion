@@ -99,7 +99,7 @@ class HeroTournamentService
 
     public function processEliminations(HeroTournament $tournament): void
     {
-        foreach ($tournament->participants()->where('eliminated', false) as $participant) {
+        foreach ($tournament->participants()->where('eliminated', false)->get() as $participant) {
             $losses = $participant->losses + rfloor($participant->draws / 2);
             if ($losses >= 2) {
                 $participant->eliminated = true;
