@@ -668,6 +668,7 @@ class ValhallaController extends AbstractController
     protected function getHeroesByStatistic(Round $round, string $stat)
     {
         $builder = $round->dominions()
+            ->human()
             ->with(['hero']);
 
         return $builder->get()
