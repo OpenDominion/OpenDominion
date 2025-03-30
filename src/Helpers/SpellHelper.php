@@ -267,7 +267,7 @@ class SpellHelper
     {
         switch ($spell->key) {
             case 'fireball':
-                return 'Kills 6% unprotected peasants';
+                return 'Kills 7.5% unprotected peasants';
             case 'lightning_bolt':
                 return 'Temporarily destroys 0.3% science, keep, forges, walls';
             case 'disband_spies':

@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-## [1.44.1] - 2025-03-29
+## [1.44.1] - 2025-03-30
 ### Added
 - Hero Battles
   - Engage in combat against other heroes
@@ -47,7 +47,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wood Elf reworked
 - The Shadow League is now the Chaos League, new perks added
   - War spells used between members are now Chaos spells
-    - Chaos Fireball - kills 6% of unprotected peasants
+    - Chaos Fireball - kills 7.5% of unprotected peasants
     - Chaos Lightning - destroys 0.3% improvements for 12 hours
     - Chaos Disband - turns 2% of enemy spies into random resources for yourself
     - Chaos spells have a 25% chance for critical success, dealing 50% more damage, but increasing chance of critical failure
@@ -2386,7 +2386,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.44.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.44.1...HEAD
+[1.44.1]: https://github.com/OpenDominion/OpenDominion/compare/1.44.0...1.44.1
 [1.44.0]: https://github.com/OpenDominion/OpenDominion/compare/1.43.2...1.44.0
 [1.43.2]: https://github.com/OpenDominion/OpenDominion/compare/1.43.1...1.43.2
 [1.43.1]: https://github.com/OpenDominion/OpenDominion/compare/1.43.0...1.43.1

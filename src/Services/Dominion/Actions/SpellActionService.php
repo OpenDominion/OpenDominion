@@ -860,7 +860,7 @@ class SpellActionService
                     // Chaos Fireball
                     if ($spell->key == 'fireball') {
                         if ($attr == 'peasants') {
-                            $baseDamage = 0.06;
+                            $baseDamage = 0.075;
                         }
                         if ($attr == 'resource_food') {
                             $baseDamage = 0;
