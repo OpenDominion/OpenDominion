@@ -854,7 +854,7 @@ class MilitaryCalculator
                 ($dominion->calc !== null && !isset($dominion->calc['invasion']) && isset($dominion->calc['infernal_command']))
             )
         ) {
-            $pairingPerkData = [4, 1, 1];
+            $pairingPerkData = [4, 1, 0.75];
         }
 
         if (!$pairingPerkData) {
