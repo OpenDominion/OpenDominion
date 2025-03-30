@@ -863,7 +863,7 @@ class MilitaryCalculator
 
         $unitSlot = (int)$pairingPerkData[0];
         $numRequired = (int)$pairingPerkData[1];
-        $amount = (int)$pairingPerkData[2];
+        $amount = (float)$pairingPerkData[2];
 
         $powerFromPerk = 0;
         $numberPaired = 0;

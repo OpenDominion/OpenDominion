@@ -141,7 +141,7 @@ class SpellHelper
             'cancels_immortal' => 'Military units lose all casualty reductions (including immortality)',
             'conversion_rate' => '%+g%% conversion rate',
             'conversions_range' => 'Conversions increased by %d%% against dominions in The Graveyard under 75%% of your size',
-            'convert_vampires' => 'Bloodreavers convert additional Kindred equal to %g%% of units sent',
+            'convert_vampires' => 'Bloodreavers convert additional Kindred equal to %g%% of units sent (8.5%% below 75%% of your size)',
             'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
             'kills_immortal' => 'Can kill immortal units',
             'ignore_draftees' => 'Enemy draftees do not participate in battle',

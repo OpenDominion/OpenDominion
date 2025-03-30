@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.44.1] - 2025-03-29
+### Added
+- Hero Battles
+  - Engage in combat against other heroes
+  - Level up and unlock bonuses from upgrades
+
+### Changed
+- Demon: Infernal Command changed to +0.75 OP per Imp (from +0.5), homeland changed to cavern (from swamp)
+- Demon Abyssal Fiend: changed to +1 DP for every 10% swamps (from 10% towers)
+- Icekin Ice Elemental: +20p (from 1120p)
+- Lycanthrope: Feral Hunger now converts one for every 16 sent (from 15)
+- Lycanthrope Garou: now converts one for every 22 sent (from 21)
+- Vampire: Feast of Blood now converts only 8.5% when attacking below 75% (from 10% regardless of range)
+
 ## [1.44.0] - 2025-03-08
 ### Added
 - New Hero Upgrades
@@ -14,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Staff of the Stormcaller (item): +20% cyclone damage (Level 6)
 - Divination: moved to Level 4, increased to -10% cost of info spells (from -5%)
 - Abjuration and Evocation: moved to Level 6
+- Added new race: Demon
 
 ### Changed
 - Conversions formula changed to a flat [UnitsSent/UnitPerk] when attacking 75%+ (was [UnitsSent/UnitPerk x LandRatio^2]) and [1.25x LandRatio^2] when attacking below 75% (was [1x LandRatio^2])
@@ -28,6 +43,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit Spectre: defense reduced to 0 (from 1)
 - Sylvan Sprite: +0.5 DP (from 2.5), +50p (from 250p)
 - Vampire Bloodreaver: now converts one for every 28 sent (from up to one per 20)
+- Wood Elf reworked
 - The Shadow League is now the Chaos League, new perks added
   - War spells used between members are now Chaos spells
     - Chaos Fireball - kills 6% of unprotected peasants

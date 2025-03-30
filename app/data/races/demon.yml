@@ -7,11 +7,11 @@ description: >-
 attacker_difficulty: 2
 explorer_difficulty: 1
 converter_difficulty: 2
-home_land_type: swamp
+home_land_type: cavern
 perks:
   offense: 5
 units:
-  - name: Imp
+  - name: Infernal Imp
     cost:
       platinum: 260
       mana: 20
@@ -36,7 +36,7 @@ units:
       offense: 0
       defense: 5
     perks:
-      defense_from_building: tower,10,1 # land type, ratio%, max
+      defense_from_land: swamp,10,1 # land type, ratio%, max
   - name: Archdemon
     cost:
       platinum: 860

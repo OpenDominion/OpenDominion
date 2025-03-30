@@ -1000,6 +1000,10 @@ class InvadeActionService
                 $unitCount = round($unitsNeededToBreakTarget * $slotTotalAmountPercentage);
 
                 $conversionRate = $dominion->getSpellPerkMultiplier('convert_vampires');
+                if ($landRatio < 0.75) {
+                    // Penalty for bottom feeding
+                    $conversionRate = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
+                }
                 $convertedUnits[$unitSlotTo] += rfloor($unitCount * $conversionRate);
             }
         }
