@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Level up and unlock bonuses from upgrades
 
 ### Changed
+- Dark Elf Swordsman: -10p (from 460p)
 - Demon: Infernal Command changed to +0.75 OP per Imp (from +0.5), homeland changed to cavern (from swamp)
 - Demon Abyssal Fiend: changed to +1 DP for every 10% swamps (from 10% towers)
 - Icekin Ice Elemental: +20p (from 1120p)
