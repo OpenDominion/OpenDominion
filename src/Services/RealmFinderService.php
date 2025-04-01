@@ -365,16 +365,16 @@ class RealmFinderService
             $round->update(['assignment_complete' => true]);
         }
 
-        // Send Notifications
-        $this->realmAssignmentNotifications($round);
+        // Send Realm Assignment Notifications
+        $this->sendNotifications($round);
     }
 
     /**
-     * Send notifications to all registered dominions after assignment
+     * Send realm assignment notifications to all registered dominions
      *
      * @param Round $round
      */
-    protected function realmAssignmentNotifications(Round $round)
+    public function sendNotifications(Round $round)
     {
         $notificationService = app(NotificationService::class);
         foreach ($round->realms()->get() as $realm) {
