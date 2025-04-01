@@ -172,6 +172,8 @@
                                     @if ($dominion->ruler_name !== $dominion->user->display_name)
                                         ({{ $dominion->user->display_name }})
                                     @endif
+
+                                    - {{ $dominion->race->name }}
                                 </li>
                             @endforeach
                         </ul>
