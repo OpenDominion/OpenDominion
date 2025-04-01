@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $pack_size
  * @property int $players_per_race
  * @property bool $mixed_alignment
+ * @property bool $assignment_complete
  * @property int $tech_version
  * @property int $valor
  * @property int|null $discord_guild_id
@@ -168,6 +169,16 @@ class Round extends AbstractModel
     }
 
     /**
+     * Returns the graveyard realm for the round.
+     *
+     * @return Realm|null
+     */
+    public function graveyard()
+    {
+        return $this->realms()->where('number', 0)->first();
+    }
+
+    /**
      * Returns the scheduled realm assignment date.
      *
      * @return bool
@@ -246,7 +257,7 @@ class Round extends AbstractModel
      */
     public function hasAssignedRealms()
     {
-        return ($this->realmAssignmentDate() <= now());
+        return ($this->realmAssignmentDate() <= now()) && $this->assignment_complete;
     }
 
     /**

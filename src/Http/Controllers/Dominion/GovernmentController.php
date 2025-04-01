@@ -24,7 +24,7 @@ class GovernmentController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $guardMembershipService = app(GuardMembershipService::class);
 
-        if ($dominion->round->realmAssignmentDate()->addMinutes(5) > now()) {
+        if (!$dominion->round->hasAssignedRealms()) {
             $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
             return redirect()->back();
         }

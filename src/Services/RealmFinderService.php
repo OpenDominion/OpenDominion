@@ -354,7 +354,31 @@ class RealmFinderService
                     $dominion->pack->realm_id = $realm->id;
                     $dominion->pack->save();
                 }
-                // Notifications
+            }
+            $realm->rating = $this->calculateRating($realmies['players']);
+            $realm->save();
+        }
+
+        // Unlock realm pages
+        $graveyard = $round->graveyard();
+        if ($graveyard !== null && $graveyard->dominions()->count() == 0) {
+            $round->update(['assignment_complete' => true]);
+        }
+
+        // Send Notifications
+        $this->realmAssignmentNotifications($round);
+    }
+
+    /**
+     * Send notifications to all registered dominions after assignment
+     *
+     * @param Round $round
+     */
+    protected function realmAssignmentNotifications(Round $round)
+    {
+        $notificationService = app(NotificationService::class);
+        foreach ($round->realms()->get() as $realm) {
+            foreach ($realm->dominions()->get() as $dominion) {
                 $notificationService->queueNotification('realm_assignment', [
                     '_routeParams' => [$realm->number],
                     'realmNumber' => $realm->number,
@@ -362,8 +386,6 @@ class RealmFinderService
                 ]);
                 $notificationService->sendNotifications($dominion, 'irregular_dominion');
             }
-            $realm->rating = $this->calculateRating($realmies['players']);
-            $realm->save();
         }
     }
 }
