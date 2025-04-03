@@ -197,6 +197,14 @@
                                                         {{ sprintf('%s-%s-%s', $hero->stat_combat_wins, $hero->stat_combat_losses, $hero->stat_combat_draws) }}
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <td>
+                                                        <span title="PvP Rating" data-toggle="tooltip">Rating</span>
+                                                    </td>
+                                                    <td>
+                                                        {{ $hero->combat_rating }}
+                                                    </td>
+                                                </tr>
                                             </table>
                                         </div>
                                     </div>

@@ -10,6 +10,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
 use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroBattleAction;
+use OpenDominion\Models\HeroBattleQueue;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\Round;
 
@@ -46,7 +47,7 @@ class HeroBattleService
 
         $challengerHero = $challenger->heroes()->first();
         if ($challengerHero === null) {
-            throw new GameException('Challanger must have a hero to battle');
+            throw new GameException('Challenger must have a hero to battle');
         }
 
         $opponentHero = $opponent->heroes()->first();
@@ -55,13 +56,13 @@ class HeroBattleService
         }
 
         $heroBattle = HeroBattle::create(['round_id' => $challenger->round_id]);
-        $challengerCombatant = $this->createCombatant($challengerHero, $heroBattle);
-        $opponentCombatant = $this->createCombatant($opponentHero, $heroBattle);
+        $challengerCombatant = $this->createCombatant($heroBattle, $challengerHero);
+        $opponentCombatant = $this->createCombatant($heroBattle, $opponentHero);
 
         return $heroBattle;
     }
 
-    public function createCombatant(Hero $hero, HeroBattle $heroBattle): HeroCombatant
+    public function createCombatant(HeroBattle $heroBattle, Hero $hero): HeroCombatant
     {
         $combatStats = $this->heroCalculator->getHeroCombatStats($hero);
 
@@ -78,42 +79,96 @@ class HeroBattleService
             'counter' => $combatStats['counter'],
             'recover' => 0, // $combatStats['recover'],
             'current_health' => $combatStats['health'],
-            'has_focus' => false,
-            'last_action' => null,
             'time_bank' => self::STARTING_TIME_BANK,
-            'actions' => null,
             'strategy' => self::DEFAULT_STRATEGY
         ]);
     }
 
-    public function createPracticeBattle(Dominion $dominion): void
+    public function createPracticeBattle(Dominion $dominion): HeroBattle
     {
         // TODO: Check isUnderProtection
 
         if ($dominion->hero == null) {
-            throw GameException('You must have a hero to practice');
+            throw new GameException('You must have a hero to practice');
         }
 
         if ($dominion->hero->battles->where('finished', false)->count() > 0) {
-            throw GameException('You already have a battle in progress');
+            throw new GameException('You already have a battle in progress');
         }
 
-        $bots = $dominion->round->dominions()->bot()->get();
-        if ($bots->count() == 0) {
-            throw GameException('There are no bots to practice against');
+        $heroBattle = HeroBattle::create(['round_id' => $dominion->round_id, 'pvp' => false]);
+        $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
+        $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
+        $nonPlayerStats['name'] = 'Evil Twin';
+        $practiceCombatant = $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
+
+        return $heroBattle;
+    }
+
+    public function createNonPlayerCombatant(HeroBattle $heroBattle, array $combatStats): HeroCombatant
+    {
+        return HeroCombatant::create([
+            'hero_battle_id' => $heroBattle->id,
+            'hero_id' => null,
+            'dominion_id' => null,
+            'name' => 'Evil Twin',
+            'health' => $combatStats['health'],
+            'attack' => $combatStats['attack'],
+            'defense' => $combatStats['defense'],
+            'evasion' => $combatStats['evasion'],
+            'focus' => $combatStats['focus'],
+            'counter' => $combatStats['counter'],
+            'recover' => 0, // $combatStats['recover'],
+            'current_health' => $combatStats['health'],
+            'time_bank' => 0,
+            'automated' => true,
+            'strategy' => self::DEFAULT_STRATEGY
+        ]);
+    }
+
+    public function joinQueue(Dominion $dominion): ?HeroBattle
+    {
+        $this->clearQueue();
+
+        // TODO: Check isUnderProtection
+
+        if ($dominion->hero == null) {
+            throw new GameException('You must have a hero to queue for battles');
         }
 
-        $bot = $bots->random();
-        $hero = $bot->hero;
-        if ($hero === null) {
-            $hero = $bot->heroes()->create([
-                'name' => 'Punching Bag',
-                'class' => 'alchemist',
-                'experience' => $dominion->hero->experience,
+        if ($dominion->hero->isInQueue()) {
+            throw new GameException('You are already in the queue');
+        }
+
+        if ($dominion->hero->battles->where('finished', false)->count() > 0) {
+            throw new GameException('You already have a battle in progress');
+        }
+
+        $opponent = HeroBattleQueue::query()->first();
+        if ($opponent === null) {
+            HeroBattleQueue::create([
+                'hero_id' => $dominion->hero->id,
+                'level' => $this->heroCalculator->getHeroLevel($dominion->hero),
+                'rating' => $dominion->hero->combat_rating
             ]);
+            return null;
+        } else {
+            return $this->createBattle($dominion, $opponent->hero->dominion);
         }
-        $battle = $this->createBattle($dominion, $bot);
-        $battle->combatants()->where('hero_id', $hero->id)->update(['automated' => true]);
+    }
+
+    public function leaveQueue(Dominion $dominion): void
+    {
+        if ($dominion->hero == null) {
+            throw new GameException('You don\'t have a hero');
+        }
+
+        HeroBattleQueue::where('hero_id', $dominion->hero->id)->delete();
+    }
+
+    public function clearQueue(): void
+    {
+        HeroBattleQueue::where('created_at', '<', now()->subHours(1))->delete();
     }
 
     public function processBattles(Round $round): void
@@ -320,7 +375,7 @@ class HeroBattleService
         ];
     }
 
-    private function setWinner(HeroBattle $heroBattle, ?HeroCombatant $winner): void
+    protected function setWinner(HeroBattle $heroBattle, ?HeroCombatant $winner): void
     {
         $heroBattle->winner_combatant_id = $winner ? $winner->id : null;
         $heroBattle->finished = true;
@@ -334,21 +389,57 @@ class HeroBattleService
             }
 
             if ($winner == null) {
-                $combatant->hero->increment('stat_combat_draws');
+                if ($combatant->hero !== null && $heroBattle->pvp) {
+                    $combatant->hero->increment('stat_combat_draws');
+                }
                 if ($participant !== null) {
                     $participant->increment('draws');
                 }
             } elseif ($combatant->id == $winner->id) {
-                $combatant->hero->increment('stat_combat_wins');
+                if ($combatant->hero !== null && $heroBattle->pvp) {
+                    $combatant->hero->increment('stat_combat_wins');
+                }
                 if ($participant !== null) {
                     $participant->increment('wins');
                 }
             } else {
-                $combatant->hero->increment('stat_combat_losses');
+                if ($combatant->hero !== null && $heroBattle->pvp) {
+                    $combatant->hero->increment('stat_combat_losses');
+                }
                 if ($participant !== null) {
                     $participant->increment('losses');
                 }
             }
+        }
+
+        if ($heroBattle->pvp) {
+            $this->updateRatings($heroBattle);
+        }
+    }
+
+    protected function updateRatings(HeroBattle $heroBattle): void
+    {
+        $playerCount = $heroBattle->combatants->count();
+        $playerRatings = $heroBattle->combatants->map(function ($combatant) {
+            return [
+                'id' => $combatant->id,
+                'rating' => $combatant->hero->combat_rating
+            ];
+        })->keyBy('id');
+
+        foreach ($heroBattle->combatants as $combatant) {
+            $averageRating = $playerRatings->where('id', '!=', $combatant->id)->average('rating');
+            if ($heroBattle->winner_combatant_id == null) {
+                $result = 1 / $playerCount;
+            } elseif ($combatant->id == $heroBattle->winner_combatant_id) {
+                $result = 1;
+            } else {
+                $result = 0;
+            }
+            $currentRating = $playerRatings[$combatant->id]['rating'];
+            $newRating = $this->heroCalculator->calculateRatingChange($currentRating, $averageRating, $result);
+            $combatant->hero->combat_rating = $newRating;
+            $combatant->hero->save();
         }
     }
 }

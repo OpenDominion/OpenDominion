@@ -41,6 +41,11 @@ class Hero extends AbstractModel
         return $this->hasMany(HeroCombatant::class);
     }
 
+    public function queue()
+    {
+        return $this->hasMany(HeroBattleQueue::class);
+    }
+
     public function combatActionRequired(): int
     {
         $ongoingBattles = $this->combatants()
@@ -58,6 +63,11 @@ class Hero extends AbstractModel
             });
 
         return $ongoingBattles->count();
+    }
+
+    public function isInQueue(): bool
+    {
+        return $this->queue()->exists();
     }
 
     public function upgrades()

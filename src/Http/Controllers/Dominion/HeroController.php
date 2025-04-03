@@ -261,6 +261,46 @@ class HeroController extends AbstractDominionController
         return redirect()->route('dominion.heroes.battles');
     }
 
+    public function getJoinQueue(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $heroBattleService = app(HeroBattleService::class);
+
+        try {
+            $this->guardLockedDominion($dominion);
+            $result = $heroBattleService->joinQueue($dominion);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        if ($result === null) {
+            $request->session()->flash('alert-success', 'You have joined the queue.');
+        } else {
+            $request->session()->flash('alert-success', 'The battle begins!');
+        }
+        return redirect()->route('dominion.heroes.battles');
+    }
+
+    public function getLeaveQueue(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $heroBattleService = app(HeroBattleService::class);
+
+        try {
+            $this->guardLockedDominion($dominion);
+            $result = $heroBattleService->leaveQueue($dominion);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'You have left the queue.');
+        return redirect()->route('dominion.heroes.battles');
+    }
+
     public function getTournaments()
     {
         $round_id = $this->getSelectedDominion()->round_id;

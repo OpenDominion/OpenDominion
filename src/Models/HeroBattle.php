@@ -10,6 +10,7 @@ use \Illuminate\Database\Eloquent\Builder;
  * @property int $id
  * @property int $round_id
  * @property int $current_turn
+ * @property int $pvp
  * @property int|null $winner_combatant_id
  * @property bool $finished
  * @property \Illuminate\Support\Carbon|null $last_processed_at

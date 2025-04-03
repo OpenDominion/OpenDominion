@@ -391,4 +391,13 @@ class HeroCalculator
     {
         return $combatant->defense;
     }
+
+    public function calculateRatingChange(float $currentRating, float $opponentRating, float $result): int
+    {
+        $k = 32;
+        $expected = 1 / (1 + pow(10, ($opponentRating - $currentRating) / 480));
+        $newRating = $currentRating + $k * ($result - $expected);
+
+        return round($newRating);
+    }
 }

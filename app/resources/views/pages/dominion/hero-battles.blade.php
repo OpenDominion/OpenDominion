@@ -35,11 +35,7 @@
                                                             </th>
                                                         </tr>
                                                     </thead>
-                                                    @php
-                                                        $heroLevel = $heroCalculator->getHeroLevel($combatant->hero);
-                                                        $baseCombatStats = $heroCalculator->getBaseCombatStats($heroLevel);
-                                                    @endphp
-                                                    @foreach ($baseCombatStats as $stat => $value)
+                                                    @foreach ($heroCalculator->getBaseCombatStats($combatant->level) as $stat => $value)
                                                         <tr>
                                                             <td>
                                                                 <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green': null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
@@ -230,9 +226,18 @@
                     <p>When you run out of match time, your hero will take actions automatically using the selected strategy.</p>
                     <p>Heroes gain an additional 5 health after every level up and are be granted combat bonuses with each upgrade they unlock.</p>
                     @if ($activeBattles->where('finished', false)->count() == 0)
-                        <a class="btn btn-primary" href="{{ route('dominion.heroes.battles.practice') }}">
+                        <a class="btn btn-primary btn-block" href="{{ route('dominion.heroes.battles.practice') }}">
                             Start Practice Battle
                         </a>
+                        @if ($hero->isInQueue())
+                            <a class="btn btn-danger btn-block" href="{{ route('dominion.heroes.battles.dequeue') }}">
+                                Leave Queue
+                            </a>
+                        @else
+                            <a class="btn btn-primary btn-block" href="{{ route('dominion.heroes.battles.queue') }}">
+                                Queue for Battle
+                            </a>
+                        @endif
                     @endif
                 </div>
             </div>

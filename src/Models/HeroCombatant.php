@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property int $hero_id
  * @property int $dominion_id
  * @property string $name
+ * @property int $level
  * @property int $health
  * @property int $attack
  * @property int $defense
