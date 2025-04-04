@@ -13,8 +13,8 @@ divination:
   icon: ra-book-cover
   perks:
     info_spell_cost: -10
-    combat_focus: 5
-    combat_evasion: 2
+    combat_focus: 1
+    combat_evasion: 4
 enchantment:
   name: Enchantment
   level: 2
@@ -22,7 +22,7 @@ enchantment:
   icon: ra-book-cover
   perks:
     self_spell_strength_cost: -1
-    combat_focus: 10
+    combat_focus: 2
 evocation:
   name: Evocation
   level: 6
@@ -38,7 +38,7 @@ hammer_of_retribution:
   icon: ra-hammer-drop
   perks:
     retal_prestige: 5
-    combat_counter: 15
+    combat_counter: 5
 illusion:
   name: Illusion
   level: 2
@@ -62,7 +62,7 @@ kings_banner:
   icon: ra-knight-banner
   perks:
     invasion_morale: -2
-    combat_health: 3
+    combat_health: 5
 orb_of_detection:
   name: Orb of Detection
   level: 4
@@ -70,8 +70,8 @@ orb_of_detection:
   icon: ra-orb-wand
   perks:
     enemy_spy_losses: 20
-    combat_counter: 10
-    combat_evasion: 1
+    combat_counter: 2
+    combat_evasion: 4
 spyglass:
   name: Spyglass
   level: 2
@@ -79,8 +79,8 @@ spyglass:
   icon: ra-spyglass
   perks:
     land_spy_strength_cost: 1
-    combat_counter: 5
-    combat_evasion: 3
+    combat_counter: 1
+    combat_evasion: 4
 scribes_journal:
   name: Scribe's Journal
   level: 2
@@ -88,7 +88,7 @@ scribes_journal:
   icon: ra-scroll-quill
   perks:
     tech_production_invasion: 10
-    combat_focus: 10
+    combat_focus: 2
 transmutation:
   name: Transmutation
   level: 4
@@ -96,8 +96,8 @@ transmutation:
   icon: ra-book-cover
   perks:
     exchange_mana: 1
-    combat_focus: 5
-    combat_health: 2
+    combat_health: 4
+    combat_recover: 1
 disarmament:
   name: Disarmament
   level: 0
@@ -151,5 +151,5 @@ staff_of_stormcaller:
   icon: ra-wizard-staff
   perks:
     cyclone_damage: 20
-    combat_focus: 10
+    combat_focus: 2
     combat_health: 5

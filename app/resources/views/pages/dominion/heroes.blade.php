@@ -175,36 +175,38 @@
                                                         <th colspan=2 class="text-center">Combat Stats</th>
                                                     </tr>
                                                 </thead>
-                                                @foreach ($heroCalculator->getHeroCombatStats($hero) as $stat => $value)
+                                                <tbody>
                                                     <tr>
                                                         <td>
-                                                            <span data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
-                                                                {{ ucwords($stat) }}
-                                                            </span>
+                                                            <span title="PvP Rating" data-toggle="tooltip">Rating</span>
                                                         </td>
                                                         <td>
-                                                            <span class="{{ $baseCombatStats[$stat] != $value ? 'text-green' : null }}">
-                                                                {{ $value }}
-                                                            </span>
+                                                            {{ $hero->combat_rating }}
                                                         </td>
                                                     </tr>
-                                                @endforeach
-                                                <tr>
-                                                    <td>
-                                                        <span title="Win - Loss - Draw" data-toggle="tooltip">Record</span>
-                                                    </td>
-                                                    <td>
-                                                        {{ sprintf('%s-%s-%s', $hero->stat_combat_wins, $hero->stat_combat_losses, $hero->stat_combat_draws) }}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <span title="PvP Rating" data-toggle="tooltip">Rating</span>
-                                                    </td>
-                                                    <td>
-                                                        {{ $hero->combat_rating }}
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <span title="Win - Loss - Draw" data-toggle="tooltip">Record</span>
+                                                        </td>
+                                                        <td>
+                                                            {{ sprintf('%s-%s-%s', $hero->stat_combat_wins, $hero->stat_combat_losses, $hero->stat_combat_draws) }}
+                                                        </td>
+                                                    </tr>
+                                                    @foreach ($heroCalculator->getHeroCombatStats($hero) as $stat => $value)
+                                                        <tr>
+                                                            <td>
+                                                                <span data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
+                                                                    {{ ucwords($stat) }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="{{ $baseCombatStats[$stat] != $value ? 'text-green' : null }}">
+                                                                    {{ $value }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>

@@ -333,13 +333,13 @@ class HeroCalculator
     public function getBaseCombatStats(int $level = 0): array
     {
         return [
-            'health' => 40 + (5 * $level),
-            'attack' => 20,
-            'defense' => 10,
+            'health' => 80 + (5 * $level),
+            'attack' => 40,
+            'defense' => 20,
             'evasion' => 10,
-            'focus' => 25,
-            'counter' => 50,
-            //'recover' => 0,
+            'focus' => 10,
+            'counter' => 10,
+            'recover' => 20,
         ];
     }
 
@@ -360,9 +360,14 @@ class HeroCalculator
         $baseDamage = $combatant->attack;
         $baseDefense = $target->defense;
 
-        if (!$counterAttack && $combatant->has_focus) {
-            $focusBonus = $combatant->focus / 100;
-            $baseDamage *= (1 + $focusBonus);
+        if ($counterAttack) {
+            $baseDamage += $combatant->counter;
+        } elseif ($combatant->has_focus) {
+            $baseDamage += $combatant->focus;
+        }
+
+        if ($target->current_action == 'recover') {
+            $baseDefense -= 5;
         }
 
         if ($target->current_action == 'defend') {
@@ -370,11 +375,6 @@ class HeroCalculator
         }
 
         $damage = max(0, $baseDamage - $baseDefense);
-
-        if ($counterAttack) {
-            $counterBonus = $combatant->counter / 100;
-            $damage *= (1 + $counterBonus);
-        }
 
         return round($damage);
     }
@@ -389,7 +389,7 @@ class HeroCalculator
 
     public function calculateCombatHeal(HeroCombatant $combatant): int
     {
-        return $combatant->defense;
+        return $combatant->recover;
     }
 
     public function calculateRatingChange(float $currentRating, float $opponentRating, float $result): int

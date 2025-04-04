@@ -259,12 +259,12 @@ class HeroHelper
     {
         $combatStats = [
             'health' => 'Current and maximum health',
-            'attack' => 'Raw attack damage, reduced by defense of opponent',
-            'defense' => 'Mitigate incoming attack damage by this amount, doubled while defending',
+            'attack' => 'Attack damage, reduced by defense of opponent',
+            'defense' => 'Reduce incoming attack damage by this amount, doubled while defending',
             'evasion' => 'Chance to evade an attack is equal to this percentage',
-            'focus' => 'Focus attack damage is increased by this percentage',
-            'counter' => 'Counter attack damage is increased by this percentage',
-            'recover' => 'Heal damage equal to your defense',
+            'focus' => 'Focus increases attack damage by this amount',
+            'counter' => 'Counter attack damage is increased by this amount',
+            'recover' => 'Heal damage equal to this amount',
         ];
 
         return $combatStats[$stat];

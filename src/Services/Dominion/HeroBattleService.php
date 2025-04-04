@@ -77,7 +77,7 @@ class HeroBattleService
             'evasion' => $combatStats['evasion'],
             'focus' => $combatStats['focus'],
             'counter' => $combatStats['counter'],
-            'recover' => 0, // $combatStats['recover'],
+            'recover' => $combatStats['recover'],
             'current_health' => $combatStats['health'],
             'time_bank' => self::STARTING_TIME_BANK,
             'strategy' => self::DEFAULT_STRATEGY
@@ -118,7 +118,7 @@ class HeroBattleService
             'evasion' => $combatStats['evasion'],
             'focus' => $combatStats['focus'],
             'counter' => $combatStats['counter'],
-            'recover' => 0, // $combatStats['recover'],
+            'recover' => $combatStats['recover'],
             'current_health' => $combatStats['health'],
             'time_bank' => 0,
             'automated' => true,
@@ -324,14 +324,15 @@ class HeroBattleService
                 $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
                 $combatant->has_focus = false;
                 $evaded = $this->heroCalculator->calculateCombatEvade($target);
-                if ($evaded) {
+                if ($damage > 0 && $evaded) {
                     $damageEvaded = $damage;
-                    $damage = 0;
+                    $damage = round($damage / 2);
                     $description = sprintf(
-                        '%s deals %s damage, but %s evades.',
+                        '%s deals %s damage, but %s evades, reducing damage to %s.',
                         $combatant->name,
                         $damageEvaded,
-                        $target->name
+                        $target->name,
+                        $damage
                     );
                 } else {
                     $description = sprintf(
