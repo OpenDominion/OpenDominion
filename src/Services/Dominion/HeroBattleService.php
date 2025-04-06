@@ -161,6 +161,7 @@ class HeroBattleService
             ]);
             return null;
         } else {
+            HeroBattleQueue::where('hero_id', $opponent->hero->id)->delete();
             return $this->createBattle($dominion, $opponent->hero->dominion);
         }
     }
