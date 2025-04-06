@@ -306,7 +306,7 @@
                 <div class="box-body">
                     <p>You can only have one hero at a time.</p>
                     <p>Your hero gains experience and levels up, increasing its class bonus and unlocking new upgrades.</p>
-                    <p>Your hero gains 1 XP per acre gained from invasion, 1 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.</p>
+                    <p>Your hero gains 1 XP per acre gained from invasion, 0.25 XP per acre explored, 1-2 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>
                     <p>You can also <a href="{{ route('dominion.heroes.retire') }}">retire your hero</a> and create another. The new hero will start with XP equal to half that of its predecessor.</p>
                 </div>

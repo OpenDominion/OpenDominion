@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.44.2] - 2025-04-06
+### Changed
+- Hero Battles
+  - Base combat stats and upgrades adjusted
+  - Focus and Counter stats now increase damage by a flat amount (was a percentage)
+  - Recover now reduces defense by 5 on the turn it is used
+  - Evade now reduces damage by 50% instead of 100%
+  - You can now queue against player opponents, added ELO rating for PvP matches
+  - You can now configure notifications for battle start/end
+
 ## [1.44.1] - 2025-03-30
 ### Added
 - Hero Battles

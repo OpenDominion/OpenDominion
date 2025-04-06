@@ -125,7 +125,7 @@ class HeroBattleService
             'hero_battle_id' => $heroBattle->id,
             'hero_id' => null,
             'dominion_id' => null,
-            'name' => 'Evil Twin',
+            'name' => $combatStats['name'],
             'health' => $combatStats['health'],
             'attack' => $combatStats['attack'],
             'defense' => $combatStats['defense'],
