@@ -13,6 +13,7 @@ use OpenDominion\Models\HeroBattleAction;
 use OpenDominion\Models\HeroBattleQueue;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\NotificationService;
 
 class HeroBattleService
 {
@@ -58,6 +59,13 @@ class HeroBattleService
         $heroBattle = HeroBattle::create(['round_id' => $challenger->round_id]);
         $challengerCombatant = $this->createCombatant($heroBattle, $challengerHero);
         $opponentCombatant = $this->createCombatant($heroBattle, $opponentHero);
+
+        // Send Notifications
+        $notificationService = app(NotificationService::class);
+        $notificationService->queueNotification('hero_battle', ['status' => 'started']);
+        $notificationService->sendNotifications($challengerHero->dominion, 'irregular_dominion');
+        $notificationService->queueNotification('hero_battle', ['status' => 'started']);
+        $notificationService->sendNotifications($opponentHero->dominion, 'irregular_dominion');
 
         return $heroBattle;
     }
@@ -415,6 +423,12 @@ class HeroBattleService
 
         if ($heroBattle->pvp) {
             $this->updateRatings($heroBattle);
+            // Send Notifications
+            $notificationService = app(NotificationService::class);
+            foreach ($heroBattle->combatants as $combatant) {
+                $notificationService->queueNotification('hero_battle', ['status' => 'ended']);
+                $notificationService->sendNotifications($combatant->hero->dominion, 'irregular_dominion');
+            }
         }
     }
 

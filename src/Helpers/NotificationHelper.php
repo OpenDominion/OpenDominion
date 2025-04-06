@@ -120,6 +120,12 @@ class NotificationHelper
                 'route' => route('dominion.heroes'),
                 'iconClass' => 'ra ra-knight-helmet text-green',
             ],
+            'hero_battle' => [
+                'label' => 'A hero battle started or ended',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.heroes.battles'),
+                'iconClass' => 'ra ra-axe text-green',
+            ],
             'realm_assignment' => [
                 'label' => 'Your dominion was assigned a realm',
                 'defaults' => ['email' => true, 'ingame' => true],
@@ -362,6 +368,12 @@ class NotificationHelper
                 return sprintf(
                     'Your hero reached level %s.',
                     $data['level']
+                );
+
+            case 'irregular_dominion.hero_battle':
+                return sprintf(
+                    'A hero battle has %s.',
+                    $data['status']
                 );
 
             case 'irregular_dominion.realm_assignment':

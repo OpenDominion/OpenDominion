@@ -342,7 +342,6 @@ class RealmFinderService
 
         // Create realms and assign dominions
         $realmFactory = app(RealmFactory::class);
-        $notificationService = app(NotificationService::class);
         shuffle($realms);
         foreach ($realms as $realmies) {
             $realm = $realmFactory->create($round);
