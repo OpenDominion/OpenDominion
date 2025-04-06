@@ -13,6 +13,7 @@ use OpenDominion\Models\HeroBattleAction;
 use OpenDominion\Models\HeroBattleQueue;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\NotificationService;
 
 class HeroBattleService
@@ -23,6 +24,9 @@ class HeroBattleService
     /** @var HeroHelper */
     protected $heroHelper;
 
+    /** @var ProtectionService */
+    protected $protectionService;
+
     /**
      * HeroBattleService constructor.
      */
@@ -30,9 +34,9 @@ class HeroBattleService
     {
         $this->heroCalculator = app(HeroCalculator::class);
         $this->heroHelper = app(HeroHelper::class);
+        $this->protectionService = app(ProtectionService::class);
     }
 
-    // TODO: Set this back to 24 hours
     public const STARTING_TIME_BANK = 12 * 60 * 60;
     public const DEFAULT_STRATEGY = 'balanced';
 
@@ -94,7 +98,9 @@ class HeroBattleService
 
     public function createPracticeBattle(Dominion $dominion): HeroBattle
     {
-        // TODO: Check isUnderProtection
+        if ($this->protectionService->isUnderProtection($dominion)) {
+            throw new GameException('You cannot battle while under protection');
+        }
 
         if ($dominion->hero == null) {
             throw new GameException('You must have a hero to practice');
@@ -138,7 +144,9 @@ class HeroBattleService
     {
         $this->clearQueue();
 
-        // TODO: Check isUnderProtection
+        if ($this->protectionService->isUnderProtection($dominion)) {
+            throw new GameException('You cannot battle while under protection');
+        }
 
         if ($dominion->hero == null) {
             throw new GameException('You must have a hero to queue for battles');
