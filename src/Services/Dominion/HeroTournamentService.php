@@ -25,6 +25,7 @@ class HeroTournamentService
     }
 
     protected const DEFAULT_NAME = 'The Grand Tournament';
+    protected const TOURNAMENT_TIME_BANK = 12 * 60 * 60;
 
     public function createTournament(Round $round, string $name = self::DEFAULT_NAME): HeroTournament
     {
@@ -63,6 +64,7 @@ class HeroTournamentService
                 continue;
             }
             $heroBattle = $this->heroBattleService->createBattle($participants[0]->hero->dominion, $participants[1]->hero->dominion);
+            $heroBattle->combatants()->update(['time_bank' => self::TOURNAMENT_TIME_BANK]);
             HeroTournamentBattle::create([
                 'hero_tournament_id' => $tournament->id,
                 'hero_battle_id' => $heroBattle->id,

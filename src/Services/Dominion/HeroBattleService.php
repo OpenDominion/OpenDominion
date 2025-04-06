@@ -37,7 +37,7 @@ class HeroBattleService
         $this->protectionService = app(ProtectionService::class);
     }
 
-    public const STARTING_TIME_BANK = 12 * 60 * 60;
+    public const DEFAULT_TIME_BANK = 2 * 60 * 60;
     public const DEFAULT_STRATEGY = 'balanced';
 
     public function createBattle(Dominion $challenger, Dominion $opponent): HeroBattle
@@ -91,7 +91,7 @@ class HeroBattleService
             'counter' => $combatStats['counter'],
             'recover' => $combatStats['recover'],
             'current_health' => $combatStats['health'],
-            'time_bank' => self::STARTING_TIME_BANK,
+            'time_bank' => self::DEFAULT_TIME_BANK,
             'strategy' => self::DEFAULT_STRATEGY
         ]);
     }
