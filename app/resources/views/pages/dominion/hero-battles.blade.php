@@ -167,6 +167,9 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-axe"></i> Previous Battles</h3>
+                    <div class="pull-right">
+                        <a href="{{ route('dominion.heroes.battles.leaderboard') }}">View Leaderboard</a>
+                    </div>
                 </div>
                 <div class="box-body">
                     <div class="row">

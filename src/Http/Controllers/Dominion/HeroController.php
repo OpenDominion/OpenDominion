@@ -8,6 +8,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
+use OpenDominion\Models\Hero;
 use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroTournament;
@@ -299,6 +300,23 @@ class HeroController extends AbstractDominionController
 
         $request->session()->flash('alert-success', 'You have left the queue.');
         return redirect()->route('dominion.heroes.battles');
+    }
+
+    public function getLeaderBoard()
+    {
+        $round_id = $this->getSelectedDominion()->round_id;
+        $heroes = Hero::query()
+            ->join('dominions', 'dominions.id', 'heroes.dominion_id')
+            ->where('dominions.round_id', $round_id)
+            ->orderByDesc('combat_rating')
+            ->get()
+            ->filter(function ($hero) {
+                return $hero->stat_combat_wins || $hero->stat_combat_losses || $hero->stat_combat_draws;
+            });
+
+        return view('pages.dominion.hero-battle-leaderboard', compact(
+            'heroes',
+        ));
     }
 
     public function getTournaments()
