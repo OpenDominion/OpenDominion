@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-axe"></i> Leaderboard</h3>
+                    <h3 class="box-title"><i class="ra ra-trophy"></i> Leaderboard</h3>
                 </div>
                 <div class="box-body table-responsive">
                     <table class="table table-striped">

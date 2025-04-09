@@ -235,7 +235,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12 table-responsive">
                                     <h4>Hero Upgrades</h4>
                                     <table class="table">
                                         <colgroup>
