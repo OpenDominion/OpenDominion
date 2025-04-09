@@ -305,7 +305,7 @@ class HeroController extends AbstractDominionController
     public function getLeaderBoard()
     {
         $round_id = $this->getSelectedDominion()->round_id;
-        $heroes = Hero::query()
+        $heroes = Hero::select('heroes.*')
             ->join('dominions', 'dominions.id', 'heroes.dominion_id')
             ->where('dominions.round_id', $round_id)
             ->orderByDesc('combat_rating')
