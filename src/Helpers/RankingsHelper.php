@@ -82,6 +82,14 @@ class RankingsHelper
                 'title_icon' => 'ra-target-poster',
             ],
             [
+                'name' => 'Largest Harem',
+                'key' => 'spies-converted',
+                'stat' => 'stat_spies_converted',
+                'stat_label' => 'Spies Converted',
+                'title' => 'the Succubus',
+                'title_icon' => 'ra-succubus',
+            ],
+            [
                 'name' => 'Most Masterful Spies',
                 'key' => 'spy-mastery',
                 'stat' => 'spy_mastery',

@@ -86,6 +86,7 @@ class ValhallaController extends AbstractController
             case 'largest-solo': $data = $this->getDominionsByRanking($round, 'largest-dominions', true); break;
             case 'stat-prestige': $data = $this->getDominionsByRanking($round, 'prestige'); break;
             case 'stat-bounties-collected': $data = $this->getDominionsByRanking($round, 'bounties-collected'); break;
+            case 'stat-spies-converted': $data = $this->getDominionsByRanking($round, 'spies-converted'); break;
             case 'stat-attacking-success': $data = $this->getDominionsByRanking($round, 'attacking-success'); break;
             case 'stat-defending-success': $data = $this->getDominionsByStatistic($round, 'stat_defending_success'); break;
             case 'stat-espionage-success': $data = $this->getDominionsByRanking($round, 'espionage-success'); break;

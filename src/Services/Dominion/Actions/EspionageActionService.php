@@ -902,6 +902,8 @@ class EspionageActionService
                 $unitsCharmed = ($nonUnitSpiesKilled * $charmPercentage) + $target->racial_value;
                 $target->military_spies += rfloor($unitsCharmed);
                 $target->racial_value = fmod($unitsCharmed, 1);
+
+                $target->stat_spies_converted += $unitsCharmed;
             }
         }
 
