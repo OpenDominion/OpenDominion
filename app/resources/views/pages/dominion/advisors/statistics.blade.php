@@ -589,12 +589,14 @@
                                                     <strong>{{ number_format($target->stat_bounties_collected) }}</strong>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>Spies Converted:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_spies_converted) }}</strong>
-                                                </td>
-                                            </tr>
+                                            @if ($target->race->key === 'demon')
+                                                <tr>
+                                                    <td>Spies Converted:</td>
+                                                    <td>
+                                                        <strong>{{ number_format($target->stat_spies_converted) }}</strong>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                             <tr>
                                                 <td>Hero XP Gain:</td>
                                                 <td>
