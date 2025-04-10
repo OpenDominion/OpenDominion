@@ -144,7 +144,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-prestige']) }}">Most Prestigious Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-prestige']) }}">Most Prestigious Realms</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-bounties-collected']) }}">Most Bounties Collected</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-spies-converted']) }}">Largest Harem</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-spies-charmed']) }}">Largest Harem</a><br>
                 </div>
             </div>
 

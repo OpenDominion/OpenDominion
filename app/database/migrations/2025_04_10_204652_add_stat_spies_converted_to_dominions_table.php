@@ -14,7 +14,7 @@ class AddStatSpiesConvertedToDominionsTable extends Migration
     public function up()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->unsignedInteger('stat_spies_converted')
+            $table->unsignedInteger('stat_spies_charmed')
                 ->after('stat_bounties_collected')
                 ->default(0);
         });
@@ -28,7 +28,7 @@ class AddStatSpiesConvertedToDominionsTable extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->dropColumn('stat_spies_converted');
+            $table->dropColumn('stat_spies_charmed');
         });
     }
 }

@@ -593,7 +593,7 @@
                                                 <tr>
                                                     <td>Spies Charmed:</td>
                                                     <td>
-                                                        <strong>{{ number_format($target->stat_spies_converted) }}</strong>
+                                                        <strong>{{ number_format($target->stat_spies_charmed) }}</strong>
                                                     </td>
                                                 </tr>
                                             @endif
