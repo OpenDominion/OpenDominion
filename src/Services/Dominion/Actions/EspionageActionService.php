@@ -903,7 +903,7 @@ class EspionageActionService
                 $target->military_spies += rfloor($unitsCharmed);
                 $target->racial_value = fmod($unitsCharmed, 1);
 
-                $target->stat_spies_converted += $unitsCharmed;
+                $target->stat_spies_charmed += $unitsCharmed;
             }
         }
 
