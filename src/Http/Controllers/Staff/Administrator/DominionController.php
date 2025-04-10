@@ -108,11 +108,14 @@ class DominionController extends AbstractController
             ->join('dominions AS source', 'game_events.source_id', '=', 'source.id')
             ->join('dominions AS target', 'game_events.target_id', '=', 'target.id')
             ->leftJoin('info_ops', function (JoinClause $join) {
-                $join->on('target.id', '=', 'info_ops.target_dominion_id')
+                $join->on('info_ops.target_dominion_id', '=', 'target.id')
+                    ->on('info_ops.source_realm_id', '=', 'source.realm_id')
+                    ->where('info_ops.source_realm_id', 'source.realm_id')
                     ->where('info_ops.created_at', '<', DB::raw('game_events.created_at'))
                     ->where('info_ops.created_at', '>', DB::raw('DATE_SUB(game_events.created_at, INTERVAL 12 HOUR)'));
             })
             ->where('game_events.round_id', $round->id)
+            ->where('game_events.type', 'invasion')
             ->groupBy('game_events.id')
             ->having('ops_count', '<', 3)
             ->orderByDesc('game_events.created_at')
