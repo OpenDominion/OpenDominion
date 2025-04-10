@@ -20,7 +20,7 @@ class RenameActiveSpellsTable extends Migration
 
         Schema::table('dominion_spells', function (Blueprint $table) {
             $table->unsignedInteger('spell_id')->after('spell');
-            $table->dropColumn('spell');
+//            $table->dropColumn('spell');
 
             $table->dropForeign('active_spells_dominion_id_foreign');
             $table->dropForeign('active_spells_cast_by_dominion_id_foreign');
@@ -29,6 +29,10 @@ class RenameActiveSpellsTable extends Migration
             $table->foreign('spell_id')->references('id')->on('spells');
             $table->foreign('dominion_id')->references('id')->on('dominions');
             $table->foreign('cast_by_dominion_id')->references('id')->on('dominions');
+        });
+
+        Schema::table('dominion_spells', function (Blueprint $table) {
+            $table->dropColumn('spell');
         });
     }
 
