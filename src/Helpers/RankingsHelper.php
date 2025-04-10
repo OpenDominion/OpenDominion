@@ -85,7 +85,7 @@ class RankingsHelper
                 'name' => 'Largest Harem',
                 'key' => 'spies-converted',
                 'stat' => 'stat_spies_converted',
-                'stat_label' => 'Spies Converted',
+                'stat_label' => 'Spies Charmed',
                 'title' => 'the Succubus',
                 'title_icon' => 'ra-succubus',
             ],
