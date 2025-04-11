@@ -1007,10 +1007,10 @@
     select2 "^4.0.3"
     slimscroll "^0.9.1"
 
-"@opendominion/rpg-awesome@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.18.tgz#b379d57435462b88c3742c34525db20a336bd82c"
-  integrity sha512-82BZr+VJZlqpnbx3EFd1KPrDt3mFL645bbFZhkanU24dnC1pstShrD5J/xR8uTczboW8jQzOAevVsdrD3T1M6A==
+"@opendominion/rpg-awesome@0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.19.tgz#66da349c65298f7ba917f9f8696fffedb73837b1"
+  integrity sha512-j1nO+TT3P9eArSOOvv4qlPoRwrb9mxufXL2PPSHAN/hn+KPI4WTIzrjPg1k7y0APWozjBSynBj/aKnMgtnVt9Q==
   dependencies:
     grunt-sass "^3.1.0"
     node-sass "^8.0.0"
@@ -7056,6 +7056,7 @@ yargs@^17.2.1:
     y18n "^5.0.5"
     yargs-parser "^21.1.1"
 
-yarn@^1.22.19:
-  version "1.22.19"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.19.tgz#4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+yarn@^1.22.22:
+  version "1.22.22"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.22.tgz#ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+  integrity sha512-prL3kGtyG7o9Z9Sv8IPfBNrWTDmXB4Qbes8A9rEzt6wkJV8mUvoirjU0Mp3GGAU06Y0XQyA3/2/RQFVuK7MTfg==
