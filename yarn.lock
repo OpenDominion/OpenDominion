@@ -1007,10 +1007,10 @@
     select2 "^4.0.3"
     slimscroll "^0.9.1"
 
-"@opendominion/rpg-awesome@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.19.tgz#66da349c65298f7ba917f9f8696fffedb73837b1"
-  integrity sha512-j1nO+TT3P9eArSOOvv4qlPoRwrb9mxufXL2PPSHAN/hn+KPI4WTIzrjPg1k7y0APWozjBSynBj/aKnMgtnVt9Q==
+"@opendominion/rpg-awesome@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.20.tgz#e509096b891cb60c47371bb0616ad59d5bfd7ceb"
+  integrity sha512-B2hcd6CUkqBM4ABSLExnUBK93m2IAqE8vzY8TuEue3fUiCY/GxQMei1cNdicnXaYCo83f4XvGIJ0SfEqsia76w==
   dependencies:
     grunt-sass "^3.1.0"
     node-sass "^8.0.0"
