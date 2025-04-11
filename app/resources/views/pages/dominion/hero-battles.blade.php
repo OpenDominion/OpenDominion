@@ -38,7 +38,7 @@
                                                     @foreach ($heroCalculator->getBaseCombatStats($combatant->level) as $stat => $value)
                                                         <tr>
                                                             <td>
-                                                                <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green': null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
+                                                                <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green' : null }} {{ in_array($stat, ['focus', 'counter', 'recover']) && $stat == $combatant->last_action ? 'text-warning' : null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
                                                                     {{ ucwords($stat) }}
                                                                 </span>
                                                             </td>
@@ -46,7 +46,7 @@
                                                                 @if ($stat == 'health')
                                                                     {{ $combatant->current_health }} /
                                                                 @endif
-                                                                <span class="{{ $combatant->{$stat} != $value ? 'text-green' : null }}">
+                                                                <span class="{{ $combatant->hero_id !== null &&$combatant->{$stat} != $value ? 'text-green' : null }}">
                                                                     {{ $combatant->{$stat} }}
                                                                 </span>
                                                             </td>
@@ -100,8 +100,14 @@
                                                                     <a class="btn btn-block btn-default" disabled>
                                                                         {{ ucwords($action) }}
                                                                     </a>
+                                                                @elseif ($action == 'attack' && $battle->combatants->count() > 2)
+                                                                    @foreach ($battle->combatants->where('hero_id', '!=', $playerCombatant->hero_id) as $target)
+                                                                        <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$action]) }}" {{ $target->current_health <= 0 ? 'disabled' : null }}>
+                                                                            {{ ucwords($action) }} {{ $target->name }}
+                                                                        </a>
+                                                                    @endforeach
                                                                 @else
-                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'action'=>$action]) }}">
+                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$action]) }}">
                                                                         {{ ucwords($action) }}
                                                                     </a>
                                                                 @endif
@@ -145,7 +151,7 @@
                                                 <th>Combat Log</th>
                                             </tr>
                                         </thead>
-                                        @foreach ($battle->actions->groupBy('turn')->sortDesc() as $turn => $actions)
+                                        @foreach ($battle->actions->sortByDesc('turn')->groupBy('turn') as $turn => $actions)
                                             <tr><td>Turn {{ $turn }}</td></tr>
                                             <tr><td>
                                                 @foreach ($actions as $action)

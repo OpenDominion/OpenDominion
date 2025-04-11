@@ -221,7 +221,7 @@ class HeroBattleService
             return false;
         }
 
-        $combatants = $heroBattle->combatants;
+        $combatants = $heroBattle->combatants->where('current_health', '>', '0');
 
         // Eject if not all combatants are ready
         foreach ($combatants as $combatant) {
@@ -237,7 +237,9 @@ class HeroBattleService
 
         // Perform the actions and persist results
         foreach ($combatants as $combatant) {
-            $target = $combatants->where('id', '!=', $combatant->id)->random();
+            // TODO: How to get target?
+            $target = $combatants->where('hero_id', '!=', $combatant->hero_id)->random();
+
             $result = $this->processAction($combatant, $target);
 
             $combatant->current_health += $result['health'];
@@ -309,8 +311,10 @@ class HeroBattleService
         if ($combatant->has_focus) {
             $options->forget('focus');
         }
-        if ($combatant->health < ($combatant->current_health + $combatant->defense)) {
-        } elseif ($combatant->current_health < 20 && isset($options['recover'])) {
+        if ($combatant->health < ($combatant->current_health + $combatant->recover)) {
+            $options->forget('recover');
+        }
+        if ($combatant->current_health <= 40 && isset($options['recover'])) {
             $options->forget('focus');
             $options['recover'] = $options['attack'] * 2;
         }
@@ -365,6 +369,7 @@ class HeroBattleService
                 $combatant->has_focus = true;
                 break;
             case 'counter':
+                // TODO: Do this within the attack case
                 if ($target->current_action == 'attack') {
                     $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target, true);
                     $description = sprintf(
