@@ -589,6 +589,14 @@
                                                     <strong>{{ number_format($target->stat_bounties_collected) }}</strong>
                                                 </td>
                                             </tr>
+                                            @if ($target->race->key === 'demon')
+                                                <tr>
+                                                    <td>Spies Charmed:</td>
+                                                    <td>
+                                                        <strong>{{ number_format($target->stat_spies_charmed) }}</strong>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                             <tr>
                                                 <td>Hero XP Gain:</td>
                                                 <td>

@@ -1,11 +1,10 @@
-# For more information: https://laravel.com/docs/sail
-version: '3'
 services:
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/7.4
             dockerfile: Dockerfile
             args:
+                NODE_VERSION: '14'
                 WWWGROUP: '${WWWGROUP}'
         image: sail-7.4/app
         extra_hosts:

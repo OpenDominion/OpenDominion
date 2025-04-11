@@ -975,9 +975,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@opendominion/admin-lte@^2.4.19":
-  version "2.4.19"
-  resolved "https://registry.npmjs.org/@opendominion/admin-lte/-/admin-lte-2.4.19.tgz"
+"@opendominion/admin-lte@^2.4.22":
+  version "2.4.22"
+  resolved "https://registry.yarnpkg.com/@opendominion/admin-lte/-/admin-lte-2.4.22.tgz#0456f29706b6b2b521d755e175a21240863d0d81"
+  integrity sha512-C1eNVeMNRNnOJLB+BJuT+wYbDUWiorNGXRVPCibxNrX9+7HKi7CoxMfE2AAm1ky177cACoc4w/JTiHKA4SCVjQ==
   dependencies:
     bootstrap "^3.4"
     bootstrap-colorpicker "^2.5.3"
@@ -1006,9 +1007,10 @@
     select2 "^4.0.3"
     slimscroll "^0.9.1"
 
-"@opendominion/rpg-awesome@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.12.tgz#15b2a5eb0e36589fdc35b5be2b6ea079504adeb5"
+"@opendominion/rpg-awesome@0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@opendominion/rpg-awesome/-/rpg-awesome-0.0.18.tgz#b379d57435462b88c3742c34525db20a336bd82c"
+  integrity sha512-82BZr+VJZlqpnbx3EFd1KPrDt3mFL645bbFZhkanU24dnC1pstShrD5J/xR8uTczboW8jQzOAevVsdrD3T1M6A==
   dependencies:
     grunt-sass "^3.1.0"
     node-sass "^8.0.0"
