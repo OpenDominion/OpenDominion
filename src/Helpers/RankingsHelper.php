@@ -87,7 +87,7 @@ class RankingsHelper
                 'stat' => 'stat_spies_charmed',
                 'stat_label' => 'Spies Charmed',
                 'title' => 'the Succubus',
-                'title_icon' => 'ra-succubus',
+                'title_icon' => 'ra-pretty-fangs',
             ],
             [
                 'name' => 'Most Masterful Spies',
