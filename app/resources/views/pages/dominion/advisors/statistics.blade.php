@@ -595,6 +595,14 @@
                                                     {!! bonus_display(($heroCalculator->getExperienceMultiplier($target) - 1) * 100) !!}
                                                 </td>
                                             </tr>
+                                            @if ($target->race->key === 'demon')
+                                                <tr>
+                                                    <td>Spies Charmed:</td>
+                                                    <td>
+                                                        <strong>{{ number_format($target->stat_spies_charmed) }}</strong>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>

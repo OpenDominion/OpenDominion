@@ -3,7 +3,9 @@
 namespace OpenDominion\Console\Commands\Development;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use OpenDominion\Console\Commands\CommandInterface;
+use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
@@ -26,6 +28,8 @@ class RealmSeederCommand extends Command implements CommandInterface
      */
     public function handle(): void
     {
+        $dominionFactory = resolve(DominionFactory::class);
+
         $count = $this->option('count');
 
         if ($count < 0) {
@@ -33,33 +37,43 @@ class RealmSeederCommand extends Command implements CommandInterface
         }
 
         $round = Round::all()->last();
-        if($round) {
-            $realms = Realm::active()->where('round_id', '=', $round->id)->get();
-            foreach($realms as $realm) {
-                $races = Race::where('alignment', '=', $realm->alignment)->get(['id'])->toArray();
-                $dom_count = Dominion::where('realm_id', $realm->id)->count();
-                $user = factory(User::class, $round->realm_size - $dom_count)->create()->each(function ($u) use ($round, $realm, $races) {
-                    factory(Dominion::class)->create([
-                        'user_id' => $u->id,
-                        'round_id' => $round->id,
-                        'realm_id' => $realm->id,
-                        'race_id' => $races[array_rand($races)]['id'],
-                    ]);
-                });
-            }
-            for ($n = count($realms)+1; $n <= $count; $n++) {
-                $alignment = rand(0, 1) ? 'good' : 'evil';
-                $realm = app(RealmFactory::class)->create($round, $alignment);
-                $races = Race::where('alignment', '=', $realm->alignment)->get(['id'])->toArray();
-                $user = factory(User::class, $round->realm_size)->create()->each(function ($u) use ($round, $realm, $races) {
-                    factory(Dominion::class)->create([
-                        'user_id' => $u->id,
-                        'round_id' => $round->id,
-                        'realm_id' => $realm->id,
-                        'race_id' => $races[array_rand($races)]['id'],
-                    ]);
-                });
-            }
+
+        if ($round) {
+            DB::transaction(function () use ($count, $dominionFactory, $round) {
+                $realms = Realm::active()->where('round_id', '=', $round->id)->get();
+                foreach($realms as $realm) {
+                    $races = Race::get(['id'])->toArray();
+                    $dom_count = Dominion::where('realm_id', $realm->id)->count();
+                    $user = User::factory()->count($round->realm_size - $dom_count)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
+                        $randomString = str_random(10);
+
+                        $dominionFactory->create(
+                            $user,
+                            $realm,
+                            Race::findOrFail($races[array_rand($races)]['id']),
+                            "Ruler $randomString",
+                            "Dominion $randomString",
+                        );
+                    });
+                }
+
+                for ($n = count($realms)+1; $n <= $count; $n++) {
+                    $alignment = rand(0, 1) ? 'good' : 'evil';
+                    $realm = app(RealmFactory::class)->create($round, $alignment);
+                    $races = Race::get(['id'])->toArray();
+                    $user = User::factory()->count($round->realm_size)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
+                        $randomString = str_random(10);
+
+                        $dominionFactory->create(
+                            $user,
+                            $realm,
+                            Race::findOrFail($races[array_rand($races)]['id']),
+                            "Ruler $randomString",
+                            "Dominion $randomString",
+                        );
+                    });
+                }
+            });
         } else {
             throw new RuntimeException('No rounds found, seed the development database first.');
         }

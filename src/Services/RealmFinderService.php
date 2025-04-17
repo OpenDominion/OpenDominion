@@ -285,6 +285,8 @@ class RealmFinderService
         $smallPacks = $smallPacks->sortBy('rating')->values();
         foreach (range(0, $realmCount - 1) as $idx) {
             $players = array_merge($largePacks[$idx]['players'], $smallPacks[$idx]['players']);
+            $players ??= [];
+
             $realms[] = [
                 'players' => $players,
                 'rating' => $this->calculateRating($players)
