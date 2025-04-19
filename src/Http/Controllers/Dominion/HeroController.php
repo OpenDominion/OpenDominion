@@ -201,10 +201,12 @@ class HeroController extends AbstractDominionController
         try {
             $action = $request->get('action');
             $combatant = HeroCombatant::findOrFail($request->get('combatant'));
+            $target = HeroCombatant::find($request->get('target'));
             $heroBattleService->checkTime($combatant->battle);
             $result = $heroActionService->queueAction(
                 $dominion,
                 $combatant->refresh(),
+                $target,
                 $action
             );
             $turnProcessed = $heroBattleService->processTurn($combatant->battle->refresh());

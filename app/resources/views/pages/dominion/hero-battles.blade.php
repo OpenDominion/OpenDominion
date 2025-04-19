@@ -35,27 +35,40 @@
                                                             </th>
                                                         </tr>
                                                     </thead>
-                                                    @foreach ($heroCalculator->getBaseCombatStats($combatant->level) as $stat => $value)
+                                                    <tbody>
+                                                        @foreach ($heroCalculator->getBaseCombatStats($combatant->level) as $stat => $value)
+                                                            <tr>
+                                                                <td>
+                                                                    <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green' : null }} {{ in_array($stat, ['focus', 'counter', 'recover']) && $stat == $combatant->last_action ? 'text-warning' : null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
+                                                                        {{ ucwords($stat) }}
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    @if ($stat == 'health')
+                                                                        {{ $combatant->current_health }} /
+                                                                    @endif
+                                                                    <span class="{{ $combatant->hero_id !== null &&$combatant->{$stat} != $value ? 'text-green' : null }}">
+                                                                        {{ $combatant->{$stat} }}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
                                                         <tr>
-                                                            <td>
-                                                                <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green' : null }} {{ in_array($stat, ['focus', 'counter', 'recover']) && $stat == $combatant->last_action ? 'text-warning' : null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
-                                                                    {{ ucwords($stat) }}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                @if ($stat == 'health')
-                                                                    {{ $combatant->current_health }} /
-                                                                @endif
-                                                                <span class="{{ $combatant->hero_id !== null &&$combatant->{$stat} != $value ? 'text-green' : null }}">
-                                                                    {{ $combatant->{$stat} }}
-                                                                </span>
-                                                            </td>
+                                                            <td><span data-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
+                                                            <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
                                                         </tr>
-                                                    @endforeach
-                                                    <tr>
-                                                        <td><span data-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
-                                                        <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
-                                                    </tr>
+                                                    </tbody>
+                                                    @if ($playerCombatant->id !== $combatant->id && !$battle->finished)
+                                                        <tfoot>
+                                                            <tr>
+                                                                <td colspan=2>
+                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>'attack']) }}" {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
+                                                                        Attack
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </tfoot>
+                                                    @endif
                                                 </table>
                                             </div>
                                         @endforeach
@@ -80,7 +93,7 @@
                                                             @foreach ($playerCombatant->actions ?? [] as $idx => $action)
                                                                 <tr>
                                                                     <td>{{ $battle->current_turn + $idx }}</td>
-                                                                    <td>{{ ucwords($action) }}</td>
+                                                                    <td>{{ ucwords($action['action']) }}</td>
                                                                     <td>
                                                                         <a href="{{ route('dominion.heroes.battles.action.delete', ['combatant'=>$playerCombatant->id, 'action'=>$idx]) }}">
                                                                             <i class="fa fa-trash text-danger"></i>
@@ -100,13 +113,7 @@
                                                                     <a class="btn btn-block btn-default" disabled>
                                                                         {{ ucwords($action) }}
                                                                     </a>
-                                                                @elseif ($action == 'attack' && $battle->combatants->count() > 2)
-                                                                    @foreach ($battle->combatants->where('hero_id', '!=', $playerCombatant->hero_id) as $target)
-                                                                        <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$action]) }}" {{ $target->current_health <= 0 ? 'disabled' : null }}>
-                                                                            {{ ucwords($action) }} {{ $target->name }}
-                                                                        </a>
-                                                                    @endforeach
-                                                                @else
+                                                                @elseif ($action !== 'attack' || $battle->combatants->count() == 2)
                                                                     <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$action]) }}">
                                                                         {{ ucwords($action) }}
                                                                     </a>

@@ -267,7 +267,7 @@ class HeroActionService
         $combatant->save();
     }
 
-    public function queueAction(Dominion $dominion, HeroCombatant $combatant, string $action)
+    public function queueAction(Dominion $dominion, HeroCombatant $combatant, HeroCombatant $target, string $action)
     {
         $this->guardLockedDominion($dominion);
 
@@ -277,6 +277,10 @@ class HeroActionService
 
         if ($combatant->battle->finished) {
             throw new GameException('You cannot queue actions for a battle that has ended.');
+        }
+
+        if ($combatant->hero_battle_id !== $target->hero_battle_id || $target->current_health <= 0) {
+            throw new GameException('Invalid target.');
         }
 
         if ($combatant->time_bank <= 0) {
@@ -293,7 +297,7 @@ class HeroActionService
             throw new GameException('You cannot queue more than 6 actions.');
         }
 
-        array_push($actions, $action);
+        array_push($actions, ['action' => $action, 'target' => $target->id]);
         $combatant->actions = $actions;
         $combatant->automated = false;
         $combatant->save();

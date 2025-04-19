@@ -232,13 +232,23 @@ class HeroBattleService
 
         // Determine which action to take via queue or automated strategy
         foreach ($combatants as $combatant) {
-            $combatant->current_action = $this->determineAction($combatant);
+            $nextAction = $this->determineAction($combatant);
+            $combatant->current_action = $nextAction['action'];
+            $combatant->current_target = $nextAction['target'];
         }
 
         // Perform the actions and persist results
         foreach ($combatants as $combatant) {
-            // TODO: How to get target?
-            $target = $combatants->where('hero_id', '!=', $combatant->hero_id)->random();
+            if ($combatant->current_target !== null) {
+                // Use specified target
+                $target = $combatants->where('id', $combatant->current_target)->first();
+            } elseif ($combatant->current_action == 'attack') {
+                // Attack a random opponent
+                $target = $combatants->where('hero_id', '!=', $combatant->hero_id)->random();
+            } else {
+                // Default to self
+                $target = $combatant;
+            }
 
             $result = $this->processAction($combatant, $target);
 
@@ -248,6 +258,7 @@ class HeroBattleService
             $action = HeroBattleAction::create([
                 'hero_battle_id' => $heroBattle->id,
                 'combatant_id' => $combatant->id,
+                'target_combatant_id' => $target->id,
                 'turn' => $heroBattle->current_turn,
                 'action' => $combatant->current_action,
                 'damage' => $result['damage'],
@@ -263,6 +274,7 @@ class HeroBattleService
             }
             $combatant->last_action = $combatant->current_action;
             unset($combatant->current_action);
+            unset($combatant->current_target);
             $combatant->save();
         }
 
@@ -283,7 +295,7 @@ class HeroBattleService
         return true;
     }
 
-    private function determineAction(HeroCombatant $combatant): string
+    private function determineAction(HeroCombatant $combatant): array
     {
         $queuedActions = $combatant->actions ?? [];
 
@@ -291,7 +303,7 @@ class HeroBattleService
             $limitedActions = $this->heroHelper->getLimitedCombatActions();
             $nextAction = array_shift($queuedActions);
             $combatant->actions = $queuedActions;
-            if (!in_array($nextAction, $limitedActions) || $nextAction != $combatant->last_action) {
+            if (!in_array($nextAction['action'], $limitedActions) || $nextAction['action'] != $combatant->last_action) {
                 return $nextAction;
             }
         }
@@ -318,7 +330,7 @@ class HeroBattleService
             $options->forget('focus');
             $options['recover'] = $options['attack'] * 2;
         }
-        return $this->randomAction($options, $combatant->last_action);
+        return ['action' => $this->randomAction($options, $combatant->last_action), 'target' => null];
     }
 
     private function randomAction(Collection $options, ?string $last_action): string
