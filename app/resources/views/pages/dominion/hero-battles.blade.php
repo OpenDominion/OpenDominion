@@ -58,7 +58,7 @@
                                                             <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
                                                         </tr>
                                                     </tbody>
-                                                    @if ($playerCombatant->id !== $combatant->id && !$battle->finished)
+                                                    @if ($battle->combatants->count() > 2 && $playerCombatant->id !== $combatant->id && !$battle->finished)
                                                         <tfoot>
                                                             <tr>
                                                                 <td colspan=2>
@@ -113,7 +113,12 @@
                                                                     <a class="btn btn-block btn-default" disabled>
                                                                         {{ ucwords($action) }}
                                                                     </a>
-                                                                @elseif ($action !== 'attack' || $battle->combatants->count() == 2)
+                                                                @elseif ($action == 'attack' && $battle->combatants->count() == 2)
+                                                                    @php $target = $battle->combatants->where('id', '!=', $playerCombatant->id)->first(); @endphp
+                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$action]) }}">
+                                                                        {{ ucwords($action) }}
+                                                                    </a>
+                                                                @else
                                                                     <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$action]) }}">
                                                                         {{ ucwords($action) }}
                                                                     </a>
