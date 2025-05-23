@@ -35,7 +35,7 @@ class TechHelper
             'construction_cost' => '%+g%% construction platinum cost',
             'construction_platinum_cost' => '%+g%% construction platinum cost',
             'construction_lumber_cost' => '%+g%% construction lumber cost',
-            'destruction_discount' => '%g%% of destroyed buildings can be rebuilt at a discount (excluding Nomad, Wood Elf)',
+            'destruction_discount' => '%g%% of destroyed buildings can be rebuilt at a discount (excluding Nomad)',
             'destruction_refund' => '%+g%% refund when destroying buildings',
             'exchange_bonus' => '%+g%% better exchange rates',
             'explore_draftee_cost' => '%+g draftee per acre explore cost (min 6)',
