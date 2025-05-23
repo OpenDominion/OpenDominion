@@ -233,8 +233,9 @@ class ValhallaController extends AbstractController
             ->where('end_date', '<', now())
             ->get();
 
-        $standings = DailyRanking::query()
+        $standings = DailyRanking::select('daily_rankings.*', 'dominions.user_id', 'users.display_name')
             ->join('dominions', 'dominions.user_id', 'daily_rankings.dominion_id')
+            ->join('users', 'users.id', 'dominions.user_id')
             ->where('dominions.user_id', '!=', null)
             ->whereIn('daily_rankings.round_id', $rounds->pluck('id'))
             ->where('key', $type)
@@ -243,8 +244,8 @@ class ValhallaController extends AbstractController
             ->map(function ($dailyRanking) {
                 return [
                     'value' => $dailyRanking->value,
-                    'user_id' => $dailyRanking->dominion->user_id,
-                    'display_name' => $dailyRanking->dominion->user->display_name,
+                    'user_id' => $dailyRanking->user_id,
+                    'display_name' => $dailyRanking->display_name,
                 ];
             })
             ->groupBy('user_id')
