@@ -233,14 +233,13 @@ class ValhallaController extends AbstractController
             ->where('end_date', '<', now())
             ->get();
 
-        $standings = DailyRanking::with(['dominion.user'])
+        $standings = DailyRanking::query()
+            ->join('dominions', 'dominions.user_id', 'daily_rankings.dominion_id')
+            ->where('dominions.user_id', '!=', null)
             ->whereIn('round_id', $rounds->pluck('id'))
             ->where('key', $type)
             ->where('value', '>', 0)
             ->get()
-            ->filter(function ($dailyRanking) {
-                return $dailyRanking->dominion->user_id !== null;
-            })
             ->map(function ($dailyRanking) {
                 return [
                     'value' => $dailyRanking->value,
