@@ -234,9 +234,8 @@ class ValhallaController extends AbstractController
             ->get();
 
         $standings = DailyRanking::select('daily_rankings.*', 'dominions.user_id', 'users.display_name')
-            ->join('dominions', 'dominions.user_id', 'daily_rankings.dominion_id')
+            ->join('dominions', 'dominions.id', 'daily_rankings.dominion_id')
             ->join('users', 'users.id', 'dominions.user_id')
-            ->where('dominions.user_id', '!=', null)
             ->whereIn('daily_rankings.round_id', $rounds->pluck('id'))
             ->where('key', $type)
             ->where('value', '>', 0)
