@@ -605,6 +605,7 @@ infernal_command:
     - demon
   perks:
     offense_from_pairing_demon: 0.75
+    casualties_demon: -20
     apply_corruption: 1
 corruption:
   name: Corruption
@@ -617,3 +618,4 @@ corruption:
   perks:
     platinum_production: -5
     food_consumption: 5
+    food_production_damage: -30

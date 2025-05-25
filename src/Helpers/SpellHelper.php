@@ -154,6 +154,7 @@ class SpellHelper
             'casualties' => '%d%% casualties',
             'casualties_offense' => '%d%% offensive casualties',
             'casualties_defense' => '%d%% defensive casualties',
+            'casualties_demon' => 'Archdemon gains %+g%% casualties',
 
             // Info ops
             'clear_sight' => 'Reveal status screen',
@@ -205,6 +206,7 @@ class SpellHelper
             'destroy_improvement_walls' => 'Destroys %g%% walls',
             'ore_production_damage' => 'Ore production immune to Earthquake',
             'food_decay' => '%+g%% food decay',
+            'food_production_damage' => '%+g%% Insect Swarm damage',
             'lumber_decay' => '%+g%% lumber rot',
             'mana_decay' => '%+g%% mana drain',
             'martyrdom' => 'Spy and wizard cost reduced by 1%% per 15 prestige (max 50%%)',
