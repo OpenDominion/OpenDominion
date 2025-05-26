@@ -5,8 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Changed
+- Dark Elf Swordsman: now convert 8.5% of survivors (from 8%)
 - Demon: Infernal Command now grants Archdemons 20% reduced casualties
 - Demon: Corruption now reduces the effects of Insect Swarm by 30%
+- Goblin Raider: +25p (from 325p)
+- Sylvan Centaur: -20p (from 960p)
+- Troll Basher/Smasher: -15p (from 1415p)
+- Troll Brute: +10p (from 350p)
+- Undead: boat capacity racial increased to +20 (from +10)
 - Frezy, Gaia's Light, Gaia's Shadow, and Delve Into Shadow mana cost reduced to 2.5x (from 5x)
 - Mutual war now increases the duration of Burning and Lightning Storm by 18 hours (from 6)
 - Mastery gains increased by 1

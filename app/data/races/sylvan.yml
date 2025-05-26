@@ -39,7 +39,7 @@ units:
       defense_from_land: forest,20,4 # land type, ratio%, max
   - name: Centaur
     cost:
-      platinum: 960
+      platinum: 940
       lumber: 20
     power:
       offense: 5.5
