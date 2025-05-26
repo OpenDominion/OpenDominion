@@ -304,7 +304,7 @@ defensive_frenzy:
 frenzy:
   name: Frenzy
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
@@ -392,7 +392,7 @@ ascendance:
 delve_into_shadow:
   name: Delve into Shadow
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
@@ -541,7 +541,7 @@ illumination:
 gaias_light:
   name: Gaia's Light
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
@@ -553,7 +553,7 @@ gaias_light:
 gaias_shadow:
   name: Gaia's Shadow
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
