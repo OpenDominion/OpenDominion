@@ -226,6 +226,7 @@ class SpellHelper
             'immune_lightning_storm' => 'Immune to Lightning Storm',
             'lightning_storm' => 'Lightning Bolt deals an additional %g%% temporary damage (until this expires)',
             'war_cancels' => 'Cancelled if this realm declares war',
+            'war_extends' => 'Extended if this realm declares war',
             'cancels_gaias_light' => 'Cancels and cancelled by Gaia\'s Light',
             'cancels_gaias_shadow' => 'Cancels and cancelled by Gaia\'s Shadow',
             'cancels_midas_touch' => 'Cancels and cancelled by Midas Touch',

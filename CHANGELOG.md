@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Undead: boat capacity racial increased to +20 (from +10)
 - Frezy, Gaia's Light, Gaia's Shadow, and Delve Into Shadow mana cost reduced to 2.5x (from 5x)
 - Mutual war now increases the duration of Burning and Lightning Storm by 18 hours (from 6)
+- Declaring war now extends existing Burning and Lightning Storm effects in the declaring realm to 18 hours (plus the remaining duration if Mutual War)
 - Mastery gains increased by 1
 
 ## [1.44.3] - 2025-04-11

@@ -255,6 +255,7 @@ class GovernmentActionService
 
         $isMutual = $this->governmentService->isAtWar($dominion->realm, $target);
         $burningSpell = Spell::where('key', 'burning')->first();
+        $lightningStormSpell = Spell::where('key', 'lightning_storm')->first();
         $rejuvenationSpell = Spell::where('key', 'rejuvenation')->first();
         if ($rejuvenationSpell) {
             // Remove Rejuvenation
@@ -263,12 +264,19 @@ class GovernmentActionService
                 ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
                 ->delete();
         }
-        if ($isMutual && $burningSpell) {
-            // Extend Burning by 18 hours
+        if ($isMutual) {
+            // Extend Status Effect duration by 18 hours
             DominionSpell::query()
-                ->where('spell_id', $burningSpell->id)
+                ->whereIn('spell_id', [$burningSpell->id, $lightningStormSpell->id])
                 ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
                 ->update(['duration' => DB::raw('duration + 18')]);
+        } else {
+            // Refresh Status Effect duration to 18 hours
+            DominionSpell::query()
+                ->whereIn('spell_id', [$burningSpell->id, $lightningStormSpell->id])
+                ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
+                ->where('duration', '<', 18)
+                ->update(['duration' => 18]);
         }
 
         $war = RealmWar::create([
