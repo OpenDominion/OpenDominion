@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Demon: Infernal Command now grants Archdemons 20% reduced casualties
 - Demon: Corruption now reduces the effects of Insect Swarm by 30%
+- Frezy, Gaia's Light, Gaia's Shadow, and Delve Into Shadow mana cost reduced to 2.5x (from 5x)
+- Mutual war now increases the duration of Burning and Lightning Storm by 18 hours (from 6)
+- Mastery gains increased by 1
 
 ## [1.44.3] - 2025-04-11
 ### Added

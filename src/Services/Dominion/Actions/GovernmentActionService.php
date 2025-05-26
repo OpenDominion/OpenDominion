@@ -264,11 +264,11 @@ class GovernmentActionService
                 ->delete();
         }
         if ($isMutual && $burningSpell) {
-            // Extend Burning by 6 hours
+            // Extend Burning by 18 hours
             DominionSpell::query()
                 ->where('spell_id', $burningSpell->id)
                 ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
-                ->update(['duration' => DB::raw('duration + 6')]);
+                ->update(['duration' => DB::raw('duration + 18')]);
         }
 
         $war = RealmWar::create([

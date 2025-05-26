@@ -1323,7 +1323,7 @@ class SpellActionService
                             // Extend duration
                             $duration += clamp(rfloor(($target->round->daysInRound() - 4) / 4), 0, 10);
                             if ($mutualWarDeclared) {
-                                $duration += 6;
+                                $duration += 18;
                             }
                             DominionSpell::create([
                                 'dominion_id' => $target->id,
