@@ -27,4 +27,9 @@ class Raid extends AbstractModel
     {
         return $this->belongsTo(Round::class);
     }
+
+    public function objectives()
+    {
+        return $this->hasMany(RaidObjective::class);
+    }
 }

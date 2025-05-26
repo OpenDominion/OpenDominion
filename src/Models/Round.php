@@ -76,6 +76,11 @@ class Round extends AbstractModel
         return $this->hasMany(Pack::class);
     }
 
+    public function raids()
+    {
+        return $this->hasMany(Raid::class);
+    }
+
     public function realms()
     {
         return $this->hasMany(Realm::class);
