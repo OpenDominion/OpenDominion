@@ -23,7 +23,7 @@ class WonderCalculator
     /**
      * @var float Minimum damage threshold for prestige gain
      */
-    protected const PRESTIGE_CONTRIBUTION_MIN = 0.02;
+    protected const PRESTIGE_CONTRIBUTION_MIN = 0.019;
 
     /**
      * @var float Maximum damage threshold for prestige gain
@@ -172,14 +172,21 @@ class WonderCalculator
     */
     public function getPrestigeGainForDominion(RoundWonder $wonder, Dominion $dominion): float
     {
-        if ($wonder->realm == null || !$dominion->realm->wonders->isEmpty()) {
-            // Wonder is neutral or realm already has a wonder
+        if (!$dominion->realm->wonders->isEmpty()) {
+            // Realm already has a wonder
             return 0;
         }
 
         $damageContribution = $this->getDamageContribution($wonder, $dominion, 'attack');
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
             return 0;
+        }
+
+        if ($wonder->realm == null) {
+            // Wonder is neutral
+            if ($damageContribution >= static::PRESTIGE_CONTRIBUTION_MIN) {
+                return static::PRESTIGE_BASE_GAIN;
+            }
         }
 
         return round(static::PRESTIGE_BASE_GAIN + (
@@ -197,14 +204,21 @@ class WonderCalculator
     */
     public function getMasteryGainForDominion(RoundWonder $wonder, Dominion $dominion): float
     {
-        if ($wonder->realm == null || !$dominion->realm->wonders->isEmpty()) {
-            // Wonder is neutral or realm already has a wonder
+        if (!$dominion->realm->wonders->isEmpty()) {
+            // Realm already has a wonder
             return 0;
         }
 
         $damageContribution = $this->getDamageContribution($wonder, $dominion, 'cyclone');
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
             return 0;
+        }
+
+        if ($wonder->realm == null) {
+            // Wonder is neutral
+            if ($damageContribution >= static::PRESTIGE_CONTRIBUTION_MIN) {
+                return static::PRESTIGE_BASE_GAIN;
+            }
         }
 
         return round(static::PRESTIGE_BASE_GAIN + (

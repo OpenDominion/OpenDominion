@@ -16,7 +16,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Frezy, Gaia's Light, Gaia's Shadow, and Delve Into Shadow mana cost reduced to 2.5x (from 5x)
 - Mutual war now increases the duration of Burning and Lightning Storm by 18 hours (from 6)
 - Declaring war now extends existing Burning and Lightning Storm effects in the declaring realm to 18 hours (plus the remaining duration if Mutual War)
+- Sabotage Boats damage increased to 2.5% (from 2.3%)
 - Mastery gains increased by 1
+- Destroying a neutral wonder now grants 25 prestige/mastery if you contributed at least 2% damage and your realm does not already control a wonder
 
 ## [1.44.3] - 2025-04-11
 ### Added
