@@ -167,9 +167,9 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center.show', $dominion);
         }
 
-        if ($selectedDominion->id == $dominion->id && $roundEnded) {
+        if ($roundEnded && $selectedDominion->realm_id == $dominion->realm_id) {
             // After round has ended
-            // Get all info ops taken on own dominion
+            // Get all info ops taken on own realm
             $infoOpArchive = $selectedDominion->infoOps()
                 ->with('sourceDominion')
                 ->where('type', '=', $type)
