@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Day 3: one Tier 2
   - Day 6: one Tier 2
   - Day 9: one of the following: City of Gold, Fountain of Youth, Horn of Plenty
+- Daily automations increased to 3 (from 2)
 
 ## [1.44.3] - 2025-04-11
 ### Added
