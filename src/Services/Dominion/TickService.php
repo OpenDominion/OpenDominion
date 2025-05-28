@@ -681,7 +681,7 @@ class TickService
 
             // Spawn Wonders
             $day = $round->daysInRound();
-            if ($day > 1 && $day % 2 == 0) {
+            if ($day > 0 && $day % 3 == 0) {
                 $this->wonderService->createWonder($round);
             }
         }

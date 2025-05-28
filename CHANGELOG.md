@@ -9,16 +9,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Demon: Infernal Command now grants Archdemons 20% reduced casualties
 - Demon: Corruption now reduces the effects of Insect Swarm by 30%
 - Goblin Raider: +25p (from 325p)
+- Nox: Removed
 - Sylvan Centaur: -20p (from 960p)
 - Troll Basher/Smasher: -15p (from 1415p)
 - Troll Brute: +10p (from 350p)
 - Undead: boat capacity racial increased to +20 (from +10)
-- Frezy, Gaia's Light, Gaia's Shadow, and Delve Into Shadow mana cost reduced to 2.5x (from 5x)
+- Frenzy, Gaia's Light, Gaia's Shadow, and Delve Into Shadow mana cost reduced to 2.5x (from 5x)
 - Mutual war now increases the duration of Burning and Lightning Storm by 18 hours (from 6)
 - Declaring war now extends existing Burning and Lightning Storm effects in the declaring realm to 18 hours (plus the remaining duration if Mutual War)
 - Sabotage Boats damage increased to 2.5% (from 2.3%)
 - Mastery gains increased by 1
 - Destroying a neutral wonder now grants 25 prestige/mastery if you contributed at least 2% damage and your realm does not already control a wonder
+- Altar of Heroes: hero experience gains increased by 20% (from 10%)
+- New Wonder: City of Gold +4% platinum production
+- Wonder Spawn Schedule
+  - Registration Open: two Tier 1 (excluding the below "Day 9" wonders), one Tier 2
+  - Day 3: one Tier 2
+  - Day 6: one Tier 2
+  - Day 9: one of the following: City of Gold, Fountain of Youth, Horn of Plenty
 
 ## [1.44.3] - 2025-04-11
 ### Added
@@ -142,7 +150,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Sylvan Centaur: +60p (from 900p)
 - Sylvan Sprite: -0.5 DP (from 3), -50p (from 300p)
 - Undead: Death and Decay increased to 0.6% of peasants (from 0.5%)
-- Wood Elf: removed
+- Wood Elf: Removed
 
 ### Fixed
 - When a war is canceled, the town crier will now show the realm name from the time of cancelation (instead of from the time of declaration)

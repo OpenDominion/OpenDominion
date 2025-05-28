@@ -18,7 +18,7 @@ use OpenDominion\Services\NotificationService;
 
 class WonderService
 {
-    public const MAX_WONDERS_PER_REALM = 0.4;
+    public const MAX_WONDERS = 6;
 
     /**
      * Get the most frequent wonders in the past few rounds for each tier.
@@ -69,6 +69,11 @@ class WonderService
             $tier2->forget($wonderKey);
         }
 
+        // Exclude 'S Tier' wonders
+        $tier1->forget('city_of_gold');
+        $tier1->forget('fountain_of_youth');
+        $tier1->forget('horn_of_plenty');
+
         $wonderOptions = $tier1->random(3);
         if ($wonderOptions->has('halls_of_knowledge')) {
             $wonderOptions->forget('ancient_library');
@@ -98,17 +103,19 @@ class WonderService
             $wonders->forget($wonderKey);
         }
 
-        // Limit to three Tier 1
-        if ($existingWonders->where('wonder.power', Wonder::TIER_ONE_POWER)->count() >= 3) {
-            $wonders = $wonders->where('power', Wonder::TIER_TWO_POWER);
-        }
-
-        if ($existingWonders->count() >= $round->realms()->count() * self::MAX_WONDERS_PER_REALM) {
+        if ($existingWonders->count() >= self::MAX_WONDERS) {
             return collect();
         }
 
-        if ($round->daysInRound() > 9) {
-            $wonders->forget('halls_of_knowledge');
+        if ($round->daysInRound() < 9) {
+            // Limit to Tier 2
+            $wonders = $wonders->where('power', Wonder::TIER_TWO_POWER);
+        } elseif ($round->daysInRound() == 9) {
+            // Limit to 'S Tier'
+            $wonders = $wonders->whereIn('key', ['city_of_gold', 'fountain_of_youth', 'horn_of_plenty']);
+        } else {
+            // Limit to Tier 1
+            $wonders = $wonders->where('power', Wonder::TIER_ONE_POWER);
         }
 
         if ($existingWonders->has('ancient_library') || $existingWonders->has('halls_of_knowledge')) {
