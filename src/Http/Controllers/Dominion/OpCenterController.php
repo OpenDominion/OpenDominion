@@ -170,7 +170,7 @@ class OpCenterController extends AbstractDominionController
         if ($roundEnded && $selectedDominion->realm_id == $dominion->realm_id) {
             // After round has ended
             // Get all info ops taken on own realm
-            $infoOpArchive = $selectedDominion->infoOps()
+            $infoOpArchive = $dominion->infoOps()
                 ->with('sourceDominion')
                 ->where('type', '=', $type)
                 ->orderBy('created_at', 'desc')
