@@ -100,7 +100,7 @@ class PrestigeCalculator
 
         // Heroes
         if ($dominion->hero !== null && $dominion->hero->getPerkValue('retal_prestige') && $target->realm->number != '0') {
-            $hoursSinceInvasion = $this->militaryCalculator->getRetaliationHours($target, $dominion->realm);
+            $hoursSinceInvasion = $this->militaryCalculator->getRetaliationHours($target->realm, $dominion->realm);
             if ($hoursSinceInvasion !== null) {
                 $bonusPrestige = $dominion->hero->getPerkValue('retal_prestige');
                 if ($hoursSinceInvasion < 24) {
