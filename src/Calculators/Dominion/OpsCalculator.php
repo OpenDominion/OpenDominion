@@ -565,11 +565,11 @@ class OpsCalculator
             ->count();
 
         if ($success) {
-            // Gain between 20 and 50
-            return min(50, (5 * $realmies) + 15);
+            // Gain between 25 and 50
+            return min(50, (5 * $realmies) + 20);
         }
 
-        // Lose between 10 and 100
-        return max(10, 110 - (10 * $realmies));
+        // Lose between 50 and 100
+        return max(50, 110 - (10 * $realmies));
     }
 }
