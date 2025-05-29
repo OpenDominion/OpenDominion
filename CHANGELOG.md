@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Offensive power bonus from single/mutual war changed to 4%/8% (from 5%/10%)
 - Sabotage Boats damage increased to 2.5% (from 2.3%)
 - Mastery gains increased by 1
+- Critical failure chance is now less consistent
+- Incite Chaos now transfers some of your own chaos to the target
 - Destroying a neutral wonder now grants 25 prestige/mastery if you contributed at least 2% damage and your realm does not already control a wonder
 - Altar of Heroes: hero experience gains increased by 20% (from 10%)
 - New Wonder: City of Gold +4% platinum production

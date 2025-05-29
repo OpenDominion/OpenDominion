@@ -626,13 +626,9 @@ class SpellActionService
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
         $criticalSuccess = false;
-        if ($dominion->chaos >= 100) {
-            $criticalFailureChance = 1;
-        } else {
-            $criticalFailureChance = ($dominion->chaos / 100) / 2;
-        }
-        $failure = ($criticalFailureChance == 1) || !random_chance($successRate);
-        $criticalFailure = $failure && (($criticalFailureChance == 1) || ($chaosSpell && random_chance($criticalFailureChance)));
+        $criticalFailureChance = ($dominion->chaos / 100) / 1.5;
+        $failure = ($dominion->chaos >= 100 && random_chance($criticalFailureChance)) || !random_chance($successRate);
+        $criticalFailure = $failure && (($dominion->chaos >= 100) || ($chaosSpell && random_chance($criticalFailureChance)));
 
         if ($failure && !$criticalFailure) {
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');

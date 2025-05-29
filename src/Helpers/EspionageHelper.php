@@ -163,10 +163,10 @@ class EspionageHelper
             ],
             [
                 'name' => 'Incite Chaos',
-                'description' => 'Increases critical failure chance by 5%',
+                'description' => 'Increases critical failure chance by 6-14%',
                 'key' => 'incite_chaos',
                 'attrs' => ['chaos'],
-                'percentage' => 5,
+                'percentage' => 9,
             ]
         ]);
     }
