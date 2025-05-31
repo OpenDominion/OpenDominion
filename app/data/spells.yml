@@ -304,7 +304,7 @@ defensive_frenzy:
 frenzy:
   name: Frenzy
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
@@ -392,7 +392,7 @@ ascendance:
 delve_into_shadow:
   name: Delve into Shadow
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
@@ -489,6 +489,7 @@ burning:
     enemy_fireball_damage: 100
     apply_rejuvenation: 1
     immune_lightning_storm: 1
+    war_extends: 1
 lightning_storm:
   name: Lightning Storm
   category: effect
@@ -499,6 +500,7 @@ lightning_storm:
     lightning_storm: 50
     apply_rejuvenation: 1
     immune_burning: 1
+    war_extends: 1
 rejuvenation:
   name: Rejuvenation
   category: effect
@@ -541,7 +543,7 @@ illumination:
 gaias_light:
   name: Gaia's Light
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
@@ -553,7 +555,7 @@ gaias_light:
 gaias_shadow:
   name: Gaia's Shadow
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
@@ -605,6 +607,7 @@ infernal_command:
     - demon
   perks:
     offense_from_pairing_demon: 0.75
+    casualties_demon: -20
     apply_corruption: 1
 corruption:
   name: Corruption
@@ -617,3 +620,4 @@ corruption:
   perks:
     platinum_production: -5
     food_consumption: 5
+    food_production_damage: -30
