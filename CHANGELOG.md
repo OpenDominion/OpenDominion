@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.45.0] - 2025-05-30
 ### Changed
 - Dark Elf Swordsman: now convert 8.5% of survivors (from 8%)
 - Demon: Infernal Command now grants Archdemons 20% reduced casualties
@@ -2429,7 +2431,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.44.3...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.45.0...HEAD
+[1.45.0]: https://github.com/OpenDominion/OpenDominion/compare/1.44.3...1.45.0
 [1.44.3]: https://github.com/OpenDominion/OpenDominion/compare/1.44.2...1.44.3
 [1.44.2]: https://github.com/OpenDominion/OpenDominion/compare/1.44.1...1.44.2
 [1.44.1]: https://github.com/OpenDominion/OpenDominion/compare/1.44.0...1.44.1
