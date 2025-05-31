@@ -46,3 +46,4 @@ units:
       defense: 2
     perks:
       casualties: -50
+playable: false

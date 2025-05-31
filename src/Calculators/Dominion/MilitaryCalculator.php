@@ -211,9 +211,9 @@ class MilitaryCalculator
         } else {
             if ($target !== null && $dominion->realm !== null) {
                 if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
-                    $multiplier += 0.1;
+                    $multiplier += 0.08;
                 } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
-                    $multiplier += 0.05;
+                    $multiplier += 0.04;
                 }
             }
         }
@@ -1284,19 +1284,20 @@ class MilitaryCalculator
      * @param Realm $realm
      * @return int
      */
-    public function getRetaliationHours(Dominion $dominion, Realm $realm): ?int
+    public function getRetaliationHours(Realm $attackingRealm, Realm $defendingRealm): ?int
     {
-        $dominionIds = $realm->dominions->pluck('id')->all();
+        $attackerIds = $attackingRealm->dominions->pluck('id')->all();
+        $defenderIds = $defendingRealm->dominions->pluck('id')->all();
 
         // todo: this touches the db. should probably be in invasion or military service instead
         $mostRecentInvasion = GameEvent::query()
             ->where([
-                'source_type' => Dominion::class,
-                'source_id' => $dominion->id,
                 'type' => 'invasion',
+                'source_type' => Dominion::class,
                 'target_type' => Dominion::class,
             ])
-            ->whereIn('target_id', $dominionIds)
+            ->whereIn('source_id', $attackerIds)
+            ->whereIn('target_id', $defenderIds)
             ->max('created_at');
 
         if ($mostRecentInvasion === null) {

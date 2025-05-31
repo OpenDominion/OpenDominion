@@ -20,7 +20,7 @@ units:
       offense: 4
       defense: 0
     perks:
-      upgrade_survivors: 4,8 # slot 4, 8%
+      upgrade_survivors: 4,8.5 # slot 4, 8%
   - name: Gargoyle
     cost:
       platinum: 300

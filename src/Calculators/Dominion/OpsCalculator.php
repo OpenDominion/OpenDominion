@@ -374,12 +374,12 @@ class OpsCalculator
             $masteryDifference -= 1;
         }
 
-        // Amount based on relative mastery (from 0 to 6, 3 when equal)
-        $masteryChange = 3 + ($masteryDifference / 200);
+        // Amount based on relative mastery (from 1 to 7, 4 when equal)
+        $masteryChange = 4 + ($masteryDifference / 200);
 
-        // Halved for mastery loss (from 0 to 3)
+        // Reduced for mastery loss (from 0 to 3)
         if ($loss) {
-            $masteryChange = $masteryChange / 2;
+            $masteryChange = $masteryChange / 2.75;
             if ($selfMastery < 100) {
                 $masteryChange = 0;
             }
@@ -565,11 +565,11 @@ class OpsCalculator
             ->count();
 
         if ($success) {
-            // Gain between 20 and 50
-            return min(50, (5 * $realmies) + 15);
+            // Gain between 25 and 50
+            return min(50, (5 * $realmies) + 20);
         }
 
-        // Lose between 10 and 100
-        return max(10, 110 - (10 * $realmies));
+        // Lose between 50 and 100
+        return max(50, 110 - (10 * $realmies));
     }
 }
