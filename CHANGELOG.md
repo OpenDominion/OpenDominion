@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 
 ## [1.45.0] - 2025-05-30
+### Added
+- After the round has ended, you can now view all ops taken on your realmies from their advisors page
+
 ### Changed
 - Dark Elf Swordsman: now convert 8.5% of survivors (from 8%)
 - Demon: Infernal Command now grants Archdemons 20% reduced casualties
