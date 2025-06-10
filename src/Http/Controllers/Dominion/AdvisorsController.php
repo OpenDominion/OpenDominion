@@ -142,7 +142,7 @@ class AdvisorsController extends AbstractDominionController
             'latestInfoOps' => $latestInfoOps,
             'latestInvasionEvents' => $latestInvasionEvents,
             'inRealm' => true,
-            'selfArchive' => $dominion->round->hasEnded() && $dominion->id == $selectedDominion->id,
+            'realmArchive' => $dominion->round->hasEnded() && $selectedDominion->realm_id == $dominion->realm_id,
             'targetDominion' => $target
         ]);
     }

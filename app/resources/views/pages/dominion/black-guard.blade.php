@@ -269,6 +269,7 @@
                     <p>War and black ops cannot be performed until the 4th day of the round.<p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} <b>mana</b> and {{ sprintf("%.4g", $selectedDominion->wizard_strength) }}% <b>wizard strength</b>.</p>
                     <p>You have {{ sprintf("%.4g", $selectedDominion->spy_strength) }}% <b>spy strength</b>.</p>
+                    <p>You have {{ $selectedDominion->chaos }} <b>chaos</b>, unstable magic yields a {{ sprintf("%.2g", $selectedDominion->chaos / 1.5) }}% chance of critical failure.</p>
                     <p>Joining the Chaos League takes 12 hours and you cannot leave for the first 12 hours after joining. Leaving the Chaos League also requires an additional 12 hours to go into effect.</p>
 
                     @if ($isBlackGuardMember)

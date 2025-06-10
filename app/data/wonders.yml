@@ -64,9 +64,8 @@ fountain_of_youth:
 city_of_gold:
   name: City of Gold
   perks:
-    platinum_production: 10
+    platinum_production: 4
   power: 150000
-  active: false
 ruby_monolith:
   name: Ruby Monolith
   perks:
@@ -168,7 +167,7 @@ altar_of_heroes:
   name: Altar of Heroes
   perks:
     hero_bonus: 100
-    hero_experience: 10
+    hero_experience: 20
   power: 75000
   active: true
 temple_of_the_damned:

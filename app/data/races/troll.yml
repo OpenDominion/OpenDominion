@@ -17,7 +17,7 @@ perks:
 units:
   - name: Brute
     cost:
-      platinum: 350
+      platinum: 360
       ore: 25
     power:
       offense: 4
@@ -32,7 +32,7 @@ units:
   - name: Basher
     type: offensive_elite
     cost:
-      platinum: 1415
+      platinum: 1400
       ore: 150
     power:
       offense: 7
@@ -43,7 +43,7 @@ units:
   - name: Smasher
     type: hybrid_elite
     cost:
-      platinum: 1415
+      platinum: 1400
       ore: 150
     power:
       offense: 7

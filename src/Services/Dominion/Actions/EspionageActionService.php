@@ -750,8 +750,11 @@ class EspionageActionService
                 } elseif ($attr == 'chaos') {
                     // Flat, inverted damage
                     $damage = ($baseDamage * 100);
+                    $bonusDamage = min(rand(2/3 * $damage, 4/3 * $damage), $dominion->{$attr});
+                    $damage += $bonusDamage;
                     $actualDamage = $damage;
                     $target->{$attr} += $damage;
+                    $dominion->{$attr} -= $bonusDamage;
                 } else {
                     // Rounded up for all other damage types
                     $damage = rceil($damage);

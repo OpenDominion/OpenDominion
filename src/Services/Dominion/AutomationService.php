@@ -26,7 +26,7 @@ class AutomationService
 {
     use DominionGuardsTrait;
 
-    public const DAILY_ACTIONS = 2;
+    public const DAILY_ACTIONS = 3;
 
     /** @var BankActionService */
     protected $bankActionService;

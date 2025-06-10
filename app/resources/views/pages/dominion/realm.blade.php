@@ -317,7 +317,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you view which realms currently have war relations with this one.</p>
-                    <p>While a war is active, dominions in both realms gain 5% offense when attacking members of the opposing realm. If both realms have an active war bonus, that increases to 10% offense.</p>
+                    <p>While a war is active, dominions in both realms gain 4% offense when attacking members of the opposing realm. If both realms have an active war bonus, that increases to 8% offense.</p>
                 </div>
             </div>
         </div>
