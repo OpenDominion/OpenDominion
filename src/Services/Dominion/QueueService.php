@@ -191,7 +191,7 @@ class QueueService
                 continue;
             }
 
-            DB::transaction(function () use ($dominion, $source, $resource, $hours) {
+            DB::transaction(function () use ($dominion, $source, $resource, $hours, $amount, $now) {
                 $existingQueueRow = $dominion->queues()
                     ->where('source', $source)
                     ->where('resource', $resource)
