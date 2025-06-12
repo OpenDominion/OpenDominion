@@ -211,7 +211,7 @@ class QueueService
                         'created_at' => $now,
                     ]);
                 } catch(QueryException $e) {
-                    if ($e->getCode() == "23000") {
+                    if ($e->getCode() == '23000') {
                         $existingQueueRow = true;
                     } else {
                         throw $e;
