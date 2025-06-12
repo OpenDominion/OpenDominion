@@ -190,33 +190,33 @@ class QueueService
             if ($amount === 0) {
                 continue;
             }
-            $q = $this->getQueue($source, $dominion);
-            $existingQueueRow =
-                $q->filter(static function ($row) use ($resource, $hours) {
-                    return (
-                        ($row->resource === $resource) &&
-                        ((int)$row->hours === $hours)
-                    );
-                })->first();
 
-            if ($existingQueueRow === null) {
-                $dominion->queues()->insert([
-                    'dominion_id' => $dominion->id,
-                    'source' => $source,
-                    'resource' => $resource,
-                    'hours' => $hours,
-                    'amount' => $amount,
-                    'created_at' => $now,
-                ]);
-            } else {
-                $dominion->queues()->where([
-                    'source' => $source,
-                    'resource' => $resource,
-                    'hours' => $hours,
-                ])->update([
-                    'amount' => DB::raw("amount + $amount"),
-                ]);
-            }
+            DB::transaction(function () use ($dominion, $source, $resource, $hours) {
+                $existingQueueRow = $dominion->queues()
+                    ->where('source', $source)
+                    ->where('resource', $resource)
+                    ->where('hours', $hours)
+                    ->first();
+
+                if ($existingQueueRow === null) {
+                    $dominion->queues()->insert([
+                        'dominion_id' => $dominion->id,
+                        'source' => $source,
+                        'resource' => $resource,
+                        'hours' => $hours,
+                        'amount' => $amount,
+                        'created_at' => $now,
+                    ]);
+                } else {
+                    $dominion->queues()->where([
+                        'source' => $source,
+                        'resource' => $resource,
+                        'hours' => $hours,
+                    ])->update([
+                        'amount' => DB::raw("amount + $amount"),
+                    ]);
+                }
+            }, 2);
         }
     }
 
