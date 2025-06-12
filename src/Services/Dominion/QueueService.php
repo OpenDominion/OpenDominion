@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use BadMethodCallException;
 use DB;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
 use Throwable;
@@ -190,15 +191,17 @@ class QueueService
             if ($amount === 0) {
                 continue;
             }
+            $q = $this->getQueue($source, $dominion);
+            $existingQueueRow =
+                $q->filter(static function ($row) use ($resource, $hours) {
+                    return (
+                        ($row->resource === $resource) &&
+                        ((int)$row->hours === $hours)
+                    );
+                })->first();
 
-            DB::transaction(function () use ($dominion, $source, $resource, $hours, $amount, $now) {
-                $existingQueueRow = $dominion->queues()
-                    ->where('source', $source)
-                    ->where('resource', $resource)
-                    ->where('hours', $hours)
-                    ->first();
-
-                if ($existingQueueRow === null) {
+            if ($existingQueueRow === null) {
+                try {
                     $dominion->queues()->insert([
                         'dominion_id' => $dominion->id,
                         'source' => $source,
@@ -207,16 +210,24 @@ class QueueService
                         'amount' => $amount,
                         'created_at' => $now,
                     ]);
-                } else {
-                    $dominion->queues()->where([
-                        'source' => $source,
-                        'resource' => $resource,
-                        'hours' => $hours,
-                    ])->update([
-                        'amount' => DB::raw("amount + $amount"),
-                    ]);
+                } catch(QueryException $e) {
+                    if ($e->getCode() == "23000") {
+                        $existingQueueRow = true;
+                    } else {
+                        throw $e;
+                    }
                 }
-            }, 2);
+            }
+
+            if ($existingQueueRow !== null) {
+                $dominion->queues()->where([
+                    'source' => $source,
+                    'resource' => $resource,
+                    'hours' => $hours,
+                ])->update([
+                    'amount' => DB::raw("amount + $amount"),
+                ]);
+            }
         }
     }
 
