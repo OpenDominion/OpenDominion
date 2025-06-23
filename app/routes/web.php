@@ -158,6 +158,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Raids
             $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');
+            $router->get('raids/objective/{objective}')->uses('Dominion\RaidController@getRaidObjective')->name('raid-objective');
 
             // Wonders
             $router->get('wonders')->uses('Dominion\WonderController@getWonders')->name('wonders');

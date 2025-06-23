@@ -22,6 +22,8 @@ class CreateRaidsTables extends Migration
             $table->integer('reward_amount');
             $table->string('completion_reward_resource');
             $table->integer('completion_reward_amount');
+            $table->timestamp('start_date');
+            $table->timestamp('end_date');
             $table->timestamps();
 
             $table->foreign('round_id')->references('id')->on('rounds');
@@ -34,6 +36,8 @@ class CreateRaidsTables extends Migration
             $table->string('description');
             $table->integer('order')->unsigned();
             $table->integer('score_required')->unsigned();
+            $table->timestamp('start_date');
+            $table->timestamp('end_date');
             $table->timestamps();
 
             $table->foreign('raid_id')->references('id')->on('raids');
@@ -44,7 +48,6 @@ class CreateRaidsTables extends Migration
             $table->integer('raid_objective_id')->unsigned();
             $table->string('type');
             $table->string('name');
-            $table->float('modifier');
             $table->text('attributes')->nullable();
             $table->text('bonuses')->nullable();
             $table->timestamps();
