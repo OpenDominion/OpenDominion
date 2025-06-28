@@ -26,7 +26,7 @@ use \Illuminate\Database\Eloquent\Builder;
  */
 class HeroTournament extends AbstractModel
 {
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['start_date', 'created_at', 'updated_at'];
 
     public function round()
     {
@@ -52,5 +52,10 @@ class HeroTournament extends AbstractModel
     public function scopeActive(Builder $query)
     {
         return $query->where('finished', false);
+    }
+
+    public function hasStarted(): bool
+    {
+        return $this->start_date !== null && $this->start_date <= now();
     }
 }

@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Hero Tournament now requires a dominion to register
 
 ## [1.45.0] - 2025-05-30
 ### Added

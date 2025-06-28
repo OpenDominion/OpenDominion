@@ -17,76 +17,111 @@
                 </div>
             @endif
             @foreach ($tournaments as $tournament)
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
+                @if ($tournament->start_date && !$tournament->hasStarted())
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="alert alert-info">
+                                <p>The tournament grounds buzz with anticipation as warriors from across the land prepare for the ultimate test of skill and valor. Preparations are underway, banners are being raised, and crowds are gathering to witness the legendary battles to come.</p>
+                                <p><strong>The tournament begins in {{ $tournament->start_date->longAbsoluteDiffForHumans() }}.</strong></p>
+                            </div>
+                            @if ($tournament->participants->pluck('hero_id')->contains($selectedDominion->hero->id))
+                                <div class="alert alert-success">
+                                    <h4>You Are Registered!</h4>
+                                    <p>Your hero stands ready among the champions, their name already inscribed in the tournament scrolls. The time for glory draws near.</p>
+                                </div>
+                                <p>
+                                    <a href="{{ route('dominion.heroes.tournaments.leave', ['tournament' => $tournament->id]) }}" class="btn btn-danger">
+                                        Leave Tournament
+                                    </a>
+                                </p>
+                            @else
+                                <div class="alert alert-warning">
+                                    <h4>Your Hero Awaits!</h4>
+                                    <p>The call to arms has been sounded, but your hero has not yet answered. Will they step forward to claim their destiny?</p>
+                                </div>
+                                <p>
+                                    <a href="{{ route('dominion.heroes.tournaments.join', ['tournament' => $tournament->id]) }}" class="btn btn-primary">
+                                        Join Tournament
+                                    </a>
+                                </p>
+                            @endif
+                        </div>
                     </div>
-                    <div class="box-body table-responsive">
-                        <h4>Standings {{ $tournament->finished ? '- Final' : null }}</h4>
-                        <table class="table table-condensed">
-                            <colgroup>
-                                <col width="100">
-                                <col>
-                                <col>
-                                <col width="100">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Standing</th>
-                                    <th>Dominion</th>
-                                    <th>Hero</th>
-                                    <th>Record</th>
-                                </tr>
-                            </thead>
-                            @foreach ($tournament->participants->sortBy([['standing', 'asc'], ['wins', 'desc'], ['losses', 'asc'], ['draws', 'desc']]) as $participant)
-                                <tr>
-                                    <td>
-                                        {{ $participant->standing ? $participant->standing : '--' }}
-                                    </td>
-                                    <td>
-                                        {{ $participant->hero->dominion->name }} (#{{ $participant->hero->dominion->realm->number }})
-                                    </td>
-                                    <td>
-                                        {{ $participant->hero->name }}
-                                    </td>
-                                    <td class="{{ $participant->eliminated ? 'text-red' : null }}">
-                                        {{ $participant->wins }} - {{ $participant->losses }} - {{ $participant->draws }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </table>
-                        <h4>Results {{ $tournament->finished ? '- Final' : null }}</h4>
-                        <table class="table table-condensed">
-                            <colgroup>
-                                <col width="100">
-                                <col>
-                                <col>
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Round</th>
-                                    <th>Matchup</th>
-                                    <th>Winner</th>
-                                </tr>
-                            </thead>
-                            @foreach ($tournament->battles->sortBy([['pivot.round_number', 'desc'], ['finished', 'desc'], ['winner', 'desc']]) as $battle)
-                                <tr>
-                                    <td>{{ $battle->pivot->round_number }}</td>
-                                    <td>{{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}</td>
-                                    <td>
-                                        @if ($battle->winner)
-                                            {{ $battle->winner->name }}
-                                        @elseif ($battle->finished)
-                                            <span class="text-muted">Draw</span>
-                                        @else
-                                            --
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </table>
+                @else
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
+                        </div>
+                        <div class="box-body table-responsive">
+                            <h4>Standings {{ $tournament->finished ? '- Final' : null }}</h4>
+                            <table class="table table-condensed">
+                                <colgroup>
+                                    <col width="100">
+                                    <col>
+                                    <col>
+                                    <col width="100">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Standing</th>
+                                        <th>Dominion</th>
+                                        <th>Hero</th>
+                                        <th>Record</th>
+                                    </tr>
+                                </thead>
+                                @foreach ($tournament->participants->sortBy([['standing', 'asc'], ['wins', 'desc'], ['losses', 'asc'], ['draws', 'desc']]) as $participant)
+                                    <tr>
+                                        <td>
+                                            {{ $participant->standing ? $participant->standing : '--' }}
+                                        </td>
+                                        <td>
+                                            {{ $participant->hero->dominion->name }} (#{{ $participant->hero->dominion->realm->number }})
+                                        </td>
+                                        <td>
+                                            {{ $participant->hero->name }}
+                                        </td>
+                                        <td class="{{ $participant->eliminated ? 'text-red' : null }}">
+                                            {{ $participant->wins }} - {{ $participant->losses }} - {{ $participant->draws }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                            <h4>Results {{ $tournament->finished ? '- Final' : null }}</h4>
+                            <table class="table table-condensed">
+                                <colgroup>
+                                    <col width="100">
+                                    <col>
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Round</th>
+                                        <th>Matchup</th>
+                                        <th>Winner</th>
+                                    </tr>
+                                </thead>
+                                @foreach ($tournament->battles->sortBy([['pivot.round_number', 'desc'], ['finished', 'desc'], ['winner', 'desc']]) as $battle)
+                                    <tr>
+                                        <td>{{ $battle->pivot->round_number }}</td>
+                                        <td>{{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}</td>
+                                        <td>
+                                            @if ($battle->winner)
+                                                {{ $battle->winner->name }}
+                                            @elseif ($battle->finished)
+                                                <span class="text-muted">Draw</span>
+                                            @else
+                                                --
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
                     </div>
-                </div>
+                @endif
             @endforeach
         </div>
 

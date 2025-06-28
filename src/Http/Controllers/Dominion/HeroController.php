@@ -14,6 +14,7 @@ use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroTournament;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
 use OpenDominion\Services\Dominion\HeroBattleService;
+use OpenDominion\Services\Dominion\HeroTournamentService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class HeroController extends AbstractDominionController
@@ -331,5 +332,39 @@ class HeroController extends AbstractDominionController
         return view('pages.dominion.hero-tournaments', compact(
             'tournaments',
         ));
+    }
+
+    public function getJoinTournament(HeroTournament $tournament)
+    {
+        $dominion = $this->getSelectedDominion();
+        $heroTournamentService = app(HeroTournamentService::class);
+
+        try {
+            $this->guardLockedDominion($dominion);
+            $heroTournamentService->joinTournament($tournament, $dominion);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return redirect()->route('dominion.heroes.tournaments');
+    }
+
+    public function getLeaveTournament(HeroTournament $tournament)
+    {
+        $dominion = $this->getSelectedDominion();
+        $heroTournamentService = app(HeroTournamentService::class);
+
+        try {
+            $this->guardLockedDominion($dominion);
+            $heroTournamentService->leaveTournament($tournament, $dominion);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return redirect()->route('dominion.heroes.tournaments');
     }
 }
