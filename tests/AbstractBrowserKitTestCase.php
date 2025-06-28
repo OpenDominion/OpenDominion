@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests;
 
 use Laravel\BrowserKitTesting\TestCase;
+use Mockery;
 use Notification;
 use OpenDominion\Tests\Traits\CreatesApplication;
 use OpenDominion\Tests\Traits\CreatesData;
@@ -33,5 +34,21 @@ abstract class AbstractBrowserKitTestCase extends TestCase
 //        Mail::fake();
         Notification::fake();
 //        Queue::fake();
+    }
+
+    /**
+     * Clean up after each test to prevent memory leaks
+     */
+    protected function tearDown(): void
+    {
+        // Close all Mockery mocks to free memory
+        Mockery::close();
+
+        parent::tearDown();
+
+        // Force garbage collection to reclaim memory
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
     }
 }
