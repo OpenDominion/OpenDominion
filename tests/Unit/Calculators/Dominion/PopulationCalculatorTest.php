@@ -310,12 +310,6 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0.0, $result);
     }
 
-    public function testGetPopulationMilitaryMaxTrainable()
-    {
-        // This method doesn't exist in the actual PopulationCalculator, so skip
-        $this->markTestSkipped('Method getPopulationMilitaryMaxTrainable does not exist in PopulationCalculator');
-    }
-
     public function testGetEmploymentJobs()
     {
         // Mock all building attributes

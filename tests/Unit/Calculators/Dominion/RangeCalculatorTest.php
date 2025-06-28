@@ -200,6 +200,9 @@ class RangeCalculatorTest extends AbstractBrowserKitTestCase
         $this->guardMembershipService->shouldReceive('joinRoyalGuard')->with($this->selfDominion)->once();
 
         $this->sut->checkGuardApplications($this->selfDominion, $this->targetDominion);
+        
+        // Assert that mock expectations were verified (joinRoyalGuard called once due to out-of-range violation)
+        $this->addToAssertionCount(1);
     }
 
     public function testCheckGuardApplicationsEliteGuardInRange()
@@ -214,6 +217,9 @@ class RangeCalculatorTest extends AbstractBrowserKitTestCase
         $this->guardMembershipService->shouldReceive('joinEliteGuard')->never();
 
         $this->sut->checkGuardApplications($this->selfDominion, $this->targetDominion);
+        
+        // Assert that mock expectations were verified (joinEliteGuard never called due to in-range status)
+        $this->addToAssertionCount(1);
     }
 
     public function testCheckGuardApplicationsNoGuard()
@@ -226,6 +232,9 @@ class RangeCalculatorTest extends AbstractBrowserKitTestCase
         $this->guardMembershipService->shouldReceive('joinEliteGuard')->never();
 
         $this->sut->checkGuardApplications($this->selfDominion, $this->targetDominion);
+        
+        // Assert that mock expectations were verified (no guard methods called for non-guard member)
+        $this->addToAssertionCount(1);
     }
 
     public function testIsInRangeWithGuardModifiers()
