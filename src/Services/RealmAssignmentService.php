@@ -1,0 +1,1045 @@
+<?php
+
+namespace OpenDominion\Services;
+
+use Illuminate\Support\Collection;
+use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Pack;
+use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
+use OpenDominion\Models\Round;
+use OpenDominion\Models\User;
+use OpenDominion\Models\UserFeedback;
+
+/**
+ * Non-persisted Player model
+ */
+class Player
+{
+    public string $id;
+    public float $rating;
+    public ?string $packId;
+    //public bool $hasDiscord;
+    public array $favorability = []; // player_id => score
+    
+    // Playstyle ratings (0-100 for each category)
+    public float $attackerRating = 0;
+    public float $converterRating = 0;
+    public float $explorerRating = 0;
+    public float $opsRating = 0;
+    
+    /**
+     * Create a new Player instance with given attributes
+     * 
+     * Initializes a player object by setting any provided attributes that match
+     * existing properties. Used to create player objects from database data.
+     *
+     * @param array $attributes Associative array of attribute names and values
+     */
+    public function __construct(array $attributes = [])
+    {
+        foreach ($attributes as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+    }
+    
+    /**
+     * Get favorability score with another player
+     * 
+     * Returns the favorability rating this player has given to another player.
+     * Positive values indicate endorsement, negative values indicate negative feedback.
+     * Returns 0 if no feedback has been given.
+     *
+     * @param string $playerId The ID of the other player
+     * @return float Favorability score (-1 to 1, typically)
+     */
+    public function getFavorabilityWith(string $playerId): float
+    {
+        return $this->favorability[$playerId] ?? 0;
+    }
+    
+    /**
+     * Get player's primary playstyle based on highest rating
+     * 
+     * Compares all playstyle ratings (attacker, converter, explorer, ops) and
+     * returns the playstyle with the highest value. Used for playstyle distribution
+     * analysis and realm balancing.
+     *
+     * @return string Primary playstyle ('attacker', 'converter', 'explorer', or 'ops')
+     */
+    public function getPrimaryPlaystyle(): string
+    {
+        $ratings = [
+            'attacker' => $this->attackerRating,
+            'converter' => $this->converterRating,
+            'explorer' => $this->explorerRating,
+            'ops' => $this->opsRating,
+        ];
+        
+        return array_keys($ratings, max($ratings))[0];
+    }
+}
+
+/**
+ * Non-persisted Pack model
+ */
+class PlaceholderPack
+{
+    public string $id;
+    public Collection $members;
+    public int $size;
+    public bool $large;
+    public float $rating;
+
+    /**
+     * Create a new PlaceholderPack instance
+     * 
+     * Initializes a pack with the given members and calculates derived properties.
+     * Large packs (>3 members) are automatically marked as such. The pack rating
+     * is calculated as the sum of all member ratings.
+     *
+     * @param string $id Unique identifier for the pack
+     * @param Collection $members Collection of Player objects in this pack
+     */
+    public function __construct(string $id, Collection $members)
+    {
+        $this->id = $id;
+        $this->members = $members;
+        $this->size = $members->count();
+        $this->large = $this->size > 3;
+        $this->rating = $members->sum('rating');
+    }
+
+    /**
+     * Calculate compatibility score with another pack
+     * 
+     * Computes the total favorability between all members of this pack and
+     * all members of another pack. Each pair of players contributes their
+     * bidirectional favorability scores to the total.
+     *
+     * @param PlaceholderPack $pack The other pack to check compatibility with
+     * @return float Total compatibility score (sum of all favorability ratings)
+     */
+    public function compatibilityWithPack(PlaceholderPack $pack): float
+    {
+        $totalScore = 0;
+
+        foreach ($this->members as $member1) {
+            foreach ($pack->members as $member2) {
+                $totalScore += $member1->getFavorabilityWith($member2->id);
+                $totalScore += $member2->getFavorabilityWith($member1->id);
+            }
+        }
+
+        return $totalScore;
+    }
+}
+
+/**
+ * Non-persisted Realm model
+ */
+class PlaceholderRealm
+{
+    public string $id;
+    public Collection $players;
+    public int $size;
+    public float $rating;
+
+    /**
+     * Create a new PlaceholderRealm instance
+     * 
+     * Initializes a realm with the given players and calculates derived statistics.
+     * Players are keyed by their ID for efficient lookup and the realm's size
+     * and rating are automatically calculated.
+     *
+     * @param string $id Unique identifier for the realm
+     * @param Collection $players Collection of Player objects in this realm
+     */
+    public function __construct(string $id, Collection $players)
+    {
+        $this->id = $id;
+        $this->players = $players->keyBy('id');
+        $this->update();
+    }
+
+    /**
+     * Get all solo players in this realm
+     * 
+     * Returns players who are not part of any pack (packId is null).
+     * These are players who registered individually rather than as part
+     * of a group.
+     *
+     * @return Collection Collection of solo Player objects
+     */
+    public function soloPlayers(): Collection
+    {
+        return $this->players->where('packId', null);
+    }
+
+    /**
+     * Get all packed players in this realm
+     * 
+     * Returns players who are part of a pack (packId is not null).
+     * These are players who registered as part of a group.
+     *
+     * @return Collection Collection of packed Player objects
+     */
+    public function packedPlayers(): Collection
+    {
+        return $this->players->where('packId', '!=', null);
+    }
+
+    /**
+     * Count the number of packed players in this realm
+     * 
+     * Used to enforce the maximum packed players per realm constraint
+     * during pack assignment.
+     *
+     * @return int Number of packed players
+     */
+    public function packedPlayerCount(): int
+    {
+        return $this->players->where('packId', '!=', null)->count();
+    }
+
+    /**
+     * Check if a pack can fit in this realm
+     * 
+     * Validates that adding the pack would not exceed the maximum number
+     * of packed players allowed per realm. Solo players don't count toward
+     * this limit.
+     *
+     * @param PlaceholderPack $pack The pack to check for fit
+     * @return bool True if the pack can fit within the packed player limit
+     */
+    public function canFitPack(PlaceholderPack $pack): bool
+    {
+        return $this->packedPlayerCount() + $pack->size <= self::MAX_PACKED_PLAYERS_PER_REALM;
+    }
+
+    /**
+     * Add an entire pack to this realm
+     * 
+     * Adds all members of a pack to the realm's player collection and
+     * updates the realm's derived statistics (size and rating).
+     *
+     * @param PlaceholderPack $pack The pack to add to this realm
+     */
+    public function addPack(PlaceholderPack $pack): void
+    {
+        foreach ($pack->members as $player) {
+            $this->players->put($player->id, $player);
+        }
+        $this->update();
+    }
+
+    /**
+     * Add a single player to this realm
+     * 
+     * Adds a player to the realm's player collection and updates the
+     * realm's derived statistics (size and rating).
+     *
+     * @param Player $player The player to add to this realm
+     */
+    public function addPlayer(Player $player): void
+    {
+        $this->players->put($player->id, $player);
+        $this->update();
+    }
+
+    /**
+     * Update realm's derived statistics
+     * 
+     * Recalculates the realm's size (player count) and total rating
+     * (sum of all player ratings). Called whenever players are added
+     * or removed from the realm.
+     */
+    public function update(): void
+    {
+        $this->size = $this->players->count();
+        $this->rating = $this->players->sum('rating');
+    }
+
+    /**
+     * Calculate compatibility score for adding players to this realm
+     * 
+     * Computes a comprehensive compatibility score that includes both
+     * favorability ratings between players and playstyle fit. The score
+     * considers both existing realm members and the potential new players.
+     * 
+     * Heavy penalties (-100) are applied when favorability is very negative
+     * to discourage placing conflicting players together.
+     *
+     * @param Collection $players Collection of Player objects to evaluate
+     * @return float Total compatibility score (higher is better)
+     */
+    public function getCompatibilityScore(Collection $players): float
+    {
+        $favorabilityScore = 0;
+        $totalScore = 0;
+
+        foreach ($players as $newMember) {
+            $favorabilityScore = 0;
+            foreach ($this->players as $realmMember) {
+                $favorabilityScore += $realmMember->getFavorabilityWith($newMember->id);
+                $favorabilityScore += $newMember->getFavorabilityWith($realmMember->id);
+            }
+            if ($favorabilityScore < -10) {
+                // Heavy penalty for conflicts
+                $favorabilityScore = -100;
+            }
+            $totalScore += $favorabilityScore;
+        }
+
+        // TODO: Weight this
+        $totalScore += $this->calculatePlaystyleScore($players);
+
+        return $totalScore;
+    }
+    
+    /**
+     * Calculate playstyle score for adding players to this realm
+     * 
+     * Computes how adding the given players would affect the realm's playstyle
+     * composition. Returns the improvement in average playstyle ratings when
+     * only considering players with ratings >= 25 in each category.
+     *
+     * @param Collection $players Players to evaluate for addition
+     * @return float Playstyle improvement score (positive is better)
+     */
+    public function calculatePlaystyleScore(Collection $players): float
+    {
+        // Get current realm composition
+        $currentComp = $this->getPlaystyleComposition();
+        $currentAverage = array_sum($currentComp) / count($currentComp);
+
+        foreach ($currentComp as $key => $value) {
+            foreach ($players as $player) {
+                if ($player->{$key} >= 25) {
+                    $currentComp[$key] += $player->{$key};
+                }
+            }
+        }
+
+        $newAverage = array_sum($currentComp) / count($currentComp);
+
+        return $newAverage - $currentAverage;
+    }
+    
+    /**
+     * Get realm's current playstyle composition
+     * 
+     * Calculates the total playstyle ratings for each category by summing
+     * ratings from all players who have >= 25 rating in that category.
+     * This provides the foundation for playstyle balance calculations.
+     *
+     * @return array Associative array with playstyle totals (attackerRating, converterRating, etc.)
+     */
+    public function getPlaystyleComposition(): array
+    {
+        $comp = [
+            'attackerRating' => 0,
+            'converterRating' => 0,
+            'explorerRating' => 0,
+            'opsRating' => 0,
+        ];
+
+        foreach ($this->players as $realmMember) {
+            foreach ($comp as $key => $value) {
+                if ($realmMember->{$key} >= 25) {
+                    $comp[$key] += $realmMember->{$key};
+                }
+            }
+        }
+
+        return $comp;
+    }
+
+    /**
+     * Check if player has hard conflicts with realm members
+     * 
+     * Calculates the total favorability score between the player and all
+     * existing realm members. A hard conflict exists when the total favorability
+     * is less than -10, indicating significant negative relationships.
+     *
+     * @param Player $player The player to check for conflicts
+     * @return bool True if hard conflicts exist (favorability < -10)
+     */
+    public function hasHardConflicts(Player $player): bool
+    {
+        $favorabilityScore = 0;
+
+        foreach ($this->players as $member) {
+            $favorabilityScore += $player->getFavorabilityWith($member->id);
+            $favorabilityScore += $member->getFavorabilityWith($player->id);
+        }
+        if ($favorabilityScore < -10) {
+            return true;
+        }
+        return false;
+    }
+}
+
+/**
+ * Main Realm Assignment Service
+ */
+class RealmAssignmentService
+{
+    /**
+     * @var int Maximum number of packs that can exist in a single realm
+     */
+    public const MAX_PACKS_PER_REALM = 3;
+
+    /**
+     * @var int Maximum number of players allowed in packs in a single realm
+     */
+    public const MAX_PACKED_PLAYERS_PER_REALM = 8;
+
+    /**
+     * @var int Number of hours before round start to begin realm assignment
+     */
+    public const ASSIGNMENT_HOURS_BEFORE_START = 96;
+
+    /**
+     * @var int Minimum number of realms to create
+     */
+    public const ASSIGNMENT_MIN_REALM_COUNT = 8;
+
+    /**
+     * @var int Maximum number of realms to create
+     */
+    public const ASSIGNMENT_MAX_REALM_COUNT = 14;
+
+    /**
+     * @var float Calculate what an average realm's stats should be
+     */
+    public float $targetRealmSize = 0.0;
+    public float $targetRealmStrength = 0.0;
+
+    public Collection $packs;
+
+    public Collection $players;
+
+    public Collection $realms;
+
+    /**
+     * Assigns all registered dominions (in realm 0) to newly created realms
+     * 
+     * This is the main entry point for the realm assignment algorithm. It orchestrates
+     * the entire process: closing packs, loading players, calculating optimal realm
+     * structure, assigning packs and solo players, and performing post-assignment
+     * optimization. Returns the final realm assignments.
+     *
+     * @param Round $round The round to perform realm assignment for
+     * @return Collection Collection of PlaceholderRealm objects with assigned players
+     */
+    public function assignRealms(Round $round): Collection
+    {
+        $this->closePacks($round);
+
+        $this->loadPlayers($round);
+        $playerCount = $this->players->count();
+        $this->targetRealmStrength = $this->players->avg('rating');
+
+        $this->loadPacks();
+        $realmCount = $this->calculateRealmCount();
+        $this->targetRealmSize = $playerCount / $realmCount;
+
+        $this->createPlaceholderRealms();
+        $this->assignPacks();
+
+        // Assign solos
+        $this->assignSolos();
+
+        // Optimization pass
+        $this->optimizeAssignments();
+
+        return $this->realms;
+    }
+
+    /**
+     * Close all packs for the round and unlink solo players
+     * 
+     * Finalizes all pack registrations by closing them and calculating their
+     * final ratings. Packs with only one member are dissolved and that player
+     * becomes a solo player instead.
+     *
+     * @param Round $round The round to close packs for
+     */
+    private function closePacks(Round $round): void
+    {
+        // Close open packs and unlink solo players
+        $packs = Pack::where('round_id', $round->id)->get();
+        foreach ($packs as $pack) {
+            $pack->close();
+            if ($pack->dominions()->count() == 1) {
+                $pack->dominions()->update(['pack_id' => null]);
+            }
+        }
+    }
+
+    /**
+     * Load all registered players for the round
+     * 
+     * Fetches all registered dominions from the database and converts them
+     * to Player objects with favorability matrices, playstyle ratings, and
+     * other assignment-relevant data. Placeholder playstyle data is used
+     * until proper calculation is implemented.
+     *
+     * @param Round $round The round to load players for
+     */
+    private function loadPlayers(Round $round): void
+    {
+        // Fetch all registered dominions
+        $registeredDominions = $round->activeDominions()
+            ->human()
+            ->with('user')
+            ->where('realms.number', 0)
+            ->get();
+
+        // Fetch favorability data
+        $userIds = $registeredDominions->pluck('user_id');
+        $userFeedback = UserFeedback::whereIn('source_id', $userIds)->get();
+
+        // Collect data for all dominions
+        foreach ($registeredDominions as $dominion) {
+            // Perform pre-processing
+            $playerFeedback = $userFeedback->where('source_id', $dominion->user_id);
+            $favorabilityMatrix = $playerFeedback->mapwithKeys(function ($feedback) {
+                return [$feedback->target_id => $feedback->endorsed ? 1 : -1];
+            });
+            // Create player
+            $player = new Player([
+                'id' => $dominion->id,
+                'packId' => $dominion->pack_id,
+                'rating' => $dominion->user->rating,// TODO: * $dominion->user->rating_weight,
+                'favorability' => $favorabilityMatrix,
+                'hasDiscord' => true,
+                // TODO: Calculate these
+                'attackerRating' => 75,
+                'converterRating' => 25,
+                'explorerRating' => 50,
+                'opsRating' => 25,
+            ]);
+            $this->players->put($dominion->id, $player);
+        }
+    }
+
+    /**
+     * Create Pack objects from players
+     * 
+     * Groups packed players by their pack ID and creates PlaceholderPack objects.
+     * Removes packed players from the solo players collection since they'll be
+     * assigned as part of their pack rather than individually.
+     */
+    private function loadPacks(): void
+    {
+        $playersByPack = $this->players
+            ->whereNotNull('packId')
+            ->groupBy('packId');
+
+        foreach ($playersByPack as $packId => $packMembers) {
+            $pack = new PlaceholderPack($packId, $packMembers);
+            $this->packs->put($packId, $pack);
+            $this->players->forget($packMembers->pluck('id'));
+        }
+    }
+
+    /**
+     * Calculate optimal number of realms based on pack sizes
+     * 
+     * The number of realms is primarily determined by the number of large packs
+     * (>3 players), with adjustments to stay within min/max bounds. Large packs
+     * may be downgraded or small packs upgraded to achieve the target count.
+     *
+     * @return int Number of realms to create
+     */
+    private function calculateRealmCount(): int
+    {
+        $largePacks = $this->packs->where('large', true)->count();
+
+        if ($largePacks > self::ASSIGNMENT_MAX_REALM_COUNT) {
+            $this->downgradePacks(self::ASSIGNMENT_MAX_REALM_COUNT - $largePacks);
+            return self::ASSIGNMENT_MAX_REALM_COUNT;
+        } elseif ($largePacks < self::ASSIGNMENT_MIN_REALM_COUNT) {
+            $this->upgradePacks(self::ASSIGNMENT_MIN_REALM_COUNT - $largePacks);
+            return self::ASSIGNMENT_MIN_REALM_COUNT;
+        } else {
+            return $largePacks;
+        }
+    }
+
+    /**
+     * Downgrade large packs to small packs
+     * 
+     * Selects the lowest-rated large packs and marks them as small packs.
+     * This is done when there are too many large packs to stay within
+     * the maximum realm count.
+     *
+     * @param int $count Number of packs to downgrade
+     */
+    private function downgradePacks(int $count): void
+    {
+        $packs = $this->packs->where('large', true)->sortBy('rating')->take($count);
+        foreach ($packs as $pack) {
+            $this->packs[$pack->id]->large = false;
+        }
+    }
+
+    /**
+     * Upgrade small packs to large packs
+     * 
+     * Selects the highest-rated small packs and marks them as large packs.
+     * This is done when there are too few large packs to meet the minimum
+     * realm count requirement.
+     *
+     * @param int $count Number of packs to upgrade
+     */
+    private function upgradePacks(int $count): void
+    {
+        $packs = $this->packs->where('large', false)->sortByDesc('rating')->take($count);
+        foreach ($packs as $pack) {
+            $this->packs[$pack->id]->large = true;
+        }
+    }
+
+    /**
+     * Create initial realms from large packs
+     * 
+     * Each large pack becomes the foundation of a new realm. This establishes
+     * the basic realm structure before assigning remaining packs and solo players.
+     * Large packs are removed from the assignment queue since they're now placed.
+     */
+    private function createPlaceholderRealms(): void
+    {
+        $packs = $this->packs->where('large', true);
+        foreach ($packs as $idx => $pack) {
+            $realm = new PlaceholderRealm($idx, $pack->members);
+            $this->realms->push($realm);
+            $this->packs->forget($pack->id);
+        }
+    }
+
+    /**
+     * Assign all remaining packs to realms
+     * 
+     * Orchestrates the assignment of non-large packs to existing realms
+     * using the sophisticated scoring algorithm. Each pack is removed from
+     * the assignment queue after placement.
+     */
+    private function assignPacks(): void
+    {
+        foreach ($this->packs as $pack) {
+            $this->assignPack($pack);
+            $this->packs->forget($pack->id);
+        }
+    }
+
+    /**
+     * Assign a single pack to the best available realm
+     * 
+     * Evaluates all realms that can fit the pack and selects the one with the
+     * highest placement score. The scoring considers compatibility, balance,
+     * and opportunity cost. If no realm meets size constraints, the best
+     * overall realm is chosen regardless of size limits.
+     *
+     * @param PlaceholderPack $pack The pack to assign to a realm
+     */
+    private function assignPack(PlaceholderPack $pack): void
+    {
+        $bestRealm = null;
+        $bestScore = -INF;
+
+        $potentialRealms = $this->realms->filter(function ($realm) {
+            return $realm->canFitPack($pack);
+        });
+        if ($potentialRealms->isEmpty()) {
+            // Ignore size restrictions if no other options
+            $potentialRealms = $this->realms;
+        }
+
+        foreach ($potentialRealms as $realm) {
+            $score = $this->evaluatePackPlacement($pack, $realm);
+
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestRealm = $realm;
+            }
+        }
+
+        $bestRealm->addPack($pack);
+    }
+
+    /**
+     * Evaluate placing pack in existing realm
+     * 
+     * Calculates a comprehensive score for placing a pack in a specific realm.
+     * The score combines compatibility (favorability + playstyle), balance
+     * improvement, and opportunity cost considerations. Returns -INF for
+     * placements that would create severe conflicts.
+     *
+     * @param PlaceholderPack $pack The pack to evaluate
+     * @param PlaceholderRealm $realm The realm to evaluate placement in
+     * @return float Placement score (higher is better, -INF for conflicts)
+     */
+    private function evaluatePackPlacement(
+        PlaceholderPack $pack, 
+        PlaceholderRealm $realm
+    ): float {
+        $compatibility = $realm->getCompatibilityScore($pack->members);
+        $balanceScore = $this->calculateBalanceScore($realm, $pack->members);
+        $opportunityCost = $this->calculateOpportunityCost($realm, $pack, $compatibility + $balanceScore);
+
+        // TODO: Weight this
+        return $compatibility + $balanceScore + $opportunityCost;
+    }
+
+    /**
+     * Calculate rating balance improvement from adding players
+     * 
+     * Measures how much adding the given players would improve the realm's
+     * deviation from the target strength. Returns positive values when the
+     * addition brings the realm closer to the target, negative when it moves
+     * further away. Used to encourage balanced realm strengths.
+     *
+     * @param PlaceholderRealm $realm The realm to evaluate
+     * @param Collection $players The players to potentially add
+     * @return float Balance improvement score (positive is better)
+     */
+    public function calculateBalanceScore(PlaceholderRealm $realm, Collection $players): float
+    {
+        $currentRating = $realm->players->sum('rating');
+        $currentAverageRating = $currentRating / $realm->players->count();
+        $currentDeviation = abs($this->targetRealmStrength - $currentAverageRating);
+
+        $newRating = $currentRating + $players->sum('rating');
+        $newAverageRating = $newRating / ($realm->players->count() + $players->count());
+        $newDeviation = abs($this->targetRealmStrength - $newAverageRating);
+
+        return $currentDeviation - $newDeviation;
+    }
+
+    /**
+     * Calculate opportunity cost of this placement
+     * 
+     * Evaluates whether other unassigned packs could make better use of this realm.
+     * The opportunity cost is higher when other packs would score better in this
+     * realm AND have fewer viable alternatives. This encourages leaving realms
+     * available for packs that need them most.
+     *
+     * @param PlaceholderRealm $realm The realm being considered
+     * @param PlaceholderPack $pack The pack being placed
+     * @param float $currentPackScore The score this pack would achieve
+     * @return float Opportunity cost (negative values discourage placement)
+     */
+    private function calculateOpportunityCost(
+        PlaceholderRealm $realm,
+        PlaceholderPack $pack,
+        float $currentPackScore
+    ): float {
+        $opportunityCost = 0;
+        
+        // Look at other unassigned packs that could use this realm
+        foreach ($this->packs as $otherPack) {
+            $otherPackScore = 0;
+
+            if ($otherPack->id === $pack->id) {
+                continue; // Skip the current pack
+            }
+            
+            // Could this other pack fit in this realm?
+            if (!$realm->canFitPack($otherPack)) {
+                continue; // Can't fit, so no opportunity cost
+            }
+            
+            $otherPackScore += $realm->getCompatibilityScore($otherPack->members);
+            $otherPackScore += $this->calculateBalanceScore($realm, $otherPack->members);
+            
+            $opportunityCost -= ($otherPackScore - $currentPackScore) * 0.3;
+        }
+        
+        return $opportunityCost;
+    }
+
+    /**
+     * Calculate size bonus/penalty for realm assignments
+     * 
+     * Provides a large penalty (-1000) for realms at or above target size to
+     * enforce equal distribution. Realms below target receive a small bonus
+     * proportional to how many players they need. This ensures all realms
+     * reach approximately the same size.
+     *
+     * @param PlaceholderRealm $realm The realm to evaluate
+     * @return float Size bonus/penalty (-1000 for full realms, positive for others)
+     */
+    private function calculateSizeBonus(PlaceholderRealm $realm): float
+    {
+        $currentSize = $realm->players->count();
+        $targetSize = (int) round($this->targetRealmSize);
+        
+        // Large penalty for realms at or above target size
+        if ($currentSize >= $targetSize) {
+            return -1000; // Effectively eliminates this realm from consideration
+        }
+        
+        // Small bonus for realms that need players
+        return ($targetSize - $currentSize) * 10;
+    }
+
+    /**
+     * Assign solo players to realms
+     * 
+     * Orchestrates the assignment of individual players in two phases:
+     * Phase 1 distributes new players (rating=0) evenly using round-robin.
+     * Phase 2 assigns experienced players using full scoring with size constraints.
+     * This ensures fair distribution while optimizing for compatibility and balance.
+     */
+    private function assignSolos(): void
+    {
+        // Phase 1: Distribute new players using round-robin
+        $newPlayers = $this->players->where('rating', 0);
+        foreach ($this->realms->sortBy('size') as $realm) {
+            $newPlayer = $newPlayers->shift();
+            $realm->addPlayer($newPlayer);
+            $this->players->forget($newPlayer->id);
+        }
+
+        // Phase 2: Assign experienced players using full scoring
+        $this->assignExperiencedPlayers();
+    }
+
+    /**
+     * Assign experienced players using full scoring system
+     * 
+     * Assigns players with rating > 0 using comprehensive scoring that considers
+     * compatibility, balance, and size constraints. Players are sorted by rating
+     * (highest first) for strategic placement. Hard conflicts are avoided and
+     * the size penalty ensures equal distribution across realms.
+     */
+    private function assignExperiencedPlayers(): void
+    {
+        // Sort by rating (highest first) for strategic placement
+        $sortedPlayers = $this->players->sortByDesc('rating')->values();
+
+        foreach ($sortedPlayers as $player) {
+            $bestRealm = null;
+            $bestScore = -INF;
+
+            foreach ($this->realms as $realm) {
+                // Skip realms where player would have hard conflicts
+                if ($this->hasHardConflicts($player, $realm)) {
+                    continue;
+                }
+
+                // Calculate compatibility and balance scores
+                $compatibilityScore = $realm->getCompatibilityScore(collect([$player]));
+                $balanceScore = $this->calculateBalanceScore($realm, collect([$player]));
+                $sizeBonus = $this->calculateSizeBonus($realm);
+
+                $totalScore = $compatibilityScore + $balanceScore + $sizeBonus;
+
+                if ($totalScore > $bestScore) {
+                    $bestScore = $totalScore;
+                    $bestRealm = $realm;
+                }
+            }
+
+            if ($bestRealm) {
+                $bestRealm->addPlayer($player);
+                $this->players->forget($player->id);
+            }
+        }
+    }
+
+    /**
+     * Post-assignment optimization through player swapping
+     * 
+     * Performs iterative optimization by attempting to swap solo players between
+     * realms to improve overall assignment quality. Only beneficial swaps that
+     * improve compatibility and balance are performed. Runs for up to 10 iterations
+     * or until no more improvements are found.
+     */
+    private function optimizeAssignments(): void
+    {
+        $improved = true;
+        $iterations = 0;
+        $maxIterations = 10;
+
+        while ($improved && $iterations < $maxIterations) {
+            $improved = false;
+            $iterations++;
+
+            // Try swapping solo players between realms
+            foreach ($this->realms as $realm1) {
+                foreach ($this->realms as $realm2) {
+                    if ($realm1->id === $realm2->id) {
+                        continue;
+                    }
+
+                    foreach ($realm1->soloPlayers() as $solo1) {
+                        foreach ($realm2->soloPlayers() as $solo2) {
+                            if ($this->shouldSwapSolos($solo1, $solo2, $realm1, $realm2)) {
+                                // Perform swap by removing and adding players
+                                $realm1->players->forget($solo1->id);
+                                $realm2->players->forget($solo2->id);
+                                
+                                $realm1->players->put($solo2->id, $solo2);
+                                $realm2->players->put($solo1->id, $solo1);
+                                
+                                // Update realm state
+                                $realm1->update();
+                                $realm2->update();
+
+                                $improved = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Check if swapping two solos would improve overall balance
+     * 
+     * Evaluates whether swapping two solo players between realms would improve
+     * the total assignment score. Checks for hard conflicts first, then compares
+     * current vs post-swap scores using compatibility and balance metrics.
+     * Includes a small threshold to prevent oscillating swaps.
+     *
+     * @param Player $solo1 First player to potentially swap
+     * @param Player $solo2 Second player to potentially swap  
+     * @param PlaceholderRealm $realm1 Current realm of first player
+     * @param PlaceholderRealm $realm2 Current realm of second player
+     * @return bool True if the swap would improve overall assignment quality
+     */
+    private function shouldSwapSolos(
+        Player $solo1, 
+        Player $solo2, 
+        PlaceholderRealm $realm1, 
+        PlaceholderRealm $realm2
+    ): bool {
+        // 1. Check for hard conflicts first (early exit)
+        if ($this->hasHardConflicts($solo1, $realm2) || $this->hasHardConflicts($solo2, $realm1)) {
+            return false;
+        }
+        
+        // 2. Calculate current scores (how well each player fits in their current realm)
+        $currentScore1 = $realm1->getCompatibilityScore(collect([$solo1])) + 
+                         $this->calculateBalanceScore($realm1, collect([$solo1]));
+        $currentScore2 = $realm2->getCompatibilityScore(collect([$solo2])) + 
+                         $this->calculateBalanceScore($realm2, collect([$solo2]));
+        $currentTotal = $currentScore1 + $currentScore2;
+        
+        // 3. Calculate post-swap scores (how well each player would fit in the other realm)
+        $newScore1 = $realm1->getCompatibilityScore(collect([$solo2])) + 
+                     $this->calculateBalanceScore($realm1, collect([$solo2]));
+        $newScore2 = $realm2->getCompatibilityScore(collect([$solo1])) + 
+                     $this->calculateBalanceScore($realm2, collect([$solo1]));
+        $newTotal = $newScore1 + $newScore2;
+        
+        // 4. Only swap if there's meaningful improvement (threshold prevents oscillation)
+        return $newTotal > $currentTotal + 0.1;
+    }
+    
+    /**
+     * Get comprehensive assignment statistics
+     * 
+     * Compiles detailed statistics about the completed realm assignment including
+     * overall totals, per-realm breakdowns, playstyle distributions, and balance
+     * metrics. Provides variance calculations and deviation measurements to assess
+     * algorithm performance and assignment quality.
+     *
+     * @return array Comprehensive statistics array with overall metrics and per-realm details
+     */
+    public function getAssignmentStats(): array
+    {
+        $stats = [
+            'realm_count' => $this->realms->count(),
+            'total_players' => 0,
+            'total_new_players' => 0,
+            'total_experienced_players' => 0,
+            'average_realm_size' => 0,
+            'average_realm_rating' => 0,
+            'target_realm_strength' => $this->targetRealmStrength,
+            'target_realm_size' => $this->targetRealmSize,
+            'overall_playstyle_distribution' => [
+                'attacker' => 0,
+                'converter' => 0,
+                'explorer' => 0,
+                'ops' => 0,
+            ],
+            'balance_metrics' => [
+                'size_variance' => 0,
+                'rating_variance' => 0,
+                'max_size_deviation' => 0,
+                'max_rating_deviation' => 0,
+            ],
+            'realms' => []
+        ];
+        
+        $totalPlayers = 0;
+        $totalNewPlayers = 0;
+        $totalExperiencedPlayers = 0;
+        $totalRating = 0;
+        $realmSizes = [];
+        $realmRatings = [];
+        
+        foreach ($this->realms as $realm) {
+            $realmSize = $realm->size;
+            $realmRating = $realm->players->avg('rating');
+            $playstyleDist = $realm->getPlaystyleComposition();
+            $newPlayerCount = $realm->players->where('rating', 0)->count();
+            $experiencedPlayerCount = $realm->players->where('rating', '>', 0)->count();
+            
+            // Accumulate totals
+            $totalPlayers += $realmSize;
+            $totalNewPlayers += $newPlayerCount;
+            $totalExperiencedPlayers += $experiencedPlayerCount;
+            $totalRating += $realm->rating;
+            $realmSizes[] = $realmSize;
+            $realmRatings[] = $realmRating;
+            
+            $stats['realms'][] = [
+                'id' => $realm->id,
+                'size' => $realmSize,
+                'total_rating' => round($realm->rating, 2),
+                'average_rating' => $realmRating,
+                'new_players' => $newPlayerCount,
+                'experienced_players' => $experiencedPlayerCount,
+                'packed_players' => $realm->packedPlayerCount(),
+                'solo_players' => $realm->soloPlayers()->count(),
+                'playstyle_distribution' => $playstyleDist,
+                'deviation_from_target_size' => round(abs($realmSize - $this->targetRealmSize), 2),
+                'deviation_from_target_rating' => round(abs($realmRating - $this->targetRealmStrength), 2),
+            ];
+        }
+        
+        // Calculate overall statistics
+        $stats['total_players'] = $totalPlayers;
+        $stats['total_new_players'] = $totalNewPlayers;
+        $stats['total_experienced_players'] = $totalExperiencedPlayers;
+        $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->realms->count(), 2) : 0;
+        $stats['average_realm_rating'] = $totalPlayers > 0 ? round($totalRating / $totalPlayers, 2) : 0;
+        
+        // Calculate balance metrics
+        if (count($realmSizes) > 1) {
+            $meanSize = array_sum($realmSizes) / count($realmSizes);
+            $meanRating = array_sum($realmRatings) / count($realmRatings);
+            
+            $sizeVariances = array_map(fn($size) => pow($size - $meanSize, 2), $realmSizes);
+            $ratingVariances = array_map(fn($rating) => pow($rating - $meanRating, 2), $realmRatings);
+            
+            $stats['balance_metrics'] = [
+                'size_variance' => round(array_sum($sizeVariances) / count($sizeVariances), 2),
+                'rating_variance' => round(array_sum($ratingVariances) / count($ratingVariances), 2),
+                'max_size_deviation' => round(max(array_map(fn($size) => abs($size - $this->targetRealmSize), $realmSizes)), 2),
+                'max_rating_deviation' => round(max(array_map(fn($rating) => abs($rating - $this->targetRealmStrength), $realmRatings)), 2),
+            ];
+        }
+
+        return $stats;
+    }
+}
