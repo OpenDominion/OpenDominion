@@ -216,7 +216,7 @@ class PlaceholderRealm
      */
     public function canFitPack(PlaceholderPack $pack): bool
     {
-        return $this->packedPlayerCount() + $pack->size <= self::MAX_PACKED_PLAYERS_PER_REALM;
+        return $this->packedPlayerCount() + $pack->size <= RealmAssignmentService::MAX_PACKED_PLAYERS_PER_REALM;
     }
 
     /**
@@ -718,7 +718,20 @@ class RealmAssignmentService
         $newAverageRating = $newRating / ($realm->players->count() + $players->count());
         $newDeviation = abs($this->targetRealmStrength - $newAverageRating);
 
-        return $currentDeviation - $newDeviation;
+        // Instead of just rewarding improvement, penalize final distance from target
+        // This encourages assignments that result in realms closer to the target
+        $baseScore = 200 - $newDeviation; // Higher score for realms closer to target
+        
+        // Bonus for improvement (but secondary to final position)
+        $improvementBonus = ($currentDeviation - $newDeviation) * 0.5;
+        
+        // Strong exponential penalty for very unbalanced final states
+        $unbalancePenalty = 0;
+        if ($newDeviation > 150) {
+            $unbalancePenalty = pow($newDeviation / 100, 2) * 50;
+        }
+        
+        return $baseScore + $improvementBonus - $unbalancePenalty;
     }
 
     /**
@@ -820,8 +833,8 @@ class RealmAssignmentService
      */
     private function assignExperiencedPlayers(): void
     {
-        // Sort by rating (highest first) for strategic placement
-        $sortedPlayers = $this->players->sortByDesc('rating')->values();
+        // Sort by rating (highest first) for strategic placement, with shuffle for tied ratings
+        $sortedPlayers = $this->players->sortByDesc('rating')->shuffle()->values();
 
         foreach ($sortedPlayers as $player) {
             $bestRealm = null;
@@ -829,7 +842,7 @@ class RealmAssignmentService
 
             foreach ($this->realms as $realm) {
                 // Skip realms where player would have hard conflicts
-                if ($this->hasHardConflicts($player, $realm)) {
+                if ($realm->hasHardConflicts($player)) {
                     continue;
                 }
 
@@ -838,7 +851,10 @@ class RealmAssignmentService
                 $balanceScore = $this->calculateBalanceScore($realm, collect([$player]));
                 $sizeBonus = $this->calculateSizeBonus($realm);
 
-                $totalScore = $compatibilityScore + $balanceScore + $sizeBonus;
+                // Weight the balance score more heavily to prevent extreme rating imbalances
+                $weightedBalanceScore = $balanceScore * 5; // Increase balance importance
+
+                $totalScore = $compatibilityScore + $weightedBalanceScore + $sizeBonus + $randomComponent;
 
                 if ($totalScore > $bestScore) {
                     $bestScore = $totalScore;
@@ -854,48 +870,85 @@ class RealmAssignmentService
     }
 
     /**
-     * Post-assignment optimization through player swapping
+     * Post-assignment optimization through randomized player swapping
      * 
-     * Performs iterative optimization by attempting to swap solo players between
-     * realms to improve overall assignment quality. Only beneficial swaps that
-     * improve compatibility and balance are performed. Runs for up to 10 iterations
-     * or until no more improvements are found.
+     * Performs iterative optimization by randomly sampling pairs of solo players 
+     * from different realms and swapping them if beneficial. This approach is more
+     * efficient than exhaustive search and better explores the solution space.
+     * Runs for up to 15 iterations or until no more improvements are found.
      */
     private function optimizeAssignments(): void
     {
         $improved = true;
         $iterations = 0;
-        $maxIterations = 10;
+        $maxIterations = 15;
+        $totalSwaps = 0;
+        $samplesPerIteration = 200; // Number of random pairs to test per iteration
 
         while ($improved && $iterations < $maxIterations) {
             $improved = false;
             $iterations++;
 
-            // Try swapping solo players between realms
-            foreach ($this->realms as $realm1) {
-                foreach ($this->realms as $realm2) {
-                    if ($realm1->id === $realm2->id) {
-                        continue;
-                    }
+            // Collect all solo players with their realm assignments
+            $soloPlayers = collect();
+            foreach ($this->realms as $realm) {
+                foreach ($realm->soloPlayers() as $player) {
+                    $soloPlayers->push([
+                        'player' => $player,
+                        'realm' => $realm
+                    ]);
+                }
+            }
 
-                    foreach ($realm1->soloPlayers() as $solo1) {
-                        foreach ($realm2->soloPlayers() as $solo2) {
-                            if ($this->shouldSwapSolos($solo1, $solo2, $realm1, $realm2)) {
-                                // Perform swap by removing and adding players
-                                $realm1->players->forget($solo1->id);
-                                $realm2->players->forget($solo2->id);
-                                
-                                $realm1->players->put($solo2->id, $solo2);
-                                $realm2->players->put($solo1->id, $solo1);
-                                
-                                // Update realm state
-                                $realm1->update();
-                                $realm2->update();
+            // Skip if not enough solo players to swap
+            if ($soloPlayers->count() < 2) {
+                break;
+            }
 
-                                $improved = true;
-                            }
+            // Random sampling approach - test fixed number of random pairs
+            for ($sample = 0; $sample < $samplesPerIteration; $sample++) {
+                // Randomly select two different players from different realms
+                $attempts = 0;
+                do {
+                    $player1Data = $soloPlayers->random();
+                    $player2Data = $soloPlayers->random();
+                    $attempts++;
+                } while ($player1Data['realm']->id === $player2Data['realm']->id && $attempts < 10);
+
+                // Skip if we couldn't find players from different realms
+                if ($player1Data['realm']->id === $player2Data['realm']->id) {
+                    continue;
+                }
+
+                $solo1 = $player1Data['player'];
+                $solo2 = $player2Data['player'];
+                $realm1 = $player1Data['realm'];
+                $realm2 = $player2Data['realm'];
+
+                if ($this->shouldSwapSolos($solo1, $solo2, $realm1, $realm2)) {
+                    // Perform swap by removing and adding players
+                    $realm1->players->forget($solo1->id);
+                    $realm2->players->forget($solo2->id);
+                    
+                    $realm1->players->put($solo2->id, $solo2);
+                    $realm2->players->put($solo1->id, $solo1);
+                    
+                    // Update realm state
+                    $realm1->update();
+                    $realm2->update();
+
+                    $improved = true;
+                    $totalSwaps++;
+
+                    // Update our tracking collection to reflect the swap
+                    $soloPlayers = $soloPlayers->map(function ($data) use ($solo1, $solo2, $realm1, $realm2) {
+                        if ($data['player']->id === $solo1->id) {
+                            return ['player' => $solo1, 'realm' => $realm2];
+                        } elseif ($data['player']->id === $solo2->id) {
+                            return ['player' => $solo2, 'realm' => $realm1];
                         }
-                    }
+                        return $data;
+                    });
                 }
             }
         }
@@ -922,26 +975,39 @@ class RealmAssignmentService
         PlaceholderRealm $realm2
     ): bool {
         // 1. Check for hard conflicts first (early exit)
-        if ($this->hasHardConflicts($solo1, $realm2) || $this->hasHardConflicts($solo2, $realm1)) {
+        if ($realm2->hasHardConflicts($solo1) || $realm1->hasHardConflicts($solo2)) {
             return false;
         }
         
-        // 2. Calculate current scores (how well each player fits in their current realm)
-        $currentScore1 = $realm1->getCompatibilityScore(collect([$solo1])) + 
-                         $this->calculateBalanceScore($realm1, collect([$solo1]));
-        $currentScore2 = $realm2->getCompatibilityScore(collect([$solo2])) + 
-                         $this->calculateBalanceScore($realm2, collect([$solo2]));
+        // 2. Calculate accurate swap scores by removing players first, then evaluating placements
+        
+        // Remove players temporarily to get accurate base scores
+        $realm1->players->forget($solo1->id);
+        $realm2->players->forget($solo2->id);
+        $realm1->update();
+        $realm2->update();
+        
+        // Calculate base scores without either player
+        $currentScore1 = $this->calculateBalanceScore($realm1, collect([$solo1]));
+        $currentScore2 = $this->calculateBalanceScore($realm2, collect([$solo2]));
         $currentTotal = $currentScore1 + $currentScore2;
         
-        // 3. Calculate post-swap scores (how well each player would fit in the other realm)
-        $newScore1 = $realm1->getCompatibilityScore(collect([$solo2])) + 
-                     $this->calculateBalanceScore($realm1, collect([$solo2]));
-        $newScore2 = $realm2->getCompatibilityScore(collect([$solo1])) + 
-                     $this->calculateBalanceScore($realm2, collect([$solo1]));
+        // Calculate post-swap scores
+        $newScore1 = $this->calculateBalanceScore($realm1, collect([$solo2]));
+        $newScore2 = $this->calculateBalanceScore($realm2, collect([$solo1]));
         $newTotal = $newScore1 + $newScore2;
         
+        // Restore players to their original realms
+        $realm1->players->put($solo1->id, $solo1);
+        $realm2->players->put($solo2->id, $solo2);
+        $realm1->update();
+        $realm2->update();
+        
+        $improvement = $newTotal - $currentTotal;
+        
+        
         // 4. Only swap if there's meaningful improvement (threshold prevents oscillation)
-        return $newTotal > $currentTotal + 0.1;
+        return $improvement > 0.1;
     }
     
     /**
