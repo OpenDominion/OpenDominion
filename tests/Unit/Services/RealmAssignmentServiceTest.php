@@ -144,8 +144,16 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         echo "Max Size Deviation: " . round($stats['balance_metrics']['max_size_deviation'], 1) . "\n";
         echo "Max Rating Deviation: " . round($stats['balance_metrics']['max_rating_deviation'], 1) . "\n";
         
+        // Calculate overall favorability statistics
+        $overallFavorability = $this->calculateOverallFavorabilityStats($result);
+        echo "\n--- Favorability Metrics ---\n";
+        echo "Overall Avg Favorability: " . $overallFavorability['overall_average'] . "\n";
+        echo "Total Conflict Pairs: " . $overallFavorability['total_conflicts'] . "\n";
+        echo "Conflict-Free Realms: " . $overallFavorability['conflict_free_realms'] . "/" . $result->count() . "\n";
+        
         echo "\n--- Individual Realm Statistics ---\n";
         foreach ($stats['realms'] as $index => $realmStats) {
+            $realm = $result->get($index);
             echo "Realm " . ($index + 1) . ":\n";
             echo "  Size: {$realmStats['size']} (deviation: {$realmStats['deviation_from_target_size']})\n";
             echo "  Rating: {$realmStats['average_rating']} (deviation: {$realmStats['deviation_from_target_rating']})\n";
@@ -153,8 +161,81 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             echo "  Solo/Packed: {$realmStats['solo_players']}/{$realmStats['packed_players']}\n";
             
             $playstyle = $realmStats['playstyle_distribution'];
-            echo "  Playstyles: A:{$playstyle['attackerRating']} C:{$playstyle['converterRating']} E:{$playstyle['explorerRating']} O:{$playstyle['opsRating']}\n\n";
+            echo "  Playstyles: A:{$playstyle['attackerRating']} C:{$playstyle['converterRating']} E:{$playstyle['explorerRating']} O:{$playstyle['opsRating']}\n";
+            
+            // Calculate favorability scores for this realm
+            $favorabilityStats = $this->calculateRealmFavorabilityStats($realm);
+            echo "  Favorability: Total:{$favorabilityStats['total']} Avg:{$favorabilityStats['average']} Pos:{$favorabilityStats['positive']} Neg:{$favorabilityStats['negative']}\n";
+            echo "  Conflicts: {$favorabilityStats['conflict_pairs']} pairs with negative sentiment\n\n";
         }
+    }
+
+    /**
+     * Calculate favorability statistics for a realm
+     */
+    private function calculateRealmFavorabilityStats($realm): array
+    {
+        $totalFavorability = 0;
+        $positivePairs = 0;
+        $negativePairs = 0;
+        $conflictPairs = 0;
+        $totalPairs = 0;
+
+        foreach ($realm->players as $player1) {
+            foreach ($realm->players as $player2) {
+                if ($player1->id === $player2->id) continue;
+                
+                $favorability = $player1->getFavorabilityWith($player2->id);
+                $totalFavorability += $favorability;
+                $totalPairs++;
+                
+                if ($favorability > 0) {
+                    $positivePairs++;
+                } elseif ($favorability < 0) {
+                    $negativePairs++;
+                    if ($favorability <= -1) { // Strong negative sentiment
+                        $conflictPairs++;
+                    }
+                }
+            }
+        }
+
+        return [
+            'total' => round($totalFavorability, 1),
+            'average' => $totalPairs > 0 ? round($totalFavorability / $totalPairs, 2) : 0,
+            'positive' => $positivePairs,
+            'negative' => $negativePairs,
+            'conflict_pairs' => $conflictPairs,
+            'total_pairs' => $totalPairs
+        ];
+    }
+
+    /**
+     * Calculate overall favorability statistics across all realms
+     */
+    private function calculateOverallFavorabilityStats($realms): array
+    {
+        $totalFavorability = 0;
+        $totalConflicts = 0;
+        $conflictFreeRealms = 0;
+        $totalPairs = 0;
+
+        foreach ($realms as $realm) {
+            $realmStats = $this->calculateRealmFavorabilityStats($realm);
+            $totalFavorability += $realmStats['total'];
+            $totalConflicts += $realmStats['conflict_pairs'];
+            $totalPairs += $realmStats['total_pairs'];
+            
+            if ($realmStats['conflict_pairs'] === 0) {
+                $conflictFreeRealms++;
+            }
+        }
+
+        return [
+            'overall_average' => $totalPairs > 0 ? round($totalFavorability / $totalPairs, 2) : 0,
+            'total_conflicts' => $totalConflicts,
+            'conflict_free_realms' => $conflictFreeRealms
+        ];
     }
 
     /**
