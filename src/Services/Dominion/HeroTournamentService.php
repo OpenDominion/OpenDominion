@@ -88,8 +88,8 @@ class HeroTournamentService
         $this->processEliminations($tournament);
         $finished = $this->checkTournamentEnded($tournament);
         if (!$finished) {
-            $tournament->increment('current_round_number');
             $this->handleMatchups($tournament);
+            $tournament->increment('current_round_number');
         }
     }
 

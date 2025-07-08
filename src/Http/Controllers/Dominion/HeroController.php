@@ -322,6 +322,7 @@ class HeroController extends AbstractDominionController
 
     public function getTournaments()
     {
+        $heroHelper = app(HeroHelper::class);
         $round_id = $this->getSelectedDominion()->round_id;
         $tournaments = HeroTournament::query()
             ->with('battles.combatants', 'battles.winner', 'participants.hero.dominion.realm')
@@ -330,11 +331,12 @@ class HeroController extends AbstractDominionController
             ->get();
 
         return view('pages.dominion.hero-tournaments', compact(
+            'heroHelper',
             'tournaments',
         ));
     }
 
-    public function getJoinTournament(HeroTournament $tournament)
+    public function getJoinTournament(Request $request, HeroTournament $tournament)
     {
         $dominion = $this->getSelectedDominion();
         $heroTournamentService = app(HeroTournamentService::class);
@@ -351,7 +353,7 @@ class HeroController extends AbstractDominionController
         return redirect()->route('dominion.heroes.tournaments');
     }
 
-    public function getLeaveTournament(HeroTournament $tournament)
+    public function getLeaveTournament(Request $request, HeroTournament $tournament)
     {
         $dominion = $this->getSelectedDominion();
         $heroTournamentService = app(HeroTournamentService::class);

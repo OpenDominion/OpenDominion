@@ -3,7 +3,7 @@
 namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Str;
-use OpenDominion\Models\HeroBattleAction;
+use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroUpgrade;
 
@@ -302,6 +302,57 @@ class HeroHelper
         }
 
         return true;
+    }
+
+
+    public function getBattleResult(HeroBattle $battle): string
+    {
+        if (!$battle->finished) {
+            return 'The battle is still in progress.';
+        }
+
+        if ($battle->winner_combatant_id === null) {
+            $outcomes = collect([
+                'The battle ended in a draw.',
+                'Neither side could claim victory, what a nail-biter!',
+                'Both heroes walked away, pride intact but egos bruised.',
+                'The dust has settled, but the score remains even.',
+                'It was a tie! The bards are still arguing about who was better.',
+                'No winner, no loser—just a great story for the tavern.',
+            ]);
+        } else {
+            $outcomes = collect([
+                '%1$s emerged victorious, basking in the glory of battle!',
+                '%2$s was utterly defeated, their dreams dashed upon the battlefield.',
+                'With a mighty roar, %1$s crushed their foe beneath their heel.',
+                'The crowd cheered as %1$s claimed a legendary triumph!',
+                '%1$s outwitted and outlasted their opponent, seizing the day!',
+                'A stunning upset! %2$s never saw it coming.',
+                'Victory was sweet for %1$s, who now stands tall among heroes.',
+                '%2$s will remember this loss for ages to come.',
+                'A tale of defeat for %2$s, sung by bards as a warning.',
+                '%1$s\'s cunning and strength proved too much to overcome.',
+                'The fates smiled on %1$s, granting them a glorious win.',
+                'A crushing blow! %2$s was left reeling in the aftermath.',
+                '%1$s\'s legend grows with every victory.',
+                'The gods turned their backs on %2$s today.',
+                'A masterful display by %1$s, leaving no doubt of their prowess.',
+                'The dust settles, and %1$s stands alone as the victor.',
+                'A bitter defeat for %2$s, but perhaps a lesson learned.',
+                'In a shocking twist, %2$s tripped over their own feet and handed victory to %1$s.',
+                '%1$s won so convincingly, the spectators asked for an autograph.',
+                'Rumor has it %2$s is still looking for their dignity somewhere on the battlefield.',
+            ]);
+        }
+
+        $winner = $battle->winner->name;
+        $loser = $battle->combatants->where('id', '!=', $battle->winner_combatant_id)->first()->name;
+
+        return sprintf(
+            $outcomes->random(),
+            $winner,
+            $loser
+        );
     }
 
     public function getUpgradeIcon(HeroUpgrade $upgrade)

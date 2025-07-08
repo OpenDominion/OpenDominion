@@ -56,6 +56,18 @@
                             <h3 class="box-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
                         </div>
                         <div class="box-body table-responsive">
+                            @if (!$tournament->battles->where('finished', true)->isEmpty())
+                                @php $battle = $tournament->battles->where('finished', false)->sortByDesc('updated_at')->first(); @endphp
+                                <div class="panel panel-info">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <i class="fa fa-clock-o"></i> Most Recent Battle - {{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}
+                                            <div class="pull-right text-muted">{{ $battle->updated_at->diffForHumans() }}</div>
+                                        </div>
+                                        {{ $heroHelper->getBattleResult($battle) }}
+                                    </div>
+                                </div>
+                            @endif
                             <h4>Standings {{ $tournament->finished ? '- Final' : null }}</h4>
                             <table class="table table-condensed">
                                 <colgroup>
