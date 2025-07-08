@@ -57,7 +57,7 @@
                         </div>
                         <div class="box-body table-responsive">
                             @if (!$tournament->battles->where('finished', true)->isEmpty())
-                                @php $battle = $tournament->battles->where('finished', false)->sortByDesc('updated_at')->first(); @endphp
+                                @php $battle = $tournament->battles->where('finished', true)->sortByDesc('updated_at')->first(); @endphp
                                 <div class="panel panel-info">
                                     <div class="panel-body">
                                         <div class="form-group">
