@@ -304,7 +304,6 @@ class HeroHelper
         return true;
     }
 
-
     public function getBattleResult(HeroBattle $battle): string
     {
         if (!$battle->finished) {
@@ -320,6 +319,9 @@ class HeroHelper
                 'It was a tie! The bards are still arguing about who was better.',
                 'No winner, no loser—just a great story for the tavern.',
             ]);
+
+            $winner = null;
+            $loser = null;
         } else {
             $outcomes = collect([
                 '%1$s emerged victorious, basking in the glory of battle!',
@@ -343,13 +345,17 @@ class HeroHelper
                 '%1$s won so convincingly, the spectators asked for an autograph.',
                 'Rumor has it %2$s is still looking for their dignity somewhere on the battlefield.',
             ]);
+
+            $winner = $battle->winner->name;
+            $loser = $battle->combatants->where('id', '!=', $battle->winner_combatant_id)->first()->name;
         }
 
-        $winner = $battle->winner->name;
-        $loser = $battle->combatants->where('id', '!=', $battle->winner_combatant_id)->first()->name;
+        // Use deterministic selection
+        $seconds = $battle->updated_at->second;
+        $index = $seconds % $outcomes->count();
 
         return sprintf(
-            $outcomes->random(),
+            $outcomes->get($index),
             $winner,
             $loser
         );
