@@ -155,6 +155,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('heroes/battles/leaderboard')->uses('Dominion\HeroController@getLeaderboard')->name('heroes.battles.leaderboard');
             $router->get('heroes/battles/report/{battle}')->uses('Dominion\HeroController@getBattleReport')->name('heroes.battles.report');
             $router->get('heroes/tournaments')->uses('Dominion\HeroController@getTournaments')->name('heroes.tournaments');
+            $router->get('heroes/tournaments/{tournament}/join')->uses('Dominion\HeroController@getJoinTournament')->name('heroes.tournaments.join');
+            $router->get('heroes/tournaments/{tournament}/leave')->uses('Dominion\HeroController@getLeaveTournament')->name('heroes.tournaments.leave');
 
             // Raids
             $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');

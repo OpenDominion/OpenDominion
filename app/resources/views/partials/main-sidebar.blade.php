@@ -118,6 +118,13 @@
                     <li class="{{ Route::is('dominion.heroes.tournaments') ? 'active' : null }}">
                         <a href="{{ route('dominion.heroes.tournaments') }}">
                             <i class="fa fa-trophy fa-fw"></i> <span>Hero Tournament</span>
+                            @if ($selectedDominion->round->tournaments()->where('start_date', '>', now())->count() > 0)
+                                <span class="pull-right-container">
+                                    <span class="label label-primary pull-right">
+                                        R
+                                    </span>
+                                </span>
+                            @endif
                         </a>
                     </li>
                 @endif

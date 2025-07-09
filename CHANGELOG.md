@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.45.1] - 2025-07-07
+### Changed
+- Hero Tournament now requires a dominion to register
+
 ## [1.45.0] - 2025-05-30
 ### Added
 - After the round has ended, you can now view all ops taken on your realmies from their advisors page
@@ -2434,7 +2438,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.45.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.45.1...HEAD
+[1.45.1]: https://github.com/OpenDominion/OpenDominion/compare/1.45.0...1.45.1
 [1.45.0]: https://github.com/OpenDominion/OpenDominion/compare/1.44.3...1.45.0
 [1.44.3]: https://github.com/OpenDominion/OpenDominion/compare/1.44.2...1.44.3
 [1.44.2]: https://github.com/OpenDominion/OpenDominion/compare/1.44.1...1.44.2

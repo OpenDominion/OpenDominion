@@ -27,24 +27,16 @@ class HeroTournamentService
     protected const DEFAULT_NAME = 'The Grand Tournament';
     protected const TOURNAMENT_TIME_BANK = 12 * 60 * 60;
 
-    public function createTournament(Round $round, string $name = self::DEFAULT_NAME): HeroTournament
+    public function createTournament(Round $round, int $dayOfRound = null, string $name = self::DEFAULT_NAME): HeroTournament
     {
+        $startDate = $round->start_date->addDays($dayOfRound - 1);
+
         $tournament = HeroTournament::create([
             'round_id' => $round->id,
             'name' => $name,
+            'start_date' => $startDate,
             'current_round_number' => 1,
         ]);
-
-        foreach ($round->activeDominions()->human()->get() as $dominion) {
-            if ($dominion->hero !== null) {
-                HeroTournamentParticipant::create([
-                    'hero_id' => $dominion->hero->id,
-                    'hero_tournament_id' => $tournament->id,
-                ]);
-            }
-        }
-
-        $this->handleMatchups($tournament);
 
         return $tournament;
     }
@@ -55,7 +47,7 @@ class HeroTournamentService
             ->where('eliminated', false)
             ->inRandomOrder()
             ->get()
-            ->sortByDesc('wins');
+            ->sortBy('wins');
 
         foreach ($participants->chunk(2) as $pairing) {
             $participants = $pairing->values();
@@ -81,7 +73,9 @@ class HeroTournamentService
             ->get();
 
         foreach ($tournaments as $tournament) {
-            $this->checkRoundEnded($tournament);
+            if ($tournament->hasStarted()) {
+                $this->checkRoundEnded($tournament);
+            }
         }
     }
 
@@ -94,8 +88,8 @@ class HeroTournamentService
         $this->processEliminations($tournament);
         $finished = $this->checkTournamentEnded($tournament);
         if (!$finished) {
-            $tournament->increment('current_round_number');
             $this->handleMatchups($tournament);
+            $tournament->increment('current_round_number');
         }
     }
 
@@ -128,5 +122,50 @@ class HeroTournamentService
         }
 
         return $tournament->finished;
+    }
+
+    public function joinTournament(HeroTournament $tournament, Dominion $dominion): void
+    {
+        if ($tournament->hasStarted()) {
+            throw new GameException('Tournament registration is closed.');
+        }
+
+        if ($dominion->hero === null) {
+            throw new GameException('You need a hero to join the tournament.');
+        }
+
+        $existingParticipant = HeroTournamentParticipant::where('hero_tournament_id', $tournament->id)
+            ->where('hero_id', $dominion->hero->id)
+            ->first();
+
+        if ($existingParticipant) {
+            throw new GameException('You are already registered for this tournament.');
+        }
+
+        HeroTournamentParticipant::create([
+            'hero_id' => $dominion->hero->id,
+            'hero_tournament_id' => $tournament->id,
+        ]);
+    }
+
+    public function leaveTournament(HeroTournament $tournament, Dominion $dominion): void
+    {
+        if ($tournament->hasStarted()) {
+            throw new GameException('Tournament registration is closed.');
+        }
+
+        if ($dominion->hero === null) {
+            throw new GameException('You need a hero to leave the tournament.');
+        }
+
+        $participant = HeroTournamentParticipant::where('hero_tournament_id', $tournament->id)
+            ->where('hero_id', $dominion->hero->id)
+            ->first();
+
+        if (!$participant) {
+            throw new GameException('You are not registered for this tournament.');
+        }
+
+        $participant->delete();
     }
 }
