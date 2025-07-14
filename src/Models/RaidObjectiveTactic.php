@@ -22,6 +22,14 @@ namespace OpenDominion\Models;
  */
 class RaidObjectiveTactic extends AbstractModel
 {
+    protected $fillable = [
+        'raid_objective_id',
+        'type',
+        'name',
+        'attributes',
+        'bonuses',
+    ];
+
     protected $casts = [
         'attributes' => 'array',
         'bonuses' => 'array',
@@ -29,6 +37,21 @@ class RaidObjectiveTactic extends AbstractModel
 
     public function objective()
     {
-        return $this->belongsTo(RaidObjective::class);
+        return $this->belongsTo(RaidObjective::class, 'raid_objective_id');
+    }
+
+    public function getSortOrderAttribute(): int
+    {
+        $types = [
+            'hero',
+            'investment',
+            'exploration',
+            'espionage',
+            'magic',
+            'invasion',
+        ];
+
+        $index = array_search($this->type, $types);
+        return $index !== false ? $index : 999;
     }
 }

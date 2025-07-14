@@ -12,6 +12,7 @@ use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroBattleAction;
 use OpenDominion\Models\HeroBattleQueue;
 use OpenDominion\Models\HeroCombatant;
+use OpenDominion\Models\RaidContribution;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\NotificationService;
@@ -438,6 +439,21 @@ class HeroBattleService
                 $notificationService->queueNotification('hero_battle', ['status' => 'ended']);
                 $notificationService->sendNotifications($combatant->hero->dominion, 'irregular_dominion');
             }
+        }
+
+        if ($heroBattle->raid_tactic_id !== null && $winner !== null && $winner->hero !== null) {
+            $dominion = $winner->hero->dominion;
+            $tactic = $heroBattle->tactic;
+            $score = $tactic->attributes['points_awarded'];
+
+            // Create contribution record
+            RaidContribution::create([
+                'realm_id' => $dominion->realm_id,
+                'dominion_id' => $dominion->id,
+                'raid_objective_id' => $tactic->raid_objective_id,
+                'type' => $tactic->type,
+                'score' => $score,
+            ]);
         }
     }
 

@@ -49,7 +49,7 @@
                                                 <tr class="{{ $objective->isActive() ? 'success' : null}}">
                                                     <td>{{ $objective->order }}</td>
                                                     <td>
-                                                        <a href="{{ route('dominion.raid-objective', [$objective->id]) }}">
+                                                        <a href="{{ route('dominion.raids.objective', [$objective->id]) }}">
                                                             {{ $objective->name }}
                                                         </a>
                                                     </td>

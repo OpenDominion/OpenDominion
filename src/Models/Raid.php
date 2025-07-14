@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * OpenDominion\Models\Raid
  *
@@ -25,6 +27,18 @@ namespace OpenDominion\Models;
  */
 class Raid extends AbstractModel
 {
+    protected $fillable = [
+        'round_id',
+        'name',
+        'description',
+        'reward_resource',
+        'reward_amount',
+        'completion_reward_resource',
+        'completion_reward_amount',
+        'start_date',
+        'end_date',
+    ];
+
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',

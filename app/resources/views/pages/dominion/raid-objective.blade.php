@@ -32,45 +32,41 @@
                                     @endif
                                 </div>
                             </div>
+                            @php
+                                $totalScore = $raidCalculator->getObjectiveScore($objective);
+                                $progress = $raidCalculator->getObjectiveProgress($objective);
+                                $dominionContribution = $raidCalculator->getDominionContribution($objective, $selectedDominion);
+                                $dominionPercentage = $raidCalculator->getDominionContributionPercentage($objective, $selectedDominion);
+                                $realmContribution = $raidCalculator->getRealmContribution($objective, $selectedDominion->realm);
+                                $realmPercentage = $raidCalculator->getRealmContributionPercentage($objective, $selectedDominion->realm);
+                            @endphp
                             <div class="progress">
-                                <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
-                                    <span class="sr-only">30% Complete (success)</span>
+                                <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="{{ $realmPercentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $realmPercentage }}%">
+                                    <span class="sr-only">{{ number_format($realmPercentage, 1) }}% Complete (realm)</span>
                                 </div>
-                                <div class="progress-bar progress-bar-blue" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 10%">
-                                    <span class="sr-only">10% Complete (success)</span>
+                                <div class="progress-bar progress-bar-blue" role="progressbar" aria-valuenow="{{ $dominionPercentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $dominionPercentage }}%">
+                                    <span class="sr-only">{{ number_format($dominionPercentage, 1) }}% Complete (you)</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <b>Progress:</b> 4,000 / 10,000
+                                    <b>Progress:</b> {{ number_format($totalScore) }} / {{ number_format($objective->score_required) }} ({{ number_format($progress, 1) }}%)
                                 </div>
                                 <div class="col-md-6">
-                                    <b>Your Contribution:</b> 1,000 / 10,000 (10%)
+                                    <b>Your Contribution:</b> {{ number_format($dominionContribution) }} / {{ number_format($totalScore) }} ({{ number_format($dominionPercentage, 1) }}%)
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <form action="" method="post">
-                @foreach ($objective->tactics as $tactic)
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box box-warning">
-                                <div class="box-header with-border">
-                                    {{ $tactic->name }}
-                                    <div class="box-tools pull-right">
-                                        <div class="label label-primary">{{ ucwords($tactic->type) }}</div>
-                                    </div>
-                                </div>
-                                <div class="box-body">
-                                    @include("partials.dominion.raids.{$tactic->type}")
-                                </div>
-                            </div>
-                        </div>
+            @foreach ($objective->tactics->sortBy('sort_order') as $tactic)
+                <div class="row">
+                    <div class="col-md-12">
+                        @include("partials.dominion.raids.{$tactic->type}")
                     </div>
-                @endforeach
-            </form>
+                </div>
+            @endforeach
         </div>
 
         <div class="col-sm-12 col-md-3">
@@ -88,11 +84,20 @@
                     <h3 class="box-title">Recent Actions</h3>
                 </div>
                 <div class="box-body">
-                    <div>
-                        Build Siege Weapons<br/>
-                        <span class="small">2 minutes ago</span>
-                        <div class="pull-right">+85</div>
-                    </div>
+                    @php
+                        $recentContributions = $raidCalculator->getRecentContributions($objective, 5);
+                    @endphp
+                    @forelse($recentContributions as $contribution)
+                        <div class="small" style="margin-bottom: 8px;">
+                            <strong>{{ $contribution['dominion_name'] }}</strong> ({{ $contribution['realm_name'] }})
+                            <br/>
+                            {{ ucwords(str_replace('_', ' ', $contribution['type'])) }}
+                            <span class="text-muted">{{ $contribution['created_at']->diffForHumans() }}</span>
+                            <div class="pull-right text-success">+{{ number_format($contribution['score']) }}</div>
+                        </div>
+                    @empty
+                        <div class="text-muted">No recent contributions.</div>
+                    @endforelse
                 </div>
             </div>
         </div>

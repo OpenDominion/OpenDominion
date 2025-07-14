@@ -8,7 +8,7 @@ namespace OpenDominion\Models;
  * @property int $id
  * @property int $realm_id
  * @property int $dominion_id
- * @property int $objective_id
+ * @property int $raid_objective_id
  * @property string $type
  * @property int $score - TODO: or float?
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -23,6 +23,15 @@ namespace OpenDominion\Models;
  */
 class RaidContribution extends AbstractModel
 {
+    protected $fillable = [
+        'realm_id',
+        'dominion_id',
+        'raid_objective_id',
+        'type',
+        'score',
+        'created_at'
+    ];
+
     public function dominion()
     {
         return $this->belongsTo(Dominion::class);
@@ -30,7 +39,7 @@ class RaidContribution extends AbstractModel
 
     public function objective()
     {
-        return $this->belongsTo(RaidObjective::class);
+        return $this->belongsTo(RaidObjective::class, 'raid_objective_id');
     }
 
     public function realm()

@@ -186,6 +186,21 @@
                                                 land from
                                                 <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ in_array($gameEvent->target_id, $dominionIds, true) ? 'text-green' : 'text-light-blue' }}" data-toggle="tooltip" data-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                                                 <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
+                                            @elseif ($gameEvent->type == 'raid_attacked')
+                                                @php
+                                                    $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $gameEvent->source), 2);
+                                                    $sourceRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $gameEvent->source);
+                                                    $sourceRaceName = $gameEvent->source->race->name;
+                                                    $sourceToolTipHtml = "$sourceRaceName (<span class=\"$sourceRangeClass\">$sourceRange%</span>)";
+                                                @endphp
+                                                @if (in_array($gameEvent->source_id, $dominionIds, true))
+                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                @else
+                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                @endif
+                                                has attacked <a href="{{ route('dominion.raids.objective', [$gameEvent->target_id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>.
                                             @elseif ($gameEvent->type == 'abandoned')
                                                 <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
                                                 <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
@@ -197,7 +212,7 @@
                                                 @if ($gameEvent->source->realm_id == $selectedDominion->realm->id || $gameEvent->target->realm_id == $selectedDominion->realm->id)
                                                     <a href="{{ route('dominion.event', [$gameEvent->id]) }}"><i class="ra ra-crossed-swords ra-fw"></i></a>
                                                 @endif
-                                            @elseif ($gameEvent->type === 'wonder_attacked')
+                                            @elseif ($gameEvent->type === 'wonder_attacked' || $gameEvent->type === 'raid_attacked')
                                                 @if ($gameEvent->source->realm_id == $selectedDominion->realm->id || $gameEvent->target->realm_id == $selectedDominion->realm->id)
                                                     <a href="{{ route('dominion.event', [$gameEvent->id]) }}"><i class="ra ra-sword ra-fw"></i></a>
                                                 @endif

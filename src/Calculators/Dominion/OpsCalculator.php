@@ -572,4 +572,34 @@ class OpsCalculator
         // Lose between 50 and 100
         return max(50, 110 - (10 * $realmies));
     }
+
+    /**
+     * Returns the espionage score multiplier for raid operations.
+     * Formula: 1.5 * Min(1, spy_ratio) * land_size
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getEspionageScoreMultiplier(Dominion $dominion): float
+    {
+        $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
+        $landSize = $this->landCalculator->getTotalLand($dominion);
+
+        return 1.5 * min(1, $spyRatio) * $landSize;
+    }
+
+    /**
+     * Returns the magic score multiplier for raid operations.
+     * Formula: 1.5 * Min(1, wizard_ratio) * land_size
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getMagicScoreMultiplier(Dominion $dominion): float
+    {
+        $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
+        $landSize = $this->landCalculator->getTotalLand($dominion);
+
+        return 1.5 * min(1, $wizardRatio) * $landSize;
+    }
 }
