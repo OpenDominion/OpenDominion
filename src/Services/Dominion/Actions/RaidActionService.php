@@ -6,6 +6,7 @@ use DB;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
+use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\RaidHelper;
 use OpenDominion\Models\Dominion;
@@ -25,14 +26,8 @@ class RaidActionService
 {
     use DominionGuardsTrait;
 
-    /** @var RaidHelper */
-    protected $raidHelper;
-
-    /** @var ProtectionService */
-    protected $protectionService;
-
-    /** @var OpsCalculator */
-    protected $opsCalculator;
+    /** @var InvasionService */
+    protected $invasionService;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -40,11 +35,20 @@ class RaidActionService
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
-    /** @var InvasionService */
-    protected $invasionService;
+    /** @var OpsCalculator */
+    protected $opsCalculator;
+
+    /** @var ProtectionService */
+    protected $protectionService;
 
     /** @var QueueService */
     protected $queueService;
+
+    /** @var RaidCalculator */
+    protected $raidCalculator;
+
+    /** @var RaidHelper */
+    protected $raidHelper;
 
     /** @var array Attack result array. todo: Should probably be refactored later to its own class */
     protected $attackResult = [
@@ -65,13 +69,14 @@ class RaidActionService
      */
     public function __construct()
     {
-        $this->raidHelper = app(RaidHelper::class);
-        $this->protectionService = app(ProtectionService::class);
-        $this->opsCalculator = app(OpsCalculator::class);
+        $this->invasionService = app(InvasionService::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
-        $this->invasionService = app(InvasionService::class);
+        $this->opsCalculator = app(OpsCalculator::class);
+        $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
+        $this->raidCalculator = app(RaidCalculator::class);
+        $this->raidHelper = app(RaidHelper::class);
     }
 
     /**
@@ -321,9 +326,8 @@ class RaidActionService
                 break;
 
             case 'magic':
-                $manaCostMultiplier = $selectedOption['mana_cost'];
                 $wizardStrength = $selectedOption['strength_cost'];
-                $actualManaCost = rceil($manaCostMultiplier * $this->landCalculator->getTotalLand($dominion));
+                $actualManaCost = $this->raidCalculator->getTacticManaCost($dominion, $selectedOption);
                 if ($dominion->resource_mana < $actualManaCost) {
                     throw new GameException('You do not have enough mana');
                 }

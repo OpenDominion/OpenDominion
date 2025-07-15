@@ -11,6 +11,24 @@ use OpenDominion\Models\Realm;
 
 class RaidCalculator
 {
+    /** @var LandCalculator */
+    protected $landCalculator;
+
+    public function __construct()
+    {
+        $this->landCalculator = app(LandCalculator::class);
+    }
+
+    /**
+     * Get the mana cost for a tactic spell option.
+     */
+    public function getTacticManaCost(Dominion $dominion, array $spellOption): int
+    {
+        $manaCostMultiplier = $spellOption['mana_cost'] ?? 0;
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        return rceil($manaCostMultiplier * $totalLand);
+    }
+
     /**
      * Get the total score for a raid objective.
      */

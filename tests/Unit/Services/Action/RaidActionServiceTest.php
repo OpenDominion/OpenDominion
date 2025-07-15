@@ -59,7 +59,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $this->dominion->military_unit3 = 500;
         $this->dominion->military_unit4 = 200;
         $this->dominion->military_spies = 25; // For 0.5 spy ratio with 50 land
-        $this->dominion->military_wizards = 25; // For 0.5 wizard ratio with 50 land  
+        $this->dominion->military_wizards = 50; // For 1.0 wizard ratio with 50 land
         $this->dominion->spy_strength = 100;
         $this->dominion->wizard_strength = 100;
         $this->dominion->morale = 100;

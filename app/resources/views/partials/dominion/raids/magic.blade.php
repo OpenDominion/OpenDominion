@@ -28,9 +28,8 @@
                     <tbody>
                         @foreach($tactic->attributes as $optionKey => $option)
                             @php
+                                $actualManaCost = $raidCalculator->getTacticManaCost($selectedDominion, $option);
                                 $manaCostMultiplier = $option['mana_cost'] ?? 0;
-                                $totalLand = $landCalculator->getTotalLand($selectedDominion);
-                                $actualManaCost = rceil($manaCostMultiplier * $totalLand);
                                 $wizardStrengthRequired = $option['strength_cost'] ?? 0;
                                 $pointsAwarded = $option['points_awarded'] ?? 0;
                                 $canPerform = $selectedDominion->resource_mana >= $actualManaCost && $selectedDominion->wizard_strength >= $wizardStrengthRequired;
