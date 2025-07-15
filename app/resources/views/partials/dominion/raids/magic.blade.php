@@ -31,7 +31,7 @@
                                 $actualManaCost = $raidCalculator->getTacticManaCost($selectedDominion, $option);
                                 $manaCostMultiplier = $option['mana_cost'] ?? 0;
                                 $wizardStrengthRequired = $option['strength_cost'] ?? 0;
-                                $pointsAwarded = $option['points_awarded'] ?? 0;
+                                $pointsAwarded = $raidCalculator->getTacticPointsEarned($selectedDominion, $tactic, $option);
                                 $canPerform = $selectedDominion->resource_mana >= $actualManaCost && $selectedDominion->wizard_strength >= $wizardStrengthRequired;
                             @endphp
                             <tr>

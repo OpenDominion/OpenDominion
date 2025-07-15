@@ -31,7 +31,7 @@
                                 <td>{{ $option['name'] }}</td>
                                 <td>{{ number_format($option['morale_cost']) }}%</td>
                                 <td>{{ number_format($option['draftee_cost']) }}</td>
-                                <td>{{ $option['points_awarded'] }} points</td>
+                                <td>{{ number_format($option['points_awarded']) }} points</td>
                                 <td>
                                     @if ($selectedDominion->military_draftees >= $option['draftee_cost'])
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">

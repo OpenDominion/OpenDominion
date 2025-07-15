@@ -3,10 +3,12 @@
 namespace OpenDominion\Calculators;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\RaidContribution;
 use OpenDominion\Models\RaidObjective;
+use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Realm;
 
 class RaidCalculator
@@ -14,9 +16,13 @@ class RaidCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var OpsCalculator */
+    protected $opsCalculator;
+
     public function __construct()
     {
         $this->landCalculator = app(LandCalculator::class);
+        $this->opsCalculator = app(OpsCalculator::class);
     }
 
     /**
@@ -27,6 +33,28 @@ class RaidCalculator
         $manaCostMultiplier = $spellOption['mana_cost'] ?? 0;
         $totalLand = $this->landCalculator->getTotalLand($dominion);
         return rceil($manaCostMultiplier * $totalLand);
+    }
+
+    /**
+     * Get the actual points earned for a tactic action.
+     */
+    public function getTacticPointsEarned(Dominion $dominion, RaidObjectiveTactic $tactic, array $tacticOption): float
+    {
+        $basePoints = $tacticOption['points_awarded'];
+
+        // Apply espionage score multiplier for espionage tactics
+        if ($tactic->type === 'espionage') {
+            $multiplier = $this->opsCalculator->getEspionageScoreMultiplier($dominion);
+            return $basePoints * $multiplier;
+        }
+
+        // Apply magic score multiplier for magic tactics
+        if ($tactic->type === 'magic') {
+            $multiplier = $this->opsCalculator->getMagicScoreMultiplier($dominion);
+            return $basePoints * $multiplier;
+        }
+
+        return $basePoints;
     }
 
     /**

@@ -27,7 +27,7 @@
                         @foreach($tactic->attributes as $optionKey => $option)
                             @php
                                 $strengthCost = $option['strength_cost'] ?? 0;
-                                $pointsAwarded = $option['points_awarded'] ?? 0;
+                                $pointsAwarded = $raidCalculator->getTacticPointsEarned($selectedDominion, $tactic, $option);
                                 $canPerform = $selectedDominion->spy_strength >= $strengthCost;
                             @endphp
                             <tr>

@@ -5,7 +5,6 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
-use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\RaidHelper;
@@ -34,9 +33,6 @@ class RaidActionService
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
-
-    /** @var OpsCalculator */
-    protected $opsCalculator;
 
     /** @var ProtectionService */
     protected $protectionService;
@@ -72,7 +68,6 @@ class RaidActionService
         $this->invasionService = app(InvasionService::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
-        $this->opsCalculator = app(OpsCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
         $this->raidCalculator = app(RaidCalculator::class);
@@ -124,7 +119,7 @@ class RaidActionService
 
         // Calculate costs and deductions
         $costs = $this->calculateCosts($dominion, $tactic, $data, $selectedOption);
-        $pointsEarned = $this->calculatePointsEarned($dominion, $tactic, $data, $selectedOption);
+        $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic, $selectedOption);
 
         DB::transaction(function () use ($dominion, $tactic, $costs, $pointsEarned) {
             // Apply costs
@@ -342,27 +337,6 @@ class RaidActionService
         return $costs;
     }
 
-    /**
-     * Calculate points earned for a tactic action.
-     */
-    protected function calculatePointsEarned(Dominion $dominion, RaidObjectiveTactic $tactic, array $data, array $selectedOption): float
-    {
-        $basePoints = $selectedOption['points_awarded'];
-
-        // Apply espionage score multiplier for espionage tactics
-        if ($tactic->type === 'espionage') {
-            $multiplier = $this->opsCalculator->getEspionageScoreMultiplier($dominion);
-            return $basePoints * $multiplier;
-        }
-
-        // Apply magic score multiplier for magic tactics
-        if ($tactic->type === 'magic') {
-            $multiplier = $this->opsCalculator->getMagicScoreMultiplier($dominion);
-            return $basePoints * $multiplier;
-        }
-
-        return $basePoints;
-    }
 
     /**
      * Handles the returning boats.

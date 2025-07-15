@@ -33,7 +33,7 @@
                             <tr>
                                 <td>{{ $option['name'] }}</td>
                                 <td>{{ number_format($option['amount']) }} {{ $option['resource'] }}</td>
-                                <td>{{ $option['points_awarded'] }}</td>
+                                <td>{{ number_format($option['points_awarded']) }}</td>
                                 <td>
                                     @if ($canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">

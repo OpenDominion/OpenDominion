@@ -28,7 +28,7 @@
                             <tr>
                                 <td>{{ $tactic->name }}</td>
                                 <td>{{ $tactic->attributes['name'] }}</td>
-                                <td>{{ $tactic->attributes['points_awarded'] }} points</td>
+                                <td>{{ number_format($tactic->attributes['points_awarded']) }} points</td>
                                 <td>
                                     <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                         @csrf
