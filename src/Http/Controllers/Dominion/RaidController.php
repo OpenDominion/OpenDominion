@@ -24,13 +24,16 @@ class RaidController extends AbstractDominionController
     {
         $raidCalculator = app(RaidCalculator::class);
         $raidHelper = app(RaidHelper::class);
+        $selectedDominion = $this->getSelectedDominion();
+        $selectedRealm = $selectedDominion->realm;
 
-        $raids = $this->getSelectedDominion()->round->raids->sortBy('order');
+        $raids = $selectedDominion->round->raids->sortBy('order');
 
         return view('pages.dominion.raids', compact(
             'raidCalculator',
             'raidHelper',
-            'raids'
+            'raids',
+            'selectedRealm'
         ));
     }
 
@@ -41,6 +44,8 @@ class RaidController extends AbstractDominionController
         $raidCalculator = app(RaidCalculator::class);
         $raidHelper = app(RaidHelper::class);
         $unitHelper = app(UnitHelper::class);
+        $selectedDominion = $this->getSelectedDominion();
+        $selectedRealm = $selectedDominion->realm;
 
         return view('pages.dominion.raid-objective', compact(
             'objective',
@@ -49,6 +54,7 @@ class RaidController extends AbstractDominionController
             'raidCalculator',
             'raidHelper',
             'unitHelper',
+            'selectedRealm'
         ));
     }
 
@@ -69,5 +75,23 @@ class RaidController extends AbstractDominionController
         }
 
         return redirect()->route('dominion.raids.objective', $tactic->objective);
+    }
+
+    public function getRaidLeaderboard(RaidObjective $objective)
+    {
+        $raidCalculator = app(RaidCalculator::class);
+        $selectedDominion = $this->getSelectedDominion();
+        $selectedRealm = $selectedDominion->realm;
+
+        $leaderboard = $raidCalculator->getRealmsLeaderboard($objective);
+        $totalScore = $raidCalculator->getObjectiveScore($objective);
+
+        return view('pages.dominion.raid-leaderboard', [
+            'objective' => $objective,
+            'raidCalculator' => $raidCalculator,
+            'selectedRealm' => $selectedRealm,
+            'leaderboard' => $leaderboard,
+            'totalScore' => $totalScore,
+        ]);
     }
 }

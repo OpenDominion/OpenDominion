@@ -349,4 +349,204 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         // Assert
         $this->assertEquals(30.0, $percentage);
     }
+
+    // Tests for new unified API with realm parameter
+    public function testGetObjectiveScore_WithRealm_ReturnsOnlyRealmScore()
+    {
+        // Arrange
+        $anotherUser = $this->createUser();
+        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        
+        // Ensure they're in different realms by updating one
+        $anotherRealm = $this->createRealm($this->round, 'Test Realm 2');
+        $anotherDominion->realm_id = $anotherRealm->id;
+        $anotherDominion->save();
+
+        RaidContribution::create([
+            'realm_id' => $this->dominion->realm_id,
+            'dominion_id' => $this->dominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 300,
+        ]);
+
+        RaidContribution::create([
+            'realm_id' => $anotherDominion->realm_id,
+            'dominion_id' => $anotherDominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 700,
+        ]);
+
+        // Act
+        $realmScore = $this->calculator->getObjectiveScore($this->objective, $this->dominion->realm);
+        $globalScore = $this->calculator->getObjectiveScore($this->objective);
+
+        // Assert
+        $this->assertEquals(300, $realmScore); // Only this realm's score
+        $this->assertEquals(1000, $globalScore); // All realms combined
+    }
+
+    public function testGetObjectiveProgress_WithRealm_ReturnsOnlyRealmProgress()
+    {
+        // Arrange
+        $anotherUser = $this->createUser();
+        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        
+        // Ensure they're in different realms by updating one
+        $anotherRealm = $this->createRealm($this->round, 'Test Realm 2');
+        $anotherDominion->realm_id = $anotherRealm->id;
+        $anotherDominion->save();
+
+        RaidContribution::create([
+            'realm_id' => $this->dominion->realm_id,
+            'dominion_id' => $this->dominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 250, // 25% of 1000 required
+        ]);
+
+        RaidContribution::create([
+            'realm_id' => $anotherDominion->realm_id,
+            'dominion_id' => $anotherDominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 750, // 75% of 1000 required
+        ]);
+
+        // Act
+        $realmProgress = $this->calculator->getObjectiveProgress($this->objective, $this->dominion->realm);
+        $globalProgress = $this->calculator->getObjectiveProgress($this->objective);
+
+        // Assert
+        $this->assertEquals(25.0, $realmProgress); // Only this realm's progress
+        $this->assertEquals(100.0, $globalProgress); // All realms combined
+    }
+
+    public function testIsObjectiveCompleted_WithRealm_ChecksOnlyRealmCompletion()
+    {
+        // Arrange
+        $anotherUser = $this->createUser();
+        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        
+        // Ensure they're in different realms by updating one
+        $anotherRealm = $this->createRealm($this->round, 'Test Realm 2');
+        $anotherDominion->realm_id = $anotherRealm->id;
+        $anotherDominion->save();
+
+        RaidContribution::create([
+            'realm_id' => $this->dominion->realm_id,
+            'dominion_id' => $this->dominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 500, // 50% - not completed
+        ]);
+
+        RaidContribution::create([
+            'realm_id' => $anotherDominion->realm_id,
+            'dominion_id' => $anotherDominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 1000, // 100% - completed
+        ]);
+
+        // Act
+        $realmCompleted = $this->calculator->isObjectiveCompleted($this->objective, $this->dominion->realm);
+        $otherRealmCompleted = $this->calculator->isObjectiveCompleted($this->objective, $anotherDominion->realm);
+        $globalCompleted = $this->calculator->isObjectiveCompleted($this->objective);
+
+        // Assert
+        $this->assertFalse($realmCompleted); // This realm hasn't completed
+        $this->assertTrue($otherRealmCompleted); // Other realm has completed
+        $this->assertTrue($globalCompleted); // At least one realm has completed
+    }
+
+    public function testGetRecentContributionsInRealm_ReturnsOnlyRealmContributions()
+    {
+        // Arrange
+        $anotherUser = $this->createUser();
+        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        
+        // Ensure they're in different realms by updating one
+        $anotherRealm = $this->createRealm($this->round, 'Test Realm 2');
+        $anotherDominion->realm_id = $anotherRealm->id;
+        $anotherDominion->save();
+
+        RaidContribution::create([
+            'realm_id' => $this->dominion->realm_id,
+            'dominion_id' => $this->dominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test1',
+            'score' => 100,
+            'created_at' => now()->subMinutes(1),
+        ]);
+
+        RaidContribution::create([
+            'realm_id' => $anotherDominion->realm_id,
+            'dominion_id' => $anotherDominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test2',
+            'score' => 200,
+            'created_at' => now()->subMinutes(2),
+        ]);
+
+        // Act
+        $realmContributions = $this->calculator->getRecentContributionsInRealm($this->objective, $this->dominion->realm, 5);
+        $allContributions = $this->calculator->getRecentContributions($this->objective, 5);
+
+        // Assert
+        $this->assertCount(1, $realmContributions); // Only this realm's contribution
+        $this->assertCount(2, $allContributions); // All contributions
+        $this->assertEquals('test1', $realmContributions[0]['type']);
+        $this->assertEquals($this->dominion->name, $realmContributions[0]['dominion_name']);
+        $this->assertArrayNotHasKey('realm_name', $realmContributions[0]); // Should not include realm name
+    }
+
+    public function testGetTopContributorsInRealm_ReturnsOnlyRealmContributors()
+    {
+        // Arrange
+        $anotherUser = $this->createUser();
+        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        
+        // Ensure they're in different realms by updating one
+        $anotherRealm = $this->createRealm($this->round, 'Test Realm 2');
+        $anotherDominion->realm_id = $anotherRealm->id;
+        $anotherDominion->save();
+        $realmMate = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $this->dominion->realm);
+
+        RaidContribution::create([
+            'realm_id' => $this->dominion->realm_id,
+            'dominion_id' => $this->dominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 300,
+        ]);
+
+        RaidContribution::create([
+            'realm_id' => $realmMate->realm_id,
+            'dominion_id' => $realmMate->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 400,
+        ]);
+
+        RaidContribution::create([
+            'realm_id' => $anotherDominion->realm_id,
+            'dominion_id' => $anotherDominion->id,
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'score' => 500,
+        ]);
+
+        // Act
+        $realmContributors = $this->calculator->getTopContributorsInRealm($this->objective, $this->dominion->realm, 5);
+        $allContributors = $this->calculator->getTopContributors($this->objective, 5);
+
+        // Assert
+        $this->assertCount(2, $realmContributors); // Only this realm's contributors
+        $this->assertCount(3, $allContributors); // All contributors
+        $this->assertEquals(400, $realmContributors[0]['total_score']); // Highest in realm
+        $this->assertEquals(300, $realmContributors[1]['total_score']); // Second in realm
+        $this->assertArrayNotHasKey('realm_name', $realmContributors[0]); // Should not include realm name
+    }
 }

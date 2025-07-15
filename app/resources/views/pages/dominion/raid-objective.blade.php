@@ -33,27 +33,37 @@
                                 </div>
                             </div>
                             @php
-                                $totalScore = $raidCalculator->getObjectiveScore($objective);
-                                $progress = $raidCalculator->getObjectiveProgress($objective);
+                                $realmScore = $raidCalculator->getObjectiveScore($objective, $selectedRealm);
+                                $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedRealm);
+                                $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
                                 $dominionContribution = $raidCalculator->getDominionContribution($objective, $selectedDominion);
-                                $dominionPercentage = $raidCalculator->getDominionContributionPercentage($objective, $selectedDominion);
-                                $realmContribution = $raidCalculator->getRealmContribution($objective, $selectedDominion->realm);
-                                $realmPercentage = $raidCalculator->getRealmContributionPercentage($objective, $selectedDominion->realm);
+                                $dominionPercentage = $realmScore > 0 ? ($dominionContribution / $realmScore) * 100 : 0;
+                                $dominionProgressOfTotal = $objective->score_required > 0 ? ($dominionContribution / $objective->score_required) * 100 : 0;
                             @endphp
                             <div class="progress">
-                                <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="{{ $realmPercentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $realmPercentage }}%">
-                                    <span class="sr-only">{{ number_format($realmPercentage, 1) }}% Complete (realm)</span>
+                                <div class="progress-bar progress-bar-{{ $realmCompleted ? 'success' : 'primary' }}" role="progressbar" aria-valuenow="{{ $realmProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $realmProgress }}%">
+                                    <span class="sr-only">{{ number_format($realmProgress, 1) }}% Complete (realm)</span>
                                 </div>
-                                <div class="progress-bar progress-bar-blue" role="progressbar" aria-valuenow="{{ $dominionPercentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $dominionPercentage }}%">
-                                    <span class="sr-only">{{ number_format($dominionPercentage, 1) }}% Complete (you)</span>
+                                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ $dominionProgressOfTotal }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $dominionProgressOfTotal }}%">
+                                    <span class="sr-only">{{ number_format($dominionProgressOfTotal, 1) }}% Complete (you)</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <b>Progress:</b> {{ number_format($totalScore) }} / {{ number_format($objective->score_required) }} ({{ number_format($progress, 1) }}%)
+                                    <b>Realm Progress:</b> {{ number_format($realmScore) }} / {{ number_format($objective->score_required) }} ({{ number_format($realmProgress, 1) }}%)
+                                    @if ($realmCompleted)
+                                        <span class="label label-success">Completed!</span>
+                                    @endif
+                                    <br>
+                                    <b>Your Contribution:</b> {{ number_format($dominionContribution) }} ({{ number_format($dominionPercentage, 1) }}% of realm)
                                 </div>
-                                <div class="col-md-6">
-                                    <b>Your Contribution:</b> {{ number_format($dominionContribution) }} / {{ number_format($totalScore) }} ({{ number_format($dominionPercentage, 1) }}%)
+                                <div class="col-md-6 text-right">
+                                    <a href="{{ route('dominion.raids') }}" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-arrow-left"></i> Back to Raids
+                                    </a>
+                                    <a href="{{ route('dominion.raids.leaderboard', $objective) }}" class="btn btn-sm btn-info">
+                                        <i class="fa fa-list"></i> View Leaderboard
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -88,13 +98,13 @@
                 </div>
                 <div class="box-body">
                     @php
-                        $recentContributions = $raidCalculator->getRecentContributions($objective, 5);
+                        $recentContributions = $raidCalculator->getRecentContributionsInRealm($objective, $selectedRealm, 10);
                     @endphp
                     @forelse($recentContributions as $contribution)
                         <div class="small" style="margin-bottom: 8px;">
-                            <strong>{{ $contribution['dominion_name'] }}</strong> ({{ $contribution['realm_name'] }})
+                            <strong>{{ $contribution['dominion_name'] }}</strong>
                             <br/>
-                            {{ ucwords(str_replace('_', ' ', $contribution['type'])) }}
+                            {{ ucwords(str_replace('_', ' ', $contribution['type'])) }} -
                             <span class="text-muted">{{ $contribution['created_at']->diffForHumans() }}</span>
                             <div class="pull-right text-success">+{{ number_format($contribution['score']) }}</div>
                         </div>

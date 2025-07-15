@@ -42,19 +42,29 @@
                                                     <th>Objective</th>
                                                     <th>Description</th>
                                                     <th>Score Required</th>
+                                                    <th>Your Realm Progress</th>
                                                     <th>Tactics</th>
                                                 </tr>
                                             </thead>
                                             @foreach ($raid->objectives->sortBy('order') as $objective)
+                                                @php
+                                                    $realmScore = $raidCalculator->getObjectiveScore($objective, $selectedRealm);
+                                                    $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedRealm);
+                                                    $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
+                                                @endphp
                                                 <tr class="{{ $objective->isActive() ? 'success' : null}}">
                                                     <td>{{ $objective->order }}</td>
                                                     <td>
                                                         <a href="{{ route('dominion.raids.objective', [$objective->id]) }}">
                                                             {{ $objective->name }}
                                                         </a>
+                                                        @if ($realmCompleted)
+                                                            <span class="label label-success">Completed</span>
+                                                        @endif
                                                     </td>
                                                     <td>{{ $objective->description }}</td>
                                                     <td>{{ number_format($objective->score_required) }}</td>
+                                                    <td>{{ number_format($realmScore) }} ({{ number_format($realmProgress, 1) }}%)</td>
                                                     <td>
                                                         @foreach ($objective->tactics as $tactic)
                                                             <div class="label label-primary">{{ ucwords($tactic->type) }}</div>

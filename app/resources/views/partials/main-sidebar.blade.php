@@ -209,7 +209,7 @@
                         @endif
                     </a>
                 </li>
-                <li class="{{ Route::is('dominion.raids') ? 'active' : null }}"><a href="{{ route('dominion.raids') }}"><i class="ra ra-castle-flag ra-fw"></i> <span>Raids</span></a></li>
+                <li class="{{ Route::is('dominion.raids*') ? 'active' : null }}"><a href="{{ route('dominion.raids') }}"><i class="ra ra-castle-flag ra-fw"></i> <span>Raids</span></a></li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a></li>
                 <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}">
                     <a href="{{ route('dominion.forum') }}">

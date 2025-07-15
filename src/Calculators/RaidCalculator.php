@@ -58,19 +58,29 @@ class RaidCalculator
     }
 
     /**
-     * Get the total score for a raid objective.
+     * Get the score for a raid objective.
+     * If no realm is provided, returns the total score for all realms.
+     * If a realm is provided, returns the score for that specific realm.
      */
-    public function getObjectiveScore(RaidObjective $objective): int
+    public function getObjectiveScore(RaidObjective $objective, ?Realm $realm = null): int
     {
-        return RaidContribution::where('raid_objective_id', $objective->id)->sum('score');
+        $query = RaidContribution::where('raid_objective_id', $objective->id);
+
+        if ($realm !== null) {
+            $query->where('realm_id', $realm->id);
+        }
+
+        return $query->sum('score');
     }
 
     /**
      * Get the progress percentage for a raid objective.
+     * If no realm is provided, returns the progress for all realms combined.
+     * If a realm is provided, returns the progress for that specific realm.
      */
-    public function getObjectiveProgress(RaidObjective $objective): float
+    public function getObjectiveProgress(RaidObjective $objective, ?Realm $realm = null): float
     {
-        $currentScore = $this->getObjectiveScore($objective);
+        $currentScore = $this->getObjectiveScore($objective, $realm);
         $requiredScore = $objective->score_required;
 
         if ($requiredScore <= 0) {
@@ -82,10 +92,12 @@ class RaidCalculator
 
     /**
      * Check if a raid objective is completed.
+     * If no realm is provided, checks if any realm has completed it.
+     * If a realm is provided, checks if that specific realm has completed it.
      */
-    public function isObjectiveCompleted(RaidObjective $objective): bool
+    public function isObjectiveCompleted(RaidObjective $objective, ?Realm $realm = null): bool
     {
-        return $this->getObjectiveScore($objective) >= $objective->score_required;
+        return $this->getObjectiveScore($objective, $realm) >= $objective->score_required;
     }
 
     /**
@@ -161,6 +173,28 @@ class RaidCalculator
     }
 
     /**
+     * Get recent contributions for a raid objective from a specific realm.
+     */
+    public function getRecentContributionsInRealm(RaidObjective $objective, Realm $realm, int $limit = 10): array
+    {
+        return RaidContribution::where('raid_objective_id', $objective->id)
+            ->where('realm_id', $realm->id)
+            ->with(['dominion'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function ($contribution) {
+                return [
+                    'dominion_name' => $contribution->dominion->name,
+                    'type' => $contribution->type,
+                    'score' => $contribution->score,
+                    'created_at' => $contribution->created_at,
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
      * Get top contributors for a raid objective.
      */
     public function getTopContributors(RaidObjective $objective, int $limit = 10): array
@@ -176,6 +210,74 @@ class RaidCalculator
                 return [
                     'dominion_name' => $contribution->dominion->name,
                     'realm_name' => $contribution->dominion->realm->name,
+                    'total_score' => $contribution->total_score,
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Get realm leaderboard for a raid objective.
+     */
+    public function getRealmsLeaderboard(RaidObjective $objective): array
+    {
+        return RaidContribution::where('raid_objective_id', $objective->id)
+            ->with(['realm'])
+            ->selectRaw('realm_id, SUM(score) as total_score')
+            ->groupBy('realm_id')
+            ->orderBy('total_score', 'desc')
+            ->get()
+            ->map(function ($contribution) use ($objective) {
+                $progress = min(100, ($contribution->total_score / $objective->score_required) * 100);
+                return [
+                    'realm_id' => $contribution->realm_id,
+                    'realm_name' => $contribution->realm->name,
+                    'total_score' => $contribution->total_score,
+                    'progress' => $progress,
+                    'completed' => $contribution->total_score >= $objective->score_required,
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Get realms that have completed the objective.
+     */
+    public function getCompletedRealms(RaidObjective $objective): array
+    {
+        return RaidContribution::where('raid_objective_id', $objective->id)
+            ->with(['realm'])
+            ->selectRaw('realm_id, SUM(score) as total_score')
+            ->groupBy('realm_id')
+            ->havingRaw('SUM(score) >= ?', [$objective->score_required])
+            ->orderBy('total_score', 'desc')
+            ->get()
+            ->map(function ($contribution) {
+                return [
+                    'realm_id' => $contribution->realm_id,
+                    'realm_name' => $contribution->realm->name,
+                    'total_score' => $contribution->total_score,
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Get top contributors for a raid objective within a specific realm.
+     */
+    public function getTopContributorsInRealm(RaidObjective $objective, Realm $realm, int $limit = 10): array
+    {
+        return RaidContribution::where('raid_objective_id', $objective->id)
+            ->where('realm_id', $realm->id)
+            ->with(['dominion'])
+            ->selectRaw('dominion_id, SUM(score) as total_score')
+            ->groupBy('dominion_id')
+            ->orderBy('total_score', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function ($contribution) {
+                return [
+                    'dominion_name' => $contribution->dominion->name,
                     'total_score' => $contribution->total_score,
                 ];
             })
