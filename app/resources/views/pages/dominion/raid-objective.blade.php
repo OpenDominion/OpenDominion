@@ -60,10 +60,13 @@
                     </div>
                 </div>
             </div>
-            @foreach ($objective->tactics->sortBy('sort_order') as $tactic)
+            @php
+                $tacticsByType = $objective->tactics->sortBy('sort_order')->groupBy('type');
+            @endphp
+            @foreach ($tacticsByType as $type => $tactics)
                 <div class="row">
                     <div class="col-md-12">
-                        @include("partials.dominion.raids.{$tactic->type}")
+                        @include("partials.dominion.raids.{$type}", ['tactics' => $tactics->sortBy('id')])
                     </div>
                 </div>
             @endforeach

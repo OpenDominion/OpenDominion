@@ -1,8 +1,8 @@
 <div class="box box-primary">
     <div class="box-header with-border">
-        <div class="box-title"><i class="ra ra-knight-helmet ra-fw"></i> {{ $tactic->name }}</div>
+        <div class="box-title"><i class="ra ra-knight-helmet ra-fw"></i> Hero Challenges</div>
         <div class="box-tools pull-right">
-            <div class="label label-primary">{{ ucwords($tactic->type) }}</div>
+            <div class="label label-primary">Hero</div>
         </div>
     </div>
     <div class="box-body">
@@ -17,7 +17,7 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Challenge</th>
                             <th>Opponent</th>
                             <th>Points Awarded</th>
                             <th>Actions</th>
@@ -25,23 +25,23 @@
                     </thead>
                     <tbody>
                         @if($selectedDominion->hero)
-                            <tr>
-                                <td>{{ $tactic->name }}</td>
-                                <td>{{ $tactic->attributes['name'] }}</td>
-                                <td>{{ number_format($tactic->attributes['points_awarded']) }} points</td>
-                                <td>
-                                    <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
-                                        @csrf
-                                        <button type="submit" class="btn btn-block btn-sm btn-primary">
-                                            Deploy Hero
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                            @foreach($tactics as $tactic)
+                                <tr>
+                                    <td>{{ $tactic->name }}</td>
+                                    <td>{{ $tactic->attributes['name'] }}</td>
+                                    <td>{{ number_format($tactic->attributes['points_awarded']) }}</td>
+                                    <td>
+                                        <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-primary">Start Battle</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         @else
                             <tr>
-                                <td colspan="5" class="text-center text-muted">
-                                    You need a hero to perform hero operations.
+                                <td colspan="4" class="text-center">
+                                    <small class="text-muted">You need a hero to participate in hero challenges.</small>
                                 </td>
                             </tr>
                         @endif

@@ -1,8 +1,8 @@
 <div class="box box-primary">
     <div class="box-header with-border">
-        <div class="box-title"><i class="ra ra-telescope ra-fw"></i> {{ $tactic->name }}</div>
+        <div class="box-title"><i class="ra ra-telescope ra-fw"></i> Expeditions</div>
         <div class="box-tools pull-right">
-            <div class="label label-primary">{{ ucwords($tactic->type) }}</div>
+            <div class="label label-primary">Exploration</div>
         </div>
     </div>
     <div class="box-body">
@@ -18,30 +18,36 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th>Location</th>
-                            <th>Morale</th>
-                            <th>Draftees</th>
-                            <th>Points Awarded</th>
-                            <th>Actions</th>
+                            <th>Expedition</th>
+                            <th>Draftee Cost</th>
+                            <th>Morale Cost</th>
+                            <th>Points</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($tactic->attributes as $optionKey => $option)
+                        @foreach($tactics as $tactic)
+                            @php
+                                $drafteeCost = $tactic->attributes['draftee_cost'];
+                                $moraleCost = $tactic->attributes['morale_cost'];
+                                $pointsAwarded = $tactic->attributes['points_awarded'];
+                                $canPerform = $selectedDominion->military_draftees >= $drafteeCost;
+                            @endphp
                             <tr>
-                                <td>{{ $option['name'] }}</td>
-                                <td>{{ number_format($option['morale_cost']) }}%</td>
-                                <td>{{ number_format($option['draftee_cost']) }}</td>
-                                <td>{{ number_format($option['points_awarded']) }} points</td>
+                                <td>{{ $tactic->name }}</td>
+                                <td>{{ number_format($drafteeCost) }}</td>
+                                <td>{{ $moraleCost }}%</td>
+                                <td>{{ number_format($pointsAwarded) }}</td>
                                 <td>
-                                    @if ($selectedDominion->military_draftees >= $option['draftee_cost'])
+                                    @if ($selectedDominion->military_draftees >= $drafteeCost)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
-                                            <button type="submit" name="option" value="{{ $optionKey }}" class="btn btn-block btn-sm btn-primary">
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary">
                                                 Explore
                                             </button>
                                         </form>
                                     @else
-                                        <button type="button" class="btn btn-block btn-sm btn-secondary" disabled>
+                                        <button type="button" class="btn btn-block btn-sm btn-primary" disabled>
                                             Insufficient Draftees
                                         </button>
                                     @endif
@@ -51,10 +57,14 @@
                         <tr>
                             <td></td>
                             <td>
-                                <small class="text-muted">Morale: {{ number_format($selectedDominion->morale) }}%</small>
+                                <small class="text-muted">
+                                    Morale: {{ $selectedDominion->morale }}%
+                                </small>
                             </td>
                             <td colspan=3>
-                                <small class="text-muted">Draftees: {{ number_format($selectedDominion->military_draftees) }}</small>
+                                <small class="text-muted">
+                                    Draftees: {{ number_format($selectedDominion->military_draftees) }}
+                                </small>
                             </td>
                         </tr>
                     </tbody>

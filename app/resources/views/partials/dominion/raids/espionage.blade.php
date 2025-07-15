@@ -1,8 +1,8 @@
 <div class="box box-primary">
     <div class="box-header with-border">
-        <div class="box-title"><i class="fa fa-user-secret fa-fw"></i> {{ $tactic->name }}</div>
+        <div class="box-title"><i class="fa fa-user-secret fa-fw"></i> Espionage Operations</div>
         <div class="box-tools pull-right">
-            <div class="label label-primary">{{ ucwords($tactic->type) }}</div>
+            <div class="label label-primary">Espionage</div>
         </div>
     </div>
     <div class="box-body">
@@ -20,30 +20,30 @@
                             <th>Operation</th>
                             <th>Spy Strength</th>
                             <th>Points Awarded</th>
-                            <th>Actions</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($tactic->attributes as $optionKey => $option)
+                        @foreach($tactics as $tactic)
                             @php
-                                $strengthCost = $option['strength_cost'] ?? 0;
-                                $pointsAwarded = $raidCalculator->getTacticPointsEarned($selectedDominion, $tactic, $option);
+                                $strengthCost = $tactic->attributes['strength_cost'];
+                                $pointsAwarded = $raidCalculator->getTacticPointsEarned($selectedDominion, $tactic);
                                 $canPerform = $selectedDominion->spy_strength >= $strengthCost;
                             @endphp
                             <tr>
-                                <td>{{ $option['name'] }}</td>
+                                <td>{{ $tactic->name }}</td>
                                 <td>{{ $strengthCost }}%</td>
-                                <td>{{ number_format($pointsAwarded) }} points</td>
+                                <td>{{ number_format($pointsAwarded) }}</td>
                                 <td>
                                     @if($canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
-                                            <button type="submit" name="option" value="{{ $optionKey }}" class="btn btn-block btn-sm btn-primary">
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary">
                                                 Execute Operation
                                             </button>
                                         </form>
                                     @else
-                                        <button type="button" class="btn btn-block btn-sm btn-secondary" disabled>
+                                        <button type="button" class="btn btn-block btn-sm btn-primary" disabled>
                                             Insufficient Spy Strength
                                         </button>
                                     @endif

@@ -28,9 +28,9 @@ class RaidCalculator
     /**
      * Get the mana cost for a tactic spell option.
      */
-    public function getTacticManaCost(Dominion $dominion, array $spellOption): int
+    public function getTacticManaCost(Dominion $dominion, RaidObjectiveTactic $tactic): int
     {
-        $manaCostMultiplier = $spellOption['mana_cost'] ?? 0;
+        $manaCostMultiplier = $tactic->attributes['mana_cost'];
         $totalLand = $this->landCalculator->getTotalLand($dominion);
         return rceil($manaCostMultiplier * $totalLand);
     }
@@ -38,9 +38,9 @@ class RaidCalculator
     /**
      * Get the actual points earned for a tactic action.
      */
-    public function getTacticPointsEarned(Dominion $dominion, RaidObjectiveTactic $tactic, array $tacticOption): float
+    public function getTacticPointsEarned(Dominion $dominion, RaidObjectiveTactic $tactic): float
     {
-        $basePoints = $tacticOption['points_awarded'];
+        $basePoints = $tactic->attributes['points_awarded'];
 
         // Apply espionage score multiplier for espionage tactics
         if ($tactic->type === 'espionage') {

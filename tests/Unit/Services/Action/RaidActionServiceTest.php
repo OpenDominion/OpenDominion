@@ -120,26 +120,15 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'investment',
-            'name' => 'Fund Campaign',
+            'name' => 'Fund Campaign (Platinum)',
             'attributes' => [
-                'platinum' => [
-                    'name' => 'Platinum',
-                    'resource' => 'platinum',
-                    'amount' => 5000,
-                    'points_awarded' => 500,
-                ],
-                'lumber' => [
-                    'name' => 'Lumber',
-                    'resource' => 'lumber',
-                    'amount' => 1000,
-                    'points_awarded' => 100,
-                ],
+                'resource' => 'platinum',
+                'amount' => 5000,
+                'points_awarded' => 500,
             ],
         ]);
 
-        $data = [
-            'option' => 'platinum',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -164,20 +153,15 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'investment',
-            'name' => 'Fund Campaign',
+            'name' => 'Fund Campaign (Platinum)',
             'attributes' => [
-                'platinum' => [
-                    'name' => 'Platinum',
-                    'resource' => 'platinum',
-                    'amount' => 200000, // More than available
-                    'points_awarded' => 20000,
-                ],
+                'resource' => 'platinum',
+                'amount' => 200000, // More than available
+                'points_awarded' => 20000,
             ],
         ]);
 
-        $data = [
-            'option' => 'platinum',
-        ];
+        $data = [];
 
         // Act & Assert
         $this->expectException(GameException::class);
@@ -192,19 +176,14 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'espionage',
-            'name' => 'Test Espionage',
+            'name' => 'Reconnaissance',
             'attributes' => [
-                'reconnaissance' => [
-                    'name' => 'Reconnaissance',
-                    'strength_cost' => 20,
-                    'points_awarded' => 100,
-                ],
+                'strength_cost' => 20,
+                'points_awarded' => 100,
             ],
         ]);
 
-        $data = [
-            'option' => 'reconnaissance',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -266,24 +245,14 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'espionage',
-            'name' => 'Multi Operation Espionage',
+            'name' => 'Sabotage Communications',
             'attributes' => [
-                'infiltrate' => [
-                    'name' => 'Infiltrate Supply Lines',
-                    'strength_cost' => 15,
-                    'points_awarded' => 80,
-                ],
-                'sabotage' => [
-                    'name' => 'Sabotage Communications',
-                    'strength_cost' => 25,
-                    'points_awarded' => 120,
-                ],
+                'strength_cost' => 25,
+                'points_awarded' => 120,
             ],
         ]);
 
-        $data = [
-            'option' => 'sabotage',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -306,26 +275,15 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'magic',
-            'name' => 'Multi Spell Magic',
+            'name' => 'Mystic Disruption',
             'attributes' => [
-                'arcane_blast' => [
-                    'name' => 'Arcane Blast',
-                    'mana_cost' => 30, // 30 * 50 land = 1500 mana
-                    'strength_cost' => 20,
-                    'points_awarded' => 250,
-                ],
-                'mystic_disruption' => [
-                    'name' => 'Mystic Disruption',
-                    'mana_cost' => 50, // 50 * 50 land = 2500 mana
-                    'strength_cost' => 35,
-                    'points_awarded' => 350,
-                ],
+                'mana_cost' => 50, // 50 * 50 land = 2500 mana
+                'strength_cost' => 35,
+                'points_awarded' => 350,
             ],
         ]);
 
-        $data = [
-            'option' => 'mystic_disruption',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -349,29 +307,14 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'espionage',
-            'name' => 'Dragon Reconnaissance',
+            'name' => 'Stealth Reconnaissance',
             'attributes' => [
-                'scout_perimeter' => [
-                    'name' => 'Scout Dragon Perimeter',
-                    'strength_cost' => 15,
-                    'points_awarded' => 100,
-                ],
-                'stealth_reconnaissance' => [
-                    'name' => 'Stealth Reconnaissance',
-                    'strength_cost' => 25,
-                    'points_awarded' => 160,
-                ],
-                'deep_infiltration' => [
-                    'name' => 'Deep Lair Infiltration',
-                    'strength_cost' => 35,
-                    'points_awarded' => 250,
-                ],
+                'strength_cost' => 25,
+                'points_awarded' => 160,
             ],
         ]);
 
-        $data = [
-            'option' => 'stealth_reconnaissance',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -394,32 +337,15 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'magic',
-            'name' => 'Protective Enchantments',
+            'name' => 'Shield of the Ancients',
             'attributes' => [
-                'ward_of_dragon_resistance' => [
-                    'name' => 'Ward of Dragon Resistance',
-                    'mana_cost' => 40, // 40 * 50 land = 2000 mana
-                    'strength_cost' => 25,
-                    'points_awarded' => 300,
-                ],
-                'shield_of_the_ancients' => [
-                    'name' => 'Shield of the Ancients',
-                    'mana_cost' => 56, // 56 * 50 land = 2800 mana
-                    'strength_cost' => 35,
-                    'points_awarded' => 420,
-                ],
-                'enchant_siege_weapons' => [
-                    'name' => 'Enchant Siege Weapons',
-                    'mana_cost' => 70, // 70 * 50 land = 3500 mana
-                    'strength_cost' => 40,
-                    'points_awarded' => 500,
-                ],
+                'mana_cost' => 56, // 56 * 50 land = 2800 mana
+                'strength_cost' => 35,
+                'points_awarded' => 420,
             ],
         ]);
 
-        $data = [
-            'option' => 'shield_of_the_ancients',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -446,19 +372,14 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'espionage',
-            'name' => 'Test Espionage',
+            'name' => 'Reconnaissance',
             'attributes' => [
-                'reconnaissance' => [
-                    'name' => 'Reconnaissance',
-                    'strength_cost' => 20,
-                    'points_awarded' => 100,
-                ],
+                'strength_cost' => 20,
+                'points_awarded' => 100,
             ],
         ]);
 
-        $data = [
-            'option' => 'reconnaissance',
-        ];
+        $data = [];
 
         // Act & Assert
         $this->expectException(GameException::class);
@@ -475,18 +396,13 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'exploration',
             'name' => 'Test Exploration',
             'attributes' => [
-                'exploration' => [
-                    'name' => 'Test Explore',
-                    'draftee_cost' => 1000,
-                    'morale_cost' => 2,
-                    'points_awarded' => 200,
-                ],
+                'draftee_cost' => 1000,
+                'morale_cost' => 2,
+                'points_awarded' => 200,
             ],
         ]);
 
-        $data = [
-            'option' => 'exploration',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -505,20 +421,15 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'magic',
-            'name' => 'Test Magic',
+            'name' => 'Test Spell',
             'attributes' => [
-                'test_spell' => [
-                    'name' => 'Test Spell',
-                    'mana_cost' => 40, // 40 * 50 land = 2000 mana
-                    'strength_cost' => 30,
-                    'points_awarded' => 300,
-                ],
+                'mana_cost' => 40, // 40 * 50 land = 2000 mana
+                'strength_cost' => 30,
+                'points_awarded' => 300,
             ],
         ]);
 
-        $data = [
-            'option' => 'test_spell',
-        ];
+        $data = [];
 
         // Act
         $result = $this->raidActionService->performAction($this->dominion, $tactic, $data);
@@ -637,18 +548,19 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertArrayHasKey('redirect', $result);
     }
 
-    public function testPerformAction_InvalidOption()
+    public function testPerformAction_InvalidTacticType()
     {
         // Arrange
-        $this->expectException(GameException::class);
-        $this->expectExceptionMessage('Invalid option');
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('Trying to access array offset on value of type null');
         
-        // Create a tactic with invalid type
+        // Create a tactic with invalid attributes
         $invalidTactic = new RaidObjectiveTactic();
         $invalidTactic->type = 'magic';
+        $invalidTactic->attributes = null; // This will cause issues when accessed
         $invalidTactic->objective = $this->objective;
         
-        $this->raidActionService->performAction($this->dominion, $invalidTactic, ['option' => 'invalid_option']);
+        $this->raidActionService->performAction($this->dominion, $invalidTactic, []);
     }
 
     public function testPerformAction_InactiveObjective()
@@ -660,19 +572,14 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'espionage',
-            'name' => 'Test Espionage',
+            'name' => 'Test Operation',
             'attributes' => [
-                'test_espionage' => [
-                    'name' => 'Test Operation',
-                    'strength_cost' => 20,
-                    'points_awarded' => 100,
-                ],
+                'strength_cost' => 20,
+                'points_awarded' => 100,
             ],
         ]);
 
-        $data = [
-            'option' => 'test_espionage',
-        ];
+        $data = [];
 
         // Act & Assert
         $this->expectException(GameException::class);
@@ -687,34 +594,28 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $tactic1 = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'investment',
-            'name' => 'Fund Campaign - First',
+            'name' => 'Fund Campaign - First (Platinum)',
             'attributes' => [
-                'platinum' => [
-                    'name' => 'Platinum',
-                    'resource' => 'platinum',
-                    'amount' => 3000,
-                    'points_awarded' => 300,
-                ],
+                'resource' => 'platinum',
+                'amount' => 3000,
+                'points_awarded' => 300,
             ],
         ]);
 
         $tactic2 = RaidObjectiveTactic::create([
             'raid_objective_id' => $this->objective->id,
             'type' => 'investment',
-            'name' => 'Fund Campaign - Second',
+            'name' => 'Fund Campaign - Second (Platinum)',
             'attributes' => [
-                'platinum' => [
-                    'name' => 'Platinum',
-                    'resource' => 'platinum',
-                    'amount' => 2000,
-                    'points_awarded' => 200,
-                ],
+                'resource' => 'platinum',
+                'amount' => 2000,
+                'points_awarded' => 200,
             ],
         ]);
 
         // Act: Make two separate contributions
-        $this->raidActionService->performAction($this->dominion, $tactic1, ['option' => 'platinum']);
-        $this->raidActionService->performAction($this->dominion, $tactic2, ['option' => 'platinum']);
+        $this->raidActionService->performAction($this->dominion, $tactic1, []);
+        $this->raidActionService->performAction($this->dominion, $tactic2, []);
 
         // Assert: Total contributions should be accumulated
         $totalContributions = RaidContribution::where('dominion_id', $this->dominion->id)->sum('score');

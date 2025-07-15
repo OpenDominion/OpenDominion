@@ -111,15 +111,9 @@ class RaidActionService
      */
     protected function processAction(Dominion $dominion, RaidObjectiveTactic $tactic, array $data): array
     {
-        // Extract option from data
-        if (!isset($data['option']) || !isset($tactic->attributes[$data['option']])) {
-            throw new GameException('Invalid option');
-        }
-        $selectedOption = $tactic->attributes[$data['option']];
-
         // Calculate costs and deductions
-        $costs = $this->calculateCosts($dominion, $tactic, $data, $selectedOption);
-        $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic, $selectedOption);
+        $costs = $this->calculateCosts($dominion, $tactic, $data);
+        $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic);
 
         DB::transaction(function () use ($dominion, $tactic, $costs, $pointsEarned) {
             // Apply costs
@@ -289,13 +283,13 @@ class RaidActionService
     /**
      * Calculate tactic costs.
      */
-    protected function calculateCosts(Dominion $dominion, RaidObjectiveTactic $tactic, array $data, array $selectedOption): array
+    protected function calculateCosts(Dominion $dominion, RaidObjectiveTactic $tactic, array $data): array
     {
         $costs = [];
 
         switch ($tactic->type) {
             case 'espionage':
-                $strengthCost = $selectedOption['strength_cost'];
+                $strengthCost = $tactic->attributes['strength_cost'];
                 if ($dominion->spy_strength < $strengthCost) {
                     throw new GameException('You do not have enough spy strength');
                 }
@@ -303,17 +297,17 @@ class RaidActionService
                 break;
 
             case 'exploration':
-                $drafteeCost = $selectedOption['draftee_cost'];
+                $drafteeCost = $tactic->attributes['draftee_cost'];
                 if ($dominion->military_draftees < $drafteeCost) {
                     throw new GameException('You do not have enough draftees');
                 }
                 $costs['military_draftees'] = $drafteeCost;
-                $costs['morale'] = $selectedOption['morale_cost'];
+                $costs['morale'] = $tactic->attributes['morale_cost'];
                 break;
 
             case 'investment':
-                $resourceType = $selectedOption['resource'];
-                $resourceCost = $selectedOption['amount'];
+                $resourceType = $tactic->attributes['resource'];
+                $resourceCost = $tactic->attributes['amount'];
                 if ($dominion->{"resource_{$resourceType}"} < $resourceCost) {
                     throw new GameException("You do not have enough {$resourceType}");
                 }
@@ -321,8 +315,8 @@ class RaidActionService
                 break;
 
             case 'magic':
-                $wizardStrength = $selectedOption['strength_cost'];
-                $actualManaCost = $this->raidCalculator->getTacticManaCost($dominion, $selectedOption);
+                $wizardStrength = $tactic->attributes['strength_cost'];
+                $actualManaCost = $this->raidCalculator->getTacticManaCost($dominion, $tactic);
                 if ($dominion->resource_mana < $actualManaCost) {
                     throw new GameException('You do not have enough mana');
                 }

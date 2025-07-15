@@ -12,11 +12,6 @@ class RaidActionRequest extends AbstractDominionRequest
     public function rules()
     {
         $rules = [];
-        $tactic = $this->route('tactic');
-
-        if ($tactic->type !== 'hero' && $tactic->type !== 'invasion') {
-            $rules['option'] = 'required|string';
-        }
 
         // invasion
         for ($i = 1; $i <= 4; $i++) {
@@ -32,7 +27,6 @@ class RaidActionRequest extends AbstractDominionRequest
     public function messages()
     {
         return [
-            'option.required' => 'You must select an action to perform.',
             'unit.*.integer' => 'Unit amounts must be integers.',
             'unit.*.min' => 'Unit amounts must be non-negative.',
         ];

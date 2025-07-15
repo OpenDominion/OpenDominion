@@ -76,23 +76,38 @@ class RaidSeeder extends Seeder
         RaidObjectiveTactic::create([
             'raid_objective_id' => $objective1->id,
             'type' => 'espionage',
-            'name' => 'Dragon Reconnaissance',
+            'name' => 'Scout Dragon Perimeter',
             'attributes' => [
-                'scout_perimeter' => [
-                    'name' => 'Scout Dragon Perimeter',
-                    'strength_cost' => 15,
-                    'points_awarded' => 100,
-                ],
-                'stealth_reconnaissance' => [
-                    'name' => 'Stealth Reconnaissance',
-                    'strength_cost' => 25,
-                    'points_awarded' => 160,
-                ],
-                'deep_infiltration' => [
-                    'name' => 'Deep Lair Infiltration',
-                    'strength_cost' => 35,
-                    'points_awarded' => 250,
-                ],
+                'strength_cost' => 15,
+                'points_awarded' => 100,
+            ],
+            'bonuses' => [
+                'race_bonuses' => ['halfling' => 1.2, 'elf' => 1.1],
+                'tech_bonuses' => ['spy_networks' => 1.15],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective1->id,
+            'type' => 'espionage',
+            'name' => 'Stealth Reconnaissance',
+            'attributes' => [
+                'strength_cost' => 25,
+                'points_awarded' => 160,
+            ],
+            'bonuses' => [
+                'race_bonuses' => ['halfling' => 1.2, 'elf' => 1.1],
+                'tech_bonuses' => ['spy_networks' => 1.15],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective1->id,
+            'type' => 'espionage',
+            'name' => 'Deep Lair Infiltration',
+            'attributes' => [
+                'strength_cost' => 35,
+                'points_awarded' => 250,
             ],
             'bonuses' => [
                 'race_bonuses' => ['halfling' => 1.2, 'elf' => 1.1],
@@ -104,20 +119,26 @@ class RaidSeeder extends Seeder
         RaidObjectiveTactic::create([
             'raid_objective_id' => $objective1->id,
             'type' => 'investment',
-            'name' => 'Fund Intelligence Network',
+            'name' => 'Fund Intelligence Network (Platinum)',
             'attributes' => [
-                'platinum' => [
-                    'name' => 'Platinum',
-                    'resource' => 'platinum',
-                    'amount' => 1000,
-                    'points_awarded' => 100,
-                ],
-                'gems' => [
-                    'name' => 'Gems',
-                    'resource' => 'gems', 
-                    'amount' => 100,
-                    'points_awarded' => 200,
-                ],
+                'resource' => 'platinum',
+                'amount' => 1000,
+                'points_awarded' => 100,
+            ],
+            'bonuses' => [
+                'race' => ['gnome' => 1.1, 'dwarf' => 1.05],
+                'tech' => ['economics' => 1.1],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective1->id,
+            'type' => 'investment',
+            'name' => 'Fund Intelligence Network (Gems)',
+            'attributes' => [
+                'resource' => 'gems',
+                'amount' => 100,
+                'points_awarded' => 200,
             ],
             'bonuses' => [
                 'race' => ['gnome' => 1.1, 'dwarf' => 1.05],
@@ -136,17 +157,15 @@ class RaidSeeder extends Seeder
             'end_date' => now()->addDays(8),
         ]);
 
-        // Exploration tactics
+        // Exploration tactics (though this one only has one option)
         RaidObjectiveTactic::create([
             'raid_objective_id' => $objective2->id,
             'type' => 'exploration',
             'name' => 'Expand Weapon Foundries',
             'attributes' => [
-                'explore' => [
-                    'draftee_cost' => 500,
-                    'morale_cost' => 2,
-                    'points_awarded' => 200,
-                ],
+                'draftee_cost' => 500,
+                'morale_cost' => 2,
+                'points_awarded' => 200,
             ],
             'bonuses' => [
                 'race' => ['dwarf' => 1.25, 'human' => 1.1],
@@ -158,26 +177,41 @@ class RaidSeeder extends Seeder
         RaidObjectiveTactic::create([
             'raid_objective_id' => $objective2->id,
             'type' => 'investment',
-            'name' => 'Provide Construction Materials',
+            'name' => 'Provide Construction Materials (Lumber)',
             'attributes' => [
-                'lumber' => [
-                    'name' => 'Lumber',
-                    'resource' => 'lumber',
-                    'amount' => 500,
-                    'points_awarded' => 75,
-                ],
-                'ore' => [
-                    'name' => 'Ore',
-                    'resource' => 'ore',
-                    'amount' => 250,
-                    'points_awarded' => 100,
-                ],
-                'platinum' => [
-                    'name' => 'Platinum',
-                    'resource' => 'platinum',
-                    'amount' => 2000,
-                    'points_awarded' => 40,
-                ],
+                'resource' => 'lumber',
+                'amount' => 500,
+                'points_awarded' => 75,
+            ],
+            'bonuses' => [
+                'race' => ['dwarf' => 1.2, 'human' => 1.1],
+                'tech' => ['construction' => 1.15],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective2->id,
+            'type' => 'investment',
+            'name' => 'Provide Construction Materials (Ore)',
+            'attributes' => [
+                'resource' => 'ore',
+                'amount' => 250,
+                'points_awarded' => 100,
+            ],
+            'bonuses' => [
+                'race' => ['dwarf' => 1.2, 'human' => 1.1],
+                'tech' => ['construction' => 1.15],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective2->id,
+            'type' => 'investment',
+            'name' => 'Provide Construction Materials (Platinum)',
+            'attributes' => [
+                'resource' => 'platinum',
+                'amount' => 2000,
+                'points_awarded' => 40,
             ],
             'bonuses' => [
                 'race' => ['dwarf' => 1.2, 'human' => 1.1],
@@ -200,26 +234,41 @@ class RaidSeeder extends Seeder
         RaidObjectiveTactic::create([
             'raid_objective_id' => $objective3->id,
             'type' => 'magic',
-            'name' => 'Protective Enchantments',
+            'name' => 'Ward of Dragon Resistance',
             'attributes' => [
-                'ward_of_dragon_resistance' => [
-                    'name' => 'Ward of Dragon Resistance',
-                    'mana_cost' => 8, // 8x land multiplier
-                    'strength_cost' => 25,
-                    'points_awarded' => 300,
-                ],
-                'shield_of_the_ancients' => [
-                    'name' => 'Shield of the Ancients',
-                    'mana_cost' => 12, // 12x land multiplier
-                    'strength_cost' => 35,
-                    'points_awarded' => 420,
-                ],
-                'enchant_siege_weapons' => [
-                    'name' => 'Enchant Siege Weapons',
-                    'mana_cost' => 15, // 15x land multiplier
-                    'strength_cost' => 40,
-                    'points_awarded' => 500,
-                ],
+                'mana_cost' => 8, // 8x land multiplier
+                'strength_cost' => 25,
+                'points_awarded' => 300,
+            ],
+            'bonuses' => [
+                'race_bonuses' => ['elf' => 1.3, 'lizardfolk' => 1.2],
+                'tech_bonuses' => ['magical_focus' => 1.25],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective3->id,
+            'type' => 'magic',
+            'name' => 'Shield of the Ancients',
+            'attributes' => [
+                'mana_cost' => 12, // 12x land multiplier
+                'strength_cost' => 35,
+                'points_awarded' => 420,
+            ],
+            'bonuses' => [
+                'race_bonuses' => ['elf' => 1.3, 'lizardfolk' => 1.2],
+                'tech_bonuses' => ['magical_focus' => 1.25],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective3->id,
+            'type' => 'magic',
+            'name' => 'Enchant Siege Weapons',
+            'attributes' => [
+                'mana_cost' => 15, // 15x land multiplier
+                'strength_cost' => 40,
+                'points_awarded' => 500,
             ],
             'bonuses' => [
                 'race_bonuses' => ['elf' => 1.3, 'lizardfolk' => 1.2],
@@ -327,38 +376,99 @@ class RaidSeeder extends Seeder
         RaidObjectiveTactic::create([
             'raid_objective_id' => $objective->id,
             'type' => 'investment',
-            'name' => 'Fund Expedition',
+            'name' => 'Fund Expedition (Platinum)',
             'attributes' => [
-                'platinum' => [
-                    'name' => 'Platinum',
-                    'resource' => 'platinum',
-                    'amount' => 1000,
-                    'points_awarded' => 150,
+                'resource' => 'platinum',
+                'amount' => 1000,
+                'points_awarded' => 150,
+            ],
+            'bonuses' => [
+                'race' => [
+                    'gnome' => 1.15,
+                    'dwarf' => 1.2,
+                    'human' => 1.1,
                 ],
-                'lumber' => [
-                    'name' => 'Lumber',
-                    'resource' => 'lumber', 
-                    'amount' => 500,
-                    'points_awarded' => 60,
+                'tech' => [
+                    'economics' => 1.15,
+                    'construction' => 1.1,
                 ],
-                'ore' => [
-                    'name' => 'Ore',
-                    'resource' => 'ore',
-                    'amount' => 200,
-                    'points_awarded' => 50,
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective->id,
+            'type' => 'investment',
+            'name' => 'Fund Expedition (Lumber)',
+            'attributes' => [
+                'resource' => 'lumber',
+                'amount' => 500,
+                'points_awarded' => 60,
+            ],
+            'bonuses' => [
+                'race' => [
+                    'gnome' => 1.15,
+                    'dwarf' => 1.2,
+                    'human' => 1.1,
                 ],
-                'gems' => [
-                    'name' => 'Gems',
-                    'resource' => 'gems',
-                    'amount' => 50,
-                    'points_awarded' => 250,
+                'tech' => [
+                    'economics' => 1.15,
+                    'construction' => 1.1,
                 ],
-                'food' => [
-                    'name' => 'Food',
-                    'resource' => 'food',
-                    'amount' => 2000,
-                    'points_awarded' => 160,
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective->id,
+            'type' => 'investment',
+            'name' => 'Fund Expedition (Ore)',
+            'attributes' => [
+                'resource' => 'ore',
+                'amount' => 200,
+                'points_awarded' => 50,
+            ],
+            'bonuses' => [
+                'race' => [
+                    'gnome' => 1.15,
+                    'dwarf' => 1.2,
+                    'human' => 1.1,
                 ],
+                'tech' => [
+                    'economics' => 1.15,
+                    'construction' => 1.1,
+                ],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective->id,
+            'type' => 'investment',
+            'name' => 'Fund Expedition (Gems)',
+            'attributes' => [
+                'resource' => 'gems',
+                'amount' => 50,
+                'points_awarded' => 250,
+            ],
+            'bonuses' => [
+                'race' => [
+                    'gnome' => 1.15,
+                    'dwarf' => 1.2,
+                    'human' => 1.1,
+                ],
+                'tech' => [
+                    'economics' => 1.15,
+                    'construction' => 1.1,
+                ],
+            ],
+        ]);
+
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective->id,
+            'type' => 'investment',
+            'name' => 'Fund Expedition (Food)',
+            'attributes' => [
+                'resource' => 'food',
+                'amount' => 2000,
+                'points_awarded' => 160,
             ],
             'bonuses' => [
                 'race' => [

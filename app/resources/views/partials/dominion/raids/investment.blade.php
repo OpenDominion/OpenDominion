@@ -1,8 +1,8 @@
 <div class="box box-primary">
     <div class="box-header with-border">
-        <div class="box-title"><i class="fa fa-money fa-fw"></i> {{ $tactic->name }}</div>
+        <div class="box-title"><i class="fa fa-money fa-fw"></i> Resource Investments</div>
         <div class="box-tools pull-right">
-            <div class="label label-primary">{{ ucwords($tactic->type) }}</div>
+            <div class="label label-primary">Investment</div>
         </div>
     </div>
     <div class="box-body">
@@ -10,41 +10,45 @@
             <div class="col-md-12 table-responsive">
                 <table class="table">
                     <colgroup>
-                        <col width="45%">
+                        <col width="30%">
                         <col width="20%">
-                        <col width="20%">
+                        <col width="25%">
+                        <col width="10%">
                         <col width="15%">
                     </colgroup>
                     <thead>
                         <tr>
+                            <th>Investment</th>
                             <th>Resource</th>
                             <th>Amount</th>
-                            <th>Points Awarded</th>
-                            <th>Actions</th>
+                            <th>Points</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($tactic->attributes as $optionKey => $option)
+                        @foreach($tactics as $tactic)
                             @php
-                                $resourceType = $option['resource'];
-                                $resourceCost = $option['amount'];
-                                $canPerform = $selectedDominion->{"resource_{$resourceType}"} >= $resourceCost;
+                                $resourceType = $tactic->attributes['resource'];
+                                $amount = $tactic->attributes['amount'];
+                                $pointsAwarded = $tactic->attributes['points_awarded'];
+                                $canPerform = $selectedDominion->{"resource_{$resourceType}"} >= $amount;
                             @endphp
                             <tr>
-                                <td>{{ $option['name'] }}</td>
-                                <td>{{ number_format($option['amount']) }} {{ $option['resource'] }}</td>
-                                <td>{{ number_format($option['points_awarded']) }}</td>
+                                <td>{{ $tactic->name }}</td>
+                                <td>{{ ucfirst($resourceType) }}</td>
+                                <td>{{ number_format($amount) }}</td>
+                                <td>{{ number_format($pointsAwarded) }}</td>
                                 <td>
-                                    @if ($canPerform)
+                                    @if (!$canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
-                                            <button type="submit" name="option" value="{{ $optionKey }}" class="btn btn-block btn-sm btn-primary">
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary">
                                                 Invest
                                             </button>
                                         </form>
                                     @else
-                                        <button type="button" class="btn btn-block btn-sm btn-secondary" disabled>
-                                            Insufficient Resources
+                                        <button type="button" class="btn btn-block btn-sm btn-primary" disabled>
+                                            Insufficient {{ ucfirst($resourceType) }}
                                         </button>
                                     @endif
                                 </td>
