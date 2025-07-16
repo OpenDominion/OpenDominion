@@ -37,11 +37,13 @@ class Raid extends AbstractModel
         'completion_reward_amount',
         'start_date',
         'end_date',
+        'rewards_distributed',
     ];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'rewards_distributed' => 'boolean',
     ];
 
     public function round()

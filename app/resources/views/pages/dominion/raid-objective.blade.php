@@ -98,7 +98,7 @@
                 </div>
                 <div class="box-body">
                     @php
-                        $recentContributions = $raidCalculator->getRecentContributionsInRealm($objective, $selectedRealm, 10);
+                        $recentContributions = $raidCalculator->getRecentContributions($objective, $selectedRealm, 10);
                     @endphp
                     @forelse($recentContributions as $contribution)
                         <div class="small" style="margin-bottom: 8px;">

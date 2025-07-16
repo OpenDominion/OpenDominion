@@ -31,6 +31,7 @@ use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Services\Dominion\HeroTournamentService;
 use OpenDominion\Services\NotificationService;
+use OpenDominion\Services\RaidService;
 use OpenDominion\Services\ValorService;
 use OpenDominion\Services\WonderService;
 use Throwable;
@@ -76,6 +77,9 @@ class TickService
     /** @var RankingsHelper */
     protected $rankingsHelper;
 
+    /** @var RaidService */
+    protected $raidService;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
 
@@ -100,6 +104,7 @@ class TickService
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->queueService = app(QueueService::class);
         $this->rankingsHelper = app(RankingsHelper::class);
+        $this->raidService = app(RaidService::class);
         $this->spellCalculator = app(SpellCalculator::class);
         $this->wonderService = app(WonderService::class);
     }
@@ -134,6 +139,9 @@ class TickService
             $this->heroBattleService->processBattles($round);
             $this->heroTournamentService->processTournaments($round);
         }
+
+        // Process completed raids and distribute rewards
+        $this->raidService->processCompletedRaids($round);
 
         // Realm Assignment
         $rounds = Round::readyForAssignment()->get();

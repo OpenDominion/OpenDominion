@@ -44,6 +44,7 @@ class HistoryService
     public const EVENT_ACTION_WONDER_DESTROYED = 'wonder destroyed';
     public const EVENT_ACTION_RAID_ACTION = 'raid action';
     public const EVENT_ACTION_RAID_ATTACKED = 'raid attacked';
+    public const EVENT_ACTION_RAID_REWARD = 'raid reward';
 
     /**
      * Returns a cloned dominion instance with state at a certain time.
