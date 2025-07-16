@@ -405,9 +405,11 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertTrue($globalCompleted); // 1200 >= 1000
 
         // Test 4: Recent contributions filtering
-        $realmContributions = $this->calculator->getRecentContributions($this->objective, $this->dominion->realm, 5);
+        $realmContributions = $this->calculator->getRecentContributionsInRealm($this->objective, $this->dominion->realm, 5);
+        $allContributions = $this->calculator->getRecentContributions($this->objective, 5);
         
         $this->assertCount(2, $realmContributions); // Only this realm's contributions
+        $this->assertCount(3, $allContributions); // All contributions
         $this->assertEquals('test1', $realmContributions[0]['type']);
         $this->assertArrayNotHasKey('realm_name', $realmContributions[0]); // Realm-specific should not include realm name
 
@@ -443,83 +445,63 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $raid = $this->createCompletedRaid();
-        $contributionData = [
-            'total' => 2000,
-            'by_dominion' => [$this->dominion->id => 400] // 20% of total
-        ];
-        $realmBonusData = [$this->dominion->realm_id => ['excess_bonus_eligible' => false]];
+        $playerAllocations = [$this->dominion->id => 2000]; // Pre-calculated allocation
 
         // Act
-        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $contributionData, $realmBonusData);
+        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $playerAllocations);
 
         // Assert
-        $this->assertEquals(2000, $reward['amount']); // 20% of 10000 reward, no bonuses
+        $this->assertEquals(2000, $reward['amount']); 
+        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEmpty($reward['bonuses_applied']); // No bonuses in new system
+    }
+
+    public function testCalculateParticipationReward_WithHighContribution_ReturnsAllocatedAmount()
+    {
+        // Arrange
+        $raid = $this->createCompletedRaid();
+        $playerAllocations = [$this->dominion->id => 3000]; // Pre-calculated allocation
+
+        // Act
+        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $playerAllocations);
+
+        // Assert
+        $this->assertEquals(3000, $reward['amount']);
+        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEmpty($reward['bonuses_applied']); // No bonuses in new system
+    }
+
+    public function testCalculateParticipationReward_WithMaxAllocation_ReturnsMaxAmount()
+    {
+        // Arrange
+        $raid = $this->createCompletedRaid();
+        $playerAllocations = [$this->dominion->id => 1000]; // Max allocation based on 10% of required score
+
+        // Act
+        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $playerAllocations);
+
+        // Assert
+        $this->assertEquals(1000, $reward['amount']);
+        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEmpty($reward['bonuses_applied']); // No bonuses in new system
+    }
+
+    public function testCalculateParticipationReward_WithZeroAllocation_ReturnsZero()
+    {
+        // Arrange
+        $raid = $this->createCompletedRaid();
+        $playerAllocations = []; // No allocation for this dominion
+
+        // Act
+        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $playerAllocations);
+
+        // Assert
+        $this->assertEquals(0, $reward['amount']);
         $this->assertEquals('platinum', $reward['resource']);
         $this->assertEmpty($reward['bonuses_applied']);
     }
 
-    public function testCalculateParticipationReward_WithHighContribution_AppliesParticipationBonus()
-    {
-        // Arrange
-        $raid = $this->createCompletedRaid();
-        $contributionData = [
-            'total' => 4000,
-            'by_dominion' => [$this->dominion->id => 1250] // 31.25% of total - qualifies for high contribution bonus (>25%)
-        ];
-        $realmBonusData = [$this->dominion->realm_id => ['excess_bonus_eligible' => false]];
-
-        // Act
-        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $contributionData, $realmBonusData);
-
-        // Assert
-        // Expected: 31.25% * 10000 * 1.5 = 4687, but capped at 30% of total = 3000
-        $maxReward = 10000 * 0.3; // 30% cap
-        $this->assertEquals((int) $maxReward, $reward['amount']);
-        $this->assertContains('participation_bonus', $reward['bonuses_applied']);
-        $this->assertContains('capped', $reward['bonuses_applied']);
-    }
-
-    public function testCalculateParticipationReward_WithExcessContribution_AppliesExcessBonus()
-    {
-        // Arrange
-        $raid = $this->createCompletedRaid();
-        $contributionData = [
-            'total' => 1600,
-            'by_dominion' => [$this->dominion->id => 1600] // 100% of total
-        ];
-        $realmBonusData = [$this->dominion->realm_id => ['excess_bonus_eligible' => true]];
-
-        // Act
-        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $contributionData, $realmBonusData);
-
-        // Assert
-        // Expected: 100% * 10000 * 1.25 = 12500, but capped at 30% of total = 3000
-        $maxReward = 10000 * 0.3; // 30% cap
-        $this->assertEquals((int) $maxReward, $reward['amount']);
-        $this->assertContains('excess_bonus', $reward['bonuses_applied']);
-        $this->assertContains('capped', $reward['bonuses_applied']);
-    }
-
-    public function testCalculateParticipationReward_WithIndividualCap_CapsReward()
-    {
-        // Arrange
-        $raid = $this->createCompletedRaid();
-        $contributionData = [
-            'total' => 5000,
-            'by_dominion' => [$this->dominion->id => 5000] // 100% of total - would normally get all reward
-        ];
-        $realmBonusData = [$this->dominion->realm_id => ['excess_bonus_eligible' => false]];
-
-        // Act
-        $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $contributionData, $realmBonusData);
-
-        // Assert
-        $maxReward = 10000 * 0.3; // 30% cap
-        $this->assertEquals((int) $maxReward, $reward['amount']);
-        $this->assertContains('capped', $reward['bonuses_applied']);
-    }
-
-    public function testCalculateCompletionReward_WithIncompleteRealm_ReturnsZero()
+    public function testCalculateCompletionReward_WithIncompleteRealm_ReturnsScaledReward()
     {
         // Arrange
         $raid = $this->createCompletedRaid();
@@ -533,10 +515,10 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         // Act
         $reward = $this->calculator->calculateCompletionReward($raid, $this->dominion, $realmCompletionData);
 
-        // Assert
-        $this->assertEquals(0, $reward['amount']);
+        // Assert (50% of 1000 completion reward)
+        $this->assertEquals(500, $reward['amount']);
         $this->assertEquals('gems', $reward['resource']);
-        $this->assertEmpty($reward['bonuses_applied']);
+        $this->assertContains('partial_completion', $reward['bonuses_applied']);
     }
 
     public function testCalculateCompletionReward_WithCompleteRealm_ReturnsFullReward()
@@ -556,7 +538,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         // Assert
         $this->assertEquals(1000, $reward['amount']);
         $this->assertEquals('gems', $reward['resource']);
-        $this->assertEmpty($reward['bonuses_applied']);
+        $this->assertContains('full_completion', $reward['bonuses_applied']);
     }
 
     public function testCalculateRaidRewards_IntegratesAllRewardTypes()
@@ -583,8 +565,8 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertNotNull($dominionReward);
         $this->assertGreaterThan(0, $dominionReward['participation_reward']['amount']);
         $this->assertEquals(1000, $dominionReward['completion_reward']['amount']); // Realm completed
-        $this->assertContains('excess_bonus', $dominionReward['participation_reward']['bonuses_applied']);
-        $this->assertContains('participation_bonus', $dominionReward['participation_reward']['bonuses_applied']);
+        $this->assertContains('full_completion', $dominionReward['completion_reward']['bonuses_applied']);
+        $this->assertEmpty($dominionReward['participation_reward']['bonuses_applied']); // No bonuses in new system
     }
 
     public function testCalculateCompletionReward_WithPrecomputedCompletionMap_UsesMapInsteadOfRecalculating()
@@ -630,6 +612,86 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($rewardWithoutMap['amount'], $rewardWithMap['amount']);
         $this->assertEquals($rewardWithoutMap['resource'], $rewardWithMap['resource']);
         $this->assertEquals(1000, $rewardWithMap['amount']); // Should get completion reward
+    }
+
+    public function testTwoTierRewardDistribution_WithMultipleRealms_DistributesCorrectly()
+    {
+        // Arrange - Create a raid with multiple realms
+        $raid = $this->createCompletedRaid();
+        $raid->reward_amount = 10000; // Total pool
+        $raid->save();
+        
+        // Create dominions in different realms with correct alignment
+        $realm1 = $this->dominion->realm;
+        $realm2 = $this->createRealm($this->round, $this->dominion->race->alignment);
+        $realm3 = $this->createRealm($this->round, $this->dominion->race->alignment);
+        
+        $dominion2 = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $realm2);
+        $dominion3 = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $realm3);
+        
+        // Create contributions: Realm 1 = 6000, Realm 2 = 3000, Realm 3 = 1000 (total 10000)
+        $this->createRaidContributions($raid, [
+            ['dominion' => $this->dominion, 'score' => 6000],  // Realm 1: 60% contribution
+            ['dominion' => $dominion2, 'score' => 3000],       // Realm 2: 30% contribution  
+            ['dominion' => $dominion3, 'score' => 1000],       // Realm 3: 10% contribution
+        ]);
+        
+        // Act
+        $rewardData = $this->calculator->calculateRaidRewards($raid);
+        
+        // Assert realm distribution
+        $realm1Reward = collect($rewardData)->firstWhere('dominion.id', $this->dominion->id)['participation_reward']['amount'];
+        $realm2Reward = collect($rewardData)->firstWhere('dominion.id', $dominion2->id)['participation_reward']['amount'];
+        $realm3Reward = collect($rewardData)->firstWhere('dominion.id', $dominion3->id)['participation_reward']['amount'];
+        
+        // Each realm should get at least their capped contribution (max 10% = 1000) plus equal distribution
+        $this->assertGreaterThanOrEqual(1000, $realm1Reward); // Realm 1 capped at 10%
+        $this->assertGreaterThanOrEqual(1000, $realm2Reward); // Realm 2 capped at 10%
+        $this->assertGreaterThanOrEqual(1000, $realm3Reward); // Realm 3 gets 10%
+        
+        // Total should equal the reward pool (allow for small rounding differences)
+        $totalDistributed = $realm1Reward + $realm2Reward + $realm3Reward;
+        $this->assertEqualsWithDelta(10000, $totalDistributed, 1);
+    }
+
+    public function testTwoTierRewardDistribution_WithMultiplePlayersInRealm_DistributesWithinRealm()
+    {
+        // Arrange - Create multiple players in same realm
+        $raid = $this->createCompletedRaid();
+        $raid->reward_amount = 10000;
+        $raid->save();
+        
+        $player2 = $this->createDominion($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
+        $player3 = $this->createDominion($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
+        
+        // Create contributions within same realm: Player 1 = 6000, Player 2 = 3000, Player 3 = 1000
+        $this->createRaidContributions($raid, [
+            ['dominion' => $this->dominion, 'score' => 6000],  // 60% of realm contribution
+            ['dominion' => $player2, 'score' => 3000],         // 30% of realm contribution
+            ['dominion' => $player3, 'score' => 1000],         // 10% of realm contribution
+        ]);
+        
+        // Act
+        $rewardData = $this->calculator->calculateRaidRewards($raid);
+        
+        // Assert player distribution within realm
+        $player1Reward = collect($rewardData)->firstWhere('dominion.id', $this->dominion->id)['participation_reward']['amount'];
+        $player2Reward = collect($rewardData)->firstWhere('dominion.id', $player2->id)['participation_reward']['amount'];
+        $player3Reward = collect($rewardData)->firstWhere('dominion.id', $player3->id)['participation_reward']['amount'];
+        
+        // Each player should get at least their capped contribution (max 10% of required score = 100) plus equal distribution
+        $this->assertGreaterThanOrEqual(100, $player1Reward); // Player 1 capped at 10% of required score
+        $this->assertGreaterThanOrEqual(100, $player2Reward); // Player 2 capped at 10% of required score
+        $this->assertGreaterThanOrEqual(100, $player3Reward); // Player 3 gets proportional share
+        
+        // In the new system with equal distribution of leftovers, differences may be smaller
+        // Player 1 should get at least as much as others due to higher contribution
+        $this->assertGreaterThanOrEqual($player2Reward, $player1Reward);
+        $this->assertGreaterThanOrEqual($player3Reward, $player2Reward);
+        
+        // Total should equal the reward pool (allow for small rounding differences)
+        $totalDistributed = $player1Reward + $player2Reward + $player3Reward;
+        $this->assertEqualsWithDelta(10000, $totalDistributed, 1);
     }
 
     public function testGetRealmCompletionStatusMap_ReturnsCorrectMappingForAllParticipatingRealms()
@@ -683,12 +745,13 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             ]
         ];
 
-        // Since COMPLETION_REWARD_SCALING is false by default, we expect binary behavior
+        // Since COMPLETION_REWARD_SCALING is now true, we expect percentage scaling
         $reward = $this->calculator->calculateCompletionReward($raid, $this->dominion, $completionData);
         
-        // Assert binary behavior (current default)
-        $this->assertEquals(0, $reward['amount']); // Binary mode: incomplete = 0 reward
+        // Assert percentage behavior (60% of 1000 = 600)
+        $this->assertEquals(600, $reward['amount']);
         $this->assertEquals('gems', $reward['resource']);
+        $this->assertContains('partial_completion', $reward['bonuses_applied']);
         
         // Test with full completion
         $fullCompletionData = [
@@ -699,10 +762,8 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         ];
         
         $fullReward = $this->calculator->calculateCompletionReward($raid, $this->dominion, $fullCompletionData);
-        $this->assertEquals(1000, $fullReward['amount']); // Binary mode: complete = full reward
-        
-        // Note: To test percentage scaling, the COMPLETION_REWARD_SCALING constant would need to be true
-        // This test documents the expected behavior when scaling is enabled in the future
+        $this->assertEquals(1000, $fullReward['amount']); // Full completion = full reward
+        $this->assertContains('full_completion', $fullReward['bonuses_applied']);
     }
 
     // Helper methods for reward tests
