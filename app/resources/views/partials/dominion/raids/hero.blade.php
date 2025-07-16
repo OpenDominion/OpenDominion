@@ -19,7 +19,7 @@
                         <tr>
                             <th>Challenge</th>
                             <th>Opponent</th>
-                            <th>Points Awarded</th>
+                            <th>Points</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -33,7 +33,7 @@
                                     <td>
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-primary">Start Battle</button>
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary">Start Battle</button>
                                         </form>
                                     </td>
                                 </tr>

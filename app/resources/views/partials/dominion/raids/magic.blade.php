@@ -21,7 +21,7 @@
                             <th>Spell</th>
                             <th>Mana Cost</th>
                             <th>Wizard Strength</th>
-                            <th>Points Awarded</th>
+                            <th>Points</th>
                             <th>Action</th>
                         </tr>
                     </thead>

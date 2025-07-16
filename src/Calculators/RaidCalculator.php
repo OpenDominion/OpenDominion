@@ -157,31 +157,9 @@ class RaidCalculator
     }
 
     /**
-     * Get recent contributions for a raid objective.
-     */
-    public function getRecentContributions(RaidObjective $objective, int $limit = 10): array
-    {
-        return RaidContribution::where('raid_objective_id', $objective->id)
-            ->with(['dominion', 'dominion.realm'])
-            ->orderBy('created_at', 'desc')
-            ->limit($limit)
-            ->get()
-            ->map(function ($contribution) {
-                return [
-                    'dominion_name' => $contribution->dominion->name,
-                    'realm_name' => $contribution->dominion->realm->name,
-                    'type' => $contribution->type,
-                    'score' => $contribution->score,
-                    'created_at' => $contribution->created_at,
-                ];
-            })
-            ->toArray();
-    }
-
-    /**
      * Get recent contributions for a raid objective from a specific realm.
      */
-    public function getRecentContributionsInRealm(RaidObjective $objective, Realm $realm, int $limit = 10): array
+    public function getRecentContributions(RaidObjective $objective, Realm $realm, int $limit = 10): array
     {
         return RaidContribution::where('raid_objective_id', $objective->id)
             ->where('realm_id', $realm->id)

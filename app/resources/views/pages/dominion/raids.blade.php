@@ -34,6 +34,16 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <div class="row form-group">
+                                        <div class="col-md-6">
+                                            <strong>Contribution Rewards:</strong> {{ number_format($raid->reward_amount) }} {{ ucfirst($raid->reward_resource) }}
+                                            <span class="text-muted">(split amongst all realms)</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Completion Bonus:</strong> {{ number_format($raid->completion_reward_amount) }} {{ ucfirst($raid->completion_reward_resource) }}
+                                            <span class="text-muted">(per player)</span>
+                                        </div>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-condensed">
                                             <thead>
@@ -42,7 +52,7 @@
                                                     <th>Objective</th>
                                                     <th>Description</th>
                                                     <th>Score Required</th>
-                                                    <th>Your Realm Progress</th>
+                                                    <th>Realm Progress</th>
                                                     <th>Tactics</th>
                                                 </tr>
                                             </thead>
@@ -97,13 +107,57 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Raids are great</p>
+                    <h4>Raid Rewards</h4>
+                    <p class="small">Rewards are earned based on your contribution.</p>
+                    <ul class="small">
+                        <li><strong>Realm Share:</strong> Each realm earns up to 10% of the total based on their contribution relative to all other realms</li>
+                        <li><strong>Player Share:</strong> Each player earns a portion of the realm's share up to 10% of required score</li>
+                        <li><strong>Distribution:</strong> Any remaining resources are shared equally among all participants</li>
+                    </ul>
+
+                    <h4>Completion Bonus</h4>
+                    <p class="small">Each player receives the completion bonus based on their realm's objective completion percentage.</p>
+                    <ul class="small">
+                        <li><strong>Scaled Rewards:</strong> Rewards are proportional to completion percentage</li>
+                        <li><strong>Per Player:</strong> Each participating player gets the full amount for any objectives completed by their realm</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
     </div>
 @endsection
+
+@push('inline-styles')
+    <style>
+        .rewards-info {
+            background: #f8f9fa;
+            border-left: 3px solid #007bff;
+            border-radius: 3px;
+            padding: 6px 8px;
+            margin-top: 4px;
+        }
+        .rewards-info .small {
+            color: #495057;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+        .rewards-info .fa {
+            color: #007bff;
+            margin-right: 4px;
+            width: 12px;
+        }
+        .rewards-info .fa-trophy {
+            color: #ffc107;
+        }
+        .rewards-info .fa-star {
+            color: #28a745;
+        }
+        .rewards-info .text-muted {
+            font-size: 11px;
+        }
+    </style>
+@endpush
 
 @push('inline-scripts')
     <script type="text/javascript">

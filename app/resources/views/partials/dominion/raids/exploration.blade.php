@@ -35,8 +35,8 @@
                             @endphp
                             <tr>
                                 <td>{{ $tactic->name }}</td>
-                                <td>{{ number_format($drafteeCost) }}</td>
                                 <td>{{ $moraleCost }}%</td>
+                                <td>{{ number_format($drafteeCost) }}</td>
                                 <td>{{ number_format($pointsAwarded) }}</td>
                                 <td>
                                     @if ($selectedDominion->military_draftees >= $drafteeCost)

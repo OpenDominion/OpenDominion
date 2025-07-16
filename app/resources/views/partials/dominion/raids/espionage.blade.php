@@ -19,7 +19,7 @@
                         <tr>
                             <th>Operation</th>
                             <th>Spy Strength</th>
-                            <th>Points Awarded</th>
+                            <th>Points</th>
                             <th>Action</th>
                         </tr>
                     </thead>
