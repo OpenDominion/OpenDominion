@@ -9,6 +9,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\NotificationService;
 
 class RaidService
 {
@@ -18,10 +19,14 @@ class RaidService
     /** @var HistoryService */
     protected $historyService;
 
-    public function __construct(RaidCalculator $raidCalculator, HistoryService $historyService)
+    /** @var NotificationService */
+    protected $notificationService;
+
+    public function __construct(RaidCalculator $raidCalculator, HistoryService $historyService, NotificationService $notificationService)
     {
         $this->raidCalculator = $raidCalculator;
         $this->historyService = $historyService;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -45,7 +50,9 @@ class RaidService
      */
     public function distributeRaidRewards(Raid $raid): void
     {
-        DB::transaction(function () use ($raid) {
+        $rewardData = [];
+
+        DB::transaction(function () use ($raid, $rewardData) {
             $rewardData = $this->raidCalculator->calculateRaidRewards($raid);
 
             foreach ($rewardData as $data) {
@@ -59,6 +66,21 @@ class RaidService
             // Mark raid as having rewards distributed
             $raid->update(['rewards_distributed' => true]);
         });
+
+        foreach ($rewardData as $data) {
+            // Queue notification for this dominion
+            $this->notificationService->queueNotification('raid_rewards', [
+                'raid_name' => $raid->name,
+                'participation_amount' => $data['participation_reward']['amount'],
+                'participation_resource' => $data['participation_reward']['resource'],
+                'completion_amount' => $data['completion_reward']['amount'],
+                'completion_resource' => $data['completion_reward']['resource'],
+            ]);
+
+            // Send notification to dominion
+            $this->notificationService->sendNotifications($data['dominion'], 'irregular_dominion');
+        }
+
     }
 
     /**

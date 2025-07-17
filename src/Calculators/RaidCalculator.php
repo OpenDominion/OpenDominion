@@ -276,16 +276,16 @@ class RaidCalculator
     {
         // Step 1: Load all contribution data
         $contributionData = $this->getRaidContributionData($raid);
-        
+
         // Step 2: Calculate realm completion data for completion rewards
         $realmCompletionData = $this->calculateRealmCompletionData($raid, $contributionData);
-        
+
         // Step 3: Calculate realm reward pools (two-tier system)
         $realmPools = $this->calculateRealmRewardPools($raid, $contributionData);
-        
+
         // Step 4: Calculate player allocations within realm pools
         $playerAllocations = $this->calculatePlayerRewardAllocations($raid, $contributionData, $realmPools);
-        
+
         // Step 5: Get all participating dominions
         $participatingDominions = $this->getParticipatingDominions($raid);
 

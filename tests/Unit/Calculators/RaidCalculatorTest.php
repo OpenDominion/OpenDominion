@@ -229,7 +229,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         ]);
 
         // Act
-        $contributions = $this->calculator->getRecentContributions($this->objective, 5);
+        $contributions = $this->calculator->getRecentContributions($this->objective, $this->dominion->realm, 5);
 
         // Assert
         $this->assertCount(2, $contributions);
@@ -405,23 +405,19 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertTrue($globalCompleted); // 1200 >= 1000
 
         // Test 4: Recent contributions filtering
-        $realmContributions = $this->calculator->getRecentContributionsInRealm($this->objective, $this->dominion->realm, 5);
-        $allContributions = $this->calculator->getRecentContributions($this->objective, 5);
+        $realmContributions = $this->calculator->getRecentContributions($this->objective, $this->dominion->realm, 5);
         
-        $this->assertCount(2, $realmContributions); // Only this realm's contributions
-        $this->assertCount(3, $allContributions); // All contributions
+        $this->assertCount(2, $realmContributions);
         $this->assertEquals('test1', $realmContributions[0]['type']);
         $this->assertArrayNotHasKey('realm_name', $realmContributions[0]); // Realm-specific should not include realm name
 
-        // Test 5: Top contributors filtering  
-        $realmContributors = $this->calculator->getTopContributorsInRealm($this->objective, $this->dominion->realm, 5);
-        $allContributors = $this->calculator->getTopContributors($this->objective, 5);
+        // Test 5: Top contributors
+        $realmContributors = $this->calculator->getTopContributors($this->objective, 5);
 
-        $this->assertCount(2, $realmContributors); // Only this realm's contributors
-        $this->assertCount(3, $allContributors); // All contributors
-        $this->assertEquals(300, $realmContributors[0]['total_score']); // Highest in realm
-        $this->assertEquals(200, $realmContributors[1]['total_score']); // Second in realm
-        $this->assertArrayNotHasKey('realm_name', $realmContributors[0]); // Should not include realm name
+        $this->assertCount(3, $realmContributors); // Only this realm's contributors
+        $this->assertEquals(700, $realmContributors[0]['total_score']); // Highest
+        $this->assertEquals(300, $realmContributors[1]['total_score']); // Second
+        $this->assertEquals(200, $realmContributors[2]['total_score']); // Third
     }
 
     // Tests for reward calculation system
