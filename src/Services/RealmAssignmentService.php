@@ -21,16 +21,16 @@ class Player
     public ?string $packId;
     //public bool $hasDiscord;
     public array $favorability = []; // player_id => score
-    
+
     // Playstyle ratings (0-100 for each category)
     public float $attackerRating = 0;
     public float $converterRating = 0;
     public float $explorerRating = 0;
     public float $opsRating = 0;
-    
+
     /**
      * Create a new Player instance with given attributes
-     * 
+     *
      * Initializes a player object by setting any provided attributes that match
      * existing properties. Used to create player objects from database data.
      *
@@ -44,10 +44,10 @@ class Player
             }
         }
     }
-    
+
     /**
      * Get favorability score with another player
-     * 
+     *
      * Returns the favorability rating this player has given to another player.
      * Positive values indicate endorsement, negative values indicate negative feedback.
      * Returns 0 if no feedback has been given.
@@ -59,10 +59,10 @@ class Player
     {
         return $this->favorability[$playerId] ?? 0;
     }
-    
+
     /**
      * Get player's primary playstyle based on highest rating
-     * 
+     *
      * Compares all playstyle ratings (attacker, converter, explorer, ops) and
      * returns the playstyle with the highest value. Used for playstyle distribution
      * analysis and realm balancing.
@@ -77,7 +77,7 @@ class Player
             'explorer' => $this->explorerRating,
             'ops' => $this->opsRating,
         ];
-        
+
         return array_keys($ratings, max($ratings))[0];
     }
 }
@@ -95,7 +95,7 @@ class PlaceholderPack
 
     /**
      * Create a new PlaceholderPack instance
-     * 
+     *
      * Initializes a pack with the given members and calculates derived properties.
      * Large packs (>3 members) are automatically marked as such. The pack rating
      * is calculated as the sum of all member ratings.
@@ -114,7 +114,7 @@ class PlaceholderPack
 
     /**
      * Calculate compatibility score with another pack
-     * 
+     *
      * Computes the total favorability between all members of this pack and
      * all members of another pack. Each pair of players contributes their
      * bidirectional favorability scores to the total.
@@ -149,7 +149,7 @@ class PlaceholderRealm
 
     /**
      * Create a new PlaceholderRealm instance
-     * 
+     *
      * Initializes a realm with the given players and calculates derived statistics.
      * Players are keyed by their ID for efficient lookup and the realm's size
      * and rating are automatically calculated.
@@ -166,7 +166,7 @@ class PlaceholderRealm
 
     /**
      * Get all solo players in this realm
-     * 
+     *
      * Returns players who are not part of any pack (packId is null).
      * These are players who registered individually rather than as part
      * of a group.
@@ -180,7 +180,7 @@ class PlaceholderRealm
 
     /**
      * Get all packed players in this realm
-     * 
+     *
      * Returns players who are part of a pack (packId is not null).
      * These are players who registered as part of a group.
      *
@@ -193,7 +193,7 @@ class PlaceholderRealm
 
     /**
      * Count the number of packed players in this realm
-     * 
+     *
      * Used to enforce the maximum packed players per realm constraint
      * during pack assignment.
      *
@@ -206,7 +206,7 @@ class PlaceholderRealm
 
     /**
      * Check if a pack can fit in this realm
-     * 
+     *
      * Validates that adding the pack would not exceed the maximum number
      * of packed players allowed per realm. Solo players don't count toward
      * this limit.
@@ -221,7 +221,7 @@ class PlaceholderRealm
 
     /**
      * Add an entire pack to this realm
-     * 
+     *
      * Adds all members of a pack to the realm's player collection and
      * updates the realm's derived statistics (size and rating).
      *
@@ -237,7 +237,7 @@ class PlaceholderRealm
 
     /**
      * Add a single player to this realm
-     * 
+     *
      * Adds a player to the realm's player collection and updates the
      * realm's derived statistics (size and rating).
      *
@@ -251,7 +251,7 @@ class PlaceholderRealm
 
     /**
      * Update realm's derived statistics
-     * 
+     *
      * Recalculates the realm's size (player count) and total rating
      * (sum of all player ratings). Called whenever players are added
      * or removed from the realm.
@@ -264,11 +264,11 @@ class PlaceholderRealm
 
     /**
      * Calculate compatibility score for adding players to this realm
-     * 
+     *
      * Computes a comprehensive compatibility score that includes both
      * favorability ratings between players and playstyle fit. The score
      * considers both existing realm members and the potential new players.
-     * 
+     *
      * Heavy penalties (-100) are applied when favorability is very negative
      * to discourage placing conflicting players together.
      *
@@ -298,10 +298,10 @@ class PlaceholderRealm
 
         return $totalScore;
     }
-    
+
     /**
      * Calculate playstyle score for adding players to this realm
-     * 
+     *
      * Computes how adding the given players would affect the realm's playstyle
      * composition. Returns the improvement in average playstyle ratings when
      * only considering players with ratings >= 25 in each category.
@@ -327,10 +327,10 @@ class PlaceholderRealm
 
         return $newAverage - $currentAverage;
     }
-    
+
     /**
      * Get realm's current playstyle composition
-     * 
+     *
      * Calculates the total playstyle ratings for each category by summing
      * ratings from all players who have >= 25 rating in that category.
      * This provides the foundation for playstyle balance calculations.
@@ -359,7 +359,7 @@ class PlaceholderRealm
 
     /**
      * Check if player has hard conflicts with realm members
-     * 
+     *
      * Calculates the total favorability score between the player and all
      * existing realm members. A hard conflict exists when the total favorability
      * is less than -10, indicating significant negative relationships.
@@ -426,7 +426,7 @@ class RealmAssignmentService
 
     /**
      * Assigns all registered dominions (in realm 0) to newly created realms
-     * 
+     *
      * This is the main entry point for the realm assignment algorithm. It orchestrates
      * the entire process: closing packs, loading players, calculating optimal realm
      * structure, assigning packs and solo players, and performing post-assignment
@@ -461,7 +461,7 @@ class RealmAssignmentService
 
     /**
      * Close all packs for the round and unlink solo players
-     * 
+     *
      * Finalizes all pack registrations by closing them and calculating their
      * final ratings. Packs with only one member are dissolved and that player
      * becomes a solo player instead.
@@ -482,7 +482,7 @@ class RealmAssignmentService
 
     /**
      * Load all registered players for the round
-     * 
+     *
      * Fetches all registered dominions from the database and converts them
      * to Player objects with favorability matrices, playstyle ratings, and
      * other assignment-relevant data. Placeholder playstyle data is used
@@ -529,7 +529,7 @@ class RealmAssignmentService
 
     /**
      * Create Pack objects from players
-     * 
+     *
      * Groups packed players by their pack ID and creates PlaceholderPack objects.
      * Removes packed players from the solo players collection since they'll be
      * assigned as part of their pack rather than individually.
@@ -549,7 +549,7 @@ class RealmAssignmentService
 
     /**
      * Calculate optimal number of realms based on pack sizes
-     * 
+     *
      * The number of realms is primarily determined by the number of large packs
      * (>3 players), with adjustments to stay within min/max bounds. Large packs
      * may be downgraded or small packs upgraded to achieve the target count.
@@ -573,7 +573,7 @@ class RealmAssignmentService
 
     /**
      * Downgrade large packs to small packs
-     * 
+     *
      * Selects the lowest-rated large packs and marks them as small packs.
      * This is done when there are too many large packs to stay within
      * the maximum realm count.
@@ -590,7 +590,7 @@ class RealmAssignmentService
 
     /**
      * Upgrade small packs to large packs
-     * 
+     *
      * Selects the highest-rated small packs and marks them as large packs.
      * This is done when there are too few large packs to meet the minimum
      * realm count requirement.
@@ -607,7 +607,7 @@ class RealmAssignmentService
 
     /**
      * Create initial realms from large packs
-     * 
+     *
      * Each large pack becomes the foundation of a new realm. This establishes
      * the basic realm structure before assigning remaining packs and solo players.
      * Large packs are removed from the assignment queue since they're now placed.
@@ -624,7 +624,7 @@ class RealmAssignmentService
 
     /**
      * Assign all remaining packs to realms
-     * 
+     *
      * Orchestrates the assignment of non-large packs to existing realms
      * using the sophisticated scoring algorithm. Each pack is removed from
      * the assignment queue after placement.
@@ -639,7 +639,7 @@ class RealmAssignmentService
 
     /**
      * Assign a single pack to the best available realm
-     * 
+     *
      * Evaluates all realms that can fit the pack and selects the one with the
      * highest placement score. The scoring considers compatibility, balance,
      * and opportunity cost. If no realm meets size constraints, the best
@@ -674,7 +674,7 @@ class RealmAssignmentService
 
     /**
      * Evaluate placing pack in existing realm
-     * 
+     *
      * Calculates a comprehensive score for placing a pack in a specific realm.
      * The score combines compatibility (favorability + playstyle), balance
      * improvement, and opportunity cost considerations. Returns -INF for
@@ -685,7 +685,7 @@ class RealmAssignmentService
      * @return float Placement score (higher is better, -INF for conflicts)
      */
     private function evaluatePackPlacement(
-        PlaceholderPack $pack, 
+        PlaceholderPack $pack,
         PlaceholderRealm $realm
     ): float {
         $compatibility = $realm->getCompatibilityScore($pack->members);
@@ -698,7 +698,7 @@ class RealmAssignmentService
 
     /**
      * Calculate rating balance improvement from adding players
-     * 
+     *
      * Measures how much adding the given players would improve the realm's
      * deviation from the target strength. Returns positive values when the
      * addition brings the realm closer to the target, negative when it moves
@@ -721,22 +721,22 @@ class RealmAssignmentService
         // Instead of just rewarding improvement, penalize final distance from target
         // This encourages assignments that result in realms closer to the target
         $baseScore = 200 - $newDeviation; // Higher score for realms closer to target
-        
+
         // Bonus for improvement (but secondary to final position)
         $improvementBonus = ($currentDeviation - $newDeviation) * 0.5;
-        
+
         // Strong exponential penalty for very unbalanced final states
         $unbalancePenalty = 0;
         if ($newDeviation > 150) {
             $unbalancePenalty = pow($newDeviation / 100, 2) * 50;
         }
-        
+
         return $baseScore + $improvementBonus - $unbalancePenalty;
     }
 
     /**
      * Calculate opportunity cost of this placement
-     * 
+     *
      * Evaluates whether other unassigned packs could make better use of this realm.
      * The opportunity cost is higher when other packs would score better in this
      * realm AND have fewer viable alternatives. This encourages leaving realms
@@ -753,7 +753,7 @@ class RealmAssignmentService
         float $currentPackScore
     ): float {
         $opportunityCost = 0;
-        
+
         // Look at other unassigned packs that could use this realm
         foreach ($this->packs as $otherPack) {
             $otherPackScore = 0;
@@ -761,24 +761,24 @@ class RealmAssignmentService
             if ($otherPack->id === $pack->id) {
                 continue; // Skip the current pack
             }
-            
+
             // Could this other pack fit in this realm?
             if (!$realm->canFitPack($otherPack)) {
                 continue; // Can't fit, so no opportunity cost
             }
-            
+
             $otherPackScore += $realm->getCompatibilityScore($otherPack->members);
             $otherPackScore += $this->calculateBalanceScore($realm, $otherPack->members);
-            
+
             $opportunityCost -= ($otherPackScore - $currentPackScore) * 0.3;
         }
-        
+
         return $opportunityCost;
     }
 
     /**
      * Calculate size bonus/penalty for realm assignments
-     * 
+     *
      * Provides a large penalty (-1000) for realms at or above target size to
      * enforce equal distribution. Realms below target receive a small bonus
      * proportional to how many players they need. This ensures all realms
@@ -791,19 +791,19 @@ class RealmAssignmentService
     {
         $currentSize = $realm->players->count();
         $targetSize = (int) round($this->targetRealmSize);
-        
+
         // Large penalty for realms at or above target size
         if ($currentSize >= $targetSize) {
             return -1000; // Effectively eliminates this realm from consideration
         }
-        
+
         // Small bonus for realms that need players
         return ($targetSize - $currentSize) * 10;
     }
 
     /**
      * Assign solo players to realms
-     * 
+     *
      * Orchestrates the assignment of individual players in two phases:
      * Phase 1 distributes new players (rating=0) evenly using round-robin.
      * Phase 2 assigns experienced players using full scoring with size constraints.
@@ -825,7 +825,7 @@ class RealmAssignmentService
 
     /**
      * Assign experienced players using full scoring system
-     * 
+     *
      * Assigns players with rating > 0 using comprehensive scoring that considers
      * compatibility, balance, and size constraints. Players are sorted by rating
      * (highest first) for strategic placement. Hard conflicts are avoided and
@@ -871,8 +871,8 @@ class RealmAssignmentService
 
     /**
      * Post-assignment optimization through randomized player swapping
-     * 
-     * Performs iterative optimization by randomly sampling pairs of solo players 
+     *
+     * Performs iterative optimization by randomly sampling pairs of solo players
      * from different realms and swapping them if beneficial. This approach is more
      * efficient than exhaustive search and better explores the solution space.
      * Runs for up to 15 iterations or until no more improvements are found.
@@ -929,10 +929,10 @@ class RealmAssignmentService
                     // Perform swap by removing and adding players
                     $realm1->players->forget($solo1->id);
                     $realm2->players->forget($solo2->id);
-                    
+
                     $realm1->players->put($solo2->id, $solo2);
                     $realm2->players->put($solo1->id, $solo1);
-                    
+
                     // Update realm state
                     $realm1->update();
                     $realm2->update();
@@ -953,66 +953,65 @@ class RealmAssignmentService
             }
         }
     }
-    
+
     /**
      * Check if swapping two solos would improve overall balance
-     * 
+     *
      * Evaluates whether swapping two solo players between realms would improve
      * the total assignment score. Checks for hard conflicts first, then compares
      * current vs post-swap scores using compatibility and balance metrics.
      * Includes a small threshold to prevent oscillating swaps.
      *
      * @param Player $solo1 First player to potentially swap
-     * @param Player $solo2 Second player to potentially swap  
+     * @param Player $solo2 Second player to potentially swap
      * @param PlaceholderRealm $realm1 Current realm of first player
      * @param PlaceholderRealm $realm2 Current realm of second player
      * @return bool True if the swap would improve overall assignment quality
      */
     private function shouldSwapSolos(
-        Player $solo1, 
-        Player $solo2, 
-        PlaceholderRealm $realm1, 
+        Player $solo1,
+        Player $solo2,
+        PlaceholderRealm $realm1,
         PlaceholderRealm $realm2
     ): bool {
         // 1. Check for hard conflicts first (early exit)
         if ($realm2->hasHardConflicts($solo1) || $realm1->hasHardConflicts($solo2)) {
             return false;
         }
-        
+
         // 2. Calculate accurate swap scores by removing players first, then evaluating placements
-        
+
         // Remove players temporarily to get accurate base scores
         $realm1->players->forget($solo1->id);
         $realm2->players->forget($solo2->id);
         $realm1->update();
         $realm2->update();
-        
+
         // Calculate base scores without either player
         $currentScore1 = $this->calculateBalanceScore($realm1, collect([$solo1]));
         $currentScore2 = $this->calculateBalanceScore($realm2, collect([$solo2]));
         $currentTotal = $currentScore1 + $currentScore2;
-        
+
         // Calculate post-swap scores
         $newScore1 = $this->calculateBalanceScore($realm1, collect([$solo2]));
         $newScore2 = $this->calculateBalanceScore($realm2, collect([$solo1]));
         $newTotal = $newScore1 + $newScore2;
-        
+
         // Restore players to their original realms
         $realm1->players->put($solo1->id, $solo1);
         $realm2->players->put($solo2->id, $solo2);
         $realm1->update();
         $realm2->update();
-        
+
         $improvement = $newTotal - $currentTotal;
-        
-        
+
         // 4. Only swap if there's meaningful improvement (threshold prevents oscillation)
         return $improvement > 0.1;
     }
-    
+
     /**
      * Get comprehensive assignment statistics
-     * 
+     *
      * Compiles detailed statistics about the completed realm assignment including
      * overall totals, per-realm breakdowns, playstyle distributions, and balance
      * metrics. Provides variance calculations and deviation measurements to assess
@@ -1045,21 +1044,21 @@ class RealmAssignmentService
             ],
             'realms' => []
         ];
-        
+
         $totalPlayers = 0;
         $totalNewPlayers = 0;
         $totalExperiencedPlayers = 0;
         $totalRating = 0;
         $realmSizes = [];
         $realmRatings = [];
-        
+
         foreach ($this->realms as $realm) {
             $realmSize = $realm->size;
             $realmRating = $realm->players->avg('rating');
             $playstyleDist = $realm->getPlaystyleComposition();
             $newPlayerCount = $realm->players->where('rating', 0)->count();
             $experiencedPlayerCount = $realm->players->where('rating', '>', 0)->count();
-            
+
             // Accumulate totals
             $totalPlayers += $realmSize;
             $totalNewPlayers += $newPlayerCount;
@@ -1067,7 +1066,7 @@ class RealmAssignmentService
             $totalRating += $realm->rating;
             $realmSizes[] = $realmSize;
             $realmRatings[] = $realmRating;
-            
+
             $stats['realms'][] = [
                 'id' => $realm->id,
                 'size' => $realmSize,
@@ -1082,27 +1081,27 @@ class RealmAssignmentService
                 'deviation_from_target_rating' => round(abs($realmRating - $this->targetRealmStrength), 2),
             ];
         }
-        
+
         // Calculate overall statistics
         $stats['total_players'] = $totalPlayers;
         $stats['total_new_players'] = $totalNewPlayers;
         $stats['total_experienced_players'] = $totalExperiencedPlayers;
         $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->realms->count(), 2) : 0;
         $stats['average_realm_rating'] = $totalPlayers > 0 ? round($totalRating / $totalPlayers, 2) : 0;
-        
+
         // Calculate balance metrics
         if (count($realmSizes) > 1) {
             $meanSize = array_sum($realmSizes) / count($realmSizes);
             $meanRating = array_sum($realmRatings) / count($realmRatings);
-            
-            $sizeVariances = array_map(fn($size) => pow($size - $meanSize, 2), $realmSizes);
-            $ratingVariances = array_map(fn($rating) => pow($rating - $meanRating, 2), $realmRatings);
-            
+
+            $sizeVariances = array_map(fn ($size) => pow($size - $meanSize, 2), $realmSizes);
+            $ratingVariances = array_map(fn ($rating) => pow($rating - $meanRating, 2), $realmRatings);
+
             $stats['balance_metrics'] = [
                 'size_variance' => round(array_sum($sizeVariances) / count($sizeVariances), 2),
                 'rating_variance' => round(array_sum($ratingVariances) / count($ratingVariances), 2),
-                'max_size_deviation' => round(max(array_map(fn($size) => abs($size - $this->targetRealmSize), $realmSizes)), 2),
-                'max_rating_deviation' => round(max(array_map(fn($rating) => abs($rating - $this->targetRealmStrength), $realmRatings)), 2),
+                'max_size_deviation' => round(max(array_map(fn ($size) => abs($size - $this->targetRealmSize), $realmSizes)), 2),
+                'max_rating_deviation' => round(max(array_map(fn ($rating) => abs($rating - $this->targetRealmStrength), $realmRatings)), 2),
             ];
         }
 
