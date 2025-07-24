@@ -122,10 +122,10 @@
                                                     >
                                                         {{ $dominion->user->display_name }}
                                                     </a>
-                                                    @if ($isOwnRealm && ($dominion->user_id !== $selectedDominion->user_id) && ($round->hasEnded() && $round->end_date->addDays(7) > now()))
+                                                    @if ($isOwnRealm && ($dominion->user_id !== $selectedDominion->user_id) && ($round->hasOffensiveActionsDisabled() && $round->end_date->addDays(7) > now()))
                                                         <a
                                                             href="{{ route('api.user.feedback') }}?user_id={{ $dominion->user_id }}&endorsed=1"
-                                                            class="upvote_user{{ $selectedDominion->user->hasUpvotedUser($dominion->user_id) ? ' text-green' : null }}"
+                                                            class="upvote_user{{ $selectedDominion->user->hasUpvotedUser($dominion->user_id, $selectedDominion->round_id) ? ' text-green' : null }}"
                                                             title="Upvote"
                                                             data-toggle="tooltip"
                                                         >
@@ -133,7 +133,7 @@
                                                         </a>
                                                         <a
                                                             href="{{ route('api.user.feedback') }}?user_id={{ $dominion->user_id }}&endorsed=0"
-                                                            class="downvote_user{{ $selectedDominion->user->hasDownvotedUser($dominion->user_id) ? ' text-red' : null }}"
+                                                            class="downvote_user{{ $selectedDominion->user->hasDownvotedUser($dominion->user_id, $selectedDominion->round_id) ? ' text-red' : null }}"
                                                             title="Downvote"
                                                             data-toggle="tooltip"
                                                         >

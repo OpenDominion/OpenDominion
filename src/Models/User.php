@@ -115,18 +115,20 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     // Methods
 
-    public function hasUpvotedUser(int $userId)
+    public function hasUpvotedUser(int $userId, int $roundId)
     {
         return !$this->feedback
             ->where('target_id', $userId)
+            ->where('round_id', $roundId)
             ->where('endorsed', 1)
             ->isEmpty();
     }
 
-    public function hasDownvotedUser(int $userId)
+    public function hasDownvotedUser(int $userId, int $roundId)
     {
         return !$this->feedback
             ->where('target_id', $userId)
+            ->where('round_id', $roundId)
             ->where('endorsed', 0)
             ->isEmpty();
     }
