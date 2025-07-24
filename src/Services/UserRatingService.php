@@ -2,16 +2,16 @@
 
 namespace OpenDominion\Services;
 
-use OpenDominion\Models\User;
+use Illuminate\Support\Facades\DB;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundLeague;
-use OpenDominion\Calculators\Dominion\LandCalculator;
-use Illuminate\Support\Facades\DB;
+use OpenDominion\Models\User;
 
 /**
  * Service for calculating and managing user ratings
- * 
+ *
  * This service calculates a user's skill rating based on their performance
  * across multiple rounds, similar to ELO or other rating systems used in
  * competitive games.
@@ -29,7 +29,7 @@ class UserRatingService
 
     /**
      * Update a user's rating
-     * 
+     *
      * @param User $user
      * @return bool True if rating was updated, false otherwise
      */
@@ -50,9 +50,9 @@ class UserRatingService
 
     /**
      * Update all users' ratings after a round ends
-     * 
+     *
      * @param Round $round
-     * @return array 
+     * @return array
      */
     public function updateRatingsAfterRound(Round $round): array
     {
@@ -77,10 +77,10 @@ class UserRatingService
 
     /**
      * Update ratings for all users who have played at least one dominion
-     * 
+     *
      * This method iterates through all users that have at least one dominion
      * and triggers a rating calculation/update for each user.
-     * 
+     *
      * @param Round|null $round Optional specific round to process, or null for all rounds
      * @return array Summary of updates performed
      */
@@ -108,7 +108,7 @@ class UserRatingService
 
     /**
      * Calculate a user's current rating
-     * 
+     *
      * @param User $user
      * @return array The calculated ratings
      */
@@ -134,10 +134,10 @@ class UserRatingService
 
     /**
      * Calculate performance scores for a user's most recent dominions
-     * 
+     *
      * This method gets the user's recent dominions and calculates a performance
      * score for each based on their final position, competition level, and other factors.
-     * 
+     *
      * @param User $user
      * @param int $maxDominions Maximum number of recent dominions to consider
      * @return array Array of dominion scores with metadata
@@ -169,7 +169,7 @@ class UserRatingService
 
     /**
      * Calculate performance score for a single dominion
-     * 
+     *
      * @param Dominion $dominion
      * @return array Performance scores for this dominion
      */
@@ -220,7 +220,7 @@ class UserRatingService
 
     /**
      * Calculate feedback score for a user
-     * 
+     *
      * @param int $userId
      * @return float Feedback score
      */
@@ -242,7 +242,7 @@ class UserRatingService
 
     /**
      * Calculate a user's playstyle affinities
-     * 
+     *
      * @param array $dominionScores Array of dominion score data
      * @return array Playstyle affinities
      */
@@ -281,10 +281,10 @@ class UserRatingService
 
     /**
      * Average the best finishes to determine overall rating
-     * 
+     *
      * Takes the dominion scores and calculates an average based
      * on the user's best performances.
-     * 
+     *
      * @param array $dominionScores Array of dominion score data
      * @param int $bestCount Number of best finishes to use for the average
      * @return float Calculated rating
@@ -309,7 +309,7 @@ class UserRatingService
 
     /**
      * Get performance metrics for a dominion
-     * 
+     *
      * @param Dominion $dominion
      * @return array Performance metrics
      */
@@ -348,7 +348,7 @@ class UserRatingService
             'espionage_ops' => $dominion->stat_espionage_success + $dominion->stat_espionage_failure,
             'magic_ops' => $dominion->stat_spell_success + $dominion->stat_spell_failure,
             'bounties_collected' => $dominion->stat_bounties_collected,
-            'hourly_activity' => substr_count($dominion->hourly_activity, "1"),
+            'hourly_activity' => substr_count($dominion->hourly_activity, '1'),
         ];
     }
 }
