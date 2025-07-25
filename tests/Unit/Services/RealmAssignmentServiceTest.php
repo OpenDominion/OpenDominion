@@ -416,7 +416,7 @@ class RealmAssignmentServiceTest extends AbstractTestCase
     }
 
     /**
-     * Execute the core assignment logic without database dependencies
+     * Execute the core assignment logic using actual service methods
      */
     private function executeAssignmentLogic(): void
     {
@@ -424,20 +424,28 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $realmCount = $this->calculateRealmCount();
         $this->service->targetRealmSize = 100 / $realmCount;
 
+        // Use reflection to call the actual service methods
+        $reflection = new \ReflectionClass($this->service);
+
         // Create placeholder realms from large packs
-        $this->createPlaceholderRealms();
+        $createPlaceholderRealmsMethod = $reflection->getMethod('createPlaceholderRealms');
+        $createPlaceholderRealmsMethod->setAccessible(true);
+        $createPlaceholderRealmsMethod->invoke($this->service);
 
         // Assign remaining packs
-        $this->assignPacks();
+        $assignPacksMethod = $reflection->getMethod('assignPacks');
+        $assignPacksMethod->setAccessible(true);
+        $assignPacksMethod->invoke($this->service);
 
         // Assign solo players
-        $this->assignSolos();
+        $assignSolosMethod = $reflection->getMethod('assignSolos');
+        $assignSolosMethod->setAccessible(true);
+        $assignSolosMethod->invoke($this->service);
 
-        // Optimization pass - call the service's optimization method
-        $reflection = new \ReflectionClass($this->service);
-        $method = $reflection->getMethod('optimizeAssignments');
-        $method->setAccessible(true);
-        $method->invoke($this->service);
+        // Optimization pass
+        $optimizeMethod = $reflection->getMethod('optimizeAssignments');
+        $optimizeMethod->setAccessible(true);
+        $optimizeMethod->invoke($this->service);
     }
 
     /**
@@ -447,88 +455,6 @@ class RealmAssignmentServiceTest extends AbstractTestCase
     {
         $largePacks = $this->service->packs->where('large', true)->count();
         return max(8, min(14, $largePacks));
-    }
-
-    /**
-     * Create initial realms from large packs
-     */
-    private function createPlaceholderRealms(): void
-    {
-        $packs = $this->service->packs->where('large', true);
-        foreach ($packs as $idx => $pack) {
-            $realm = new PlaceholderRealm((string)$idx, $pack->members);
-            $this->service->realms->push($realm);
-            $this->service->packs->forget($pack->id);
-        }
-    }
-
-    /**
-     * Assign remaining packs to realms
-     */
-    private function assignPacks(): void
-    {
-        foreach ($this->service->packs as $pack) {
-            $bestRealm = null;
-            $bestScore = -INF;
-
-            foreach ($this->service->realms as $realm) {
-                if ($realm->canFitPack($pack)) {
-                    $score = $realm->getCompatibilityScore($pack->members);
-                    if ($score > $bestScore) {
-                        $bestScore = $score;
-                        $bestRealm = $realm;
-                    }
-                }
-            }
-
-            if ($bestRealm) {
-                $bestRealm->addPack($pack);
-            }
-        }
-        $this->service->packs = collect(); // Clear assigned packs
-    }
-
-    /**
-     * Assign solo players to realms with better size balancing
-     */
-    private function assignSolos(): void
-    {
-        // Distribute new players evenly
-        $newPlayers = $this->service->players->where('rating', 0)->values();
-        $realmIndex = 0;
-        foreach ($newPlayers as $player) {
-            $realm = $this->service->realms->get($realmIndex % $this->service->realms->count());
-            $realm->addPlayer($player);
-            $this->service->players->forget($player->id);
-            $realmIndex++;
-        }
-
-        // Assign experienced players with size balancing priority
-        foreach ($this->service->players->sortByDesc('rating') as $player) {
-            $bestRealm = null;
-            $bestScore = -INF;
-
-            foreach ($this->service->realms as $realm) {
-                if (!$realm->hasHardConflicts($player)) {
-                    $compatibilityScore = $realm->getCompatibilityScore(collect([$player]));
-
-                    // Add significant bonus for smaller realms to encourage balance
-                    $sizeBonus = (20 - $realm->size) * 10; // Larger bonus for smaller realms
-
-                    $totalScore = $compatibilityScore + $sizeBonus;
-
-                    if ($totalScore > $bestScore) {
-                        $bestScore = $totalScore;
-                        $bestRealm = $realm;
-                    }
-                }
-            }
-
-            if ($bestRealm) {
-                $bestRealm->addPlayer($player);
-            }
-        }
-        $this->service->players = collect(); // Clear assigned players
     }
 
     /**

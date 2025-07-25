@@ -3,6 +3,7 @@
 namespace OpenDominion\Services;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -10,6 +11,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Models\UserFeedback;
+use OpenDominion\Services\NotificationService;
 
 /**
  * Non-persisted Player model
@@ -447,7 +449,10 @@ class RealmAssignmentService
         $realmCount = $this->calculateRealmCount();
         $this->targetRealmSize = $playerCount / $realmCount;
 
+        // Assign large packs
         $this->createPlaceholderRealms();
+
+        // Assign small packs
         $this->assignPacks();
 
         // Assign solos
@@ -456,7 +461,11 @@ class RealmAssignmentService
         // Optimization pass
         $this->optimizeAssignments();
 
-        return $this->realms;
+        // Create the final realms
+        $this->createRealms($round);
+
+        // Send assignment notifications
+        $this->sendNotifications($round);
     }
 
     /**
@@ -468,7 +477,7 @@ class RealmAssignmentService
      *
      * @param Round $round The round to close packs for
      */
-    private function closePacks(Round $round): void
+    public function closePacks(Round $round): void
     {
         // Close open packs and unlink solo players
         $packs = Pack::where('round_id', $round->id)->get();
@@ -490,7 +499,7 @@ class RealmAssignmentService
      *
      * @param Round $round The round to load players for
      */
-    private function loadPlayers(Round $round): void
+    public function loadPlayers(Round $round): void
     {
         // Fetch all registered dominions
         $registeredDominions = $round->activeDominions()
@@ -534,7 +543,7 @@ class RealmAssignmentService
      * Removes packed players from the solo players collection since they'll be
      * assigned as part of their pack rather than individually.
      */
-    private function loadPacks(): void
+    public function loadPacks(): void
     {
         $playersByPack = $this->players
             ->whereNotNull('packId')
@@ -556,7 +565,7 @@ class RealmAssignmentService
      *
      * @return int Number of realms to create
      */
-    private function calculateRealmCount(): int
+    public function calculateRealmCount(): int
     {
         $largePacks = $this->packs->where('large', true)->count();
 
@@ -580,7 +589,7 @@ class RealmAssignmentService
      *
      * @param int $count Number of packs to downgrade
      */
-    private function downgradePacks(int $count): void
+    public function downgradePacks(int $count): void
     {
         $packs = $this->packs->where('large', true)->sortBy('rating')->take($count);
         foreach ($packs as $pack) {
@@ -597,7 +606,7 @@ class RealmAssignmentService
      *
      * @param int $count Number of packs to upgrade
      */
-    private function upgradePacks(int $count): void
+    public function upgradePacks(int $count): void
     {
         $packs = $this->packs->where('large', false)->sortByDesc('rating')->take($count);
         foreach ($packs as $pack) {
@@ -612,7 +621,7 @@ class RealmAssignmentService
      * the basic realm structure before assigning remaining packs and solo players.
      * Large packs are removed from the assignment queue since they're now placed.
      */
-    private function createPlaceholderRealms(): void
+    public function createPlaceholderRealms(): void
     {
         $packs = $this->packs->where('large', true);
         foreach ($packs as $idx => $pack) {
@@ -629,7 +638,7 @@ class RealmAssignmentService
      * using the sophisticated scoring algorithm. Each pack is removed from
      * the assignment queue after placement.
      */
-    private function assignPacks(): void
+    public function assignPacks(): void
     {
         foreach ($this->packs as $pack) {
             $this->assignPack($pack);
@@ -647,12 +656,12 @@ class RealmAssignmentService
      *
      * @param PlaceholderPack $pack The pack to assign to a realm
      */
-    private function assignPack(PlaceholderPack $pack): void
+    public function assignPack(PlaceholderPack $pack): void
     {
         $bestRealm = null;
         $bestScore = -INF;
 
-        $potentialRealms = $this->realms->filter(function ($realm) {
+        $potentialRealms = $this->realms->filter(function ($realm) use ($pack) {
             return $realm->canFitPack($pack);
         });
         if ($potentialRealms->isEmpty()) {
@@ -684,7 +693,7 @@ class RealmAssignmentService
      * @param PlaceholderRealm $realm The realm to evaluate placement in
      * @return float Placement score (higher is better, -INF for conflicts)
      */
-    private function evaluatePackPlacement(
+    public function evaluatePackPlacement(
         PlaceholderPack $pack,
         PlaceholderRealm $realm
     ): float {
@@ -747,7 +756,7 @@ class RealmAssignmentService
      * @param float $currentPackScore The score this pack would achieve
      * @return float Opportunity cost (negative values discourage placement)
      */
-    private function calculateOpportunityCost(
+    public function calculateOpportunityCost(
         PlaceholderRealm $realm,
         PlaceholderPack $pack,
         float $currentPackScore
@@ -787,7 +796,7 @@ class RealmAssignmentService
      * @param PlaceholderRealm $realm The realm to evaluate
      * @return float Size bonus/penalty (-1000 for full realms, positive for others)
      */
-    private function calculateSizeBonus(PlaceholderRealm $realm): float
+    public function calculateSizeBonus(PlaceholderRealm $realm): float
     {
         $currentSize = $realm->players->count();
         $targetSize = (int) round($this->targetRealmSize);
@@ -809,7 +818,7 @@ class RealmAssignmentService
      * Phase 2 assigns experienced players using full scoring with size constraints.
      * This ensures fair distribution while optimizing for compatibility and balance.
      */
-    private function assignSolos(): void
+    public function assignSolos(): void
     {
         // Phase 1: Distribute new players using round-robin
         $newPlayers = $this->players->where('rating', 0);
@@ -831,7 +840,7 @@ class RealmAssignmentService
      * (highest first) for strategic placement. Hard conflicts are avoided and
      * the size penalty ensures equal distribution across realms.
      */
-    private function assignExperiencedPlayers(): void
+    public function assignExperiencedPlayers(): void
     {
         // Sort by rating (highest first) for strategic placement, with shuffle for tied ratings
         $sortedPlayers = $this->players->sortByDesc('rating')->shuffle()->values();
@@ -854,7 +863,7 @@ class RealmAssignmentService
                 // Weight the balance score more heavily to prevent extreme rating imbalances
                 $weightedBalanceScore = $balanceScore * 5; // Increase balance importance
 
-                $totalScore = $compatibilityScore + $weightedBalanceScore + $sizeBonus + $randomComponent;
+                $totalScore = $compatibilityScore + $weightedBalanceScore + $sizeBonus;
 
                 if ($totalScore > $bestScore) {
                     $bestScore = $totalScore;
@@ -877,7 +886,7 @@ class RealmAssignmentService
      * efficient than exhaustive search and better explores the solution space.
      * Runs for up to 15 iterations or until no more improvements are found.
      */
-    private function optimizeAssignments(): void
+    public function optimizeAssignments(): void
     {
         $improved = true;
         $iterations = 0;
@@ -968,7 +977,7 @@ class RealmAssignmentService
      * @param PlaceholderRealm $realm2 Current realm of second player
      * @return bool True if the swap would improve overall assignment quality
      */
-    private function shouldSwapSolos(
+    public function shouldSwapSolos(
         Player $solo1,
         Player $solo2,
         PlaceholderRealm $realm1,
@@ -1007,6 +1016,70 @@ class RealmAssignmentService
 
         // 4. Only swap if there's meaningful improvement (threshold prevents oscillation)
         return $improvement > 0.1;
+    }
+
+    /**
+     * Create actual realms from placeholder assignments and persist to database
+     *
+     * Converts the balanced placeholder realm assignments into actual Realm entities,
+     * assigns dominions to their designated realms, and updates pack affiliations.
+     * Also sets realm ratings based on the calculated balance scores and marks
+     * the round as assignment complete when all dominions are properly assigned.
+     *
+     * @param Round $round The game round to create realms for
+     * @return void
+     */
+    public function createRealms(Round $round): void
+    {
+        $realmFactory = app(RealmFactory::class);
+
+        foreach ($this->realms->shuffle() as $placeholderRealm) {
+            $realm = $realmFactory->create($round);
+            foreach ($placeholderRealm->players as $player) {
+                $dominion = Dominion::find($player->id);
+                $dominion->realm_id = $realm->id;
+                $dominion->save();
+                if ($dominion->pack_id !== null && $dominion->pack->realm_id !== $realm->id) {
+                    $dominion->pack->realm_id = $realm->id;
+                    $dominion->pack->save();
+                }
+            }
+            $realm->rating = $placeholderRealm->rating;
+            $realm->save();
+        }
+
+        // Unlock realm pages
+        $graveyard = $round->graveyard();
+        if ($graveyard !== null && $graveyard->dominions()->count() == 0) {
+            $round->update(['assignment_complete' => true]);
+        }
+    }
+
+    /**
+     * Send realm assignment notifications to all dominions in the round
+     *
+     * Notifies all players about their realm assignments through both in-game
+     * notifications and email alerts. Includes realm number and Discord integration
+     * status in the notification data to help players connect with their new
+     * realm members.
+     *
+     * @param Round $round The game round to send notifications for
+     * @return void
+     */
+    public function sendNotifications(Round $round): void
+    {
+        $notificationService = app(NotificationService::class);
+
+        foreach ($round->realms()->get() as $realm) {
+            foreach ($realm->dominions()->get() as $dominion) {
+                $notificationService->queueNotification('realm_assignment', [
+                    '_routeParams' => [$realm->number],
+                    'realmNumber' => $realm->number,
+                    'discordEnabled' => ($round->discord_guild_id !== null && $round->discord_guild_id !== '')
+                ]);
+                $notificationService->sendNotifications($dominion, 'irregular_dominion');
+            }
+        }
     }
 
     /**
