@@ -115,6 +115,7 @@ class ValhallaController extends AbstractController
             case 'stat-top-magical-assassins': $data = $this->getDominionsByRanking($round, 'magical-assassins'); break;
             case 'stat-top-military-assassins': $data = $this->getDominionsByRanking($round, 'military-assassins'); break;
             case 'stat-top-snare-setters': $data = $this->getDominionsByRanking($round, 'snare-setters'); break;
+            case 'stat-masters-of-chaos': $data = $this->getDominionsByRanking($round, 'masters-of-chaos'); break;
             case 'stat-masters-of-fire': $data = $this->getDominionsByRanking($round, 'masters-of-fire'); break;
             case 'stat-masters-of-plague': $data = $this->getDominionsByRanking($round, 'masters-of-plague'); break;
             case 'stat-masters-of-swarm': $data = $this->getDominionsByRanking($round, 'masters-of-swarm'); break;
