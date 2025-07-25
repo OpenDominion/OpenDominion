@@ -638,8 +638,11 @@ class RealmAssignmentServiceTest extends AbstractTestCase
 
         if ($realmCount > 0) {
             $overallCompatibility = $totalCompatibilityScore / $realmCount;
-            $this->assertGreaterThanOrEqual(-2.0, $overallCompatibility,
-                'Overall realm compatibility should be reasonable after optimization');
+            $this->assertGreaterThanOrEqual(
+                -2.0,
+                $overallCompatibility,
+                'Overall realm compatibility should be reasonable after optimization'
+            );
         }
     }
 }
