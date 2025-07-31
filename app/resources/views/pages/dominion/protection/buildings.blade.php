@@ -50,32 +50,11 @@
                                             @endforeach
                                         </tbody>
                                     @endforeach
-                                    <thead>
-                                        <tr>
-                                            <th colspan=2>
-                                                <h4>Total Buildings</h4>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center">Available</th>
-                                            <th class="text-center">Selected</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-center">
-                                                <span id="total_land">{{ number_format($landCalculator->getTotalLand($selectedDominion)) }}</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span id="total_buildings">600</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
                                 </table>
                             </div>
                             
                             <div class="col-md-12 col-lg-6">
-                                <table class="table table-condensed">
+                                <table class="table table-condensed" style="margin-bottom: 0px;">
                                     <colgroup>
                                         <col width="50%">
                                         <col width="50%">
@@ -114,6 +93,14 @@
                     </div>
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }} disabled>Build</button>
+                        <div class="pull-right">
+                            <h4>
+                                Total Buildings:
+                                <span id="total_buildings">600</span>
+                                /
+                                <span id="total_land">{{ number_format($landCalculator->getTotalLand($selectedDominion)) }}</span>
+                            </h4>
+                        </div>
                     </div>
                 </form>
             </div>
