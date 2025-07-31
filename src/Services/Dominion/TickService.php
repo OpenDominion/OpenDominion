@@ -489,6 +489,12 @@ class TickService
         DB::transaction(function () use ($dominion, $actions, $revertTo) {
             // Update attributes
             foreach ($actions as $action) {
+                if (isset($action->delta['action']) && ($action->delta['action'] == 'starting_buildings')) {
+                    // Don't revert starting building choices
+                    $action->delete();
+                    continue;
+                }
+
                 foreach ($action->delta as $key => $value) {
                     if ($key == 'calculated_networth') {
                         continue;

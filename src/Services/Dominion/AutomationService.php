@@ -188,7 +188,7 @@ class AutomationService
         $populationCalculator = app(PopulationCalculator::class);
         $dominion->peasants = $populationCalculator->getMaxPeasantPopulation($dominion);
 
-        $dominion->save(['event' => HistoryService::EVENT_TICK]);
+        $dominion->save(['event' => HistoryService::EVENT_TICK, 'action' => 'starting_buildings']);
     }
 
     protected function processBank(Dominion $dominion, array $data)

@@ -39,7 +39,6 @@ class HistoryService
     public const EVENT_ACTION_LEAVE_BLACK_GUARD = 'leave black guard';
     public const EVENT_ACTION_CANCEL_LEAVE_BLACK_GUARD = 'cancel leave black guard';
     public const EVENT_ACTION_PROTECTION_ADVANCE_TICK = 'advance tick';
-    public const EVENT_ACTION_PROTECTION_SELECT_BUILDINGS = 'select buildings';
     public const EVENT_ACTION_RESTART = 'restart';
     public const EVENT_ACTION_WONDER_ATTACKED = 'wonder attacked';
     public const EVENT_ACTION_WONDER_DESTROYED = 'wonder destroyed';
