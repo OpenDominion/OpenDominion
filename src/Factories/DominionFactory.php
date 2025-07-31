@@ -440,6 +440,7 @@ class DominionFactory
         if ($protectionType == 'quick') {
             $startingAttributes['resource_platinum'] = 50000;
             $startingAttributes['military_draftees'] = 150;
+            $startingAttributes['highest_land_achieved'] = 560;
             $startingAttributes['protection_ticks'] = 36;
             $startingAttributes['protection_ticks_remaining'] = 37;
         }

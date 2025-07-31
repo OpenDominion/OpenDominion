@@ -166,4 +166,74 @@ trait CreatesData
         $dominion = $this->createDominion($user, $round, $race, $realm);
         return $this->selectDominion($dominion);
     }
+
+    /**
+     * Creates a dominion with legacy starting resources for tests that expect old values.
+     *
+     * @param User $user
+     * @param Round $round
+     * @param Race|null $race
+     * @param Realm|null $realm
+     * @return Dominion
+     */
+    protected function createDominionWithLegacyStats(User $user, Round $round, ?Race $race = null, ?Realm $realm = null): Dominion
+    {
+        // First create a normal dominion
+        $dominion = $this->createDominion($user, $round, $race, $realm);
+
+        // Override with legacy values that tests expect
+        $dominion->update([
+            'peasants' => 1300,
+            'resource_platinum' => 100000,
+            'military_draftees' => 100,
+            'military_unit2' => 150,
+            'military_spies' => 25,
+            'military_wizards' => 25,
+
+            // Legacy land distribution (total 250 vs new 560/350)
+            'land_plain' => 100,
+            'land_cavern' => 20,
+            'land_hill' => 20,
+            'land_mountain' => 20,
+            'land_swamp' => 20,
+            'land_forest' => 40,
+            'land_water' => 20,
+
+            'building_home' => 10,
+            'building_alchemy' => 30,
+            'building_farm' => 30,
+            'building_lumberyard' => 20,
+
+            // Disable protection for tests
+            'protection_type' => 'advanced',
+            'protection_ticks' => 72, // Ensure we're not in building phase
+            'protection_ticks_remaining' => 0,
+            'protection_finished' => true,
+        ]);
+
+        if ($race !== null) {
+            $homeland = $race->home_land_type;
+            $homelandAttr = "land_{$homeland}";
+        } else {
+            $homelandAttr = "land_plain";
+        }
+        $dominion->update([$homelandAttr => $dominion->{$homelandAttr} + 10]);
+
+        return $dominion;
+    }
+
+    /**
+     * Creates and selects a dominion with legacy starting resources for tests.
+     *
+     * @param User $user
+     * @param Round $round
+     * @param Race|null $race
+     * @param Realm|null $realm
+     * @return Dominion
+     */
+    protected function createAndSelectDominionWithLegacyStats(User $user, Round $round, ?Race $race = null, ?Realm $realm = null): Dominion
+    {
+        $dominion = $this->createDominionWithLegacyStats($user, $round, $race, $realm);
+        return $this->selectDominion($dominion);
+    }
 }
