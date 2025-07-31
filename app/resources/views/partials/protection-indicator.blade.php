@@ -19,15 +19,17 @@
                 @else
                     Protection Hour {{ $selectedDominion->protection_ticks - $selectedDominion->protection_ticks_remaining + 1 }}
                 @endif
-                <span class="text-nowrap">
-                    @if ($selectedDominion->protection_ticks_remaining > 0)
-                        @if ($selectedDominion->protection_type !== 'quick' || $selectedDominion->protection_ticks_remaining <= 12)
-                            ({{ $selectedDominion->protection_ticks_remaining }} ticks remaining)
+                @if (!$selectedDominion->isBuildingPhase())
+                    <span class="text-nowrap">
+                        @if ($selectedDominion->protection_ticks_remaining > 0)
+                            @if ($selectedDominion->protection_type !== 'quick' || $selectedDominion->protection_ticks_remaining <= 12)
+                                ({{ $selectedDominion->protection_ticks_remaining }} ticks remaining)
+                            @endif
+                        @else
+                            - <b>{{ $protectionService->getUnderProtectionHoursLeft($selectedDominion) }}</b> hours remaining
                         @endif
-                    @else
-                        - <b>{{ $protectionService->getUnderProtectionHoursLeft($selectedDominion) }}</b> hours remaining
-                    @endif
-                </span>
+                    </span>
+                @endif
             </div>
             <div class="col-xs-2 text-right">
                 @if (!$selectedDominion->protection_finished)
