@@ -80,18 +80,18 @@ class LogParserService
         $this->race = $dominion->race;
         $this->errors = [];
 
-        $actions = array_fill(0, 72, []);
+        $actions = array_fill(0, $dominion->protection_ticks + 1, []);
         $lines = explode(PHP_EOL, $log);
         foreach ($lines as $this->lineNumber => $line) {
             $lineValid = false;
 
             $isHour = preg_match('/Protection Hour: (\d+)/', $line, $hourMatches);
             if ($isHour) {
-                if ((int)$hourMatches[1] <= $this->currentHour) {
+                if ((int)$hourMatches[1] < $this->currentHour) {
                     $this->writeError("hour {$this->currentHour} duplicate or out of order");
                 } else {
                     $this->currentHour = (int)$hourMatches[1];
-                    if ($this->currentHour > 73) break;
+                    if ($this->currentHour > ($dominion->protection_ticks + 1)) break;
                 }
                 $lineValid = true;
             }
@@ -101,12 +101,17 @@ class LogParserService
                     $parseFunc = 'parse' . ucfirst($action);
                     $data = $this->$parseFunc($line);
                     if ($data) {
-                        $actions[$this->currentHour-1][] = [
+                        $actions[$this->currentHour][] = [
                             'line' => $this->lineNumber + 1,
                             'type' => $action,
                             'data' => $data,
                         ];
                         $lineValid = true;
+                        if ($this->currentHour == 0) {
+                            if (count($actions[0]) !== 1 || $actions[0][0]['type'] !== 'construction') {
+                                $this->errors[] = 'Hour 0 should contain only a single line of construction';
+                            }
+                        }
                     }
                 }
                 if (!$lineValid) {
@@ -115,8 +120,8 @@ class LogParserService
             }
         }
 
-        if ($this->currentHour < 73) {
-            foreach (range($this->currentHour, 72) as $key) {
+        if ($this->currentHour < ($dominion->protection_ticks + 1)) {
+            foreach (range($this->currentHour + 1, $dominion->protection_ticks) as $key) {
                 unset($actions[$key]);
             }
         }
@@ -152,7 +157,7 @@ class LogParserService
 
     protected function parseConstruction(string $line)
     {
-        if (preg_match('/Construction of ([\w\s,-]*) started at a cost of/', $line, $matches)) {
+        if (preg_match('/Construction of ([\w\s,-]*) started/', $line, $matches)) {
             if (preg_match_all('/(-*\d+)\s([\w\s]+)/', $matches[1], $constructMatches)) {
                 $constructData = [];
                 foreach ($constructMatches[1] as $idx => $amount) {
@@ -334,12 +339,12 @@ class LogParserService
     }
 
     public function writeLog(Dominion $dominion) {
-        if ($dominion->protection_ticks_remaining == 0 && $dominion->round->hasStarted()) {
+        if ($dominion->protection_finished && $dominion->round->hasStarted()) {
             return [];
         }
 
-        $log = ['====== Protection Hour: 1 ======'];
-        $protectionHour = 1;
+        $log = ['====== Protection Hour: 0 ======'];
+        $protectionHour = 0;
         $events = $dominion->history();
 
         // Ignore everything prior to latest restart
@@ -354,7 +359,7 @@ class LogParserService
         foreach ($events->orderBy('created_at')->get() as $history) {
             if ($history->event == 'tick') {
                 $protectionHour++;
-                if ($protectionHour > 73) {
+                if ($protectionHour > $dominion->protection_ticks) {
                     break;
                 }
             }
@@ -388,6 +393,20 @@ class LogParserService
                     '%s have been traded for %s.',
                     dominion_attr_sentence_from_array($negative, true),
                     dominion_attr_sentence_from_array($positive, true)
+                );
+
+            case 'select buildings':
+                $buildings = array_map(
+                    function ($value) {
+                        return abs($value);
+                    },
+                    array_filter($history->delta, function ($key) {
+                        return Str::startsWith($key, 'building_');
+                    }, ARRAY_FILTER_USE_KEY)
+                );
+                return sprintf(
+                    'Construction of %s started.',
+                    dominion_attr_sentence_from_array($buildings, true),
                 );
 
             case 'construct':

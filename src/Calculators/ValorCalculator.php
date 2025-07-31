@@ -41,7 +41,7 @@ class ValorCalculator
 
         $dominions = $round->activeDominions()
             ->human()
-            ->where('protection_ticks_remaining', 0)
+            ->where('protection_finished', true)
             ->get();
         $fixedValor = $this->calculateFixedValor($round, $dominions);
         $bonusValor = $this->calculateBonusValor($round, $dominions);

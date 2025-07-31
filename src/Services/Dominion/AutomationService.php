@@ -4,7 +4,10 @@ namespace OpenDominion\Services\Dominion;
 
 use DB;
 use Illuminate\Support\Arr;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
@@ -90,22 +93,46 @@ class AutomationService
     public function processLog(Dominion $dominion, array $protection)
     {
         try {
-            $currentHour = 72 - $dominion->protection_ticks_remaining;
+            $currentHour = $dominion->protection_ticks - $dominion->protection_ticks_remaining + 1;
 
             foreach ($protection as $hour => $actions) {
+                // Skip hours that have already been completed
                 if ($hour >= $currentHour) {
+                    if ($hour == 0) {
+                        $this->lastAction = $actions[0];
+                        $this->lastHour = 0;
+                        DB::transaction(function () use ($dominion, $actions) {
+                            $dominion->protection_ticks_remaining -= 1;
+                            $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
+                            $this->processStartingBuildings($dominion, $actions[0]['data']);
+                        });
+                        continue;
+                    }
+                    if ($dominion->protection_type == 'quick_start' && !(in_array($dominion->protection_ticks_remaining, [36, 24]) || $dominion->protection_ticks_remaining <= 12)) {
+                        // Don't process 'skipped' ticks for Quick Start
+                        continue;
+                    }
                     DB::transaction(function () use ($dominion, $hour, $actions) {
                         foreach ($actions as $action) {
                             $this->lastAction = $action;
-                            $this->lastHour = $hour + 1;
+                            $this->lastHour = $hour;
                             $processFunc = 'process' . ucfirst($action['type']);
                             $this->$processFunc($dominion, $action['data']);
                             $dominion->refresh();
                         }
-                        if ($hour < 72) {
+                        if ($hour < ($dominion->protection_ticks + 1)) {
                             // TODO: De-deplicate from MiscController
                             $dominion->protection_ticks_remaining -= 1;
-                            if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
+                            if ($dominion->protection_ticks_remaining == 0) {
+                                if ($dominion->created_at < $dominion->round->start_date) {
+                                    // Automatically confirm protection finished
+                                    $dominion->protection_finished = true;
+                                }
+                            }
+                            if ($dominion->protection_ticks_remaining == 0 ||
+                                ($dominion->protection_ticks_remaining == 24 && $dominion->protection_type !== 'quick')
+                            ) {
+                                // Daily bonuses don't reset during Quick Start
                                 if ($dominion->daily_land || $dominion->daily_platinum) {
                                     // Record reset bonuses
                                     $bonusDelta = [];
@@ -130,6 +157,38 @@ class AutomationService
         } catch (GameException $e) {
             throw new GameException("Error processing hour {$this->lastHour} line {$this->lastAction['line']} - " . $e->getMessage());
         }
+    }
+
+    public function processStartingBuildings(Dominion $dominion, array $data)
+    {
+        $landCalculator = app(LandCalculator::class);
+        $totalLand = $landCalculator->getTotalLand($dominion);
+
+        $totalBuildings = array_sum($data);
+        if ($totalBuildings !== $totalLand) {
+            throw new GameException('Invalid building count.');
+        }
+
+        $landHelper = app(LandHelper::class);
+        $landTypes = $landHelper->getLandTypes();
+        $buildingLandTypes = $landHelper->getLandTypesByBuildingType($dominion->race);
+
+        // Reset land types
+        foreach ($landTypes as $landType) {
+            $dominion->{"land_$landType"} = 0;
+        }
+
+        // Add buildings and the appropriate land type
+        foreach ($data as $buildingType => $amount) {
+            $landType = $buildingLandTypes[str_replace('building_', '', $buildingType)];
+            $dominion->{$buildingType} = $amount;
+            $dominion->{"land_{$landType}"} += $amount;
+        }
+
+        $populationCalculator = app(PopulationCalculator::class);
+        $dominion->peasants = $populationCalculator->getMaxPeasantPopulation($dominion);
+
+        $dominion->save(['event' => HistoryService::EVENT_TICK]);
     }
 
     protected function processBank(Dominion $dominion, array $data)
@@ -207,7 +266,7 @@ class AutomationService
             throw new GameException('You cannot schedule actions for current or past ticks.');
         }
 
-        if ($dominion->protection_ticks_remaining > 0) {
+        if (!$dominion->protection_finished) {
             throw new GameException('You cannot schedule actions while under protection.');
         }
 

@@ -106,4 +106,21 @@ class BuildingHelper
 
         return $helpStrings[$buildingType] ?: null;
     }
+
+    public function getDefaultBuildings(bool $quickStart = true): array
+    {
+        if ($quickStart) {
+            return [
+                'farm' => 30,
+                'lumberyard' => 20,
+                'smithy' => 100,
+                'tower' => 20,
+            ];
+        }
+
+        return [
+            'farm' => 30,
+            'lumberyard' => 20,
+        ];
+    }
 }

@@ -99,6 +99,7 @@ class RoundController extends AbstractController
             'pack_name' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_password' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
+            'protection_type' => 'in:advanced,quick',
         ]);
 
         /** @var Realm $realm */
@@ -169,6 +170,7 @@ class RoundController extends AbstractController
                     $race,
                     ($request->get('ruler_name') ?: $user->display_name),
                     $dominionName,
+                    ($request->get('protection_type') ?: 'quick'),
                     $pack
                 );
 

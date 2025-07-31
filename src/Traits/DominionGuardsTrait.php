@@ -14,10 +14,14 @@ trait DominionGuardsTrait
      * @param Dominion $dominion
      * @throws RuntimeException
      */
-    public function guardLockedDominion(Dominion $dominion): void
+    public function guardLockedDominion(Dominion $dominion, bool $ignoreBuildPhase = false): void
     {
         if ($dominion->isLocked()) {
             throw new GameException("Dominion {$dominion->name} is locked");
+        }
+
+        if ($dominion->isBuildingPhase() && !$ignoreBuildPhase) {
+            throw new GameException('You have not confirmed your starting buildings');
         }
 
         // Reassign active doms from Graveyard
@@ -40,7 +44,7 @@ trait DominionGuardsTrait
      */
     public function guardActionsDuringTick(Dominion $dominion, int $seconds = 3): void
     {
-        if ($dominion->protection_ticks_remaining == 0) {
+        if ($dominion->protection_finished) {
             $requestTimestamp = request()->server('REQUEST_TIME');
             if ($requestTimestamp !== null) {
                 $requestTime = Carbon::createFromTimestamp($requestTimestamp);

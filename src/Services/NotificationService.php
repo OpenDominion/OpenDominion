@@ -69,7 +69,7 @@ class NotificationService
                 $dominion->notify(new WebNotification($category, $type, $data));
             }
 
-            if ($dominion->protection_ticks_remaining && $type !== 'realm_assignment') {
+            if (!$dominion->protection_finished && $type !== 'realm_assignment') {
                 // Disable email notfications during protection
                 continue;
             }

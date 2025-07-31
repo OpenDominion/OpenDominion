@@ -39,13 +39,10 @@
                                 <div class="text-center">
                                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Good Aligned Races</h4>
                                 </div>
-                                @php($i = 0)
-                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'good'; }) as $race)
-                                    @if ($i % 2 == 0)
-                                        <div class="row">
-                                    @endif
+                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'good'; })->chunk(2) as $raceRow)
+                                    <div class="row">
+                                        @foreach ($raceRow as $race)
                                             <div class="col-md-6">
-
                                                 <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
                                                     <div class="row">
                                                         <div class="col-lg-12">
@@ -87,10 +84,8 @@
                                                     </div>
                                                 </label>
                                             </div>
-                                    @if ($i % 2)
-                                        </div>
-                                    @endif
-                                    @php($i++)
+                                        @endforeach
+                                    </div>
                                 @endforeach
                             </div>
                         </div>
@@ -100,12 +95,10 @@
                                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Evil Aligned Races</h4>
                                 </div>
                                 @php($i = 0)
-                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; }) as $race)
-                                    @if ($i % 2 == 0)
-                                        <div class="row">
-                                    @endif
+                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; })->chunk(2) as $raceRow)
+                                    <div class="row">
+                                        @foreach ($raceRow as $race)
                                             <div class="col-md-6">
-
                                                 <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
                                                     <div class="row">
                                                         <div class="col-lg-12">
@@ -147,22 +140,34 @@
                                                     </div>
                                                 </label>
                                             </div>
-                                            @if ($i % 2)
-                                        </div>
-                                    @endif
-                                    @php($i++)
+                                        @endforeach
+                                    </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Protection -->
+                <div class="form-group">
+                    <label for="protection_type" class="col-sm-3 control-label">Protection</label>
+                    <div class="col-sm-9">
+                        <select name="protection_type" id="protection_type" class="form-control" required>
+                            <option value="quick" {{ (old('realm_type') === 'quick') ? 'selected' : null }}>Quick Start (recommended)</option>
+                            <option value="advanced" {{ (old('realm_type') === 'advanced') ? 'selected' : null }}>Advanced Simulation</option>
+                        </select>
+                        <p class="help-block">
+                            <span class="text-muted">You can change your selection after registration.</span>
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Realm -->
                 <div class="form-group">
-                    <label for="realm" class="col-sm-3 control-label">Realm</label>
+                    <label for="realm_type" class="col-sm-3 control-label">Realm</label>
                     <div class="col-sm-9">
                         <select name="realm_type" id="realm_type" class="form-control" required>
-                            <option value="random" {{ (old('realm_type') === 'random') ? 'selected' : null }}>Put me in a random realm</option>
+                            <option value="random" {{ (old('realm_type') === 'random') ? 'selected' : null }}>Put me in a random realm (recommended)</option>
                             @if ($round->packRegistrationOpen())
                                 <option value="join_pack" {{ (old('realm_type') === 'join_pack') ? 'selected' : null }}>Join an existing pack</option>
                                 <option value="create_pack" {{ (old('realm_type') === 'create_pack') ? 'selected' : null }}>Create a new pack</option>
@@ -170,9 +175,9 @@
                         </select>
                         <p class="help-block">
                             @if ($round->packRegistrationOpen())
-                                <span class="text-danger">If you choose to join/create a pack, you will not be able to change your selection after registration.</span>
+                                <span class="text-muted">You can join a pack after registration, but you cannot leave a pack.</span>
                             @else
-                                <span class="text-danger">Pack registration is currently closed.</span>
+                                <span class="text-muted">Pack registration is currently closed.</span>
                             @endif
                         </p>
                     </div>
