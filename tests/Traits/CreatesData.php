@@ -215,7 +215,7 @@ trait CreatesData
             $homeland = $race->home_land_type;
             $homelandAttr = "land_{$homeland}";
         } else {
-            $homelandAttr = "land_plain";
+            $homelandAttr = 'land_plain';
         }
         $dominion->update([$homelandAttr => $dominion->{$homelandAttr} + 10]);
 
