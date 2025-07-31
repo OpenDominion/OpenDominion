@@ -11,6 +11,7 @@ use OpenDominion\Models\HeroUpgrade;
 
 class HeroCalculator
 {
+    const LEGACY_RETENTION_PERCENTAGE = 0.25; // 25% of original bonus retained
     /** @var HeroHelper */
     protected $heroHelper;
 
@@ -79,13 +80,28 @@ class HeroCalculator
             return 0;
         }
 
+        $bonus = 0;
+
+        // Current hero bonus
         $heroPerk = $this->heroHelper->getPassivePerkType($dominion->hero->class);
-        if ($heroPerk !== $perkType) {
-            return 0;
+        if ($heroPerk === $perkType) {
+            $currentBonus = $this->getPassiveBonus($dominion->hero, $perkType) / 100;
+            $currentBonus *= $this->getPassiveBonusMultiplier($dominion);
+            $bonus += $currentBonus;
         }
 
-        $bonus = $this->getPassiveBonus($dominion->hero, $perkType) / 100;
-        $bonus *= $this->getPassiveBonusMultiplier($dominion);
+        // Legacy bonuses
+        if ($dominion->hero->legacy) {
+            foreach ($dominion->hero->legacy as $legacyHero) {
+                if (isset($legacyHero['perkType']) && $legacyHero['perkType'] === $perkType) {
+                    $retentionRate = $legacyHero['retentionRate'] ?? self::LEGACY_RETENTION_PERCENTAGE;
+                    $legacyBonus = $this->calculatePassiveBonus($perkType, $legacyHero['level']) * $retentionRate;
+                    $legacyBonus = $legacyBonus / 100;
+                    $legacyBonus *= $this->getPassiveBonusMultiplier($dominion);
+                    $bonus += $legacyBonus;
+                }
+            }
+        }
 
         return $bonus;
     }

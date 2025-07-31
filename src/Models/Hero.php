@@ -25,6 +25,10 @@ use OpenDominion\Services\NotificationService;
 class Hero extends AbstractModel
 {
     protected $dates = ['created_at', 'updated_at'];
+    
+    protected $casts = [
+        'legacy' => 'array',
+    ];
 
     public function dominion()
     {

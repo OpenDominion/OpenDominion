@@ -109,6 +109,14 @@
                                     <div class="text-center">
                                         {{ $heroCalculator->getPassiveDescription($hero) }}
                                     </div>
+                                    @if ($hero->legacy && count($hero->legacy) > 0)
+                                        <div class="text-center text-muted" style="font-size: 12px; margin-top: 5px;">
+                                            <strong>Legacy Bonuses:</strong><br>
+                                            @foreach ($hero->legacy as $legacyHero)
+                                                {{ $legacyHero['name'] }} ({{ $heroHelper->getClassDisplayName($legacyHero['class']) }} L{{ $legacyHero['level'] }})<br>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                     @if ($heroCalculator->getPassiveBonusMultiplier($selectedDominion) > 1)
                                         <div class="text-center">
                                             {{ number_format($heroCalculator->getHeroPerkMultiplier($selectedDominion, $perkType) * 100, 2) }}%

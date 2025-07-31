@@ -199,6 +199,25 @@ class HeroActionService
         }
 
         DB::transaction(function () use ($dominion, $name, $selectedClass) {
+            // Store legacy hero information
+            $currentHero = $dominion->hero;
+            $currentHeroClass = $this->heroHelper->getClasses()->keyBy('key')[$currentHero->class];
+            $currentLevel = $this->heroCalculator->getHeroLevel($currentHero);
+            
+            $legacyData = [
+                'name' => $currentHero->name,
+                'class' => $currentHero->class,
+                'level' => $currentLevel,
+                'perkType' => $currentHeroClass['perk_type'] ?? null,
+                'retentionRate' => $this->heroCalculator::LEGACY_RETENTION_PERCENTAGE
+            ];
+            
+            // Get existing legacy data or initialize empty array
+            $existingLegacy = $currentHero->legacy ?? [];
+            
+            // Add new legacy entry
+            $existingLegacy[] = $legacyData;
+
             HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();
 
             // Starting XP
@@ -224,7 +243,8 @@ class HeroActionService
             $dominion->hero()->update([
                 'name' => $name,
                 'class' => $selectedClass['key'],
-                'experience' => $xp
+                'experience' => $xp,
+                'legacy' => $existingLegacy
             ]);
 
             $dominion->save([
