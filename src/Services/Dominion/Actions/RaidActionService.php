@@ -331,7 +331,6 @@ class RaidActionService
         return $costs;
     }
 
-
     /**
      * Handles the returning boats.
      *

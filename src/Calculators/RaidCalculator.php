@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Calculators;
 
+use Illuminate\Support\Collection;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
-use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\RaidContribution;
@@ -334,7 +334,7 @@ class RaidCalculator
         if (self::COMPLETION_REWARD_SCALING) {
             // Percentage-based: Scale reward by completion percentage
             $rewardAmount = (int) ($completionData['completion_percentage'] * $raid->completion_reward_amount);
-            
+
             if ($completionData['completion_percentage'] >= 1.0) {
                 $bonusesApplied[] = 'full_completion';
             } elseif ($completionData['completion_percentage'] > 0) {
@@ -372,7 +372,7 @@ class RaidCalculator
     protected function getRaidContributionData(Raid $raid): array
     {
         $objectiveIds = $raid->objectives->pluck('id');
-        
+
         // Single query to get all contribution data
         $contributions = RaidContribution::whereIn('raid_objective_id', $objectiveIds)
             ->selectRaw('dominion_id, realm_id, raid_objective_id, SUM(score) as total_score')
@@ -397,13 +397,13 @@ class RaidCalculator
             $data['total'] += $score;
             $data['by_dominion'][$dominionId] = ($data['by_dominion'][$dominionId] ?? 0) + $score;
             $data['by_realm'][$realmId] = ($data['by_realm'][$realmId] ?? 0) + $score;
-            
+
             // Track realm scores per objective for completion calculations
             if (!isset($data['by_realm_objective'][$realmId])) {
                 $data['by_realm_objective'][$realmId] = [];
             }
             $data['by_realm_objective'][$realmId][$objectiveId] = ($data['by_realm_objective'][$realmId][$objectiveId] ?? 0) + $score;
-            
+
             // Map dominion to realm for efficient lookups
             $data['dominion_realm_map'][$dominionId] = $realmId;
         }
@@ -484,25 +484,25 @@ class RaidCalculator
         $totalPool = $raid->reward_amount;
         $totalContributions = $contributionData['total'];
         $realmContributions = $contributionData['by_realm'];
-        
+
         if ($totalContributions == 0 || empty($realmContributions)) {
             return [];
         }
-        
+
         $realmPools = [];
         $allocatedAmount = 0;
         $maxRealmAmount = $totalPool * self::MAX_REALM_REWARD_RATIO;
-        
+
         // Step 1: Allocate based on contribution percentage (capped at 10%)
         foreach ($realmContributions as $realmId => $realmContribution) {
             $contributionPercentage = $realmContribution / $totalContributions;
             $proportionalAmount = $contributionPercentage * $totalPool;
             $cappedAmount = min($proportionalAmount, $maxRealmAmount);
-            
+
             $realmPools[$realmId] = $cappedAmount;
             $allocatedAmount += $cappedAmount;
         }
-        
+
         // Step 2: Distribute remaining pool equally among all realms
         $remainingPool = $totalPool - $allocatedAmount;
         if ($remainingPool > 0 && count($realmPools) > 0) {
@@ -511,7 +511,7 @@ class RaidCalculator
                 $realmPools[$realmId] = $currentAmount + $equalShare;
             }
         }
-        
+
         return $realmPools;
     }
 
@@ -523,43 +523,43 @@ class RaidCalculator
     protected function calculatePlayerRewardAllocations(Raid $raid, array $contributionData, array $realmPools): array
     {
         $playerAllocations = [];
-        
+
         // Calculate total required score across all objectives
         $totalRequiredScore = $raid->objectives->sum('score_required');
         $maxPlayerAmount = $totalRequiredScore * self::MAX_PLAYER_REWARD_RATIO;
-        
+
         foreach ($realmPools as $realmId => $realmPool) {
             if ($realmPool <= 0) {
                 continue;
             }
-            
+
             // Get all players in this realm using the dominion_realm_map
             $realmPlayers = [];
             $realmTotalContributions = $contributionData['by_realm'][$realmId] ?? 0;
-            
+
             foreach ($contributionData['by_dominion'] as $dominionId => $dominionContribution) {
                 $dominionRealmId = $contributionData['dominion_realm_map'][$dominionId] ?? null;
                 if ($dominionRealmId == $realmId) {
                     $realmPlayers[$dominionId] = $dominionContribution;
                 }
             }
-            
+
             if (empty($realmPlayers) || $realmTotalContributions == 0) {
                 continue;
             }
-            
+
             $realmAllocatedAmount = 0;
-            
+
             // Step 1: Allocate based on contribution percentage within realm (capped at 10% of required score)
             foreach ($realmPlayers as $dominionId => $dominionContribution) {
                 $contributionPercentage = $dominionContribution / $realmTotalContributions;
                 $proportionalAmount = $contributionPercentage * $realmPool;
                 $cappedAmount = min($proportionalAmount, $maxPlayerAmount);
-                
+
                 $playerAllocations[$dominionId] = $cappedAmount;
                 $realmAllocatedAmount += $cappedAmount;
             }
-            
+
             // Step 2: Distribute remaining realm pool equally among realm players
             $remainingRealmPool = $realmPool - $realmAllocatedAmount;
             if ($remainingRealmPool > 0 && count($realmPlayers) > 0) {
@@ -569,8 +569,7 @@ class RaidCalculator
                 }
             }
         }
-        
+
         return $playerAllocations;
     }
-
 }
