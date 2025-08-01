@@ -39,7 +39,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->calculator = app(RaidCalculator::class);
-        
+
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
         $this->dominion = $this->createDominion($user, $this->round, Race::first());
@@ -164,7 +164,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         return [
             'no_contributions' => [0, false],
-            'insufficient_score' => [999, false], 
+            'insufficient_score' => [999, false],
             'exact_requirement' => [1000, true],
             'excess_score' => [1500, true],
         ];
@@ -346,7 +346,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $anotherRealm = $this->createRealm($this->round, 'Test Realm 2');
         $anotherDominion->realm_id = $anotherRealm->id;
         $anotherDominion->save();
-        
+
         $realmMate = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $this->dominion->realm);
 
         // Create contributions from both realms
@@ -381,16 +381,16 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $thisRealmScore = $this->calculator->getObjectiveScore($this->objective, $this->dominion->realm);
         $otherRealmScore = $this->calculator->getObjectiveScore($this->objective, $anotherDominion->realm);
         $globalScore = $this->calculator->getObjectiveScore($this->objective);
-        
+
         $this->assertEquals(500, $thisRealmScore); // 300 + 200
         $this->assertEquals(700, $otherRealmScore);
         $this->assertEquals(1200, $globalScore); // All realms combined
 
-        // Test 2: Progress calculations  
+        // Test 2: Progress calculations
         $thisRealmProgress = $this->calculator->getObjectiveProgress($this->objective, $this->dominion->realm);
         $otherRealmProgress = $this->calculator->getObjectiveProgress($this->objective, $anotherDominion->realm);
         $globalProgress = $this->calculator->getObjectiveProgress($this->objective);
-        
+
         $this->assertEquals(50.0, $thisRealmProgress); // 500/1000 = 50%
         $this->assertEquals(70.0, $otherRealmProgress); // 700/1000 = 70%
         $this->assertEquals(100.0, $globalProgress); // Combined exceeds 100%, capped
@@ -399,14 +399,14 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $thisRealmCompleted = $this->calculator->isObjectiveCompleted($this->objective, $this->dominion->realm);
         $otherRealmCompleted = $this->calculator->isObjectiveCompleted($this->objective, $anotherDominion->realm);
         $globalCompleted = $this->calculator->isObjectiveCompleted($this->objective);
-        
+
         $this->assertFalse($thisRealmCompleted); // 500 < 1000
-        $this->assertFalse($otherRealmCompleted); // 700 < 1000  
+        $this->assertFalse($otherRealmCompleted); // 700 < 1000
         $this->assertTrue($globalCompleted); // 1200 >= 1000
 
         // Test 4: Recent contributions filtering
         $realmContributions = $this->calculator->getRecentContributions($this->objective, $this->dominion->realm, 5);
-        
+
         $this->assertCount(2, $realmContributions);
         $this->assertEquals('test1', $realmContributions[0]['type']);
         $this->assertArrayNotHasKey('realm_name', $realmContributions[0]); // Realm-specific should not include realm name
@@ -427,10 +427,10 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $raid = $this->createCompletedRaid();
         $contributionData = ['total' => 0, 'by_dominion' => []];
         $realmBonusData = [];
-        
+
         // Act
         $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $contributionData, $realmBonusData);
-        
+
         // Assert
         $this->assertEquals(0, $reward['amount']);
         $this->assertEquals('platinum', $reward['resource']);
@@ -447,7 +447,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $reward = $this->calculator->calculateParticipationReward($raid, $this->dominion, $playerAllocations);
 
         // Assert
-        $this->assertEquals(2000, $reward['amount']); 
+        $this->assertEquals(2000, $reward['amount']);
         $this->assertEquals('platinum', $reward['resource']);
         $this->assertEmpty($reward['bonuses_applied']); // No bonuses in new system
     }
@@ -556,7 +556,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertCount(2, $allRewards);
-        
+
         $dominionReward = collect($allRewards)->firstWhere('dominion.id', $this->dominion->id);
         $this->assertNotNull($dominionReward);
         $this->assertGreaterThan(0, $dominionReward['participation_reward']['amount']);
@@ -591,17 +591,17 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Act
         $rewardWithMap = $this->calculator->calculateCompletionReward($raid, $this->dominion, $completionStatusMap);
-        
+
         // For comparison, create a fresh completion map
         $reflection = new \ReflectionClass($this->calculator);
         $contributionMethod = $reflection->getMethod('getRaidContributionData');
         $contributionMethod->setAccessible(true);
         $contributionData = $contributionMethod->invoke($this->calculator, $raid);
-        
+
         $completionMethod = $reflection->getMethod('calculateRealmCompletionData');
         $completionMethod->setAccessible(true);
         $freshCompletionData = $completionMethod->invoke($this->calculator, $raid, $contributionData);
-        
+
         $rewardWithoutMap = $this->calculator->calculateCompletionReward($raid, $this->dominion, $freshCompletionData);
 
         // Assert - Both should produce the same result
@@ -616,35 +616,35 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $raid = $this->createCompletedRaid();
         $raid->reward_amount = 10000; // Total pool
         $raid->save();
-        
+
         // Create dominions in different realms with correct alignment
         $realm1 = $this->dominion->realm;
         $realm2 = $this->createRealm($this->round, $this->dominion->race->alignment);
         $realm3 = $this->createRealm($this->round, $this->dominion->race->alignment);
-        
+
         $dominion2 = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $realm2);
         $dominion3 = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $realm3);
-        
+
         // Create contributions: Realm 1 = 6000, Realm 2 = 3000, Realm 3 = 1000 (total 10000)
         $this->createRaidContributions($raid, [
             ['dominion' => $this->dominion, 'score' => 6000],  // Realm 1: 60% contribution
-            ['dominion' => $dominion2, 'score' => 3000],       // Realm 2: 30% contribution  
+            ['dominion' => $dominion2, 'score' => 3000],       // Realm 2: 30% contribution
             ['dominion' => $dominion3, 'score' => 1000],       // Realm 3: 10% contribution
         ]);
-        
+
         // Act
         $rewardData = $this->calculator->calculateRaidRewards($raid);
-        
+
         // Assert realm distribution
         $realm1Reward = collect($rewardData)->firstWhere('dominion.id', $this->dominion->id)['participation_reward']['amount'];
         $realm2Reward = collect($rewardData)->firstWhere('dominion.id', $dominion2->id)['participation_reward']['amount'];
         $realm3Reward = collect($rewardData)->firstWhere('dominion.id', $dominion3->id)['participation_reward']['amount'];
-        
+
         // Each realm should get at least their capped contribution (max 10% = 1000) plus equal distribution
         $this->assertGreaterThanOrEqual(1000, $realm1Reward); // Realm 1 capped at 10%
         $this->assertGreaterThanOrEqual(1000, $realm2Reward); // Realm 2 capped at 10%
         $this->assertGreaterThanOrEqual(1000, $realm3Reward); // Realm 3 gets 10%
-        
+
         // Total should equal the reward pool (allow for small rounding differences)
         $totalDistributed = $realm1Reward + $realm2Reward + $realm3Reward;
         $this->assertEqualsWithDelta(10000, $totalDistributed, 1);
@@ -656,35 +656,35 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $raid = $this->createCompletedRaid();
         $raid->reward_amount = 10000;
         $raid->save();
-        
+
         $player2 = $this->createDominion($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
         $player3 = $this->createDominion($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
-        
+
         // Create contributions within same realm: Player 1 = 6000, Player 2 = 3000, Player 3 = 1000
         $this->createRaidContributions($raid, [
             ['dominion' => $this->dominion, 'score' => 6000],  // 60% of realm contribution
             ['dominion' => $player2, 'score' => 3000],         // 30% of realm contribution
             ['dominion' => $player3, 'score' => 1000],         // 10% of realm contribution
         ]);
-        
+
         // Act
         $rewardData = $this->calculator->calculateRaidRewards($raid);
-        
+
         // Assert player distribution within realm
         $player1Reward = collect($rewardData)->firstWhere('dominion.id', $this->dominion->id)['participation_reward']['amount'];
         $player2Reward = collect($rewardData)->firstWhere('dominion.id', $player2->id)['participation_reward']['amount'];
         $player3Reward = collect($rewardData)->firstWhere('dominion.id', $player3->id)['participation_reward']['amount'];
-        
+
         // Each player should get at least their capped contribution (max 10% of required score = 100) plus equal distribution
         $this->assertGreaterThanOrEqual(100, $player1Reward); // Player 1 capped at 10% of required score
         $this->assertGreaterThanOrEqual(100, $player2Reward); // Player 2 capped at 10% of required score
         $this->assertGreaterThanOrEqual(100, $player3Reward); // Player 3 gets proportional share
-        
+
         // In the new system with equal distribution of leftovers, differences may be smaller
         // Player 1 should get at least as much as others due to higher contribution
         $this->assertGreaterThanOrEqual($player2Reward, $player1Reward);
         $this->assertGreaterThanOrEqual($player3Reward, $player2Reward);
-        
+
         // Total should equal the reward pool (allow for small rounding differences)
         $totalDistributed = $player1Reward + $player2Reward + $player3Reward;
         $this->assertEqualsWithDelta(10000, $totalDistributed, 1);
@@ -714,7 +714,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $contributionMethod = $reflection->getMethod('getRaidContributionData');
         $contributionMethod->setAccessible(true);
         $contributionData = $contributionMethod->invoke($this->calculator, $raid);
-        
+
         $method = $reflection->getMethod('calculateRealmCompletionData');
         $method->setAccessible(true);
         $completionMap = $method->invoke($this->calculator, $raid, $contributionData);
@@ -732,7 +732,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         // Arrange - Test the scaling logic behavior with different completion data
         $raid = $this->createCompletedRaid();
-        
+
         // Test 60% completion (3 out of 5 objectives)
         $completionData = [
             $this->dominion->realm_id => [
@@ -743,12 +743,12 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Since COMPLETION_REWARD_SCALING is now true, we expect percentage scaling
         $reward = $this->calculator->calculateCompletionReward($raid, $this->dominion, $completionData);
-        
+
         // Assert percentage behavior (60% of 1000 = 600)
         $this->assertEquals(600, $reward['amount']);
         $this->assertEquals('gems', $reward['resource']);
         $this->assertContains('partial_completion', $reward['bonuses_applied']);
-        
+
         // Test with full completion
         $fullCompletionData = [
             $this->dominion->realm_id => [
@@ -756,7 +756,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
                 'all_completed' => true,
             ]
         ];
-        
+
         $fullReward = $this->calculator->calculateCompletionReward($raid, $this->dominion, $fullCompletionData);
         $this->assertEquals(1000, $fullReward['amount']); // Full completion = full reward
         $this->assertContains('full_completion', $fullReward['bonuses_applied']);

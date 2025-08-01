@@ -35,7 +35,7 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->service = app(RaidService::class);
-        
+
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
         $this->dominion = $this->createDominion($user, $this->round, Race::first());
@@ -88,7 +88,7 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
         ]);
 
         $objective = $this->createObjective($raid, ['score_required' => 1000]);
-        
+
         $this->createContribution($objective, $this->dominion, 1000); // Complete the objective
 
         $initialPlatinum = $this->dominion->resource_platinum;
@@ -124,7 +124,7 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
         // Let's add a third dominion to ensure no one hits 25% threshold
         $thirdDominion = $this->createDominion($this->createUser(), $this->round, Race::first());
         $this->createContribution($objective, $this->dominion, 300); // 15% of 2000
-        $this->createContribution($objective, $otherDominion, 200); // 10% of 2000  
+        $this->createContribution($objective, $otherDominion, 200); // 10% of 2000
         $this->createContribution($objective, $thirdDominion, 1500); // 75% of 2000
 
         $initialPlatinum1 = $this->dominion->resource_platinum;
@@ -143,12 +143,11 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
         // In the new two-tier system, contributions are more evenly distributed
         // Dominion 1 (300) should still get more than Dominion 2 (200), but the difference is smaller due to equal distribution
         $this->assertGreaterThanOrEqual($platinum2Gained, $platinum1Gained);
-        
+
         // All should get completion rewards since realm completed the objective (2000 >= 2000)
         $this->assertGreaterThan(0, $this->dominion->resource_gems);
         $this->assertEquals($this->dominion->resource_gems, $otherDominion->resource_gems);
     }
-
 
     public function testDistributeRaidRewards_RecordsHistoryForRewardedDominions()
     {
@@ -175,7 +174,7 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
         $rewardHistory = $this->dominion->history()
             ->where('event', HistoryService::EVENT_ACTION_RAID_REWARD)
             ->first();
-        
+
         $this->assertNotNull($rewardHistory);
     }
 

@@ -40,7 +40,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->raidActionService = app(RaidActionService::class);
-        
+
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
         $this->dominion = $this->createDominion($user, $this->round, Race::first());
@@ -105,12 +105,12 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $this->raid = null;
         $this->objective = null;
         $this->round = null;
-        
+
         // Force garbage collection to help with memory usage
         if (function_exists('gc_collect_cycles')) {
             gc_collect_cycles();
         }
-        
+
         parent::tearDown();
     }
 
@@ -166,7 +166,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         // Act & Assert
         $this->expectException(GameException::class);
         $this->expectExceptionMessage('You do not have enough platinum');
-        
+
         $this->raidActionService->performAction($this->dominion, $tactic, $data);
     }
 
@@ -204,15 +204,15 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $opsCalculator = app(OpsCalculator::class);
-        
+
         // Act
         $multiplier = $opsCalculator->getEspionageScoreMultiplier($this->dominion);
-        
+
         // Assert
-        // Formula: 1.5 * min(1, spy_ratio) * land_size  
+        // Formula: 1.5 * min(1, spy_ratio) * land_size
         // Current setup gives multiplier of 37.5
         $this->assertEqualsWithDelta(37.5, $multiplier, 0.01);
-        
+
         // Verify the calculation matches our expected score
         $basePoints = 100;
         $expectedScore = $basePoints * $multiplier;
@@ -223,16 +223,16 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $opsCalculator = app(OpsCalculator::class);
-        
+
         // Act
         $multiplier = $opsCalculator->getMagicScoreMultiplier($this->dominion);
-        
+
         // Assert
         // Formula: 1.5 * min(1, wizard_ratio) * land_size
         // Current setup gives 75.0, which means wizard_ratio = 1.0
         // multiplier = 1.5 * 1.0 * 50 = 75.0
         $this->assertEqualsWithDelta(75.0, $multiplier, 0.01);
-        
+
         // Verify the calculation matches our expected score
         $basePoints = 300;
         $expectedScore = $basePoints * $multiplier;
@@ -384,7 +384,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         // Act & Assert
         $this->expectException(GameException::class);
         $this->expectExceptionMessage('You do not have enough spy strength');
-        
+
         $this->raidActionService->performAction($this->dominion, $tactic, $data);
     }
 
@@ -507,7 +507,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         // Act & Assert
         $this->expectException(GameException::class);
         $this->expectExceptionMessage('You must have a hero to perform this action');
-        
+
         $this->raidActionService->performAction($this->dominion, $tactic, $data);
     }
 
@@ -537,7 +537,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->dominion->refresh();
-        
+
         // Verify contribution was recorded with damage-based score
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
         $this->assertNotNull($contribution);
@@ -553,13 +553,13 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         // Arrange
         $this->expectException(\ErrorException::class);
         $this->expectExceptionMessage('Trying to access array offset on value of type null');
-        
+
         // Create a tactic with invalid attributes
         $invalidTactic = new RaidObjectiveTactic();
         $invalidTactic->type = 'magic';
         $invalidTactic->attributes = null; // This will cause issues when accessed
         $invalidTactic->objective = $this->objective;
-        
+
         $this->raidActionService->performAction($this->dominion, $invalidTactic, []);
     }
 
@@ -584,7 +584,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         // Act & Assert
         $this->expectException(GameException::class);
         $this->expectExceptionMessage('This raid objective is not currently active');
-        
+
         $this->raidActionService->performAction($this->dominion, $tactic, $data);
     }
 
@@ -630,7 +630,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertCount(2, $contributions);
         $this->assertEquals(300, $contributions->where('score', 300)->first()->score);
         $this->assertEquals(200, $contributions->where('score', 200)->first()->score);
-        
+
         // Clear local references to help with memory cleanup
         $tactic1 = null;
         $tactic2 = null;
