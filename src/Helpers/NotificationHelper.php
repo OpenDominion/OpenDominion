@@ -195,6 +195,12 @@ class NotificationHelper
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'ra ra-fairy-wand text-green',
             ],
+            'raid_rewards' => [
+                'label' => 'Raid rewards received',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.raids'),
+                'iconClass' => 'ra ra-castle-flag text-green',
+            ],
 //            'scripted' => [
 //                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
 //                'defaults' => ['email' => false, 'ingame' => true],
@@ -749,6 +755,26 @@ class NotificationHelper
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $data['spellName']
+                );
+
+            case 'irregular_dominion.raid_rewards':
+                $participationAmount = $data['participation_amount'];
+                $completionAmount = $data['completion_amount'];
+                $participationResource = $data['participation_resource'];
+                $completionResource = $data['completion_resource'];
+                $raidName = $data['raid_name'] ?? 'a raid';
+
+                $participationString = "You earned {$participationAmount} {$participationResource}";
+                $completionString = '.';
+                if ($completionAmount > 0) {
+                    $completionString = " and {$completionAmount} {$completionResource}.";
+                }
+
+                return sprintf(
+                    'Our realm has completed %s. %s%s',
+                    $raidName,
+                    $participationString,
+                    $completionString,
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':

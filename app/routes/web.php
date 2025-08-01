@@ -158,6 +158,12 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('heroes/tournaments/{tournament}/join')->uses('Dominion\HeroController@getJoinTournament')->name('heroes.tournaments.join');
             $router->get('heroes/tournaments/{tournament}/leave')->uses('Dominion\HeroController@getLeaveTournament')->name('heroes.tournaments.leave');
 
+            // Raids
+            $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');
+            $router->get('raids/objective/{objective}')->uses('Dominion\RaidController@getRaidObjective')->name('raids.objective');
+            $router->get('raids/objective/{objective}/leaderboard')->uses('Dominion\RaidController@getRaidLeaderboard')->name('raids.leaderboard');
+            $router->post('raids/tactic/{tactic}')->uses('Dominion\RaidController@postRaidTactic')->name('raids.tactic');
+
             // Wonders
             $router->get('wonders')->uses('Dominion\WonderController@getWonders')->name('wonders');
             $router->post('wonders')->uses('Dominion\WonderController@postWonders');

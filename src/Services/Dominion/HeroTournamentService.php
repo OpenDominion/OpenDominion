@@ -35,7 +35,7 @@ class HeroTournamentService
             'round_id' => $round->id,
             'name' => $name,
             'start_date' => $startDate,
-            'current_round_number' => 1,
+            'current_round_number' => 0,
         ]);
 
         return $tournament;
@@ -88,8 +88,8 @@ class HeroTournamentService
         $this->processEliminations($tournament);
         $finished = $this->checkTournamentEnded($tournament);
         if (!$finished) {
-            $this->handleMatchups($tournament);
             $tournament->increment('current_round_number');
+            $this->handleMatchups($tournament);
         }
     }
 
