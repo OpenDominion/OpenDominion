@@ -34,12 +34,12 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound('last week');
 
-        $this->dominion = $this->createDominion($user, $this->round, Race::where('name', 'Merfolk')->firstOrFail());
+        $this->dominion = $this->createDominionWithLegacyStats($user, $this->round, Race::where('name', 'Merfolk')->firstOrFail());
         $this->dominion->protection_ticks_remaining = 0;
         $this->dominion->land_plain = 2850;
 
         $targetUser = $this->createUser();
-        $this->target = $this->createDominion($targetUser, $this->round, Race::where('name', 'Lycanthrope')->firstOrFail());
+        $this->target = $this->createDominionWithLegacyStats($targetUser, $this->round, Race::where('name', 'Lycanthrope')->firstOrFail());
         $this->target->protection_ticks_remaining = 0;
         $this->target->land_plain = 2850;
 

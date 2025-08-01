@@ -46,9 +46,6 @@ class SelectorService
             throw new RuntimeException('User cannot select someone else\'s Dominion');
         }
 
-        // todo: fire laravel event
-//        event(new Dominion\SelectedEvent($user, $dominion));
-
         session([self::SESSION_NAME => $dominion->id]);
     }
 

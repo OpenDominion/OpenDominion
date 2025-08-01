@@ -19,7 +19,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
 
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
-        $this->dominion = $this->createAndSelectDominion($user, $round);
+        $this->dominion = $this->createAndSelectDominionWithLegacyStats($user, $round);
     }
 
     /**

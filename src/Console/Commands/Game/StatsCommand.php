@@ -40,7 +40,7 @@ class StatsCommand extends Command implements CommandInterface
                 ->where([
                     'round_id' => $round->id,
                     'locked_at' => null,
-                    'protection_ticks_remaining' => 0
+                    'protection_finished' => true
                 ])
                 ->get();
 

@@ -18,24 +18,12 @@
 
         <div class="col-sm-12 col-md-3">
             @if ($protectionService->isUnderProtection($selectedDominion))
-                <div class="box box-success">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-forward"></i> Automate</h3>
-                    </div>
-                    <div class="box-body">
-                        <p>New to the game or just want to get straight to the action?</p>
-                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Quick Start Build</a></p>
-                        @if (!$selectedDominion->round->hasStarted())
-                            <p>Already have a log from the <a href="https://github.com/Yami-10/OD-Simulator" target="_blank">Excel Simulator</a>?</p>
-                            <p><a href="{{ route('dominion.protection.import-log') }}" class="btn btn-primary">Import Log</a></p>
-                        @endif
-                    </div>
-                </div>
                 <div class="box box-warning">
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="ra ra-shield text-aqua"></i> Under Protection</h3>
                     </div>
                     <div class="box-body">
+                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Restart or Rename</a></p>
                         <p>You are under a magical state of protection. During this time you cannot be attacked or attack other dominions. Nor can you cast any offensive spells or engage in espionage.</p>
                         @php
                             $hoursLeft = $protectionService->getUnderProtectionHoursLeft($selectedDominion);
@@ -44,8 +32,10 @@
                             <p>You will remain in protection until the start of the round ({{ $selectedDominion->round->start_date->format('l, jS \o\f F Y \a\t G:i') }}).</p>
                             <p>If you have not completed your protection prior to this time, you will be unable to leave for an additional 24 hours.</p>
                         @endif
-                        <p>No production occurs until you have left protection.</p>
-                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-warning">Restart or Rename</a></p>
+                        @if (!$selectedDominion->round->hasStarted())
+                            <p>Have a log from the <a href="https://github.com/Yami-10/OD-Simulator" target="_blank">Excel Simulator</a>?</p>
+                            <p><a href="{{ route('dominion.protection.import-log') }}" class="btn btn-primary">Import Log</a></p>
+                        @endif
                     </div>
                 </div>
             @else

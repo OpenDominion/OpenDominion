@@ -203,6 +203,7 @@ class HistoryService
                 'hourly_activity',
                 'locked_at',
                 'abandoned_at',
+                'protection_type',
                 'ai_enabled',
                 'ai_config',
                 'monarchy_vote_for_dominion_id',

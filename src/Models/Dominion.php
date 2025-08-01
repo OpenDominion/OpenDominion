@@ -102,7 +102,10 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property string|null $hourly_activity
  * @property \Illuminate\Support\Carbon|null $locked_at
  * @property \Illuminate\Support\Carbon|null $abandoned_at
+ * @property string|null $protection_type
+ * @property int $protection_ticks
  * @property int $protection_ticks_remaining
+ * @property bool $protection_finished
  * @property bool $ai_enabled
  * @property array|null $ai_config
  * @property int $monarchy_vote_for_dominion_id
@@ -210,7 +213,10 @@ class Dominion extends AbstractModel
         'hourly_activity' => 'string',
         'locked_at' => 'datetime',
         'abandoned_at' => 'datetime',
+        'protection_type' => 'string',
+        'protection_ticks' => 'integer',
         'protection_ticks_remaining' => 'integer',
+        'protection_finished' => 'boolean',
         'ai_enabled' => 'boolean',
         'ai_config' => 'array',
         'settings' => 'array',
@@ -625,6 +631,14 @@ class Dominion extends AbstractModel
     public function isActive(): bool
     {
         return $this->protection_ticks_remaining == 0;
+    }
+
+    /**
+     * Return a boolean whether or not the dominion is in their starting building phase of protection.
+     */
+    public function isBuildingPhase(): bool
+    {
+        return $this->protection_ticks_remaining > $this->protection_ticks;
     }
 
     /**

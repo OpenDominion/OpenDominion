@@ -33,7 +33,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
-        $this->dominion = $this->createDominion($user, $this->round);
+        $this->dominion = $this->createDominionWithLegacyStats($user, $this->round);
         $this->landCalculator = $this->app->make(LandCalculator::class);
         $this->rezoneActionService = $this->app->make(RezoneActionService::class);
     }

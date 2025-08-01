@@ -119,7 +119,7 @@ class TickService
         foreach ($activeRounds as $round) {
             // Reset Daily Bonuses
             if ($round->start_date->hour == now()->hour) {
-                $round->activeDominions()->where('protection_ticks_remaining', 0)->update([
+                $round->activeDominions()->where('protection_finished', true)->update([
                     'daily_platinum' => false,
                     'daily_land' => false,
                     'daily_actions' => AutomationService::DAILY_ACTIONS,
@@ -218,7 +218,7 @@ class TickService
         if ($dominion == null) {
             $where = [
                 ['round_id', '=', $round->id],
-                ['protection_ticks_remaining', '=', 0],
+                ['protection_finished', '=', true],
                 ['locked_at', '=', null]
             ];
         } else {
@@ -489,6 +489,12 @@ class TickService
         DB::transaction(function () use ($dominion, $actions, $revertTo) {
             // Update attributes
             foreach ($actions as $action) {
+                if (isset($action->delta['action']) && ($action->delta['action'] == 'starting_buildings')) {
+                    // Don't revert starting building choices
+                    $action->delete();
+                    continue;
+                }
+
                 foreach ($action->delta as $key => $value) {
                     if ($key == 'calculated_networth') {
                         continue;
@@ -667,7 +673,7 @@ class TickService
                 $inactiveDominions = $round->dominions()
                     ->join('users', 'dominions.user_id', '=', 'users.id')
                     ->where('realms.number', '>', 0)
-                    ->where('dominions.protection_ticks_remaining', '>', 0)
+                    ->where('dominions.protection_finished', false)
                     ->where('dominions.created_at', '<', now()->subDays(3))
                     ->where('users.last_online', '<', now()->subDays(3))
                     ->toBase()->update([

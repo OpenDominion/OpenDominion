@@ -287,6 +287,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Protection
             // todo: move pack/restart/rename/tick
+            $router->get('protection/buildings')->uses('Dominion\ProtectionController@getBuildings')->name('protection.buildings');
+            $router->post('protection/buildings')->uses('Dominion\ProtectionController@postBuildings');
             $router->get('protection/import-log')->uses('Dominion\ProtectionController@getImportLog')->name('protection.import-log');
             $router->post('protection/import-log')->uses('Dominion\ProtectionController@postImportLog');
             $router->post('automation/protection')->uses('Dominion\ProtectionController@postAutomateProtection')->name('protection.automate');

@@ -7,7 +7,6 @@ use OpenDominion\Models\Dominion;
 
 class ProtectionService
 {
-    public const PROTECTION_DURATION_IN_HOURS = 72; // todo: move to config?
     public const WAIT_PERIOD_DURATION_IN_HOURS = 24;
 
     /**
@@ -35,7 +34,7 @@ class ProtectionService
      */
     public function isUnderProtection(Dominion $dominion): bool
     {
-        return ($dominion->protection_ticks_remaining > 0) || ($dominion->round->start_date >= now());
+        return !$dominion->protection_finished || ($dominion->round->start_date >= now());
     }
 
     /**

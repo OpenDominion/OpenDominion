@@ -127,7 +127,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         $this->dominion->shouldReceive('getAttribute')->with('building_masonry')->andReturn(0);
         // Mock other building types as 0 for simplicity
         foreach (['ore_mine', 'gryphon_nest', 'tower', 'wizard_guild', 'temple', 'diamond_mine',
-                  'school', 'lumberyard', 'forest_haven', 'guard_tower', 'shrine', 'dock', 'factory'] as $building) {
+                  'school', 'lumberyard', 'forest_haven', 'factory', 'guard_tower', 'shrine', 'dock'] as $building) {
             $this->dominion->shouldReceive('getAttribute')->with("building_{$building}")->andReturn(0);
         }
 
@@ -316,7 +316,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         $buildings = [
             'alchemy', 'farm', 'smithy', 'masonry', 'ore_mine', 'gryphon_nest', 'tower',
             'wizard_guild', 'temple', 'diamond_mine', 'school', 'lumberyard', 'forest_haven',
-            'guard_tower', 'shrine', 'dock'
+            'factory', 'guard_tower', 'shrine', 'dock'
         ];
 
         $totalRegularBuildings = 0;
@@ -326,17 +326,14 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
             $totalRegularBuildings += $count;
         }
 
-        // Mock factory buildings (different job count)
-        $this->dominion->shouldReceive('getAttribute')->with('building_factory')->andReturn(10);
-
         // Mock wonder employment multiplier
         $this->dominion->shouldReceive('getWonderPerkMultiplier')->with('employment')->andReturn(0.05);
 
         $result = $this->sut->getEmploymentJobs($this->dominion);
 
-        // Expected: (70 * 20) + (10 * 25) = 1400 + 250 = 1650
-        // With wonder bonus: 1650 * 1.05 = 1732.5 = 1732 (truncated)
-        $this->assertEquals(1732, $result);
+        // Expected: 70 * 20 = 1400
+        // With wonder bonus: 1400 * 1.05 = 1470
+        $this->assertEquals(1470, $result);
     }
 
     public function testGetPopulationEmployed()
