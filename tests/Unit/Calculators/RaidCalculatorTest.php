@@ -42,7 +42,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
-        $this->dominion = $this->createDominion($user, $this->round, Race::first());
+        $this->dominion = $this->createDominionWithLegacyStats($user, $this->round, Race::first());
 
         $this->raid = Raid::create([
             'round_id' => $this->round->id,
@@ -174,7 +174,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $anotherUser = $this->createUser();
-        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        $anotherDominion = $this->createDominionWithLegacyStats($anotherUser, $this->round, Race::first());
 
         RaidContribution::create([
             'realm_id' => $this->dominion->realm_id,
@@ -242,7 +242,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $anotherUser = $this->createUser();
-        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        $anotherDominion = $this->createDominionWithLegacyStats($anotherUser, $this->round, Race::first());
 
         // First dominion makes multiple contributions
         RaidContribution::create([
@@ -283,7 +283,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $anotherUser = $this->createUser();
-        $anotherDominion = $this->createDominion($anotherUser, $this->round, $this->dominion->race, $this->dominion->realm);
+        $anotherDominion = $this->createDominionWithLegacyStats($anotherUser, $this->round, $this->dominion->race, $this->dominion->realm);
 
         RaidContribution::create([
             'realm_id' => $this->dominion->realm_id,
@@ -312,7 +312,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $anotherUser = $this->createUser();
-        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        $anotherDominion = $this->createDominionWithLegacyStats($anotherUser, $this->round, Race::first());
 
         RaidContribution::create([
             'realm_id' => $this->dominion->realm_id,
@@ -342,12 +342,12 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     {
         // Arrange - Create dominions in different realms
         $anotherUser = $this->createUser();
-        $anotherDominion = $this->createDominion($anotherUser, $this->round, Race::first());
+        $anotherDominion = $this->createDominionWithLegacyStats($anotherUser, $this->round, Race::first());
         $anotherRealm = $this->createRealm($this->round, 'Test Realm 2');
         $anotherDominion->realm_id = $anotherRealm->id;
         $anotherDominion->save();
 
-        $realmMate = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $this->dominion->realm);
+        $realmMate = $this->createDominionWithLegacyStats($this->createUser(), $this->round, $this->dominion->race, $this->dominion->realm);
 
         // Create contributions from both realms
         RaidContribution::create([
@@ -545,7 +545,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $objective->score_required = 1000;
         $objective->save();
 
-        $otherDominion = $this->createDominion($this->createUser(), $this->round, Race::first());
+        $otherDominion = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first());
         $this->createRaidContributions($raid, [
             ['dominion' => $this->dominion, 'score' => 1500], // High contribution, exceeds requirement
             ['dominion' => $otherDominion, 'score' => 500],
@@ -622,8 +622,8 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $realm2 = $this->createRealm($this->round, $this->dominion->race->alignment);
         $realm3 = $this->createRealm($this->round, $this->dominion->race->alignment);
 
-        $dominion2 = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $realm2);
-        $dominion3 = $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $realm3);
+        $dominion2 = $this->createDominionWithLegacyStats($this->createUser(), $this->round, $this->dominion->race, $realm2);
+        $dominion3 = $this->createDominionWithLegacyStats($this->createUser(), $this->round, $this->dominion->race, $realm3);
 
         // Create contributions: Realm 1 = 6000, Realm 2 = 3000, Realm 3 = 1000 (total 10000)
         $this->createRaidContributions($raid, [
@@ -657,8 +657,8 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $raid->reward_amount = 10000;
         $raid->save();
 
-        $player2 = $this->createDominion($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
-        $player3 = $this->createDominion($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
+        $player2 = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
+        $player3 = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
 
         // Create contributions within same realm: Player 1 = 6000, Player 2 = 3000, Player 3 = 1000
         $this->createRaidContributions($raid, [
@@ -700,7 +700,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Create dominions in different realms
         $anotherRealm = $this->createRealm($this->round, 'Another Realm');
-        $anotherDominion = $this->createDominion($this->createUser(), $this->round, Race::first());
+        $anotherDominion = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first());
         $anotherDominion->realm_id = $anotherRealm->id;
         $anotherDominion->save();
 

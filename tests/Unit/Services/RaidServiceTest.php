@@ -38,7 +38,7 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
 
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
-        $this->dominion = $this->createDominion($user, $this->round, Race::first());
+        $this->dominion = $this->createDominionWithLegacyStats($user, $this->round, Race::first());
     }
 
     public function testProcessCompletedRaids_WithNoCompletedRaids_DoesNothing()
@@ -118,11 +118,11 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
 
         $objective = $this->createObjective($raid, ['score_required' => 2000]); // Higher requirement to avoid excess bonus
 
-        $otherDominion = $this->createDominion($this->createUser(), $this->round, Race::first());
+        $otherDominion = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first());
 
         // Dominion 1 contributes 15%, Dominion 2 contributes 10% (both well under caps and bonus thresholds)
         // Let's add a third dominion to ensure no one hits 25% threshold
-        $thirdDominion = $this->createDominion($this->createUser(), $this->round, Race::first());
+        $thirdDominion = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first());
         $this->createContribution($objective, $this->dominion, 300); // 15% of 2000
         $this->createContribution($objective, $otherDominion, 200); // 10% of 2000
         $this->createContribution($objective, $thirdDominion, 1500); // 75% of 2000

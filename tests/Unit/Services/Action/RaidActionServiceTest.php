@@ -43,7 +43,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
 
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
-        $this->dominion = $this->createDominion($user, $this->round, Race::first());
+        $this->dominion = $this->createDominionWithLegacyStats($user, $this->round, Race::first());
 
         // Set up dominion with resources and land
         $this->dominion->resource_platinum = 100000;
