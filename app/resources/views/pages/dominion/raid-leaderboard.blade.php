@@ -10,7 +10,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">
                         <i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}
-                        <small>Realm Leaderboard</small>
+                        - Leaderboard
                     </h3>
                     <div class="pull-right">
                         <span class="badge">

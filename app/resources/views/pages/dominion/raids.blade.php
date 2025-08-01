@@ -76,7 +76,7 @@
                                                     <td>{{ number_format($objective->score_required) }}</td>
                                                     <td>{{ number_format($realmScore) }} ({{ number_format($realmProgress, 1) }}%)</td>
                                                     <td>
-                                                        @foreach ($objective->tactics as $tactic)
+                                                        @foreach ($objective->tactics->unique('type') as $tactic)
                                                             <div class="label label-primary">{{ ucwords($tactic->type) }}</div>
                                                         @endforeach
                                                     </td>
@@ -157,12 +157,4 @@
             font-size: 11px;
         }
     </style>
-@endpush
-
-@push('inline-scripts')
-    <script type="text/javascript">
-        (function ($) {
-            console.log('we need this');
-        })(jQuery);
-    </script>
 @endpush

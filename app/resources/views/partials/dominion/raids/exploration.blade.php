@@ -19,8 +19,8 @@
                     <thead>
                         <tr>
                             <th>Expedition</th>
-                            <th>Draftee Cost</th>
                             <th>Morale Cost</th>
+                            <th>Draftee Cost</th>
                             <th>Points</th>
                             <th>Action</th>
                         </tr>
@@ -39,7 +39,7 @@
                                 <td>{{ number_format($drafteeCost) }}</td>
                                 <td>{{ number_format($pointsAwarded) }}</td>
                                 <td>
-                                    @if ($selectedDominion->military_draftees >= $drafteeCost)
+                                    @if ($canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
                                             <button type="submit" class="btn btn-block btn-sm btn-primary">

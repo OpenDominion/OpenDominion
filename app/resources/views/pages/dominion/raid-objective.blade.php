@@ -39,12 +39,13 @@
                                 $dominionContribution = $raidCalculator->getDominionContribution($objective, $selectedDominion);
                                 $dominionPercentage = $realmScore > 0 ? ($dominionContribution / $realmScore) * 100 : 0;
                                 $dominionProgressOfTotal = $objective->score_required > 0 ? ($dominionContribution / $objective->score_required) * 100 : 0;
+                                $otherContributorsProgress = $realmProgress - $dominionProgressOfTotal;
                             @endphp
                             <div class="progress">
-                                <div class="progress-bar progress-bar-{{ $realmCompleted ? 'success' : 'primary' }}" role="progressbar" aria-valuenow="{{ $realmProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $realmProgress }}%">
-                                    <span class="sr-only">{{ number_format($realmProgress, 1) }}% Complete (realm)</span>
+                                <div class="progress-bar progress-bar-{{ $realmCompleted ? 'success' : 'primary' }}" role="progressbar" style="width: {{ $otherContributorsProgress }}%">
+                                    <span class="sr-only">{{ number_format($otherContributorsProgress, 1) }}% Complete (others)</span>
                                 </div>
-                                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ $dominionProgressOfTotal }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $dominionProgressOfTotal }}%">
+                                <div class="progress-bar progress-bar-info" role="progressbar" style="width: {{ $dominionProgressOfTotal }}%">
                                     <span class="sr-only">{{ number_format($dominionProgressOfTotal, 1) }}% Complete (you)</span>
                                 </div>
                             </div>
@@ -117,11 +118,3 @@
 
     </div>
 @endsection
-
-@push('inline-scripts')
-    <script type="text/javascript">
-        (function ($) {
-            console.log('we need this');
-        })(jQuery);
-    </script>
-@endpush

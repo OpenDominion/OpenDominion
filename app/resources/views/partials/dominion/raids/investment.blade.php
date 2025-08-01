@@ -39,7 +39,7 @@
                                 <td>{{ number_format($amount) }}</td>
                                 <td>{{ number_format($pointsAwarded) }}</td>
                                 <td>
-                                    @if (!$canPerform)
+                                    @if ($canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
                                             <button type="submit" class="btn btn-block btn-sm btn-primary">
@@ -54,6 +54,15 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td colspan=3>
+                                <small class="text-muted">
+                                    {{ ucwords($resourceType) }}: {{ number_format($selectedDominion->{"resource_{$resourceType}"}) }}
+                                </small>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

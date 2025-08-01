@@ -128,6 +128,18 @@
                         </a>
                     </li>
                 @endif
+                <li class="{{ Route::is('dominion.raids*') ? 'active' : null }}">
+                    <a href="{{ route('dominion.raids') }}">
+                        <i class="ra ra-castle-flag ra-fw"></i> <span>Raids</span>
+                        @if ($activeRaids > 0)
+                            <span class="pull-right-container">
+                                <span class="label label-primary pull-right">
+                                    {{ $activeRaids }}
+                                </span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.journal') ? 'active' : null }}"><a href="{{ route('dominion.journal') }}"><i class="ra ra-scroll-quill ra-fw"></i> <span>Journal</span></a></li>
 
                 <li class="header">OPERATIONS</li>
@@ -209,7 +221,6 @@
                         @endif
                     </a>
                 </li>
-                <li class="{{ Route::is('dominion.raids*') ? 'active' : null }}"><a href="{{ route('dominion.raids') }}"><i class="ra ra-castle-flag ra-fw"></i> <span>Raids</span></a></li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a></li>
                 <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}">
                     <a href="{{ route('dominion.forum') }}">
