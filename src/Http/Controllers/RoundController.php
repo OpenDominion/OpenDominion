@@ -51,8 +51,15 @@ class RoundController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
+        $hasDiscord = true;
+        $user = Auth::user();
+        if ($user->discordUser === null && $user->dominions()->count() > 1) {
+            $hasDiscord = false;
+        }
+
         $races = Race::query()
             ->with(['perks'])
+            ->active()
             ->orderBy('name')
             ->get();
 
@@ -60,6 +67,7 @@ class RoundController extends AbstractController
             'raceHelper' => app(RaceHelper::class),
             'round' => $round,
             'races' => $races,
+            'hasDiscord' => $hasDiscord,
         ]);
     }
 
@@ -95,11 +103,12 @@ class RoundController extends AbstractController
                 }),
             ],
             'race' => 'required|exists:races,key',
+            'protection_type' => 'in:advanced,quick',
             'realm_type' => 'in:random,join_pack,create_pack',
             'pack_name' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_password' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
-            'protection_type' => 'in:advanced,quick',
+            'discord' => 'in:yes,no',
         ]);
 
         /** @var Realm $realm */
@@ -187,6 +196,11 @@ class RoundController extends AbstractController
 
                     $pack->realm_id = $realm->id;
                     $pack->save();
+                }
+
+                if ($dominion->pack_id === null && $request->get('discord') == 'no') {
+                    $dominion->settings = ['usediscord' => false];
+                    $dominion->save();
                 }
             });
         } catch (QueryException $e) {

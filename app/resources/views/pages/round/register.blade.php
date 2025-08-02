@@ -26,7 +26,7 @@
                     <label for="ruler_name" class="col-sm-3 control-label">Ruler Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="{{ Auth::user()->display_name }}" value="{{ old('ruler_name') }}">
-                        <p class="help-block">This is your personal alias in the round which will be shown to your realmies. Defaults to your display name '{{ Auth::user()->display_name }}' if omitted.</p>
+                        <p class="help-block">This is your personal alias in the round and is visible to everyone. Defaults to your display name '{{ Auth::user()->display_name }}' if omitted.</p>
                     </div>
                 </div>
 
@@ -39,110 +39,110 @@
                                 <div class="text-center">
                                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Good Aligned Races</h4>
                                 </div>
-                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'good'; })->chunk(2) as $raceRow)
-                                    <div class="row">
-                                        @foreach ($raceRow as $race)
-                                            <div class="col-md-6">
-                                                <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
-                                                    <div class="row">
-                                                        <div class="col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Race</th>
+                                                <th>Difficulty</th>
+                                                <th>Attacker</th>
+                                                <th>Explorer</th>
+                                                <th>Converter</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="inline-radio">
+                                            @foreach ($races->where('alignment', 'good') as $race)
+                                                <tr>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label"
+                                                            data-toggle="tooltip" data-html="true"
+                                                            title='@foreach ($race->perks as $perk){!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br/>@endforeach'
+                                                        >
+                                                            <input type="radio" name="race" id="{{ $race->key }}" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required />
+                                                            {{ $race->name }}
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            &nbsp;
                                                             {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
-                                                            <h4>
-                                                                <input type="radio" name="race" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
-                                                                <strong>{{ $race->name }}</strong>
-                                                            </h4>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-4">
-                                                            <p>
-                                                                Attacker: {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-lg-4">
-                                                            <p>
-                                                                Explorer: {!! $raceHelper->getDifficultyString($race->explorer_difficulty) !!}
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-lg-4">
-                                                            <p>
-                                                                Converter: {!! $raceHelper->getDifficultyString($race->converter_difficulty) !!}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-5 text-left">
-                                                            <ul>
-                                                                @foreach ($race->perks as $perk)
-                                                                    <li>{!! $raceHelper->getPerkDescriptionHtml($perk) !!}</li>
-                                                                @endforeach
-                                                            </ul>
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            {!! $race->description !!}
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endforeach
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
+
                             <div class="col-xs-12">
                                 <div class="text-center">
                                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Evil Aligned Races</h4>
                                 </div>
-                                @php($i = 0)
-                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; })->chunk(2) as $raceRow)
-                                    <div class="row">
-                                        @foreach ($raceRow as $race)
-                                            <div class="col-md-6">
-                                                <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
-                                                    <div class="row">
-                                                        <div class="col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Race</th>
+                                                <th>Difficulty</th>
+                                                <th>Attacker</th>
+                                                <th>Explorer</th>
+                                                <th>Converter</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="inline-radio">
+                                            @foreach ($races->where('alignment', 'evil') as $race)
+                                                <tr>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label"
+                                                            data-toggle="tooltip" data-html="true"
+                                                            title='@foreach ($race->perks as $perk){!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br/>@endforeach'
+                                                        >
+                                                            <input type="radio" name="race" id="{{ $race->key }}" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required />
+                                                            {{ $race->name }}
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            &nbsp;
                                                             {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
-                                                            <h4>
-                                                                <input type="radio" name="race" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
-                                                                <strong>{{ $race->name }}</strong>
-                                                            </h4>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-4">
-                                                            <p>
-                                                                Attacker: {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-lg-4">
-                                                            <p>
-                                                                Explorer: {!! $raceHelper->getDifficultyString($race->explorer_difficulty) !!}
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-lg-4">
-                                                            <p>
-                                                                Converter: {!! $raceHelper->getDifficultyString($race->converter_difficulty) !!}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-5 text-left">
-                                                            <ul>
-                                                                @foreach ($race->perks as $perk)
-                                                                    <li>{!! $raceHelper->getPerkDescriptionHtml($perk) !!}</li>
-                                                                @endforeach
-                                                            </ul>
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            {!! $race->description !!}
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endforeach
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{ $race->key }}" class="radio-row-label">
+                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -218,6 +218,20 @@
                     </div>
                 </div>
 
+                <!-- Discord -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Discord</label>
+                    <div class="col-sm-9">
+                        <select name="discord" id="discord" class="form-control" required>
+                            <option value="yes" {{ (old('discord') === 'yes') ? 'selected' : null }}>Place me in a Discord-enabled realm (recommended)</option>
+                            <option value="no" {{ ((old('discord') === 'no') || (old('discord') === null) && !$hasDiscord) ? 'selected' : null }}>I do not plan to use Discord</option>
+                        </select>
+                        <p class="help-block">
+                            <span class="text-muted">Discord is a third party chat program used to communicate with your realm.</span>
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Rules -->
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Rules</label>
@@ -258,6 +272,28 @@
         </div>
     </div>
 @endsection
+
+@push('inline-styles')
+    <style>
+        table > tbody.inline-radio > tr > td {
+            padding: 0px;
+        }
+
+        .radio-row-label {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 8px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .radio-row-label > input {
+            margin-right: 5px;
+            margin-top: 2px;
+        }
+    </style>
+@endpush
 
 @push('inline-scripts')
     <script type="text/javascript">
