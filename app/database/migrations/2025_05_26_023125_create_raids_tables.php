@@ -17,7 +17,7 @@ class CreateRaidsTables extends Migration
             $table->increments('id');
             $table->integer('round_id')->unsigned();
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->string('reward_resource');
             $table->integer('reward_amount');
             $table->string('completion_reward_resource');
