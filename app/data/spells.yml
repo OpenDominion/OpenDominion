@@ -423,6 +423,7 @@ gaias_blessing:
   perks:
     food_production: 20
     lumber_production: 10
+  active: false
 nightfall:
   name: Nightfall
   category: self

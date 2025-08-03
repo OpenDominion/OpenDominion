@@ -78,7 +78,7 @@
                 <div class="row">
                     <div class="col-md-12 text-center">
                         This is your last chance to train specialists to coincide with leaving protection.
-                        <br/>You'll need at least {{ number_format(4580) }} defense to continue at this land size.
+                        <!--<br/>You'll need at least {{ number_format(4580) }} defense to continue at this land size.-->
                     </div>
                 </div>
             @endif
