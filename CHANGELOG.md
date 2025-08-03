@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-## [1.46.0] - 2025-07-07
+## [1.46.0] - 2025-08-03
 ### Added
 - Raids
   - Do things, win prizes
@@ -2454,7 +2454,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.45.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.46.0...HEAD
+[1.46.0]: https://github.com/OpenDominion/OpenDominion/compare/1.45.1...1.46.0
 [1.45.1]: https://github.com/OpenDominion/OpenDominion/compare/1.45.0...1.45.1
 [1.45.0]: https://github.com/OpenDominion/OpenDominion/compare/1.44.3...1.45.0
 [1.44.3]: https://github.com/OpenDominion/OpenDominion/compare/1.44.2...1.44.3
