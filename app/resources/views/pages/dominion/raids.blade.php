@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            @if (!empty($raids))
+            @if (!$raids->isEmpty())
                 @foreach ($raids as $raid)
                     <div class="box box-primary">
                         <div class="box-header with-border">
