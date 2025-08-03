@@ -5,6 +5,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.46.0] - 2025-07-07
+### Added
+- Raids
+  - Do things, win prizes
+
+### Changed
+- Protection has been reworked
+  - Select your buildings before starting
+  - Starting land increased to 350a
+  - Ticks reduced to 48 (from 72)
+  - Quick Start is now 560a with just 14 'ticks' to complete instead of a preset
+- Realm assignment has been reworked
+  - Option to join a non-Discord realm
+  - Endorsements from previous rounds will have more of an effect on matchmaking
+  - Matchmaking will now try to balance playstles to some degree
+
 ## [1.45.1] - 2025-07-07
 ### Changed
 - Hero Tournament now requires a dominion to register
