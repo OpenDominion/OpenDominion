@@ -40,7 +40,7 @@ class DominionFactory
         $this->guardAgainstMultipleDominionsInARound($user, $realm->round);
         $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
-        $startingBuildings = $this->getStartingBuildings();
+        $startingBuildings = $this->getStartingBuildings($protectionType);
 
         $startingLand = $this->getStartingLand(
             $race,
@@ -48,7 +48,7 @@ class DominionFactory
             $startingBuildings
         );
 
-        $startingAttributes = $this->getStartingAttributes();
+        $startingAttributes = $this->getStartingAttributes($protectionType);
 
         $additionalAttributes = $this->getLateStartAttributes($realm->round);
         foreach ($additionalAttributes as $attribute => $value) {
