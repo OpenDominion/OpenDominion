@@ -358,6 +358,9 @@ class LogParserService
 
         foreach ($events->orderBy('created_at')->get() as $history) {
             if ($history->event == 'tick') {
+                if ($protectionHour == 0) {
+                    $log[] = $this->formatStartingBuildings($dominion, $history);
+                }
                 $protectionHour++;
                 if ($protectionHour > $dominion->protection_ticks) {
                     break;
@@ -367,6 +370,21 @@ class LogParserService
         }
 
         return $log;
+    }
+
+    protected function formatStartingBuildings(Dominion $dominion, History $history) {
+        $buildings = array_map(
+            function ($value) {
+                return abs($value);
+            },
+            array_filter($history->delta, function ($key) {
+                return Str::startsWith($key, 'building_');
+            }, ARRAY_FILTER_USE_KEY)
+        );
+        return sprintf(
+            'Construction of %s started.',
+            dominion_attr_sentence_from_array($buildings, true),
+        );
     }
 
     protected function formatHistory(Dominion $dominion, History $history, int $hour) {
@@ -393,20 +411,6 @@ class LogParserService
                     '%s have been traded for %s.',
                     dominion_attr_sentence_from_array($negative, true),
                     dominion_attr_sentence_from_array($positive, true)
-                );
-
-            case 'select buildings':
-                $buildings = array_map(
-                    function ($value) {
-                        return abs($value);
-                    },
-                    array_filter($history->delta, function ($key) {
-                        return Str::startsWith($key, 'building_');
-                    }, ARRAY_FILTER_USE_KEY)
-                );
-                return sprintf(
-                    'Construction of %s started.',
-                    dominion_attr_sentence_from_array($buildings, true),
                 );
 
             case 'construct':
