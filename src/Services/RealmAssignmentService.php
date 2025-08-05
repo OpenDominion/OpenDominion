@@ -427,6 +427,19 @@ class RealmAssignmentService
     public Collection $realms;
 
     /**
+     * Constructor - initialize collections
+     */
+    public function __construct()
+    {
+        $this->players = collect();
+        $this->packs = collect();
+        $this->realms = collect();
+        // Target values will be calculated dynamically when needed
+        $this->targetRealmSize = 12;
+        $this->targetRealmStrength = 1500;
+    }
+
+    /**
      * Assigns all registered dominions (in realm 0) to newly created realms
      *
      * This is the main entry point for the realm assignment algorithm. It orchestrates
@@ -1179,5 +1192,184 @@ class RealmAssignmentService
         }
 
         return $stats;
+    }
+
+    /**
+     * Finds and returns the best realm for a new Dominion to settle in.
+     *
+     * @param Round $round
+     * @param Race $race
+     * @param User $user
+     * @param int $slotsNeeded (kept for compatibility, but not used for size restrictions)
+     * @return Realm|null
+     */
+    public function findRealm(Round $round, Race $race, User $user, int $slotsNeeded = 1): ?Realm
+    {
+        // Pre-assignment period: use realm 0
+        if (now() < $round->start_date->copy()->subHours(static::ASSIGNMENT_HOURS_BEFORE_START)) {
+            return $round->realms()->where('number', 0)->first();
+        }
+
+        // Get candidate realms with basic filtering
+        $candidateRealms = $this->getCandidateRealms($round, $race);
+
+        if ($candidateRealms->isEmpty()) {
+            return null;
+        }
+
+        // Load detailed data and score candidates
+        $player = $this->createPlayerForUser($user, $candidateRealms);
+
+        // Return the best match
+        return $this->selectBestRealm($candidateRealms, $player);
+    }
+
+    /**
+     * Get candidate realms with rating data included
+     */
+    public function getCandidateRealms(Round $round, Race $race): Collection
+    {
+        $query = Realm::active()
+            ->where('number', '!=', 0)
+            ->where('round_id', $round->id)
+            ->withCount(['dominions as active_dominions_count' => function ($query) {
+                $query->where('protection_finished', true);
+            }])
+            ->with(['dominions' => function($query) {
+                $query->select('realm_id', 'user_id')
+                      ->with(['user' => function($userQuery) {
+                          $userQuery->select('id', 'rating');
+                      }]);
+            }]);
+
+        // Apply alignment filtering if needed
+        if (!$round->mixed_alignment) {
+            $query->where('alignment', $race->alignment);
+        }
+
+        // Limit to 3 smallest candidates
+        return $query
+            ->orderBy('active_dominions_count')
+            ->take(3)
+            ->get();
+    }
+
+    /**
+     * Create a Player object for the user with favorability data
+     * Only loads data relevant to the candidate realms
+     */
+    public function createPlayerForUser(User $user, Collection $candidateRealms): Player
+    {
+        // Get all dominion IDs in candidate realms
+        $candidateRealmIds = $candidateRealms->pluck('id');
+        $targetUserIds = Dominion::whereIn('realm_id', $candidateRealmIds)
+            ->pluck('user_id')
+            ->toArray();
+
+        // Load favorability data only for relevant users
+        $userFeedback = UserFeedback::where('source_id', $user->id)
+            ->whereIn('target_id', $targetUserIds)
+            ->get();
+
+        $favorabilityMatrix = $userFeedback->mapWithKeys(function ($feedback) {
+            return [$feedback->target_id => $feedback->endorsed ? 1 : -1];
+        })->toArray();
+
+        return new Player([
+            'id' => $user->id,
+            'packId' => null, // Individual registration
+            'rating' => $user->rating,
+            'favorability' => $favorabilityMatrix,
+            // TODO: Calculate actual playstyle ratings when available
+            'attackerRating' => 50,
+            'converterRating' => 50,
+            'explorerRating' => 50,
+            'opsRating' => 50,
+        ]);
+    }
+
+    /**
+     * Select the best realm using compatibility and rating balance scoring
+     */
+    public function selectBestRealm(Collection $candidateRealms, Player $player): ?Realm
+    {
+        // Calculate dynamic targets from candidate realms
+        $this->calculateDynamicTargets($candidateRealms);
+
+        $bestRealm = null;
+        $bestScore = -INF;
+
+        foreach ($candidateRealms as $realm) {
+            // Create placeholder realm for scoring
+            $placeholderRealm = $this->createPlaceholderRealm($realm);
+
+            // Check for hard conflicts first (early exit)
+            if ($placeholderRealm->hasHardConflicts($player)) {
+                continue;
+            }
+
+            // Calculate compatibility score using existing method
+            $compatibilityScore = $placeholderRealm->getCompatibilityScore(collect([$player]));
+
+            // Calculate rating balance score (now uses dynamic targets)
+            $balanceScore = $this->calculateBalanceScore($placeholderRealm, collect([$player]));
+
+            // Combine scores (weight balance more heavily for individual assignments)
+            $totalScore = $compatibilityScore + ($balanceScore * 2);
+
+            if ($totalScore > $bestScore) {
+                $bestScore = $totalScore;
+                $bestRealm = $realm;
+            }
+        }
+
+        return $bestRealm;
+    }
+
+    /**
+     * Convert a database Realm to PlaceholderRealm for scoring
+     */
+    public function createPlaceholderRealm(Realm $realm): PlaceholderRealm
+    {
+        $players = $realm->dominions->map(function ($dominion) {
+            return new Player([
+                'id' => $dominion->user_id,
+                'packId' => $dominion->pack_id,
+                'rating' => $dominion->user->rating,
+                'favorability' => [], // Not needed for existing players in this context
+                // Placeholder playstyle data
+                'attackerRating' => 50,
+                'converterRating' => 50,
+                'explorerRating' => 50,
+                'opsRating' => 50,
+            ]);
+        });
+
+        return new PlaceholderRealm($realm->id, $players);
+    }
+
+    /**
+     * Calculate dynamic targets based on current realm states
+     */
+    public function calculateDynamicTargets(Collection $candidateRealms): void
+    {
+        $realmSizes = [];
+        $totalRating = 0;
+        $totalPlayers = 0;
+
+        foreach ($candidateRealms as $realm) {
+            $realmSize = $realm->dominions->count();
+            $realmRating = $realm->dominions->sum(function($dominion) {
+                return $dominion->user->rating;
+            });
+
+            $realmSizes[] = $realmSize;
+            $totalRating += $realmRating;
+            $totalPlayers += $realmSize;
+        }
+
+        // Set dynamic targets based on current state
+        $this->targetRealmSize = count($realmSizes) > 0 ? array_sum($realmSizes) / count($realmSizes) : 12;
+        $this->targetRealmStrength = $totalPlayers > 0 ? $totalRating / $totalPlayers : 1500;
     }
 }

@@ -3,14 +3,18 @@
 namespace OpenDominion\Tests\Unit\Services;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Models\Race;
 use OpenDominion\Services\PlaceholderPack;
 use OpenDominion\Services\PlaceholderRealm;
 use OpenDominion\Services\Player;
 use OpenDominion\Services\RealmAssignmentService;
 use OpenDominion\Tests\AbstractTestCase;
+use OpenDominion\Tests\Traits\CreatesData;
 
 class RealmAssignmentServiceTest extends AbstractTestCase
 {
+    use CreatesData;
+
     /** @var RealmAssignmentService */
     protected $service;
 
@@ -644,5 +648,108 @@ class RealmAssignmentServiceTest extends AbstractTestCase
                 'Overall realm compatibility should be reasonable after optimization'
             );
         }
+    }
+
+    /**
+     * Test findRealm method functionality after realm assignment is complete
+     *
+     * This integration test validates the complete findRealm workflow using real models.
+     */
+    public function testFindRealmIntegration()
+    {
+        // Create a round that's past the assignment period (started 5 days ago)
+        $round = $this->createRound('-5 days', '+42 days');
+
+        // Get a race for testing
+        $race = Race::where('name', 'Human')->firstOrFail();
+
+        // Create 4 realms with different player compositions
+        $realm1 = $this->createRealm($round, 'good'); // Small realm, mixed ratings
+        $realm1->update(['number' => 1]);
+
+        $realm2 = $this->createRealm($round, 'good'); // Medium realm, high ratings
+        $realm2->update(['number' => 2]);
+
+        $realm3 = $this->createRealm($round, 'good'); // Large realm, low ratings
+        $realm3->update(['number' => 3]);
+
+        $realm4 = $this->createRealm($round, 'good'); // Empty realm
+        $realm4->update(['number' => 4]);
+
+        // Create users with different ratings
+        $users1 = [
+            $this->createUser(null, ['rating' => 1200]),
+            $this->createUser(null, ['rating' => 800]),
+        ];
+
+        $users2 = [
+            $this->createUser(null, ['rating' => 1800]),
+            $this->createUser(null, ['rating' => 1600]),
+            $this->createUser(null, ['rating' => 1700]),
+        ];
+
+        $users3 = [
+            $this->createUser(null, ['rating' => 400]),
+            $this->createUser(null, ['rating' => 600]),
+            $this->createUser(null, ['rating' => 300]),
+            $this->createUser(null, ['rating' => 500]),
+        ];
+
+        // Create dominions in each realm
+        foreach ($users1 as $user) {
+            $this->createDominion($user, $round, $race, $realm1);
+        }
+
+        foreach ($users2 as $user) {
+            $this->createDominion($user, $round, $race, $realm2);
+        }
+
+        foreach ($users3 as $user) {
+            $this->createDominion($user, $round, $race, $realm3);
+        }
+
+        // Test scenarios
+        echo "\n=== FINDREALM INTEGRATION TEST ===\n";
+
+        // Test 1: New player (rating 0) should find a suitable realm
+        $newUser = $this->createUser(null, ['rating' => 0]);
+        $result1 = $this->service->findRealm($round, $race, $newUser);
+        $this->assertNotNull($result1, 'New player should find a realm');
+        echo "New player (rating 0) assigned to realm {$result1->number}\n";
+
+        // Test 2: High-rated player should help balance low-rated realm
+        $highRatedUser = $this->createUser(null, ['rating' => 1900]);
+        $result2 = $this->service->findRealm($round, $race, $highRatedUser);
+        $this->assertNotNull($result2, 'High-rated player should find a realm');
+        echo "High-rated player (rating 1900) assigned to realm {$result2->number}\n";
+
+        // Test 3: Low-rated player should help balance high-rated realm
+        $lowRatedUser = $this->createUser(null, ['rating' => 300]);
+        $result3 = $this->service->findRealm($round, $race, $lowRatedUser);
+        $this->assertNotNull($result3, 'Low-rated player should find a realm');
+        echo "Low-rated player (rating 300) assigned to realm {$result3->number}\n";
+
+        // Test 4: Average player should find balanced placement
+        $averageUser = $this->createUser(null, ['rating' => 1200]);
+        $result4 = $this->service->findRealm($round, $race, $averageUser);
+        $this->assertNotNull($result4, 'Average player should find a realm');
+        echo "Average player (rating 1200) assigned to realm {$result4->number}\n";
+
+        // Validate that all assignments are in valid realms
+        $validRealmIds = [$realm1->id, $realm2->id, $realm3->id, $realm4->id];
+        $this->assertContains($result1->id, $validRealmIds);
+        $this->assertContains($result2->id, $validRealmIds);
+        $this->assertContains($result3->id, $validRealmIds);
+        $this->assertContains($result4->id, $validRealmIds);
+
+        // Show realm compositions
+        echo "\nRealm compositions after assignments:\n";
+        foreach ([$realm1, $realm2, $realm3, $realm4] as $realm) {
+            $dominions = $realm->dominions()->with('user')->get();
+            $avgRating = $dominions->avg('user.rating');
+            echo "Realm {$realm->number}: {$dominions->count()} players, avg rating " . round($avgRating, 1) . "\n";
+        }
+
+        echo "Integration test completed successfully!\n";
     }
 }
