@@ -774,18 +774,18 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             'opsAffinity' => 0,
         ];
         $deviation = $realm->calculatePlaystyleDeviation($emptyComposition);
-        $expectedDeviation = 40 + 20 + 60 + 50; // Sum of ideal values
+        $expectedDeviation = 50 + 30 + 50 + 30; // Sum of ideal values
         $this->assertEquals($expectedDeviation, $deviation, 'Empty composition should deviate by sum of ideal values');
 
         // Test 3: Doubled composition should have specific deviation
         $doubledComposition = [
-            'attackerAffinity' => 80,  // 40 * 2
-            'converterAffinity' => 40, // 20 * 2
-            'explorerAffinity' => 120, // 60 * 2
-            'opsAffinity' => 100,      // 50 * 2
+            'attackerAffinity' => 100, // 40 * 2
+            'converterAffinity' => 60, // 20 * 2
+            'explorerAffinity' => 100, // 60 * 2
+            'opsAffinity' => 60,       // 50 * 2
         ];
         $deviation = $realm->calculatePlaystyleDeviation($doubledComposition);
-        $expectedDeviation = 40 + 20 + 60 + 50; // Each differs by the ideal value
+        $expectedDeviation = 50 + 30 + 50 + 30; // Each differs by the ideal value
         $this->assertEquals($expectedDeviation, $deviation, 'Doubled composition should deviate by sum of ideal values');
 
         // Test 4: Imbalanced composition should have positive deviation
@@ -900,7 +900,7 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             'rating' => 1000,
             'attackerAffinity' => 80,
             'converterAffinity' => 10,
-            'explorerAffinity' => 30,
+            'explorerAffinity' => 20,
             'opsAffinity' => 20,
             'favorability' => [],
         ]);
@@ -910,7 +910,7 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             'rating' => 1000,
             'attackerAffinity' => 90,
             'converterAffinity' => 5,
-            'explorerAffinity' => 20,
+            'explorerAffinity' => 10,
             'opsAffinity' => 15,
             'favorability' => [],
         ]);
@@ -921,10 +921,10 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $balancingPlayer = new Player([
             'id' => 'balancer',
             'rating' => 1000,
-            'attackerAffinity' => 10,
-            'converterAffinity' => 20,
-            'explorerAffinity' => 90,
-            'opsAffinity' => 60,
+            'attackerAffinity' => 15,
+            'converterAffinity' => 5,
+            'explorerAffinity' => 85,
+            'opsAffinity' => 20,
             'favorability' => [],
         ]);
 
@@ -932,9 +932,9 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $worseningPlayer = new Player([
             'id' => 'worsener',
             'rating' => 1000,
-            'attackerAffinity' => 85,
+            'attackerAffinity' => 90,
             'converterAffinity' => 5,
-            'explorerAffinity' => 25,
+            'explorerAffinity' => 10,
             'opsAffinity' => 10,
             'favorability' => [],
         ]);

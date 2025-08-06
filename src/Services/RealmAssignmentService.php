@@ -148,10 +148,10 @@ class PlaceholderRealm
      * @var array Ideal average playstyle affinities per player for balanced realms
      */
     public const IDEAL_COMPOSITION = [
-        'attackerAffinity' => 40,
-        'converterAffinity' => 20,
-        'explorerAffinity' => 60,
-        'opsAffinity' => 50,
+        'attackerAffinity' => 50,
+        'converterAffinity' => 30,
+        'explorerAffinity' => 50,
+        'opsAffinity' => 30,
     ];
 
     public string $id;
