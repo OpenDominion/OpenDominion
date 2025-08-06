@@ -489,7 +489,9 @@ class RealmAssignmentService
      */
     public function assignRealms(Round $round, bool $dryRun = false)
     {
-        $this->closePacks($round);
+        if (!$dryRun) {
+            $this->closePacks($round);
+        }
 
         $this->loadPlayers($round);
         $playerCount = $this->players->count();
