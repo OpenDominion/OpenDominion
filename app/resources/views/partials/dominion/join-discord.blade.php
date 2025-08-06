@@ -1,4 +1,4 @@
-@if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0)
+@if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0 && $selectedDominion->realm->getSetting('usediscord') !== false)
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">Team Play</h3>

@@ -21,7 +21,7 @@ class Player
     public string $id;
     public float $rating;
     public ?string $packId;
-    //public bool $hasDiscord;
+    public bool $hasDiscord = true;
     public array $favorability = []; // player_id => score
 
     // Playstyle affinities (0-100 for each category)
@@ -158,6 +158,7 @@ class PlaceholderRealm
     public Collection $players;
     public int $size;
     public float $rating;
+    public bool $discordEnabled = true;
 
     /**
      * Create a new PlaceholderRealm instance
@@ -168,11 +169,13 @@ class PlaceholderRealm
      *
      * @param string $id Unique identifier for the realm
      * @param Collection $players Collection of Player objects in this realm
+     * @param bool $discordEnabled Whether this realm allows Discord users
      */
-    public function __construct(string $id, Collection $players)
+    public function __construct(string $id, Collection $players, bool $discordEnabled = true)
     {
         $this->id = $id;
         $this->players = $players->keyBy('id');
+        $this->discordEnabled = $discordEnabled;
         $this->update();
     }
 
@@ -571,13 +574,17 @@ class RealmAssignmentService
             $favorabilityMatrix = $playerFeedback->mapWithKeys(function ($feedback) {
                 return [$feedback->target_id => $feedback->endorsed ? 1 : -1];
             })->toArray();
+            // Determine Discord preference - false only if setting exists and is explicitly false
+            $discordSetting = $dominion->getSetting('usediscord');
+            $hasDiscord = !($discordSetting !== null && $discordSetting === false);
+
             // Create player
             $player = new Player([
                 'id' => $dominion->id,
                 'packId' => $dominion->pack_id,
                 'rating' => $dominion->user->rating ?? 0,
                 'favorability' => $favorabilityMatrix,
-                'hasDiscord' => true,
+                'hasDiscord' => $hasDiscord,
                 'attackerAffinity' => $dominion->user->getAffinity('attacker'),
                 'converterAffinity' => $dominion->user->getAffinity('converter'),
                 'explorerAffinity' => $dominion->user->getAffinity('explorer'),
@@ -666,20 +673,25 @@ class RealmAssignmentService
     }
 
     /**
-     * Create initial realms from large packs
+     * Create initial realms, prioritizing non-Discord realms first
      *
-     * Each large pack becomes the foundation of a new realm. This establishes
-     * the basic realm structure before assigning remaining packs and solo players.
-     * Large packs are removed from the assignment queue since they're now placed.
+     * Creates non-Discord realms first for solo players who opted out of Discord,
+     * then creates regular Discord-enabled realms from packs.
      */
     public function createPlaceholderRealms(): void
     {
+        // Step 1: Create non-Discord realms first for solo players only
+        $this->createNonDiscordRealms();
+
+        // Step 2: Create regular Discord-enabled realms from remaining packs
         $largePacks = $this->packs->where('large', true);
         foreach ($largePacks as $idx => $pack) {
             $realm = new PlaceholderRealm($idx, $pack->members);
             $this->realms->push($realm);
             $this->packs->forget($pack->id);
         }
+
+        // Step 3: Use small packs if we need more realms
         if ($this->realms->count() < self::ASSIGNMENT_MIN_REALM_COUNT) {
             $smallPacks = $this->packs->where('large', false);
             foreach ($smallPacks as $idx => $pack) {
@@ -691,11 +703,47 @@ class RealmAssignmentService
                 }
             }
         }
+
+        // Step 4: Create empty Discord-enabled realms if needed
         if ($this->realms->count() < self::ASSIGNMENT_MIN_REALM_COUNT) {
             foreach (range($this->realms->count(), self::ASSIGNMENT_MIN_REALM_COUNT - 1) as $idx) {
                 $realm = new PlaceholderRealm($idx, collect());
                 $this->realms->push($realm);
             }
+        }
+    }
+
+    /**
+     * Create non-Discord realms for solo players who opted out of Discord
+     *
+     * Creates a single non-Discord realm unless there are more than 12
+     * non-Discord solo players, in which case additional realms are created.
+     */
+    private function createNonDiscordRealms(): void
+    {
+        $nonDiscordSoloPlayers = $this->players->where('hasDiscord', false);
+        $totalNonDiscordPlayers = $nonDiscordSoloPlayers->count();
+
+        if ($totalNonDiscordPlayers === 0) {
+            return; // No non-Discord players, nothing to do
+        }
+
+        // Determine number of non-Discord realms needed (prefer 1, but max 14 players per realm)
+        $nonDiscordRealmCount = max(1, ceil($totalNonDiscordPlayers / 14));
+
+        // Create non-Discord realms
+        for ($i = 0; $i < $nonDiscordRealmCount; $i++) {
+            $realm = new PlaceholderRealm("non-discord-{$i}", collect(), false);
+            $this->realms->push($realm);
+        }
+
+        // Assign non-Discord solo players to non-Discord realms (round-robin)
+        $soloIndex = 0;
+        foreach ($nonDiscordSoloPlayers as $player) {
+            $realmIndex = $this->realms->count() - $nonDiscordRealmCount + ($soloIndex % $nonDiscordRealmCount);
+            $this->realms[$realmIndex]->addPlayer($player);
+            $this->players->forget($player->id);
+            $soloIndex++;
         }
     }
 
@@ -1111,6 +1159,12 @@ class RealmAssignmentService
 
         foreach ($this->realms->shuffle() as $placeholderRealm) {
             $realm = $realmFactory->create($round);
+
+            // Store Discord preference in realm settings
+            $realm->settings = array_merge($realm->settings ?? [], [
+                'usediscord' => $placeholderRealm->discordEnabled
+            ]);
+
             foreach ($placeholderRealm->players as $player) {
                 $dominion = Dominion::find($player->id);
                 $dominion->realm_id = $realm->id;
@@ -1151,7 +1205,7 @@ class RealmAssignmentService
                 $notificationService->queueNotification('realm_assignment', [
                     '_routeParams' => [$realm->number],
                     'realmNumber' => $realm->number,
-                    'discordEnabled' => ($round->discord_guild_id !== null && $round->discord_guild_id !== '')
+                    'discordEnabled' => ($round->discord_guild_id !== null && $round->discord_guild_id !== '' && $realm->getSetting('usediscord') !== false)
                 ]);
                 $notificationService->sendNotifications($dominion, 'irregular_dominion');
             }
@@ -1287,7 +1341,7 @@ class RealmAssignmentService
     }
 
     /**
-     * Get candidate realms with rating data included
+     * Get candidate realms with rating data included, excluding non-Discord realms
      */
     public function getCandidateRealms(Round $round, Race $race): Collection
     {
@@ -1309,11 +1363,18 @@ class RealmAssignmentService
             $query->where('alignment', $race->alignment);
         }
 
-        // Limit to 3 smallest candidates
-        return $query
+        // Get all potential realms first
+        $realms = $query
             ->orderBy('active_dominions_count')
-            ->take(3)
             ->get();
+
+        // Filter out non-Discord realms (those with usediscord = false in settings)
+        $discordRealms = $realms->filter(function ($realm) {
+            return $realm->getSetting('usediscord') !== false;
+        });
+
+        // Return top 3 smallest Discord-enabled candidates
+        return $discordRealms->take(3);
     }
 
     /**
