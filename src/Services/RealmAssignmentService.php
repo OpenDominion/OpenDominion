@@ -462,6 +462,8 @@ class RealmAssignmentService
 
     public Collection $realms;
 
+    public Collection $nonDiscordRealms;
+
     /**
      * Constructor - initialize collections
      */
@@ -470,9 +472,18 @@ class RealmAssignmentService
         $this->players = collect();
         $this->packs = collect();
         $this->realms = collect();
+        $this->nonDiscordRealms = collect();
         // Target values will be calculated dynamically when needed
         $this->targetRealmSize = 12;
         $this->targetRealmStrength = 1500;
+    }
+
+    /**
+     * Get total count of all realms (Discord + non-Discord)
+     */
+    public function getRealmCount(): int
+    {
+        return $this->realms->count() + $this->nonDiscordRealms->count();
     }
 
     /**
@@ -494,12 +505,17 @@ class RealmAssignmentService
         }
 
         $this->loadPlayers($round);
-        $playerCount = $this->players->count();
-        $this->targetRealmStrength = $this->players->avg('rating');
-
         $this->loadPacks();
+        
+        // Separate non-Discord players early, before any calculations
+        $this->createNonDiscordRealms();
+        
+        // Calculate targets based on remaining Discord players only
+        $discordPlayerCount = $this->players->count();
+        $this->targetRealmStrength = $this->players->avg('rating') ?: 1000;
+        
         $realmCount = $this->calculateRealmCount();
-        $this->targetRealmSize = $playerCount / $realmCount;
+        $this->targetRealmSize = $discordPlayerCount / $realmCount;
 
         // Assign large packs
         $this->createPlaceholderRealms();
@@ -612,7 +628,9 @@ class RealmAssignmentService
         foreach ($playersByPack as $packId => $packMembers) {
             $pack = new PlaceholderPack($packId, $packMembers);
             $this->packs->put($packId, $pack);
-            $this->players->forget($packMembers->pluck('id'));
+            foreach ($packMembers->pluck('id') as $playerId) {
+                $this->players->forget($playerId);
+            }
         }
     }
 
@@ -675,17 +693,14 @@ class RealmAssignmentService
     }
 
     /**
-     * Create initial realms, prioritizing non-Discord realms first
+     * Create initial Discord-enabled realms from packs
      *
-     * Creates non-Discord realms first for solo players who opted out of Discord,
-     * then creates regular Discord-enabled realms from packs.
+     * Creates regular Discord-enabled realms from large packs, then small packs if needed.
+     * Non-Discord realms are handled separately.
      */
     public function createPlaceholderRealms(): void
     {
-        // Step 1: Create non-Discord realms first for solo players only
-        $this->createNonDiscordRealms();
-
-        // Step 2: Create regular Discord-enabled realms from remaining packs
+        // Step 1: Create regular Discord-enabled realms from remaining packs
         $largePacks = $this->packs->where('large', true);
         foreach ($largePacks as $idx => $pack) {
             $realm = new PlaceholderRealm($idx, $pack->members);
@@ -694,21 +709,21 @@ class RealmAssignmentService
         }
 
         // Step 3: Use small packs if we need more realms
-        if ($this->realms->count() < self::ASSIGNMENT_MIN_REALM_COUNT) {
+        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
             $smallPacks = $this->packs->where('large', false);
             foreach ($smallPacks as $idx => $pack) {
                 $realm = new PlaceholderRealm($idx, $pack->members);
                 $this->realms->push($realm);
                 $this->packs->forget($pack->id);
-                if ($this->realms->count() >= self::ASSIGNMENT_MIN_REALM_COUNT) {
+                if ($this->getRealmCount() >= self::ASSIGNMENT_MIN_REALM_COUNT) {
                     break;
                 }
             }
         }
 
         // Step 4: Create empty Discord-enabled realms if needed
-        if ($this->realms->count() < self::ASSIGNMENT_MIN_REALM_COUNT) {
-            foreach (range($this->realms->count(), self::ASSIGNMENT_MIN_REALM_COUNT - 1) as $idx) {
+        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
+            foreach (range($this->getRealmCount(), self::ASSIGNMENT_MIN_REALM_COUNT - 1) as $idx) {
                 $realm = new PlaceholderRealm($idx, collect());
                 $this->realms->push($realm);
             }
@@ -720,6 +735,7 @@ class RealmAssignmentService
      *
      * Creates a single non-Discord realm unless there are more than 12
      * non-Discord solo players, in which case additional realms are created.
+     * Stores them separately to avoid interfering with main assignment logic.
      */
     private function createNonDiscordRealms(): void
     {
@@ -733,19 +749,17 @@ class RealmAssignmentService
         // Determine number of non-Discord realms needed (prefer 1, but max 14 players per realm)
         $nonDiscordRealmCount = max(1, ceil($totalNonDiscordPlayers / 14));
 
-        // Create non-Discord realms
+        // Create non-Discord realms with integer IDs
         for ($i = 0; $i < $nonDiscordRealmCount; $i++) {
-            $realm = new PlaceholderRealm("non-discord-{$i}", collect(), false);
-            $this->realms->push($realm);
+            $realm = new PlaceholderRealm($i, collect(), false);
+            $this->nonDiscordRealms->push($realm);
         }
 
         // Assign non-Discord solo players to non-Discord realms (round-robin)
-        $soloIndex = 0;
-        foreach ($nonDiscordSoloPlayers as $player) {
-            $realmIndex = $this->realms->count() - $nonDiscordRealmCount + ($soloIndex % $nonDiscordRealmCount);
-            $this->realms[$realmIndex]->addPlayer($player);
+        foreach ($nonDiscordSoloPlayers->values() as $index => $player) {
+            $realmIndex = $index % $nonDiscordRealmCount;
+            $this->nonDiscordRealms[$realmIndex]->addPlayer($player);
             $this->players->forget($player->id);
-            $soloIndex++;
         }
     }
 
@@ -1087,6 +1101,9 @@ class RealmAssignmentService
                 }
             }
         }
+        
+        // Merge non-Discord realms into main realms collection so downstream functions see all realms
+        $this->realms = $this->realms->merge($this->nonDiscordRealms);
     }
 
     /**
@@ -1227,7 +1244,7 @@ class RealmAssignmentService
     public function getAssignmentStats(): array
     {
         $stats = [
-            'realm_count' => $this->realms->count(),
+            'realm_count' => $this->getRealmCount(),
             'total_players' => 0,
             'total_new_players' => 0,
             'total_experienced_players' => 0,
@@ -1291,7 +1308,7 @@ class RealmAssignmentService
         $stats['total_players'] = $totalPlayers;
         $stats['total_new_players'] = $totalNewPlayers;
         $stats['total_experienced_players'] = $totalExperiencedPlayers;
-        $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->realms->count(), 2) : 0;
+        $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->getRealmCount(), 2) : 0;
         $stats['average_realm_rating'] = $totalPlayers > 0 ? round($totalRating / $totalPlayers, 2) : 0;
 
         // Calculate balance metrics
