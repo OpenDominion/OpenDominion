@@ -701,21 +701,26 @@ class RealmAssignmentService
      */
     public function createPlaceholderRealms(): void
     {
+        // Start realm counter after non-Discord realms to avoid ID collisions
+        $realmCounter = $this->nonDiscordRealms->count();
+
         // Step 1: Create regular Discord-enabled realms from remaining packs
         $largePacks = $this->packs->where('large', true);
-        foreach ($largePacks as $idx => $pack) {
-            $realm = new PlaceholderRealm($idx, $pack->members);
+        foreach ($largePacks as $pack) {
+            $realm = new PlaceholderRealm($realmCounter, $pack->members);
             $this->realms->push($realm);
             $this->packs->forget($pack->id);
+            $realmCounter++;
         }
 
         // Step 3: Use small packs if we need more realms
         if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
             $smallPacks = $this->packs->where('large', false);
-            foreach ($smallPacks as $idx => $pack) {
-                $realm = new PlaceholderRealm($idx, $pack->members);
+            foreach ($smallPacks as $pack) {
+                $realm = new PlaceholderRealm($realmCounter, $pack->members);
                 $this->realms->push($realm);
                 $this->packs->forget($pack->id);
+                $realmCounter++;
                 if ($this->getRealmCount() >= self::ASSIGNMENT_MIN_REALM_COUNT) {
                     break;
                 }
@@ -723,11 +728,10 @@ class RealmAssignmentService
         }
 
         // Step 4: Create empty Discord-enabled realms if needed
-        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
-            foreach (range($this->getRealmCount(), self::ASSIGNMENT_MIN_REALM_COUNT - 1) as $idx) {
-                $realm = new PlaceholderRealm($idx, collect());
-                $this->realms->push($realm);
-            }
+        while ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
+            $realm = new PlaceholderRealm($realmCounter, collect());
+            $this->realms->push($realm);
+            $realmCounter++;
         }
     }
 
@@ -750,7 +754,7 @@ class RealmAssignmentService
         // Determine number of non-Discord realms needed (prefer 1, but max 14 players per realm)
         $nonDiscordRealmCount = max(1, ceil($totalNonDiscordPlayers / 14));
 
-        // Create non-Discord realms with integer IDs
+        // Create non-Discord realms with integer IDs starting from 0
         for ($i = 0; $i < $nonDiscordRealmCount; $i++) {
             $realm = new PlaceholderRealm($i, collect(), false);
             $this->nonDiscordRealms->push($realm);
@@ -830,12 +834,10 @@ class RealmAssignmentService
         PlaceholderPack $pack,
         PlaceholderRealm $realm
     ): float {
-        $compatibility = $realm->getCompatibilityScore($pack->members);
-        $balanceScore = $this->calculateBalanceScore($realm, $pack->members);
-        $opportunityCost = $this->calculateOpportunityCost($realm, $pack, $compatibility + $balanceScore);
+        $placementScore = $this->calculatePlacementScore($realm, $pack->members);
+        $opportunityCost = $this->calculateOpportunityCost($realm, $pack, $placementScore);
 
-        // TODO: Weight this
-        return $compatibility + $balanceScore + $opportunityCost;
+        return $placementScore + $opportunityCost;
     }
 
     /**
@@ -1288,6 +1290,12 @@ class RealmAssignmentService
         $totalRating = 0;
         $realmSizes = [];
         $realmRatings = [];
+        $totalPlaystyleAffinities = [
+            'attacker' => 0,
+            'converter' => 0,
+            'explorer' => 0,
+            'ops' => 0,
+        ];
 
         foreach ($this->realms as $realm) {
             $realmSize = $realm->size;
@@ -1303,6 +1311,12 @@ class RealmAssignmentService
             $totalRating += $realm->rating;
             $realmSizes[] = $realmSize;
             $realmRatings[] = $realmRating;
+
+            // Accumulate playstyle affinities
+            $totalPlaystyleAffinities['attacker'] += $playstyleDist['attackerAffinity'] * $realmSize;
+            $totalPlaystyleAffinities['converter'] += $playstyleDist['converterAffinity'] * $realmSize;
+            $totalPlaystyleAffinities['explorer'] += $playstyleDist['explorerAffinity'] * $realmSize;
+            $totalPlaystyleAffinities['ops'] += $playstyleDist['opsAffinity'] * $realmSize;
 
             $stats['realms'][] = [
                 'id' => $realm->id,
@@ -1325,6 +1339,16 @@ class RealmAssignmentService
         $stats['total_experienced_players'] = $totalExperiencedPlayers;
         $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->getRealmCount(), 2) : 0;
         $stats['average_realm_rating'] = $totalPlayers > 0 ? round($totalRating / $totalPlayers, 2) : 0;
+
+        // Calculate overall playstyle distribution
+        if ($totalPlayers > 0) {
+            $stats['overall_playstyle_distribution'] = [
+                'attacker' => round($totalPlaystyleAffinities['attacker'] / $totalPlayers, 2),
+                'converter' => round($totalPlaystyleAffinities['converter'] / $totalPlayers, 2),
+                'explorer' => round($totalPlaystyleAffinities['explorer'] / $totalPlayers, 2),
+                'ops' => round($totalPlaystyleAffinities['ops'] / $totalPlayers, 2),
+            ];
+        }
 
         // Calculate balance metrics
         if (count($realmSizes) > 1) {
