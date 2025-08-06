@@ -19,7 +19,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\PackService;
-use OpenDominion\Services\RealmFinderService;
+use OpenDominion\Services\RealmAssignmentService;
 
 class RoundController extends AbstractController
 {
@@ -122,7 +122,7 @@ class RoundController extends AbstractController
 
         try {
             DB::transaction(function () use ($request, $round, &$realm, &$dominion, &$dominionName) {
-                $realmFinderService = app(RealmFinderService::class);
+                $realmAssignmentService = app(RealmAssignmentService::class);
                 $realmFactory = app(RealmFactory::class);
 
                 /** @var User $user */
@@ -136,7 +136,7 @@ class RoundController extends AbstractController
 
                 switch ($request->get('realm_type')) {
                     case 'random':
-                        $realm = $realmFinderService->findRealm($round, $race, $user);
+                        $realm = $realmAssignmentService->findRealm($round, $race, $user);
                         break;
 
                     case 'join_pack':
@@ -154,13 +154,7 @@ class RoundController extends AbstractController
                         if (!$round->packRegistrationOpen()) {
                             throw new GameException('Pack registration is currently closed');
                         }
-                        $realm = $realmFinderService->findRealm(
-                            $round,
-                            $race,
-                            $user,
-                            $request->get('pack_size'),
-                            true
-                        );
+                        $realm = $realmAssignmentService->findRealm($round, $race, $user);
                         break;
 
                     default:

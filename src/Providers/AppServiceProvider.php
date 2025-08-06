@@ -72,7 +72,8 @@ use OpenDominion\Services\JournalService;
 use OpenDominion\Services\MessageBoardService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\PackService;
-use OpenDominion\Services\RealmFinderService;
+use OpenDominion\Services\RealmAssignmentService;
+use OpenDominion\Services\UserRatingService;
 use OpenDominion\Services\ValorService;
 use OpenDominion\Services\WonderService;
 use Schema;
@@ -148,7 +149,8 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(MessageBoardService::class);
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(PackService::class);
-        $this->app->singleton(RealmFinderService::class);
+        $this->app->singleton(RealmAssignmentService::class);
+        $this->app->singleton(UserRatingService::class);
         $this->app->singleton(ValorService::class);
         $this->app->singleton(WonderService::class);
 

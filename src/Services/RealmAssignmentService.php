@@ -1232,10 +1232,9 @@ class RealmAssignmentService
      * @param Round $round
      * @param Race $race
      * @param User $user
-     * @param int $slotsNeeded (kept for compatibility, but not used for size restrictions)
      * @return Realm|null
      */
-    public function findRealm(Round $round, Race $race, User $user, int $slotsNeeded = 1): ?Realm
+    public function findRealm(Round $round, Race $race, User $user): ?Realm
     {
         // Pre-assignment period: use realm 0
         if (now() < $round->start_date->copy()->subHours(static::ASSIGNMENT_HOURS_BEFORE_START)) {
