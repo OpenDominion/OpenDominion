@@ -911,20 +911,15 @@ class RealmAssignmentService
     public function calculateSizeBonus(PlaceholderRealm $realm): float
     {
         $currentSize = $realm->players->count();
-        $idealSize = floor($this->targetRealmSize);
-        $maxAllowedSize = $idealSize + 1;
+        $targetSize = $this->targetRealmSize;
 
         // Tiered penalty/bonus system for balanced distribution
-        if ($currentSize >= $maxAllowedSize) {
-            return -10000; // Strong penalty for exceeding limit
-        }
-
-        if ($currentSize == $idealSize) {
-            return -200; // Small penalty to discourage going to ideal size too quickly
+        if ($currentSize >= $targetSize) {
+            return -5000; // Strong penalty for exceeding limit
         }
 
         // Moderate bonus for realms under ideal size
-        return ($idealSize - $currentSize) * 100;
+        return ($currentSize - $currentSize) * 10;
     }
 
     /**
@@ -1009,6 +1004,45 @@ class RealmAssignmentService
     }
 
     /**
+     * Balance realm sizes by moving solo players from largest to smallest realms
+     *
+     * Performs simple size balancing before optimization by moving solo players
+     * from the largest realm to the smallest realm until sizes are within ±1.
+     * This ensures good size balance before compatibility optimization begins.
+     */
+    public function balanceRealmSizes(): void
+    {
+        $maxIterations = 10; // Prevent infinite loops
+        $iterations = 0;
+
+        while ($iterations < $maxIterations) {
+            // Sort realms by size
+            $sortedBySize = $this->realms->sortBy('size');
+            $smallest = $sortedBySize->first();
+            $largest = $sortedBySize->last();
+
+            // Stop if sizes are balanced (difference ≤ 1)
+            if ($largest->size - $smallest->size <= 1) {
+                break;
+            }
+
+            // Find a solo player from the largest realm to move
+            $soloPlayer = $largest->soloPlayers()->first();
+            if (!$soloPlayer) {
+                break; // No solo players available to move
+            }
+
+            // Move the player from largest to smallest realm
+            $largest->players->forget($soloPlayer->id);
+            $largest->update(); // Recalculate size and rating
+            $smallest->addPlayer($soloPlayer);
+            $smallest->update(); // Ensure smallest realm is also updated
+
+            $iterations++;
+        }
+    }
+
+    /**
      * Post-assignment optimization through randomized player swapping
      *
      * Performs iterative optimization by randomly sampling pairs of solo players
@@ -1018,11 +1052,14 @@ class RealmAssignmentService
      */
     public function optimizeAssignments(): void
     {
+        // Pre-balancing: Move solo players from largest to smallest realms to even out sizes
+        $this->balanceRealmSizes();
+
         $improved = true;
         $iterations = 0;
-        $maxIterations = 15;
+        $maxIterations = 50;
         $totalSwaps = 0;
-        $samplesPerIteration = 200; // Number of random pairs to test per iteration
+        $samplesPerIteration = 25; // Number of random pairs to test per iteration
 
         while ($improved && $iterations < $maxIterations) {
             $improved = false;
