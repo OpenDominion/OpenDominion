@@ -505,7 +505,8 @@ class RealmAssignmentService
         }
 
         $this->loadPlayers($round);
-        $discordPlayerCount = $this->players->where('hasDiscord', true)->orWhere('packId', '!=', null)->count();
+        $nonDiscordPlayerCount = $this->players->where('hasDiscord', false)->where('packId', null)->count();
+        $discordPlayerCount = $this->players->count() - $nonDiscordPlayerCount;
         $this->loadPacks();
 
         // Separate non-Discord players early, before any calculations
