@@ -342,7 +342,6 @@ class PlaceholderRealm
         return $currentDeviation - $newDeviation;
     }
 
-
     /**
      * Get realm's current playstyle composition as averages
      *
@@ -1268,9 +1267,9 @@ class RealmAssignmentService
             ->withCount(['dominions as active_dominions_count' => function ($query) {
                 $query->where('protection_finished', true);
             }])
-            ->with(['dominions' => function($query) {
+            ->with(['dominions' => function ($query) {
                 $query->select('realm_id', 'user_id')
-                      ->with(['user' => function($userQuery) {
+                      ->with(['user' => function ($userQuery) {
                           $userQuery->select('id', 'rating');
                       }]);
             }]);
@@ -1390,7 +1389,7 @@ class RealmAssignmentService
 
         foreach ($candidateRealms as $realm) {
             $realmSize = $realm->dominions->count();
-            $realmRating = $realm->dominions->sum(function($dominion) {
+            $realmRating = $realm->dominions->sum(function ($dominion) {
                 return $dominion->user->rating;
             });
 
