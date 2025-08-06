@@ -481,9 +481,10 @@ class RealmAssignmentService
      * optimization. Returns the final realm assignments.
      *
      * @param Round $round The round to perform realm assignment for
+     * @param bool $dryRun If true, skips database creation and outputs stats to console
      * @return Collection Collection of PlaceholderRealm objects with assigned players
      */
-    public function assignRealms(Round $round): Collection
+    public function assignRealms(Round $round, bool $dryRun = false)
     {
         $this->closePacks($round);
 
@@ -506,6 +507,11 @@ class RealmAssignmentService
 
         // Optimization pass
         $this->optimizeAssignments();
+
+        if ($dryRun) {
+            // Output comprehensive assignment statistics
+            return $this->getAssignmentStats();
+        }
 
         // Create the final realms
         $this->createRealms($round);
@@ -570,7 +576,7 @@ class RealmAssignmentService
                 'id' => $dominion->id,
                 'packId' => $dominion->pack_id,
                 'rating' => $dominion->user->rating,
-                'favorability' => $favorabilityMatrix,
+                'favorability' => $favorabilityMatrix->toArray(),
                 'hasDiscord' => true,
                 'attackerAffinity' => $dominion->user->getAffinity('attacker'),
                 'converterAffinity' => $dominion->user->getAffinity('converter'),
@@ -668,11 +674,28 @@ class RealmAssignmentService
      */
     public function createPlaceholderRealms(): void
     {
-        $packs = $this->packs->where('large', true);
-        foreach ($packs as $idx => $pack) {
+        $largePacks = $this->packs->where('large', true);
+        foreach ($largePacks as $idx => $pack) {
             $realm = new PlaceholderRealm($idx, $pack->members);
             $this->realms->push($realm);
             $this->packs->forget($pack->id);
+        }
+        if ($this->realms->count() < self::ASSIGNMENT_MIN_REALM_COUNT) {
+            $smallPacks = $this->packs->where('large', false);
+            foreach ($smallPacks as $idx => $pack) {
+                $realm = new PlaceholderRealm($idx, $pack->members);
+                $this->realms->push($realm);
+                $this->packs->forget($pack->id);
+                if ($this->realms->count() >= self::ASSIGNMENT_MIN_REALM_COUNT) {
+                    break;
+                }
+            }
+        }
+        if ($this->realms->count() < self::ASSIGNMENT_MIN_REALM_COUNT) {
+            foreach (range($this->realms->count(), self::ASSIGNMENT_MIN_REALM_COUNT - 1) as $idx) {
+                $realm = new PlaceholderRealm($idx, collect());
+                $this->realms->push($realm);
+            }
         }
     }
 
@@ -764,6 +787,10 @@ class RealmAssignmentService
      */
     public function calculateBalanceScore(PlaceholderRealm $realm, Collection $players): float
     {
+        if ($realm->players->count() == 0) {
+            return 0;
+        }
+
         $currentRating = $realm->players->sum('rating');
         $currentAverageRating = $currentRating / $realm->players->count();
         $currentDeviation = abs($this->targetRealmStrength - $currentAverageRating);
@@ -866,9 +893,13 @@ class RealmAssignmentService
     public function assignSolos(): void
     {
         // Phase 1: Distribute new players using round-robin
-        $newPlayers = $this->players->where('rating', 0);
-        foreach ($this->realms->sortBy('size') as $realm) {
-            $newPlayer = $newPlayers->shift();
+        $newPlayers = $this->players->where('rating', 0)->values(); // Get indexed collection
+        $realmCount = $this->realms->count();
+
+        // Assign all new players using round-robin across realms
+        foreach ($newPlayers as $index => $newPlayer) {
+            $realmIndex = $index % $realmCount;
+            $realm = $this->realms[$realmIndex];
             $realm->addPlayer($newPlayer);
             $this->players->forget($newPlayer->id);
         }
@@ -1310,7 +1341,7 @@ class RealmAssignmentService
             'id' => $user->id,
             'packId' => null, // Individual registration
             'rating' => $user->rating,
-            'favorability' => $favorabilityMatrix,
+            'favorability' => $favorabilityMatrix->toArray(),
             'attackerAffinity' => $user->getAffinity('attacker'),
             'converterAffinity' => $user->getAffinity('converter'),
             'explorerAffinity' => $user->getAffinity('explorer'),
