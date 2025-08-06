@@ -506,14 +506,14 @@ class RealmAssignmentService
 
         $this->loadPlayers($round);
         $this->loadPacks();
-        
+
         // Separate non-Discord players early, before any calculations
         $this->createNonDiscordRealms();
-        
+
         // Calculate targets based on remaining Discord players only
         $discordPlayerCount = $this->players->count();
         $this->targetRealmStrength = $this->players->avg('rating') ?: 1000;
-        
+
         $realmCount = $this->calculateRealmCount();
         $this->targetRealmSize = $discordPlayerCount / $realmCount;
 
@@ -1101,7 +1101,7 @@ class RealmAssignmentService
                 }
             }
         }
-        
+
         // Merge non-Discord realms into main realms collection so downstream functions see all realms
         $this->realms = $this->realms->merge($this->nonDiscordRealms);
     }
