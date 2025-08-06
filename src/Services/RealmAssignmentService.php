@@ -983,10 +983,11 @@ class RealmAssignmentService
         // Phase 1: Distribute new players using round-robin
         $newPlayers = $this->players->where('rating', 0)->values(); // Get indexed collection
         $realmCount = $this->realms->count();
+        $indexOffset = $this->nonDiscordRealms->count();
 
         // Assign all new players using round-robin across realms
         foreach ($newPlayers as $index => $newPlayer) {
-            $realmIndex = $index % $realmCount;
+            $realmIndex = ($index % $realmCount) + $indexOffset;
             $realm = $this->realms[$realmIndex];
             $realm->addPlayer($newPlayer);
             $this->players->forget($newPlayer->id);
