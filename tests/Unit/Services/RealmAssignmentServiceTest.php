@@ -752,4 +752,198 @@ class RealmAssignmentServiceTest extends AbstractTestCase
 
         echo "Integration test completed successfully!\n";
     }
+
+    /**
+     * Test playstyle deviation calculation with IDEAL_COMPOSITION
+     */
+    public function testPlaystyleDeviationCalculation()
+    {
+        // Create a test realm
+        $realm = new PlaceholderRealm('test', collect());
+
+        // Test 1: Perfect composition should have zero deviation
+        $perfectComposition = PlaceholderRealm::IDEAL_COMPOSITION;
+        $deviation = $realm->calculatePlaystyleDeviation($perfectComposition);
+        $this->assertEquals(0, $deviation, 'Perfect composition should have zero deviation');
+
+        // Test 2: Empty composition should equal sum of ideal values
+        $emptyComposition = [
+            'attackerAffinity' => 0,
+            'converterAffinity' => 0,
+            'explorerAffinity' => 0,
+            'opsAffinity' => 0,
+        ];
+        $deviation = $realm->calculatePlaystyleDeviation($emptyComposition);
+        $expectedDeviation = 40 + 20 + 60 + 50; // Sum of ideal values
+        $this->assertEquals($expectedDeviation, $deviation, 'Empty composition should deviate by sum of ideal values');
+
+        // Test 3: Doubled composition should have specific deviation
+        $doubledComposition = [
+            'attackerAffinity' => 80,  // 40 * 2
+            'converterAffinity' => 40, // 20 * 2
+            'explorerAffinity' => 120, // 60 * 2
+            'opsAffinity' => 100,      // 50 * 2
+        ];
+        $deviation = $realm->calculatePlaystyleDeviation($doubledComposition);
+        $expectedDeviation = 40 + 20 + 60 + 50; // Each differs by the ideal value
+        $this->assertEquals($expectedDeviation, $deviation, 'Doubled composition should deviate by sum of ideal values');
+
+        // Test 4: Imbalanced composition should have positive deviation
+        $imbalancedComposition = [
+            'attackerAffinity' => 100, // Way too high
+            'converterAffinity' => 0,  // Too low
+            'explorerAffinity' => 0,   // Too low
+            'opsAffinity' => 0,        // Too low
+        ];
+        $deviation = $realm->calculatePlaystyleDeviation($imbalancedComposition);
+        $this->assertGreaterThan(0, $deviation, 'Imbalanced composition should have positive deviation');
+
+        // Test 5: Compare two compositions - closer to ideal should have lower deviation
+        $betterComposition = [
+            'attackerAffinity' => 35,  // Close to ideal 30
+            'converterAffinity' => 12, // Close to ideal 10
+            'explorerAffinity' => 75,  // Close to ideal 70
+            'opsAffinity' => 48,       // Close to ideal 50
+        ];
+
+        $worseComposition = [
+            'attackerAffinity' => 80,  // Far from ideal 30
+            'converterAffinity' => 5,  // Far from ideal 10
+            'explorerAffinity' => 20,  // Far from ideal 70
+            'opsAffinity' => 25,       // Far from ideal 50
+        ];
+
+        $betterDeviation = $realm->calculatePlaystyleDeviation($betterComposition);
+        $worseDeviation = $realm->calculatePlaystyleDeviation($worseComposition);
+
+        $this->assertLessThan($worseDeviation, $betterDeviation,
+            'Composition closer to ideal should have lower deviation');
+
+        echo "\nPlaystyle deviation test results:\n";
+        echo "Perfect composition deviation: " . round($deviation, 2) . "\n";
+        echo "Better composition deviation: " . round($betterDeviation, 2) . "\n";
+        echo "Worse composition deviation: " . round($worseDeviation, 2) . "\n";
+    }
+
+    /**
+     * Test that new playstyle scoring properly distinguishes balanced vs imbalanced compositions
+     */
+    public function testPlaystyleScoringImprovement()
+    {
+        // Create test players with different playstyle patterns
+
+        // Scenario 1: Two players with extreme opposite playstyles (100, 0)
+        $extremePlayer1 = new Player([
+            'id' => 'extreme1',
+            'rating' => 1000,
+            'attackerAffinity' => 100,
+            'converterAffinity' => 0,
+            'explorerAffinity' => 0,
+            'opsAffinity' => 0,
+            'favorability' => [],
+        ]);
+
+        $extremePlayer2 = new Player([
+            'id' => 'extreme2',
+            'rating' => 1000,
+            'attackerAffinity' => 0,
+            'converterAffinity' => 0,
+            'explorerAffinity' => 100,
+            'opsAffinity' => 0,
+            'favorability' => [],
+        ]);
+
+        // Scenario 2: Two players with balanced playstyles (50, 50)
+        $balancedPlayer1 = new Player([
+            'id' => 'balanced1',
+            'rating' => 1000,
+            'attackerAffinity' => 50,
+            'converterAffinity' => 25,
+            'explorerAffinity' => 50,
+            'opsAffinity' => 25,
+            'favorability' => [],
+        ]);
+
+        $balancedPlayer2 = new Player([
+            'id' => 'balanced2',
+            'rating' => 1000,
+            'attackerAffinity' => 50,
+            'converterAffinity' => 25,
+            'explorerAffinity' => 50,
+            'opsAffinity' => 25,
+            'favorability' => [],
+        ]);
+
+        // Create empty realm for testing
+        $realm = new PlaceholderRealm('test', collect());
+
+        // Test adding extreme players
+        $extremeScore = $realm->calculatePlaystyleScore(collect([$extremePlayer1, $extremePlayer2]));
+
+        // Test adding balanced players
+        $balancedScore = $realm->calculatePlaystyleScore(collect([$balancedPlayer1, $balancedPlayer2]));
+
+        // The balanced composition should score better (higher score = better for realm balance)
+        $this->assertGreaterThan($extremeScore, $balancedScore,
+            'Balanced playstyle composition should score better than extreme composition');
+
+        // Test 3: Adding players that move toward ideal composition should score better
+        // Start with a realm that has too many attackers
+        $attackerHeavyPlayer1 = new Player([
+            'id' => 'attacker1',
+            'rating' => 1000,
+            'attackerAffinity' => 80,
+            'converterAffinity' => 10,
+            'explorerAffinity' => 30,
+            'opsAffinity' => 20,
+            'favorability' => [],
+        ]);
+
+        $attackerHeavyPlayer2 = new Player([
+            'id' => 'attacker2',
+            'rating' => 1000,
+            'attackerAffinity' => 90,
+            'converterAffinity' => 5,
+            'explorerAffinity' => 20,
+            'opsAffinity' => 15,
+            'favorability' => [],
+        ]);
+
+        $attackerHeavyRealm = new PlaceholderRealm('attacker_heavy', collect([$attackerHeavyPlayer1, $attackerHeavyPlayer2]));
+
+        // Now test adding a player that would balance it (high explorer, low attacker)
+        $balancingPlayer = new Player([
+            'id' => 'balancer',
+            'rating' => 1000,
+            'attackerAffinity' => 10,
+            'converterAffinity' => 20,
+            'explorerAffinity' => 90,
+            'opsAffinity' => 60,
+            'favorability' => [],
+        ]);
+
+        // vs adding another attacker-heavy player
+        $worseningPlayer = new Player([
+            'id' => 'worsener',
+            'rating' => 1000,
+            'attackerAffinity' => 85,
+            'converterAffinity' => 5,
+            'explorerAffinity' => 25,
+            'opsAffinity' => 10,
+            'favorability' => [],
+        ]);
+
+        $balancingScore = $attackerHeavyRealm->calculatePlaystyleScore(collect([$balancingPlayer]));
+        $worseningScore = $attackerHeavyRealm->calculatePlaystyleScore(collect([$worseningPlayer]));
+
+        $this->assertGreaterThan($worseningScore, $balancingScore,
+            'Adding player that balances composition should score better than one that worsens it');
+
+        echo "\nPlaystyle scoring improvement test results:\n";
+        echo "Extreme composition score: " . round($extremeScore, 2) . "\n";
+        echo "Balanced composition score: " . round($balancedScore, 2) . "\n";
+        echo "Balancing player score: " . round($balancingScore, 2) . "\n";
+        echo "Worsening player score: " . round($worseningScore, 2) . "\n";
+        echo "Algorithm correctly distinguishes between balanced and imbalanced compositions!\n";
+    }
 }
