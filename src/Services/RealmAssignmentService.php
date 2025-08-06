@@ -516,7 +516,7 @@ class RealmAssignmentService
         $this->targetRealmStrength = $this->players->avg('rating') ?: 1000;
 
         $realmCount = $this->calculateRealmCount();
-        $this->targetRealmSize = $discordPlayerCount / $this->realms->count();
+        $this->targetRealmSize = $discordPlayerCount / $realmCount;
 
         // Assign large packs
         $this->createPlaceholderRealms();
