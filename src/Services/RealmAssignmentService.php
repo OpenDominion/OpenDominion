@@ -515,8 +515,8 @@ class RealmAssignmentService
         // Calculate targets based on Discord players only
         $this->targetRealmStrength = $this->players->avg('rating') ?: 1000;
 
-        $realmCount = $this->calculateRealmCount();
-        $this->targetRealmSize = $discordPlayerCount / $realmCount;
+        $discordRealmCount = $this->calculateRealmCount();
+        $this->targetRealmSize = $discordPlayerCount / $discordRealmCount;
 
         // Assign large packs
         $this->createPlaceholderRealms();
@@ -936,15 +936,36 @@ class RealmAssignmentService
     public function calculateSizeBonus(PlaceholderRealm $realm): float
     {
         $currentSize = $realm->players->count();
-        $targetSize = (int) round($this->targetRealmSize);
+        $targetSize = floor($this->targetRealmSize);
 
-        // Large penalty for realms at or above target size
+        // Large penalty for realms at or above max size
         if ($currentSize >= $targetSize) {
-            return -1000; // Effectively eliminates this realm from consideration
+            return -10000;
         }
 
-        // Small bonus for realms that need players
+        // Bonus for realms that need players
         return ($targetSize - $currentSize) * 10;
+    }
+
+    /**
+     * Calculate comprehensive placement score combining all factors
+     *
+     * Combines compatibility (favorability + playstyle), rating balance, and size
+     * constraints into a single weighted score. This ensures consistent scoring
+     * across both assignment and optimization phases.
+     *
+     * @param PlaceholderRealm $realm The realm to evaluate
+     * @param Collection $players The players to potentially add
+     * @param float $balanceWeight Weight for balance score (default 1)
+     * @return float Total placement score (higher is better)
+     */
+    public function calculatePlacementScore(PlaceholderRealm $realm, Collection $players, float $balanceWeight = 1): float
+    {
+        $compatibilityScore = $realm->getCompatibilityScore($players);
+        $balanceScore = $this->calculateBalanceScore($realm, $players);
+        $sizeBonus = $this->calculateSizeBonus($realm);
+
+        return $compatibilityScore + ($balanceScore * $balanceWeight) + $sizeBonus;
     }
 
     /**
@@ -996,15 +1017,8 @@ class RealmAssignmentService
                     continue;
                 }
 
-                // Calculate compatibility and balance scores
-                $compatibilityScore = $realm->getCompatibilityScore(collect([$player]));
-                $balanceScore = $this->calculateBalanceScore($realm, collect([$player]));
-                $sizeBonus = $this->calculateSizeBonus($realm);
-
-                // Weight the balance score more heavily to prevent extreme rating imbalances
-                $weightedBalanceScore = $balanceScore * 5; // Increase balance importance
-
-                $totalScore = $compatibilityScore + $weightedBalanceScore + $sizeBonus;
+                // Calculate comprehensive placement score
+                $totalScore = $this->calculatePlacementScore($realm, collect([$player]), 5);
 
                 if ($totalScore > $bestScore) {
                     $bestScore = $totalScore;
@@ -1140,14 +1154,14 @@ class RealmAssignmentService
         $realm1->update();
         $realm2->update();
 
-        // Calculate base scores without either player
-        $currentScore1 = $this->calculateBalanceScore($realm1, collect([$solo1]));
-        $currentScore2 = $this->calculateBalanceScore($realm2, collect([$solo2]));
+        // Calculate base scores without either player (including all factors)
+        $currentScore1 = $this->calculatePlacementScore($realm1, collect([$solo1]));
+        $currentScore2 = $this->calculatePlacementScore($realm2, collect([$solo2]));
         $currentTotal = $currentScore1 + $currentScore2;
 
-        // Calculate post-swap scores
-        $newScore1 = $this->calculateBalanceScore($realm1, collect([$solo2]));
-        $newScore2 = $this->calculateBalanceScore($realm2, collect([$solo1]));
+        // Calculate post-swap scores (including all factors)
+        $newScore1 = $this->calculatePlacementScore($realm1, collect([$solo2]));
+        $newScore2 = $this->calculatePlacementScore($realm2, collect([$solo1]));
         $newTotal = $newScore1 + $newScore2;
 
         // Restore players to their original realms
