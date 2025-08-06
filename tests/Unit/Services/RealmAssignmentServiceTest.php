@@ -177,7 +177,7 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             echo "  Solo/Packed: {$realmStats['solo_players']}/{$realmStats['packed_players']}\n";
 
             $playstyle = $realmStats['playstyle_distribution'];
-            echo "  Playstyles: A:{$playstyle['attackerRating']} C:{$playstyle['converterRating']} E:{$playstyle['explorerRating']} O:{$playstyle['opsRating']}\n";
+            echo "  Playstyles: A:{$playstyle['attackerAffinity']} C:{$playstyle['converterAffinity']} E:{$playstyle['explorerAffinity']} O:{$playstyle['opsAffinity']}\n";
 
             // Calculate favorability scores for this realm
             $favorabilityStats = $this->calculateRealmFavorabilityStats($realm);
@@ -376,10 +376,10 @@ class RealmAssignmentServiceTest extends AbstractTestCase
                 'packId' => null, // Will be set for packed players
                 'favorability' => $favorabilityMatrix,
                 // Generate varied playstyle ratings based on rating tier
-                'attackerRating' => $this->generatePlaystyleRating($rating, 'attacker'),
-                'converterRating' => $this->generatePlaystyleRating($rating, 'converter'),
-                'explorerRating' => $this->generatePlaystyleRating($rating, 'explorer'),
-                'opsRating' => $this->generatePlaystyleRating($rating, 'ops'),
+                'attackerAffinity' => $this->generatePlaystyleRating($rating, 'attacker'),
+                'converterAffinity' => $this->generatePlaystyleRating($rating, 'converter'),
+                'explorerAffinity' => $this->generatePlaystyleRating($rating, 'explorer'),
+                'opsAffinity' => $this->generatePlaystyleRating($rating, 'ops'),
             ]);
 
             $this->service->players->put($playerId, $player);
@@ -511,10 +511,10 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         foreach ($realms as $realm) {
             $composition = $realm->getPlaystyleComposition();
             $this->assertIsArray($composition);
-            $this->assertArrayHasKey('attackerRating', $composition);
-            $this->assertArrayHasKey('converterRating', $composition);
-            $this->assertArrayHasKey('explorerRating', $composition);
-            $this->assertArrayHasKey('opsRating', $composition);
+            $this->assertArrayHasKey('attackerAffinity', $composition);
+            $this->assertArrayHasKey('converterAffinity', $composition);
+            $this->assertArrayHasKey('explorerAffinity', $composition);
+            $this->assertArrayHasKey('opsAffinity', $composition);
         }
     }
 

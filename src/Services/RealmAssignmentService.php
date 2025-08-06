@@ -24,11 +24,11 @@ class Player
     //public bool $hasDiscord;
     public array $favorability = []; // player_id => score
 
-    // Playstyle ratings (0-100 for each category)
-    public float $attackerRating = 0;
-    public float $converterRating = 0;
-    public float $explorerRating = 0;
-    public float $opsRating = 0;
+    // Playstyle affinities (0-100 for each category)
+    public float $attackerAffinity = 0;
+    public float $converterAffinity = 0;
+    public float $explorerAffinity = 0;
+    public float $opsAffinity = 0;
 
     /**
      * Create a new Player instance with given attributes
@@ -63,9 +63,9 @@ class Player
     }
 
     /**
-     * Get player's primary playstyle based on highest rating
+     * Get player's primary playstyle based on highest affinity
      *
-     * Compares all playstyle ratings (attacker, converter, explorer, ops) and
+     * Compares all playstyle affinities (attacker, converter, explorer, ops) and
      * returns the playstyle with the highest value. Used for playstyle distribution
      * analysis and realm balancing.
      *
@@ -73,14 +73,14 @@ class Player
      */
     public function getPrimaryPlaystyle(): string
     {
-        $ratings = [
-            'attacker' => $this->attackerRating,
-            'converter' => $this->converterRating,
-            'explorer' => $this->explorerRating,
-            'ops' => $this->opsRating,
+        $affinities = [
+            'attacker' => $this->attackerAffinity,
+            'converter' => $this->converterAffinity,
+            'explorer' => $this->explorerAffinity,
+            'ops' => $this->opsAffinity,
         ];
 
-        return array_keys($ratings, max($ratings))[0];
+        return array_keys($affinities, max($affinities))[0];
     }
 }
 
@@ -337,15 +337,15 @@ class PlaceholderRealm
      * ratings from all players who have >= 25 rating in that category.
      * This provides the foundation for playstyle balance calculations.
      *
-     * @return array Associative array with playstyle totals (attackerRating, converterRating, etc.)
+     * @return array Associative array with playstyle totals (attackerAffinity, converterAffinity, etc.)
      */
     public function getPlaystyleComposition(): array
     {
         $comp = [
-            'attackerRating' => 0,
-            'converterRating' => 0,
-            'explorerRating' => 0,
-            'opsRating' => 0,
+            'attackerAffinity' => 0,
+            'converterAffinity' => 0,
+            'explorerAffinity' => 0,
+            'opsAffinity' => 0,
         ];
 
         foreach ($this->players as $realmMember) {
@@ -536,14 +536,13 @@ class RealmAssignmentService
             $player = new Player([
                 'id' => $dominion->id,
                 'packId' => $dominion->pack_id,
-                'rating' => $dominion->user->rating,// TODO: * $dominion->user->rating_weight,
+                'rating' => $dominion->user->rating,
                 'favorability' => $favorabilityMatrix,
                 'hasDiscord' => true,
-                // TODO: Calculate these
-                'attackerRating' => 75,
-                'converterRating' => 25,
-                'explorerRating' => 50,
-                'opsRating' => 25,
+                'attackerRating' => $dominion->user->getAffinity('attacker'),
+                'converterRating' => $dominion->user->getAffinity('converter'),
+                'explorerRating' => $dominion->user->getAffinity('explorer'),
+                'opsRating' => $dominion->user->getAffinity('ops'),
             ]);
             $this->players->put($dominion->id, $player);
         }
@@ -1280,11 +1279,10 @@ class RealmAssignmentService
             'packId' => null, // Individual registration
             'rating' => $user->rating,
             'favorability' => $favorabilityMatrix,
-            // TODO: Calculate actual playstyle ratings when available
-            'attackerRating' => 50,
-            'converterRating' => 50,
-            'explorerRating' => 50,
-            'opsRating' => 50,
+            'attackerAffinity' => $user->getAffinity('attacker'),
+            'converterAffinity' => $user->getAffinity('converter'),
+            'explorerAffinity' => $user->getAffinity('explorer'),
+            'opsAffinity' => $user->getAffinity('ops'),
         ]);
     }
 
@@ -1337,11 +1335,10 @@ class RealmAssignmentService
                 'packId' => $dominion->pack_id,
                 'rating' => $dominion->user->rating,
                 'favorability' => [], // Not needed for existing players in this context
-                // Placeholder playstyle data
-                'attackerRating' => 50,
-                'converterRating' => 50,
-                'explorerRating' => 50,
-                'opsRating' => 50,
+                'attackerRating' => $dominion->user->getAffinity('attacker'),
+                'converterRating' => $dominion->user->getAffinity('converter'),
+                'explorerRating' => $dominion->user->getAffinity('explorer'),
+                'opsRating' => $dominion->user->getAffinity('ops'),
             ]);
         });
 
