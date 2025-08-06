@@ -372,7 +372,6 @@ class PlaceholderRealm
         ];
     }
 
-
     /**
      * Calculate how far a composition deviates from ideal averages
      *
@@ -613,24 +612,31 @@ class RealmAssignmentService
     }
 
     /**
-     * Calculate optimal number of realms based on pack sizes
+     * Calculate optimal number of Discord realms based on pack sizes and constraints
      *
      * The number of realms is primarily determined by the number of large packs
-     * (>3 players), with adjustments to stay within min/max bounds. Large packs
-     * may be downgraded or small packs upgraded to achieve the target count.
+     * (>3 players), with adjustments to stay within min/max bounds. Takes into account
+     * existing non-Discord realms to ensure total realm count doesn't exceed limits.
      *
-     * @return int Number of realms to create
+     * @return int Number of Discord realms to create
      */
     public function calculateRealmCount(): int
     {
         $largePacks = $this->packs->where('large', true)->count();
+        $nonDiscordRealmCount = $this->nonDiscordRealms->count();
 
-        if ($largePacks > self::ASSIGNMENT_MAX_REALM_COUNT) {
-            $this->downgradePacks(self::ASSIGNMENT_MAX_REALM_COUNT - $largePacks);
-            return self::ASSIGNMENT_MAX_REALM_COUNT;
-        } elseif ($largePacks < self::ASSIGNMENT_MIN_REALM_COUNT) {
-            $this->upgradePacks(self::ASSIGNMENT_MIN_REALM_COUNT - $largePacks);
-            return self::ASSIGNMENT_MIN_REALM_COUNT;
+        // Calculate max Discord realms we can create without exceeding total limit
+        $maxDiscordRealms = self::ASSIGNMENT_MAX_REALM_COUNT - $nonDiscordRealmCount;
+
+        // Ensure we have at least minimum total realms
+        $minDiscordRealms = max(0, self::ASSIGNMENT_MIN_REALM_COUNT - $nonDiscordRealmCount);
+
+        if ($largePacks > $maxDiscordRealms) {
+            $this->downgradePacks($maxDiscordRealms - $largePacks);
+            return $maxDiscordRealms;
+        } elseif ($largePacks < $minDiscordRealms) {
+            $this->upgradePacks($minDiscordRealms - $largePacks);
+            return $minDiscordRealms;
         } else {
             return $largePacks;
         }
@@ -678,26 +684,21 @@ class RealmAssignmentService
      */
     public function createPlaceholderRealms(): void
     {
-        // Start realm counter after non-Discord realms to avoid ID collisions
-        $realmCounter = $this->nonDiscordRealms->count();
-
         // Step 1: Create regular Discord-enabled realms from remaining packs
         $largePacks = $this->packs->where('large', true);
-        foreach ($largePacks as $pack) {
-            $realm = new PlaceholderRealm($realmCounter, $pack->members);
+        foreach ($largePacks as $idx => $pack) {
+            $realm = new PlaceholderRealm("large-{$idx}", $pack->members);
             $this->realms->push($realm);
             $this->packs->forget($pack->id);
-            $realmCounter++;
         }
 
         // Step 3: Use small packs if we need more realms
         if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
             $smallPacks = $this->packs->where('large', false);
-            foreach ($smallPacks as $pack) {
-                $realm = new PlaceholderRealm($realmCounter, $pack->members);
+            foreach ($smallPacks as $idx => $pack) {
+                $realm = new PlaceholderRealm("small-{$idx}", $pack->members);
                 $this->realms->push($realm);
                 $this->packs->forget($pack->id);
-                $realmCounter++;
                 if ($this->getRealmCount() >= self::ASSIGNMENT_MIN_REALM_COUNT) {
                     break;
                 }
@@ -705,10 +706,9 @@ class RealmAssignmentService
         }
 
         // Step 4: Create empty Discord-enabled realms if needed
-        while ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
-            $realm = new PlaceholderRealm($realmCounter, collect());
+        foreach (range($this->getRealmCount(), self::ASSIGNMENT_MIN_REALM_COUNT) as $idx) {
+            $realm = new PlaceholderRealm("solo-{$idx}", collect());
             $this->realms->push($realm);
-            $realmCounter++;
         }
     }
 
@@ -719,7 +719,7 @@ class RealmAssignmentService
      * non-Discord solo players, in which case additional realms are created.
      * Stores them separately to avoid interfering with main assignment logic.
      */
-    private function createNonDiscordRealms(): void
+    public function createNonDiscordRealms(): void
     {
         $nonDiscordSoloPlayers = $this->players->where('hasDiscord', false);
         $totalNonDiscordPlayers = $nonDiscordSoloPlayers->count();
@@ -732,8 +732,8 @@ class RealmAssignmentService
         $nonDiscordRealmCount = max(1, ceil($totalNonDiscordPlayers / 14));
 
         // Create non-Discord realms with integer IDs starting from 0
-        for ($i = 0; $i < $nonDiscordRealmCount; $i++) {
-            $realm = new PlaceholderRealm($i, collect(), false);
+        foreach (range(1, $nonDiscordRealmCount) as $idx) {
+            $realm = new PlaceholderRealm("non-discord-{$idx}", collect(), false);
             $this->nonDiscordRealms->push($realm);
         }
 
@@ -843,20 +843,16 @@ class RealmAssignmentService
         $newAverageRating = $newRating / ($realm->players->count() + $players->count());
         $newDeviation = abs($this->targetRealmStrength - $newAverageRating);
 
-        // Instead of just rewarding improvement, penalize final distance from target
-        // This encourages assignments that result in realms closer to the target
-        $baseScore = 200 - $newDeviation; // Higher score for realms closer to target
+        // Reward improvement, penalize making things worse
+        $improvement = $currentDeviation - $newDeviation;
 
-        // Bonus for improvement (but secondary to final position)
-        $improvementBonus = ($currentDeviation - $newDeviation) * 0.5;
-
-        // Strong exponential penalty for very unbalanced final states
-        $unbalancePenalty = 0;
-        if ($newDeviation > 150) {
-            $unbalancePenalty = pow($newDeviation / 100, 2) * 50;
+        if ($improvement > 0) {
+            // Adding this player improves balance - reward it
+            return $improvement * 2; // 2x multiplier for improvements
+        } else {
+            // Adding this player makes balance worse - penalize it
+            return $improvement * 3; // 3x penalty for making things worse
         }
-
-        return $baseScore + $improvementBonus - $unbalancePenalty;
     }
 
     /**
@@ -915,15 +911,20 @@ class RealmAssignmentService
     public function calculateSizeBonus(PlaceholderRealm $realm): float
     {
         $currentSize = $realm->players->count();
-        $targetSize = floor($this->targetRealmSize);
+        $idealSize = floor($this->targetRealmSize);
+        $maxAllowedSize = $idealSize + 1;
 
-        // Large penalty for realms at or above max size
-        if ($currentSize >= $targetSize) {
-            return -10000;
+        // Tiered penalty/bonus system for balanced distribution
+        if ($currentSize >= $maxAllowedSize) {
+            return -10000; // Strong penalty for exceeding limit
         }
 
-        // Bonus for realms that need players
-        return ($targetSize - $currentSize) * 10;
+        if ($currentSize == $idealSize) {
+            return -200; // Small penalty to discourage going to ideal size too quickly
+        }
+
+        // Moderate bonus for realms under ideal size
+        return ($idealSize - $currentSize) * 100;
     }
 
     /**
@@ -960,11 +961,10 @@ class RealmAssignmentService
         // Phase 1: Distribute new players using round-robin
         $newPlayers = $this->players->where('rating', 0)->values(); // Get indexed collection
         $realmCount = $this->realms->count();
-        $indexOffset = $this->nonDiscordRealms->count();
 
         // Assign all new players using round-robin across realms
         foreach ($newPlayers as $index => $newPlayer) {
-            $realmIndex = ($index % $realmCount) + $indexOffset;
+            $realmIndex = ($index % $realmCount);
             $realm = $this->realms[$realmIndex];
             $realm->addPlayer($newPlayer);
             $this->players->forget($newPlayer->id);
@@ -1450,7 +1450,6 @@ class RealmAssignmentService
         foreach ($candidateRealms as $realm) {
             // Create placeholder realm for scoring
             $placeholderRealm = $this->createPlaceholderRealm($realm);
-
 
             // Calculate compatibility score using existing method
             $compatibilityScore = $placeholderRealm->getCompatibilityScore(collect([$player]));
