@@ -372,29 +372,6 @@ class PlaceholderRealm
         ];
     }
 
-    /**
-     * Check if player has hard conflicts with realm members
-     *
-     * Calculates the total favorability score between the player and all
-     * existing realm members. A hard conflict exists when the total favorability
-     * is less than -10, indicating significant negative relationships.
-     *
-     * @param Player $player The player to check for conflicts
-     * @return bool True if hard conflicts exist (favorability < -10)
-     */
-    public function hasHardConflicts(Player $player): bool
-    {
-        $favorabilityScore = 0;
-
-        foreach ($this->players as $member) {
-            $favorabilityScore += $player->getFavorabilityWith($member->id);
-            $favorabilityScore += $member->getFavorabilityWith($player->id);
-        }
-        if ($favorabilityScore < -10) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * Calculate how far a composition deviates from ideal averages
@@ -1015,11 +992,6 @@ class RealmAssignmentService
             $bestScore = -INF;
 
             foreach ($this->realms as $realm) {
-                // Skip realms where player would have hard conflicts
-                if ($realm->hasHardConflicts($player)) {
-                    continue;
-                }
-
                 // Calculate comprehensive placement score
                 $totalScore = $this->calculatePlacementScore($realm, collect([$player]), 5);
 
@@ -1144,12 +1116,7 @@ class RealmAssignmentService
         PlaceholderRealm $realm1,
         PlaceholderRealm $realm2
     ): bool {
-        // 1. Check for hard conflicts first (early exit)
-        if ($realm2->hasHardConflicts($solo1) || $realm1->hasHardConflicts($solo2)) {
-            return false;
-        }
-
-        // 2. Calculate accurate swap scores by removing players first, then evaluating placements
+        // 1. Calculate accurate swap scores by removing players first, then evaluating placements
 
         // Remove players temporarily to get accurate base scores
         $realm1->players->forget($solo1->id);
@@ -1484,10 +1451,6 @@ class RealmAssignmentService
             // Create placeholder realm for scoring
             $placeholderRealm = $this->createPlaceholderRealm($realm);
 
-            // Check for hard conflicts first (early exit)
-            if ($placeholderRealm->hasHardConflicts($player)) {
-                continue;
-            }
 
             // Calculate compatibility score using existing method
             $compatibilityScore = $placeholderRealm->getCompatibilityScore(collect([$player]));
