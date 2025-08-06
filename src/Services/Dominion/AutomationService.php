@@ -108,7 +108,7 @@ class AutomationService
                         });
                         continue;
                     }
-                    if ($dominion->protection_type == 'quick_start' && !(in_array($dominion->protection_ticks_remaining, [36, 24]) || $dominion->protection_ticks_remaining <= 12)) {
+                    if ($dominion->protection_type == 'quick' && !(in_array($dominion->protection_ticks_remaining, [36, 24]) || $dominion->protection_ticks_remaining <= 12)) {
                         // Don't process 'skipped' ticks for Quick Start
                         continue;
                     }
