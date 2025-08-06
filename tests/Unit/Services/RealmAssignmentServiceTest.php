@@ -816,13 +816,16 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $betterDeviation = $realm->calculatePlaystyleDeviation($betterComposition);
         $worseDeviation = $realm->calculatePlaystyleDeviation($worseComposition);
 
-        $this->assertLessThan($worseDeviation, $betterDeviation,
-            'Composition closer to ideal should have lower deviation');
+        $this->assertLessThan(
+            $worseDeviation,
+            $betterDeviation,
+            'Composition closer to ideal should have lower deviation'
+        );
 
         echo "\nPlaystyle deviation test results:\n";
-        echo "Perfect composition deviation: " . round($deviation, 2) . "\n";
-        echo "Better composition deviation: " . round($betterDeviation, 2) . "\n";
-        echo "Worse composition deviation: " . round($worseDeviation, 2) . "\n";
+        echo 'Perfect composition deviation: ' . round($deviation, 2) . "\n";
+        echo 'Better composition deviation: ' . round($betterDeviation, 2) . "\n";
+        echo 'Worse composition deviation: ' . round($worseDeviation, 2) . "\n";
     }
 
     /**
@@ -884,8 +887,11 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $balancedScore = $realm->calculatePlaystyleScore(collect([$balancedPlayer1, $balancedPlayer2]));
 
         // The balanced composition should score better (higher score = better for realm balance)
-        $this->assertGreaterThan($extremeScore, $balancedScore,
-            'Balanced playstyle composition should score better than extreme composition');
+        $this->assertGreaterThan(
+            $extremeScore,
+            $balancedScore,
+            'Balanced playstyle composition should score better than extreme composition'
+        );
 
         // Test 3: Adding players that move toward ideal composition should score better
         // Start with a realm that has too many attackers
@@ -936,14 +942,17 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $balancingScore = $attackerHeavyRealm->calculatePlaystyleScore(collect([$balancingPlayer]));
         $worseningScore = $attackerHeavyRealm->calculatePlaystyleScore(collect([$worseningPlayer]));
 
-        $this->assertGreaterThan($worseningScore, $balancingScore,
-            'Adding player that balances composition should score better than one that worsens it');
+        $this->assertGreaterThan(
+            $worseningScore,
+            $balancingScore,
+            'Adding player that balances composition should score better than one that worsens it'
+        );
 
         echo "\nPlaystyle scoring improvement test results:\n";
-        echo "Extreme composition score: " . round($extremeScore, 2) . "\n";
-        echo "Balanced composition score: " . round($balancedScore, 2) . "\n";
-        echo "Balancing player score: " . round($balancingScore, 2) . "\n";
-        echo "Worsening player score: " . round($worseningScore, 2) . "\n";
+        echo 'Extreme composition score: ' . round($extremeScore, 2) . "\n";
+        echo 'Balanced composition score: ' . round($balancedScore, 2) . "\n";
+        echo 'Balancing player score: ' . round($balancingScore, 2) . "\n";
+        echo 'Worsening player score: ' . round($worseningScore, 2) . "\n";
         echo "Algorithm correctly distinguishes between balanced and imbalanced compositions!\n";
     }
 }
