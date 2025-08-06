@@ -568,15 +568,15 @@ class RealmAssignmentService
         foreach ($registeredDominions as $dominion) {
             // Perform pre-processing
             $playerFeedback = $userFeedback->where('source_id', $dominion->user_id);
-            $favorabilityMatrix = $playerFeedback->mapwithKeys(function ($feedback) {
+            $favorabilityMatrix = $playerFeedback->mapWithKeys(function ($feedback) {
                 return [$feedback->target_id => $feedback->endorsed ? 1 : -1];
-            });
+            })->toArray();
             // Create player
             $player = new Player([
                 'id' => $dominion->id,
                 'packId' => $dominion->pack_id,
-                'rating' => $dominion->user->rating,
-                'favorability' => $favorabilityMatrix->toArray(),
+                'rating' => $dominion->user->rating ?? 0,
+                'favorability' => $favorabilityMatrix,
                 'hasDiscord' => true,
                 'attackerAffinity' => $dominion->user->getAffinity('attacker'),
                 'converterAffinity' => $dominion->user->getAffinity('converter'),
@@ -1340,8 +1340,8 @@ class RealmAssignmentService
         return new Player([
             'id' => $user->id,
             'packId' => null, // Individual registration
-            'rating' => $user->rating,
-            'favorability' => $favorabilityMatrix->toArray(),
+            'rating' => $user->rating ?? 0,
+            'favorability' => $favorabilityMatrix,
             'attackerAffinity' => $user->getAffinity('attacker'),
             'converterAffinity' => $user->getAffinity('converter'),
             'explorerAffinity' => $user->getAffinity('explorer'),
@@ -1396,7 +1396,7 @@ class RealmAssignmentService
             return new Player([
                 'id' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
-                'rating' => $dominion->user->rating,
+                'rating' => $dominion->user->rating ?? 0,
                 'favorability' => [], // Not needed for existing players in this context
                 'attackerAffinity' => $dominion->user->getAffinity('attacker'),
                 'converterAffinity' => $dominion->user->getAffinity('converter'),
@@ -1420,7 +1420,7 @@ class RealmAssignmentService
         foreach ($candidateRealms as $realm) {
             $realmSize = $realm->dominions->count();
             $realmRating = $realm->dominions->sum(function ($dominion) {
-                return $dominion->user->rating;
+                return $dominion->user->rating ?? 0;
             });
 
             $realmSizes[] = $realmSize;

@@ -11,7 +11,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Dominion\SelectorService;
-use OpenDominion\Services\RealmFinderService;
+use OpenDominion\Services\RealmAssignmentService;
 
 trait CreatesData
 {
@@ -109,10 +109,10 @@ trait CreatesData
         }
 
         if ($realm === null) {
-            /** @var RealmFinderService $realmFinderService */
-            $realmFinderService = $this->app->make(RealmFinderService::class);
+            /** @var RealmAssignmentService $realmAssignmentService */
+            $realmAssignmentService = $this->app->make(RealmAssignmentService::class);
 
-            $realm = $realmFinderService->findRealm($round, $race, $user);
+            $realm = $realmAssignmentService->findRealm($round, $race, $user);
 
             if ($realm === null) {
                 /** @var RealmFactory $realmFactory */
