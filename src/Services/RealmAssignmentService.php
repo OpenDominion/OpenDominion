@@ -274,7 +274,7 @@ class PlaceholderRealm
     public function update(): void
     {
         $this->size = $this->players->count();
-        $this->rating = $this->players->avg('rating');
+        $this->rating = $this->players->avg('rating') ?? 0;
     }
 
     /**
@@ -489,7 +489,7 @@ class RealmAssignmentService
         $this->createNonDiscordRealms();
 
         // Calculate targets based on Discord players only
-        $this->targetRealmStrength = $this->players->avg('rating') ?: 1000;
+        $this->targetRealmStrength = $this->players->avg('rating') ?: 1500;
 
         $discordRealmCount = $this->calculateRealmCount();
         $this->targetRealmSize = $discordPlayerCount / $discordRealmCount;
