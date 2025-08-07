@@ -1331,8 +1331,8 @@ class RealmAssignmentService
             $realmSize = $realm->size;
             $realmRating = $realm->rating;
             $playstyleDist = $realm->getPlaystyleComposition();
-            $newPlayerCount = $realm->players->where('rating', 0)->count();
-            $experiencedPlayerCount = $realm->players->where('rating', '>', 0)->count();
+            $newPlayerCount = $realm->players->where('rating', '<=', 1000)->count();
+            $experiencedPlayerCount = $realm->players->where('rating', '>', 1000)->count();
 
             // Accumulate totals
             $totalPlayers += $realmSize;
