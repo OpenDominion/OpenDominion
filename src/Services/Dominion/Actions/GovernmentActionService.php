@@ -17,7 +17,6 @@ use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\Realm\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use OpenDominion\Traits\RealmGuardsTrait;
-use RuntimeException;
 
 class GovernmentActionService
 {
@@ -56,7 +55,7 @@ class GovernmentActionService
      *
      * @param Dominion $dominion
      * @param int $monarch_id
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function voteForMonarch(Dominion $dominion, ?int $monarch_id)
     {
@@ -65,7 +64,7 @@ class GovernmentActionService
 
         $monarch = Dominion::find($monarch_id);
         if ($monarch == null) {
-            throw new RuntimeException('Dominion not found.');
+            throw new GameException('Dominion not found.');
         }
         if ($dominion->realm_id != $monarch->realm_id) {
             throw new GameException('You cannot vote for a monarch outside of your realm.');
@@ -121,7 +120,6 @@ class GovernmentActionService
      * @param Dominion $appointee
      * @param string $role
      * @throws GameException
-     * @throws RuntimeException
      */
     public function setAppointments(Dominion $dominion, Dominion $appointee, string $role)
     {
@@ -205,7 +203,6 @@ class GovernmentActionService
      * @param Dominion $dominion
      * @param int $realm_number
      * @throws GameException
-     * @throws RuntimeException
      */
     public function declareWar(Dominion $dominion, int $realm_number)
     {
@@ -214,7 +211,7 @@ class GovernmentActionService
 
         $target = Realm::where(['round_id'=>$dominion->round_id, 'number'=>$realm_number])->first();
         if ($target == null || $dominion->realm->round_id != $target->round_id) {
-            throw new RuntimeException('Realm not found.');
+            throw new GameException('Realm not found.');
         }
 
         $this->guardGraveyardRealm($target);
@@ -224,7 +221,7 @@ class GovernmentActionService
         }
 
         if ($dominion->realm->id == $target->id) {
-            throw new RuntimeException('You cannot declare war against your own realm.');
+            throw new GameException('You cannot declare war against your own realm.');
         }
 
         if (!$this->governmentService->canDeclareWar($dominion->realm)) {
