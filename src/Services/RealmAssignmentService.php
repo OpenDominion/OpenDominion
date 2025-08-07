@@ -492,7 +492,7 @@ class RealmAssignmentService
         $this->targetRealmStrength = $this->players->avg('rating') ?: 1500;
 
         $discordRealmCount = $this->calculateRealmCount();
-        $this->targetRealmSize = $discordPlayerCount / $discordRealmCount;
+        $this->targetRealmSize = floor($discordPlayerCount / $discordRealmCount);
 
         // Assign large packs
         $this->createPlaceholderRealms();
@@ -914,12 +914,12 @@ class RealmAssignmentService
         $targetSize = $this->targetRealmSize;
 
         // Tiered penalty/bonus system for balanced distribution
-        if ($currentSize >= $targetSize) {
+        if ($currentSize > $targetSize) {
             return -5000; // Strong penalty for exceeding limit
         }
 
         // Moderate bonus for realms under ideal size
-        return ($currentSize - $currentSize) * 10;
+        return ($targetSize - $currentSize) * 10;
     }
 
     /**
@@ -931,16 +931,16 @@ class RealmAssignmentService
      *
      * @param PlaceholderRealm $realm The realm to evaluate
      * @param Collection $players The players to potentially add
-     * @param float $balanceWeight Weight for balance score (default 1)
+     * @param bool $includeSize Whether to include size bonus in calculation (default true)
      * @return float Total placement score (higher is better)
      */
-    public function calculatePlacementScore(PlaceholderRealm $realm, Collection $players, float $balanceWeight = 1): float
+    public function calculatePlacementScore(PlaceholderRealm $realm, Collection $players, bool $includeSize = true): float
     {
         $compatibilityScore = $realm->getCompatibilityScore($players);
         $balanceScore = $this->calculateBalanceScore($realm, $players);
-        $sizeBonus = $this->calculateSizeBonus($realm);
+        $sizeBonus = $includeSize ? $this->calculateSizeBonus($realm) : 0;
 
-        return $compatibilityScore + ($balanceScore * $balanceWeight) + $sizeBonus;
+        return $compatibilityScore + $balanceScore + $sizeBonus;
     }
 
     /**
@@ -954,7 +954,7 @@ class RealmAssignmentService
     public function assignSolos(): void
     {
         // Phase 1: Distribute new players using round-robin
-        $newPlayers = $this->players->where('rating', 0)->values(); // Get indexed collection
+        $newPlayers = $this->players->where('rating', '<=', 1000)->values(); // Get indexed collection
         $realmCount = $this->realms->count();
 
         // Assign all new players using round-robin across realms
@@ -979,8 +979,8 @@ class RealmAssignmentService
      */
     public function assignExperiencedPlayers(): void
     {
-        // Sort by rating (highest first) for strategic placement, with shuffle for tied ratings
-        $sortedPlayers = $this->players->sortByDesc('rating')->shuffle()->values();
+        // Sort by rating (highest first) for strategic placement
+        $sortedPlayers = $this->players->sortByDesc('rating')->values();
 
         foreach ($sortedPlayers as $player) {
             $bestRealm = null;
@@ -988,7 +988,7 @@ class RealmAssignmentService
 
             foreach ($this->realms as $realm) {
                 // Calculate comprehensive placement score
-                $totalScore = $this->calculatePlacementScore($realm, collect([$player]), 5);
+                $totalScore = $this->calculatePlacementScore($realm, collect([$player]));
 
                 if ($totalScore > $bestScore) {
                     $bestScore = $totalScore;
@@ -1026,16 +1026,42 @@ class RealmAssignmentService
                 break;
             }
 
-            // Find a solo player from the largest realm to move
-            $soloPlayer = $largest->soloPlayers()->first();
-            if (!$soloPlayer) {
+            // Find the best solo player to move (one that improves or least worsens rating balance)
+            $availablePlayers = $largest->soloPlayers()->where('rating', '>', 1000);
+            if ($availablePlayers->isEmpty()) {
                 break; // No solo players available to move
             }
 
-            // Move the player from largest to smallest realm
-            $largest->players->forget($soloPlayer->id);
+            $bestPlayer = null;
+            $bestBalanceImpact = -INF;
+
+            foreach ($availablePlayers as $player) {
+                // Calculate rating balance impact of moving this player
+                $currentLargestAvg = $largest->players->avg('rating');
+                $currentSmallestAvg = $smallest->players->avg('rating');
+
+                $newLargestAvg = $largest->players->where('id', '!=', $player->id)->avg('rating');
+                $newSmallestAvg = ($smallest->players->sum('rating') + $player->rating) / ($smallest->players->count() + 1);
+
+                // Calculate improvement in balance (lower total deviation is better)
+                $currentDeviation = abs($this->targetRealmStrength - $currentLargestAvg) + abs($this->targetRealmStrength - $currentSmallestAvg);
+                $newDeviation = abs($this->targetRealmStrength - $newLargestAvg) + abs($this->targetRealmStrength - $newSmallestAvg);
+                $balanceImpact = $currentDeviation - $newDeviation; // Positive = improvement
+
+                if ($balanceImpact > $bestBalanceImpact) {
+                    $bestBalanceImpact = $balanceImpact;
+                    $bestPlayer = $player;
+                }
+            }
+
+            if (!$bestPlayer) {
+                break; // No suitable player found
+            }
+
+            // Move the best player from largest to smallest realm
+            $largest->players->forget($bestPlayer->id);
             $largest->update(); // Recalculate size and rating
-            $smallest->addPlayer($soloPlayer);
+            $smallest->addPlayer($bestPlayer);
             $smallest->update(); // Ensure smallest realm is also updated
 
             $iterations++;
@@ -1068,7 +1094,7 @@ class RealmAssignmentService
             // Collect all solo players with their realm assignments
             $soloPlayers = collect();
             foreach ($this->realms as $realm) {
-                foreach ($realm->soloPlayers() as $player) {
+                foreach ($realm->soloPlayers()->where('rating', '>=', 1000) as $player) {
                     $soloPlayers->push([
                         'player' => $player,
                         'realm' => $realm
@@ -1161,14 +1187,14 @@ class RealmAssignmentService
         $realm1->update();
         $realm2->update();
 
-        // Calculate base scores without either player (including all factors)
-        $currentScore1 = $this->calculatePlacementScore($realm1, collect([$solo1]));
-        $currentScore2 = $this->calculatePlacementScore($realm2, collect([$solo2]));
+        // Calculate base scores without either player (excluding size - focus on compatibility/balance only)
+        $currentScore1 = $this->calculatePlacementScore($realm1, collect([$solo1]), false);
+        $currentScore2 = $this->calculatePlacementScore($realm2, collect([$solo2]), false);
         $currentTotal = $currentScore1 + $currentScore2;
 
-        // Calculate post-swap scores (including all factors)
-        $newScore1 = $this->calculatePlacementScore($realm1, collect([$solo2]));
-        $newScore2 = $this->calculatePlacementScore($realm2, collect([$solo1]));
+        // Calculate post-swap scores (excluding size - focus on compatibility/balance only)
+        $newScore1 = $this->calculatePlacementScore($realm1, collect([$solo2]), false);
+        $newScore2 = $this->calculatePlacementScore($realm2, collect([$solo1]), false);
         $newTotal = $newScore1 + $newScore2;
 
         // Restore players to their original realms
@@ -1532,23 +1558,22 @@ class RealmAssignmentService
      */
     public function calculateDynamicTargets(Collection $candidateRealms): void
     {
-        $realmSizes = [];
+        $realmCount = $candidateRealms->count();
         $totalRating = 0;
         $totalPlayers = 0;
 
         foreach ($candidateRealms as $realm) {
             $realmSize = $realm->dominions->count();
             $realmRating = $realm->dominions->sum(function ($dominion) {
-                return $dominion->user->rating ?? 0;
+                return $dominion->user->rating ?? 1000;
             });
 
-            $realmSizes[] = $realmSize;
             $totalRating += $realmRating;
             $totalPlayers += $realmSize;
         }
 
         // Set dynamic targets based on current state
-        $this->targetRealmSize = count($realmSizes) > 0 ? array_sum($realmSizes) / count($realmSizes) : 12;
-        $this->targetRealmStrength = $totalPlayers > 0 ? $totalRating / $totalPlayers : 1500;
+        $this->targetRealmSize = ($realmCount > 0) ? floor($totalPlayers / $realmCount) : 12;
+        $this->targetRealmStrength = ($totalPlayers > 0) ? ($totalRating / $totalPlayers) : 1500;
     }
 }
