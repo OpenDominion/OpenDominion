@@ -75,10 +75,16 @@
                 </div>
             @endif
             @if ($selectedDominion->protection_ticks_remaining == 9)
+                @php
+                    $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
+                    $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
+                    $landSize = $landCalculator->getTotalLandIncoming($selectedDominion);
+                    $minimumDefense = $militaryCalculator->getMinimumDefense(null, $landSize);
+                @endphp
                 <div class="row">
                     <div class="col-md-12 text-center">
                         This is your last chance to train specialists to coincide with leaving protection.
-                        <!--<br/>You'll need at least {{ number_format(4580) }} defense to continue at this land size.-->
+                        <br/>You'll need at least {{ number_format($minimumDefense) }} defense to attack or leave protection at this land size.
                     </div>
                 </div>
             @endif
