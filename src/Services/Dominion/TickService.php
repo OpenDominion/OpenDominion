@@ -138,10 +138,10 @@ class TickService
             $this->checkForAbandonedDominions($round);
             $this->heroBattleService->processBattles($round);
             $this->heroTournamentService->processTournaments($round);
-        }
 
-        // Process completed raids and distribute rewards
-        $this->raidService->processCompletedRaids($round);
+            // Process completed raids and distribute rewards
+            $this->raidService->processCompletedRaids($round);
+        }
 
         // Realm Assignment
         $rounds = Round::readyForAssignment()->get();
