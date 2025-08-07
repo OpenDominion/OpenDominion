@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Services\Dominion\Actions\Military;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class ChangeDraftRateActionService
 {
@@ -17,14 +17,14 @@ class ChangeDraftRateActionService
      * @param Dominion $dominion
      * @param int $draftRate
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function changeDraftRate(Dominion $dominion, int $draftRate): array
     {
         $this->guardLockedDominion($dominion);
 
         if (($draftRate < 0) || ($draftRate > 90)) {
-            throw new RuntimeException('Draft rate not changed due to bad input.');
+            throw new GameException('Draft rate not changed due to bad input.');
         }
 
         $dominion->draft_rate = $draftRate;
