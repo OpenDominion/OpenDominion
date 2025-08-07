@@ -274,7 +274,7 @@ class PlaceholderRealm
     public function update(): void
     {
         $this->size = $this->players->count();
-        $this->rating = $this->players->sum('rating');
+        $this->rating = $this->players->avg('rating');
     }
 
     /**
@@ -1292,7 +1292,6 @@ class RealmAssignmentService
         $totalPlayers = 0;
         $totalNewPlayers = 0;
         $totalExperiencedPlayers = 0;
-        $totalRating = 0;
         $realmSizes = [];
         $realmRatings = [];
         $totalPlaystyleAffinities = [
@@ -1304,7 +1303,7 @@ class RealmAssignmentService
 
         foreach ($this->realms as $realm) {
             $realmSize = $realm->size;
-            $realmRating = $realm->players->avg('rating');
+            $realmRating = $realm->rating;
             $playstyleDist = $realm->getPlaystyleComposition();
             $newPlayerCount = $realm->players->where('rating', 0)->count();
             $experiencedPlayerCount = $realm->players->where('rating', '>', 0)->count();
@@ -1313,7 +1312,6 @@ class RealmAssignmentService
             $totalPlayers += $realmSize;
             $totalNewPlayers += $newPlayerCount;
             $totalExperiencedPlayers += $experiencedPlayerCount;
-            $totalRating += $realm->rating;
             $realmSizes[] = $realmSize;
             $realmRatings[] = $realmRating;
 
@@ -1343,7 +1341,7 @@ class RealmAssignmentService
         $stats['total_new_players'] = $totalNewPlayers;
         $stats['total_experienced_players'] = $totalExperiencedPlayers;
         $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->getRealmCount(), 2) : 0;
-        $stats['average_realm_rating'] = $totalPlayers > 0 ? round($totalRating / $totalPlayers, 2) : 0;
+        $stats['average_realm_rating'] = count($realmRatings) > 0 ? round(array_sum($realmRatings) / count($realmRatings), 2) : 0;
 
         // Calculate overall playstyle distribution
         if ($totalPlayers > 0) {
