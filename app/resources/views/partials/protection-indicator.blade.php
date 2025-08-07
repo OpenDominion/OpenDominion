@@ -70,6 +70,9 @@
                     <div class="col-md-12 text-center">
                         This is your only chance to build or train elites, spies, and wizards to coincide with leaving protection.
                         <br/>Don't forget to cast spells again.
+                        @if ($selectedDominion->round->daysInRound() > 1)
+                            <br/>Late Start Bonus: Defense troops have been queued and will arrive when protection ends.
+                        @endif
                         <br/>Next, you'll perform each remaining tick individually.
                     </div>
                 </div>

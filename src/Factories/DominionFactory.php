@@ -207,34 +207,6 @@ class DominionFactory
             }
         }
 
-        if ($protectionType == 'quick') {
-            // Late start defense
-            if ($dominion->round->daysInRound() > 1 || $dominion->round->hoursInDay() >= 3) {
-                $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
-                $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
-                $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
-
-                if ($race->name == 'Goblin') {
-                    $unitSlot = 2;
-                } elseif ($race->name == 'Troll') {
-                    $unitSlot = 4;
-                } else {
-                    $unitSlot = 3;
-                }
-
-                $botDefense = $aiHelper->getDefenseForNonPlayer($dominion->round, $landCalculator->getTotalLand($dominion));
-                $currentDefense = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, true, false);
-                $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
-                $unitPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[$unitSlot - 1], 'defense');
-
-                $defenseNeeded = ($botDefense - $currentDefense) / $defenseMod * 1.1;
-                if ($defenseNeeded > 0) {
-                    $unitsNeeded = round($defenseNeeded / $unitPower);
-                    $dominion->{"military_unit$unitSlot"} += $unitsNeeded;
-                }
-            }
-        }
-
         // Additional late start resources
         $additionalAttributes = $this->getLateStartAttributes($dominion->round);
         foreach ($additionalAttributes as $attribute => $value) {
@@ -457,28 +429,21 @@ class DominionFactory
     protected function getLateStartAttributes(Round $round): array
     {
         $days = 0;
-        if ($round->hasStarted()) {
-            $daysLate = now()->diffInDays($round->start_date);
-            if ($daysLate >= 2) {
-                // Additional resources are not added until the 2nd day of the round
-                $days = $daysLate + 3;
-            }
+        if ($round->daysInRound() > 1) {
+            // Late start resources kick in starting day 2
+            $days = $round->daysInRound() - 1; // Day 2 = 1x multiplier, Day 3 = 2x, etc.
         }
 
         return [
-            'peasants' => (100 * $days),
-            'resource_platinum' => (5000 * $days),
+            'resource_platinum' => (10000 * $days),
             'resource_food' => (1500 * $days),
             'resource_lumber' => (2500 * $days),
             'resource_ore' => (2500 * $days),
             'resource_mana' => (1000 * $days),
-            'resource_gems' => (2000 * $days),
-            'resource_tech' => (2400 * $days),
-            'resource_boats' => (20 * $days),
-
-            'military_draftees' => (30 * $days),
-            'military_unit2' => (30 * $days),
-            'military_unit3' => 0,
+            'resource_gems' => (25000 * $days),
+            'resource_tech' => (2500 * $days),
+            'resource_boats' => (25 * $days),
+            'military_draftees' => (120 * $days),
         ];
     }
 

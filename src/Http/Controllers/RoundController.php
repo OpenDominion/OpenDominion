@@ -63,11 +63,15 @@ class RoundController extends AbstractController
             ->orderBy('name')
             ->get();
 
+        // Define late start as anything beyond day 1
+        $isLateStart = $round->daysInRound() > 1;
+
         return view('pages.round.register', [
             'raceHelper' => app(RaceHelper::class),
             'round' => $round,
             'races' => $races,
             'hasDiscord' => $hasDiscord,
+            'isLateStart' => $isLateStart,
         ]);
     }
 
@@ -83,6 +87,16 @@ class RoundController extends AbstractController
 
         // todo: make this its own FormRequest class? Might be hard due to depending on $round->pack_size, needs investigating
         /** @noinspection PhpUnhandledExceptionInspection */
+        // Define late start as anything beyond day 1
+        $isLateStart = $round->daysInRound() > 1;
+        
+        // Enforce quick protection for late starts
+        if ($isLateStart && $request->get('protection_type') === 'advanced') {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['protection_type' => 'Only Quick Start protection is available for late registrations (after Day 1).']);
+        }
+
         $this->validate($request, [
             'dominion_name' => [
                 'required',
