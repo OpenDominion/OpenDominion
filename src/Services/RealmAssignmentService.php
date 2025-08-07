@@ -1409,8 +1409,10 @@ class RealmAssignmentService
         $query = Realm::active()
             ->where('number', '!=', 0)
             ->where('round_id', $round->id)
-            ->withCount(['dominions as active_dominions_count' => function ($query) {
-                $query->where('protection_finished', true);
+            ->withCount(['dominions as active_dominions_count' => function ($query) use ($round) {
+                if ($round->hasStarted()) {
+                    $query->where('protection_finished', true);
+                }
             }])
             ->with(['dominions' => function ($query) {
                 $query->select('realm_id', 'user_id')
