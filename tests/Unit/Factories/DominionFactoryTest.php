@@ -108,14 +108,13 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
         );
 
         $expected_attributes = [
-            'peasants' => 1500,
-            'resource_platinum' => 75000,
-            'resource_food' => 22500,
-            'resource_lumber' => 27500,
-            'resource_ore' => 12500,
-            'resource_mana' => 5000,
-            'military_unit2' => 150,
-            'military_draftees' => 300,
+            'peasants' => 1000,
+            'resource_platinum' => 70000,
+            'resource_food' => 18000,
+            'resource_lumber' => 20000,
+            'resource_ore' => 5000,
+            'resource_mana' => 2000,
+            'military_draftees' => 390,
         ];
 
         foreach ($expected_attributes as $key => $value) {
