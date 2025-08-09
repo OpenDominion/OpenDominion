@@ -68,6 +68,7 @@ class RoundController extends AbstractController
             'round' => $round,
             'races' => $races,
             'hasDiscord' => $hasDiscord,
+            'isLateStart' => $round->hasStarted(),
         ]);
     }
 
@@ -81,8 +82,13 @@ class RoundController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
-        // todo: make this its own FormRequest class? Might be hard due to depending on $round->pack_size, needs investigating
-        /** @noinspection PhpUnhandledExceptionInspection */
+        // Enforce quick protection for late starts
+        if ($round->hasStarted() && $request->get('protection_type') === 'advanced') {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['protection_type' => 'Only Quick Start protection is available after round start.']);
+        }
+
         $this->validate($request, [
             'dominion_name' => [
                 'required',

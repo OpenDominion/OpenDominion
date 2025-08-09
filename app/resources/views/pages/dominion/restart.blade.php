@@ -34,8 +34,13 @@
                             </div>
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="protection_type" value="advanced" />
-                                    Advanced Simulation
+                                    @if ($selectedDominion->round->hasStarted())
+                                        <input type="radio" name="protection_type" value="advanced" disabled />
+                                        <span class="text-muted">Advanced Simulation (unavailable after round start)</span>
+                                    @else
+                                        <input type="radio" name="protection_type" value="advanced" />
+                                        Advanced Simulation
+                                    @endif
                                 </label>
                             </div>
                             <p>Advanced Simulation requires clicking through the first 48 ticks.</p>

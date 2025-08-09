@@ -398,6 +398,12 @@ class MiscController extends AbstractDominionController
 
         foreach (range(1, $ticksToAdvance) as $tick) {
             $dominion->protection_ticks_remaining -= 1;
+
+            // Queue late start defense at 12 hours remaining
+            if ($dominion->protection_ticks_remaining == 12 && $dominion->round->daysInRound() > 1) {
+                $this->queueLateStartDefense($dominion);
+            }
+
             if ($dominion->protection_ticks_remaining == 0) {
                 if ($dominion->created_at < $dominion->round->start_date) {
                     // Automatically confirm protection finished
@@ -498,5 +504,48 @@ class MiscController extends AbstractDominionController
 
         $request->session()->flash('alert-success', 'Your settings have been updated!');
         return redirect()->route('dominion.misc.settings');
+    }
+
+    /**
+     * Queue late start defense bonus for eligible dominions.
+     *
+     * @param Dominion $dominion
+     */
+    protected function queueLateStartDefense($dominion): void
+    {
+        $race = $dominion->race;
+        $aiHelper = app(AIHelper::class);
+        $landCalculator = app(LandCalculator::class);
+        $militaryCalculator = app(MilitaryCalculator::class);
+        $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
+
+        // Determine unit type based on race
+        if ($race->name == 'Goblin') {
+            $unitSlot = 2;
+        } elseif ($race->name == 'Troll') {
+            $unitSlot = 4;
+        } else {
+            $unitSlot = 3;
+        }
+
+        $totalLand = $landCalculator->getTotalLand($dominion);
+        $botDefense = $aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand);
+        $currentDefense = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, true, false);
+        $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $unitPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[$unitSlot - 1], 'defense');
+
+        $defenseNeeded = ($botDefense - $currentDefense) / $defenseMod * 1.1;
+
+        if ($defenseNeeded > 0) {
+            $unitsNeeded = round($defenseNeeded / $unitPower);
+
+            // Queue the units for 12 hours (when protection ends)
+            $queueService->queueResources(
+                'training',
+                $dominion,
+                ["military_unit{$unitSlot}" => $unitsNeeded],
+                13
+            );
+        }
     }
 }

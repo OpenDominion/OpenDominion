@@ -153,8 +153,12 @@
                     <label for="protection_type" class="col-sm-3 control-label">Protection</label>
                     <div class="col-sm-9">
                         <select name="protection_type" id="protection_type" class="form-control" required>
-                            <option value="quick" {{ (old('realm_type') === 'quick') ? 'selected' : null }}>Quick Start (recommended)</option>
-                            <option value="advanced" {{ (old('realm_type') === 'advanced') ? 'selected' : null }}>Advanced Simulation</option>
+                            <option value="quick" {{ (old('protection_type') !== 'advanced' || $isLateStart) ? 'selected' : null }}>Quick Start (recommended)</option>
+                            <option value="advanced" 
+                                {{ $isLateStart ? 'disabled' : null }}
+                                {{ (old('protection_type') === 'advanced' && !$isLateStart) ? 'selected' : null }}>
+                                Advanced Simulation{{ $isLateStart ? ' (unavailable after round start)' : '' }}
+                            </option>
                         </select>
                         <p class="help-block">
                             <span class="text-muted">You can change your selection after registration.</span>
