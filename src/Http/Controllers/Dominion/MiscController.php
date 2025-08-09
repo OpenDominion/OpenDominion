@@ -398,12 +398,12 @@ class MiscController extends AbstractDominionController
 
         foreach (range(1, $ticksToAdvance) as $tick) {
             $dominion->protection_ticks_remaining -= 1;
-            
+
             // Queue late start defense at 12 hours remaining
             if ($dominion->protection_ticks_remaining == 12 && $dominion->round->daysInRound() > 1) {
                 $this->queueLateStartDefense($dominion);
             }
-            
+
             if ($dominion->protection_ticks_remaining == 0) {
                 if ($dominion->created_at < $dominion->round->start_date) {
                     // Automatically confirm protection finished
@@ -535,16 +535,16 @@ class MiscController extends AbstractDominionController
         $unitPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[$unitSlot - 1], 'defense');
 
         $defenseNeeded = ($botDefense - $currentDefense) / $defenseMod * 1.1;
-        
+
         if ($defenseNeeded > 0) {
             $unitsNeeded = round($defenseNeeded / $unitPower);
-            
+
             // Queue the units for 12 hours (when protection ends)
             $queueService->queueResources(
                 'training',
                 $dominion,
                 ["military_unit{$unitSlot}" => $unitsNeeded],
-                12
+                13
             );
         }
     }

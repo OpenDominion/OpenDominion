@@ -68,11 +68,11 @@
             @if ($selectedDominion->protection_ticks_remaining == 12)
                 <div class="row">
                     <div class="col-md-12 text-center">
+                        @if ($selectedDominion->round->daysInRound() > 1)
+                            <b>Late Start Bonus</b>: Defensive troops have been automatically queued and will arrive when protection ends.<br/>
+                        @endif
                         This is your only chance to build or train elites, spies, and wizards to coincide with leaving protection.
                         <br/>Don't forget to cast spells again.
-                        @if ($selectedDominion->round->daysInRound() > 1)
-                            <br/>Late Start Bonus: Defense troops have been queued and will arrive when protection ends.
-                        @endif
                         <br/>Next, you'll perform each remaining tick individually.
                     </div>
                 </div>
