@@ -282,8 +282,8 @@ class InvadeActionService
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
             // Hero Experience
+            $heroCalculator = app(HeroCalculator::class);
             if ($dominion->hero && $this->invasionResult['result']['success']) {
-                $heroCalculator = app(HeroCalculator::class);
                 $xpGain = $heroCalculator->getExperienceGain($dominion, $this->invasionResult['attacker']['landGained']);
                 $this->invasionResult['attacker']['xpGain'] = $xpGain;
             }
