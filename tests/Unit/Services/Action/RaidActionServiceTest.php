@@ -78,9 +78,9 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'round_id' => $this->round->id,
             'name' => 'Test Raid',
             'description' => 'Test raid description',
-            'reward_resource' => 'platinum',
+            'reward_resource' => 'resource_platinum',
             'reward_amount' => 10000,
-            'completion_reward_resource' => 'gems',
+            'completion_reward_resource' => 'resource_gems',
             'completion_reward_amount' => 1000,
             'start_date' => now()->subHour(),
             'end_date' => now()->addDay(),
@@ -178,6 +178,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'espionage',
             'name' => 'Reconnaissance',
             'attributes' => [
+                'morale_cost' => 5,
                 'strength_cost' => 20,
                 'points_awarded' => 100,
             ],
@@ -190,6 +191,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->dominion->refresh();
+        $this->assertEquals(95, $this->dominion->morale); // 100 - 5
         $this->assertEquals(80, $this->dominion->spy_strength); // 100 - 20
 
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
@@ -247,6 +249,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'espionage',
             'name' => 'Sabotage Communications',
             'attributes' => [
+                'morale_cost' => 5,
                 'strength_cost' => 25,
                 'points_awarded' => 120,
             ],
@@ -259,6 +262,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->dominion->refresh();
+        $this->assertEquals(95, $this->dominion->morale); // 100 - 5
         $this->assertEquals(75, $this->dominion->spy_strength); // 100 - 25
 
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
@@ -309,6 +313,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'espionage',
             'name' => 'Stealth Reconnaissance',
             'attributes' => [
+                'morale_cost' => 5,
                 'strength_cost' => 25,
                 'points_awarded' => 160,
             ],
@@ -321,6 +326,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->dominion->refresh();
+        $this->assertEquals(95, $this->dominion->morale); // 100 - 5
         $this->assertEquals(75, $this->dominion->spy_strength); // 100 - 25
 
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
@@ -374,6 +380,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'espionage',
             'name' => 'Reconnaissance',
             'attributes' => [
+                'morale_cost' => 5,
                 'strength_cost' => 20,
                 'points_awarded' => 100,
             ],
@@ -574,6 +581,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'espionage',
             'name' => 'Test Operation',
             'attributes' => [
+                'morale_cost' => 5,
                 'strength_cost' => 20,
                 'points_awarded' => 100,
             ],

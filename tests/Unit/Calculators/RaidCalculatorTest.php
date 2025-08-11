@@ -48,9 +48,9 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'round_id' => $this->round->id,
             'name' => 'Test Raid',
             'description' => 'Test raid description',
-            'reward_resource' => 'platinum',
+            'reward_resource' => 'resource_platinum',
             'reward_amount' => 10000,
-            'completion_reward_resource' => 'gems',
+            'completion_reward_resource' => 'resource_gems',
             'completion_reward_amount' => 1000,
             'start_date' => now()->subHour(),
             'end_date' => now()->addDay(),
@@ -433,7 +433,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(0, $reward['amount']);
-        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEquals('resource_platinum', $reward['resource']);
         $this->assertEmpty($reward['bonuses_applied']);
     }
 
@@ -448,7 +448,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(2000, $reward['amount']);
-        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEquals('resource_platinum', $reward['resource']);
         $this->assertEmpty($reward['bonuses_applied']); // No bonuses in new system
     }
 
@@ -463,7 +463,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(3000, $reward['amount']);
-        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEquals('resource_platinum', $reward['resource']);
         $this->assertEmpty($reward['bonuses_applied']); // No bonuses in new system
     }
 
@@ -478,7 +478,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(1000, $reward['amount']);
-        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEquals('resource_platinum', $reward['resource']);
         $this->assertEmpty($reward['bonuses_applied']); // No bonuses in new system
     }
 
@@ -493,7 +493,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(0, $reward['amount']);
-        $this->assertEquals('platinum', $reward['resource']);
+        $this->assertEquals('resource_platinum', $reward['resource']);
         $this->assertEmpty($reward['bonuses_applied']);
     }
 
@@ -513,7 +513,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert (50% of 1000 completion reward)
         $this->assertEquals(500, $reward['amount']);
-        $this->assertEquals('gems', $reward['resource']);
+        $this->assertEquals('resource_gems', $reward['resource']);
         $this->assertContains('partial_completion', $reward['bonuses_applied']);
     }
 
@@ -533,7 +533,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(1000, $reward['amount']);
-        $this->assertEquals('gems', $reward['resource']);
+        $this->assertEquals('resource_gems', $reward['resource']);
         $this->assertContains('full_completion', $reward['bonuses_applied']);
     }
 
@@ -746,7 +746,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert percentage behavior (60% of 1000 = 600)
         $this->assertEquals(600, $reward['amount']);
-        $this->assertEquals('gems', $reward['resource']);
+        $this->assertEquals('resource_gems', $reward['resource']);
         $this->assertContains('partial_completion', $reward['bonuses_applied']);
 
         // Test with full completion
@@ -769,9 +769,9 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'round_id' => $this->round->id,
             'name' => 'Completed Test Raid',
             'description' => 'Test raid for reward calculations',
-            'reward_resource' => 'platinum',
+            'reward_resource' => 'resource_platinum',
             'reward_amount' => 10000,
-            'completion_reward_resource' => 'gems',
+            'completion_reward_resource' => 'resource_gems',
             'completion_reward_amount' => 1000,
             'start_date' => now()->subDays(2),
             'end_date' => now()->subHour(),

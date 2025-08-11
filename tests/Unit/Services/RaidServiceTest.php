@@ -81,9 +81,9 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
         $raid = $this->createRaid([
             'end_date' => now()->subHour(),
             'rewards_distributed' => false,
-            'reward_resource' => 'platinum',
+            'reward_resource' => 'resource_platinum',
             'reward_amount' => 10000,
-            'completion_reward_resource' => 'gems',
+            'completion_reward_resource' => 'resource_gems',
             'completion_reward_amount' => 1000,
         ]);
 
@@ -110,9 +110,9 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $raid = $this->createRaid([
-            'reward_resource' => 'platinum',
+            'reward_resource' => 'resource_platinum',
             'reward_amount' => 10000,
-            'completion_reward_resource' => 'gems',
+            'completion_reward_resource' => 'resource_gems',
             'completion_reward_amount' => 1000,
         ]);
 
@@ -153,9 +153,9 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $raid = $this->createRaid([
-            'reward_resource' => 'platinum',
+            'reward_resource' => 'resource_platinum',
             'reward_amount' => 10000,
-            'completion_reward_resource' => 'gems',
+            'completion_reward_resource' => 'resource_gems',
             'completion_reward_amount' => 1000,
         ]);
 
@@ -185,9 +185,9 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
             'round_id' => $this->round->id,
             'name' => 'Test Raid',
             'description' => 'Test raid description',
-            'reward_resource' => 'platinum',
+            'reward_resource' => 'resource_platinum',
             'reward_amount' => 10000,
-            'completion_reward_resource' => 'gems',
+            'completion_reward_resource' => 'resource_gems',
             'completion_reward_amount' => 1000,
             'start_date' => now()->subHour(),
             'end_date' => now()->addDay(),
