@@ -91,8 +91,8 @@
                                                 <td>{{ number_format($entry['total_score']) }}</td>
                                                 <td>
                                                     <div class="progress progress-sm">
-                                                        <div class="progress-bar progress-bar-{{ $entry['completed'] ? 'success' : 'primary' }}" 
-                                                             role="progressbar" 
+                                                        <div class="progress-bar progress-bar-{{ $entry['completed'] ? 'success' : 'primary' }}"
+                                                             role="progressbar"
                                                              style="width: {{ $entry['progress'] }}%">
                                                             <span class="sr-only">{{ number_format($entry['progress'], 1) }}% Complete</span>
                                                         </div>
@@ -139,12 +139,12 @@
                         $yourRank = $yourRealmData ? array_search($yourRealmData, $leaderboard) + 1 : 'N/A';
                         $topContributors = $raidCalculator->getTopContributorsInRealm($objective, $selectedRealm, 5);
                     @endphp
-                    
+
                     @if ($yourRealmData)
                         <p><strong>Rank:</strong> {{ $yourRank }}</p>
                         <p><strong>Score:</strong> {{ number_format($yourRealmData['total_score']) }}</p>
                         <p><strong>Progress:</strong> {{ number_format($yourRealmData['progress'], 1) }}%</p>
-                        <p><strong>Status:</strong> 
+                        <p><strong>Status:</strong>
                             @if ($yourRealmData['completed'])
                                 <span class="label label-success">Completed</span>
                             @else
@@ -154,7 +154,7 @@
                     @else
                         <p><em>Your realm has not contributed to this objective yet.</em></p>
                     @endif
-                    
+
                     @if (!empty($topContributors))
                         <hr>
                         <h4>Top Contributors</h4>
