@@ -87,7 +87,7 @@ class RaidActionService
         }
 
         // Check if objective is active
-        if ($tactic->objective->start_date > now() || $tactic->objective->end_date < now()) {
+        if (!$tactic->objective->isActive()) {
             throw new GameException('This raid objective is not currently active');
         }
 
