@@ -42,7 +42,7 @@
                                     @if ($canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
-                                            <button type="submit" class="btn btn-block btn-sm btn-primary">
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary" {{ $selectedDominion->isLocked() || $objective->raid->hasEnded() ? 'disabled' : null }}>
                                                 Invest
                                             </button>
                                         </form>

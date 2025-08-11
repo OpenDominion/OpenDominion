@@ -137,7 +137,7 @@ class HeroBattleService
             'current_health' => $combatStats['health'],
             'time_bank' => 0,
             'automated' => true,
-            'strategy' => self::DEFAULT_STRATEGY
+            'strategy' => $combatStats['strategy'] ?? self::DEFAULT_STRATEGY
         ]);
     }
 

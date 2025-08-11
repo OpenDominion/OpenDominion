@@ -10,7 +10,8 @@
             <div class="col-md-12 table-responsive">
                 <table class="table">
                     <colgroup>
-                        <col width="45%">
+                        <col width="25%">
+                        <col width="20%">
                         <col width="20%">
                         <col width="20%">
                         <col width="15%">
@@ -18,6 +19,7 @@
                     <thead>
                         <tr>
                             <th>Operation</th>
+                            <th>Morale</th>
                             <th>Spy Strength</th>
                             <th>Points</th>
                             <th>Action</th>
@@ -26,19 +28,21 @@
                     <tbody>
                         @foreach($tactics as $tactic)
                             @php
+                                $moraleCost = $tactic->attributes['morale_cost'];
                                 $strengthCost = $tactic->attributes['strength_cost'];
                                 $pointsAwarded = $raidCalculator->getTacticPointsEarned($selectedDominion, $tactic);
                                 $canPerform = $selectedDominion->spy_strength >= $strengthCost;
                             @endphp
                             <tr>
                                 <td>{{ $tactic->name }}</td>
+                                <td>{{ $moraleCost }}%</td>
                                 <td>{{ $strengthCost }}%</td>
                                 <td>{{ number_format($pointsAwarded) }}</td>
                                 <td>
-                                    @if($canPerform)
+                                    @if ($canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
-                                            <button type="submit" class="btn btn-block btn-sm btn-primary">
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary" {{ $selectedDominion->isLocked() || $objective->raid->hasEnded() ? 'disabled' : null }}>
                                                 Execute Operation
                                             </button>
                                         </form>
@@ -52,6 +56,11 @@
                         @endforeach
                         <tr>
                             <td></td>
+                            <td>
+                                <small class="text-muted">
+                                    Morale: {{ $selectedDominion->morale }}%
+                                </small>
+                            </td>
                             <td colspan=3>
                                 <small class="text-muted">Spy Strength: {{ sprintf("%.4g", $selectedDominion->spy_strength) }}%</small>
                             </td>

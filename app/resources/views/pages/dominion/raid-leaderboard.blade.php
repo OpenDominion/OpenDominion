@@ -31,7 +31,7 @@
                                     @elseif ($objective->isActive())
                                         <i class="fa fa-clock-o"></i> Ends in {{ $objective->timeUntilEnd() }}
                                     @else
-                                        <i class="fa fa-clock-o"></i> Completed
+                                        <i class="fa fa-clock-o"></i> {{ now()->longAbsoluteDiffForHumans($objective->start_date) }} ago
                                     @endif
                                 </div>
                             </div>

@@ -173,7 +173,10 @@ class RaidActionService
             'pvp' => false,
         ]);
         $dominionCombatant = $heroBattleService->createCombatant($heroBattle, $dominion->hero);
-        $heroBattleService->createNonPlayerCombatant($heroBattle, $tactic->attributes);
+        $enemyCount = $tactic->attributes['enemy_count'] ?? 1;
+        foreach (range(1, $enemyCount) as $idx) {
+            $heroBattleService->createNonPlayerCombatant($heroBattle, $tactic->attributes);
+        }
 
         return [
             'message' => 'The battle begins!',
@@ -290,19 +293,28 @@ class RaidActionService
         switch ($tactic->type) {
             case 'espionage':
                 $strengthCost = $tactic->attributes['strength_cost'];
+                $moraleCost = $tactic->attributes['morale_cost'];
                 if ($dominion->spy_strength < $strengthCost) {
                     throw new GameException('You do not have enough spy strength');
                 }
+                if ($dominion->morale < $moraleCost) {
+                    throw new GameException('You do not have enough morale');
+                }
                 $costs['spy_strength'] = $strengthCost;
+                $costs['morale'] = $moraleCost;
                 break;
 
             case 'exploration':
                 $drafteeCost = $tactic->attributes['draftee_cost'];
+                $moraleCost = $tactic->attributes['morale_cost'];
                 if ($dominion->military_draftees < $drafteeCost) {
                     throw new GameException('You do not have enough draftees');
                 }
+                if ($dominion->morale < $moraleCost) {
+                    throw new GameException('You do not have enough morale');
+                }
                 $costs['military_draftees'] = $drafteeCost;
-                $costs['morale'] = $tactic->attributes['morale_cost'];
+                $costs['morale'] = $moraleCost;
                 break;
 
             case 'investment':
@@ -317,14 +329,14 @@ class RaidActionService
             case 'magic':
                 $wizardStrength = $tactic->attributes['strength_cost'];
                 $actualManaCost = $this->raidCalculator->getTacticManaCost($dominion, $tactic);
-                if ($dominion->resource_mana < $actualManaCost) {
-                    throw new GameException('You do not have enough mana');
-                }
                 if ($dominion->wizard_strength < $wizardStrength) {
                     throw new GameException('You do not have enough wizard strength');
                 }
-                $costs['resource_mana'] = $actualManaCost;
+                if ($dominion->resource_mana < $actualManaCost) {
+                    throw new GameException('You do not have enough mana');
+                }
                 $costs['wizard_strength'] = $wizardStrength;
+                $costs['resource_mana'] = $actualManaCost;
                 break;
         }
 

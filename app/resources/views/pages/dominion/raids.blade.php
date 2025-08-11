@@ -21,26 +21,27 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row form-group">
-                                        <div class="col-md-9">
-                                            {{ $raid->description }}
+                                        <div class="col-md-12">
+                                            {!! $raid->description !!}
                                         </div>
-                                        <div class="col-md-3 text-right">
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-md-4">
                                             @if (!$raid->hasStarted())
                                                 <i class="fa fa-clock-o"></i> Starts in {{ $raid->timeUntilStart() }}
                                             @elseif ($raid->isActive())
                                                 <i class="fa fa-clock-o"></i> Ends in {{ $raid->timeUntilEnd() }}
                                             @else
-                                                <i class="fa fa-clock-o"></i> Completed
+                                                <i class="fa fa-clock-o"></i> {{ now()->longAbsoluteDiffForHumans($raid->start_date) }} ago
                                             @endif
                                         </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-md-6">
-                                            <strong>Contribution Rewards:</strong> {{ number_format($raid->reward_amount) }} {{ ucfirst($raid->reward_resource) }}
-                                            <span class="text-muted">(split amongst all realms)</span>
+                                        <div class="col-md-4">
+                                            <strong>Contribution Rewards:</strong><br/>
+                                            {{ number_format($raid->reward_amount) }} {{ dominion_attr_display($raid->reward_resource, $raid->reward_amount) }}
                                         </div>
-                                        <div class="col-md-6">
-                                            <strong>Completion Bonus:</strong> {{ number_format($raid->completion_reward_amount) }} {{ ucfirst($raid->completion_reward_resource) }}
+                                        <div class="col-md-4">
+                                            <strong>Completion Bonus:</strong><br/>
+                                            {{ number_format($raid->completion_reward_amount) }} {{ dominion_attr_display($raid->completion_reward_resource, $raid->completion_reward_amount) }}
                                             <span class="text-muted">(per player)</span>
                                         </div>
                                     </div>
@@ -110,8 +111,8 @@
                     <h4>Raid Rewards</h4>
                     <p class="small">Rewards are earned based on your contribution.</p>
                     <ul class="small">
-                        <li><strong>Realm Share:</strong> Each realm earns up to 10% of the total based on their contribution relative to all other realms</li>
-                        <li><strong>Player Share:</strong> Each player earns a portion of the realm's share up to 10% of required score</li>
+                        <li><strong>Realm Share:</strong> Each realm earns up to 15% of the total based on their contribution relative to all other realms</li>
+                        <li><strong>Player Share:</strong> Each player earns a portion of the realm's share up to 15% of required score</li>
                         <li><strong>Distribution:</strong> Any remaining resources are shared equally among all participants</li>
                     </ul>
 

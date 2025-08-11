@@ -63,7 +63,7 @@ class RaidObjective extends AbstractModel
         if (!$this->hasStarted()) {
             return 'Upcoming';
         } elseif ($this->hasEnded()) {
-            return 'Completed';
+            return 'Ended';
         } else {
             return 'In Progress';
         }

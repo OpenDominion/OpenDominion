@@ -68,7 +68,7 @@ class Raid extends AbstractModel
         if (!$this->hasStarted()) {
             return 'Upcoming';
         } elseif ($this->hasEnded()) {
-            return 'Completed';
+            return 'Ended';
         } else {
             return 'In Progress';
         }
@@ -79,7 +79,7 @@ class Raid extends AbstractModel
         $sortMap = [
             'In Progress' => 1,
             'Upcoming' => 2,
-            'Completed' => 3
+            'Ended' => 3
         ];
         return $sortMap[$this->status];
     }

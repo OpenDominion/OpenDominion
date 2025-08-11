@@ -21,8 +21,8 @@ class RaidCalculator
     protected $opsCalculator;
 
     // Reward calculation constants
-    const MAX_REALM_REWARD_RATIO = 0.1;          // Max 10% of total pool per realm
-    const MAX_PLAYER_REWARD_RATIO = 0.1;         // Max 10% of required score per player
+    const MAX_REALM_REWARD_RATIO = 0.15;          // Max 15% of total pool per realm
+    const MAX_PLAYER_REWARD_RATIO = 0.15;         // Max 15% of required score per player
     const COMPLETION_REWARD_SCALING = true;      // true = percentage-based, false = binary (all-or-nothing)
 
     public function __construct()
