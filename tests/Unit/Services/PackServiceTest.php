@@ -10,7 +10,6 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\PackService;
-use OpenDominion\Services\RealmFinderService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class PackServiceTest extends AbstractBrowserKitTestCase
@@ -110,8 +109,6 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     public function testCreatePackCreatesPackInARealmWithAnotherExistingPack()
     {
         // Arrange
-        app(RealmFinderService::class)->maxPacksPerRealm = null;
-
         $pack1 = $this->packService->createPack(
             $this->createDominion($this->createUser(), $this->round, $this->goodRace),
             'pack name 1',

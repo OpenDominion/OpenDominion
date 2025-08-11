@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * OpenDominion\Models\Race
  *
@@ -41,6 +43,13 @@ class Race extends AbstractModel
     {
         return $this->hasMany(Unit::class)
             ->orderBy('slot');
+    }
+
+    // Eloquent Query Scopes
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('playable', true);
     }
 
     /**

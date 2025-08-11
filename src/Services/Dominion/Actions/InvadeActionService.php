@@ -234,6 +234,10 @@ class InvadeActionService
                 throw new GameException('You do not have enough morale to invade others');
             }
 
+            if (!$this->invasionService->hasEnoughDefense($dominion, $units)) {
+                throw new GameException('You need to leave at least the minimum defense at home');
+            }
+
             if (!$this->invasionService->passes50PercentRule($dominion, $target, $units)) {
                 throw new GameException('Your forces are severely outmatched and refuse to fight');
             }
@@ -278,8 +282,8 @@ class InvadeActionService
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
             // Hero Experience
+            $heroCalculator = app(HeroCalculator::class);
             if ($dominion->hero && $this->invasionResult['result']['success']) {
-                $heroCalculator = app(HeroCalculator::class);
                 $xpGain = $heroCalculator->getExperienceGain($dominion, $this->invasionResult['attacker']['landGained']);
                 $this->invasionResult['attacker']['xpGain'] = $xpGain;
             }

@@ -76,6 +76,11 @@ class Round extends AbstractModel
         return $this->hasMany(Pack::class);
     }
 
+    public function raids()
+    {
+        return $this->hasMany(Raid::class);
+    }
+
     public function realms()
     {
         return $this->hasMany(Realm::class);
@@ -161,7 +166,7 @@ class Round extends AbstractModel
      */
     public function scopeReadyForAssignment(Builder $query): Builder
     {
-        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_BEFORE_START;
+        $assignmentHours = \OpenDominion\Services\RealmAssignmentService::ASSIGNMENT_HOURS_BEFORE_START;
 
         return $query
             ->where('start_date', '<', now()->addHours($assignmentHours))
@@ -185,7 +190,7 @@ class Round extends AbstractModel
      */
     public function realmAssignmentDate()
     {
-        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_BEFORE_START;
+        $assignmentHours = \OpenDominion\Services\RealmAssignmentService::ASSIGNMENT_HOURS_BEFORE_START;
 
         return $this->start_date->copy()->subHours($assignmentHours);
     }

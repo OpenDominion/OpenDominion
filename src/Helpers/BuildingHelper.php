@@ -97,7 +97,7 @@ class BuildingHelper
             'school' => 'Produces (1 - (Schools / Total Land)) research points per hour (minimum of 0.5). Limited to 50% of your total land.',
             'lumberyard' => 'Produces 50 lumber per hour.',
             //'forest_haven' => 'Produces 25 lumber per hour.<br>Protects 6.25% of your vulnerable peasant population from Fireball per 1% owned, up to a maximum of 50% at 8% owned.',
-            'factory' => 'Construction costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Rezoning costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Employs 25 peasants (instead of 20).',
+            'factory' => 'Construction costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Rezoning costs reduced by 5% per 1% owned, up to a maximum of 50% at 10% owned.',
             'guard_tower' => 'Defensive power increased by 1.6% per 1% owned, up to a maximum of 32% at 20% owned.',
             'shrine' => 'Increases hero experience gain by 5% per 1% owned, up to a maximum of 50% at 10% owned.<br>Increases hero bonus by 50% per 1% owned, up to a maximum of 500% at 10% owned.',
             'barracks' => 'Houses 36 trained or in training military units.<br><br>Does not employ peasants or increase in capacity due to population bonuses.',
@@ -105,5 +105,22 @@ class BuildingHelper
         ];
 
         return $helpStrings[$buildingType] ?: null;
+    }
+
+    public function getDefaultBuildings(bool $quickStart = true): array
+    {
+        if ($quickStart) {
+            return [
+                'farm' => 30,
+                'lumberyard' => 20,
+                'smithy' => 100,
+                'tower' => 20,
+            ];
+        }
+
+        return [
+            'farm' => 30,
+            'lumberyard' => 20,
+        ];
     }
 }

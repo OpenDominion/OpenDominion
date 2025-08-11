@@ -46,10 +46,11 @@ class RezoningCalculator
         }
 
         $platinum = 250 + (0.6 * $exploredLand) + (0.2 * $conqueredLand);
+        $platinumCostRaw = round($platinum);
 
         $multiplier = $this->getCostMultiplier($dominion);
 
-        return round($platinum * $multiplier);
+        return rfloor($platinumCostRaw * $multiplier);
     }
 
     /**

@@ -3,7 +3,9 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\LogParserService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -12,12 +14,67 @@ class ProtectionController extends AbstractDominionController
 {
     use DominionGuardsTrait;
 
+    public function getBuildings(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        if (!$dominion->isBuildingPhase()) {
+            return redirect()->route('dominion.status');
+        }
+
+        $buildingHelper = app(BuildingHelper::class);
+        $landCalculator = app(LandCalculator::class);
+        $buildingsByLandType = collect($buildingHelper->getBuildingTypesByRace($dominion->race));
+
+        return view('pages.dominion.protection.buildings', [
+            'buildingHelper' => $buildingHelper,
+            'buildingsByLandType' => $buildingsByLandType,
+            'landCalculator' => $landCalculator,
+        ]);
+    }
+
+    public function postBuildings(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $buildingHelper = app(BuildingHelper::class);
+        $landCalculator = app(LandCalculator::class);
+        $buildingsByLandType = collect($buildingHelper->getBuildingTypesByRace($dominion->race));
+
+        try {
+            $this->guardLockedDominion($dominion, true);
+
+            if (!$dominion->isBuildingPhase()) {
+                throw new GameException('You have already selected your starting buildings.');
+            }
+
+            $data = $request->get('construct') ?? [];
+            $data = array_only($data, array_map(function ($value) {
+                return "building_{$value}";
+            }, $buildingHelper->getBuildingTypes()));
+            $data = array_map('\intval', $data);
+
+            $automationService = app(AutomationService::class);
+            $automationService->processStartingBuildings($dominion, $data);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Your buildings have been selected. Click next to confirm.');
+        return view('pages.dominion.protection.buildings', [
+            'buildingHelper' => $buildingHelper,
+            'buildingsByLandType' => $buildingsByLandType,
+            'landCalculator' => $landCalculator,
+        ]);
+    }
+
     public function getImportLog(Request $request)
     {
         $dominion = $this->getSelectedDominion();
 
         try {
-            $this->guardLockedDominion($dominion);
+            $this->guardLockedDominion($dominion, true);
 
             // Sims cannot be loaded after the round has started
             if ($dominion->round->hasStarted()) {
@@ -43,7 +100,7 @@ class ProtectionController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
 
         try {
-            $this->guardLockedDominion($dominion);
+            $this->guardLockedDominion($dominion, true);
 
             // Sims cannot be loaded after the round has started
             if ($dominion->round->hasStarted()) {
@@ -84,7 +141,7 @@ class ProtectionController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
 
         try {
-            $this->guardLockedDominion($dominion);
+            $this->guardLockedDominion($dominion, true);
 
             // Sims cannot be loaded after the round has started
             if ($dominion->round->hasStarted()) {

@@ -115,6 +115,7 @@ class ValhallaController extends AbstractController
             case 'stat-top-magical-assassins': $data = $this->getDominionsByRanking($round, 'magical-assassins'); break;
             case 'stat-top-military-assassins': $data = $this->getDominionsByRanking($round, 'military-assassins'); break;
             case 'stat-top-snare-setters': $data = $this->getDominionsByRanking($round, 'snare-setters'); break;
+            case 'stat-masters-of-chaos': $data = $this->getDominionsByRanking($round, 'masters-of-chaos'); break;
             case 'stat-masters-of-fire': $data = $this->getDominionsByRanking($round, 'masters-of-fire'); break;
             case 'stat-masters-of-plague': $data = $this->getDominionsByRanking($round, 'masters-of-plague'); break;
             case 'stat-masters-of-swarm': $data = $this->getDominionsByRanking($round, 'masters-of-swarm'); break;
@@ -233,19 +234,18 @@ class ValhallaController extends AbstractController
             ->where('end_date', '<', now())
             ->get();
 
-        $standings = DailyRanking::with(['dominion.user'])
-            ->whereIn('round_id', $rounds->pluck('id'))
+        $standings = DailyRanking::select('daily_rankings.*', 'dominions.user_id', 'users.display_name')
+            ->join('dominions', 'dominions.id', 'daily_rankings.dominion_id')
+            ->join('users', 'users.id', 'dominions.user_id')
+            ->whereIn('daily_rankings.round_id', $rounds->pluck('id'))
             ->where('key', $type)
             ->where('value', '>', 0)
             ->get()
-            ->filter(function ($dailyRanking) {
-                return $dailyRanking->dominion->user_id !== null;
-            })
             ->map(function ($dailyRanking) {
                 return [
                     'value' => $dailyRanking->value,
-                    'user_id' => $dailyRanking->dominion->user_id,
-                    'display_name' => $dailyRanking->dominion->user->display_name,
+                    'user_id' => $dailyRanking->user_id,
+                    'display_name' => $dailyRanking->display_name,
                 ];
             })
             ->groupBy('user_id')

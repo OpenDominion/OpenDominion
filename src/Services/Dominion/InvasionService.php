@@ -121,6 +121,31 @@ class InvasionService
     }
 
     /**
+     * Check if dominion has enough defense to initiate an invasion.
+     *
+     * @param Dominion $dominion
+     * @return bool
+     */
+    public function hasEnoughDefense(Dominion $dominion, array $units): bool
+    {
+        if ($dominion->round->daysInRound() > 1) {
+            return true;
+        }
+
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, null, null, $units);
+        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
+        if ($attackingForceDP == 0) {
+            return true;
+        }
+
+        $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
+        $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
+        $minimumDefense = $this->militaryCalculator->getMinimumDefense($dominion);
+
+        return ($newHomeForcesDP >= $minimumDefense);
+    }
+
+    /**
      * Check if an invasion passes the 50%-rule.
      *
      * @param Dominion $dominion

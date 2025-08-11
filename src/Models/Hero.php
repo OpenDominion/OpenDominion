@@ -24,6 +24,13 @@ use OpenDominion\Services\NotificationService;
  */
 class Hero extends AbstractModel
 {
+    protected $fillable = [
+        'dominion_id',
+        'name',
+        'class',
+        'experience',
+    ];
+
     protected $dates = ['created_at', 'updated_at'];
 
     public function dominion()

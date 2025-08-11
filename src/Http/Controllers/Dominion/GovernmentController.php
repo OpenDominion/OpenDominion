@@ -76,7 +76,15 @@ class GovernmentController extends AbstractDominionController
         $governmentActionService = app(GovernmentActionService::class);
 
         $vote = $request->get('monarch');
-        $governmentActionService->voteForMonarch($dominion, $vote);
+
+        try {
+            $governmentActionService->voteForMonarch($dominion, $vote);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
 
         $request->session()->flash('alert-success', 'Your vote has been cast!');
         return redirect()->route('dominion.government');

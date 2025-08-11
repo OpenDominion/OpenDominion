@@ -24,6 +24,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $password
  * @property string $display_name
  * @property string|null $avatar
+ * @property int $rating
+ * @property array|null $affinities
  * @property string|null $remember_token
  * @property int $activated
  * @property string $activation_code
@@ -53,6 +55,7 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     protected $casts = [
         'settings' => 'array',
+        'affinities' => 'array',
     ];
 
     protected $dates = ['last_online', 'created_at', 'updated_at'];
@@ -115,18 +118,20 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     // Methods
 
-    public function hasUpvotedUser(int $userId)
+    public function hasUpvotedUser(int $userId, int $roundId)
     {
         return !$this->feedback
             ->where('target_id', $userId)
+            ->where('round_id', $roundId)
             ->where('endorsed', 1)
             ->isEmpty();
     }
 
-    public function hasDownvotedUser(int $userId)
+    public function hasDownvotedUser(int $userId, int $roundId)
     {
         return !$this->feedback
             ->where('target_id', $userId)
+            ->where('round_id', $roundId)
             ->where('endorsed', 0)
             ->isEmpty();
     }
@@ -148,7 +153,15 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         }
 
         return array_get($this->settings, $key);
+    }
 
+    public function getAffinity(string $key)
+    {
+        if (!array_has($this->affinities, $key)) {
+            return 50;
+        }
+
+        return array_get($this->affinities, $key);
     }
 
     /**

@@ -14,16 +14,20 @@ trait DominionGuardsTrait
      * @param Dominion $dominion
      * @throws RuntimeException
      */
-    public function guardLockedDominion(Dominion $dominion): void
+    public function guardLockedDominion(Dominion $dominion, bool $ignoreBuildPhase = false): void
     {
         if ($dominion->isLocked()) {
             throw new GameException("Dominion {$dominion->name} is locked");
         }
 
+        if ($dominion->isBuildingPhase() && !$ignoreBuildPhase) {
+            throw new GameException('You have not confirmed your starting buildings');
+        }
+
         // Reassign active doms from Graveyard
         if ($dominion->user_id !== null && $dominion->realm->number == 0 && $dominion->round->isActive()) {
-            $realmFinderService = app(\OpenDominion\Services\RealmFinderService::class);
-            $newRealm = $realmFinderService->findRealm($dominion->round, $dominion->race, $dominion->user);
+            $realmAssignmentService = app(\OpenDominion\Services\RealmAssignmentService::class);
+            $newRealm = $realmAssignmentService->findRealm($dominion->round, $dominion->race, $dominion->user);
             $dominion->update([
                 'realm_id' => $newRealm->id,
                 'monarchy_vote_for_dominion_id' => null
@@ -40,7 +44,7 @@ trait DominionGuardsTrait
      */
     public function guardActionsDuringTick(Dominion $dominion, int $seconds = 3): void
     {
-        if ($dominion->protection_ticks_remaining == 0) {
+        if ($dominion->protection_finished) {
             $requestTimestamp = request()->server('REQUEST_TIME');
             if ($requestTimestamp !== null) {
                 $requestTime = Carbon::createFromTimestamp($requestTimestamp);

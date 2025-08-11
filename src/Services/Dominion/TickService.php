@@ -31,6 +31,7 @@ use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Services\Dominion\HeroTournamentService;
 use OpenDominion\Services\NotificationService;
+use OpenDominion\Services\RaidService;
 use OpenDominion\Services\ValorService;
 use OpenDominion\Services\WonderService;
 use Throwable;
@@ -76,6 +77,9 @@ class TickService
     /** @var RankingsHelper */
     protected $rankingsHelper;
 
+    /** @var RaidService */
+    protected $raidService;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
 
@@ -100,6 +104,7 @@ class TickService
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->queueService = app(QueueService::class);
         $this->rankingsHelper = app(RankingsHelper::class);
+        $this->raidService = app(RaidService::class);
         $this->spellCalculator = app(SpellCalculator::class);
         $this->wonderService = app(WonderService::class);
     }
@@ -119,7 +124,7 @@ class TickService
         foreach ($activeRounds as $round) {
             // Reset Daily Bonuses
             if ($round->start_date->hour == now()->hour) {
-                $round->activeDominions()->where('protection_ticks_remaining', 0)->update([
+                $round->activeDominions()->where('protection_finished', true)->update([
                     'daily_platinum' => false,
                     'daily_land' => false,
                     'daily_actions' => AutomationService::DAILY_ACTIONS,
@@ -133,13 +138,16 @@ class TickService
             $this->checkForAbandonedDominions($round);
             $this->heroBattleService->processBattles($round);
             $this->heroTournamentService->processTournaments($round);
+
+            // Process completed raids and distribute rewards
+            $this->raidService->processCompletedRaids($round);
         }
 
         // Realm Assignment
         $rounds = Round::readyForAssignment()->get();
         foreach ($rounds as $round) {
-            $realmFinderService = app(\OpenDominion\Services\RealmFinderService::class);
-            $realmFinderService->assignRealms($round);
+            $realmAssignmentService = app(\OpenDominion\Services\RealmAssignmentService::class);
+            $realmAssignmentService->assignRealms($round);
         }
 
         // Generate Non-Player Dominions
@@ -218,7 +226,7 @@ class TickService
         if ($dominion == null) {
             $where = [
                 ['round_id', '=', $round->id],
-                ['protection_ticks_remaining', '=', 0],
+                ['protection_finished', '=', true],
                 ['locked_at', '=', null]
             ];
         } else {
@@ -489,6 +497,12 @@ class TickService
         DB::transaction(function () use ($dominion, $actions, $revertTo) {
             // Update attributes
             foreach ($actions as $action) {
+                if (isset($action->delta['action']) && ($action->delta['action'] == 'starting_buildings')) {
+                    // Don't revert starting building choices
+                    $action->delete();
+                    continue;
+                }
+
                 foreach ($action->delta as $key => $value) {
                     if ($key == 'calculated_networth') {
                         continue;
@@ -667,7 +681,7 @@ class TickService
                 $inactiveDominions = $round->dominions()
                     ->join('users', 'dominions.user_id', '=', 'users.id')
                     ->where('realms.number', '>', 0)
-                    ->where('dominions.protection_ticks_remaining', '>', 0)
+                    ->where('dominions.protection_finished', false)
                     ->where('dominions.created_at', '<', now()->subDays(3))
                     ->where('users.last_online', '<', now()->subDays(3))
                     ->toBase()->update([
@@ -681,7 +695,7 @@ class TickService
 
             // Spawn Wonders
             $day = $round->daysInRound();
-            if ($day > 1 && $day % 2 == 0) {
+            if ($day > 0 && $day % 3 == 0) {
                 $this->wonderService->createWonder($round);
             }
         }

@@ -23,7 +23,7 @@ class TickTest extends AbstractBrowserKitTestCase
     {
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
-        $dominion = $this->createDominion($user, $round);
+        $dominion = $this->createDominionWithLegacyStats($user, $round);
         $tickService = app(TickService::class);
 
         $dominion->protection_ticks_remaining = 0;
@@ -46,7 +46,7 @@ class TickTest extends AbstractBrowserKitTestCase
     {
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
-        $dominion = $this->createDominion($user, $round);
+        $dominion = $this->createDominionWithLegacyStats($user, $round);
         $tickService = app(TickService::class);
         $queueService = app(QueueService::class);
 
@@ -88,7 +88,7 @@ class TickTest extends AbstractBrowserKitTestCase
     {
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
-        $dominion = $this->createDominion($user, $round);
+        $dominion = $this->createDominionWithLegacyStats($user, $round);
         $tickService = app(TickService::class);
         $queueService = app(QueueService::class);
 
@@ -128,7 +128,7 @@ class TickTest extends AbstractBrowserKitTestCase
     {
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
-        $dominion = $this->createDominion($user, $round);
+        $dominion = $this->createDominionWithLegacyStats($user, $round);
         $tickService = app(TickService::class);
         $queueService = app(QueueService::class);
 
@@ -157,8 +157,8 @@ class TickTest extends AbstractBrowserKitTestCase
         $user1 = $this->createUser();
         $user2 = $this->createUser();
         $round = $this->createRound('-7 days');
-        $dominion1 = $this->createDominion($user1, $round);
-        $dominion2 = $this->createDominion($user2, $round);
+        $dominion1 = $this->createDominionWithLegacyStats($user1, $round);
+        $dominion2 = $this->createDominionWithLegacyStats($user2, $round);
         $tickService = app(TickService::class);
 
         $populationCalculator = $this->app->make(PopulationCalculator::class);
@@ -227,7 +227,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $tickService = app(TickService::class);
         // don't use a race that has food-related perks
         $race = \OpenDominion\Models\Race::where('name', 'Human')->first();
-        $dominion = $this->createDominion($user, $round, $race);
+        $dominion = $this->createDominionWithLegacyStats($user, $round, $race);
 
         $productionCalculator = $this->app->make(ProductionCalculator::class);
         $spellActionService = $this->app->make(SpellActionService::class);

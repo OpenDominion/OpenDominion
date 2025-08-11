@@ -265,7 +265,7 @@ class UnitHelper
                 // Special case for conversions
                 if ($perk->key === 'conversion' || $perk->key === 'upgrade_casualties' || $perk->key === 'upgrade_survivors' || $perk->key === 'unit_housing') {
                     $slot = (int)$perkValue[0];
-                    $amount = (int)$perkValue[1];
+                    $amount = (float)$perkValue[1];
 
                     $unitToConvertTo = $race->units->filter(static function ($unit) use ($slot) {
                         return ($unit->slot === $slot);

@@ -42,6 +42,9 @@ class HistoryService
     public const EVENT_ACTION_RESTART = 'restart';
     public const EVENT_ACTION_WONDER_ATTACKED = 'wonder attacked';
     public const EVENT_ACTION_WONDER_DESTROYED = 'wonder destroyed';
+    public const EVENT_ACTION_RAID_ACTION = 'raid action';
+    public const EVENT_ACTION_RAID_ATTACKED = 'raid attacked';
+    public const EVENT_ACTION_RAID_REWARD = 'raid reward';
 
     /**
      * Returns a cloned dominion instance with state at a certain time.
@@ -203,6 +206,7 @@ class HistoryService
                 'hourly_activity',
                 'locked_at',
                 'abandoned_at',
+                'protection_type',
                 'ai_enabled',
                 'ai_config',
                 'monarchy_vote_for_dominion_id',

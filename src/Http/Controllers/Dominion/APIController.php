@@ -227,7 +227,8 @@ class APIController extends AbstractDominionController
         try {
             $result = UserFeedback::updateOrCreate([
                 'source_id' => $user->id,
-                'target_id' => $targetId
+                'target_id' => $targetId,
+                'round_id' => $dominion->round_id,
             ], [
                 'endorsed' => $endorsed
             ]);

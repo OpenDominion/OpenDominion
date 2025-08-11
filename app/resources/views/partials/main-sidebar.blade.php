@@ -33,46 +33,67 @@
                             @endif
                         </span>
                     </a>
-                    <a href="{{ route('dominion.bonuses') }}" style="padding-top: 0px;">
-                        <i class="fa fa-fw"></i>
-                        @php
-                            if ($selectedDominion->protection_ticks_remaining > 0) {
-                                $hoursUntilReset = $selectedDominion->protection_ticks_remaining % 24;
-                            } elseif ($selectedDominion->round->start_date->addHours(24) > now()) {
-                                $hoursUntilReset = $selectedDominion->round->start_date->addHours(24)->diffInHours(now()->startOfHour());
-                            } else {
-                                $hoursUntilReset = $selectedDominion->round->start_date->hour - now()->hour;
-                            }
-                            if ($hoursUntilReset < 1) {
-                                $hoursUntilReset = 24 + $hoursUntilReset;
-                            }
-                        @endphp
-                        <span class="small">
-                            Resets in
-                            @if ($hoursUntilReset < 4)
-                                <strong class="text-orange">{{ $hoursUntilReset }}</strong>
-                            @else
-                                {{ $hoursUntilReset }}
-                            @endif
-                            {{ str_plural('tick', $hoursUntilReset) }}
-                        </span>
-                    </a>
+                    @if (!$selectedDominion->isBuildingPhase())
+                        <a href="{{ route('dominion.bonuses') }}" style="padding-top: 0px;">
+                            <i class="fa fa-fw"></i>
+                            @php
+                                if ($selectedDominion->protection_ticks_remaining > 0) {
+                                    if ($selectedDominion->protection_type !== 'quick') {
+                                        $hoursUntilReset = $selectedDominion->protection_ticks_remaining % 24;
+                                    } else {
+                                        $hoursUntilReset = $selectedDominion->protection_ticks_remaining;
+                                    }
+                                } elseif ($selectedDominion->round->start_date->addHours(24) > now()) {
+                                    $hoursUntilReset = $selectedDominion->round->start_date->addHours(24)->diffInHours(now()->startOfHour());
+                                } else {
+                                    $hoursUntilReset = $selectedDominion->round->start_date->hour - now()->hour;
+                                }
+                                if ($hoursUntilReset < 1) {
+                                    $hoursUntilReset = 24 + $hoursUntilReset;
+                                }
+                            @endphp
+                            <span class="small">
+                                Resets in
+                                @if ($hoursUntilReset < 4)
+                                    <strong class="text-orange">{{ $hoursUntilReset }}</strong>
+                                @else
+                                    {{ $hoursUntilReset }}
+                                @endif
+                                {{ str_plural('tick', $hoursUntilReset) }}
+                            </span>
+                        </a>
+                    @endif
                 </li>
 
                 <li class="header">DOMINION</li>
                 <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="ra ra-telescope ra-fw"></i> <span>Explore Land</span></a></li>
-                <li class="{{ Route::is('dominion.construct') ? 'active' : null }}">
-                    <a href="{{ route('dominion.construct') }}">
-                        <i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span>
-                        @if ($barrenLand > 0)
-                            <span class="pull-right-container">
-                                <span class="label label-primary pull-right">
-                                    {{ $barrenLand }}
+                @if ($selectedDominion->isBuildingPhase())
+                    <li class="{{ Route::is('dominion.protection.buildings') ? 'active' : null }}">
+                        <a href="{{ route('dominion.protection.buildings') }}">
+                            <i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span>
+                            @if ($barrenLand > 0)
+                                <span class="pull-right-container">
+                                    <span class="label label-primary pull-right">
+                                        {{ $barrenLand }}
+                                    </span>
                                 </span>
-                            </span>
-                        @endif
-                    </a>
-                </li>
+                            @endif
+                        </a>
+                    </li>
+                @else
+                    <li class="{{ Route::is('dominion.construct') ? 'active' : null }}">
+                        <a href="{{ route('dominion.construct') }}">
+                            <i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span>
+                            @if ($barrenLand > 0)
+                                <span class="pull-right-container">
+                                    <span class="label label-primary pull-right">
+                                        {{ $barrenLand }}
+                                    </span>
+                                </span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
                 <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}"><a href="{{ route('dominion.rezone') }}"><i class="fa fa-refresh fa-fw"></i> <span>Re-zone Land</span></a></li>
                 <li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>
                 <li class="{{ Route::is('dominion.bank') ? 'active' : null }}"><a href="{{ route('dominion.bank') }}"><i class="fa fa-money fa-fw"></i> <span>National Bank</span></a></li>
@@ -118,9 +139,28 @@
                     <li class="{{ Route::is('dominion.heroes.tournaments') ? 'active' : null }}">
                         <a href="{{ route('dominion.heroes.tournaments') }}">
                             <i class="fa fa-trophy fa-fw"></i> <span>Hero Tournament</span>
+                            @if ($selectedDominion->round->tournaments()->where('start_date', '>', now())->count() > 0)
+                                <span class="pull-right-container">
+                                    <span class="label label-primary pull-right">
+                                        R
+                                    </span>
+                                </span>
+                            @endif
                         </a>
                     </li>
                 @endif
+                <li class="{{ Route::is('dominion.raids*') ? 'active' : null }}">
+                    <a href="{{ route('dominion.raids') }}">
+                        <i class="ra ra-castle-flag ra-fw"></i> <span>Raids</span>
+                        @if ($activeRaids > 0)
+                            <span class="pull-right-container">
+                                <span class="label label-primary pull-right">
+                                    {{ $activeRaids }}
+                                </span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.journal') ? 'active' : null }}"><a href="{{ route('dominion.journal') }}"><i class="ra ra-scroll-quill ra-fw"></i> <span>Journal</span></a></li>
 
                 <li class="header">OPERATIONS</li>

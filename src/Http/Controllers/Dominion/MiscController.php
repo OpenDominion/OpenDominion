@@ -170,7 +170,7 @@ class MiscController extends AbstractDominionController
         $protectionService = app(ProtectionService::class);
 
         try {
-            $this->guardLockedDominion($dominion);
+            $this->guardLockedDominion($dominion, true);
 
             if (!$protectionService->isUnderProtection($dominion)) {
                 throw new GameException('You can only restart your dominion during protection.');
@@ -221,7 +221,7 @@ class MiscController extends AbstractDominionController
         ]);
 
         try {
-            $this->guardLockedDominion($dominion);
+            $this->guardLockedDominion($dominion, true);
 
             if (!$protectionService->isUnderProtection($dominion)) {
                 throw new GameException('You can only rename your dominion during protection.');
@@ -258,17 +258,16 @@ class MiscController extends AbstractDominionController
 
         // Additional Race validation
         $race = Race::findOrFail($request->get('race'));
-        $start_option = $request->get('start_option');
-        $customize = $request->get('customize') == 'on';
+        $protectionType = $request->get('protection_type');
 
         try {
-            $this->guardLockedDominion($dominion);
+            $this->guardLockedDominion($dominion, true);
 
             if (!$race->playable) {
                 throw new GameException('Invalid race selection');
             }
 
-            if ($start_option !== 'sim' && stripos($start_option, str_replace(' ', '', $race->name)) === false) {
+            if (!in_array($protectionType, ['advanced', 'quick'])) {
                 throw new GameException('Invalid start option');
             }
 
@@ -298,7 +297,7 @@ class MiscController extends AbstractDominionController
         }
 
         try {
-            $dominionFactory->restart($dominion, $race, $request->get('dominion_name'), $request->get('ruler_name'), $start_option, $customize);
+            $dominionFactory->restart($dominion, $race, $request->get('dominion_name'), $request->get('ruler_name'), $protectionType);
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->withErrors(['There was a problem restarting your dominion.']);
         }
@@ -313,9 +312,26 @@ class MiscController extends AbstractDominionController
         $tickService = app(TickService::class);
 
         try {
-            $this->guardLockedDominion($dominion);
+            $this->guardLockedDominion($dominion, true);
+
+            if ($dominion->isBuildingPhase()) {
+                $landCalculator = app(LandCalculator::class);
+                if ($landCalculator->getTotalBarrenLand($dominion) > 0) {
+                    throw new GameException('You have not selected your starting buildings.');
+                }
+
+                $dominion->protection_ticks_remaining -= 1;
+                $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
+                return redirect()->back();
+            }
 
             if ($dominion->protection_ticks_remaining == 0) {
+                if ($dominion->created_at >= $dominion->round->start_date) {
+                    // Confirm protection finished for late start
+                    $dominion->protection_finished = true;
+                    $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
+                    return redirect()->back();
+                }
                 throw new GameException('You have no protection ticks remaining.');
             }
 
@@ -372,25 +388,40 @@ class MiscController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $dominion->protection_ticks_remaining -= 1;
-        if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
-            if ($dominion->daily_land || $dominion->daily_platinum) {
-                // Record reset bonuses
-                $bonusDelta = [];
-                if ($dominion->daily_land) {
-                    $bonusDelta['daily_land'] = false;
-                }
-                if ($dominion->daily_platinum) {
-                    $bonusDelta['daily_platinum'] = false;
+        $ticksToAdvance = 1;
+        if ($dominion->protection_type == 'quick') {
+            if (in_array($dominion->protection_ticks_remaining, [36, 24])) {
+                // Move ahead 12 ticks instead of 1
+                $ticksToAdvance = 12;
+            }
+        }
+
+        foreach (range(1, $ticksToAdvance) as $tick) {
+            $dominion->protection_ticks_remaining -= 1;
+
+            // Queue late start defense at 12 hours remaining
+            if ($dominion->protection_ticks_remaining == 12 && $dominion->round->daysInRound() > 1) {
+                $this->queueLateStartDefense($dominion);
+            }
+
+            if ($dominion->protection_ticks_remaining == 0) {
+                if ($dominion->created_at < $dominion->round->start_date) {
+                    // Automatically confirm protection finished
+                    $dominion->protection_finished = true;
                 }
             }
-            $dominion->daily_platinum = false;
-            $dominion->daily_land = false;
-            $dominion->daily_actions = AutomationService::DAILY_ACTIONS;
-        }
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
 
-        $tickService->performTick($dominion->round, $dominion);
+            if ($dominion->protection_ticks_remaining == 0 ||
+                ($dominion->protection_ticks_remaining == 24 && $dominion->protection_type !== 'quick')
+            ) {
+                // Daily bonuses don't reset during Quick Start
+                $dominion->daily_platinum = false;
+                $dominion->daily_land = false;
+                $dominion->daily_actions = AutomationService::DAILY_ACTIONS;
+            }
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
+            $tickService->performTick($dominion->round, $dominion);
+        }
 
         return redirect()->back();
     }
@@ -412,7 +443,7 @@ class MiscController extends AbstractDominionController
                 throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
             }
 
-            if ($dominion->protection_ticks_remaining == 72) {
+            if ($dominion->protection_ticks_remaining == ($dominion->protection_ticks + 1)) {
                 throw new GameException('You have no ticks left to undo.');
             }
         } catch (GameException $e) {
@@ -421,7 +452,15 @@ class MiscController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        if (!$tickService->revertTick($dominion)) {
+        $ticksToRevert = 1;
+        if ($dominion->protection_type == 'quick' && in_array($dominion->protection_ticks_remaining, [24, 12])) {
+            // Revert 12 ticks instead of 1
+            $ticksToRevert = 12;
+        }
+        foreach (range(1, $ticksToRevert) as $tick) {
+            $isReverted = $tickService->revertTick($dominion);
+        }
+        if (!$isReverted) {
             $request->session()->flash('alert-danger', 'There are no actions to undo.');
         }
 
@@ -465,5 +504,48 @@ class MiscController extends AbstractDominionController
 
         $request->session()->flash('alert-success', 'Your settings have been updated!');
         return redirect()->route('dominion.misc.settings');
+    }
+
+    /**
+     * Queue late start defense bonus for eligible dominions.
+     *
+     * @param Dominion $dominion
+     */
+    protected function queueLateStartDefense($dominion): void
+    {
+        $race = $dominion->race;
+        $aiHelper = app(AIHelper::class);
+        $landCalculator = app(LandCalculator::class);
+        $militaryCalculator = app(MilitaryCalculator::class);
+        $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
+
+        // Determine unit type based on race
+        if ($race->name == 'Goblin') {
+            $unitSlot = 2;
+        } elseif ($race->name == 'Troll') {
+            $unitSlot = 4;
+        } else {
+            $unitSlot = 3;
+        }
+
+        $totalLand = $landCalculator->getTotalLand($dominion);
+        $botDefense = $aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand);
+        $currentDefense = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, true, false);
+        $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $unitPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[$unitSlot - 1], 'defense');
+
+        $defenseNeeded = ($botDefense - $currentDefense) / $defenseMod * 1.1;
+
+        if ($defenseNeeded > 0) {
+            $unitsNeeded = round($defenseNeeded / $unitPower);
+
+            // Queue the units for 12 hours (when protection ends)
+            $queueService->queueResources(
+                'training',
+                $dominion,
+                ["military_unit{$unitSlot}" => $unitsNeeded],
+                13
+            );
+        }
     }
 }

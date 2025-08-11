@@ -34,20 +34,21 @@ class DominionFactory
         Race $race,
         string $rulerName,
         string $dominionName,
+        string $protectionType = 'quick',
         ?Pack $pack = null
     ): Dominion {
         $this->guardAgainstMultipleDominionsInARound($user, $realm->round);
         $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
-        $startingBuildings = $this->getStartingBuildings();
+        $startingBuildings = $this->getStartingBuildings($protectionType);
 
         $startingLand = $this->getStartingLand(
             $race,
-            $this->getStartingBarrenLand(),
+            $this->getStartingBarrenLand($protectionType),
             $startingBuildings
         );
 
-        $startingAttributes = $this->getStartingAttributes();
+        $startingAttributes = $this->getStartingAttributes($protectionType);
 
         $additionalAttributes = $this->getLateStartAttributes($realm->round);
         foreach ($additionalAttributes as $attribute => $value) {
@@ -68,7 +69,7 @@ class DominionFactory
             'peasants' => $startingAttributes['peasants'],
             'peasants_last_hour' => 0,
 
-            'draft_rate' => 35,
+            'draft_rate' => 90,
             'morale' => 100,
             'spy_strength' => 100,
             'wizard_strength' => 100,
@@ -96,14 +97,14 @@ class DominionFactory
             'improvement_harbor' => 0,
 
             'military_draftees' => $startingAttributes['military_draftees'],
-            'military_unit1' => 0,
+            'military_unit1' => $startingAttributes['military_unit1'],
             'military_unit2' => $startingAttributes['military_unit2'],
-            'military_unit3' => 0,
-            'military_unit4' => 0,
-            'military_spies' => 25,
-            'military_assassins' => 0,
-            'military_wizards' => 25,
-            'military_archmages' => 0,
+            'military_unit3' => $startingAttributes['military_unit3'],
+            'military_unit4' => $startingAttributes['military_unit4'],
+            'military_spies' => $startingAttributes['military_spies'],
+            'military_assassins' => $startingAttributes['military_assassins'],
+            'military_wizards' => $startingAttributes['military_wizards'],
+            'military_archmages' => $startingAttributes['military_archmages'],
 
             'land_plain' => $startingLand['land_plain'],
             'land_mountain' => $startingLand['land_mountain'],
@@ -133,7 +134,10 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
 
+            'protection_type' => $startingAttributes['protection_type'],
+            'protection_ticks' => $startingAttributes['protection_ticks'],
             'protection_ticks_remaining' => $startingAttributes['protection_ticks_remaining'],
+            'protection_finished' => $startingAttributes['protection_finished'],
         ]);
     }
 
@@ -143,12 +147,11 @@ class DominionFactory
      * @param  Dominion $dominion
      * @param  Race $race
      * @param string $name
-     * @param string $ruler_name
-     * @param string $start_option
-     * @param bool $customize
+     * @param string $rulerName
+     * @param string $protectionType
      * @throws GameException
      */
-    public function restart(Dominion $dominion, Race $race, ?string $name, ?string $ruler_name, ?string $start_option, ?bool $customize): void
+    public function restart(Dominion $dominion, Race $race, ?string $name, ?string $rulerName, ?string $protectionType): void
     {
         // Reset Queues
         DB::table('dominion_queue')
@@ -175,19 +178,23 @@ class DominionFactory
             ->delete();
 
         // Reset starting buildings
-        $startingBuildings = $this->getStartingBuildings();
+        $startingBuildings = $this->getStartingBuildings($protectionType);
         foreach ($startingBuildings as $building_type => $value) {
             $dominion->{$building_type} = $value;
         }
 
         // Reset starting land
-        $startingLand = $this->getStartingLand($race, $this->getStartingBarrenLand(), $startingBuildings);
+        $startingLand = $this->getStartingLand(
+            $race,
+            $this->getStartingBarrenLand($protectionType),
+            $startingBuildings
+        );
         foreach ($startingLand as $land_type => $value) {
             $dominion->{$land_type} = $value;
         }
 
         // Reset other starting attributes
-        $startingAttributes = $this->getStartingAttributes();
+        $startingAttributes = $this->getStartingAttributes($protectionType);
         foreach ($startingAttributes as $attribute => $value) {
             $dominion->{$attribute} = $value;
         }
@@ -197,77 +204,6 @@ class DominionFactory
         foreach ($modelAttributes as $attr => $value) {
             if (substr_compare($attr, 'stat_', 0, 5) === 0) {
                 $dominion->{$attr} = 0;
-            }
-        }
-
-        // Quick Start
-        if ($start_option !== null && $start_option !== 'sim') {
-            $quickStartJson = $this->getQuickStartData($start_option);
-            if ($customize === true) {
-                $quickStartData = $quickStartJson[0];
-            } else {
-                $quickStartData = $quickStartJson[1];
-            }
-
-            // Set attributes
-            foreach ($quickStartData->attributes as $attr => $value) {
-                $dominion->{$attr} = $value;
-            }
-
-            // Cast spells
-            foreach ($quickStartData->spells as $spellKey) {
-                $spell = Spell::where('key', $spellKey)->first();
-                DominionSpell::insert([
-                    'dominion_id' => $dominion->id,
-                    'spell_id' => $spell->id,
-                    'duration' => 12,
-                    'cast_by_dominion_id' => $dominion->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-
-            // Queue incoming resources
-            $dominion->load('queues');
-            $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
-            foreach ($quickStartData->queues as $source => $hourlyQueues) {
-                foreach ($hourlyQueues as $index => $queuedItems) {
-                    foreach ($queuedItems as $queuedItem) {
-                        $queueService->queueResources($source, $dominion, [$queuedItem->resource => $queuedItem->amount], $index + 1);
-                    }
-                }
-            }
-
-            // Late start defense
-            if ($dominion->round->daysInRound() > 1 || $dominion->round->hoursInDay() >= 3) {
-                $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
-                $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
-                $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
-
-                if ($race->name == 'Goblin') {
-                    $unitSlot = 2;
-                } elseif ($race->name == 'Troll') {
-                    $unitSlot = 4;
-                } else {
-                    $unitSlot = 3;
-                }
-
-                $botDefense = $aiHelper->getDefenseForNonPlayer($dominion->round, $landCalculator->getTotalLand($dominion));
-                $currentDefense = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, true, false);
-                $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
-                $unitPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[$unitSlot - 1], 'defense');
-
-                $defenseNeeded = ($botDefense - $currentDefense) / $defenseMod * 1.1;
-                if ($defenseNeeded > 0) {
-                    $unitsNeeded = round($defenseNeeded / $unitPower);
-                    $dominion->{"military_unit$unitSlot"} += $unitsNeeded;
-                }
-
-                if ($customize === true) {
-                    $dominion->resource_platinum -= 250000;
-                } else {
-                    $dominion->resource_platinum -= 100000;
-                }
             }
         }
 
@@ -281,14 +217,14 @@ class DominionFactory
         if ($name !== null) {
             $dominion->name = $name;
         }
-        if ($ruler_name !== null) {
-            $dominion->ruler_name = $ruler_name;
+        if ($rulerName !== null) {
+            $dominion->ruler_name = $rulerName;
         }
 
         $dominion->updated_at = now();
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART,
-            'action' => $start_option
+            'action' => $protectionType
         ]);
     }
 
@@ -329,16 +265,28 @@ class DominionFactory
      *
      * @return array
      */
-    protected function getStartingBarrenLand(): array
+    protected function getStartingBarrenLand(string $protectionType = 'quick'): array
     {
+        if ($protectionType == 'quick') {
+            return [
+                'land_plain' => 560,
+                'land_mountain' => 0,
+                'land_swamp' => 0,
+                'land_cavern' => 0,
+                'land_forest' => 0,
+                'land_hill' => 0,
+                'land_water' => 0,
+            ];
+        }
+
         return [
-            'land_plain' => 40,
-            'land_mountain' => 20,
-            'land_swamp' => 20,
-            'land_cavern' => 20,
-            'land_forest' => 20,
-            'land_hill' => 20,
-            'land_water' => 20,
+            'land_plain' => 350,
+            'land_mountain' => 0,
+            'land_swamp' => 0,
+            'land_cavern' => 0,
+            'land_forest' => 0,
+            'land_hill' => 0,
+            'land_water' => 0,
         ];
     }
 
@@ -347,12 +295,12 @@ class DominionFactory
      *
      * @return array
      */
-    protected function getStartingBuildings(): array
+    protected function getStartingBuildings(string $protectionType = 'quick'): array
     {
-        return [
-            'building_home' => 10,
-            'building_alchemy' => 30,
-            'building_farm' => 30,
+        $startingBuildings = [
+            'building_home' => 0,
+            'building_alchemy' => 0,
+            'building_farm' => 0,
             'building_smithy' => 0,
             'building_masonry' => 0,
             'building_ore_mine' => 0,
@@ -362,7 +310,7 @@ class DominionFactory
             'building_temple' => 0,
             'building_diamond_mine' => 0,
             'building_school' => 0,
-            'building_lumberyard' => 20,
+            'building_lumberyard' => 0,
             'building_forest_haven' => 0,
             'building_factory' => 0,
             'building_guard_tower' => 0,
@@ -370,6 +318,8 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ];
+
+        return $startingBuildings;
     }
 
     /**
@@ -384,11 +334,11 @@ class DominionFactory
     protected function getStartingLand(Race $race, array $startingBarrenLand, array $startingBuildings): array
     {
         $startingLand = [
-            'land_plain' => $startingBarrenLand['land_plain'] + $startingBuildings['building_alchemy'] + $startingBuildings['building_farm'],
+            'land_plain' => $startingBarrenLand['land_plain'],
             'land_mountain' => $startingBarrenLand['land_mountain'],
             'land_swamp' => $startingBarrenLand['land_swamp'],
             'land_cavern' => $startingBarrenLand['land_cavern'],
-            'land_forest' => $startingBarrenLand['land_forest'] + $startingBuildings['building_lumberyard'],
+            'land_forest' => $startingBarrenLand['land_forest'],
             'land_hill' => $startingBarrenLand['land_hill'],
             'land_water' => $startingBarrenLand['land_water'],
         ];
@@ -403,14 +353,14 @@ class DominionFactory
      *
      * @return array
      */
-    protected function getStartingAttributes(): array
+    protected function getStartingAttributes(string $protectionType = 'quick'): array
     {
-        return [
+        $startingAttributes = [
             'prestige' => 250,
-            'peasants' => 1300,
+            'peasants' => 1000,
             'peasants_last_hour' => 0,
 
-            'draft_rate' => 35,
+            'draft_rate' => 90,
             'morale' => 100,
             'spy_strength' => 100,
             'wizard_strength' => 100,
@@ -421,12 +371,12 @@ class DominionFactory
             'ai_enabled' => false,
             'ai_config' => null,
 
-            'resource_platinum' => 100000,
+            'resource_platinum' => 120000,
             'resource_food' => 15000,
             'resource_lumber' => 15000,
             'resource_ore' => 0,
             'resource_mana' => 0,
-            'resource_gems' => 10000,
+            'resource_gems' => 0,
             'resource_tech' => 0,
             'resource_boats' => 0,
 
@@ -437,23 +387,37 @@ class DominionFactory
             'improvement_walls' => 0,
             'improvement_harbor' => 0,
 
-            'military_draftees' => 100,
+            'military_draftees' => 300,
             'military_unit1' => 0,
-            'military_unit2' => 150,
+            'military_unit2' => 0,
             'military_unit3' => 0,
             'military_unit4' => 0,
-            'military_spies' => 25,
+            'military_spies' => 0,
             'military_assassins' => 0,
-            'military_wizards' => 25,
+            'military_wizards' => 0,
             'military_archmages' => 0,
 
             'discounted_land' => 0,
-            'highest_land_achieved' => 250,
+            'highest_land_achieved' => 350,
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
             'black_guard_active_at' => null,
-            'protection_ticks_remaining' => 72,
+
+            'protection_type' => $protectionType,
+            'protection_ticks' => 48,
+            'protection_ticks_remaining' => 49,
+            'protection_finished' => false,
         ];
+
+        if ($protectionType == 'quick') {
+            $startingAttributes['resource_platinum'] = 50000;
+            $startingAttributes['military_draftees'] = 150;
+            $startingAttributes['highest_land_achieved'] = 560;
+            $startingAttributes['protection_ticks'] = 36;
+            $startingAttributes['protection_ticks_remaining'] = 37;
+        }
+
+        return $startingAttributes;
     }
 
     /**
@@ -465,28 +429,21 @@ class DominionFactory
     protected function getLateStartAttributes(Round $round): array
     {
         $days = 0;
-        if ($round->hasStarted()) {
-            $daysLate = now()->diffInDays($round->start_date);
-            if ($daysLate >= 2) {
-                // Additional resources are not added until the 2nd day of the round
-                $days = $daysLate + 3;
-            }
+        if ($round->daysInRound() > 1) {
+            // Late start resources kick in starting day 2
+            $days = $round->daysInRound() - 1; // Day 2 = 1x multiplier, Day 3 = 2x, etc.
         }
 
         return [
-            'peasants' => (100 * $days),
-            'resource_platinum' => (5000 * $days),
+            'resource_platinum' => (10000 * $days),
             'resource_food' => (1500 * $days),
             'resource_lumber' => (2500 * $days),
             'resource_ore' => (2500 * $days),
             'resource_mana' => (1000 * $days),
-            'resource_gems' => (2000 * $days),
-            'resource_tech' => (2400 * $days),
-            'resource_boats' => (20 * $days),
-
-            'military_draftees' => (30 * $days),
-            'military_unit2' => (30 * $days),
-            'military_unit3' => 0,
+            'resource_gems' => (25000 * $days),
+            'resource_tech' => (2500 * $days),
+            'resource_boats' => (25 * $days),
+            'military_draftees' => (120 * $days),
         ];
     }
 
@@ -588,7 +545,10 @@ class DominionFactory
             'building_dock' => 0,
 
             'royal_guard_active_at' => (clone $realm)->round->start_date->addDays(6),
+            'protection_type' => 'bot',
+            'protection_ticks' => 1,
             'protection_ticks_remaining' => 0,
+            'protection_finished' => true,
         ]);
 
         // Generate Military

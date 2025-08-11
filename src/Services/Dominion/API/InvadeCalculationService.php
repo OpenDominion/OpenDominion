@@ -147,6 +147,9 @@ class InvadeCalculationService
             $this->calculationResult['op_multiplier'] = $this->militaryCalculator->getOffensivePowerMultiplier($dominion);
         } else {
             $this->calculationResult['op_multiplier'] = (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
+            if ($dominion->hero !== null) {
+                $this->calculationResult['op_multiplier'] += $dominion->hero->getPerkMultiplier('wonder_attack_damage');
+            }
         }
 
         $this->calculationResult['away_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
@@ -179,9 +182,10 @@ class InvadeCalculationService
         }
         $returningForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsReturning, 0, true);
         $homeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
+        $minimumDefense = $this->militaryCalculator->getMinimumDefense($dominion);
 
         $this->calculationResult['max_op'] = $this->calculationResult['home_defense'] * 1.25;
-        $this->calculationResult['min_dp'] = ($returningForcesDP + $homeForcesDP) * 0.40;
+        $this->calculationResult['min_dp'] = max($minimumDefense, ($returningForcesDP + $homeForcesDP) * 0.40);
 
         $this->calculationResult['target_min_dp'] = $this->militaryCalculator->getMinimumDefense($target);
 

@@ -9,8 +9,8 @@
         $inRealm = false;
         $targetDominion = null;
     }
-    if (!isset($selfArchive)) {
-        $selfArchive = false;
+    if (!isset($realmArchive)) {
+        $realmArchive = false;
     }
 
     $latestClearSight = $latestInfoOps->firstWhere('type', 'clear_sight');
@@ -163,7 +163,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'clear_sight']) }}">View Archives</a>
@@ -382,7 +382,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'revelation']) }}">View Archives</a>
@@ -443,7 +443,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'castle_spy']) }}">View Archives</a>
@@ -507,7 +507,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'barracks_spy']) }}">View Archives</a>
@@ -589,7 +589,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'survey_dominion']) }}">View Archives</a>
@@ -669,7 +669,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'land_spy']) }}">View Archives</a>
@@ -750,7 +750,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'vision']) }}">View Archives</a>
@@ -860,7 +860,7 @@
                         </div>
                     @endslot
                 @endif
-                @if ($selfArchive)
+                @if ($realmArchive)
                     @slot('boxFooter')
                         <div class="text-center">
                             <a href="{{ route('dominion.op-center.archive', [$dominion, 'disclosure']) }}">View Archives</a>

@@ -7,6 +7,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 $router->get('user-agreement')->uses('HomeController@getUserAgreement')->name('user-agreement');
 $router->get('about')->uses('HomeController@getAboutPage')->name('about');
+$router->get('terms')->uses('HomeController@getTermsPage')->name('terms');
+$router->get('privacy')->uses('HomeController@getPrivacyPage')->name('privacy');
 
 // Authentication
 
@@ -155,6 +157,14 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('heroes/battles/leaderboard')->uses('Dominion\HeroController@getLeaderboard')->name('heroes.battles.leaderboard');
             $router->get('heroes/battles/report/{battle}')->uses('Dominion\HeroController@getBattleReport')->name('heroes.battles.report');
             $router->get('heroes/tournaments')->uses('Dominion\HeroController@getTournaments')->name('heroes.tournaments');
+            $router->get('heroes/tournaments/{tournament}/join')->uses('Dominion\HeroController@getJoinTournament')->name('heroes.tournaments.join');
+            $router->get('heroes/tournaments/{tournament}/leave')->uses('Dominion\HeroController@getLeaveTournament')->name('heroes.tournaments.leave');
+
+            // Raids
+            $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');
+            $router->get('raids/objective/{objective}')->uses('Dominion\RaidController@getRaidObjective')->name('raids.objective');
+            $router->get('raids/objective/{objective}/leaderboard')->uses('Dominion\RaidController@getRaidLeaderboard')->name('raids.leaderboard');
+            $router->post('raids/tactic/{tactic}')->uses('Dominion\RaidController@postRaidTactic')->name('raids.tactic');
 
             // Wonders
             $router->get('wonders')->uses('Dominion\WonderController@getWonders')->name('wonders');
@@ -285,6 +295,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Protection
             // todo: move pack/restart/rename/tick
+            $router->get('protection/buildings')->uses('Dominion\ProtectionController@getBuildings')->name('protection.buildings');
+            $router->post('protection/buildings')->uses('Dominion\ProtectionController@postBuildings');
             $router->get('protection/import-log')->uses('Dominion\ProtectionController@getImportLog')->name('protection.import-log');
             $router->post('protection/import-log')->uses('Dominion\ProtectionController@postImportLog');
             $router->post('automation/protection')->uses('Dominion\ProtectionController@postAutomateProtection')->name('protection.automate');

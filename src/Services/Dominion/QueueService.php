@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use BadMethodCallException;
 use DB;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
 use Throwable;
@@ -200,15 +201,25 @@ class QueueService
                 })->first();
 
             if ($existingQueueRow === null) {
-                $dominion->queues()->insert([
-                    'dominion_id' => $dominion->id,
-                    'source' => $source,
-                    'resource' => $resource,
-                    'hours' => $hours,
-                    'amount' => $amount,
-                    'created_at' => $now,
-                ]);
-            } else {
+                try {
+                    $dominion->queues()->insert([
+                        'dominion_id' => $dominion->id,
+                        'source' => $source,
+                        'resource' => $resource,
+                        'hours' => $hours,
+                        'amount' => $amount,
+                        'created_at' => $now,
+                    ]);
+                } catch(QueryException $e) {
+                    if ($e->getCode() == '23000') {
+                        $existingQueueRow = true;
+                    } else {
+                        throw $e;
+                    }
+                }
+            }
+
+            if ($existingQueueRow !== null) {
                 $dominion->queues()->where([
                     'source' => $source,
                     'resource' => $resource,

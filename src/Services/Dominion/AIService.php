@@ -223,7 +223,7 @@ class AIService
                                 $actionsTaken--;
                                 break;
                             case 'draft_rate':
-                                $this->changeDraftRateActionService->changeDraftRate($dominion, $instruction['amount']);
+                                $this->changeDraftRateActionService->changeDraftRate($dominion, clamp($instruction['amount'], 0, 90));
                                 break;
                             case 'explore':
                                 $maxAfford = min(

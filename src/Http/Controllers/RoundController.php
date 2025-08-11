@@ -19,7 +19,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\PackService;
-use OpenDominion\Services\RealmFinderService;
+use OpenDominion\Services\RealmAssignmentService;
 
 class RoundController extends AbstractController
 {
@@ -51,8 +51,15 @@ class RoundController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
+        $hasDiscord = true;
+        $user = Auth::user();
+        if ($user->discordUser === null && $user->dominions()->count() > 1) {
+            $hasDiscord = false;
+        }
+
         $races = Race::query()
             ->with(['perks'])
+            ->active()
             ->orderBy('name')
             ->get();
 
@@ -60,6 +67,8 @@ class RoundController extends AbstractController
             'raceHelper' => app(RaceHelper::class),
             'round' => $round,
             'races' => $races,
+            'hasDiscord' => $hasDiscord,
+            'isLateStart' => $round->hasStarted(),
         ]);
     }
 
@@ -73,8 +82,13 @@ class RoundController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
-        // todo: make this its own FormRequest class? Might be hard due to depending on $round->pack_size, needs investigating
-        /** @noinspection PhpUnhandledExceptionInspection */
+        // Enforce quick protection for late starts
+        if ($round->hasStarted() && $request->get('protection_type') === 'advanced') {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['protection_type' => 'Only Quick Start protection is available after round start.']);
+        }
+
         $this->validate($request, [
             'dominion_name' => [
                 'required',
@@ -95,10 +109,12 @@ class RoundController extends AbstractController
                 }),
             ],
             'race' => 'required|exists:races,key',
+            'protection_type' => 'in:advanced,quick',
             'realm_type' => 'in:random,join_pack,create_pack',
             'pack_name' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_password' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
+            'discord' => 'in:yes,no',
         ]);
 
         /** @var Realm $realm */
@@ -112,7 +128,7 @@ class RoundController extends AbstractController
 
         try {
             DB::transaction(function () use ($request, $round, &$realm, &$dominion, &$dominionName) {
-                $realmFinderService = app(RealmFinderService::class);
+                $realmAssignmentService = app(RealmAssignmentService::class);
                 $realmFactory = app(RealmFactory::class);
 
                 /** @var User $user */
@@ -126,7 +142,7 @@ class RoundController extends AbstractController
 
                 switch ($request->get('realm_type')) {
                     case 'random':
-                        $realm = $realmFinderService->findRealm($round, $race, $user);
+                        $realm = $realmAssignmentService->findRealm($round, $race, $user);
                         break;
 
                     case 'join_pack':
@@ -144,13 +160,7 @@ class RoundController extends AbstractController
                         if (!$round->packRegistrationOpen()) {
                             throw new GameException('Pack registration is currently closed');
                         }
-                        $realm = $realmFinderService->findRealm(
-                            $round,
-                            $race,
-                            $user,
-                            $request->get('pack_size'),
-                            true
-                        );
+                        $realm = $realmAssignmentService->findRealm($round, $race, $user);
                         break;
 
                     default:
@@ -169,6 +179,7 @@ class RoundController extends AbstractController
                     $race,
                     ($request->get('ruler_name') ?: $user->display_name),
                     $dominionName,
+                    ($request->get('protection_type') ?: 'quick'),
                     $pack
                 );
 
@@ -185,6 +196,11 @@ class RoundController extends AbstractController
 
                     $pack->realm_id = $realm->id;
                     $pack->save();
+                }
+
+                if ($dominion->pack_id === null && $request->get('discord') == 'no') {
+                    $dominion->settings = ['usediscord' => false];
+                    $dominion->save();
                 }
             });
         } catch (QueryException $e) {

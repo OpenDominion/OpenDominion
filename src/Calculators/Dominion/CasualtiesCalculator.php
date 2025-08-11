@@ -167,6 +167,12 @@ class CasualtiesCalculator
                 $unitBonusMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'casualties_offense_range') / 100);
             }
 
+            // Special case for unit bonus on a spell
+            $demonCasualtiesPerk = $dominion->getSpellPerkMultiplier('casualties_demon');
+            if ($demonCasualtiesPerk !== 0 && $slot == 4) {
+                $unitBonusMultiplier -= $demonCasualtiesPerk;
+            }
+
             // Unit Perk: Reduce Combat Losses
             $unitsSentPerSlot = [];
             $unitsSentRCLSlot = null;

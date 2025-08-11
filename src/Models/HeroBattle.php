@@ -11,6 +11,7 @@ use \Illuminate\Database\Eloquent\Builder;
  * @property int $round_id
  * @property int $current_turn
  * @property int $pvp
+ * @property int|null $raid_tactic_id
  * @property int|null $winner_combatant_id
  * @property bool $finished
  * @property \Illuminate\Support\Carbon|null $last_processed_at
@@ -53,6 +54,11 @@ class HeroBattle extends AbstractModel
     public function combatants()
     {
         return $this->hasMany(HeroCombatant::class);
+    }
+
+    public function tactic()
+    {
+        return $this->belongsTo(RaidObjectiveTactic::class, 'raid_tactic_id');
     }
 
     public function scopeActive(Builder $query): Builder

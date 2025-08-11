@@ -869,8 +869,8 @@
                             <div class="col-xs-3 text-left">
                                 <select name="calc[war_bonus]" class="form-control">
                                     <option value="0"></option>
-                                    <option value="5">Single +5%</option>
-                                    <option value="10">Mutual +10%</option>
+                                    <option value="4">Single +4%</option>
+                                    <option value="8">Mutual +8%</option>
                                 </select>
                             </div>
                             <div class="col-xs-3 text-right">

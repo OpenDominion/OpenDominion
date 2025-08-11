@@ -185,6 +185,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-top-magical-assassins']) }}">Top Magical Assassins</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-top-military-assassins']) }}">Top Military Assassins</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-top-snare-setters']) }}">Top Snare Setters</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-chaos']) }}">Masters of Chaos</a><br>
                     <!-- Top Demoralizers -->
                 </div>
                 <div class="col-sm-6 text-center">

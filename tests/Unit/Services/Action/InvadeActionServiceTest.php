@@ -34,12 +34,12 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound('last week');
 
-        $this->dominion = $this->createDominion($user, $this->round, Race::where('name', 'Merfolk')->firstOrFail());
+        $this->dominion = $this->createDominionWithLegacyStats($user, $this->round, Race::where('name', 'Merfolk')->firstOrFail());
         $this->dominion->protection_ticks_remaining = 0;
         $this->dominion->land_plain = 2850;
 
         $targetUser = $this->createUser();
-        $this->target = $this->createDominion($targetUser, $this->round, Race::where('name', 'Lycanthrope')->firstOrFail());
+        $this->target = $this->createDominionWithLegacyStats($targetUser, $this->round, Race::where('name', 'Lycanthrope')->firstOrFail());
         $this->target->protection_ticks_remaining = 0;
         $this->target->land_plain = 2850;
 
@@ -52,15 +52,15 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
     public function testInvadeSucceeds()
     {
         // Arrange
-        $this->dominion->military_unit3 = 5000;
-        $this->dominion->military_unit4 = 7500; // 30000 raw OP
+        $this->dominion->military_unit3 = 7500;
+        $this->dominion->military_unit4 = 11250; // 45k raw OP
         $this->target->military_draftees = 0;
-        $this->target->military_unit2 = 10000; // 30000 raw DP
+        $this->target->military_unit2 = 15000; // 45k raw DP
         $this->target->building_guard_tower = 30; // 1.6% DP mods (+5% racial)
 
         // Act
         $units = [
-            4 => 7269 // 29076 raw OP +10% OP mods (prestige + racial)
+            4 => 10903 // 43612 raw OP +10% OP mods (prestige + racial)
         ];
         $this->invadeActionService->invade($this->dominion, $this->target, $units, false);
 
@@ -71,25 +71,25 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(true, $invasionResult['result']['success']);
-        $this->assertEquals(618, $invasionResult['attacker']['unitsLost'][4]);
+        $this->assertEquals(927, $invasionResult['attacker']['unitsLost'][4]);
         $this->assertEquals(-13, $invasionResult['defender']['prestigeChange']);
-        $this->assertEquals(231, $this->dominion->military_unit4);
-        $this->assertEquals(9640, $this->target->military_unit2);
+        $this->assertEquals(347, $this->dominion->military_unit4);
+        $this->assertEquals(14460, $this->target->military_unit2);
         $this->assertEquals(2677, $this->target->land_plain);
     }
 
     public function testInvadeFails()
     {
         // Arrange
-        $this->dominion->military_unit3 = 5000;
-        $this->dominion->military_unit4 = 7500; // 30000 raw OP
+        $this->dominion->military_unit3 = 7500;
+        $this->dominion->military_unit4 = 11250; // 45k raw OP
         $this->target->military_draftees = 0;
-        $this->target->military_unit2 = 10000; // 30000 raw DP
+        $this->target->military_unit2 = 15000; // 45k raw DP
         $this->target->building_guard_tower = 30; // 1.6% DP mods (+5% racial)
 
         // Act
         $units = [
-            4 => 7268 // 29072 raw OP +10% OP mods (prestige + racial)
+            4 => 10902 // 43608 raw OP +10% OP mods (prestige + racial)
         ];
         $this->invadeActionService->invade($this->dominion, $this->target, $units, false);
 
@@ -100,10 +100,10 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(false, $invasionResult['result']['success']);
-        $this->assertEquals(618, $invasionResult['attacker']['unitsLost'][4]);
+        $this->assertEquals(927, $invasionResult['attacker']['unitsLost'][4]);
         $this->assertEquals(false, isset($invasionResult['defender']['prestigeChange']));
-        $this->assertEquals(232, $this->dominion->military_unit4);
-        $this->assertEquals(9641, $this->target->military_unit2);
+        $this->assertEquals(348, $this->dominion->military_unit4);
+        $this->assertEquals(14461, $this->target->military_unit2);
         $this->assertEquals(2850, $this->target->land_plain);
     }
 
@@ -131,7 +131,7 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->dominion->military_unit3 = 5000;
-        $this->dominion->military_unit4 = 7500;
+        $this->dominion->military_unit4 = 10000;
         $this->target->military_draftees = 0;
         $this->target->military_unit2 = 10000;
         $this->target->military_unit4 = 5000;
@@ -156,7 +156,7 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(18050, $populationCalculator->getPopulationMilitary($this->target));
 
         // Act
-        $units = [4 => 7500];
+        $units = [4 => 10000];
         $this->invadeActionService->invade($this->dominion, $this->target, $units, false);
 
         // Get results
@@ -166,9 +166,9 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(17049, $populationCalculator->getMaxPopulation($this->target));
-        $this->assertEquals(17673, $populationCalculator->getPopulationMilitary($this->target));
+        $this->assertEquals(17647, $populationCalculator->getPopulationMilitary($this->target));
         $this->assertEquals(true, $invasionResult['result']['success']);
-        $this->assertEquals(208, $invasionResult['defender']['unitsDeserted'][1]);
-        $this->assertEquals(416, $invasionResult['defender']['unitsDeserted'][4]);
+        $this->assertEquals(199, $invasionResult['defender']['unitsDeserted'][1]);
+        $this->assertEquals(399, $invasionResult['defender']['unitsDeserted'][4]);
     }
 }

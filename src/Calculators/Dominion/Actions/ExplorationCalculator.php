@@ -90,31 +90,14 @@ class ExplorationCalculator
      */
     public function getDrafteeCost(Dominion $dominion): int
     {
-        $draftees = 0;
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
-        if ($totalLand < 300) {
-            $draftees = -(300 / $totalLand);
-        } else {
-            $draftees += (0.003 * (($totalLand - 300) ** 1.07));
-        }
+        $drafteeCost = rfloor($totalLand / 150) + 3;
 
-        $draftees += 5;
+        // Techs
+        $drafteeCost += $dominion->getTechPerkValue('explore_draftee_cost');
 
-        if($totalLand >= 4000) {
-            $draftees *= 1.25;
-        }
-
-        $drafteeCost = round($draftees);
-
-        if ($drafteeCost < 7) {
-            // Minimum draftee cost is 4
-            return max(4, $drafteeCost);
-        } else {
-            // Techs - Cannot reduce draftee cost below 6
-            $drafteeCost += $dominion->getTechPerkValue('explore_draftee_cost');
-            return max(6, $drafteeCost);
-        }
+        return $drafteeCost;
     }
 
     /**

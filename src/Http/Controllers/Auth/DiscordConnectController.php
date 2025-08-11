@@ -77,7 +77,7 @@ class DiscordConnectController extends AbstractController
             return redirect()->route('dominion.status');
         }
 
-        if ($selectedDominion->realm->number == 0) {
+        if ($selectedDominion->realm->number == 0 || $selectedDominion->realm->getSetting('usediscord') === false) {
             $request->session()->flash('alert-danger', 'Discord is not enabled for this realm.');
             return redirect()->route('dominion.status');
         }

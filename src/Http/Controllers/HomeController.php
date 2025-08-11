@@ -63,6 +63,16 @@ class HomeController extends AbstractController
         return view('pages.about');
     }
 
+    public function getPrivacyPage()
+    {
+        return view('pages.privacy');
+    }
+
+    public function getTermsPage()
+    {
+        return view('pages.terms');
+    }
+
     public function getUserAgreement()
     {
         return view('pages.user-agreement');
