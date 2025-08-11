@@ -246,6 +246,8 @@ class HeroBattleService
             } elseif ($combatant->current_action == 'attack') {
                 // Attack a random opponent
                 $target = $combatants->where('hero_id', '!=', $combatant->hero_id)->random();
+                // TODO: elseif counter, set target to list of other combatants?
+                // Process counter action for each target?
             } else {
                 // Default to self
                 $target = $combatant;
@@ -383,6 +385,7 @@ class HeroBattleService
                 break;
             case 'counter':
                 // TODO: Do this within the attack case
+                // Do we iterate over all combatants? Not sure we have access to their targets.
                 if ($target->current_action == 'attack') {
                     $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target, true);
                     $description = sprintf(

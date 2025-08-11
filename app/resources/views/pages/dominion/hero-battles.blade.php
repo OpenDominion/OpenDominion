@@ -62,7 +62,9 @@
                                                         <tfoot>
                                                             <tr>
                                                                 <td colspan=2>
-                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>'attack']) }}" {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
+                                                                    <a class="btn btn-block btn-primary"
+                                                                        href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>'attack']) }}"
+                                                                        {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
                                                                         Attack
                                                                     </a>
                                                                 </td>

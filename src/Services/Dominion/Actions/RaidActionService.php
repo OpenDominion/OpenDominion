@@ -88,7 +88,7 @@ class RaidActionService
 
         // Check if objective is active
         if ($tactic->objective->start_date > now() || $tactic->objective->end_date < now()) {
-            throw new GameException('This raid objective is not currently active');
+            //throw new GameException('This raid objective is not currently active');
         }
 
         switch ($tactic->type) {
@@ -175,7 +175,11 @@ class RaidActionService
         $dominionCombatant = $heroBattleService->createCombatant($heroBattle, $dominion->hero);
         $enemyCount = $tactic->attributes['enemy_count'] ?? 1;
         foreach (range(1, $enemyCount) as $idx) {
-            $heroBattleService->createNonPlayerCombatant($heroBattle, $tactic->attributes);
+            $enemyAttributes = $tactic->attributes;
+            if ($idx > 1) {
+                $enemyAttributes['name'] .= " {$idx}";
+            }
+            $heroBattleService->createNonPlayerCombatant($heroBattle, $enemyAttributes);
         }
 
         return [
