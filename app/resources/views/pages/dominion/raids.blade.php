@@ -32,7 +32,7 @@
                                             @elseif ($raid->isActive())
                                                 <i class="fa fa-clock-o"></i> Ends in {{ $raid->timeUntilEnd() }}
                                             @else
-                                                <i class="fa fa-clock-o"></i> {{ now()->longAbsoluteDiffForHumans($raid->start_date) }} ago
+                                                <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($raid->start_date) }} ago
                                             @endif
                                         </div>
                                         <div class="col-md-4">
@@ -52,6 +52,7 @@
                                                     <th></th>
                                                     <th>Objective</th>
                                                     <th>Description</th>
+                                                    <th>Duration</th>
                                                     <th>Score Required</th>
                                                     <th>Realm Progress</th>
                                                     <th>Tactics</th>
@@ -63,7 +64,7 @@
                                                     $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedRealm);
                                                     $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
                                                 @endphp
-                                                <tr class="{{ $objective->isActive() ? 'success' : null}}">
+                                                <tr class="{{ $objective->isActive() ? 'info' : null}}">
                                                     <td>{{ $objective->order }}</td>
                                                     <td>
                                                         <a href="{{ route('dominion.raids.objective', [$objective->id]) }}">
@@ -74,6 +75,7 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $objective->description }}</td>
+                                                    <td>{{ $objective->start_date->diffInHours($objective->end_date) }} hours</td>
                                                     <td>{{ number_format($objective->score_required) }}</td>
                                                     <td>{{ number_format($realmScore) }} ({{ number_format($realmProgress, 1) }}%)</td>
                                                     <td>

@@ -31,7 +31,7 @@
                                     @elseif ($objective->isActive())
                                         <i class="fa fa-clock-o"></i> Ends in {{ $objective->timeUntilEnd() }}
                                     @else
-                                        <i class="fa fa-clock-o"></i> {{ now()->longAbsoluteDiffForHumans($objective->start_date) }} ago
+                                        <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($objective->start_date) }} ago
                                     @endif
                                 </div>
                             </div>
@@ -66,6 +66,7 @@
                                             <th>Score</th>
                                             <th>Progress</th>
                                             <th>Status</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -75,7 +76,7 @@
                                                     @if ($index == 0)
                                                         <i class="fa fa-trophy text-yellow"></i>
                                                     @elseif ($index == 1)
-                                                        <i class="fa fa-trophy text-gray"></i>
+                                                        <i class="fa fa-trophy text-grey"></i>
                                                     @elseif ($index == 2)
                                                         <i class="fa fa-trophy text-orange"></i>
                                                     @else
@@ -83,12 +84,17 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    {{ $entry['realm_name'] }}
+                                                    {{ $entry['realm_name'] }} (#{{ $entry['realm_number'] }})
                                                     @if ($entry['realm_id'] == $selectedRealm->id)
                                                         <span class="label label-info">Your Realm</span>
                                                     @endif
                                                 </td>
-                                                <td>{{ number_format($entry['total_score']) }}</td>
+                                                <td>
+                                                    {{ number_format($entry['total_score']) }}
+                                                    @if ($totalScore > 0)
+                                                        ({{ number_format($entry['total_score'] / $totalScore * 100) }}%)
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="progress progress-sm">
                                                         <div class="progress-bar progress-bar-{{ $entry['completed'] ? 'success' : 'primary' }}"
@@ -137,7 +143,7 @@
                     @php
                         $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedRealm->id);
                         $yourRank = $yourRealmData ? array_search($yourRealmData, $leaderboard) + 1 : 'N/A';
-                        $topContributors = $raidCalculator->getTopContributorsInRealm($objective, $selectedRealm, 5);
+                        $topContributors = $raidCalculator->getTopContributorsInRealm($objective, $selectedRealm, 10);
                     @endphp
 
                     @if ($yourRealmData)
@@ -151,6 +157,9 @@
                                 <span class="label label-primary">In Progress</span>
                             @endif
                         </p>
+                        @if ($totalScore > 0)
+                            <p><strong>Realm Share:</strong> {{ number_format(min($raidCalculator::MAX_REALM_REWARD_RATIO, $yourRealmData['total_score'] / $totalScore) * 100) }}% of total spoils</p>
+                        @endif
                     @else
                         <p><em>Your realm has not contributed to this objective yet.</em></p>
                     @endif
@@ -160,7 +169,10 @@
                         <h4>Top Contributors</h4>
                         <ol>
                             @foreach ($topContributors as $contributor)
-                                <li>{{ $contributor['dominion_name'] }} - {{ number_format($contributor['total_score']) }}</li>
+                                <li>
+                                    {{ $contributor['dominion_name'] }} - {{ number_format($contributor['total_score']) }}
+                                    ({{ number_format($contributor['total_score'] / $yourRealmData['total_score'] * 100) }}%}
+                                </li>
                             @endforeach
                         </ol>
                     @endif

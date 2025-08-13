@@ -87,8 +87,8 @@ class RaidActionService
         }
 
         // Check if objective is active
-        if ($tactic->objective->start_date > now() || $tactic->objective->end_date < now()) {
-            //throw new GameException('This raid objective is not currently active');
+        if (!$tactic->objective->isActive()) {
+            throw new GameException('This raid objective is not currently active');
         }
 
         switch ($tactic->type) {
@@ -223,8 +223,8 @@ class RaidActionService
                 'round_id' => $dominion->round->id,
                 'source_type' => Dominion::class,
                 'source_id' => $dominion->id,
-                'target_type' => RaidObjective::class,
-                'target_id' => $tactic->raid_objective_id,
+                'target_type' => RaidObjectiveTactic::class,
+                'target_id' => $tactic->id,
                 'type' => 'raid_attacked',
                 'data' => $this->attackResult
             ]);

@@ -80,7 +80,7 @@
                                             data-op="{{ $unit->power_offense }}"
                                             data-dp="{{ $unit->power_defense }}"
                                             data-need-boat="{{ (int)$unit->need_boat }}"
-                                            {{ $selectedDominion->isLocked() || $objective->raid->hasEnded() ? 'disabled' : null }}>
+                                            {{ $selectedDominion->isLocked() || !$objective->raid->isActive() ? 'disabled' : null }}>
                                 </td>
                                 <td class="text-center" id="unit{{ $unitSlot }}_stats_{{ $tactic->id }}">
                                     <span class="op">0</span> / <span class="dp text-muted">0</span>
@@ -140,7 +140,7 @@
                         <button type="submit"
                                 id="attack-button-{{ $tactic->id }}"
                                 class="btn btn-danger"
-                                {{ $selectedDominion->isLocked() || $objective->raid->hasEnded() ? 'disabled' : null }}>
+                                {{ $selectedDominion->isLocked() || !$objective->raid->isActive() ? 'disabled' : null }}>
                             <i class="ra ra-sword"></i>
                             Attack
                         </button>

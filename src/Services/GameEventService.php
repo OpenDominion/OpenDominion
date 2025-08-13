@@ -120,6 +120,8 @@ class GameEventService
                     $query->whereIn('type', ['war_declared', 'war_canceled']);
                 } elseif ($type == 'wonders') {
                     $query->whereIn('type', ['wonder_attacked', 'wonder_destroyed', 'wonder_spawned']);
+                } elseif ($type == 'raids') {
+                    $query->whereIn('type', ['raid_attacked']);
                 }
             })
             ->orderBy('created_at', 'desc')
@@ -162,6 +164,8 @@ class GameEventService
                     $query->whereIn('type', ['war_declared', 'war_canceled']);
                 } elseif ($type == 'wonders') {
                     $query->whereIn('type', ['wonder_attacked', 'wonder_destroyed', 'wonder_spawned']);
+                } elseif ($type == 'raids') {
+                    $query->whereIn('type', ['raid_attacked']);
                 }
             })
             ->orderBy('created_at', 'desc')

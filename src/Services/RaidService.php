@@ -90,13 +90,13 @@ class RaidService
     {
         // Add participation reward
         if ($participationReward['amount'] > 0) {
-            $resourceField = "resource_{$participationReward['resource']}";
+            $resourceField = "{$participationReward['resource']}";
             $dominion->$resourceField += $participationReward['amount'];
         }
 
         // Add completion reward
         if ($completionReward['amount'] > 0) {
-            $resourceField = "resource_{$completionReward['resource']}";
+            $resourceField = "{$completionReward['resource']}";
             $dominion->$resourceField += $completionReward['amount'];
         }
 

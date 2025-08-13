@@ -28,6 +28,7 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\CouncilService;
@@ -45,6 +46,7 @@ use OpenDominion\Services\Dominion\Actions\ImproveActionService;
 use OpenDominion\Services\Dominion\Actions\InvadeActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
+use OpenDominion\Services\Dominion\Actions\RaidActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
@@ -72,6 +74,7 @@ use OpenDominion\Services\JournalService;
 use OpenDominion\Services\MessageBoardService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\PackService;
+use OpenDominion\Services\RaidService;
 use OpenDominion\Services\RealmAssignmentService;
 use OpenDominion\Services\UserRatingService;
 use OpenDominion\Services\ValorService;
@@ -111,6 +114,7 @@ class AppServiceProvider extends AbstractServiceProvider
     {
         // Generic Calculators
         $this->app->singleton(NetworthCalculator::class);
+        $this->app->singleton(RaidCalculator::class);
         $this->app->singleton(WonderCalculator::class);
 
         // Dominion Calculators
@@ -149,6 +153,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(MessageBoardService::class);
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(PackService::class);
+        $this->app->singleton(RaidService::class);
         $this->app->singleton(RealmAssignmentService::class);
         $this->app->singleton(UserRatingService::class);
         $this->app->singleton(ValorService::class);
@@ -186,6 +191,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(HeroActionService::class);
         $this->app->singleton(ImproveActionService::class);
         $this->app->singleton(InvadeActionService::class);
+        $this->app->singleton(RaidActionService::class);
         $this->app->singleton(ReleaseActionService::class);
         $this->app->singleton(RezoneActionService::class);
         $this->app->singleton(SpellActionService::class);
