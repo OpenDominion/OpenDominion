@@ -158,7 +158,7 @@
                             @endif
                         </p>
                         @if ($totalScore > 0)
-                            <p><strong>Realm Share:</strong> {{ number_format(min($raidCalculator::MAX_REALM_REWARD_RATIO * 100, $entry['total_score'] / $totalScore * 100)) }}% of total spoils</p>
+                            <p><strong>Realm Share:</strong> {{ number_format(min($raidCalculator::MAX_REALM_REWARD_RATIO, $entry['total_score'] / $totalScore) * 100) }}% of total spoils</p>
                         @endif
                     @else
                         <p><em>Your realm has not contributed to this objective yet.</em></p>
