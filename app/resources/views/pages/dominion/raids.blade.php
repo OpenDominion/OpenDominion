@@ -64,7 +64,7 @@
                                                     $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedRealm);
                                                     $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
                                                 @endphp
-                                                <tr class="{{ $objective->isActive() ? 'success' : null}}">
+                                                <tr class="{{ $objective->isActive() ? 'info' : null}}">
                                                     <td>{{ $objective->order }}</td>
                                                     <td>
                                                         <a href="{{ route('dominion.raids.objective', [$objective->id]) }}">
