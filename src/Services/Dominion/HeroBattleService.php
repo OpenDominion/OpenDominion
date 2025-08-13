@@ -372,10 +372,21 @@ class HeroBattleService
                     );
                 } else {
                     $description = sprintf(
-                        '%s deals %s damage.',
+                        '%s deals %s damage to %s.',
                         $combatant->name,
-                        $damage
+                        $damage,
+                        $target->name
                     );
+                }
+                if ($target->current_action == 'counter') {
+                    $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
+                    $description = sprintf(
+                        '%s counters %s for %s damage.',
+                        $target->name,
+                        $combatant->name,
+                        $counterDamage
+                    );
+                    $health = -$counterDamage;
                 }
                 break;
             case 'defend':
@@ -384,16 +395,6 @@ class HeroBattleService
                 $combatant->has_focus = true;
                 break;
             case 'counter':
-                // TODO: Do this within the attack case
-                // Do we iterate over all combatants? Not sure we have access to their targets.
-                if ($target->current_action == 'attack') {
-                    $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target, true);
-                    $description = sprintf(
-                        '%s deals %s damage.',
-                        $combatant->name,
-                        $damage
-                    );
-                }
                 break;
             case 'recover':
                 $health = $this->heroCalculator->calculateCombatHeal($combatant);

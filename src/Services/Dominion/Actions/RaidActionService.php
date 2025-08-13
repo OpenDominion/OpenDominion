@@ -176,8 +176,8 @@ class RaidActionService
         $enemyCount = $tactic->attributes['enemy_count'] ?? 1;
         foreach (range(1, $enemyCount) as $idx) {
             $enemyAttributes = $tactic->attributes;
-            if ($idx > 1) {
-                $enemyAttributes['name'] .= " {$idx}";
+            if ($enemyCount > 1) {
+                $enemyAttributes['name'] .= " #{$idx}";
             }
             $heroBattleService->createNonPlayerCombatant($heroBattle, $enemyAttributes);
         }
