@@ -32,11 +32,6 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="alert alert-success">
-                                Your realm has completed this objective!
-                                Everyone who contributed will earn {{ number_format($objective->raid->completion_reward_amount) }} {{ dominion_attr_display($objective->raid->completion_reward_resource, $objective->raid->completion_reward_amount) }}.
-                                <br/>You can still increase your score to earn a higher share of the spoils ({{ number_format($objective->raid->reward_amount) }} {{ dominion_attr_display($objective->raid->reward_resource, $objective->raid->reward_amount) }} divided between all realms).
-                            </div>
                             @php
                                 $realmScore = $raidCalculator->getObjectiveScore($objective, $selectedRealm);
                                 $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedRealm);
@@ -46,6 +41,13 @@
                                 $dominionProgressOfTotal = $objective->score_required > 0 ? ($dominionContribution / $objective->score_required) * 100 : 0;
                                 $otherContributorsProgress = $realmProgress - $dominionProgressOfTotal;
                             @endphp
+                            @if ($realmCompleted)
+                                <div class="alert alert-success">
+                                    Your realm has completed this objective!
+                                    Everyone who contributed will earn {{ number_format($objective->raid->completion_reward_amount) }} {{ dominion_attr_display($objective->raid->completion_reward_resource, $objective->raid->completion_reward_amount) }}.
+                                    <br/>You can still increase your score to earn a higher share of the spoils ({{ number_format($objective->raid->reward_amount) }} {{ dominion_attr_display($objective->raid->reward_resource, $objective->raid->reward_amount) }} divided between all realms).
+                                </div>
+                            @endif
                             <div class="progress">
                                 <div class="progress-bar progress-bar-{{ $realmCompleted ? 'success' : 'primary' }}" role="progressbar" style="width: {{ $otherContributorsProgress }}%">
                                     <span class="sr-only">{{ number_format($otherContributorsProgress, 1) }}% Complete (others)</span>
