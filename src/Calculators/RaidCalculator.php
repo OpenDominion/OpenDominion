@@ -216,6 +216,7 @@ class RaidCalculator
                 return [
                     'realm_id' => $contribution->realm_id,
                     'realm_name' => $contribution->realm->name,
+                    'realm_number' => $contribution->realm->number,
                     'total_score' => $contribution->total_score,
                     'progress' => $progress,
                     'completed' => $contribution->total_score >= $objective->score_required,

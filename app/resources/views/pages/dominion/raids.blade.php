@@ -52,6 +52,7 @@
                                                     <th></th>
                                                     <th>Objective</th>
                                                     <th>Description</th>
+                                                    <th>Duration</th>
                                                     <th>Score Required</th>
                                                     <th>Realm Progress</th>
                                                     <th>Tactics</th>
@@ -74,6 +75,7 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $objective->description }}</td>
+                                                    <td>{{ $objective->start_date->diffInHours($objective->end_date) }} hours</td>
                                                     <td>{{ number_format($objective->score_required) }}</td>
                                                     <td>{{ number_format($realmScore) }} ({{ number_format($realmProgress, 1) }}%)</td>
                                                     <td>

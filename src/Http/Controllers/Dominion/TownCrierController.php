@@ -14,7 +14,7 @@ class TownCrierController extends AbstractDominionController
     public function getIndex(Request $request, int $realmNumber = null)
     {
         $type = $request->input('type');
-        $typeChoices = ['all', 'invasions', 'wars', 'wonders'];
+        $typeChoices = ['all', 'invasions', 'wars', 'wonders', 'raids'];
         if (!in_array($type, $typeChoices)) {
             $type = 'all';
         }
