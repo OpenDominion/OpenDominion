@@ -246,8 +246,6 @@ class HeroBattleService
             } elseif ($combatant->current_action == 'attack') {
                 // Attack a random opponent
                 $target = $combatants->where('hero_id', '!=', $combatant->hero_id)->random();
-                // TODO: elseif counter, set target to list of other combatants?
-                // Process counter action for each target?
             } else {
                 // Default to self
                 $target = $combatant;
@@ -357,36 +355,54 @@ class HeroBattleService
 
         switch ($combatant->current_action) {
             case 'attack':
-                $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
+                $countered = false;
                 $combatant->has_focus = false;
+                $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
                 $evaded = $this->heroCalculator->calculateCombatEvade($target);
+                if ($target->current_action == 'counter') {
+                    $countered = true;
+                    $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
+                    $health = -$counterDamage;
+                }
                 if ($damage > 0 && $evaded) {
                     $damageEvaded = $damage;
                     $damage = round($damage / 2);
-                    $description = sprintf(
-                        '%s deals %s damage, but %s evades, reducing damage to %s.',
-                        $combatant->name,
-                        $damageEvaded,
-                        $target->name,
-                        $damage
-                    );
+                    if ($countered) {
+                        $description = sprintf(
+                            '%s deals %s damage, but %s evades, reducing damage to %s, then %s counters for %s damage.',
+                            $combatant->name,
+                            $damageEvaded,
+                            $target->name,
+                            $damage,
+                            $target->name,
+                            $counterDamage
+                        );
+                    } else {
+                        $description = sprintf(
+                            '%s deals %s damage, but %s evades, reducing damage to %s.',
+                            $combatant->name,
+                            $damageEvaded,
+                            $target->name,
+                            $damage
+                        );
+                    }
                 } else {
-                    $description = sprintf(
-                        '%s deals %s damage to %s.',
-                        $combatant->name,
-                        $damage,
-                        $target->name
-                    );
-                }
-                if ($target->current_action == 'counter') {
-                    $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
-                    $description = sprintf(
-                        '%s counters %s for %s damage.',
-                        $target->name,
-                        $combatant->name,
-                        $counterDamage
-                    );
-                    $health = -$counterDamage;
+                    if ($countered) {
+                        $description = sprintf(
+                            '%s deals %s damage to %s, who then counters for %s damage.',
+                            $combatant->name,
+                            $damage,
+                            $target->name,
+                            $counterDamage
+                        );
+                    } else {
+                        $description = sprintf(
+                            '%s deals %s damage to %s.',
+                            $combatant->name,
+                            $damage,
+                            $target->name
+                        );
+                    }
                 }
                 break;
             case 'defend':
