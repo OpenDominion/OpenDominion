@@ -197,7 +197,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
         $this->assertNotNull($contribution);
         $this->assertEquals('espionage', $contribution->type);
-        $this->assertEquals(3750, $contribution->score); // Base 100 * espionage multiplier (37.5)
+        $this->assertEquals(2500, $contribution->score); // Base 100 * espionage multiplier (25.0)
 
         $this->assertStringContainsString('successfully completed', $result['message']);
     }
@@ -211,14 +211,14 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $multiplier = $opsCalculator->getEspionageScoreMultiplier($this->dominion);
 
         // Assert
-        // Formula: 1.5 * min(1, spy_ratio) * land_size
-        // Current setup gives multiplier of 37.5
-        $this->assertEqualsWithDelta(37.5, $multiplier, 0.01);
+        // Formula: min(1, spy_ratio) * land_size
+        // Current setup gives multiplier of 25.0
+        $this->assertEqualsWithDelta(25.0, $multiplier, 0.01);
 
         // Verify the calculation matches our expected score
         $basePoints = 100;
         $expectedScore = $basePoints * $multiplier;
-        $this->assertEqualsWithDelta(3750, $expectedScore, 0.01);
+        $this->assertEqualsWithDelta(2500, $expectedScore, 0.01);
     }
 
     public function testMagicScoreMultiplier()
@@ -230,15 +230,15 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $multiplier = $opsCalculator->getMagicScoreMultiplier($this->dominion);
 
         // Assert
-        // Formula: 1.5 * min(1, wizard_ratio) * land_size
-        // Current setup gives 75.0, which means wizard_ratio = 1.0
-        // multiplier = 1.5 * 1.0 * 50 = 75.0
-        $this->assertEqualsWithDelta(75.0, $multiplier, 0.01);
+        // Formula: min(1, wizard_ratio) * land_size
+        // Current setup gives 50.0, which means wizard_ratio = 1.0
+        // multiplier = 1.0 * 50 = 50.0
+        $this->assertEqualsWithDelta(50.0, $multiplier, 0.01);
 
         // Verify the calculation matches our expected score
         $basePoints = 300;
         $expectedScore = $basePoints * $multiplier;
-        $this->assertEqualsWithDelta(22500, $expectedScore, 0.01);
+        $this->assertEqualsWithDelta(15000, $expectedScore, 0.01);
     }
 
     public function testPerformAction_EspionageWithMultipleOperations_Success()
@@ -268,7 +268,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
         $this->assertNotNull($contribution);
         $this->assertEquals('espionage', $contribution->type);
-        $this->assertEqualsWithDelta(4500, $contribution->score, 0.01); // Base 120 * espionage multiplier (37.5)
+        $this->assertEqualsWithDelta(3000, $contribution->score, 0.01); // Base 120 * espionage multiplier (25.0)
 
         $this->assertStringContainsString('successfully completed', $result['message']);
     }
@@ -300,7 +300,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
         $this->assertNotNull($contribution);
         $this->assertEquals('magic', $contribution->type);
-        $this->assertEqualsWithDelta(26250, $contribution->score, 0.01); // Base 350 * magic multiplier (75.0)
+        $this->assertEqualsWithDelta(17500, $contribution->score, 0.01); // Base 350 * magic multiplier (50.0)
 
         $this->assertStringContainsString('successfully completed', $result['message']);
     }
@@ -332,7 +332,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
         $this->assertNotNull($contribution);
         $this->assertEquals('espionage', $contribution->type);
-        $this->assertEqualsWithDelta(6000, $contribution->score, 0.01); // Base 160 * espionage multiplier (37.5)
+        $this->assertEqualsWithDelta(4000, $contribution->score, 0.01); // Base 160 * espionage multiplier (25.0)
 
         $this->assertStringContainsString('successfully completed', $result['message']);
     }
@@ -364,7 +364,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
         $this->assertNotNull($contribution);
         $this->assertEquals('magic', $contribution->type);
-        $this->assertEqualsWithDelta(31500, $contribution->score, 0.01); // Base 420 * magic multiplier (75.0)
+        $this->assertEqualsWithDelta(21000, $contribution->score, 0.01); // Base 420 * magic multiplier (50.0)
 
         $this->assertStringContainsString('successfully completed', $result['message']);
     }
@@ -447,7 +447,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(70, $this->dominion->wizard_strength); // 100 - 30
 
         $contribution = RaidContribution::where('dominion_id', $this->dominion->id)->first();
-        $this->assertEquals(22500, $contribution->score); // Base 300 * magic multiplier (75.0)
+        $this->assertEquals(15000, $contribution->score); // Base 300 * magic multiplier (50.0)
     }
 
     public function testPerformAction_HeroTactic_Success()

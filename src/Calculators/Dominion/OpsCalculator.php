@@ -575,7 +575,7 @@ class OpsCalculator
 
     /**
      * Returns the espionage score multiplier for raid operations.
-     * Formula: 1.5 * Min(1, spy_ratio) * land_size
+     * Formula: min(1, spy_ratio) * land_size
      *
      * @param Dominion $dominion
      * @return float
@@ -585,12 +585,12 @@ class OpsCalculator
         $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
         $landSize = $this->landCalculator->getTotalLand($dominion);
 
-        return 1.5 * min(1, $spyRatio) * $landSize;
+        return min(1, $spyRatio) * $landSize;
     }
 
     /**
      * Returns the magic score multiplier for raid operations.
-     * Formula: 1.5 * Min(1, wizard_ratio) * land_size
+     * Formula: min(1, wizard_ratio) * land_size
      *
      * @param Dominion $dominion
      * @return float
@@ -600,6 +600,6 @@ class OpsCalculator
         $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $landSize = $this->landCalculator->getTotalLand($dominion);
 
-        return 1.5 * min(1, $wizardRatio) * $landSize;
+        return min(1, $wizardRatio) * $landSize;
     }
 }
