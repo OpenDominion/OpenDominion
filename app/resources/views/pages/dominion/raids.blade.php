@@ -58,9 +58,9 @@
                                             </thead>
                                             @foreach ($raid->objectives->sortBy('order') as $objective)
                                                 @php
-                                                    $realmScore = $raidCalculator->getObjectiveScore($objective, $selectedRealm);
-                                                    $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedRealm);
-                                                    $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
+                                                    $realmScore = $raidCalculator->getObjectiveScore($objective, $selectedDominion->realm);
+                                                    $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedDominion->realm);
+                                                    $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedDominion->realm);
                                                 @endphp
                                                 <tr class="{{ $objective->isActive() ? 'info' : null}}">
                                                     <td>{{ $objective->order }}</td>

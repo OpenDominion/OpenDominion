@@ -293,25 +293,71 @@ class RaidCalculator
 
         // Calculate exact participation pool shares using the existing reward distribution method
         $totalScore = $leaderboardData->sum('total_score');
-        
+
         // Build contribution data structure that calculateRealmRewardPools expects
         $contributionData = [
             'total' => $totalScore,
             'by_realm' => $leaderboardData->pluck('total_score', 'realm_id')->toArray(),
         ];
-        
+
         // Use the actual reward calculation method
         $realmPools = $this->calculateRealmRewardPools($raid, $contributionData);
-        
+
         return $leaderboardData->map(function ($entry) use ($realmPools, $totalScore) {
             $realmId = $entry['realm_id'];
             $contributionPercentage = $totalScore > 0 ? ($entry['total_score'] / $totalScore) * 100 : 0;
-            
+
             $entry['estimated_participation_reward'] = $realmPools[$realmId] ?? 0;
             $entry['contribution_percentage'] = $contributionPercentage;
-            
+
             return $entry;
         })->toArray();
+    }
+
+    /**
+     * Get player-level reward breakdown for a specific realm using actual reward calculation logic.
+     */
+    public function getRealmPlayerBreakdown(Raid $raid, Realm $realm): array
+    {
+        // Get raid contribution data using the same method as reward calculation
+        $contributionData = $this->getRaidContributionData($raid);
+
+        // Calculate realm pools using the actual reward method
+        $realmPools = $this->calculateRealmRewardPools($raid, $contributionData);
+
+        // Calculate player allocations using the actual reward method
+        $playerAllocations = $this->calculatePlayerRewardAllocations($raid, $contributionData, $realmPools);
+
+        // Get player contributions for this specific realm
+        $realmPlayerContributions = RaidContribution::whereIn('raid_objective_id', $raid->objectives->pluck('id'))
+            ->where('realm_id', $realm->id)
+            ->with(['dominion'])
+            ->selectRaw('dominion_id, SUM(score) as total_score')
+            ->groupBy('dominion_id')
+            ->orderBy('total_score', 'desc')
+            ->get();
+
+        $realmTotalScore = $contributionData['by_realm'][$realm->id] ?? 0;
+
+        return $realmPlayerContributions->map(function ($playerData) use ($playerAllocations, $realmTotalScore, $realm) {
+            $dominionId = $playerData->dominion_id;
+            $playerScore = $playerData->total_score;
+            $estimatedReward = $playerAllocations[$dominionId] ?? 0;
+            $percentageOfRealm = $realmTotalScore > 0 ? ($playerScore / $realmTotalScore) * 100 : 0;
+
+            // Data integrity check - skip dominions that don't actually belong to the requested realm
+            if ($playerData->dominion->realm_id !== $realm->id) {
+                return null; // Will be filtered out
+            }
+
+            return [
+                'dominion_id' => $dominionId,
+                'dominion_name' => $playerData->dominion->name,
+                'total_score' => $playerScore,
+                'estimated_reward' => $estimatedReward,
+                'percentage_of_realm' => $percentageOfRealm,
+            ];
+        })->filter()->toArray();
     }
 
     /**

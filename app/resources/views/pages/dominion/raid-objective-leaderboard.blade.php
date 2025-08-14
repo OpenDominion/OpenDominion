@@ -82,7 +82,7 @@
                                                 </td>
                                                 <td>
                                                     {{ $entry['realm_name'] }} (#{{ $entry['realm_number'] }})
-                                                    @if ($entry['realm_id'] == $selectedRealm->id)
+                                                    @if ($entry['realm_id'] == $selectedDominion->realm_id)
                                                         <span class="label label-info">Your Realm</span>
                                                     @endif
                                                 </td>
@@ -138,9 +138,9 @@
                 </div>
                 <div class="box-body">
                     @php
-                        $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedRealm->id);
+                        $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedDominion->realm_id);
                         $yourRank = $yourRealmData ? array_search($yourRealmData, $leaderboard) + 1 : 'N/A';
-                        $topContributors = $raidCalculator->getTopContributorsInRealm($objective, $selectedRealm, 10);
+                        $topContributors = $raidCalculator->getTopContributorsInRealm($objective, $selectedDominion->realm, 10);
                     @endphp
 
                     @if ($yourRealmData)

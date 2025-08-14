@@ -95,7 +95,7 @@
                                                 </td>
                                                 <td>
                                                     {{ $entry['realm_name'] }} (#{{ $entry['realm_number'] }})
-                                                    @if ($entry['realm_id'] == $selectedRealm->id)
+                                                    @if ($entry['realm_id'] == $selectedDominion->realm_id)
                                                         <span class="label label-info">Your Realm</span>
                                                     @endif
                                                 </td>
@@ -142,6 +142,47 @@
                     </div>
                 </div>
             </div>
+
+            @if (!empty($playerBreakdown))
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Realm Participation</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Score</th>
+                                        <th>Estimated Reward</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($playerBreakdown as $player)
+                                        <tr>
+                                            <td>
+                                                {{ $player['dominion_name'] }}
+                                                @if($player['dominion_id'] == $selectedDominion->id)
+                                                    <span class="label label-info">You</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{ number_format($player['total_score']) }}
+                                                ({{ number_format($player['percentage_of_realm'], 1) }}%)
+                                            </td>
+                                            <td>
+                                                {{ number_format($player['estimated_reward']) }}
+                                                {{ dominion_attr_display($raid->reward_resource, $player['estimated_reward']) }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div class="col-sm-12 col-md-3">
@@ -151,7 +192,7 @@
                 </div>
                 <div class="box-body">
                     @php
-                        $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedRealm->id);
+                        $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedDominion->realm_id);
                         $yourRank = $yourRealmData ? array_search($yourRealmData, $leaderboard) + 1 : 'N/A';
                     @endphp
 
@@ -184,21 +225,13 @@
                 <div class="box-body">
                     @foreach($raid->objectives->sortBy('order') as $objective)
                         @php
-                            $isCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
+                            $isCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedDominion->realm);
                         @endphp
                         <div style="margin-bottom: 8px;">
                             <a href="{{ route('dominion.raids.objective', $objective) }}">
                                 {{ $objective->name }}
                             </a>
-                            @if ($isCompleted)
-                                <span class="label label-success">✓</span>
-                            @elseif ($objective->isActive())
-                                <span class="label label-warning">Active</span>
-                            @elseif (!$objective->hasStarted())
-                                <span class="label label-default">Upcoming</span>
-                            @else
-                                <span class="label label-danger">Ended</span>
-                            @endif
+                            {!! $raidHelper->getStatusLabel($objective->status) !!}
                         </div>
                     @endforeach
                 </div>

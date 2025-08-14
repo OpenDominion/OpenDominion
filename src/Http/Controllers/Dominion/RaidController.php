@@ -22,10 +22,9 @@ class RaidController extends AbstractDominionController
 
     public function getRaids()
     {
+        $selectedDominion = $this->getSelectedDominion();
         $raidCalculator = app(RaidCalculator::class);
         $raidHelper = app(RaidHelper::class);
-        $selectedDominion = $this->getSelectedDominion();
-        $selectedRealm = $selectedDominion->realm;
 
         $raids = $selectedDominion->round->raids->sortBy('order');
 
@@ -33,7 +32,6 @@ class RaidController extends AbstractDominionController
             'raidCalculator',
             'raidHelper',
             'raids',
-            'selectedRealm'
         ));
     }
 
@@ -44,8 +42,6 @@ class RaidController extends AbstractDominionController
         $raidCalculator = app(RaidCalculator::class);
         $raidHelper = app(RaidHelper::class);
         $unitHelper = app(UnitHelper::class);
-        $selectedDominion = $this->getSelectedDominion();
-        $selectedRealm = $selectedDominion->realm;
 
         return view('pages.dominion.raid-objective', compact(
             'objective',
@@ -54,7 +50,6 @@ class RaidController extends AbstractDominionController
             'raidCalculator',
             'raidHelper',
             'unitHelper',
-            'selectedRealm'
         ));
     }
 
@@ -79,19 +74,19 @@ class RaidController extends AbstractDominionController
 
     public function getRaidLeaderboard(Raid $raid)
     {
+        $selectedDominion = $this->getSelectedDominion();
         $raidCalculator = app(RaidCalculator::class);
         $raidHelper = app(RaidHelper::class);
-        $selectedDominion = $this->getSelectedDominion();
-        $selectedRealm = $selectedDominion->realm;
 
         $leaderboard = $raidCalculator->getRaidLeaderboard($raid);
+        $playerBreakdown = $raidCalculator->getRealmPlayerBreakdown($raid, $selectedDominion->realm);
 
         return view('pages.dominion.raid-leaderboard', [
             'raid' => $raid,
             'raidCalculator' => $raidCalculator,
             'raidHelper' => $raidHelper,
-            'selectedRealm' => $selectedRealm,
             'leaderboard' => $leaderboard,
+            'playerBreakdown' => $playerBreakdown,
         ]);
     }
 
@@ -99,8 +94,6 @@ class RaidController extends AbstractDominionController
     {
         $raidCalculator = app(RaidCalculator::class);
         $raidHelper = app(RaidHelper::class);
-        $selectedDominion = $this->getSelectedDominion();
-        $selectedRealm = $selectedDominion->realm;
 
         $leaderboard = $raidCalculator->getRealmsLeaderboard($objective);
         $totalScore = $raidCalculator->getObjectiveScore($objective);
@@ -110,7 +103,6 @@ class RaidController extends AbstractDominionController
             'objective' => $objective,
             'raidCalculator' => $raidCalculator,
             'raidHelper' => $raidHelper,
-            'selectedRealm' => $selectedRealm,
             'totalScore' => $totalScore,
         ]);
     }

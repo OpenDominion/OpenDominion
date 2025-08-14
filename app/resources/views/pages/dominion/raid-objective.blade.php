@@ -31,9 +31,9 @@
                                 </div>
                             </div>
                             @php
-                                $realmScore = $raidCalculator->getObjectiveScore($objective, $selectedRealm);
-                                $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedRealm);
-                                $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
+                                $realmScore = $raidCalculator->getObjectiveScore($objective, $selectedDominion->realm);
+                                $realmProgress = $raidCalculator->getObjectiveProgress($objective, $selectedDominion->realm);
+                                $realmCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedDominion->realm);
                                 $dominionContribution = $raidCalculator->getDominionContribution($objective, $selectedDominion);
                                 $dominionPercentage = $realmScore > 0 ? ($dominionContribution / $realmScore) * 100 : 0;
                                 $dominionProgressOfTotal = $objective->score_required > 0 ? ($dominionContribution / $objective->score_required) * 100 : 0;
@@ -131,7 +131,7 @@
                 </div>
                 <div class="box-body">
                     @php
-                        $recentContributions = $raidCalculator->getRecentContributions($objective, $selectedRealm, 10);
+                        $recentContributions = $raidCalculator->getRecentContributions($objective, $selectedDominion->realm, 10);
                     @endphp
                     @forelse($recentContributions as $contribution)
                         <div class="small" style="margin-bottom: 8px;">
