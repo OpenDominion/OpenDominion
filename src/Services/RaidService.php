@@ -56,7 +56,7 @@ class RaidService
         DB::transaction(function () use ($raid) {
             $this->rewardData = $this->raidCalculator->calculateRaidRewards($raid);
 
-            foreach ($rewardData as $data) {
+            foreach ($this->rewardData as $data) {
                 $this->distributeRewardToDominion(
                     $data['dominion'],
                     $data['participation_reward'],

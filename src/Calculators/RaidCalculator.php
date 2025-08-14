@@ -518,16 +518,12 @@ class RaidCalculator
 
     /**
      * Calculate player reward allocations within their realm pools.
-     * Each player gets up to 10% of required score based on contribution.
+     * Each player gets up to 15% of the realm's total contribution based on their individual contribution.
      * Remaining realm pool is distributed equally among realm players.
      */
     protected function calculatePlayerRewardAllocations(Raid $raid, array $contributionData, array $realmPools): array
     {
         $playerAllocations = [];
-
-        // Calculate total required score across all objectives
-        $totalRequiredScore = $raid->objectives->sum('score_required');
-        $maxPlayerAmount = $totalRequiredScore * self::MAX_PLAYER_REWARD_RATIO;
 
         foreach ($realmPools as $realmId => $realmPool) {
             if ($realmPool <= 0) {
@@ -549,9 +545,12 @@ class RaidCalculator
                 continue;
             }
 
+            // Calculate the maximum amount a single player can get (15% of realm's total contribution)
+            $maxPlayerAmount = $realmTotalContributions * self::MAX_PLAYER_REWARD_RATIO;
+
             $realmAllocatedAmount = 0;
 
-            // Step 1: Allocate based on contribution percentage within realm (capped at 10% of required score)
+            // Step 1: Allocate based on contribution percentage within realm (capped at 15% of realm total)
             foreach ($realmPlayers as $dominionId => $dominionContribution) {
                 $contributionPercentage = $dominionContribution / $realmTotalContributions;
                 $proportionalAmount = $contributionPercentage * $realmPool;
