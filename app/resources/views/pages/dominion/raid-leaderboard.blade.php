@@ -48,7 +48,7 @@
                                         <span class="info-box-icon bg-yellow"><i class="fa fa-gift"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text">Participation Pool</span>
-                                            <span class="info-box-number">{{ number_format($raid->reward_amount) }}</span>
+                                            <span class="info-box-number">{{ number_format($raid->reward_amount) }} {{ dominion_attr_display($raid->reward_resource, $raid->reward_amount) }}</span>
                                         </div>
                                     </div>
                                 </div>

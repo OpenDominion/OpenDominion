@@ -39,7 +39,7 @@
                                 $dominionProgressOfTotal = $objective->score_required > 0 ? ($dominionContribution / $objective->score_required) * 100 : 0;
                                 $otherContributorsProgress = $realmProgress - $dominionProgressOfTotal;
                             @endphp
-                            @if (!$realmCompleted)
+                            @if ($realmCompleted)
                                 <div class="alert alert-success">
                                     Your realm has completed this objective! Everyone who contributes to the raid will be awarded {{ dominion_attr_display($objective->raid->completion_reward_resource, $objective->raid->completion_reward_amount) }}.
                                     <br/>You can still increase your score to earn a higher share of the spoils ({{ number_format($objective->raid->reward_amount) }} {{ dominion_attr_display($objective->raid->reward_resource, $objective->raid->reward_amount) }} divided between all realms).
