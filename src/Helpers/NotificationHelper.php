@@ -758,10 +758,10 @@ class NotificationHelper
                 );
 
             case 'irregular_dominion.raid_rewards':
-                $participationAmount = $data['participation_amount'];
-                $completionAmount = $data['completion_amount'];
-                $participationResource = $data['participation_resource'];
-                $completionResource = $data['completion_resource'];
+                $participationAmount = number_format($data['participation_amount']);
+                $completionAmount = number_format($data['completion_amount']);
+                $participationResource = dominion_attr_display($data['participation_resource'], $data['participation_amount']);
+                $completionResource = dominion_attr_display($data['completion_resource'], $data['completion_amount']);
                 $raidName = $data['raid_name'] ?? 'a raid';
 
                 $participationString = "You earned {$participationAmount} {$participationResource}";

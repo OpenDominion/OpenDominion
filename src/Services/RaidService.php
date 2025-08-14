@@ -22,6 +22,9 @@ class RaidService
     /** @var NotificationService */
     protected $notificationService;
 
+    /** @var array */
+    protected $rewardData = [];
+
     public function __construct(RaidCalculator $raidCalculator, HistoryService $historyService, NotificationService $notificationService)
     {
         $this->raidCalculator = $raidCalculator;
@@ -50,10 +53,8 @@ class RaidService
      */
     public function distributeRaidRewards(Raid $raid): void
     {
-        $rewardData = [];
-
-        DB::transaction(function () use ($raid, $rewardData) {
-            $rewardData = $this->raidCalculator->calculateRaidRewards($raid);
+        DB::transaction(function () use ($raid) {
+            $this->rewardData = $this->raidCalculator->calculateRaidRewards($raid);
 
             foreach ($rewardData as $data) {
                 $this->distributeRewardToDominion(
@@ -67,7 +68,7 @@ class RaidService
             $raid->update(['rewards_distributed' => true]);
         });
 
-        foreach ($rewardData as $data) {
+        foreach ($this->rewardData as $data) {
             // Queue notification for this dominion
             $this->notificationService->queueNotification('raid_rewards', [
                 'raid_name' => $raid->name,
