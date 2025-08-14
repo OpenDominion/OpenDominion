@@ -658,8 +658,8 @@ class RaidCalculator
                 continue;
             }
 
-            // Calculate the maximum amount a single player can get (15% of realm's total contribution)
-            $maxPlayerAmount = $realmTotalContributions * self::MAX_PLAYER_REWARD_RATIO;
+            // Calculate the maximum amount a single player can get (15% of realm's reward pool)
+            $maxPlayerAmount = $realmPool * self::MAX_PLAYER_REWARD_RATIO;
 
             $realmAllocatedAmount = 0;
 
