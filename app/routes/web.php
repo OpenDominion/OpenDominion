@@ -162,8 +162,9 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Raids
             $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');
+            $router->get('raids/{raid}/leaderboard')->uses('Dominion\RaidController@getRaidLeaderboard')->name('raids.leaderboard');
             $router->get('raids/objective/{objective}')->uses('Dominion\RaidController@getRaidObjective')->name('raids.objective');
-            $router->get('raids/objective/{objective}/leaderboard')->uses('Dominion\RaidController@getRaidLeaderboard')->name('raids.leaderboard');
+            $router->get('raids/objective/{objective}/leaderboard')->uses('Dominion\RaidController@getRaidObjectiveLeaderboard')->name('raids.objective.leaderboard');
             $router->post('raids/tactic/{tactic}')->uses('Dominion\RaidController@postRaidTactic')->name('raids.tactic');
 
             // Wonders

@@ -248,6 +248,73 @@ class RaidCalculator
     }
 
     /**
+     * Get raid-level leaderboard showing objective completion progress.
+     */
+    public function getRaidLeaderboard(Raid $raid): array
+    {
+        $objectiveIds = $raid->objectives->pluck('id');
+        $totalObjectives = $raid->objectives->count();
+
+        // Get all realms that participated in this raid
+        $participatingRealms = RaidContribution::whereIn('raid_objective_id', $objectiveIds)
+            ->with(['realm'])
+            ->selectRaw('realm_id, SUM(score) as total_score')
+            ->groupBy('realm_id')
+            ->orderBy('total_score', 'desc')
+            ->get();
+
+        $leaderboardData = $participatingRealms->map(function ($realmData) use ($raid, $totalObjectives) {
+            $realm = $realmData->realm;
+            $completedObjectives = 0;
+
+            // Count how many objectives this realm has completed
+            foreach ($raid->objectives as $objective) {
+                if ($this->isObjectiveCompleted($objective, $realm)) {
+                    $completedObjectives++;
+                }
+            }
+
+            $completionPercentage = $totalObjectives > 0 ? ($completedObjectives / $totalObjectives) * 100 : 0;
+
+            return [
+                'realm_id' => $realm->id,
+                'realm_name' => $realm->name,
+                'realm_number' => $realm->number,
+                'total_score' => $realmData->total_score,
+                'completed_objectives' => $completedObjectives,
+                'total_objectives' => $totalObjectives,
+                'completion_percentage' => $completionPercentage,
+                'fully_completed' => $completedObjectives === $totalObjectives,
+            ];
+        })
+        ->sortByDesc('completed_objectives')  // Sort by objectives completed first
+        ->sortByDesc('total_score')          // Then by total score as tiebreaker
+        ->values();
+
+        // Calculate exact participation pool shares using the existing reward distribution method
+        $totalScore = $leaderboardData->sum('total_score');
+        
+        // Build contribution data structure that calculateRealmRewardPools expects
+        $contributionData = [
+            'total' => $totalScore,
+            'by_realm' => $leaderboardData->pluck('total_score', 'realm_id')->toArray(),
+        ];
+        
+        // Use the actual reward calculation method
+        $realmPools = $this->calculateRealmRewardPools($raid, $contributionData);
+        
+        return $leaderboardData->map(function ($entry) use ($realmPools, $totalScore) {
+            $realmId = $entry['realm_id'];
+            $contributionPercentage = $totalScore > 0 ? ($entry['total_score'] / $totalScore) * 100 : 0;
+            
+            $entry['estimated_participation_reward'] = $realmPools[$realmId] ?? 0;
+            $entry['contribution_percentage'] = $contributionPercentage;
+            
+            return $entry;
+        })->toArray();
+    }
+
+    /**
      * Get top contributors for a raid objective within a specific realm.
      */
     public function getTopContributorsInRealm(RaidObjective $objective, Realm $realm, int $limit = 10): array

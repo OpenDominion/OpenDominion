@@ -77,20 +77,40 @@ class RaidController extends AbstractDominionController
         return redirect()->route('dominion.raids.objective', $tactic->objective);
     }
 
-    public function getRaidLeaderboard(RaidObjective $objective)
+    public function getRaidLeaderboard(Raid $raid)
     {
         $raidCalculator = app(RaidCalculator::class);
+        $raidHelper = app(RaidHelper::class);
+        $selectedDominion = $this->getSelectedDominion();
+        $selectedRealm = $selectedDominion->realm;
+
+        $leaderboard = $raidCalculator->getRaidLeaderboard($raid);
+
+        return view('pages.dominion.raid-leaderboard', [
+            'raid' => $raid,
+            'raidCalculator' => $raidCalculator,
+            'raidHelper' => $raidHelper,
+            'selectedRealm' => $selectedRealm,
+            'leaderboard' => $leaderboard,
+        ]);
+    }
+
+    public function getRaidObjectiveLeaderboard(RaidObjective $objective)
+    {
+        $raidCalculator = app(RaidCalculator::class);
+        $raidHelper = app(RaidHelper::class);
         $selectedDominion = $this->getSelectedDominion();
         $selectedRealm = $selectedDominion->realm;
 
         $leaderboard = $raidCalculator->getRealmsLeaderboard($objective);
         $totalScore = $raidCalculator->getObjectiveScore($objective);
 
-        return view('pages.dominion.raid-leaderboard', [
+        return view('pages.dominion.raid-objective-leaderboard', [
+            'leaderboard' => $leaderboard,
             'objective' => $objective,
             'raidCalculator' => $raidCalculator,
+            'raidHelper' => $raidHelper,
             'selectedRealm' => $selectedRealm,
-            'leaderboard' => $leaderboard,
             'totalScore' => $totalScore,
         ]);
     }

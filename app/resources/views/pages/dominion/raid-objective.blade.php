@@ -10,9 +10,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}</h3>
                     <div class="pull-right">
-                        <span class="badge">
-                            <i class="ra ra-hourglass"></i> {{ $objective->status }}
-                        </span>
+                        {!! $raidHelper->getStatusLabel($objective->status) !!}
                     </div>
                 </div>
                 <div class="box-body">
@@ -41,10 +39,9 @@
                                 $dominionProgressOfTotal = $objective->score_required > 0 ? ($dominionContribution / $objective->score_required) * 100 : 0;
                                 $otherContributorsProgress = $realmProgress - $dominionProgressOfTotal;
                             @endphp
-                            @if ($realmCompleted)
+                            @if (!$realmCompleted)
                                 <div class="alert alert-success">
-                                    Your realm has completed this objective!
-                                    Everyone who contributed will earn {{ number_format($objective->raid->completion_reward_amount) }} {{ dominion_attr_display($objective->raid->completion_reward_resource, $objective->raid->completion_reward_amount) }}.
+                                    Your realm has completed this objective! Everyone who contributes to the raid will be awarded {{ dominion_attr_display($objective->raid->completion_reward_resource, $objective->raid->completion_reward_amount) }}.
                                     <br/>You can still increase your score to earn a higher share of the spoils ({{ number_format($objective->raid->reward_amount) }} {{ dominion_attr_display($objective->raid->reward_resource, $objective->raid->reward_amount) }} divided between all realms).
                                 </div>
                             @endif
@@ -69,8 +66,8 @@
                                     <a href="{{ route('dominion.raids') }}" class="btn btn-primary btn-sm">
                                         <i class="fa fa-arrow-left"></i> Back to Raids
                                     </a>
-                                    <a href="{{ route('dominion.raids.leaderboard', $objective) }}" class="btn btn-sm btn-info">
-                                        <i class="fa fa-list"></i> View Leaderboard
+                                    <a href="{{ route('dominion.raids.objective.leaderboard', $objective) }}" class="btn btn-sm btn-info">
+                                        <i class="fa fa-list"></i> Objective Leaderboard
                                     </a>
                                 </div>
                             </div>
@@ -93,10 +90,38 @@
         <div class="col-sm-12 col-md-3">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+                    <h3 class="box-title">Objective Details</h3>
                 </div>
                 <div class="box-body">
-                    <p>Raids are great</p>
+                    <p>
+                        <strong>Score Required:</strong><br>
+                        {{ number_format($objective->score_required) }} points
+                    </p>
+                    <p>
+                        <strong>Available Tactics:</strong><br>
+                        @php $tacticsByType = $objective->tactics->unique('type'); @endphp
+                        @foreach($tacticsByType as $tactic)
+                            <span class="label label-primary">{{ ucwords($tactic->type) }}</span>
+                        @endforeach
+                    </p>
+                    <p>
+                        <strong>Duration:</strong><br>
+                        {{ $objective->start_date->diffInHours($objective->end_date) }} hours
+                    </p>
+                    @if($objective->isActive())
+                        <p>
+                            <strong>Time Remaining:</strong><br>
+                            <i class="fa fa-clock-o"></i> {{ $objective->timeUntilEnd() }}
+                        </p>
+                    @endif
+                    <div class="form-group">
+                        Rewards are distributed at the raid level across all objectives at the end of the raid.
+                    </div>
+                    <div>
+                        <a href="{{ route('dominion.raids.leaderboard', $objective->raid) }}" class="btn btn-sm btn-info">
+                            <i class="fa fa-trophy"></i> Raid Leaderboard
+                        </a>
+                    </div>
                 </div>
             </div>
 

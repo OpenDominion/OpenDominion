@@ -9,13 +9,10 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">
-                        <i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}
-                        - Leaderboard
+                        <i class="ra ra-castle-flag"></i> {{ $raid->name }} - Overall Leaderboard
                     </h3>
                     <div class="pull-right">
-                        <span class="badge">
-                            <i class="ra ra-hourglass"></i> {{ $objective->status }}
-                        </span>
+                        {!! $raidHelper->getStatusLabel($raid->status) !!}
                     </div>
                 </div>
                 <div class="box-body">
@@ -23,50 +20,63 @@
                         <div class="col-md-12">
                             <div class="row form-group">
                                 <div class="col-md-9">
-                                    {{ $objective->description }}
+                                    {!! $raid->description !!}
                                 </div>
                                 <div class="col-md-3 text-right">
-                                    @if (!$objective->hasStarted())
-                                        <i class="fa fa-clock-o"></i> Starts in {{ $objective->timeUntilStart() }}
-                                    @elseif ($objective->isActive())
-                                        <i class="fa fa-clock-o"></i> Ends in {{ $objective->timeUntilEnd() }}
+                                    @if (!$raid->hasStarted())
+                                        <i class="fa fa-clock-o"></i> Starts in {{ $raid->timeUntilStart() }}
+                                    @elseif ($raid->isActive())
+                                        <i class="fa fa-clock-o"></i> Ends in {{ $raid->timeUntilEnd() }}
                                     @else
-                                        <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($objective->start_date) }} ago
+                                        <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($raid->start_date) }} ago
                                     @endif
                                 </div>
                             </div>
 
                             <div class="row form-group">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="info-box">
                                         <span class="info-box-icon bg-blue"><i class="fa fa-trophy"></i></span>
                                         <div class="info-box-content">
-                                            <span class="info-box-text">Score Required</span>
-                                            <span class="info-box-number">{{ number_format($objective->score_required) }}</span>
+                                            <span class="info-box-text">Total Objectives</span>
+                                            <span class="info-box-number">{{ $raid->objectives->count() }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="info-box">
-                                        <span class="info-box-icon bg-green"><i class="fa fa-globe"></i></span>
+                                        <span class="info-box-icon bg-yellow"><i class="fa fa-gift"></i></span>
                                         <div class="info-box-content">
-                                            <span class="info-box-text">Total Global Score</span>
-                                            <span class="info-box-number">{{ number_format($totalScore) }}</span>
+                                            <span class="info-box-text">Participation Pool</span>
+                                            <span class="info-box-number">{{ number_format($raid->reward_amount) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-green"><i class="fa fa-star"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Completion Bonus</span>
+                                            <span class="info-box-number">{{ number_format($raid->completion_reward_amount) }} {{ dominion_attr_display($raid->completion_reward_resource) }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+                            @php
+                                $grandTotalScore = collect($leaderboard)->sum('total_score');
+                            @endphp
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
                                             <th>Rank</th>
                                             <th>Realm</th>
-                                            <th>Score</th>
-                                            <th>Progress</th>
+                                            <th>Total Score</th>
+                                            <th>Realm Share</th>
+                                            <th>Objectives</th>
+                                            <th>Completion Bonus</th>
                                             <th>Status</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -91,25 +101,28 @@
                                                 </td>
                                                 <td>
                                                     {{ number_format($entry['total_score']) }}
-                                                    @if ($totalScore > 0)
-                                                        ({{ number_format($entry['total_score'] / $totalScore * 100) }}%)
+                                                    @if ($grandTotalScore > 0)
+                                                        ({{ number_format(($entry['total_score'] / $grandTotalScore) * 100, 1) }}%)
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar progress-bar-{{ $entry['completed'] ? 'success' : 'primary' }}"
-                                                             role="progressbar"
-                                                             style="width: {{ $entry['progress'] }}%">
-                                                            <span class="sr-only">{{ number_format($entry['progress'], 1) }}% Complete</span>
-                                                        </div>
-                                                    </div>
-                                                    {{ number_format($entry['progress'], 1) }}%
+                                                    {{ number_format($entry['estimated_participation_reward']) }}
+                                                    {{ dominion_attr_display($raid->reward_resource, $entry['estimated_participation_reward']) }}
                                                 </td>
                                                 <td>
-                                                    @if ($entry['completed'])
-                                                        <span class="label label-success">Completed</span>
+                                                    {{ $entry['completed_objectives'] }} / {{ $entry['total_objectives'] }}
+                                                </td>
+                                                <td>
+                                                    {{ number_format($entry['completed_objectives'] / $entry['total_objectives'] * $raid->completion_reward_amount) }}
+                                                    {{ dominion_attr_display($raid->completion_reward_resource) }} <span class="small">(per player)</span>
+                                                </td>
+                                                <td>
+                                                    @if ($entry['fully_completed'])
+                                                        {!! $raidHelper->getStatusLabel("Completed", true) !!}
+                                                    @elseif ($entry['completed_objectives'] > 0)
+                                                        {!! $raidHelper->getStatusLabel("Partial", true) !!}
                                                     @else
-                                                        <span class="label label-primary">In Progress</span>
+                                                        {!! $raidHelper->getStatusLabel($raid->status, true) !!}
                                                     @endif
                                                 </td>
                                             </tr>
@@ -120,11 +133,8 @@
 
                             <div class="row">
                                 <div class="col-md-12 text-right">
-                                    <a href="{{ route('dominion.raids.objective', $objective) }}" class="btn btn-primary btn-sm">
-                                        <i class="fa fa-arrow-left"></i> Back to Objective
-                                    </a>
-                                    <a href="{{ route('dominion.raids') }}" class="btn btn-info btn-sm">
-                                        <i class="ra ra-castle-flag"></i> Raids
+                                    <a href="{{ route('dominion.raids') }}" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-arrow-left"></i> Back to Raids
                                     </a>
                                 </div>
                             </div>
@@ -143,39 +153,54 @@
                     @php
                         $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedRealm->id);
                         $yourRank = $yourRealmData ? array_search($yourRealmData, $leaderboard) + 1 : 'N/A';
-                        $topContributors = $raidCalculator->getTopContributorsInRealm($objective, $selectedRealm, 10);
                     @endphp
 
                     @if ($yourRealmData)
                         <p><strong>Rank:</strong> {{ $yourRank }}</p>
-                        <p><strong>Score:</strong> {{ number_format($yourRealmData['total_score']) }}</p>
-                        <p><strong>Progress:</strong> {{ number_format($yourRealmData['progress'], 1) }}%</p>
+                        <p><strong>Total Score:</strong> {{ number_format($yourRealmData['total_score']) }}</p>
+                        <p><strong>Realm Share:</strong> {{ number_format($yourRealmData['estimated_participation_reward']) }} {{ dominion_attr_display($raid->reward_resource, $yourRealmData['estimated_participation_reward']) }}</p>
+                        <p><strong>Objectives:</strong> {{ $yourRealmData['completed_objectives'] }} / {{ $yourRealmData['total_objectives'] }}</p>
+                        <p><strong>Completion:</strong> {{ number_format($yourRealmData['completion_percentage'], 1) }}%</p>
+                        <p><strong>Completion Bonus:</strong> {{ number_format($entry['completed_objectives'] / $entry['total_objectives'] * $raid->completion_reward_amount) }} {{ dominion_attr_display($raid->completion_reward_resource) }}</p>
                         <p><strong>Status:</strong>
-                            @if ($yourRealmData['completed'])
-                                <span class="label label-success">Completed</span>
+                            @if ($yourRealmData['fully_completed'])
+                                Complete
+                            @elseif ($yourRealmData['completed_objectives'] > 0)
+                                Partial
                             @else
-                                <span class="label label-primary">In Progress</span>
+                                {{ $raid->status }}
                             @endif
                         </p>
-                        @if ($totalScore > 0)
-                            <p><strong>Realm Share:</strong> {{ number_format(min($raidCalculator::MAX_REALM_REWARD_RATIO, $yourRealmData['total_score'] / $totalScore) * 100) }}% of total spoils</p>
-                        @endif
                     @else
-                        <p><em>Your realm has not contributed to this objective yet.</em></p>
+                        <p><em>Your realm has not participated in this raid yet.</em></p>
                     @endif
+                </div>
+            </div>
 
-                    @if (!empty($topContributors))
-                        <hr>
-                        <h4>Top Contributors</h4>
-                        <ol>
-                            @foreach ($topContributors as $contributor)
-                                <li>
-                                    {{ $contributor['dominion_name'] }} - {{ number_format($contributor['total_score']) }}
-                                    ({{ number_format($contributor['total_score'] / $yourRealmData['total_score'] * 100) }}%}
-                                </li>
-                            @endforeach
-                        </ol>
-                    @endif
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Objectives</h3>
+                </div>
+                <div class="box-body">
+                    @foreach($raid->objectives->sortBy('order') as $objective)
+                        @php
+                            $isCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedRealm);
+                        @endphp
+                        <div style="margin-bottom: 8px;">
+                            <a href="{{ route('dominion.raids.objective', $objective) }}">
+                                {{ $objective->name }}
+                            </a>
+                            @if ($isCompleted)
+                                <span class="label label-success">✓</span>
+                            @elseif ($objective->isActive())
+                                <span class="label label-warning">Active</span>
+                            @elseif (!$objective->hasStarted())
+                                <span class="label label-default">Upcoming</span>
+                            @else
+                                <span class="label label-danger">Ended</span>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

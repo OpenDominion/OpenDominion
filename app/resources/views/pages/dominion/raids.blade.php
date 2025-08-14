@@ -12,9 +12,7 @@
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="ra ra-castle-flag"></i> {{ $raid->name }}</h3>
                             <div class="pull-right">
-                                <span class="badge">
-                                    <i class="ra ra-hourglass"></i> {{ $raid->status }}
-                                </span>
+                                {!! $raidHelper->getStatusLabel($raid->status) !!}
                             </div>
                         </div>
                         <div class="box-body">
@@ -26,7 +24,7 @@
                                         </div>
                                     </div>
                                     <div class="row form-group">
-                                        <div class="col-md-4">
+                                        <div class="col-sm-12 col-md-4">
                                             @if (!$raid->hasStarted())
                                                 <i class="fa fa-clock-o"></i> Starts in {{ $raid->timeUntilStart() }}
                                             @elseif ($raid->isActive())
@@ -35,11 +33,11 @@
                                                 <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($raid->start_date) }} ago
                                             @endif
                                         </div>
-                                        <div class="col-md-4">
-                                            <strong>Contribution Rewards:</strong><br/>
+                                        <div class="col-sm-6 col-md-4">
+                                            <strong>Participation Rewards:</strong><br/>
                                             {{ number_format($raid->reward_amount) }} {{ dominion_attr_display($raid->reward_resource, $raid->reward_amount) }}
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-sm-6 col-md-4">
                                             <strong>Completion Bonus:</strong><br/>
                                             {{ number_format($raid->completion_reward_amount) }} {{ dominion_attr_display($raid->completion_reward_resource, $raid->completion_reward_amount) }}
                                             <span class="text-muted">(per player)</span>
@@ -88,6 +86,11 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="col-md-12 text-right">
+                                    <a href="{{ route('dominion.raids.leaderboard', $raid) }}" class="btn btn-sm btn-info">
+                                        <i class="fa fa-list"></i> Raid Leaderboard
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -110,19 +113,18 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <h4>Raid Rewards</h4>
+                    <h4>Participation Rewards</h4>
                     <p class="small">Rewards are earned based on your contribution.</p>
                     <ul class="small">
                         <li><strong>Realm Share:</strong> Each realm earns up to 15% of the total based on their contribution relative to all other realms</li>
-                        <li><strong>Player Share:</strong> Each player earns a portion of the realm's share up to 15% of required score</li>
+                        <li><strong>Player Share:</strong> Each player earns a portion of the realm's share up to 15% of the realm's total score</li>
                         <li><strong>Distribution:</strong> Any remaining resources are shared equally among all participants</li>
                     </ul>
-
                     <h4>Completion Bonus</h4>
-                    <p class="small">Each player receives the completion bonus based on their realm's objective completion percentage.</p>
+                    <p class="small">Each player receives a completion bonus based on the number of objectives completed by their realm.</p>
                     <ul class="small">
-                        <li><strong>Scaled Rewards:</strong> Rewards are proportional to completion percentage</li>
-                        <li><strong>Per Player:</strong> Each participating player gets the full amount for any objectives completed by their realm</li>
+                        <li><strong>Scaled Rewards:</strong> Rewards are proportional to the number of objectives completed</li>
+                        <li><strong>Per Player:</strong> Each participating player gets the full amount regardless of their individual score</li>
                     </ul>
                 </div>
             </div>

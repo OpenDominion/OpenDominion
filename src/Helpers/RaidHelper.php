@@ -16,6 +16,41 @@ class RaidHelper
         ];
     }
 
+    public function getStatusLabel(string $status, bool $objective = false): string
+    {
+        $labelClass = 'default';
+        $labelText = $status;
+
+        switch ($status) {
+            case 'Upcoming':
+                $labelClass = 'info';
+                break;
+            case 'In Progress':
+                $labelClass = 'primary';
+                break;
+            case 'Completed':
+                $labelClass = 'success';
+                break;
+            case 'Partial':
+                $labelClass = 'warning';
+                break;
+            case 'Ended':
+                $labelClass = 'danger';
+                if ($objective) {
+                    $labelText = 'Failed';
+                }
+                break;
+            default:
+                break;
+        }
+
+        return sprintf(
+            '<span class="label label-%s">%s</span>',
+            $labelClass,
+            $labelText
+        );
+    }
+
     public function getTacticAttributeSchema(string $type): array
     {
         $schemas = [
