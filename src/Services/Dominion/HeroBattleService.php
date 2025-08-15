@@ -363,10 +363,10 @@ class HeroBattleService
 
         switch ($combatant->current_action) {
             case 'attack':
-                $countered = false;
-                $combatant->has_focus = false;
                 $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
                 $evaded = $this->heroCalculator->calculateCombatEvade($target);
+                $combatant->has_focus = false;
+                $countered = false;
                 if ($target->current_action == 'counter') {
                     $countered = true;
                     $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
