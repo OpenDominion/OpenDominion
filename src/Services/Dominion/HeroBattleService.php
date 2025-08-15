@@ -281,8 +281,13 @@ class HeroBattleService
 
         $livingCombatants = $combatants->where('current_health', '>', '0');
         if ($livingCombatants->count() == 0) {
+            // Everyone was eliminated (draw)
             $this->setWinner($heroBattle, null);
+        } elseif ($livingCombatants->where('hero_id', '!=', null)->count() == 0) {
+            // All players eliminated, but NPC remains
+            $this->setWinner($heroBattle, $livingCombatants->first());
         } elseif ($livingCombatants->count() == 1) {
+            // A single player remains
             $this->setWinner($heroBattle, $livingCombatants->first());
         }
 
@@ -315,6 +320,9 @@ class HeroBattleService
                 break;
             case 'defensive':
                 $options = collect(['attack' => 3, 'defend' => 1, 'counter' => 1, 'recover' => 1]);
+                break;
+            case 'counter':
+                $options = collect(['attack' => 3, 'defend' => 1, 'counter' => 3, 'recover' => 1]);
                 break;
             default:
                 $options = collect(['attack' => 4, 'defend' => 1, 'focus' => 1, 'counter' => 1, 'recover' => 1]);
