@@ -584,15 +584,21 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Bounties Collected:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_bounties_collected) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
                                                 <td>Hero XP Gain:</td>
                                                 <td>
                                                     {!! bonus_display(($heroCalculator->getExperienceMultiplier($target) - 1) * 100) !!}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Raid Score:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->stat_raid_score) }}</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bounties Collected:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->stat_bounties_collected) }}</strong>
                                                 </td>
                                             </tr>
                                             @if ($target->race->key === 'demon')

@@ -82,6 +82,14 @@ class RankingsHelper
                 'title_icon' => 'ra-target-poster',
             ],
             [
+                'name' => 'Highest Raid Score',
+                'key' => 'raid-score',
+                'stat' => 'stat_raid_score',
+                'stat_label' => 'Points Scored',
+                'title' => 'the Relentless',
+                'title_icon' => 'ra-hydra',
+            ],
+            [
                 'name' => 'Largest Harem',
                 'key' => 'spies-charmed',
                 'stat' => 'stat_spies_charmed',

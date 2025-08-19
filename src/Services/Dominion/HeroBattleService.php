@@ -14,6 +14,7 @@ use OpenDominion\Models\HeroBattleQueue;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\RaidContribution;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\NotificationService;
 
@@ -490,6 +491,9 @@ class HeroBattleService
             $dominion = $winner->hero->dominion;
             $tactic = $heroBattle->tactic;
             $score = $tactic->attributes['points_awarded'];
+
+            $dominion->stat_raid_score += $pointsEarned;
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_RAID_ACTION]);
 
             // Create contribution record
             RaidContribution::create([

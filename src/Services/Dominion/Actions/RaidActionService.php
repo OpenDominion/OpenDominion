@@ -121,6 +121,8 @@ class RaidActionService
                 $dominion->{$attr} -= $cost;
             }
 
+            $dominion->stat_raid_score += $pointsEarned;
+
             // Save dominion changes
             $dominion->save(['event' => HistoryService::EVENT_ACTION_RAID_ACTION]);
 
@@ -228,6 +230,8 @@ class RaidActionService
                 'type' => 'raid_attacked',
                 'data' => $this->attackResult
             ]);
+
+            $dominion->stat_raid_score += $damageDealt;
 
             // Save dominion changes
             $dominion->save(['event' => HistoryService::EVENT_ACTION_RAID_ATTACKED]);

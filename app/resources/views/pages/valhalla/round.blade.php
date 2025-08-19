@@ -137,6 +137,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-attacking-success']) }}">Most Victorious Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-attacking-success']) }}">Most Victorious Realms</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'hero-stat-experience']) }}">Most Hero Experience</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-raid-score']) }}">Highest Raid Score</a><br>
                 </div>
                 <div class="col-sm-6 text-center">
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-explored']) }}">Largest Exploring Dominions</a><br>
