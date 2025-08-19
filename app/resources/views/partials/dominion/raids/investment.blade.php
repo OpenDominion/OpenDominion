@@ -30,7 +30,7 @@
                             @php
                                 $resourceType = $tactic->attributes['resource'];
                                 $amount = $tactic->attributes['amount'];
-                                $pointsAwarded = $tactic->attributes['points_awarded'];
+                                $pointsAwarded = $raidCalculator->getTacticScore($selectedDominion, $tactic);
                                 $canPerform = $selectedDominion->{"resource_{$resourceType}"} >= $amount;
                             @endphp
                             <tr>

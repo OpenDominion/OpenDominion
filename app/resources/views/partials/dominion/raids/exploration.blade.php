@@ -30,7 +30,7 @@
                             @php
                                 $drafteeCost = $tactic->attributes['draftee_cost'];
                                 $moraleCost = $tactic->attributes['morale_cost'];
-                                $pointsAwarded = $tactic->attributes['points_awarded'];
+                                $pointsAwarded = $raidCalculator->getTacticScore($selectedDominion, $tactic);
                                 $canPerform = $selectedDominion->military_draftees >= $drafteeCost;
                             @endphp
                             <tr>

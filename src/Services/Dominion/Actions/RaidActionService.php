@@ -114,10 +114,7 @@ class RaidActionService
         // Calculate costs and deductions
         $costs = $this->calculateCosts($dominion, $tactic, $data);
         $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic);
-
-        // Apply realm activity multiplier
-        $activityMultiplier = $this->raidCalculator->getRealmActivityMultiplier($dominion, $tactic->objective->raid);
-        $score = rceil($pointsEarned * $activityMultiplier);
+        $score = $this->raidCalculator->getTacticScore($dominion, $tactic);
 
         DB::transaction(function () use ($dominion, $tactic, $costs, $pointsEarned, $score) {
             // Apply costs
@@ -125,9 +122,8 @@ class RaidActionService
                 $dominion->{$attr} -= $cost;
             }
 
-            $dominion->stat_raid_score += $pointsEarned;
-
             // Save dominion changes
+            $dominion->stat_raid_score += $pointsEarned;
             $dominion->save(['event' => HistoryService::EVENT_ACTION_RAID_ACTION]);
 
             // Create contribution record

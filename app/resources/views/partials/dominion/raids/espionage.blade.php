@@ -30,7 +30,7 @@
                             @php
                                 $moraleCost = $tactic->attributes['morale_cost'];
                                 $strengthCost = $tactic->attributes['strength_cost'];
-                                $pointsAwarded = $raidCalculator->getTacticPointsEarned($selectedDominion, $tactic);
+                                $pointsAwarded = $raidCalculator->getTacticScore($selectedDominion, $tactic);
                                 $canPerform = $selectedDominion->spy_strength >= $strengthCost;
                             @endphp
                             <tr>

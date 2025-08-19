@@ -490,14 +490,13 @@ class HeroBattleService
         if ($heroBattle->raid_tactic_id !== null && $winner !== null && $winner->hero !== null) {
             $dominion = $winner->hero->dominion;
             $tactic = $heroBattle->tactic;
-            $pointsEarned = $tactic->attributes['points_awarded'];
 
             // Modify score by realm activity
-            $multiplier = $this->raidCalculator->getRealmActivityMultiplier($dominion, $tactic->objective->raid);
-            $score = rceil($pointsEarned * $multiplier);
-            $dominion->stat_raid_score += $pointsEarned;
+            $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic);
+            $score = $this->raidCalculator->getTacticScore($dominion, $tactic);
 
             // Save dominion changes
+            $dominion->stat_raid_score += $pointsEarned;
             $dominion->save(['event' => HistoryService::EVENT_ACTION_RAID_ACTION]);
 
             // Create contribution record

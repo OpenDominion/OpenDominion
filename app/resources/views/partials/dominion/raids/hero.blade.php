@@ -29,7 +29,7 @@
                                 <tr>
                                     <td>{{ $tactic->name }}</td>
                                     <td>{{ $tactic->attributes['name'] }}</td>
-                                    <td>{{ number_format($tactic->attributes['points_awarded']) }}</td>
+                                    <td>{{ number_format($raidCalculator->getTacticScore($selectedDominion, $tactic)) }}</td>
                                     <td>
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
