@@ -9,6 +9,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\RaidContribution;
 use OpenDominion\Models\RaidObjective;
+use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -760,6 +761,159 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $fullReward = $this->calculator->calculateCompletionReward($raid, $this->dominion, $fullCompletionData);
         $this->assertEquals(1000, $fullReward['amount']); // Full completion = full reward
         $this->assertContains('full_completion', $fullReward['bonuses_applied']);
+    }
+
+    public function testGetTacticPointsEarned_WithActivityBonus_ReturnsIncreasedPoints()
+    {
+        // Arrange - Create a raid with average of 8.5 active players
+        $this->raid->average_active_player_count = 8.5;
+        $this->raid->save();
+
+        // Set realm to have fewer active players (gets bonus)
+        $this->dominion->realm->active_player_count = 6; // Below neutral zone
+        $this->dominion->realm->save();
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Investment',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [],
+        ]);
+
+        // Act
+        $pointsEarned = $this->calculator->getTacticPointsEarned($this->dominion, $tactic);
+
+        // Assert - Should get bonus: 8.5 / (6+1) = 1.21x multiplier
+        $expectedPoints = 100 * (8.5 / 7);
+        $this->assertEquals(ceil($expectedPoints), $pointsEarned);
+        $this->assertGreaterThan(100, $pointsEarned);
+    }
+
+    public function testGetTacticPointsEarned_WithActivityPenalty_ReturnsDecreasedPoints()
+    {
+        // Arrange - Create a raid with average of 8.5 active players
+        $this->raid->average_active_player_count = 8.5;
+        $this->raid->save();
+
+        // Set realm to have more active players (gets penalty)
+        $this->dominion->realm->active_player_count = 12; // Above neutral zone
+        $this->dominion->realm->save();
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Investment',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [],
+        ]);
+
+        // Act
+        $pointsEarned = $this->calculator->getTacticPointsEarned($this->dominion, $tactic);
+
+        // Assert - Should get penalty: 8.5 / (12-1) = 0.77x multiplier
+        $expectedPoints = 100 * (8.5 / 11);
+        $this->assertEquals(ceil($expectedPoints), $pointsEarned);
+        $this->assertLessThan(100, $pointsEarned);
+    }
+
+    public function testGetTacticPointsEarned_WithNeutralZone_ReturnsUnchangedPoints()
+    {
+        // Arrange - Create a raid with average of 8.5 active players
+        $this->raid->average_active_player_count = 8.5;
+        $this->raid->save();
+
+        // Set realm to be in neutral zone (8 or 9 players)
+        $this->dominion->realm->active_player_count = 8; // In neutral zone
+        $this->dominion->realm->save();
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Investment',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [],
+        ]);
+
+        // Act
+        $pointsEarned = $this->calculator->getTacticPointsEarned($this->dominion, $tactic);
+
+        // Assert - Should get no multiplier (1.0x)
+        $this->assertEquals(100, $pointsEarned);
+    }
+
+    public function testGetTacticPointsEarned_WithNoRaidAverage_ReturnsUnchangedPoints()
+    {
+        // Arrange - Create a raid with no average set
+        $this->raid->average_active_player_count = 0;
+        $this->raid->save();
+
+        $this->dominion->realm->active_player_count = 5;
+        $this->dominion->realm->save();
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Investment',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [],
+        ]);
+
+        // Act
+        $pointsEarned = $this->calculator->getTacticPointsEarned($this->dominion, $tactic);
+
+        // Assert - Should get no multiplier when no average calculated
+        $this->assertEquals(100, $pointsEarned);
+    }
+
+    public function testGetTacticPointsEarned_WithExtremeBonusCapped_ReturnsMaxBonus()
+    {
+        // Arrange - Create scenario with extreme bonus
+        $this->raid->average_active_player_count = 8.0;
+        $this->raid->save();
+
+        // Set realm to have very few active players
+        $this->dominion->realm->active_player_count = 2; // Should give 4.0x, but capped at 2.0x
+        $this->dominion->realm->save();
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Investment',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [],
+        ]);
+
+        // Act
+        $pointsEarned = $this->calculator->getTacticPointsEarned($this->dominion, $tactic);
+
+        // Assert - Should be capped at 2.0x multiplier
+        $this->assertEquals(200, $pointsEarned); // 100 * 2.0 (capped)
+    }
+
+    public function testGetTacticPointsEarned_WithExtremePenaltyCapped_ReturnsMinPenalty()
+    {
+        // Arrange - Create scenario with extreme penalty
+        $this->raid->average_active_player_count = 8.0;
+        $this->raid->save();
+
+        // Set realm to have many active players
+        $this->dominion->realm->active_player_count = 20; // Should give 0.4x, but capped at 0.75x
+        $this->dominion->realm->save();
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Investment',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [],
+        ]);
+
+        // Act
+        $pointsEarned = $this->calculator->getTacticPointsEarned($this->dominion, $tactic);
+
+        // Assert - Should be capped at 0.75x multiplier
+        $this->assertEquals(75, $pointsEarned); // 100 * 0.75 (capped)
     }
 
     // Helper methods for reward tests

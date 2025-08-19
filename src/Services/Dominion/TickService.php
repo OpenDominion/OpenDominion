@@ -698,6 +698,9 @@ class TickService
             if ($day > 0 && $day % 3 == 0) {
                 $this->wonderService->createWonder($round);
             }
+
+            // Update active player counts for realms and upcoming raids
+            $this->raidService->updateActivePlayerCounts($round);
         }
     }
 

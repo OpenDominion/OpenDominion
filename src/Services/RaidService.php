@@ -104,4 +104,33 @@ class RaidService
         // Save changes and record history
         $dominion->save(['event' => HistoryService::EVENT_ACTION_RAID_REWARD]);
     }
+
+    /**
+     * Update active player counts for all realms and raid averages for upcoming raids.
+     */
+    public function updateActivePlayerCounts(Round $round): void
+    {
+        // Update active player counts for all realms in this round
+        $realms = $round->realms()->with(['dominions.user'])->where('number', '!=', 0)->get();
+
+        foreach ($realms as $realm) {
+            $activeCount = $realm->dominions()
+                ->where('protection_ticks_remaining', 0)
+                ->where(function($query) {
+                    $query->whereNull('abandoned_at')
+                          ->orWhere('abandoned_at', '>', now());
+                })
+                ->whereNull('locked_at')
+                ->whereHas('user', function ($query) {
+                    $query->where('last_online', '>', now()->subHours(18));
+                })
+                ->count();
+
+            $realm->update(['active_player_count' => $activeCount]);
+        }
+
+        // Update average active player count for raids that haven't started yet
+        $averageActiveCount = round($realms->fresh()->avg('active_player_count'), 2);
+        $round->raids()->where('start_date', '>', now())->update(['average_active_player_count' => $averageActiveCount]);
+    }
 }

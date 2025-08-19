@@ -685,4 +685,38 @@ class RaidCalculator
 
         return $playerAllocations;
     }
+
+    /**
+     * Get the realm activity multiplier for raid tactics.
+     * Smaller realms get bonus points to help compensate for fewer active players.
+     */
+    public function getRealmActivityMultiplier(Dominion $dominion, Raid $raid): float
+    {
+        $realmActiveCount = $dominion->realm->active_player_count;
+        $averageActiveCount = $raid->average_active_player_count;
+
+        // If no average calculated yet, no multiplier
+        if ($averageActiveCount <= 0) {
+            return 1.0;
+        }
+
+        // Create neutral zone: floor and ceil of average get no bonus/penalty
+        $lowerBound = rfloor($averageActiveCount);
+        $upperBound = rceil($averageActiveCount);
+
+        // Bonus for realms below the neutral zone
+        if ($realmActiveCount < $lowerBound) {
+            $multiplier = $averageActiveCount / max($realmActiveCount + 1, 1);
+            return min(2.0, $multiplier); // Cap at 2.0x
+        }
+
+        // Penalty for realms above the neutral zone
+        if ($realmActiveCount > $upperBound) {
+            $multiplier = $averageActiveCount / max($realmActiveCount - 1, 1);
+            return max(0.75, $multiplier); // Cap at 0.75x
+        }
+
+        // No bonus/penalty if realm count is +/- 1 of average
+        return 1.0;
+    }
 }

@@ -61,6 +61,18 @@
                                     @endif
                                     <br>
                                     <b>Your Contribution:</b> {{ number_format($dominionContribution) }} ({{ number_format($dominionPercentage, 1) }}% of realm)
+                                    <br>
+                                    @php
+                                        $activityMultiplier = $raidCalculator->getRealmActivityMultiplier($selectedDominion, $objective->raid);
+                                    @endphp
+                                    <b>Realm Size Score Multiplier:</b>
+                                    @if ($activityMultiplier < 1.0)
+                                        <span class="text-red">-{{ number_format(($activityMultiplier - 1) * 100, 1) }}%</span>
+                                    @elseif ($activityMultiplier > 1.0)
+                                        <span class="text-green">+{{ number_format(($activityMultiplier - 1) * 100, 1) }}%</span>
+                                    @else
+                                        <span class="text-muted">0%</span>
+                                    @endif
                                 </div>
                                 <div class="col-md-6 text-right">
                                     <a href="{{ route('dominion.raids') }}" class="btn btn-primary btn-sm">

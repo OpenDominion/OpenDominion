@@ -115,7 +115,11 @@ class RaidActionService
         $costs = $this->calculateCosts($dominion, $tactic, $data);
         $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic);
 
-        DB::transaction(function () use ($dominion, $tactic, $costs, $pointsEarned) {
+        // Apply realm activity multiplier
+        $activityMultiplier = $this->raidCalculator->getRealmActivityMultiplier($dominion, $tactic->objective->raid);
+        $score = rceil($pointsEarned * $activityMultiplier);
+
+        DB::transaction(function () use ($dominion, $tactic, $costs, $pointsEarned, $score) {
             // Apply costs
             foreach ($costs as $attr => $cost) {
                 $dominion->{$attr} -= $cost;
@@ -132,7 +136,7 @@ class RaidActionService
                 'dominion_id' => $dominion->id,
                 'raid_objective_id' => $tactic->raid_objective_id,
                 'type' => $tactic->type,
-                'score' => $pointsEarned,
+                'score' => $score,
             ]);
         });
 
@@ -140,11 +144,11 @@ class RaidActionService
             'message' => sprintf(
                 'You have successfully completed %s for %s points.',
                 $tactic->name,
-                number_format($pointsEarned)
+                number_format($score)
             ),
             'data' => [
                 'tacticName' => $tactic->name,
-                'pointsEarned' => $pointsEarned,
+                'pointsEarned' => $score,
                 'costs' => $costs,
             ]
         ];
@@ -231,6 +235,9 @@ class RaidActionService
                 'data' => $this->attackResult
             ]);
 
+            // Modify score by realm activity
+            $multiplier = $this->raidCalculator->getRealmActivityMultiplier($dominion, $tactic->objective->raid);
+            $score = rceil($damageDealt * $multiplier);
             $dominion->stat_raid_score += $damageDealt;
 
             // Save dominion changes
@@ -242,7 +249,7 @@ class RaidActionService
                 'dominion_id' => $dominion->id,
                 'raid_objective_id' => $tactic->raid_objective_id,
                 'type' => $tactic->type,
-                'score' => $damageDealt,
+                'score' => $score,
             ]);
         });
 
