@@ -67,9 +67,9 @@
                                     @endphp
                                     <b>Realm Size Score Multiplier:</b>
                                     @if ($activityMultiplier < 1.0)
-                                        <span class="text-red">-{{ number_format(($activityMultiplier - 1) * 100, 1) }}%</span>
+                                        <span class="text-red">{{ number_format(($activityMultiplier - 1) * 100, 2) }}%</span>
                                     @elseif ($activityMultiplier > 1.0)
-                                        <span class="text-green">+{{ number_format(($activityMultiplier - 1) * 100, 1) }}%</span>
+                                        <span class="text-green">+{{ number_format(($activityMultiplier - 1) * 100, 2) }}%</span>
                                     @else
                                         <span class="text-muted">0%</span>
                                     @endif
