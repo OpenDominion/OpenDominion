@@ -116,7 +116,7 @@ class RaidService
         foreach ($realms as $realm) {
             $activeCount = $realm->dominions()
                 ->where('protection_ticks_remaining', 0)
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->whereNull('abandoned_at')
                           ->orWhere('abandoned_at', '>', now());
                 })
