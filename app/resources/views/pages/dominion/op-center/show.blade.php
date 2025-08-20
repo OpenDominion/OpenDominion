@@ -964,6 +964,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="box-footer text-center">
+                    <a href="{{ route('dominion.town-crier') }}?dominion={{ $dominion->id }}">View All Events</a>
+                </div>
             </div>
         </div>
 

@@ -115,7 +115,7 @@ class OpCenterController extends AbstractDominionController
             ->where('latest', '=', true)
             ->get();
 
-        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 10);
+        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 5);
 
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),

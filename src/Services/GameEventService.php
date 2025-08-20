@@ -15,32 +15,20 @@ use OpenDominion\Models\Wonder;
 
 class GameEventService
 {
-    public function getTownCrier(Dominion $dominion, Realm $realm = null, string $type = 'all'): array
+    public function getTownCrier(Dominion $dominion, Realm $realm = null, Dominion $target = null, string $type = 'all'): array
     {
-        if ($realm === null) {
-            return $this->getGameEventsforRound($dominion, now(), $type);
+        if ($target !== null) {
+            return $this->getGameEventsForDominion($target, now(), $type);
         }
 
-        return $this->getGameEventsForRealm($realm, now(), $type);
+        if ($realm !== null) {
+            return $this->getGameEventsForRealm($realm, now(), $type);
+        }
+
+        return $this->getGameEventsforRound($dominion, now(), $type);
     }
 
-    public function getGameEventsForDominion(Dominion $dominion): Collection
-    {
-        return GameEvent::query()
-            ->with(['source', 'target'])
-            ->where(function ($query) use ($dominion) {
-                $query->where('source_id', $dominion->id);
-                $query->where('source_type', Dominion::class);
-            })
-            ->orWhere(function ($query) use ($dominion) {
-                $query->where('target_id', $dominion->id);
-                $query->where('target_type', Dominion::class);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-    }
-
-    public function getLatestInvasionEventsForDominion(Dominion $dominion, int $count): Collection
+    public function getLatestInvasionEventsForDominion(Dominion $dominion, int $count = 100): Collection
     {
         return GameEvent::query()
             ->with(['source', 'target'])
@@ -125,7 +113,6 @@ class GameEventService
                 }
             })
             ->orderBy('created_at', 'desc')
-            ->orderBy('type', 'desc')
             ->paginate(100)
             ->withQueryString();
 
@@ -169,12 +156,47 @@ class GameEventService
                 }
             })
             ->orderBy('created_at', 'desc')
-            ->orderBy('type', 'desc')
             ->paginate(100)
             ->withQueryString();
 
         return [
             'dominionIds' => $dominionIds,
+            'gameEvents' =>  $gameEvents
+        ];
+    }
+
+    public function getGameEventsForDominion(Dominion $dominion, Carbon $createdBefore, string $type = 'all'): array
+    {
+        $gameEvents = GameEvent::query()
+            ->with(['source', 'target'])
+            ->where(function (Builder $query) use ($dominion) {
+                $query
+                    ->orWhere(function (Builder $query) use ($dominion) {
+                        $query->where('source_id', $dominion->id);
+                        $query->where('source_type', Dominion::class);
+                    })
+                    ->orWhere(function (Builder $query) use ($dominion) {
+                        $query->where('target_id', $dominion->id);
+                        $query->where('target_type', Dominion::class);
+                    });
+            })
+            ->where('round_id', $dominion->round_id)
+            ->where('created_at', '<', $createdBefore)
+            ->where(function ($query) use ($type) {
+                if ($type == 'invasions') {
+                    $query->where('type', 'invasion');
+                } elseif ($type == 'wonders') {
+                    $query->where('type', 'wonder_attacked');
+                } elseif ($type == 'raids') {
+                    $query->where('type', 'raid_attacked');
+                }
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(100)
+            ->withQueryString();
+
+        return [
+            'dominionIds' => [(int) $dominion->id],
             'gameEvents' =>  $gameEvents
         ];
     }

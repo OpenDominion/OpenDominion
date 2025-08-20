@@ -9,7 +9,9 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">
                         <i class="fa fa-newspaper-o"></i> Town Crier for
-                        @if ($realm !== null)
+                        @if ($singleDominion !== null)
+                            {{ $singleDominion->name }} (#{{ $singleDominion->realm->number }})
+                        @elseif ($realm !== null)
                             {{ $realm->name }} (#{{ $realm->number }})
                         @else
                             All Realms
@@ -250,17 +252,19 @@
                     @endif
                     <p>You will see only military operations and important messages regarding Wonders of the World. Magical and Spy operations are not known to the Town Crier.</p>
                     @if ($selectedDominion->round->start_date <= now())
-                    <p>
-                        <label for="realm-select">Show Town Crier for:</label>
-                        <select id="realm-select" class="form-control">
-                            <option value="">All Realms</option>
-                            @for ($i=0; $i<$realmCount; $i++)
-                                <option value="{{ $i }}" {{ $realm && $realm->number == $i ? 'selected' : null }}>
-                                    #{{ $i }} {{ $selectedDominion->realm->number == $i ? '(My Realm)' : null }}
-                                </option>
-                            @endfor
-                        </select>
-                    </p>
+                        @if ($singleDominion == null)
+                            <p>
+                                <label for="realm-select">Show Town Crier for:</label>
+                                <select id="realm-select" class="form-control">
+                                    <option value="">All Realms</option>
+                                    @for ($i=0; $i<$realmCount; $i++)
+                                        <option value="{{ $i }}" {{ $realm && $realm->number == $i ? 'selected' : null }}>
+                                            #{{ $i }} {{ $selectedDominion->realm->number == $i ? '(My Realm)' : null }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </p>
+                        @endif
                     <p>
                         <label for="realm-select">Event Types:</label>
                         <select id="event-select" class="form-control">
@@ -297,7 +301,7 @@
             });
             $('#event-select').change(function() {
                 var selectedType = $(this).val();
-                window.location.href = "{!! route('dominion.town-crier', $realm->number ?? null) !!}/?type=" + selectedType;
+                window.location.href = "{!! route('dominion.town-crier', $realm->number ?? null) !!}/?type=" + selectedType + "{!! $singleDominion ? '&dominion='.$singleDominion->id : null !!}";
             });
         })(jQuery);
     </script>

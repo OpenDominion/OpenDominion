@@ -47,7 +47,7 @@ class DominionController extends AbstractController
     {
         $gameEventService = app(GameEventService::class);
 
-        $gameEvents = $gameEventService->getGameEventsForDominion($dominion);
+        $gameEvents = $gameEventService->getLatestInvasionEventsForDominion($dominion);
 
         $userLogins = UserActivity::query()
             ->where('user_id', '=', $dominion->user_id)

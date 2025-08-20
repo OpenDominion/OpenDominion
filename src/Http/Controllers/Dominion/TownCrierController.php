@@ -13,19 +13,22 @@ class TownCrierController extends AbstractDominionController
 {
     public function getIndex(Request $request, int $realmNumber = null)
     {
+        $gameEventService = app(GameEventService::class);
+        $rangeCalculator = app(RangeCalculator::class);
+
+        $selectedDominion = $this->getSelectedDominion();
+        $realmCount = Realm::where('round_id', $selectedDominion->round_id)->count();
+
+        $dominionId = $request->input('dominion');
         $type = $request->input('type');
         $typeChoices = ['all', 'invasions', 'wars', 'wonders', 'raids'];
         if (!in_array($type, $typeChoices)) {
             $type = 'all';
         }
 
-        $gameEventService = app(GameEventService::class);
-
-        $dominion = $this->getSelectedDominion();
-
         if ($realmNumber !== null) {
             $realm = Realm::where([
-                'round_id' => $dominion->round_id,
+                'round_id' => $selectedDominion->round_id,
                 'number' => $realmNumber,
             ])
             ->first();
@@ -33,19 +36,23 @@ class TownCrierController extends AbstractDominionController
             $realm = null;
         }
 
-        $townCrierData = $gameEventService->getTownCrier($dominion, $realm, $type);
-
-        $latestEventTime = $townCrierData['gameEvents']->max('created_at');
-        if ($latestEventTime !== null && $latestEventTime > $dominion->town_crier_last_seen) {
-            $this->updateDominionTownCrierLastSeen($dominion);
+        if ($dominionId !== null) {
+            $dominion = Dominion::find($dominionId);
+        } else {
+            $dominion = null;
         }
 
+        $townCrierData = $gameEventService->getTownCrier($selectedDominion, $realm, $dominion, $type);
         $gameEvents = $townCrierData['gameEvents'];
         $dominionIds = $townCrierData['dominionIds'];
 
-        $realmCount = Realm::where('round_id', $dominion->round_id)->count();
+        if ($dominion === null) {
+            $latestEventTime = $townCrierData['gameEvents']->max('created_at');
+            if ($latestEventTime !== null && $latestEventTime > $selectedDominion->town_crier_last_seen) {
+                $this->updateDominionTownCrierLastSeen($selectedDominion);
+            }
+        }
 
-        $rangeCalculator = app(RangeCalculator::class);
         return view('pages.dominion.town-crier', compact(
             'dominionIds',
             'gameEvents',
@@ -54,7 +61,10 @@ class TownCrierController extends AbstractDominionController
             'rangeCalculator',
             'type',
             'typeChoices'
-        ))->with('fromOpCenter', false);
+        ))->with([
+            'fromOpCenter' => false,
+            'singleDominion' => $dominion
+        ]);
     }
 
     protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
