@@ -149,7 +149,19 @@ class GameEventService
     public function getGameEventsForDominion(Dominion $dominion, Carbon $createdBefore, string $type = 'all'): array
     {
         $gameEvents = GameEvent::query()
-            ->with(['source', 'target'])
+            ->with(['source' => function (MorphTo $morphTo) {
+                $morphTo->morphWith([
+                    Dominion::class => ['race', 'realm'],
+                    RoundWonder::class => ['wonder'],
+                ]);
+            }])
+            ->with(['target' => function (MorphTo $morphTo) {
+                $morphTo->morphWith([
+                    Dominion::class => ['race', 'realm'],
+                    RealmWar::class => ['sourceRealm', 'targetRealm'],
+                    RoundWonder::class => ['realm', 'wonder'],
+                ]);
+            }])
             ->where(function (Builder $query) use ($dominion) {
                 $query
                     ->orWhere(function (Builder $query) use ($dominion) {
