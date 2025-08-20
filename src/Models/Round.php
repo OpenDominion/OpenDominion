@@ -5,6 +5,7 @@ namespace OpenDominion\Models;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 /**
  * OpenDominion\Models\Round
@@ -407,9 +408,11 @@ class Round extends AbstractModel
         );
 
         if ($this->isActive()) {
+            $hours = now()->startOfHour()->diffInHours($date->startOfHour());
             $tooltip .= sprintf(
-                '<br>(%s hours ago)',
-                now()->startOfHour()->diffInHours($date->startOfHour()),
+                '<br>(%s %s ago)',
+                $hours,
+                Str::of('hour')->plural($hours),
             );
         }
 
