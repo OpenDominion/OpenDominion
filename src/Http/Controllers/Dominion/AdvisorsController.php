@@ -121,7 +121,7 @@ class AdvisorsController extends AbstractDominionController
             ],
         ]);
 
-        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 5);
+        $latestGameEvents = $dominion->events()->orderByDesc('created_at')->take(5)->get();
 
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
@@ -140,7 +140,7 @@ class AdvisorsController extends AbstractDominionController
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
             'latestInfoOps' => $latestInfoOps,
-            'latestInvasionEvents' => $latestInvasionEvents,
+            'latestGameEvents' => $latestGameEvents,
             'inRealm' => true,
             'realmArchive' => $dominion->round->hasEnded() && $selectedDominion->realm_id == $dominion->realm_id,
             'targetDominion' => $target

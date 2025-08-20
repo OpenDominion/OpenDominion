@@ -17,7 +17,6 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\UserActivity;
 use OpenDominion\Services\Activity\ActivityEvent;
 use OpenDominion\Services\Activity\ActivityService;
-use OpenDominion\Services\GameEventService;
 
 class DominionController extends AbstractController
 {
@@ -45,9 +44,7 @@ class DominionController extends AbstractController
 
     public function show(Dominion $dominion)
     {
-        $gameEventService = app(GameEventService::class);
-
-        $gameEvents = $gameEventService->getLatestInvasionEventsForDominion($dominion);
+        $gameEvents = $dominion->events()->where('type', 'invasion')->orderByDesc('created_at')->get();
 
         $userLogins = UserActivity::query()
             ->where('user_id', '=', $dominion->user_id)

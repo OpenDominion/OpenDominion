@@ -28,25 +28,6 @@ class GameEventService
         return $this->getGameEventsforRound($dominion, now(), $type);
     }
 
-    public function getLatestInvasionEventsForDominion(Dominion $dominion, int $count = 100): Collection
-    {
-        return GameEvent::query()
-            ->with(['source', 'target'])
-            ->where(function ($query) use ($dominion) {
-                $query->where('type', 'invasion');
-                $query->where('source_id', $dominion->id);
-                $query->where('source_type', Dominion::class);
-            })
-            ->orWhere(function ($query) use ($dominion) {
-                $query->where('type', 'invasion');
-                $query->where('target_id', $dominion->id);
-                $query->where('target_type', Dominion::class);
-            })
-            ->orderBy('created_at', 'desc')
-            ->take($count)
-            ->get();
-    }
-
     public function getClairvoyance(Realm $realm, Carbon $clairvoyanceCreatedAt): array
     {
         return $this->getGameEventsForRealm($realm, $clairvoyanceCreatedAt);
