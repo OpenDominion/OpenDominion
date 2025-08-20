@@ -41,6 +41,11 @@ class RaidObjective extends AbstractModel
         'end_date' => 'datetime',
     ];
 
+    public function contributions()
+    {
+        return $this->hasMany(RaidContribution::class);
+    }
+
     public function raid()
     {
         return $this->belongsTo(Raid::class);
