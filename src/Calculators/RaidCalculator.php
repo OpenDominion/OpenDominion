@@ -115,13 +115,11 @@ class RaidCalculator
      */
     public function getObjectiveScore(RaidObjective $objective, ?Realm $realm = null): int
     {
-        $contributions = $objective->contributions;
-
         if ($realm !== null) {
-            $contributions->where('realm_id', $realm->id);
+            return $objective->contributions->where('realm_id', $realm->id)->sum('score');
         }
 
-        return $contributions->sum('score');
+        return $objective->contributions->sum('score');
     }
 
     /**
