@@ -394,4 +394,25 @@ class Round extends AbstractModel
         }
         return (24 * ($this->daysInRound() - 1)) + ($this->hoursInDay() - 1);
     }
+
+    /**
+     * Returns a tooltip for the specified date.
+     */
+    public function getDateTooltip(Carbon $date): string
+    {
+        $tooltip = sprintf(
+            'Day %s, Hour %s',
+            $this->daysInRound($date),
+            $this->hoursInDay($date),
+        );
+
+        if ($this->isActive()) {
+            $tooltip .= sprintf(
+                '<br>(%s hours ago)',
+                now()->startOfHour()->diffInHours($date->startOfHour()),
+            );
+        }
+
+        return $tooltip;
+    }
 }

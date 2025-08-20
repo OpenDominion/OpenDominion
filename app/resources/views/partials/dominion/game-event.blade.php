@@ -1,7 +1,7 @@
 <tr>
     <td>
         @if ($selectedDominion->round->isActive())
-            <span title="({{ now()->startOfHour()->diffInHours($gameEvent->created_at->startOfHour()) }} hours ago)" data-toggle="tooltip">
+            <span title="{{ $selectedDominion->round->getDateTooltip($gameEvent->created_at) }}" data-toggle="tooltip">
                 {{ $gameEvent->created_at }}
             </span>
         @else
