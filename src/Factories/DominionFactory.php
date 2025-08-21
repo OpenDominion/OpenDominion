@@ -35,7 +35,7 @@ class DominionFactory
         Race $race,
         string $rulerName,
         string $dominionName,
-        string $protectionType = 'quick',
+        string $protectionType = 'advanced',
         ?Pack $pack = null
     ): Dominion {
         $this->guardAgainstMultipleDominionsInARound($user, $realm->round);

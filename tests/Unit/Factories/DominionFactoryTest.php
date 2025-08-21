@@ -75,7 +75,8 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
             $this->realm,
             $this->race,
             'Ruler Name',
-            'Dominion Name'
+            'Dominion Name',
+            'quick',
         );
 
         $expected_attributes = [
@@ -104,7 +105,8 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
             $this->realm,
             $this->race,
             'Ruler Name',
-            'Dominion Name'
+            'Dominion Name',
+            'quick',
         );
 
         $expected_attributes = [
@@ -121,4 +123,32 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
             $this->assertEquals($dominion->{$key}, $value);
         }
     }
+
+    public function testAdvancedStartingResources()
+    {
+        $dominion = $this->dominionFactory->create(
+            $this->user,
+            $this->realm,
+            $this->race,
+            'Ruler Name',
+            'Dominion Name',
+            'advanced',
+        );
+
+        $expected_attributes = [
+            'peasants' => 1000,
+            'resource_platinum' => 120000,
+            'resource_food' => 15000,
+            'resource_lumber' => 15000,
+            'resource_ore' => 0,
+            'resource_mana' => 0,
+            'military_unit2' => 0,
+            'military_draftees' => 300,
+        ];
+
+        foreach ($expected_attributes as $key => $value) {
+            $this->assertEquals($dominion->{$key}, $value);
+        }
+    }
+
 }
