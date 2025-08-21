@@ -43,7 +43,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     It's time to choose your starting buildings.
-                    <br/>Don't forget to build docks if you plan on attacking.
+                    <br/>Don't forget to build docks if you plan on attacking (and your units requires boats).
                 </div>
             </div>
         @endif
@@ -51,7 +51,7 @@
             @if ($selectedDominion->protection_ticks_remaining == 36)
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        Now you can choose to take daily bonuses, exchange resources, or explore.
+                        Now you can choose to explore, take daily bonuses, or exchange resources.
                         <br/>Next, you'll skip ahead 12 ticks.
                     </div>
                 </div>

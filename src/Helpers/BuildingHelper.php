@@ -113,7 +113,7 @@ class BuildingHelper
             return [
                 'farm' => 30,
                 'lumberyard' => 20,
-                'smithy' => 100,
+                'smithy' => 45,
                 'tower' => 20,
             ];
         }

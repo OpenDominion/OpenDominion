@@ -113,7 +113,23 @@
                 </div>
                 <div class="box-body">
                     <p>You can choose to start with whichever buildings you want.</p>
-                    <p>You have {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} acres of land.</p>
+                    <p>You have <b>{{ number_format($landCalculator->getTotalLand($selectedDominion)) }} acres</b> of land.</p>
+                    @if ($selectedDominion->protection_type == 'quick')
+                        @php
+                            $totalLandIncoming = $landCalculator->getTotalLandIncoming($selectedDominion) + 20;
+                        @endphp
+                        <p>You also have <b>60 acres of plains</b> incoming.</p>
+                        <p>Additionally, you can take one land bonus during protection to gain 20 acres of your race's home land.</p>
+                        <p>Common Percentages of {{ $totalLandIncoming }}:</p>
+                        <ul>
+                            <li>3.5% - {{ round(0.035 * $totalLandIncoming, 2) }}</li>
+                            <li>5% - {{ round(0.05 * $totalLandIncoming, 2) }}</li>
+                            <li>10% - {{ round(0.1 * $totalLandIncoming, 2) }}</li>
+                            <li>18% - {{ round(0.18 * $totalLandIncoming, 2) }}</li>
+                            <li>20% - {{ round(0.2 * $totalLandIncoming, 2) }}</li>
+                        </ul>
+                        <p>If you use your incoming plains to build smithies, then you'll only need {{ rceil(0.18 * $totalLandIncoming) - 60 }} now to reach the maximum of 18%.</p>
+                    @endif
                 </div>
             </div>
         </div>

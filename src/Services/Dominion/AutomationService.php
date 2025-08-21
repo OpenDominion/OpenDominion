@@ -188,7 +188,17 @@ class AutomationService
         $populationCalculator = app(PopulationCalculator::class);
         $dominion->peasants = $populationCalculator->getMaxPeasantPopulation($dominion);
 
-        $dominion->save(['event' => HistoryService::EVENT_TICK, 'action' => 'starting_buildings']);
+        // Remove previous starting_buildings history record
+        $latestHistory = $dominion->history()->orderByDesc('created_at')->first();
+        if ($latestHistory !== null && isset($latestHistory->delta['action']) && $latestHistory->delta['action'] == 'starting_buildings') {
+            $latestHistory->delete();
+        }
+
+        $selectedBuildings = array_filter($data, function($value) {
+            return $value !== 0;
+        });
+
+        $dominion->save(['event' => HistoryService::EVENT_TICK, 'action' => 'starting_buildings', 'delta' => $selectedBuildings]);
     }
 
     protected function processBank(Dominion $dominion, array $data)

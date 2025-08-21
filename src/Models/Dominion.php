@@ -377,7 +377,11 @@ class Dominion extends AbstractModel
         $recordChanges = isset($options['event']);
         if ($recordChanges) {
             $dominionHistoryService = app(HistoryService::class);
-            $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+            if (isset($options['delta'])) {
+                $deltaAttributes = $options['delta'];
+            } else {
+                $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+            }
         }
 
         // Verify tick hasn't happened during this request

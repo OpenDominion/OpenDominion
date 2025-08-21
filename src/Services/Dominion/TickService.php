@@ -499,7 +499,6 @@ class TickService
             foreach ($actions as $action) {
                 if (isset($action->delta['action']) && ($action->delta['action'] == 'starting_buildings')) {
                     // Don't revert starting building choices
-                    $action->delete();
                     continue;
                 }
 
@@ -657,6 +656,11 @@ class TickService
                 $notification->delete();
             }
         }, 5);
+
+        if ($dominion->protection_type == 'quick' && $ticks->count() == 2) {
+            // Add incoming land for quick start
+            $this->queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
+        }
 
         return true;
     }

@@ -13,6 +13,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Dominion\AutomationService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class DominionFactory
 {
@@ -55,7 +56,7 @@ class DominionFactory
             $startingAttributes[$attribute] += $value;
         }
 
-        return Dominion::create([
+        $dominion = Dominion::create([
             'user_id' => $user->id,
             'round_id' => $realm->round->id,
             'realm_id' => $realm->id,
@@ -139,6 +140,14 @@ class DominionFactory
             'protection_ticks_remaining' => $startingAttributes['protection_ticks_remaining'],
             'protection_finished' => $startingAttributes['protection_finished'],
         ]);
+
+        if ($protectionType == 'quick') {
+            // Add incoming land for quick start
+            $queueService = app(QueueService::class);
+            $queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
+        }
+
+        return $dominion;
     }
 
     /**
@@ -221,6 +230,12 @@ class DominionFactory
             $dominion->ruler_name = $rulerName;
         }
 
+        if ($protectionType == 'quick') {
+            // Add incoming land for quick start
+            $queueService = app(QueueService::class);
+            $queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
+        }
+
         $dominion->updated_at = now();
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART,
@@ -269,7 +284,7 @@ class DominionFactory
     {
         if ($protectionType == 'quick') {
             return [
-                'land_plain' => 560,
+                'land_plain' => 500,
                 'land_mountain' => 0,
                 'land_swamp' => 0,
                 'land_cavern' => 0,
@@ -589,7 +604,7 @@ class DominionFactory
         }
 
         // Add incoming units
-        $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
+        $queueService = app(QueueService::class);
         $additionalDefense = (2 * $landSize) + mt_rand(200, 500);
         $incSpecs = (int) ($additionalDefense / $defenseMod / $specPower * $specRatio);
         $incElites = (int) ($additionalDefense / $defenseMod / $elitePower * (1 - $specRatio));
