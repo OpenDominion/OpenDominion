@@ -194,7 +194,7 @@ class AutomationService
             $latestHistory->delete();
         }
 
-        $selectedBuildings = array_filter($data, function($value) {
+        $selectedBuildings = array_filter($data, function ($value) {
             return $value !== 0;
         });
 
