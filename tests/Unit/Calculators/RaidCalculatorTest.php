@@ -32,6 +32,9 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
     /** @var RaidObjective */
     protected $objective;
 
+    /** @var RaidObjectiveTactic */
+    protected $tactic;
+
     /** @var Dominion */
     protected $dominion;
 
@@ -66,6 +69,15 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'start_date' => now()->subHour(),
             'end_date' => now()->addDay(),
         ]);
+
+        $this->tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'test',
+            'name' => 'Test Tactic',
+            'description' => 'Test tactic description',
+            'attributes' => json_encode(['points_awarded' => 100]),
+            'bonuses' => json_encode([]),
+        ]);
     }
 
     public function testBasicObjectiveMethods_WithNoContributions_ReturnZero()
@@ -83,6 +95,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 250,
         ]);
@@ -91,6 +104,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 350,
         ]);
@@ -109,6 +123,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 250, // 25% of 1000 required
         ]);
@@ -127,6 +142,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 1500, // 150% of 1000 required
         ]);
@@ -149,6 +165,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
                 'realm_id' => $this->dominion->realm_id,
                 'dominion_id' => $this->dominion->id,
                 'raid_objective_id' => $this->objective->id,
+                'raid_tactic_id' => $this->tactic->id,
                 'type' => 'test',
                 'score' => $score,
             ]);
@@ -181,6 +198,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 300,
         ]);
@@ -189,6 +207,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $anotherDominion->realm_id,
             'dominion_id' => $anotherDominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 200,
         ]);
@@ -197,6 +216,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 150,
         ]);
@@ -215,6 +235,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test1',
             'score' => 100,
             'created_at' => now()->subMinutes(3),
@@ -224,6 +245,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test2',
             'score' => 200,
             'created_at' => now()->subMinutes(1),
@@ -250,6 +272,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 300,
         ]);
@@ -258,6 +281,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 200,
         ]);
@@ -267,6 +291,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $anotherDominion->realm_id,
             'dominion_id' => $anotherDominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 400,
         ]);
@@ -290,6 +315,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 300,
         ]);
@@ -298,6 +324,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $anotherDominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 200,
         ]);
@@ -319,6 +346,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 300, // 30% of 1000 total
         ]);
@@ -327,6 +355,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $anotherDominion->realm_id,
             'dominion_id' => $anotherDominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test',
             'score' => 700, // 70% of 1000 total
         ]);
@@ -355,6 +384,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $this->dominion->realm_id,
             'dominion_id' => $this->dominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test1',
             'score' => 300,
             'created_at' => now()->subMinutes(1),
@@ -364,6 +394,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $realmMate->realm_id,
             'dominion_id' => $realmMate->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test1',
             'score' => 200,
             'created_at' => now()->subMinutes(2),
@@ -373,6 +404,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'realm_id' => $anotherDominion->realm_id,
             'dominion_id' => $anotherDominion->id,
             'raid_objective_id' => $this->objective->id,
+            'raid_tactic_id' => $this->tactic->id,
             'type' => 'test2',
             'score' => 700,
             'created_at' => now()->subMinutes(3),
@@ -912,16 +944,27 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
             'end_date' => now()->subHour(),
         ]);
 
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $objective->id,
+            'type' => 'test',
+            'name' => 'Test Tactic',
+            'attributes' => json_encode(['points_awarded' => 100]),
+            'bonuses' => json_encode([]),
+        ]);
+
         return $raid->load('objectives');
     }
 
     private function createRaidContributions(Raid $raid, array $contributions): void
     {
+        $tactic = $raid->objectives->first()->tactics->first();
+
         foreach ($contributions as $contribution) {
             RaidContribution::create([
                 'realm_id' => $contribution['dominion']->realm_id,
                 'dominion_id' => $contribution['dominion']->id,
                 'raid_objective_id' => $raid->objectives->first()->id,
+                'raid_tactic_id' => $tactic->id,
                 'type' => 'test',
                 'score' => $contribution['score'],
             ]);

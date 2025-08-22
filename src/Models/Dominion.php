@@ -299,6 +299,11 @@ class Dominion extends AbstractModel
         return $this->belongsTo(Race::class);
     }
 
+    public function raidContributions()
+    {
+        return $this->hasMany(RaidContribution::class);
+    }
+
     public function rankings()
     {
         return $this->hasMany(DailyRanking::class);

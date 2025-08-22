@@ -75,6 +75,30 @@ class RaidCalculator
     }
 
     /**
+     * Get the number of times a dominion has completed a specific tactic.
+     */
+    public function getTacticCompletionCount(Dominion $dominion, RaidObjectiveTactic $tactic): int
+    {
+        return $dominion->raidContributions
+            ->where('raid_tactic_id', $tactic->id)
+            ->count();
+    }
+
+    /**
+     * Check if a dominion can still perform a tactic (hasn't reached limit).
+     */
+    public function canPerformTactic(Dominion $dominion, RaidObjectiveTactic $tactic): bool
+    {
+        if (isset($tactic->attributes['limit'])) {
+            $limit = (int) $tactic->attributes['limit'];
+            $completionCount = $this->getTacticCompletionCount($dominion, $tactic);
+            return $completionCount < $limit;
+        }
+
+        return true;
+    }
+
+    /**
      * Get the realm activity multiplier for raid tactics.
      * Smaller realms get bonus points to help compensate for fewer active players.
      */

@@ -9,6 +9,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\RaidContribution;
 use OpenDominion\Models\RaidObjective;
+use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\RaidService;
@@ -210,10 +211,21 @@ class RaidServiceTest extends AbstractBrowserKitTestCase
 
     private function createContribution(RaidObjective $objective, Dominion $dominion, int $score): RaidContribution
     {
+        // Create or find a tactic for this objective
+        $tactic = RaidObjectiveTactic::firstOrCreate([
+            'raid_objective_id' => $objective->id,
+            'type' => 'test',
+        ], [
+            'name' => 'Test Tactic',
+            'attributes' => json_encode(['points_awarded' => 100]),
+            'bonuses' => json_encode([]),
+        ]);
+
         return RaidContribution::create([
             'realm_id' => $dominion->realm_id,
             'dominion_id' => $dominion->id,
             'raid_objective_id' => $objective->id,
+            'raid_tactic_id' => $tactic->id,
             'type' => 'test',
             'score' => $score,
         ]);

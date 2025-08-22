@@ -111,6 +111,12 @@ class RaidActionService
      */
     protected function processAction(Dominion $dominion, RaidObjectiveTactic $tactic, array $data): array
     {
+        // Check if tactic can still be performed (hasn't reached limit)
+        if (!$this->raidCalculator->canPerformTactic($dominion, $tactic)) {
+            $limit = $tactic->attributes['limit'];
+            throw new GameException("You can only complete this tactic {$limit} times");
+        }
+
         // Calculate costs and deductions
         $costs = $this->calculateCosts($dominion, $tactic, $data);
         $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic);
@@ -131,6 +137,7 @@ class RaidActionService
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
                 'raid_objective_id' => $tactic->raid_objective_id,
+                'raid_tactic_id' => $tactic->id,
                 'type' => $tactic->type,
                 'score' => $score,
             ]);
@@ -156,16 +163,17 @@ class RaidActionService
             throw new GameException('You must have a hero to perform this action');
         }
 
-        $tacticBattles = $dominion->hero->battles->where('raid_tactic_id', $tactic->id);
-
-        foreach ($tacticBattles->where('finished', true) as $finishedBattle) {
+        // Check if any battle for this objective has been completed
+        $objectiveTacticIds = $tactic->objective->tactics->pluck('id');
+        $objectiveBattles = $dominion->hero->battles->whereIn('raid_tactic_id', $objectiveTacticIds);
+        foreach ($objectiveBattles->where('finished', true) as $finishedBattle) {
             if ($finishedBattle->winner && $finishedBattle->winner->dominion_id == $dominion->id) {
                 throw new GameException('You have already completed this objective');
             }
         }
 
-        if ($tacticBattles->where('finished', false)->count() > 0) {
-            throw new GameException('You already have a battle in progress');
+        if ($objectiveBattles->where('finished', false)->count() > 0) {
+            throw new GameException('You already have a battle in progress for this objective');
         }
 
         $heroBattleService = app(HeroBattleService::class);
@@ -244,6 +252,7 @@ class RaidActionService
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
                 'raid_objective_id' => $tactic->raid_objective_id,
+                'raid_tactic_id' => $tactic->id,
                 'type' => $tactic->type,
                 'score' => $score,
             ]);

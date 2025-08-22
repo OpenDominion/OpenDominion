@@ -10,7 +10,7 @@ namespace OpenDominion\Models;
  * @property int $dominion_id
  * @property int $raid_objective_id
  * @property string $type
- * @property int $score - TODO: or float?
+ * @property int $score
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
@@ -27,6 +27,7 @@ class RaidContribution extends AbstractModel
         'realm_id',
         'dominion_id',
         'raid_objective_id',
+        'raid_tactic_id',
         'type',
         'score',
         'created_at'
@@ -45,5 +46,10 @@ class RaidContribution extends AbstractModel
     public function realm()
     {
         return $this->belongsTo(Realm::class);
+    }
+
+    public function tactic()
+    {
+        return $this->belongsTo(RaidObjectiveTactic::class, 'raid_tactic_id');
     }
 }
