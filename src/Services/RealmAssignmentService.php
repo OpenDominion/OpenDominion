@@ -564,10 +564,11 @@ class RealmAssignmentService
 
         // Collect data for all dominions
         foreach ($registeredDominions as $dominion) {
-            // Perform pre-processing
             $playerFeedback = $userFeedback->where('source_id', $dominion->user_id);
-            $favorabilityMatrix = $playerFeedback->mapWithKeys(function ($feedback) {
-                return [$feedback->target_id => $feedback->endorsed ? 1 : -1];
+            $favorabilityMatrix = $playerFeedback->groupBy('target_id')->mapWithKeys(function ($feedbacks, $targetId) {
+                $positive = $feedbacks->where('endorsed', true)->count();
+                $negative = $feedbacks->where('endorsed', false)->count();
+                return [$targetId => $positive - $negative];
             })->toArray();
             // Determine Discord preference - false only if setting exists and is explicitly false
             $discordSetting = $dominion->getSetting('usediscord');
@@ -1483,8 +1484,10 @@ class RealmAssignmentService
             ->whereIn('target_id', $targetUserIds)
             ->get();
 
-        $favorabilityMatrix = $userFeedback->mapWithKeys(function ($feedback) {
-            return [$feedback->target_id => $feedback->endorsed ? 1 : -1];
+        $favorabilityMatrix = $userFeedback->groupBy('target_id')->mapWithKeys(function ($feedbacks, $targetId) {
+            $positive = $feedbacks->where('endorsed', true)->count();
+            $negative = $feedbacks->where('endorsed', false)->count();
+            return [$targetId => $positive - $negative];
         })->toArray();
 
         return new Player([

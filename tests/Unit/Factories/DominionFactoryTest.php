@@ -150,5 +150,4 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
             $this->assertEquals($dominion->{$key}, $value);
         }
     }
-
 }
