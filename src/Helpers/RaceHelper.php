@@ -15,6 +15,10 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'archmage cost';
                 break;
+            case 'assassin_cost':
+                $negativeBenefit = true;
+                $description = 'assassin cost';
+                break;
             case 'barracks_housing':
                 $negativeBenefit = false;
                 $description = 'barracks housing';
@@ -170,6 +174,11 @@ class RaceHelper
             case 'archmage_cost':
                 $negativeBenefit = true;
                 $description = 'Archmage cost';
+                $valueType = 'p';
+                break;
+            case 'assassin_cost':
+                $negativeBenefit = true;
+                $description = 'Assassin cost';
                 $valueType = 'p';
                 break;
             case 'barracks_housing':
