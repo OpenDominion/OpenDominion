@@ -1006,6 +1006,9 @@ class MilitaryCalculator
     {
         $regen = 4;
 
+        // Racial Bonus
+        $regen += $dominion->race->getPerkValue('spy_strength_recovery');
+
         // Techs
         $regen += $dominion->getTechPerkValue('spy_strength_recovery');
 
@@ -1097,6 +1100,9 @@ class MilitaryCalculator
     public function getWizardStrengthRegen(Dominion $dominion): float
     {
         $regen = 4;
+
+        // Racial Bonus
+        $regen += $dominion->race->getPerkValue('wizard_strength_recovery');
 
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');

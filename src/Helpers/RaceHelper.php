@@ -119,6 +119,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'spy power';
                 break;
+            case 'spy_strength_recovery':
+                $negativeBenefit = false;
+                $description = 'spy strength per hour';
+                break;
             case 'tech_cost':
                 $negativeBenefit = true;
                 $description = 'tech cost';
@@ -134,6 +138,10 @@ class RaceHelper
             case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'wizard power';
+                break;
+            case 'wizard_strength_recovery':
+                $negativeBenefit = false;
+                $description = 'wizard strength per hour';
                 break;
             default:
                 return '';
@@ -272,6 +280,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Spy power';
                 break;
+            case 'spy_strength_recovery':
+                $negativeBenefit = false;
+                $description = 'Spy strength per hour';
+                break;
             case 'tech_cost':
                 $negativeBenefit = true;
                 $description = 'Tech cost';
@@ -287,6 +299,10 @@ class RaceHelper
             case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'Wizard power';
+                break;
+            case 'wizard_strength_recovery':
+                $negativeBenefit = false;
+                $description = 'Wizard strength per hour';
                 break;
             default:
                 return null;
