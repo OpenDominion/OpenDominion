@@ -407,6 +407,16 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Results</h3>
+                    @if ($targetDominion->realm_id !== $selectedDominion->realm_id)
+                        <div class="box-tools pull-right">
+                            <a href="{{ route('dominion.invade') }}?dominion={{ $targetDominion->id }}"
+                                id="invade-button"
+                                class="btn btn-danger" style="font-size: 18px; padding: 2px 4px 0px;"
+                                title="Invade" data-toggle="tooltip">
+                                <i class="ra ra-crossed-swords"></i>
+                            </a>
+                        </div>
+                    @endif
                 </div>
                 <div class="box-body table-responsive">
                     <table class="table">
@@ -1010,6 +1020,15 @@
                             DPTemplesElement.text(($('input[name=calc\\[temple_percent\\]]').val() || 0) + '%');
                             DPMultiplierElement.text(response.dp_multiplier.toLocaleString(undefined, {maximumFractionDigits: 2}) + '%');
                             DPRawElement.text(response.dp_raw.toLocaleString(undefined, {maximumFractionDigits: 2}));
+
+                            // Update invade button URL with DP value
+                            var invadeButton = $('#invade-button');
+                            if (invadeButton.length) {
+                                var currentHref = invadeButton.attr('href');
+                                var baseUrl = currentHref.split('&dp=')[0];
+                                var newHref = baseUrl + '&dp=' + Math.ceil(response.dp);
+                                invadeButton.attr('href', newHref);
+                            }
                         }
                     }
                 );

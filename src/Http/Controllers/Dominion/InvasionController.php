@@ -20,6 +20,7 @@ class InvasionController extends AbstractDominionController
     public function getInvade(Request $request)
     {
         $targetDominion = $request->input('dominion');
+        $estimatedDefense = $request->input('dp');
 
         return view('pages.dominion.invade', [
             'buildingHelper' => app(BuildingHelper::class),
@@ -30,6 +31,7 @@ class InvasionController extends AbstractDominionController
             'rangeCalculator' => app(RangeCalculator::class),
             'unitHelper' => app(UnitHelper::class),
             'targetDominion' => $targetDominion,
+            'estimatedDefense' => $estimatedDefense,
         ]);
     }
 

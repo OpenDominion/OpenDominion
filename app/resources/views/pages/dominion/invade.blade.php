@@ -54,6 +54,10 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @if ($estimatedDefense !== null)
+                                Estimated Defense: <b>{{ number_format($estimatedDefense) }}</b> -
+                                <span class="text-muted">This is based on your calculation from the previous page and is not guaranteed to be accurate.</span>
+                            @endif
                         </div>
                     </div>
 
@@ -420,6 +424,15 @@
                             homeForcesMinDPElement.data('amount', response.min_dp);
                             homeForcesDPAElement.data('amount', response.home_dpa);
                             // Update OP / DP display
+                            @if ($estimatedDefense !== null)
+                                if (response.away_offense > {{ $estimatedDefense }}) {
+                                    invasionForceOPElement.addClass('text-green');
+                                    invasionForceOPElement.removeClass('text-red');
+                                } else {
+                                    invasionForceOPElement.addClass('text-red');
+                                    invasionForceOPElement.removeClass('text-green');
+                                }
+                            @endif
                             invasionForceOPElement.text(response.away_offense.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             invasionForceDPElement.text(response.away_defense.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             invasionForceBoatsElement.text(response.boats_needed.toLocaleString(undefined, {maximumFractionDigits: 2}));
