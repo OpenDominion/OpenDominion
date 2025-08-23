@@ -50,10 +50,18 @@
                             <thead>
                                 <tr>
                                     <th>{{ $selectedDominion->race->name }} Perks</th>
-                                    <th>Value</th>
+                                    <th class="text-right">Value</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td>
+                                        Home land
+                                    </td>
+                                    <td class="text-right">
+                                        {{ ucwords($selectedDominion->race->home_land_type) }}
+                                    </td>
+                                </tr>
                                 @foreach ($selectedDominion->race->perks as $perk)
                                     @php
                                         $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
@@ -62,7 +70,7 @@
                                         <td>
                                             {!! $perkDescription['description'] !!}
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-right">
                                             {!! $perkDescription['value']  !!}
                                         </td>
                                     </tr>
