@@ -29,7 +29,10 @@
                                 <tr>
                                     <td>{{ $tactic->name }}</td>
                                     <td>{{ $tactic->attributes['name'] }}</td>
-                                    <td>{{ number_format($raidCalculator->getTacticScore($selectedDominion, $tactic)) }}</td>
+                                    <td>
+                                        {{ number_format($raidCalculator->getTacticScore($selectedDominion, $tactic)) }}
+                                        <small class="text-muted">(limit: 1)</small>
+                                    </td>
                                     <td>
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
                                             @csrf
@@ -40,6 +43,13 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            @if ($tactics->count() > 1)
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <small class="text-muted">You can only complete one of the hero battles for this objective.</small>
+                                    </td>
+                                </tr>
+                            @endif
                         @else
                             <tr>
                                 <td colspan="4" class="text-center">

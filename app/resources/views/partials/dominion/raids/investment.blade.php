@@ -37,7 +37,12 @@
                                 <td>{{ $tactic->name }}</td>
                                 <td>{{ ucfirst($resourceType) }}</td>
                                 <td>{{ number_format($amount) }}</td>
-                                <td>{{ number_format($pointsAwarded) }}</td>
+                                <td>
+                                    {{ number_format($pointsAwarded) }}
+                                    @if(isset($tactic->attributes['limit']))
+                                        <small class="text-muted">(limit: {{ $tactic->attributes['limit'] }})</small>
+                                    @endif
+                                </td>
                                 <td>
                                     @if ($canPerform)
                                         <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
