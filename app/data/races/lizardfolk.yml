@@ -11,8 +11,8 @@ overall_difficulty: 1
 home_land_type: water
 perks:
   max_population: 5
-  spy_power: 10
   food_consumption: -15
+  spy_power_offense: 25
 units:
   - name: Reptile
     cost:
@@ -38,8 +38,7 @@ units:
       offense: 4
       defense: 4
     perks:
-      counts_as_spy_offense: 0.25
-      counts_as_spy_defense: 0.2
+      counts_as_spy: 0.15
     need_boat: false
   - name: Lizardman
     cost:

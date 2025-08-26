@@ -4,6 +4,16 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Clear Sight now shows raw spy ratio
+- Dark Elf: +25% offensive wizard power
+- Dark Elf Adept: counts as 0.15 of a wizard (was 0.25 on offense, 0.20 on defense)
+- Lizardfolk: +25% offensive spy power (was +10% spy power)
+- Lizardfolk Chameleon: counts as 0.15 of a spy (was 0.25 on offense, 0.20 on defense)
+- Halfling: +25% defensive spy power
+- Halfling Master Thief: counts as 0.15 of a spy (was 0.20 on offense, 0.25 on defense)
+- Sylvan: +25% defensive wizard power
+- Sylvan Dryad: counts as 0.15 of a wizard (was 0.20 on offense, 0.25 on defense)
 
 ## [1.46.0] - 2025-08-03
 ### Added

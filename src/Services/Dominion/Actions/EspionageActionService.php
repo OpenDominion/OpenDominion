@@ -872,8 +872,8 @@ class EspionageActionService
         }
 
         foreach ($dominion->race->units as $unit) {
-            if ($unit->getPerkValue('counts_as_spy_offense')) {
-                $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * $spiesKilledPercentage;
+            if ($unit->getPerkValue('counts_as_spy')) {
+                $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy') / 2) * $spiesKilledPercentage;
                 $unitKilled = (int)rfloor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
                 $unitKilled = round(min($unitKilled, $unitsKilledCap) * $spiesKilledModifier);
                 if ($unitKilled > 0) {

@@ -123,6 +123,14 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'spy power';
                 break;
+            case 'spy_power_defense':
+                $negativeBenefit = false;
+                $description = 'defensive spy power';
+                break;
+            case 'spy_power_offense':
+                $negativeBenefit = false;
+                $description = 'offensive spy power';
+                break;
             case 'spy_strength_recovery':
                 $negativeBenefit = false;
                 $description = 'spy strength per hour';
@@ -142,6 +150,14 @@ class RaceHelper
             case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'wizard power';
+                break;
+            case 'wizard_power_defense':
+                $negativeBenefit = false;
+                $description = 'defensive wizard power';
+                break;
+            case 'wizard_power_offense':
+                $negativeBenefit = false;
+                $description = 'offensive wizard power';
                 break;
             case 'wizard_strength_recovery':
                 $negativeBenefit = false;
@@ -289,6 +305,14 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Spy power';
                 break;
+            case 'spy_power_defense':
+                $negativeBenefit = false;
+                $description = 'Spy power on defense';
+                break;
+            case 'spy_power_offense':
+                $negativeBenefit = false;
+                $description = 'Spy power on offense';
+                break;
             case 'spy_strength_recovery':
                 $negativeBenefit = false;
                 $description = 'Spy strength per hour';
@@ -308,6 +332,14 @@ class RaceHelper
             case 'wizard_power':
                 $negativeBenefit = false;
                 $description = 'Wizard power';
+                break;
+            case 'wizard_power_defense':
+                $negativeBenefit = false;
+                $description = 'Wizard power on defense';
+                break;
+            case 'wizard_power_offense':
+                $negativeBenefit = false;
+                $description = 'Wizard power on offense';
                 break;
             case 'wizard_strength_recovery':
                 $negativeBenefit = false;

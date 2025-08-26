@@ -29,6 +29,7 @@ class MiscHelper
             'spy_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery awards +0.2% spy strength recovery (max +2%) and -5% spy losses (max -50%).',
             'wizard_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery awards +0.2% wizard strength recovery (max +2%) and -2% spell mana costs (max -20%).',
             'resilience' => 'Gained by victims of the magic snare operation.<br>Increases wizard strength recovery while under 30% by 1% per 100 resilience.',
+            'spa' => 'Raw Spy Ratio.',
             'wpa' => 'Raw Wizard Ratio.<br>Used to calculate Fireball protection and offense of Ice Elementals.',
         ];
 

@@ -730,7 +730,7 @@ class MilitaryCalculator
         $ratio = (float)$wizardRatioPerk[0];
         $max = (float)$wizardRatioPerk[1];
 
-        $wizardRawRatio = $this->getWizardRatioRaw($dominion, 'offense');
+        $wizardRawRatio = $this->getWizardRatioRaw($dominion);
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['wizard_ratio'])) {
@@ -934,7 +934,7 @@ class MilitaryCalculator
      */
     public function getSpyRatio(Dominion $dominion, string $type = 'offense'): float
     {
-        return ($this->getSpyRatioRaw($dominion, $type) * $this->getSpyRatioMultiplier($dominion, $type));
+        return ($this->getSpyRatioRaw($dominion) * $this->getSpyRatioMultiplier($dominion, $type));
     }
 
     /**
@@ -943,18 +943,14 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpyRatioRaw(Dominion $dominion, string $type = 'offense'): float
+    public function getSpyRatioRaw(Dominion $dominion): float
     {
         $spies = $dominion->military_spies + ($dominion->military_assassins * 2);
 
         // Add units which count as (partial) spies (Lizardfolk Chameleon)
         foreach ($dominion->race->units as $unit) {
-            if ($type === 'offense' && $unit->getPerkValue('counts_as_spy_offense')) {
-                $spies += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_offense'));
-            }
-
-            if ($type === 'defense' && $unit->getPerkValue('counts_as_spy_defense')) {
-                $spies += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_defense'));
+            if ($unit->getPerkValue('counts_as_spy')) {
+                $spies += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy'));
             }
         }
 
@@ -973,6 +969,12 @@ class MilitaryCalculator
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('spy_power');
+        if ($type == 'defense') {
+            $multiplier += $dominion->race->getPerkMultiplier('spy_power_defense');
+        }
+        if ($type == 'offense') {
+            $multiplier += $dominion->race->getPerkMultiplier('spy_power_offense');
+        }
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_power') / 100;
@@ -1027,7 +1029,7 @@ class MilitaryCalculator
      */
     public function getWizardRatio(Dominion $dominion, string $type = 'offense'): float
     {
-        return ($this->getWizardRatioRaw($dominion, $type) * $this->getWizardRatioMultiplier($dominion, $type));
+        return ($this->getWizardRatioRaw($dominion) * $this->getWizardRatioMultiplier($dominion, $type));
     }
 
     /**
@@ -1036,18 +1038,14 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getWizardRatioRaw(Dominion $dominion, string $type = 'offense'): float
+    public function getWizardRatioRaw(Dominion $dominion): float
     {
         $wizards = $dominion->military_wizards + ($dominion->military_archmages * 2);
 
         // Add units which count as (partial) wizards (Dark Elf Adept)
         foreach ($dominion->race->units as $unit) {
-            if ($type === 'offense' && $unit->getPerkValue('counts_as_wizard_offense')) {
-                $wizards += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_offense'));
-            }
-
-            if ($type === 'defense' && $unit->getPerkValue('counts_as_wizard_defense')) {
-                $wizards += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_defense'));
+            if ($unit->getPerkValue('counts_as_wizard')) {
+                $wizards += rfloor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard'));
             }
         }
 
@@ -1066,6 +1064,12 @@ class MilitaryCalculator
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_power');
+        if ($type == 'defense') {
+            $multiplier += $dominion->race->getPerkMultiplier('wizard_power_defense');
+        }
+        if ($type == 'offense') {
+            $multiplier += $dominion->race->getPerkMultiplier('wizard_power_offense');
+        }
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_power') / 100;

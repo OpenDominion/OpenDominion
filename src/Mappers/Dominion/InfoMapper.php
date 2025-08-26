@@ -129,8 +129,8 @@ class InfoMapper
             $data['recently_invaded_count'] = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
         }
 
-        //$data['spa'] = $this->militaryCalculator->getSpyRatioRaw($dominion);
-        $data['wpa'] = $this->militaryCalculator->getWizardRatioRaw($dominion, 'defense');
+        $data['spa'] = $this->militaryCalculator->getSpyRatioRaw($dominion);
+        $data['wpa'] = $this->militaryCalculator->getWizardRatioRaw($dominion);
 
         $military_draftees = $dominion->military_draftees;
         $military_unit1 = $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1);

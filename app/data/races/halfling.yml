@@ -13,6 +13,7 @@ perks:
   extra_barren_max_population: 5
   defense: 10
   food_consumption: -30
+  spy_power_defense: 25
 units:
   - name: Slinger
     cost:
@@ -35,8 +36,7 @@ units:
       offense: 2
       defense: 4
     perks:
-      counts_as_spy_offense: 0.2
-      counts_as_spy_defense: 0.25
+      counts_as_spy: 0.15
   - name: Staff Master
     cost:
       platinum: 900

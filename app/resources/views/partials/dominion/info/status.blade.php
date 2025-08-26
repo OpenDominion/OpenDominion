@@ -64,6 +64,21 @@
                 </tr>
                 <tr>
                     <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('resilience') }}">
+                            Resilience:
+                        </span>
+                    </td>
+                    <td>
+                        {{ number_format(array_get($data, 'resilience', 0)) }}
+                        @if (array_get($data, 'resilience', 0) > 0)
+                            <small class="text-muted">
+                                ({{ number_format(array_get($data, 'resilience', 0) / 100, 2) }}%)
+                            </small>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('spy_mastery') }}">
                             Spy Mastery:
                         </span>
@@ -157,20 +172,14 @@
                     </td>
                     <td>{{ number_format(rfloor($data['resource_boats'])) }}</td>
                 </tr>
+                @php $spa = array_get($data, 'spa', -1); @endphp
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('resilience') }}">
-                            Resilience:
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('spa') }}">
+                            Spy Ratio:
                         </span>
                     </td>
-                    <td>
-                        {{ number_format(array_get($data, 'resilience', 0)) }}
-                        @if (array_get($data, 'resilience', 0) > 0)
-                            <small class="text-muted">
-                                ({{ number_format(array_get($data, 'resilience', 0) / 100, 2) }}%)
-                            </small>
-                        @endif
-                    </td>
+                    <td>{{ $spa == -1 ? '???' : round($spa, 3) }}</td>
                 </tr>
                 @php $wpa = array_get($data, 'wpa', -1); @endphp
                 <tr>

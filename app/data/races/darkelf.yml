@@ -11,6 +11,7 @@ home_land_type: cavern
 perks:
   max_population: -5
   gem_production: 5
+  wizard_power_offense: 25
 units:
   - name: Swordsman
     cost:
@@ -36,8 +37,7 @@ units:
       offense: 0
       defense: 6
     perks:
-      counts_as_wizard_offense: 0.25
-      counts_as_wizard_defense: 0.2
+      counts_as_wizard: 0.15
   - name: Spellblade
     cost:
       platinum: 1200

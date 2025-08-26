@@ -11,6 +11,7 @@ home_land_type: cavern
 perks:
   mana_production: 5
   gem_production: 5
+  wizard_power_offense: 25
 units:
   - name: Swordsman
     cost:
@@ -35,8 +36,7 @@ units:
       offense: 2
       defense: 4
     perks:
-      counts_as_wizard_offense: 0.2
-      counts_as_wizard_defense: 0.25
+      counts_as_wizard: 0.2
       offense_from_building: wizard_guild,10,4 # building type, ratio%, max
       defense_from_building: wizard_guild,10,4 # building type, ratio%, max
   - name: Spirit Warrior
