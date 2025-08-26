@@ -10,7 +10,6 @@ converter_difficulty: 3
 home_land_type: hill
 perks:
   max_population: 5
-  extra_barren_max_population: 5
   defense: 10
   food_consumption: -30
   spy_power_defense: 25

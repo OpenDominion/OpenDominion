@@ -10,6 +10,7 @@ converter_difficulty: 2
 home_land_type: cavern
 perks:
   offense: 5
+  wizard_strength_recovery: 1
 units:
   - name: Infernal Imp
     cost:
@@ -19,16 +20,14 @@ units:
       offense: 3
       defense: 0
     need_boat: false
-  - name: Succubus
+  - name: Abyssal Fiend
     cost:
       platinum: 300
       mana: 10
     power:
       offense: 0
       defense: 3
-    perks:
-      charm_spies: 1
-  - name: Abyssal Fiend
+  - name: Succubus
     cost:
       platinum: 1050
       mana: 10
@@ -37,10 +36,13 @@ units:
       defense: 5
     perks:
       defense_from_land: swamp,10,1 # land type, ratio%, max
+      charm_spies: 1
   - name: Archdemon
     cost:
-      platinum: 860
+      platinum: 875
       mana: 30
     power:
       offense: 5
       defense: 2
+    perks:
+      casualties_offense: -20
