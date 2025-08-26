@@ -37,7 +37,7 @@ class TechCalculator
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'tech_cost');
 
-        $techCost = (2.5 * $dominion->highest_land_achieved) + (100 * $dominion->techs->count());
+        $techCost = (2.5 * $dominion->highest_land_achieved) + (50 * $dominion->techs->count());
 
         return max(3750, round($techCost * $multiplier));
     }

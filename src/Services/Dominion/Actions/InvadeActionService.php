@@ -445,7 +445,7 @@ class InvadeActionService
             }
             $this->invasionResult['attacker']['habitualInvasion'] = $penaltyHits > 0;
             if ($penaltyHits > 0) {
-                $multiplier = max(0.50, (1 - $penalty * $penaltyHits));
+                $multiplier = max(0.40, (1 - $penalty * $penaltyHits));
                 $attackerPrestigeChange = (int)round($attackerPrestigeChange * $multiplier);
             }
 
