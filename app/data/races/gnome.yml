@@ -12,8 +12,7 @@ perks:
   offense: 7.5
   max_population: -5
   food_consumption: -20
-  gem_production: 5
-  tech_production: 5
+  tech_production: 10
 units:
   - name: Suicide Squad
     cost:
@@ -34,7 +33,7 @@ units:
   - name: Rockapult
     cost:
       platinum: 675
-      ore: 330
+      ore: 350
     power:
       offense: 2
       defense: 4
@@ -43,7 +42,7 @@ units:
   - name: Juggernaut
     cost:
       platinum: 750
-      ore: 550
+      ore: 525
     power:
       offense: 6.5
       defense: 3

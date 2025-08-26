@@ -12,7 +12,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Demon Archdemon: +15p (from 860p), casualties reduced by 20%
 - Demon Succubus: now 0/5 elite, +1 DP for every 10% swamps (max +1), charms spies
 - Dwarf: removed extra barren population
-- Gnome: removed extra barren population
+- Gnome: removed 5% gem production perk, increased research production perk to 10% (from 5%), removed extra barren population
+- Gnome Juggernaut: -25r (from 550r)
+- Gnome Rockapult: +20r (from 330r)
 - Kobold: +1 spy strength recovery per hour
 - Kobold Taskmaster: -50p (from 1350p)
 - Lizardfolk: +25% offensive spy power (was +10% spy power)
