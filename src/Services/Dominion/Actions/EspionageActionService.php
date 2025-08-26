@@ -310,9 +310,6 @@ class EspionageActionService
 
         $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
-        // Wonders
-        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
-
         if (!random_chance($successRate)) {
             list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
 

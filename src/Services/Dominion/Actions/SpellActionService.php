@@ -409,9 +409,6 @@ class SpellActionService
 
         $successRate = $this->opsCalculator->infoOperationSuccessChance($selfWpa, $targetWpa, $dominion->wizard_strength, $target->wizard_strength);
 
-        // Wonders
-        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
-
         if (!random_chance($successRate)) {
             // Inform target that they repelled a info spell
             $sourceDominionId = $dominion->id;

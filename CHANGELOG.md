@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Tech cost now increased by 50 for each unlock (from 100)
 - Prestige penalty for hitting bots max increased to -60% (from -50%)
 - Mutual war now increases the duration of Burning and Lightning Storm by 12 hours (from 18)
+- Ivory Tower and Underground Society no longer affect info ops
 - Clear Sight now shows raw spy ratio
 - Dark Elf: +25% offensive wizard power
 - Dark Elf Adept: counts as 0.15 of a wizard (was 0.25 on offense, 0.20 on defense)
