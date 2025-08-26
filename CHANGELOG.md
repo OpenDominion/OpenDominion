@@ -8,12 +8,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Clear Sight now shows raw spy ratio
 - Dark Elf: +25% offensive wizard power
 - Dark Elf Adept: counts as 0.15 of a wizard (was 0.25 on offense, 0.20 on defense)
+- Kobold: +1 spy strength recovery per hour
+- Kobold Taskmaster: -50p (from 1350p)
 - Lizardfolk: +25% offensive spy power (was +10% spy power)
 - Lizardfolk Chameleon: counts as 0.15 of a spy (was 0.25 on offense, 0.20 on defense)
 - Halfling: +25% defensive spy power
 - Halfling Master Thief: counts as 0.15 of a spy (was 0.20 on offense, 0.25 on defense)
 - Sylvan: +25% defensive wizard power
 - Sylvan Dryad: counts as 0.15 of a wizard (was 0.20 on offense, 0.25 on defense)
+- Wood Elf: assassin cost -100p
+- Wood Elf Wisp: each unit produces 1 lumber per hour for every 20% forests, max +1 (from 1 per 40% forests)
 
 ## [1.46.0] - 2025-08-03
 ### Added

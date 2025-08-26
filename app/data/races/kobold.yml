@@ -14,6 +14,7 @@ perks:
   population_growth: 15
   food_consumption: -25
   boat_capacity: 10
+  spy_strength_recovery: 1
 units:
   - name: Underling
     cost:
@@ -33,7 +34,7 @@ units:
       flavor_tunneler: 1
   - name: Taskmaster
     cost:
-      platinum: 1350
+      platinum: 1300
       ore: 0
     power:
       offense: 3
