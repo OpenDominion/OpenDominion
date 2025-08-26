@@ -48,6 +48,7 @@ class TechHelper
             'invest_bonus_spires' => '%+g%% bonus to spires investment',
 
             // Spy related
+            'assassin_cost' => '%+g%% cost of assassins',
             'enemy_assassinate_draftees_damage' => '%+g%% draftees lost in assassination attempts',
             'enemy_assassinate_wizards_damage' => '%+g%% wizards lost in assassination attempts',
             'spy_cost' => '%+g%% cost of spies',
@@ -78,6 +79,7 @@ class TechHelper
             'mana_decay' => '%+g%% mana drain',
 
             // Wizard related
+            'archmage_cost' => '%+g%% cost of archmages',
             'enemy_disband_spies_damage' => '%+g%% enemy disband spies damage',
             'enemy_fireball_damage' => '%+g%% enemy fireball damage',
             'enemy_lightning_bolt_damage' => '%+g%% enemy lightning bolt damage',

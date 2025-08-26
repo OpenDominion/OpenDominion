@@ -209,7 +209,7 @@ class SpellHelper
             'food_production_damage' => '%+g%% Insect Swarm damage',
             'lumber_decay' => '%+g%% lumber rot',
             'mana_decay' => '%+g%% mana drain',
-            'martyrdom' => 'Spy and wizard cost reduced by 1%% per 15 prestige (max 50%%)',
+            'martyrdom' => 'Spy, assassin, wizard, and archmage costs reduced by 1%% per 15 prestige (max 50%%)',
             'spy_cost' => '%+g%% cost of spies',
             'spy_losses' => '%s%% spy losses on failed operations',
             'spy_power' => '%+g%% spy power',

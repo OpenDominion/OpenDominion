@@ -82,8 +82,7 @@ techs:
     y: 1
     name: Arcane Bloodlines
     perks:
-      spy_cost: -5
-      wizard_cost: -15
+      wizard_cost: -20
     requires:
       - tech_15_1
       - tech_19_1
@@ -349,20 +348,21 @@ techs:
   tech_16_7:
     x: 16
     y: 7
-    name: Anti-Magic Sigils
+    name: Night Watch
     perks:
-      enemy_spell_duration: -1
+      enemy_assassinate_draftees_damage: -25
+      enemy_assassinate_wizards_damage: -25
+      enemy_disband_spies_damage: -25
     requires:
       - tech_17_5
       - tech_18_7
   tech_18_7:
     x: 18
     y: 7
-    name: Night Watch
+    name: Shadow Academy
     perks:
-      enemy_assassinate_draftees_damage: -25
-      enemy_assassinate_wizards_damage: -25
-      enemy_disband_spies_damage: -25
+      archmage_cost: -20
+      assassin_cost: -20
     requires:
       - tech_19_5
       - tech_16_7
@@ -588,8 +588,7 @@ techs:
     y: 17
     name: Centralized Intelligence
     perks:
-      spy_cost: -15
-      wizard_cost: -5
+      spy_cost: -20
     requires:
       - tech_8_15
       - tech_10_19

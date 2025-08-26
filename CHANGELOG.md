@@ -29,6 +29,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Sylvan Dryad: counts as 0.15 of a wizard (was 0.20 on offense, 0.25 on defense)
 - Wood Elf: assassin cost -100p
 - Wood Elf Wisp: each unit produces 1 lumber per hour for every 20% forests, max +1 (from 1 per 40% forests)
+- Tech Tree Updates
+  - Anti Magic Sigils removed
+  - Arcane Bloodlines: -20% cost of wizards (was -15% wizards/archmages, -5% spies/assassins)
+  - Centralized Intelligence: -20% cost of spies (was -15% spy/assassin, -5% wizards/archmages)
+  - Night Watch moves into Anti Magic Sigils former position
+  - Shadow Academy added into Night Watch former position
+  - Shadow Academy: -20% cost of assassins/archmages
 
 ## [1.46.0] - 2025-08-03
 ### Added

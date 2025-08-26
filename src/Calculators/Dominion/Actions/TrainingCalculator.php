@@ -50,13 +50,15 @@ class TrainingCalculator
         $archmageBaseCost += $dominion->race->getPerkValue('archmage_cost');
 
         $spyCostMultiplier = $this->getSpyCostMultiplier($dominion);
+        $assassinCostMultiplier = $this->getAssassinCostMultiplier($dominion);
         $wizardCostMultiplier = $this->getWizardCostMultiplier($dominion);
+        $archmageCostMultiplier = $this->getArchmageCostMultiplier($dominion);
 
         // Values
         $spyPlatinumCost = (int)rceil($spyBaseCost * $spyCostMultiplier);
-        $assassinPlatinumCost = (int)rceil($assassinBaseCost * $spyCostMultiplier);
+        $assassinPlatinumCost = (int)rceil($assassinBaseCost * $assassinCostMultiplier);
         $wizardPlatinumCost = (int)rceil($wizardBaseCost * $wizardCostMultiplier);
-        $archmagePlatinumCost = (int)rceil($archmageBaseCost * $wizardCostMultiplier);
+        $archmagePlatinumCost = (int)rceil($archmageBaseCost * $archmageCostMultiplier);
 
         $units = $dominion->race->units;
 
@@ -205,7 +207,45 @@ class TrainingCalculator
     }
 
     /**
-     * Returns the Dominion's training platinum cost multiplier for spies and assassins.
+     * Returns the Dominion's training platinum cost multiplier for archmages.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getArchmageCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('archmage_cost');
+
+        // Perks that affect all types
+        $multiplier += $this->getOpsCostMultiplier($dominion);
+
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's training platinum cost multiplier for assassins.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getAssassinCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('assassin_cost');
+
+        // Perks that affect all types
+        $multiplier += $this->getOpsCostMultiplier($dominion);
+
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's training platinum cost multiplier for spies.
      *
      * @param Dominion $dominion
      * @return float
@@ -219,12 +259,9 @@ class TrainingCalculator
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'spy_cost') / 100;
-        $martyrdomPerk = $this->spellCalculator->resolveSpellPerk($dominion, 'martyrdom');
-        if ($martyrdomPerk) {
-            // Special case for Martyrdom, cap at 50% reduction
-            $prestigeMultiplier = 1 / $martyrdomPerk / 100;
-            $multiplier -= min(0.5, $prestigeMultiplier * $dominion->prestige);
-        }
+
+        // Perks that affect all types
+        $multiplier += $this->getOpsCostMultiplier($dominion);
 
         return $multiplier;
     }
@@ -244,6 +281,23 @@ class TrainingCalculator
 
         // Spells
         $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_cost') / 100;
+
+        // Perks that affect all types
+        $multiplier += $this->getOpsCostMultiplier($dominion);
+
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's training platinum cost multiplier for all special forces units.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getOpsCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
         $martyrdomPerk = $this->spellCalculator->resolveSpellPerk($dominion, 'martyrdom');
         if ($martyrdomPerk) {
             // Special case for Martyrdom, cap at 50% reduction
