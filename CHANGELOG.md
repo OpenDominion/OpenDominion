@@ -8,10 +8,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Clear Sight now shows raw spy ratio
 - Dark Elf: +25% offensive wizard power
 - Dark Elf Adept: counts as 0.15 of a wizard (was 0.25 on offense, 0.20 on defense)
+- Dark Elf Swordsman: now convert 8% of survivors (from 8.5%)
+- Demon: +1 wizard strength recovery per hour
 - Demon Abyssal Fiend: now 0/3 specialist, no perks
 - Demon Archdemon: +15p (from 860p), casualties reduced by 20%
 - Demon Succubus: now 0/5 elite, +1 DP for every 10% swamps (max +1), charms spies
 - Dwarf: removed extra barren population
+- Firewalker Salamander: -15p (from 940p)
 - Gnome: removed 5% gem production perk, increased research production perk to 10% (from 5%), removed extra barren population
 - Gnome Juggernaut: -25r (from 550r)
 - Gnome Rockapult: +20r (from 330r)

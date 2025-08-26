@@ -38,7 +38,7 @@ units:
       rebirth: 6
   - name: Salamander
     cost:
-      platinum: 940
+      platinum: 925
       ore: 0
     power:
       offense: 5
