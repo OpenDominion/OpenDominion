@@ -65,7 +65,7 @@ class HeroHelper
                 'key' => 'infiltrator',
                 'class_type' => 'basic',
                 'perk_type' => 'spy_power',
-                'coefficient' => 2,
+                'coefficient' => 2.5,
                 'icon' => 'ra-hood'
             ],
             [
@@ -73,15 +73,15 @@ class HeroHelper
                 'key' => 'sorcerer',
                 'class_type' => 'basic',
                 'perk_type' => 'wizard_power',
-                'coefficient' => 2,
+                'coefficient' => 2.5,
                 'icon' => 'ra-pointy-hat'
             ],
             [
                 'name' => 'Scholar',
                 'key' => 'scholar',
                 'class_type' => 'advanced',
-                'perk_type' => 'tech_cost',
-                'coefficient' => -0.75,
+                'perk_type' => 'max_population',
+                'coefficient' => 0.2,
                 'perks' => ['pursuit_of_knowledge'],
                 'icon' => 'ra-graduate-cap',
                 'requirement_stat' => 'resource_tech',
@@ -91,8 +91,8 @@ class HeroHelper
                 'name' => 'Scion',
                 'key' => 'scion',
                 'class_type' => 'advanced',
-                'perk_type' => 'ops_power',
-                'coefficient' => 1,
+                'perk_type' => 'explore_cost',
+                'coefficient' => -0.25,
                 'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
                 'icon' => 'ra-ankh',
                 'requirement_stat' => 'prestige',

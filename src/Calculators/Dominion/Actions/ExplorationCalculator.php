@@ -8,6 +8,9 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class ExplorationCalculator
 {
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -17,14 +20,17 @@ class ExplorationCalculator
     /**
      * ExplorationCalculator constructor.
      *
+     * @param HeroCalculator $heroCalculator
      * @param LandCalculator $landCalculator
      * @param GuardMembershipService $guardMembershipService
      */
     public function __construct(
+        HeroCalculator $heroCalculator,
         LandCalculator $landCalculator,
         GuardMembershipService $guardMembershipService
     )
     {
+        $this->heroCalculator = $heroCalculator;
         $this->landCalculator = $landCalculator;
         $this->guardMembershipService = $guardMembershipService;
     }
@@ -67,6 +73,9 @@ class ExplorationCalculator
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('explore_platinum_cost');
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'max_population');
 
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion) && $dominion->user_id !== null) {

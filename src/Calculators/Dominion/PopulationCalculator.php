@@ -11,6 +11,9 @@ class PopulationCalculator
     /** @var BuildingHelper */
     protected $buildingHelper;
 
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
 
@@ -36,6 +39,7 @@ class PopulationCalculator
      * PopulationCalculator constructor.
      *
      * @param BuildingHelper $buildingHelper
+     * @param HeroCalculator $heroCalculator
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
@@ -45,6 +49,7 @@ class PopulationCalculator
      */
     public function __construct(
         BuildingHelper $buildingHelper,
+        HeroCalculator $heroCalculator,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
@@ -54,6 +59,7 @@ class PopulationCalculator
     )
     {
         $this->buildingHelper = $buildingHelper;
+        $this->heroCalculator = $heroCalculator;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
@@ -213,6 +219,9 @@ class PopulationCalculator
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('max_population');
+
+        // Heroes
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'max_population');
 
         // Improvement: Keep
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');

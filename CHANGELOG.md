@@ -39,6 +39,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Hero Updates
   - Anti Magic Sigils (item): -2 enemy spell duration (Level 6)
   - Farmer (class): +1% food production per level
+  - Scholar now increases max population by 0.2% per level (was -0.75% tech cost per level)
+  - Scion now reduces explore cost by 0.25% per level (was 1% spy/wizard power per level)
 
 ## [1.46.0] - 2025-08-03
 ### Added
