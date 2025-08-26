@@ -36,6 +36,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Night Watch moves into Anti Magic Sigils former position
   - Shadow Academy added into Night Watch former position
   - Shadow Academy: -20% cost of assassins/archmages
+- Hero Updates
+  - Anti Magic Sigils (item): -2 enemy spell duration (Level 6)
+  - Farmer (class): +1% food production per level
 
 ## [1.46.0] - 2025-08-03
 ### Added

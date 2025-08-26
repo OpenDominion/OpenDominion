@@ -45,6 +45,14 @@ class HeroHelper
                 'icon' => 'ra-hammer'
             ],
             [
+                'name' => 'Farmer',
+                'key' => 'farmer',
+                'class_type' => 'basic',
+                'perk_type' => 'food_production',
+                'coefficient' => 1,
+                'icon' => 'ra-sprout'
+            ],
+            [
                 'name' => 'Healer',
                 'key' => 'healer',
                 'class_type' => 'basic',
@@ -179,6 +187,7 @@ class HeroHelper
             // Items
             'assassinate_draftees_damage' => '%+g%% assassinate draftee damage',
             'cyclone_damage' => '%+g%% cyclone damage',
+            'enemy_spell_duration' => '%+g enemy spell duration',
             'invasion_morale' => '%+g%% morale loss from invasion',
             'land_spy_strength_cost' => 'Survey Dominion and Land Spy now cost 1%% spy strength',
             'retal_prestige' => '%+g prestige gains from invasion if the target realm has attacked your realm (doubled if in the last 24 hours)',

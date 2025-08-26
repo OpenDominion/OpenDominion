@@ -153,3 +153,11 @@ staff_of_stormcaller:
     cyclone_damage: 20
     combat_focus: 2
     combat_health: 5
+anti_magic_sigils:
+  name: Anti-Magic Sigils
+  level: 6
+  type: item
+  icon: ra-x-mark
+  perks:
+    enemy_spell_duration: -2
+    combat_evasion: 7
