@@ -545,8 +545,16 @@ class OpsCalculator
      */
     public function getImprovementsVulnerable(Dominion $dominion): int
     {
+        // Masonries
+        $masonryReduction = 5;
+        $masonryReductionMax = 50;
+        $vulnerabilityModifier = static::IMPROVEMENT_VULNERABILITY - min(
+            (($dominion->building_masonry / $this->landCalculator->getTotalLand($dominion)) * $masonryReduction),
+            ($masonryReductionMax / 100)
+        ) / 5;
+
         $vulnerableInvestments = max(0, $dominion->stat_total_investment - $dominion->improvement_spires - $dominion->improvement_harbor);
-        $protectedImprovements = round($vulnerableInvestments * (1 - static::IMPROVEMENT_VULNERABILITY));
+        $protectedImprovements = round($vulnerableInvestments * (1 - $vulnerabilityModifier));
 
         $currentImprovements = $this->improvementCalculator->getImprovementTotal($dominion);
         $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;

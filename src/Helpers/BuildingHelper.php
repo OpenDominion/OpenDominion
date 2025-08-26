@@ -87,7 +87,7 @@ class BuildingHelper
             'alchemy' => 'Produces 45 platinum per hour.',
             'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of one bushel of food per hour.',
             'smithy' => 'Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.<br><br>Does not affect Gnome ore costs.',
-            'masonry' => 'Increases castle bonuses by 2.6% per 1% owned.',
+            'masonry' => 'Increases castle bonuses by 2.6% per 1% owned.<br><br>Reduces the maximum amount of damage that can be dealt to your castle by Lightning Bolt by 5% per 1% owned, up to a maximum of 50% at 10% owned.',
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Offensive power increased by 1.6% per 1% owned, up to a maximum of 32% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',

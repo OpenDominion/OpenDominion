@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Changed
+- Masonries now reduces the maximum amount of damage that can be dealt to your castle by Lightning Bolt by 5% per 1% owned, up to a maximum of 50% at 10% owned (lightning vulnerability from 20% to 10%)
 - Tech cost now increased by 50 for each unlock (from 100)
 - Prestige penalty for hitting bots max increased to -60% (from -50%)
 - Mutual war now increases the duration of Burning and Lightning Storm by 12 hours (from 18)
