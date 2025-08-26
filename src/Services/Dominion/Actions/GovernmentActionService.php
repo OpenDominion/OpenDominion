@@ -262,18 +262,18 @@ class GovernmentActionService
                 ->delete();
         }
         if ($isMutual) {
-            // Extend Status Effect duration by 18 hours
+            // Extend Status Effect duration by 12 hours
             DominionSpell::query()
                 ->whereIn('spell_id', [$burningSpell->id, $lightningStormSpell->id])
                 ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
-                ->update(['duration' => DB::raw('duration + 18')]);
+                ->update(['duration' => DB::raw('duration + 12')]);
         } else {
-            // Refresh Status Effect duration to 18 hours
+            // Refresh Status Effect duration to 12 hours
             DominionSpell::query()
                 ->whereIn('spell_id', [$burningSpell->id, $lightningStormSpell->id])
                 ->whereIn('dominion_id', $dominion->realm->dominions()->pluck('id'))
-                ->where('duration', '<', 18)
-                ->update(['duration' => 18]);
+                ->where('duration', '<', 12)
+                ->update(['duration' => 12]);
         }
 
         $war = RealmWar::create([

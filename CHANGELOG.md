@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Changed
+- Mutual war now increases the duration of Burning and Lightning Storm by 12 hours (from 18)
 - Clear Sight now shows raw spy ratio
 - Dark Elf: +25% offensive wizard power
 - Dark Elf Adept: counts as 0.15 of a wizard (was 0.25 on offense, 0.20 on defense)
