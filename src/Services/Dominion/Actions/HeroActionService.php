@@ -179,6 +179,8 @@ class HeroActionService
             throw new GameException('You do not have a hero to retire.');
         }
 
+        // TODO: Add cooldown
+
         $heroClasses = $this->heroHelper->getClasses()->keyBy('key');
         $currentHeroClass = $heroClasses[$dominion->hero->class] ?? null;
         if ($currentHeroClass['class_type'] === 'advanced') {
@@ -199,10 +201,8 @@ class HeroActionService
         }
 
         DB::transaction(function () use ($dominion, $name, $selectedClass) {
-            HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();
-
-            // Starting XP
-            $xp = (int) min($dominion->hero->experience, 10000) / 2;
+            // TODO: Consider deleting upgrades for Scion?
+            // HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();
 
             if ($selectedClass['class_type'] === 'advanced') {
                 // Advanced Class Upgrades
@@ -221,10 +221,28 @@ class HeroActionService
                 }
             }
 
+            $xp = 0;
+            $classData = $dominion->hero->class_data;
+            $existingClassData = collect($classData)->where('key', $selectedClass['key'])->first();
+            if ($existingClassData !== null) {
+                $xp = $existingClassData['experience'];
+            }
+            $currentClassData = collect($classData)->where('key', $dominion->hero->class)->first();
+            if ($currentClassData !== null) {
+                $classData[$dominion->hero->class]['experience'] = $dominion->hero->experience;
+            } else {
+                $classData[$dominion->hero->class] = [
+                    'key' => $dominion->hero->class,
+                    'experience' => $dominion->hero->experience,
+                    'perk_type' => $this->heroHelper->getPassivePerkType($dominion->hero->class),
+                ];
+            }
+
             $dominion->hero()->update([
                 'name' => $name,
                 'class' => $selectedClass['key'],
-                'experience' => $xp
+                'experience' => $xp,
+                'class_data' => $classData,
             ]);
 
             $dominion->save([

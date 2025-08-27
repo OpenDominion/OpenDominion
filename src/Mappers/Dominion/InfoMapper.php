@@ -11,6 +11,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
@@ -26,6 +27,9 @@ class InfoMapper
 
     /** @var HeroCalculator */
     protected $heroCalculator;
+
+    /** @var HeroHelper */
+    protected $heroHelper;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -59,6 +63,7 @@ class InfoMapper
         $this->buildingCalculator = app(BuildingCalculator::class);
         $this->buildingHelper = app(BuildingHelper::class);
         $this->heroCalculator = app(HeroCalculator::class);
+        $this->heroHelper = app(HeroHelper::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
         $this->landCalculator = app(LandCalculator::class);
@@ -380,6 +385,20 @@ class InfoMapper
             return [];
         }
 
+        $inactiveClasses = [];
+        foreach (collect($dominion->hero->class_data)->sortByDesc('experience') as $inactiveClass) {
+            if ($dominion->hero->class == $inactiveClass['key']) {
+                continue;
+            }
+            $inactiveClasses[] = [
+                'key' => $inactiveClass['key'],
+                'level' => $this->heroCalculator->getExperienceLevel($inactiveClass['experience']),
+                'experience' => $inactiveClass['experience'],
+                'bonus' => $this->heroCalculator->getPassiveBonus($dominion->hero, $inactiveClass['perk_type']),
+            ];
+        }
+        $currentPerkType = $this->heroHelper->getPassivePerkType($dominion->hero->class);
+
         return [
             [
                 'name' => $dominion->hero->name,
@@ -387,8 +406,9 @@ class InfoMapper
                 'level' => $this->heroCalculator->getHeroLevel($dominion->hero),
                 'experience' => rfloor($dominion->hero->experience),
                 'next_level_xp' => $this->heroCalculator->getNextLevelXP($dominion->hero),
-                'bonus' => $this->heroCalculator->getPassiveBonus($dominion->hero),
-                'upgrades' => $dominion->hero->upgrades->pluck('name', 'key')->all()
+                'bonus' => $this->heroCalculator->getPassiveBonus($dominion->hero, $currentPerkType),
+                'upgrades' => $dominion->hero->upgrades->pluck('name', 'key')->all(),
+                'inactive_classes' => $inactiveClasses,
             ]
         ];
     }

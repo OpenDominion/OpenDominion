@@ -124,7 +124,7 @@
                                             </div>
                                             <div class="row" style="font-size: 64px; margin-top: 20px;">
                                                 <div class="col-xs-6 text-center">
-                                                    <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i>
+                                                    <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Current Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i>
                                                 </div>
                                                 @if (isset($upgrades[0]))
                                                     @foreach ($upgrades[0] as $upgrade)
@@ -211,27 +211,84 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-lg-6 table-responsive">
-                                    <table class="table table-condensed table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Level</th>
-                                                <th>XP</th>
-                                                <th>Bonus</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($heroCalculator->getExperienceLevels() as $level)
-                                                @if ($level['level'] !== 0)
-                                                    <tr class="{{ $heroCalculator->getHeroLevel($hero) == $level['level'] ? 'active' : null }}">
-                                                        <td>{{ $level['level'] }}</td>
-                                                        <td>{{ $level['xp'] }}</td>
-                                                        <td>{{ number_format($heroCalculator->calculatePassiveBonus($perkType, $level['level']), 2) }}%</td>
+                                <div class="col-sm-12 col-lg-6">
+                                    <div class="table-responsive" style="margin-top: 15px;">
+                                        <table class="table table-condensed table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Level</th>
+                                                    <th>XP</th>
+                                                    <th>{{ $heroHelper->getClassDisplayName($hero->class) }} Bonus</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($heroCalculator->getExperienceLevels() as $level)
+                                                    @if ($level['level'] !== 0)
+                                                        <tr class="{{ $heroCalculator->getHeroLevel($hero) == $level['level'] ? 'active' : null }}">
+                                                            <td>{{ $level['level'] }}</td>
+                                                            <td>{{ $level['xp'] }}</td>
+                                                            <td>{{ number_format($heroCalculator->calculatePassiveBonus($perkType, $level['level']), 2) }}%</td>
+                                                        </tr>
+                                                    @endif
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @if ($hero->class_data)
+                                        <h4>Hero Bonuses</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-condensed table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Class Name</th>
+                                                        <th>Level</th>
+                                                        <th>XP</th>
+                                                        <th>Current Bonus</th>
+                                                        <th>Switch Class</th>
                                                     </tr>
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($heroHelper->getClasses() as $class)
+                                                        @if ($hero->class == $class['key'])
+                                                            <tr class="active">
+                                                                <td>{{ $heroHelper->getClassDisplayName($hero->class) }}</td>
+                                                                <td>{{ $heroCalculator->getHeroLevel($hero) }}</td>
+                                                                <td>{{ $hero->experience }}</td>
+                                                                <td>{{ $heroCalculator->getPassiveDescription($hero) }}</td>
+                                                                <td>
+                                                                    <a href="{{ route('dominion.heroes.retire') }}" class="btn btn-primary btn-xs" disabled>
+                                                                        Select
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        @else
+                                                            @php
+                                                                $data = array_get($heroClassData, $class['key'], []);
+                                                                $key = array_get($data, 'key', $class['key']);
+                                                                $level = array_get($data, 'level', null);
+                                                                $experience = array_get($data, 'experience', 0);
+                                                            @endphp
+                                                            <tr>
+                                                                <td>{{ $heroHelper->getClassDisplayName($key) }}</td>
+                                                                <td>{{ $level ?? $heroCalculator->getExperienceLevel($experience) }}</td>
+                                                                <td>{{ $experience }}</td>
+                                                                <td>{{ $heroCalculator->getPassiveDescription($hero, $class['perk_type']) }}</td>
+                                                                <td>
+                                                                    <a href="{{ route('dominion.heroes.retire') }}" class="btn btn-primary btn-xs">
+                                                                        Select
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="row">

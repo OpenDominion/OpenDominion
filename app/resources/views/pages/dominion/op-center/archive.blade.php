@@ -439,36 +439,45 @@
                         @else
                             @slot('noPadding', true)
 
-                            <table class="table">
-                                <colgroup>
-                                    <col width="25%">
-                                    <col width="75%">
-                                </colgroup>
-                                <tbody>
-                                    @foreach ($infoOp->data as $hero)
+                            @foreach ($infoOp->data as $hero)
+                                <h4 class="text-center">{{ $hero['name'] }}</h4>
+                                <table class="table table-condensed">
+                                    <colgroup>
+                                        <col width="30%">
+                                        <col width="10%">
+                                        <col width="15%">
+                                        <col width="30%">
+                                        <col width="15%">
+                                    </colgroup>
+                                    <thead>
                                         <tr>
-                                            <td class="text-right">Name</td>
-                                            <td class="text-left">{{ $hero['name'] }}</td>
+                                            <th>Class</th>
+                                            <th>Level</th>
+                                            <th>Experience</th>
+                                            <th>Bonus</th>
+                                            <th>Amount</th>
                                         </tr>
+                                    </thead>
+                                    <tbody>
                                         <tr>
-                                            <td class="text-right">Class</td>
-                                            <td class="text-left">{{ ucwords($hero['class']) }}</td>
+                                            <td><b>{{ ucwords($hero['class']) }}</b></td>
+                                            <td>{{ $hero['level'] }}</td>
+                                            <td>{{ $hero['experience'] }} / {{ $hero['next_level_xp'] }}</td>
+                                            <td>{{ ucwords(str_replace('_', ' ', $heroHelper->getPassivePerkType($hero['class']))) }}</td>
+                                            <td>{{ number_format($hero['bonus'], 2) }}%</td>
                                         </tr>
-                                        <tr>
-                                            <td class="text-right">Level</td>
-                                            <td class="text-left">{{ $hero['level'] }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-right">Experience</td>
-                                            <td class="text-left">{{ $hero['experience'] }} / {{ $hero['next_level_xp'] }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-right">{{ ucwords(str_replace('_', ' ', $heroHelper->getPassivePerkType($hero['class']))) }}</td>
-                                            <td class="text-left">{{ number_format($hero['bonus'], 4) }}%</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                        @foreach ($hero['inactive_classes'] ?? [] as $inactiveClass)
+                                            <tr>
+                                                <td>{{ ucwords($inactiveClass['key']) }}</td>
+                                                <td>{{ $inactiveClass['level'] }}</td>
+                                                <td>{{ $inactiveClass['experience'] }}</td>
+                                                <td>{{ ucwords(str_replace('_', ' ', $heroHelper->getPassivePerkType($inactiveClass['key']))) }}</td>
+                                                <td>{{ number_format($inactiveClass['bonus'], 2) }}%</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
                         @endif
 
                         @slot('boxFooter')

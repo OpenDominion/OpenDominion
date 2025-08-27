@@ -13,6 +13,7 @@ use OpenDominion\Services\NotificationService;
  * @property string $name
  * @property string $class
  * @property int $experience
+ * @property array $class_data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
@@ -29,6 +30,10 @@ class Hero extends AbstractModel
         'name',
         'class',
         'experience',
+    ];
+
+    protected $casts = [
+        'class_data' => 'array',
     ];
 
     protected $dates = ['created_at', 'updated_at'];
@@ -126,6 +131,7 @@ class Hero extends AbstractModel
             $previousLevel = $heroCalculator->getExperienceLevel($original['experience']);
             $currentLevel = $heroCalculator->getHeroLevel($this);
             if ($previousLevel != $currentLevel) {
+                // TODO: Update class_data array?
                 $notificationService = app(NotificationService::class);
                 $notificationService->queueNotification('hero_level', [
                     'level' => $currentLevel,

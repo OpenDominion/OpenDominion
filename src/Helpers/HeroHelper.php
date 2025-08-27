@@ -132,16 +132,16 @@ class HeroHelper
         return $this->getClasses()[$class]['perk_type'];
     }
 
-    public function getPassiveHelpString(string $key)
+    public function getPassiveHelpString(string $perkType)
     {
-        $perk = $this->getClasses()[$key]['perk_type'];
-
         $helpStrings = [
             'casualties' => '%+.2f%% casualties',
             'construction_cost' => '%+.2f%% construction platinum cost',
+            'explore_cost' => '%+.2f%% exploring platinum cost',
             'food_production' => '%+.2f%% food production',
             'gem_production' => '%+.2f%% gem production',
             'invest_bonus' => '%+.2f%% castle investment bonus',
+            'max_population' => '%+.2f%% maximum population',
             'military_cost' => '%+.2f%% military training cost',
             'platinum_production' => '%+.2f%% platinum production',
             'tech_production' => '%+.2f%% research point production',
@@ -150,7 +150,7 @@ class HeroHelper
             'wizard_power' => '%+.2f%% wizard power',
         ];
 
-        return $helpStrings[$perk] ?? null;
+        return $helpStrings[$perkType] ?? null;
     }
 
     public function getHeroUpgrades()

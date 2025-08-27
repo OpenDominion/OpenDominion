@@ -11,6 +11,11 @@ use OpenDominion\Models\HeroUpgrade;
 
 class HeroCalculator
 {
+    /**
+     * @var float The percentage of each inactive class bonus that is lost
+     */
+    protected const INACTIVE_CLASS_PENALTY = 0.5;
+
     /** @var HeroHelper */
     protected $heroHelper;
 
@@ -79,11 +84,6 @@ class HeroCalculator
             return 0;
         }
 
-        $heroPerk = $this->heroHelper->getPassivePerkType($dominion->hero->class);
-        if ($heroPerk !== $perkType) {
-            return 0;
-        }
-
         $bonus = $this->getPassiveBonus($dominion->hero, $perkType) / 100;
         $bonus *= $this->getPassiveBonusMultiplier($dominion);
 
@@ -97,14 +97,30 @@ class HeroCalculator
      * @param string $perkType
      * @return float
      */
-    public function getPassiveBonus(Hero $hero, ?string $perkType = null): float
+    public function getPassiveBonus(Hero $hero, string $perkType): float
     {
-        if (!$perkType) {
-            $perkType = $this->heroHelper->getPassivePerkType($hero->class);
-        }
-        $level = $this->getHeroLevel($hero);
+        $isCurrentClass = false;
 
-        return $this->calculatePassiveBonus($perkType, $level);
+        $classes = collect($hero->class_data);
+        $class = $classes->where('perk_type', $perkType)->first();
+        if ($class === null) {
+            $isCurrentClass = $this->heroHelper->getPassivePerkType($hero->class) == $perkType;
+            if (!$isCurrentClass) {
+                return 0;
+            }
+        }
+
+        $multiplier = 1;
+        if ($isCurrentClass || $class['key'] == $hero->class) {
+            // Active Class
+            $level = $this->getHeroLevel($hero);
+        } else {
+            // Inactive Class
+            $level = $this->getExperienceLevel($class['experience']);
+            $multiplier = (1 - $this::INACTIVE_CLASS_PENALTY);
+        }
+
+        return $this->calculatePassiveBonus($perkType, $level) * $multiplier;
     }
 
     /**
@@ -279,12 +295,14 @@ class HeroCalculator
      * @param Hero $hero
      * @return float
      */
-    public function getPassiveDescription(Hero $hero): string
+    public function getPassiveDescription(Hero $hero, ?string $perkType = null): string
     {
-        $perkType = $this->heroHelper->getClasses()[$hero->class]['perk_type'];
+        if ($perkType === null) {
+            $perkType = $this->heroHelper->getPassivePerkType($hero->class);
+        }
         $perkValue = $this->getHeroPerkMultiplier($hero->dominion, $perkType);
         $helpString = sprintf(
-            $this->heroHelper->getPassiveHelpString($hero->class),
+            $this->heroHelper->getPassiveHelpString($perkType),
             number_format($perkValue * 100, 2)
         );
 
