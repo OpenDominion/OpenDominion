@@ -312,6 +312,19 @@ frenzy:
   perks:
     spy_power: 20
     spy_losses: -10
+  active: false
+finders_keepers:
+  name: Finders Keepers
+  category: self
+  cost_mana: 2.5
+  cost_strength: 5
+  duration: 12
+  races:
+    - halfling
+  perks:
+    theft_gains: 10
+    theft_chance: 10
+    theft_strength_cost: -1
 howling:
   name: Howling
   category: self

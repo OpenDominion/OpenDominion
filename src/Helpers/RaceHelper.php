@@ -307,11 +307,11 @@ class RaceHelper
                 break;
             case 'spy_power_defense':
                 $negativeBenefit = false;
-                $description = 'Spy power on defense';
+                $description = 'Defensive spy power';
                 break;
             case 'spy_power_offense':
                 $negativeBenefit = false;
-                $description = 'Spy power on offense';
+                $description = 'Offensive spy power';
                 break;
             case 'spy_strength_recovery':
                 $negativeBenefit = false;

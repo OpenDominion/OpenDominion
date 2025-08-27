@@ -618,7 +618,7 @@ class SpellActionService
         $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa, $dominion->wizard_strength, $target->wizard_strength);
 
         // Spells
-        $successRate -= ($target->getSpellPerkValue('enemy_spell_chance') / 100);
+        $successRate -= $target->getSpellPerkMultiplier('enemy_spell_chance');
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
@@ -686,7 +686,7 @@ class SpellActionService
                     'dominion_id' => $target->id,
                 ])->delete();
             }
-            $energyMirrorChance = ($target->getSpellPerkValue('energy_mirror') / 100);
+            $energyMirrorChance = $target->getSpellPerkMultiplier('energy_mirror');
             if ($energyMirrorChance && random_chance($energyMirrorChance)) {
                 $spellReflected = true;
                 $reflectedBy = $target;

@@ -207,6 +207,7 @@ class EspionageActionService
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;
+                $spyStrengthLost += $dominion->getSpellPerk('theft_strength_cost');
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
                 if ($this->espionageHelper->isWarOperation($operationKey)) {
@@ -426,6 +427,9 @@ class EspionageActionService
 
         $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
+        // Spells
+        $successRate += $this->getSpellPerkMultiplier('theft_chance');
+
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
@@ -596,8 +600,14 @@ class EspionageActionService
             $maxCarried = $this->militaryCalculator->getSpyRatioRaw($dominion) * $this->landCalculator->getTotalLand($dominion) * $constraints['spy_carries'];
         }
 
+        $multiplier = 1;
+
         // Techs
-        $multiplier = (1 + $dominion->getTechPerkMultiplier('theft_gains') + $target->getTechPerkMultiplier('theft_losses'));
+        $multiplier += $dominion->getTechPerkMultiplier('theft_gains');
+        $multiplier += $target->getTechPerkMultiplier('theft_losses');
+
+        // Spells
+        $multiplier += $dominion->getSpellPerkMultiplier('theft_gains');
 
         return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier);
     }
