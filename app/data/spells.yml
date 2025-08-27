@@ -227,14 +227,14 @@ alchemist_flame:
 erosion:
   name: Erosion
   category: self
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   races:
     - lizardfolk
     - merfolk
   perks:
-    auto_rezone_water: 20
+    auto_rezone_water: 25
 blizzard:
   name: Blizzard
   category: self
@@ -367,7 +367,7 @@ regeneration:
   races:
     - troll
   perks:
-    casualties: -25
+    casualties: -30
 parasitic_hunger:
   name: Parasitic Hunger
   category: self

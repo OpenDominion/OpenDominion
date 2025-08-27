@@ -30,11 +30,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Kobold Taskmaster: -50p (from 1350p)
 - Lizardfolk: +25% offensive spy power (was +10% spy power)
 - Lizardfolk Chameleon: counts as 0.15 of a spy (was 0.25 on offense, 0.20 on defense)
+- Lizardfolk: Erosion cost reduced to 2.5x (from 5x), amount increased to 25% (from 20%)
 - Halfling: +25% defensive spy power, removed extra barren population
 - Halfling Master Thief: counts as 0.15 of a spy (was 0.20 on offense, 0.25 on defense)
 - Halfling: Finders Keepers, +10% theft gains, +10% theft success rate, -1 theft strength cost (was Frenzy, +20% spy strength, -10% spy losses)
+- Merfolk: Erosion cost reduced to 2.5x (from 5x), amount increased to 25% (from 20%)
 - Sylvan: +25% defensive wizard power
 - Sylvan Dryad: counts as 0.15 of a wizard (was 0.20 on offense, 0.25 on defense)
+- Troll: Regeneration reduces casualties by 30% (from 25%)
 - Wood Elf: assassin cost -100p
 - Wood Elf Wisp: each unit produces 1 lumber per hour for every 20% forests, max +1 (from 1 per 40% forests)
 - Tech Tree Updates
