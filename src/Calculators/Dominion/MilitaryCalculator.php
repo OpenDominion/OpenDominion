@@ -34,9 +34,6 @@ class MilitaryCalculator
      */
     public const LAND_GEN_RATIO = 1.00;
 
-    /** @var BuildingCalculator */
-    protected $buildingCalculator;
-
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -64,7 +61,6 @@ class MilitaryCalculator
     /**
      * MilitaryCalculator constructor.
      *
-     * @param BuildingCalculator $buildingCalculator
      * @param GovernmentService $governmentService
      * @param HeroCalculator $heroCalculator
      * @param ImprovementCalculator $improvementCalculator
@@ -74,7 +70,6 @@ class MilitaryCalculator
      * @param SpellHelper $spellHelper
      */
     public function __construct(
-        BuildingCalculator $buildingCalculator,
         GovernmentService $governmentService,
         HeroCalculator $heroCalculator,
         ImprovementCalculator $improvementCalculator,
@@ -84,7 +79,6 @@ class MilitaryCalculator
         SpellHelper $spellHelper
     )
     {
-        $this->buildingCalculator = $buildingCalculator;
         $this->governmentService = $governmentService;
         $this->heroCalculator = $heroCalculator;
         $this->improvementCalculator = $improvementCalculator;
@@ -664,19 +658,8 @@ class MilitaryCalculator
         $landType = $landPerkData[0];
         $ratio = (float)$landPerkData[1];
         $max = (float)$landPerkData[2];
-        $constructedOnly = false;
-        //$constructedOnly = $landPerkData[3]; todo: implement for Nox?
         $totalLand = $this->landCalculator->getTotalLand($dominion);
-
-        if (!$constructedOnly)
-        {
-            $landPercentage = ($dominion->{"land_{$landType}"} / $totalLand) * 100;
-        }
-        else
-        {
-            $buildingsForLandType = $this->buildingCalculator->getTotalBuildingsForLandType($dominion, $landType);
-            $landPercentage = ($buildingsForLandType / $totalLand) * 100;
-        }
+        $landPercentage = ($dominion->{"land_{$landType}"} / $totalLand) * 100;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc["{$landType}_percent"])) {
@@ -798,6 +781,15 @@ class MilitaryCalculator
 
     protected function getUnitPowerFromSpellPerk(Dominion $dominion, float $landRatio = null, Unit $unit, string $powerType): float
     {
+        // Special Case for Infernal Command
+        if ($dominion->race->key == 'demon' && $unit->slot == 1 && $powerType == 'offense') {
+            if ($dominion->calc !== null) {
+                return isset($dominion->calc['infernal_command']) ? 0.5 : 0;
+            } else {
+                return $dominion->getSpellPerkValue('offense_unit1');
+            }
+        }
+
         $powerFromSpellPerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
             "{$powerType}_from_spell"
@@ -815,12 +807,8 @@ class MilitaryCalculator
         $spellKey = $powerFromSpellPerk[0];
         $power = (float)$powerFromSpellPerk[1];
 
-        if (isset($dominion->calc['cull_the_weak'])) {
+        if ($this->spellCalculator->isSpellActive($dominion, $spellKey)) {
             $powerFromPerk = $power;
-        } else {
-            if ($this->spellCalculator->isSpellActive($dominion, $spellKey)) {
-                $powerFromPerk = $power;
-            }
         }
 
         return $powerFromPerk;
@@ -846,16 +834,6 @@ class MilitaryCalculator
     protected function getBonusPowerFromPairingPerk(Dominion $dominion, Unit $unit, string $powerType, array $units = null): float
     {
         $pairingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_pairing", null);
-
-        // Special Case for Infernal Command
-        if (
-            ($powerType == 'offense' && $unit->slot == 1) && (
-                $this->spellCalculator->isSpellActive($dominion, 'infernal_command') ||
-                ($dominion->calc !== null && !isset($dominion->calc['invasion']) && isset($dominion->calc['infernal_command']))
-            )
-        ) {
-            $pairingPerkData = [4, 1, 0.75];
-        }
 
         if (!$pairingPerkData) {
             return 0;
@@ -1157,6 +1135,23 @@ class MilitaryCalculator
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor', true));
 
         return rceil($boatsProtected);
+    }
+
+    /**
+     * Determines if the unit needs boats for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param int $slot
+     * @return int
+     */
+    public function getUnitNeedBoats(Dominion $dominion, Unit $unit): bool
+    {
+        // Special Case for Infernal Command
+        if ($dominion->race->key == 'demon' && $unit->slot == 4) {
+            return $dominion->getSpellPerkValue('flying_unit4') == 0;
+        }
+
+        return $unit->need_boat;
     }
 
     /**

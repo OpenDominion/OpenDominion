@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\GuardMembershipService;

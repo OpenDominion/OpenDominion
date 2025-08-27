@@ -134,7 +134,7 @@ class InvadeCalculationService
                 'offense'
             );
             // Calculate boats needed
-            if (isset($units[$unit->slot]) && $unit->need_boat) {
+            if (isset($units[$unit->slot]) && $this->militaryCalculator->getUnitNeedBoats($dominion, $unit)) {
                 $unitsThatNeedBoats += (int)$units[$unit->slot];
             }
         }

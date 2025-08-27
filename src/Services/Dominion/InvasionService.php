@@ -103,7 +103,7 @@ class InvasionService
                 continue;
             }
 
-            if ($unit->need_boat) {
+            if ($this->militaryCalculator->getUnitNeedBoats($dominion, $unit)) {
                 $unitsThatNeedBoats += (int)$units[$unit->slot];
             }
         }

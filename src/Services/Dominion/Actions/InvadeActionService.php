@@ -1174,7 +1174,7 @@ class InvadeActionService
             $this->invasionService->applySpell($target, $dominion, $spell, 9);
         }
 
-        // Corruption from Demonic Pact
+        // Corruption from Infernal Command
         $spell = Spell::active()->firstWhere('key', 'corruption');
         if ($dominion->getSpellPerkValue('apply_corruption')) {
             $this->invasionService->applySpell($dominion, $dominion, $spell, $spell->duration);
@@ -1240,7 +1240,7 @@ class InvadeActionService
                 $unitsThatSinkBoats += (int)$units[$unit->slot];
             }
 
-            if ($unit->need_boat) {
+            if ($this->militaryCalculator->getUnitNeedBoats($dominion, $unit)) {
                 $hours = $this->invasionService->getUnitReturnHoursForSlot($dominion, $unit->slot);
 
                 if (!isset($unitsThatNeedsBoatsByReturnHours[$hours])) {

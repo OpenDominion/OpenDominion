@@ -589,7 +589,7 @@ class WonderActionService
                 continue;
             }
 
-            if ($unit->need_boat) {
+            if ($this->militaryCalculator->getUnitNeedBoats($dominion, $unit)) {
                 $hours = $this->invasionService->getUnitReturnHoursForSlot($dominion, $unit->slot);
 
                 if (!isset($unitsThatNeedsBoatsByReturnHours[$hours])) {

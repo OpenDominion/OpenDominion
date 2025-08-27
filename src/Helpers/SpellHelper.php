@@ -134,7 +134,6 @@ class SpellHelper
             'defense' => '%+g%% defensive power',
             'offense' => '%+g%% offensive power',
             'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+g%%)',
-            'offense_from_pairing_demon' => 'Each Imp gains %+g offense when paired with an Archdemon on attack',
             'apply_corruption' => 'Applies Corruption to yourself after attacking',
             'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
@@ -150,11 +149,14 @@ class SpellHelper
             'upgrade_swordsmen' => '%d%% of surviving Swordsmen return from battle as Spellblades (75%%+ range only)',
             'upgrade_specs' => 'Sacrifice Skeletons and Ghouls to summon Death Knights and Necromancers (2 plus 1 per 1000 acres, hourly)',
 
+            // Unit specific
+            'offense_unit1' => 'Infernal Imps gain %+g offense',
+            'flying_unit4' => 'Archdemons gain flying (no boats needed)',
+
             // Casualties related
             'casualties' => '%d%% casualties',
             'casualties_offense' => '%d%% offensive casualties',
             'casualties_defense' => '%d%% defensive casualties',
-            'casualties_demon' => 'Archdemon gains %+g%% casualties',
 
             // Info ops
             'clear_sight' => 'Reveal status screen',
