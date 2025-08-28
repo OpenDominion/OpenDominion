@@ -24,6 +24,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
  */
 class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 {
+
     /** @var Mock|BuildingCalculator */
     protected $buildingCalculator;
 
@@ -58,8 +59,9 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
+        $this->buildingCalculator = m::mock(BuildingCalculator::class);
+
         $this->sut = m::mock(MilitaryCalculator::class, [
-            $this->buildingCalculator = m::mock(BuildingCalculator::class),
             $this->governmentService = m::mock(GovernmentService::class),
             $this->heroCalculator = m::mock(HeroCalculator::class),
             $this->improvementCalculator = m::mock(ImprovementCalculator::class),
@@ -373,7 +375,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($test['attributes']['slot'])->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type)->andReturn($test['attributes']['perk_value'])->byDefault();
             $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
-            $this->sut->shouldReceive('getWizardRatioRaw')->with($dominion, $test['attributes']['power_type'])->andReturn($test['attributes']['wpa'])->byDefault();
+            $this->sut->shouldReceive('getWizardRatioRaw')->with($dominion)->andReturn($test['attributes']['wpa'])->byDefault();
 
             $this->assertEquals(
                 $test['expected'],
@@ -564,12 +566,18 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
     {
         /** @var Mock|Dominion $dominion */
         $dominion = m::mock(Dominion::class);
+        
+        /** @var Mock|Race $race */
+        $race = m::mock(Race::class);
 
         $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(1000)->byDefault();
         $dominion->shouldReceive('getTechPerkValue')->with('wizard_strength_recovery')->andReturn(1)->byDefault();
         $dominion->shouldReceive('isActive')->andReturn(true)->byDefault();
         $dominion->shouldReceive('getAttribute')->with('wizard_mastery')->andReturn(100)->byDefault();
         $dominion->shouldReceive('getAttribute')->with('wizard_strength')->andReturn(50)->byDefault();
+        $dominion->shouldReceive('getAttribute')->with('resilience')->andReturn(0)->byDefault();
+        $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
+        $race->shouldReceive('getPerkValue')->with('wizard_strength_recovery')->andReturn(0)->byDefault();
 
         $this->assertEquals(5.2, $this->sut->getWizardStrengthRegen($dominion));
     }

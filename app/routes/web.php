@@ -144,9 +144,9 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Heroes
             $router->get('heroes')->uses('Dominion\HeroController@getHeroes')->name('heroes');
             $router->post('heroes')->uses('Dominion\HeroController@postHeroes');
-            $router->get('heroes/retire')->uses('Dominion\HeroController@getRetireHero')->name('heroes.retire');
-            $router->post('heroes/retire')->uses('Dominion\HeroController@postRetireHero');
             $router->post('heroes/create')->uses('Dominion\HeroController@postCreateHero')->name('heroes.create');
+            $router->get('heroes/class')->uses('Dominion\HeroController@getRetireHero')->name('heroes.change-class');
+            $router->post('heroes/class')->uses('Dominion\HeroController@postRetireHero');
             $router->get('heroes/battles')->uses('Dominion\HeroController@getBattles')->name('heroes.battles');
             $router->post('heroes/battles')->uses('Dominion\HeroController@postBattles');
             $router->get('heroes/battles/action')->uses('Dominion\HeroController@getAddCombatAction')->name('heroes.battles.action');

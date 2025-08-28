@@ -90,13 +90,13 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
     public function testPerformOperation_SameSpa_LoseMilitary()
     {
         // Arrange
-        $this->dominion->military_unit3 = 25000;
-        $this->target->military_spies = 5000;
+        $this->dominion->military_unit3 = 20000;
+        $this->target->military_spies = 3000;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(24994, $this->dominion->military_unit3);
+        $this->assertEquals(19997, $this->dominion->military_unit3);
     }
 }

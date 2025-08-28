@@ -72,14 +72,14 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->dominion->resource_mana = 100000;
-        $this->dominion->military_wizards = 5000;
+        $this->dominion->military_wizards = 4000;
         $this->target->military_wizards = 5000;
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'insect_swarm', $this->target);
 
         // Assert
-        $this->assertEquals(4950, $this->dominion->military_wizards);
+        $this->assertEquals(3960, $this->dominion->military_wizards);
     }
 
     public function testCastSpell_MuchLowerWpa_LoseMaxOnePointFivePercent()
@@ -114,14 +114,14 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->dominion->resource_mana = 100000;
-        $this->dominion->military_unit3 = 25000;
-        $this->target->military_wizards = 5000;
+        $this->dominion->military_unit3 = 16000;
+        $this->target->military_wizards = 3000;
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'insect_swarm', $this->target);
 
         // Assert
-        $this->assertEquals(24976, $this->dominion->military_unit3);
+        $this->assertEquals(15989, $this->dominion->military_unit3);
     }
 
     public function testCastSpell_Fireball_NoProtection()

@@ -11,7 +11,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\PrestigeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
-use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -23,6 +23,9 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */
     protected $dominion;
+
+    /** @var Mock|HeroCalculator */
+    protected $heroCalculator;
 
     /** @var Mock|ImprovementCalculator */
     protected $improvementsCalculator;
@@ -56,13 +59,13 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->sut = m::mock(PopulationCalculator::class, [
             $this->app->make(BuildingHelper::class),
+            $this->heroCalculator = m::mock(HeroCalculator::class),
             $this->improvementsCalculator = m::mock(ImprovementCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
             $this->militaryCalculator = m::mock(MilitaryCalculator::class),
             $this->prestigeCalculator = m::mock(PrestigeCalculator::class),
             $this->queueService = m::mock(QueueService::class),
-            $this->spellCalculator = m::mock(SpellCalculator::class),
-            $this->app->make(UnitHelper::class)
+            $this->spellCalculator = m::mock(SpellCalculator::class)
         ])->makePartial();
     }
 
@@ -164,6 +167,10 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         // Mock prestige calculator
         $this->prestigeCalculator->shouldReceive('getPrestigeMultiplier')->with($this->dominion)
             ->andReturn(0.02);
+
+        // Mock hero calculator
+        $this->heroCalculator->shouldReceive('getHeroPerkMultiplier')
+            ->with($this->dominion, 'max_population')->andReturn(0.0);
 
         $result = $this->sut->getMaxPopulationMultiplier($this->dominion);
 
