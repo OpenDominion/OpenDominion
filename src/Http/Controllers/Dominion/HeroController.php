@@ -78,7 +78,7 @@ class HeroController extends AbstractDominionController
         return redirect()->route('dominion.heroes');
     }
 
-    public function getRetireHero(Request $request)
+    public function getChangeClass(Request $request, string $class)
     {
         $heroCalculator = app(HeroCalculator::class);
         $heroHelper = app(HeroHelper::class);
@@ -86,27 +86,43 @@ class HeroController extends AbstractDominionController
         $hero = $this->getSelectedDominion()->hero;
 
         if ($hero === null) {
-            $request->session()->flash('alert-warning', 'You do not have a hero to retire.');
+            $request->session()->flash('alert-warning', 'You do not have a hero to change class.');
             return redirect()->back();
         }
 
-        return view('pages.dominion.retire', compact(
+        // Validate the target class exists
+        $heroClasses = $this->heroHelper->getClasses()->keyBy('key');
+        $targetClass = $heroClasses[$class] ?? null;
+        if ($targetClass === null) {
+            $request->session()->flash('alert-danger', 'Invalid hero class selected.');
+            return redirect()->route('dominion.heroes');
+        }
+
+        // Check cooldown
+        if (!$heroCalculator->canChangeClass($hero)) {
+            $hoursRemaining = $heroCalculator->hoursUntilClassChange($hero);
+            $request->session()->flash('alert-warning', "You cannot change class for another {$hoursRemaining} hours.");
+            return redirect()->route('dominion.heroes');
+        }
+
+        return view('pages.dominion.change-class', compact(
             'heroCalculator',
             'heroHelper',
-            'hero'
+            'hero',
+            'targetClass'
         ));
     }
 
-    public function postRetireHero(HeroCreateActionRequest $request)
+    public function postChangeClass(HeroCreateActionRequest $request, string $class)
     {
         $dominion = $this->getSelectedDominion();
         $heroActionService = app(HeroActionService::class);
 
         try {
-            $result = $heroActionService->retire(
+            $result = $heroActionService->changeClass(
                 $dominion,
                 $request->get('name'),
-                $request->get('class')
+                $class
             );
         } catch (GameException $e) {
             return redirect()->back()

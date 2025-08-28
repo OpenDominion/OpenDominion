@@ -20,7 +20,7 @@ class HistoryService
     public const EVENT_ACTION_TECH = 'tech';
     public const EVENT_ACTION_HERO = 'hero';
     public const EVENT_ACTION_HERO_CREATE = 'created hero';
-    public const EVENT_ACTION_HERO_RETIRE = 'retired hero';
+    public const EVENT_ACTION_HERO_CLASS_CHANGE = 'changed hero class';
     public const EVENT_ACTION_CHANGE_DRAFT_RATE = 'change draft rate';
     public const EVENT_ACTION_TRAIN = 'train';
     public const EVENT_ACTION_RELEASE = 'release';

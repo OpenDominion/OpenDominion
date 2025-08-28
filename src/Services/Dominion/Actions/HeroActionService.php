@@ -162,7 +162,7 @@ class HeroActionService
     }
 
     /**
-     * Does a retire hero action for a Dominion.
+     * Does a change hero class action for a Dominion.
      *
      * @param Dominion $dominion
      * @param string $name
@@ -171,20 +171,24 @@ class HeroActionService
      * @throws LogicException
      * @throws GameException
      */
-    public function retire(Dominion $dominion, string $name, string $class): array
+    public function changeClass(Dominion $dominion, string $name, string $class): array
     {
         $this->guardLockedDominion($dominion);
 
         if ($dominion->heroes->isEmpty()) {
-            throw new GameException('You do not have a hero to retire.');
+            throw new GameException('You do not have a hero to change class.');
         }
 
-        // TODO: Add cooldown
+        // Check cooldown
+        if (!$this->heroCalculator->canChangeClass($dominion->hero)) {
+            $hoursRemaining = $this->heroCalculator->hoursUntilClassChange($dominion->hero);
+            throw new GameException("You cannot change class for another {$hoursRemaining} hours.");
+        }
 
         $heroClasses = $this->heroHelper->getClasses()->keyBy('key');
         $currentHeroClass = $heroClasses[$dominion->hero->class] ?? null;
         if ($currentHeroClass['class_type'] === 'advanced') {
-            throw new GameException('You cannot retire an advanced hero class.');
+            throw new GameException('You cannot change class from an advanced hero class.');
         }
         $selectedClass = $heroClasses[$class] ?? null;
         if ($selectedClass === null) {
@@ -243,17 +247,18 @@ class HeroActionService
                 'class' => $selectedClass['key'],
                 'experience' => $xp,
                 'class_data' => $classData,
+                'last_class_change_at' => now(),
             ]);
 
             $dominion->save([
-                'event' => HistoryService::EVENT_ACTION_HERO_RETIRE,
+                'event' => HistoryService::EVENT_ACTION_HERO_CLASS_CHANGE,
                 'action' => $selectedClass['key']
             ]);
         });
 
         return [
             'message' => sprintf(
-                'Your hero has been retired. You have selected the %s hero.',
+                'Your hero has changed to %s class.',
                 $selectedClass['name']
             )
         ];

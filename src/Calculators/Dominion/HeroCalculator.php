@@ -16,6 +16,11 @@ class HeroCalculator
      */
     protected const INACTIVE_CLASS_PENALTY = 0.5;
 
+    /**
+     * @var int Hours required between class changes
+     */
+    protected const CLASS_CHANGE_COOLDOWN_HOURS = 48;
+
     /** @var HeroHelper */
     protected $heroHelper;
 
@@ -417,5 +422,36 @@ class HeroCalculator
         $newRating = $currentRating + $k * ($result - $expected);
 
         return round($newRating);
+    }
+
+    /**
+     * Check if the hero can change class (not on cooldown)
+     *
+     * @param Hero $hero
+     * @return bool
+     */
+    public function canChangeClass(Hero $hero): bool
+    {
+        if (!$hero->last_class_change_at) {
+            return true;
+        }
+
+        return $hero->last_class_change_at->diffInHours(now()) >= self::CLASS_CHANGE_COOLDOWN_HOURS;
+    }
+
+    /**
+     * Get hours until the hero can change class again
+     *
+     * @param Hero $hero
+     * @return int
+     */
+    public function hoursUntilClassChange(Hero $hero): int
+    {
+        if (!$hero->last_class_change_at) {
+            return 0;
+        }
+
+        $elapsed = $hero->last_class_change_at->diffInHours(now());
+        return max(0, self::CLASS_CHANGE_COOLDOWN_HOURS - $elapsed);
     }
 }

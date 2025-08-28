@@ -14,6 +14,7 @@ use OpenDominion\Services\NotificationService;
  * @property string $class
  * @property int $experience
  * @property array $class_data
+ * @property \Illuminate\Support\Carbon|null $last_class_change_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
@@ -36,7 +37,7 @@ class Hero extends AbstractModel
         'class_data' => 'array',
     ];
 
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at', 'last_class_change_at'];
 
     public function dominion()
     {

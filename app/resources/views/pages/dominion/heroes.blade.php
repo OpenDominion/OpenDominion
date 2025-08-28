@@ -260,9 +260,9 @@
                                                                 <td>{{ $hero->experience }}</td>
                                                                 <td>{{ $heroCalculator->getPassiveDescription($hero) }}</td>
                                                                 <td>
-                                                                    <a href="{{ route('dominion.heroes.retire') }}" class="btn btn-primary btn-xs" disabled>
-                                                                        Select
-                                                                    </a>
+                                                                    <span class="btn btn-primary btn-xs" disabled>
+                                                                        Current
+                                                                    </span>
                                                                 </td>
                                                             </tr>
                                                         @else
@@ -278,9 +278,15 @@
                                                                 <td>{{ $experience }}</td>
                                                                 <td>{{ $heroCalculator->getPassiveDescription($hero, $class['perk_type']) }}</td>
                                                                 <td>
-                                                                    <a href="{{ route('dominion.heroes.retire') }}" class="btn btn-primary btn-xs">
-                                                                        Select
-                                                                    </a>
+                                                                    @if ($heroCalculator->canChangeClass($hero))
+                                                                        <a href="{{ route('dominion.heroes.change-class', $class['key']) }}" class="btn btn-primary btn-xs">
+                                                                            Select
+                                                                        </a>
+                                                                    @else
+                                                                        <span class="btn btn-default btn-xs" disabled title="Class change on cooldown for {{ $heroCalculator->hoursUntilClassChange($hero) }} more hours" data-toggle="tooltip">
+                                                                            Cooldown
+                                                                        </span>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                         @endif
@@ -365,7 +371,11 @@
                     <p>Your hero gains experience and levels up, increasing its class bonus and unlocking new upgrades.</p>
                     <p>Your hero gains 1 XP per acre gained from invasion, 0.25 XP per acre explored, 1-2 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>
-                    <p>You can also <a href="{{ route('dominion.heroes.retire') }}">retire your hero</a> and create another. The new hero will start with XP equal to half that of its predecessor.</p>
+                    <p>You can also change your hero's class. The hero will continue where you left off if you've played this class before, or start at 0 XP if this is a new class.</p>
+                    @if($hero && !$heroCalculator->canChangeClass($hero))
+                        <p><strong>Class Change Cooldown:</strong> {{ $heroCalculator->hoursUntilClassChange($hero) }} hours remaining.</p>
+                    @endif
+                    <p><em>Note: There is a 48-hour cooldown between class changes.</em></p>
                 </div>
             </div>
         </div>
