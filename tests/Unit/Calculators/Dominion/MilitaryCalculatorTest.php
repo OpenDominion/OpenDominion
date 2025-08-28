@@ -566,7 +566,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
     {
         /** @var Mock|Dominion $dominion */
         $dominion = m::mock(Dominion::class);
-        
+
         /** @var Mock|Race $race */
         $race = m::mock(Race::class);
 
