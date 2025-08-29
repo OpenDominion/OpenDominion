@@ -25,8 +25,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dark Elf Adept: counts as 0.15 of a wizard (was 0.25 on offense, 0.20 on defense)
 - Dark Elf Swordsman: now convert 8% of survivors (from 8.5%)
 - Demon: +1 wizard strength recovery per hour
-- Demon Abyssal Fiend: now 0/3 specialist, no perks
 - Demon Archdemon: +15p (from 860p), casualties reduced by 20%
+- Demon Infernal Imp: +20p (from 260p)
+- Demon Abyssal Fiend: now 0/3 specialist, no perks
 - Demon Succubus: now 0/5 elite, +1 DP for every 10% swamps (max +1), charms spies
 - Demon: Infernal Command now increases offense of Imps by 0.5 (was 0.75 when paired) and grants Archdemons flying (was -20% casualties)
 - Demon: Corruption no longer modifies food consumption and Insect Swarm, just -5% platinum production

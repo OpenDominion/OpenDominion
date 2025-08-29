@@ -14,7 +14,7 @@ perks:
 units:
   - name: Infernal Imp
     cost:
-      platinum: 260
+      platinum: 280
       mana: 20
     power:
       offense: 3
