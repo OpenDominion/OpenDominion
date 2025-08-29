@@ -31,6 +31,8 @@ class Hero extends AbstractModel
         'name',
         'class',
         'experience',
+        'class_data',
+        'last_class_change_at',
     ];
 
     protected $casts = [

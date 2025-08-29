@@ -185,19 +185,12 @@ class HeroActionService
         }
 
         $heroClasses = $this->heroHelper->getClasses()->keyBy('key');
-        $currentHeroClass = $heroClasses[$dominion->hero->class] ?? null;
-        if ($currentHeroClass['class_type'] === 'advanced') {
-            throw new GameException('You cannot change class from an advanced hero class.');
-        }
         $selectedClass = $heroClasses[$class] ?? null;
         if ($selectedClass === null) {
             throw new LogicException('Failed to find hero class ' . $class);
         }
 
         if ($selectedClass['class_type'] === 'advanced') {
-            if ($dominion->round->daysInRound() < 5) {
-                throw new GameException('You cannot select an advanced hero class until the 5th day of the round.');
-            }
             if ($dominion->{$selectedClass['requirement_stat']} < $selectedClass['requirement_value']) {
                 throw new GameException('You do not meet the requirements to select this hero class.');
             }
@@ -224,23 +217,28 @@ class HeroActionService
                 }
             }
 
+            // Get previous experience
             $xp = 0;
-            $classData = $dominion->hero->class_data;
-            $existingClassData = collect($classData)->where('key', $selectedClass['key'])->first();
-            if ($existingClassData !== null) {
-                $xp = $existingClassData['experience'];
+            $classData = $dominion->hero->class_data ?? [];
+            if (isset($classData[$selectedClass['key']])) {
+                $xp = $classData[$selectedClass['key']]['experience'];
             }
-            $currentClassData = collect($classData)->where('key', $dominion->hero->class)->first();
-            if ($currentClassData !== null) {
-                $classData[$dominion->hero->class]['experience'] = $dominion->hero->experience;
+
+            // Cap current class XP at minimum for current level (lose excess XP)
+            $cappedExperience = min($dominion->hero->experience, $this->heroCalculator->getCurrentLevelXP($dominion->hero));
+
+            // Store current class state
+            if (isset($classData[$dominion->hero->class])) {
+                $classData[$dominion->hero->class]['experience'] = $cappedExperience;
             } else {
                 $classData[$dominion->hero->class] = [
                     'key' => $dominion->hero->class,
-                    'experience' => $dominion->hero->experience,
+                    'experience' => $cappedExperience,
                     'perk_type' => $this->heroHelper->getPassivePerkType($dominion->hero->class),
                 ];
             }
 
+            // Update current class state
             $dominion->hero()->update([
                 'class' => $selectedClass['key'],
                 'experience' => $xp,

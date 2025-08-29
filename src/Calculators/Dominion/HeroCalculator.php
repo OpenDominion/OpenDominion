@@ -201,6 +201,31 @@ class HeroCalculator
     }
 
     /**
+     * Returns the experience required for a specific level.
+     *
+     * @param int $level
+     * @return int
+     */
+    protected function getXpForLevel(int $level): int
+    {
+        $xpLevels = $this->getExperienceLevels();
+        $levelData = $xpLevels->firstWhere('level', $level);
+        return $levelData ? $levelData['xp'] : 0;
+    }
+
+    /**
+     * Returns the minimum experience required for the hero's current level.
+     *
+     * @param Hero $hero
+     * @return int
+     */
+    public function getCurrentLevelXP(Hero $hero): int
+    {
+        $currentLevel = $this->getHeroLevel($hero);
+        return $this->getXpForLevel($currentLevel);
+    }
+
+    /**
      * Returns the experience required to reach the next level.
      *
      * @param Hero $hero
@@ -208,10 +233,9 @@ class HeroCalculator
      */
     public function getNextLevelXP(Hero $hero): int
     {
-        $level = $this->getHeroLevel($hero);
-        $xpLevels = $this->getExperienceLevels();
-        $nextLevel = $xpLevels->firstWhere('level', $level + 1);
-        return $nextLevel ? $nextLevel['xp'] : 99999;
+        $currentLevel = $this->getHeroLevel($hero);
+        $nextLevel = $currentLevel + 1;
+        return $this->getXpForLevel($nextLevel) ?: 99999;
     }
 
     /**

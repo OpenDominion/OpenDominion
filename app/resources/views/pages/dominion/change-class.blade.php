@@ -15,14 +15,10 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4>{{ $hero->name }} - Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }}</h4>
+                                <h4>{{ $hero->name }} - Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }} - {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP</h4>
                                 <p>Are you sure you want to change your hero class to <strong>{{ $targetClass['name'] }}</strong>?</p>
-                                <!-- <p>You will lose any progress you've made toward the next level.</p>-->
-                                @if($targetClass['class_type'] === 'basic')
-                                    <p>The hero will continue where you left off if you've used this class before, or start at 0 XP if this is a new class.</p>
-                                @else
-                                    <p><strong>Warning:</strong> Advanced classes cannot be changed once selected.</p>
-                                @endif
+                                <p>You will lose any progress you've made toward the next level (<b class="text-red">-{{ $hero->experience - $heroCalculator->getCurrentLevelXP($hero) }} XP</b>).</p>
+                                <p>You will continue where you left off if you've used this class before, or start at 0 XP if not.</p>
                                 <p>Your current <strong>{{ $heroHelper->getClassDisplayName($hero->class) }}</strong> class bonus bonus will be reduced by half while inactive.</p>
                             </div>
                         </div>
@@ -168,12 +164,11 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>You can only have one hero at a time.</p>
-                    <p>Your hero gains experience and levels up, increasing a passive bonus based on its class and unlocking new upgrades.</p>
-                    <p>Your hero gains 1 XP per acre gained from invasion, 1 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.</p>
+                    <p>Your hero gains experience and levels up, increasing its class bonuses and unlocking new upgrades.</p>
+                    <p>Your hero gains 1 XP per acre gained from invasion, 0.25 XP per acre explored, 2-3 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>
-                    <p>You can change your hero class at any time. Any bonuses you've earned on other classes will be halved while inactive.</p>
-                    <p>Advanced hero classes unlock additional upgrades. All hero upgrades are <b>permanent</b>.</p>
+                    <p>You can change your hero class at any time, but you'll lose any progress you've made toward the next level. Any bonuses you've acquired from other classes will be halved while inactive.</p>
+                    <p>Advanced hero classes have special requirements to select and unlock additional upgrades on first use. All hero upgrades are <b>permanent</b>.</p>
                     <p>There is a 48 hour cooldown between class changes.</p>
                 </div>
             </div>
