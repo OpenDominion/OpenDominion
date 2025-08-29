@@ -12,9 +12,10 @@ use OpenDominion\Models\Realm;
 class BountyService
 {
     public const DAILY_RP_LIMIT = 8;
-    public const DAILY_XP_LIMIT = 32;
+    public const DAILY_XP_LIMIT = 8;
     public const REWARD_RESOURCE = 'resource_tech';
     public const REWARD_AMOUNT = 10;
+    public const XP_AMOUNT = 8;
 
     /**
      * Get bounties for a realm
@@ -241,15 +242,15 @@ class BountyService
                         $bountyRewards = [
                             'resource' => static::REWARD_RESOURCE,
                             'amount' => static::REWARD_AMOUNT,
-                            'xp' => 2
+                            'xp' => static::XP_AMOUNT
                         ];
                     } elseif ($bountiesCollected < static::DAILY_XP_LIMIT) {
                         $bountyRewards = [
-                            'xp' => 2
+                            'xp' => static::XP_AMOUNT
                         ];
                     } else {
                         $bountyRewards = [
-                            'xp' => 1
+                            'xp' => 0
                         ];
                     }
                     if ($activeBounty->id == null) {

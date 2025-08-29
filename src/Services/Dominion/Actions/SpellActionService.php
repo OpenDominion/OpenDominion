@@ -200,7 +200,7 @@ class SpellActionService
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
             } elseif ($this->spellHelper->isInfoOpSpell($spell)) {
-                $xpGain = 2;
+                $xpGain = 3;
                 $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $wizardStrengthLost = 1;
@@ -260,7 +260,7 @@ class SpellActionService
                         $bountyRewardString = '';
                         $rewards = $result['bounty'];
                         if (isset($rewards['xp']) && $rewards['xp']) {
-                            $xpGain *= $rewards['xp'];
+                            $xpGain = max($xpGain, $rewards['xp']);
                         }
                         if (isset($rewards['resource']) && isset($rewards['amount'])) {
                             $dominion->{$rewards['resource']} += $rewards['amount'];

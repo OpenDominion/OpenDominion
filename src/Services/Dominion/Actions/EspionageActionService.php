@@ -193,7 +193,7 @@ class EspionageActionService
             $xpGain = 0;
 
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $xpGain = 1;
+                $xpGain = 2;
                 $spyStrengthLost = 2;
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $spyStrengthLost = 1;
@@ -239,7 +239,7 @@ class EspionageActionService
                     $bountyRewardString = '';
                     $rewards = $result['bounty'];
                     if (isset($rewards['xp']) && $rewards['xp']) {
-                        $xpGain *= $rewards['xp'];
+                        $xpGain = max($xpGain, $rewards['xp']);
                     }
                     if (isset($rewards['resource']) && isset($rewards['amount'])) {
                         $dominion->{$rewards['resource']} += $rewards['amount'];
