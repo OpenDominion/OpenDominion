@@ -19,7 +19,7 @@ class HeroCalculator
     /**
      * @var int Hours required between class changes
      */
-    protected const CLASS_CHANGE_COOLDOWN_HOURS = 48;
+    public const CLASS_CHANGE_COOLDOWN_HOURS = 96;
 
     /** @var HeroHelper */
     protected $heroHelper;

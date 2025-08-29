@@ -169,7 +169,7 @@
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>
                     <p>You can change your hero class at any time, but you'll lose any progress you've made toward the next level. Any bonuses you've acquired from other classes will be halved while inactive.</p>
                     <p>Advanced hero classes have special requirements to select and unlock additional upgrades on first use. All hero upgrades are <b>permanent</b>.</p>
-                    <p>There is a 48 hour cooldown between class changes.</p>
+                    <p>There is a {{ \OpenDominion\Calculators\Dominion\HeroCalculator::CLASS_CHANGE_COOLDOWN_HOURS }} hour cooldown between class changes.</p>
                 </div>
             </div>
         </div>
