@@ -2,7 +2,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">{{ $race->name }}</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="box-body">
             <div class="row">
                 <div class="col-md-4">
                     <img class="img-responsive" style="padding: 0 10px 10px 10px;" src="https://s3.us-east-2.amazonaws.com/dominion.opendominion.net/images/races/{{ $race->key }}.png" />
@@ -93,46 +93,48 @@
                     {{-- Military Units --}}
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Military Units</h4>
 
-                    <table class="table table-striped">
-                        <colgroup>
-                            <col width="200px">
-                            <col width="50px">
-                            <col width="50px">
-                            <col>
-                            <col width="100px">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Unit</th>
-                                <th class="text-center">OP</th>
-                                <th class="text-center">DP</th>
-                                <th>Perks</th>
-                                <th class="text-center">Cost</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($race->units as $unit)
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <colgroup>
+                                <col width="200px">
+                                <col width="50px">
+                                <col width="50px">
+                                <col>
+                                <col width="100px">
+                            </colgroup>
+                            <thead>
                                 <tr>
-                                    <td>
-                                        {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
-                                        {{ $unit->name }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $unit->power_offense }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $unit->power_defense }}
-                                    </td>
-                                    <td>
-                                        {!! $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) !!}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $unitHelper->getUnitCostString($unit) }}
-                                    </td>
+                                    <th>Unit</th>
+                                    <th class="text-center">OP</th>
+                                    <th class="text-center">DP</th>
+                                    <th>Perks</th>
+                                    <th class="text-center">Cost</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($race->units as $unit)
+                                    <tr>
+                                        <td>
+                                            {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
+                                            {{ $unit->name }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $unit->power_offense }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $unit->power_defense }}
+                                        </td>
+                                        <td>
+                                            {!! $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) !!}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $unitHelper->getUnitCostString($unit) }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
