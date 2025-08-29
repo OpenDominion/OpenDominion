@@ -99,6 +99,9 @@ class AutomationService
                 // Skip hours that have already been completed
                 if ($hour >= $currentHour) {
                     if ($hour == 0) {
+                        if (!isset($actions[0])) {
+                            continue;
+                        }
                         $this->lastAction = $actions[0];
                         $this->lastHour = 0;
                         DB::transaction(function () use ($dominion, $actions) {
