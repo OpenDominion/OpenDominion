@@ -222,8 +222,11 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
             $minimumXp = $this->heroCalculator->getCurrentLevelXP($hero);
 
             // Assert
-            $this->assertEquals($testCase['expectedMinimum'], $minimumXp,
-                "Hero with {$testCase['xp']} XP should have minimum of {$testCase['expectedMinimum']} for current level");
+            $this->assertEquals(
+                $testCase['expectedMinimum'],
+                $minimumXp,
+                "Hero with {$testCase['xp']} XP should have minimum of {$testCase['expectedMinimum']} for current level"
+            );
         }
     }
 
@@ -251,8 +254,11 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
             $nextLevelXp = $this->heroCalculator->getNextLevelXP($hero);
 
             // Assert
-            $this->assertEquals($testCase['expectedNext'], $nextLevelXp,
-                "Hero with {$testCase['xp']} XP should need {$testCase['expectedNext']} XP for next level");
+            $this->assertEquals(
+                $testCase['expectedNext'],
+                $nextLevelXp,
+                "Hero with {$testCase['xp']} XP should need {$testCase['expectedNext']} XP for next level"
+            );
         }
     }
 }
