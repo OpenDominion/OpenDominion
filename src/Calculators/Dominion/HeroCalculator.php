@@ -460,6 +460,10 @@ class HeroCalculator
             return true;
         }
 
+        if (!$hero->dominion->round->hasStarted()) {
+            return true;
+        }
+
         return $this->hoursUntilClassChange($hero) == 0;
     }
 

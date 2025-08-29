@@ -144,7 +144,8 @@ class HeroActionService
         DB::transaction(function () use ($dominion, $name, $selectedClass) {
             $dominion->heroes()->create([
                 'name' => $name,
-                'class' => $selectedClass['key']
+                'class' => $selectedClass['key'],
+                'last_class_change_at' => $dominion->round->hasStarted() ? now() : $dominion->round->start_date
             ]);
 
             $dominion->save([
