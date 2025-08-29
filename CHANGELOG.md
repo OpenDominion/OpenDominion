@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Inactive classes still provide 50% of their bonus
   - You can only change classes once every 48 hours
   - Hero upgrades are permanent and not reset when switching classes
+- Shrines now increase XP gains by 25% per 1% owned, up to a maximum of 200% at 8% owned (was 5%, max 50% at 10% owned) and hero bonuses by 25% per 1% owned, up to a maximum of 200% at 8% owned (was 50%, max 500% at 10% owned)
 - Masonries now reduces the maximum amount of damage that can be dealt to your castle by Lightning Bolt by 5% per 1% owned, up to a maximum of 50% at 10% owned (lightning vulnerability from 20% to 10%)
 - Tech cost now increased by 50 for each unlock (from 100)
 - Prestige penalty for hitting bots max increased to -60% (from -50%)

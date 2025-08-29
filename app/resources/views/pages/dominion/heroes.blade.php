@@ -109,14 +109,6 @@
                                     <div class="text-center">
                                         {{ $heroCalculator->getPassiveDescription($hero) }}
                                     </div>
-                                    @if ($heroCalculator->getPassiveBonusMultiplier($selectedDominion) > 1)
-                                        <div class="text-center">
-                                            {{ number_format($heroCalculator->getHeroPerkMultiplier($selectedDominion, $perkType) * 100, 2) }}%
-                                            after
-                                            {{ ($heroCalculator->getPassiveBonusMultiplier($selectedDominion) - 1) * 100 }}%
-                                            modifier
-                                        </div>
-                                    @endif
                                     <div class="row" style="margin-top: 10px;">
                                         <div class="col-sm-12 col-md-6">
                                             <div class="text-center text-bold" style="margin: 7px 0 -8px 0;">
@@ -239,7 +231,6 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h4>Hero Bonuses</h4>
-                                    {{ $heroCalculator->hoursUntilClassChange($hero) }}
                                     <div class="table-responsive">
                                         <table class="table table-condensed table-striped">
                                             <thead>
@@ -285,6 +276,13 @@
                                                         </tr>
                                                     @endif
                                                 @endforeach
+                                                @if ($heroCalculator->getPassiveBonusMultiplier($selectedDominion) > 1)
+                                                    <tr>
+                                                        <td colspan=5>
+                                                            Your hero bonuses are being increased by {{ number_format($heroCalculator->getPassiveBonusMultiplier($selectedDominion) - 1, 4) * 100 }}%
+                                                        </td>
+                                                    </tr>
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
