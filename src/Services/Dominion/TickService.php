@@ -657,9 +657,12 @@ class TickService
             }
         }, 5);
 
-        if ($dominion->protection_type == 'quick' && $ticks->count() == 2) {
+        if ($dominion->protection_type == 'quick' && $ticks->count() <= 2) {
             // Add incoming land for quick start
-            $this->queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
+            $dominion->refresh();
+            if (!$this->queueService->getQueueTotal('exploration', $dominion)) {
+                $this->queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
+            }
         }
 
         return true;
