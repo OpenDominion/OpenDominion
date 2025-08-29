@@ -27,7 +27,7 @@ class HeroController extends AbstractDominionController
         $heroHelper = app(HeroHelper::class);
 
         $hero = $this->getSelectedDominion()->hero;
-        $heroClassData = collect($hero?->class_data ?? [])->keyBy('key');
+        $heroClassData = collect($hero !== null ? $hero->class_data : [])->keyBy('key');
 
         return view('pages.dominion.heroes', compact(
             'heroCalculator',
