@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Sylvan Centaur: +10p (from 940p)
 - Troll: Regeneration reduces casualties by 30% (from 25%)
 - Wood Elf: assassin cost -100p
+- Wood Elf Druid: -25p (from 1075p)
 - Wood Elf Wisp: each unit produces 1 lumber per hour for every 20% forests, max +1 (from 1 per 40% forests)
 - Heroes
   - Anti Magic Sigils (item): -2 enemy spell duration (Level 6)

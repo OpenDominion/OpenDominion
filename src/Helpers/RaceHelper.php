@@ -335,11 +335,11 @@ class RaceHelper
                 break;
             case 'wizard_power_defense':
                 $negativeBenefit = false;
-                $description = 'Wizard power on defense';
+                $description = 'Defensive wizard power';
                 break;
             case 'wizard_power_offense':
                 $negativeBenefit = false;
-                $description = 'Wizard power on offense';
+                $description = 'Offensive wizard power';
                 break;
             case 'wizard_strength_recovery':
                 $negativeBenefit = false;
