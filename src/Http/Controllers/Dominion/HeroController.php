@@ -124,7 +124,7 @@ class HeroController extends AbstractDominionController
                 $class
             );
         } catch (GameException $e) {
-            return redirect()->back()
+            return redirect()->route('dominion.heroes')
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
