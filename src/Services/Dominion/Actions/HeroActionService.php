@@ -165,13 +165,12 @@ class HeroActionService
      * Does a change hero class action for a Dominion.
      *
      * @param Dominion $dominion
-     * @param string $name
      * @param string $class
      * @return array
      * @throws LogicException
      * @throws GameException
      */
-    public function changeClass(Dominion $dominion, string $name, string $class): array
+    public function changeClass(Dominion $dominion, string $class): array
     {
         $this->guardLockedDominion($dominion);
 
@@ -182,7 +181,7 @@ class HeroActionService
         // Check cooldown
         if (!$this->heroCalculator->canChangeClass($dominion->hero)) {
             $hoursRemaining = $this->heroCalculator->hoursUntilClassChange($dominion->hero);
-            throw new GameException("You cannot change class for another {$hoursRemaining} hours.");
+            throw new GameException("You cannot change your hero class for another {$hoursRemaining} hours.");
         }
 
         $heroClasses = $this->heroHelper->getClasses()->keyBy('key');
@@ -204,7 +203,7 @@ class HeroActionService
             }
         }
 
-        DB::transaction(function () use ($dominion, $name, $selectedClass) {
+        DB::transaction(function () use ($dominion, $selectedClass) {
             // TODO: Consider deleting upgrades for Scion?
             // HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();
 
@@ -243,7 +242,6 @@ class HeroActionService
             }
 
             $dominion->hero()->update([
-                'name' => $name,
                 'class' => $selectedClass['key'],
                 'experience' => $xp,
                 'class_data' => $classData,

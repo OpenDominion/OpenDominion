@@ -15,7 +15,7 @@ class AddClassDataToHeroesTable extends Migration
     {
         Schema::table('heroes', function (Blueprint $table) {
             $table->text('class_data')->nullable()->after('experience');
-            $table->timestamp('last_class_change_at')->after('class_data');
+            $table->timestamp('last_class_change_at')->after('class_data')->nullable();
         });
     }
 

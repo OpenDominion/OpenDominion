@@ -91,7 +91,7 @@ class HeroController extends AbstractDominionController
         }
 
         // Validate the target class exists
-        $heroClasses = $this->heroHelper->getClasses()->keyBy('key');
+        $heroClasses = $heroHelper->getClasses()->keyBy('key');
         $targetClass = $heroClasses[$class] ?? null;
         if ($targetClass === null) {
             $request->session()->flash('alert-danger', 'Invalid hero class selected.');
@@ -101,7 +101,7 @@ class HeroController extends AbstractDominionController
         // Check cooldown
         if (!$heroCalculator->canChangeClass($hero)) {
             $hoursRemaining = $heroCalculator->hoursUntilClassChange($hero);
-            $request->session()->flash('alert-warning', "You cannot change class for another {$hoursRemaining} hours.");
+            $request->session()->flash('alert-warning', "You cannot change your hero class for another {$hoursRemaining} hours.");
             return redirect()->route('dominion.heroes');
         }
 
@@ -113,7 +113,7 @@ class HeroController extends AbstractDominionController
         ));
     }
 
-    public function postChangeClass(HeroCreateActionRequest $request, string $class)
+    public function postChangeClass(Request $request, string $class)
     {
         $dominion = $this->getSelectedDominion();
         $heroActionService = app(HeroActionService::class);
@@ -121,7 +121,6 @@ class HeroController extends AbstractDominionController
         try {
             $result = $heroActionService->changeClass(
                 $dominion,
-                $request->get('name'),
                 $class
             );
         } catch (GameException $e) {

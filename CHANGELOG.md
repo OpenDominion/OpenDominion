@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Changed
+- Updated Hero System
+  - Heroes can now switch between classes
+  - Experience is tracked separately for each class
+  - You can only have one active class at a time
+  - Inactive classes still provide 50% of their bonus
+  - You can only change classes once every 48 hours
+  - Hero upgrades are permanent and not reset when switching classes
 - Masonries now reduces the maximum amount of damage that can be dealt to your castle by Lightning Bolt by 5% per 1% owned, up to a maximum of 50% at 10% owned (lightning vulnerability from 20% to 10%)
 - Tech cost now increased by 50 for each unlock (from 100)
 - Prestige penalty for hitting bots max increased to -60% (from -50%)
@@ -40,18 +47,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Troll: Regeneration reduces casualties by 30% (from 25%)
 - Wood Elf: assassin cost -100p
 - Wood Elf Wisp: each unit produces 1 lumber per hour for every 20% forests, max +1 (from 1 per 40% forests)
-- Tech Tree Updates
+- Heroes
+  - Anti Magic Sigils (item): -2 enemy spell duration (Level 6)
+  - Farmer (class): +1.5% food production per level
+  - Scholar now requires 7,500 research points to unlock (from 10,000)
+  - Scholar now increases max population by 0.2% per level (was -0.75% tech cost per level)
+  - Scion now requires 500 prestige to unlock (from 350)
+  - Scion now reduces explore cost by 0.25% per level (was 1% spy/wizard power per level)
+- Techs
   - Anti Magic Sigils removed
   - Arcane Bloodlines: -20% cost of wizards (was -15% wizards/archmages, -5% spies/assassins)
   - Centralized Intelligence: -20% cost of spies (was -15% spy/assassin, -5% wizards/archmages)
   - Night Watch moves into Anti Magic Sigils former position
   - Shadow Academy added into Night Watch former position
   - Shadow Academy: -20% cost of assassins/archmages
-- Hero Updates
-  - Anti Magic Sigils (item): -2 enemy spell duration (Level 6)
-  - Farmer (class): +1% food production per level
-  - Scholar now increases max population by 0.2% per level (was -0.75% tech cost per level)
-  - Scion now reduces explore cost by 0.25% per level (was 1% spy/wizard power per level)
 
 ## [1.46.0] - 2025-08-03
 ### Added

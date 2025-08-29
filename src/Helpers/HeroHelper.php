@@ -49,7 +49,7 @@ class HeroHelper
                 'key' => 'farmer',
                 'class_type' => 'basic',
                 'perk_type' => 'food_production',
-                'coefficient' => 1,
+                'coefficient' => 1.5,
                 'icon' => 'ra-sprout'
             ],
             [
@@ -85,7 +85,7 @@ class HeroHelper
                 'perks' => ['pursuit_of_knowledge'],
                 'icon' => 'ra-graduate-cap',
                 'requirement_stat' => 'resource_tech',
-                'requirement_value' => 10000
+                'requirement_value' => 7500
             ],
             [
                 'name' => 'Scion',
@@ -96,7 +96,7 @@ class HeroHelper
                 'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
                 'icon' => 'ra-ankh',
                 'requirement_stat' => 'prestige',
-                'requirement_value' => 350
+                'requirement_value' => 500
             ]
         ])->keyBy('key');
     }

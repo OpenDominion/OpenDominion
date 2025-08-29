@@ -432,11 +432,11 @@ class HeroCalculator
      */
     public function canChangeClass(Hero $hero): bool
     {
-        if (!$hero->last_class_change_at) {
+        if ($hero->last_class_change_at === null) {
             return true;
         }
 
-        return $hero->last_class_change_at->diffInHours(now()) >= self::CLASS_CHANGE_COOLDOWN_HOURS;
+        return $this->hoursUntilClassChange($hero) == 0;
     }
 
     /**
@@ -447,11 +447,14 @@ class HeroCalculator
      */
     public function hoursUntilClassChange(Hero $hero): int
     {
-        if (!$hero->last_class_change_at) {
-            return 0;
+        if ($hero->last_class_change_at !== null) {
+            $changeDate = $hero->last_class_change_at->copy()->addHours(self::CLASS_CHANGE_COOLDOWN_HOURS);
+
+            if ($changeDate > now()->startOfHour()) {
+                return $changeDate->diffInHours(now()->startOfHour());
+            }
         }
 
-        $elapsed = $hero->last_class_change_at->diffInHours(now());
-        return max(0, self::CLASS_CHANGE_COOLDOWN_HOURS - $elapsed);
+        return 0;
     }
 }

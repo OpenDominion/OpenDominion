@@ -238,63 +238,56 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    @if ($hero->class_data)
-                                        <h4>Hero Bonuses</h4>
-                                        <div class="table-responsive">
-                                            <table class="table table-condensed table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Class Name</th>
-                                                        <th>Level</th>
-                                                        <th>XP</th>
-                                                        <th>Current Bonus</th>
-                                                        <th>Switch Class</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($heroHelper->getClasses() as $class)
-                                                        @if ($hero->class == $class['key'])
-                                                            <tr class="active">
-                                                                <td>{{ $heroHelper->getClassDisplayName($hero->class) }}</td>
-                                                                <td>{{ $heroCalculator->getHeroLevel($hero) }}</td>
-                                                                <td>{{ $hero->experience }}</td>
-                                                                <td>{{ $heroCalculator->getPassiveDescription($hero) }}</td>
-                                                                <td>
-                                                                    <span class="btn btn-primary btn-xs" disabled>
-                                                                        Current
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
-                                                        @else
-                                                            @php
-                                                                $data = array_get($heroClassData, $class['key'], []);
-                                                                $key = array_get($data, 'key', $class['key']);
-                                                                $level = array_get($data, 'level', null);
-                                                                $experience = array_get($data, 'experience', 0);
-                                                            @endphp
-                                                            <tr>
-                                                                <td>{{ $heroHelper->getClassDisplayName($key) }}</td>
-                                                                <td>{{ $level ?? $heroCalculator->getExperienceLevel($experience) }}</td>
-                                                                <td>{{ $experience }}</td>
-                                                                <td>{{ $heroCalculator->getPassiveDescription($hero, $class['perk_type']) }}</td>
-                                                                <td>
-                                                                    @if ($heroCalculator->canChangeClass($hero))
-                                                                        <a href="{{ route('dominion.heroes.change-class', $class['key']) }}" class="btn btn-primary btn-xs">
-                                                                            Select
-                                                                        </a>
-                                                                    @else
-                                                                        <span class="btn btn-default btn-xs" disabled title="Class change on cooldown for {{ $heroCalculator->hoursUntilClassChange($hero) }} more hours" data-toggle="tooltip">
-                                                                            Cooldown
-                                                                        </span>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                        @endif
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    @endif
+                                    <h4>Hero Bonuses</h4>
+                                    {{ $heroCalculator->hoursUntilClassChange($hero) }}
+                                    <div class="table-responsive">
+                                        <table class="table table-condensed table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Class Name</th>
+                                                    <th>Level</th>
+                                                    <th>XP</th>
+                                                    <th>Current Bonus</th>
+                                                    <th>Switch Class</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($heroHelper->getClasses() as $class)
+                                                    @if ($hero->class == $class['key'])
+                                                        <tr class="active">
+                                                            <td>{{ $heroHelper->getClassDisplayName($hero->class) }}</td>
+                                                            <td>{{ $heroCalculator->getHeroLevel($hero) }}</td>
+                                                            <td>{{ $hero->experience }}</td>
+                                                            <td>{{ $heroCalculator->getPassiveDescription($hero) }}</td>
+                                                            <td>
+                                                                <span class="btn btn-primary btn-xs" disabled>
+                                                                    Select
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @else
+                                                        @php
+                                                            $data = array_get($heroClassData, $class['key'], []);
+                                                            $key = array_get($data, 'key', $class['key']);
+                                                            $level = array_get($data, 'level', null);
+                                                            $experience = array_get($data, 'experience', 0);
+                                                        @endphp
+                                                        <tr>
+                                                            <td>{{ $heroHelper->getClassDisplayName($key) }}</td>
+                                                            <td>{{ $level ?? $heroCalculator->getExperienceLevel($experience) }}</td>
+                                                            <td>{{ $experience }}</td>
+                                                            <td>{{ $heroCalculator->getPassiveDescription($hero, $class['perk_type']) }}</td>
+                                                            <td>
+                                                                <a href="{{ route('dominion.heroes.change-class', $class['key']) }}" class="btn btn-primary btn-xs" {{ !$heroCalculator->canChangeClass($hero) ? 'disabled' : null }}>
+                                                                    Select
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -371,11 +364,12 @@
                     <p>Your hero gains experience and levels up, increasing its class bonus and unlocking new upgrades.</p>
                     <p>Your hero gains 1 XP per acre gained from invasion, 0.25 XP per acre explored, 1-2 XP per successful info operation (excluding bots), 4 XP per successful black operation, and 6 XP per successful war operation.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>
-                    <p>You can also change your hero's class. The hero will continue where you left off if you've played this class before, or start at 0 XP if this is a new class.</p>
-                    @if($hero && !$heroCalculator->canChangeClass($hero))
-                        <p><strong>Class Change Cooldown:</strong> {{ $heroCalculator->hoursUntilClassChange($hero) }} hours remaining.</p>
+                    <p>You can change your hero class at any time. Any bonuses you've earned on other classes will be halved while inactive.</p>
+                    <p>Advanced hero classes unlock additional upgrades. All hero upgrades are <b>permanent</b>.</p>
+                    <p>There is a 48 hour cooldown between class changes.</p>
+                    @if ($hero && !$heroCalculator->canChangeClass($hero))
+                        <p>You cannot change your hero class for another {{ $heroCalculator->hoursUntilClassChange($hero) }} hours.</p>
                     @endif
-                    <p><em>Note: There is a 48-hour cooldown between class changes.</em></p>
                 </div>
             </div>
         </div>
