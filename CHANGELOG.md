@@ -67,6 +67,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Night Watch moves into Anti Magic Sigils former position
   - Shadow Academy added into Night Watch former position
   - Shadow Academy: -20% cost of assassins/archmages
+  - Siege Weaponry: now increases raid attack damage by 50%
 
 ## [1.46.0] - 2025-08-03
 ### Added

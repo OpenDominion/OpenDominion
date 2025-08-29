@@ -211,12 +211,7 @@ class RaidActionService
             $multiplier = 1;
 
             // Techs
-            $multiplier += $dominion->getTechPerkMultiplier('wonder_damage');
-
-            // Heroes
-            if ($dominion->hero !== null) {
-                $multiplier += $dominion->hero->getPerkMultiplier('wonder_attack_damage');
-            }
+            $multiplier += $dominion->getTechPerkMultiplier('raid_attack_damage');
 
             $damageDealt *= $multiplier;
             $this->attackResult['attacker']['damage'] = $damageDealt;

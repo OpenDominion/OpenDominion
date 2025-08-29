@@ -24,6 +24,7 @@ class TechHelper
             'prestige_gains' => '%+g%% increased prestige gains',
             'boat_capacity' => '%+g boat capacity',
             'barracks_housing' => '%+g barracks housing',
+            'raid_attack_damage' => '%+g%% attack damage in raids',
 
             // Casualties related
             'casualties' => '%+g%% casualties',

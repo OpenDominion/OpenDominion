@@ -62,6 +62,7 @@ techs:
     name: Siege Weaponry
     perks:
       wonder_damage: 20
+      raid_attack_damage: 50
     requires:
       - tech_11_1
       - tech_15_1
