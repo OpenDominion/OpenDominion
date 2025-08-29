@@ -55,6 +55,19 @@ class ScribesController extends AbstractController
         ]);
     }
 
+    public function getAllRaces()
+    {
+        $races = Race::where('playable', true)->orderBy('name')->get();
+
+        return view('pages.scribes.all-races', [
+            'landHelper' => app(LandHelper::class),
+            'unitHelper' => app(UnitHelper::class),
+            'raceHelper' => app(RaceHelper::class),
+            'spellHelper' => app(SpellHelper::class),
+            'races' => $races,
+        ]);
+    }
+
     public function getConstruction()
     {
         $buildingHelper = app(BuildingHelper::class);
