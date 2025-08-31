@@ -4,6 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.46.1] - 2025-08-30
+### Added
+- All Playable Races page
+- Town Crier page for a single dominion
+- Invade link from calculator page that brings across the DP value
+
 ### Changed
 - Updated Hero System
   - Heroes can now switch between classes
@@ -2519,7 +2526,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.46.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.46.1...HEAD
+[1.46.1]: https://github.com/OpenDominion/OpenDominion/compare/1.46.0...1.46.1
 [1.46.0]: https://github.com/OpenDominion/OpenDominion/compare/1.45.1...1.46.0
 [1.45.1]: https://github.com/OpenDominion/OpenDominion/compare/1.45.0...1.45.1
 [1.45.0]: https://github.com/OpenDominion/OpenDominion/compare/1.44.3...1.45.0
