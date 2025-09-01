@@ -194,7 +194,7 @@ class DiscordService
             return $round->discord_guild_id;
         }
 
-        return $this->createDiscordGuild($round);
+        return '';
     }
 
     public function createDiscordGuild(Round $round): string

@@ -11,8 +11,6 @@ overall_difficulty: 1
 home_land_type: forest
 perks:
   max_population: -5
-  hero_bonus: 100
-  tech_cost: 10
   assassin_cost: -100
 units:
   - name: Ranger
@@ -29,7 +27,7 @@ units:
       offense: 0
       defense: 3
     perks:
-      lumber_from_land: forest,20,2 # amount, ratio%, max
+      lumber_from_land: forest,20,1 # amount, ratio%, max
   - name: Mystic
     cost:
       platinum: 1275
