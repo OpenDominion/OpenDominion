@@ -142,7 +142,11 @@ class RoundController extends AbstractController
 
                 switch ($request->get('realm_type')) {
                     case 'random':
-                        $realm = $realmAssignmentService->findRealm($round, $race, $user);
+                        $useDiscord = true;
+                        if ($request->get('discord') == 'no') {
+                            $useDiscord = false;
+                        }
+                        $realm = $realmAssignmentService->findRealm($round, $race, $user, $useDiscord);
                         break;
 
                     case 'join_pack':
