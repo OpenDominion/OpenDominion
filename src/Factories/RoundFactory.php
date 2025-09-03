@@ -23,6 +23,8 @@ class RoundFactory
      * @param int $packSize
      * @param int $playersPerRace
      * @param bool $mixedAlignment
+     * @param int $techVersion
+     * @param string|null $discordGuildId
      * @return Round
      */
     public function create(
@@ -32,7 +34,8 @@ class RoundFactory
         int $packSize,
         int $playersPerRace,
         bool $mixedAlignment,
-        int $techVersion = TechHelper::CURRENT_VERSION
+        int $techVersion = TechHelper::CURRENT_VERSION,
+        ?string $discordGuildId = null
     ): Round {
         $number = ($this->getLastRoundNumber($league) + 1);
         $endDate = (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS);
@@ -62,7 +65,8 @@ class RoundFactory
             'pack_size' => $packSize,
             'players_per_race' => $playersPerRace,
             'mixed_alignment' => $mixedAlignment,
-            'tech_version' => $techVersion
+            'tech_version' => $techVersion,
+            'discord_guild_id' => $discordGuildId
         ]);
 
         // Create special realm for realm assignment and inactives

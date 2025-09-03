@@ -232,6 +232,7 @@ class DominionFactory
 
         if ($protectionType == 'quick') {
             // Add incoming land for quick start
+            $dominion->refresh();
             $queueService = app(QueueService::class);
             $queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
         }

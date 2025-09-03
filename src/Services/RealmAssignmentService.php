@@ -707,7 +707,7 @@ class RealmAssignmentService
         }
 
         // Step 4: Create empty Discord-enabled realms if needed
-        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT ) {
+        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
             foreach (range($this->getRealmCount(), self::ASSIGNMENT_MIN_REALM_COUNT) as $idx) {
                 $realm = new PlaceholderRealm("solo-{$idx}", collect());
                 $this->realms->push($realm);
@@ -1409,11 +1409,18 @@ class RealmAssignmentService
      * @param User $user
      * @return Realm|null
      */
-    public function findRealm(Round $round, Race $race, User $user): ?Realm
+    public function findRealm(Round $round, Race $race, User $user, bool $useDiscord = true): ?Realm
     {
         // Pre-assignment period: use realm 0
         if (now() < $round->start_date->copy()->subHours(static::ASSIGNMENT_HOURS_BEFORE_START)) {
             return $round->realms()->where('number', 0)->first();
+        }
+
+        if (!$useDiscord && !($user->rating > 1800)) {
+            // Filter down to non-Discord realms (those with usediscord = false in settings)
+            return $round->realms->filter(function ($realm) {
+                return $realm->getSetting('usediscord') === false;
+            })->random();
         }
 
         // Get candidate realms with basic filtering

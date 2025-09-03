@@ -25,7 +25,7 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
                              {--mixedAlignment=true : Allows for mixed alignments}
                              {--techVersion= : Select which version of the tech system}
-                             {--discordEnabled=false : Triggers creation of Discord guild for round}';
+                             {--discordGuildId= : Discord guild ID to assign to the round}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 3 days';
@@ -73,7 +73,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         $playersPerRace = $this->option('playersPerRace');
         $mixedAlignments = $this->option('mixedAlignment');
         $techVersion = $this->option('techVersion');
-        $discordEnabled = $this->option('discordEnabled');
+        $discordGuildId = $this->option('discordGuildId');
 
         if ($now && (app()->environment() === 'production')) {
             throw new RuntimeException('Option --now may not be used on production');
@@ -136,12 +136,9 @@ class RoundOpenCommand extends Command implements CommandInterface
             $packSize,
             $playersPerRace,
             $mixedAlignments,
-            $techVersion ?? TechHelper::CURRENT_VERSION
+            $techVersion ?? TechHelper::CURRENT_VERSION,
+            $discordGuildId
         );
-
-        if ($discordEnabled == true) {
-            $this->discordService->getDiscordGuild($round);
-        }
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
     }
