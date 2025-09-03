@@ -20,6 +20,12 @@
                                 <p>You will lose any progress you've made toward the next level (<b class="text-red">-{{ $hero->experience - $heroCalculator->getCurrentLevelXP($hero) }} XP</b>).</p>
                                 <p>You will continue where you left off if you've used this class before, or start at 0 XP if not.</p>
                                 <p>Your current <strong>{{ $heroHelper->getClassDisplayName($hero->class) }}</strong> class bonus bonus will be reduced by half while inactive.</p>
+                                @if ($targetClass['key'] == 'scion')
+                                    <p class="text-red">If you select <b>Scion</b>, the <b>Disarmament</b> upgrade will prevent you from attacking other dominions for the rest of the round, though you will still be able to attack wonders and raids.</p>
+                                @endif
+                                @if ($targetClass['key'] == 'scholar')
+                                    <p class="text-red">If you select <b>Scholar</b>, the <b>Pursuit of Knowledge</b> upgrade will penalize your castle investments for the rest of the round.</p>
+                                @endif
                             </div>
                         </div>
                     </div>
