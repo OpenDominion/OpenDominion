@@ -707,7 +707,7 @@ class RealmAssignmentService
         }
 
         // Step 4: Create empty Discord-enabled realms if needed
-        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT ) {
+        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
             foreach (range($this->getRealmCount(), self::ASSIGNMENT_MIN_REALM_COUNT) as $idx) {
                 $realm = new PlaceholderRealm("solo-{$idx}", collect());
                 $this->realms->push($realm);
