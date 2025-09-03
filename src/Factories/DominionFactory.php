@@ -230,18 +230,18 @@ class DominionFactory
             $dominion->ruler_name = $rulerName;
         }
 
+        $dominion->updated_at = now();
+        $dominion->save([
+            'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART,
+            'action' => $protectionType
+        ]);
+
         if ($protectionType == 'quick') {
             // Add incoming land for quick start
             $dominion->refresh();
             $queueService = app(QueueService::class);
             $queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
         }
-
-        $dominion->updated_at = now();
-        $dominion->save([
-            'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART,
-            'action' => $protectionType
-        ]);
     }
 
     /**
