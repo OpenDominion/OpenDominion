@@ -30,6 +30,9 @@
                                     @else
                                         <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($raid->start_date) }} ago
                                     @endif
+                                    <br/>
+                                    <i class="fa fa-calendar"></i>
+                                    Day {{ $selectedDominion->round->daysInRound($raid->start_date) }} - {{ $selectedDominion->round->daysInRound($raid->end_date) }}
                                 </div>
                             </div>
 
