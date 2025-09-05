@@ -14,7 +14,7 @@ class HeroCalculator
     /**
      * @var float The percentage of each inactive class bonus that is lost
      */
-    protected const INACTIVE_CLASS_PENALTY = 0.5;
+    public const INACTIVE_CLASS_PENALTY = 0.5;
 
     /**
      * @var int Hours required between class changes
@@ -393,6 +393,10 @@ class HeroCalculator
     public function getHeroCombatStats(Hero $hero): array
     {
         $level = $this->getHeroLevel($hero);
+        if ($hero->class_data !== null) {
+            // Combat stats based on highest level class
+            $level = max($level, collect($hero->class_data)->max('level'));
+        }
         $combatStats = $this->getBaseCombatStats($level);
 
         foreach ($combatStats as $stat => $value) {
