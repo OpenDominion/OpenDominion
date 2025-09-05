@@ -339,48 +339,18 @@ class MiscController extends AbstractDominionController
                 throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
             }
 
-            // Dominions still in protection or newly registered are forced
-            // to wait for a short time following OOP to prevent abuse
             if ($dominion->protection_ticks_remaining == 1) {
-                $landCalculator = app(LandCalculator::class);
-                $militaryCalculator = app(MilitaryCalculator::class);
+                $automationService = app(AutomationService::class);
                 $protectionService = app(ProtectionService::class);
 
+                // Dominions still in protection or newly registered are forced
+                // to wait for a short time following OOP to prevent abuse
                 if (!$protectionService->canLeaveProtection($dominion)) {
                     throw new GameException('You cannot leave protection during the first day of the round.');
                 }
 
-                // Queues for next tick
-                $incomingQueue = DB::table('dominion_queue')
-                    ->where('dominion_id', $dominion->id)
-                    ->where('hours', '=', 1)
-                    ->get();
-
-                foreach ($incomingQueue as $row) {
-                    // Temporarily add next hour's resources for accurate calculations
-                    $dominion->{$row->resource} += $row->amount;
-                }
-
-                $totalLand = $landCalculator->getTotalLand($dominion);
-                $defensivePower = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, false, true);
-                $minDefense = $militaryCalculator->getMinimumDefense($dominion);
-
-                foreach ($incomingQueue as $row) {
-                    // Reset current resources
-                    $dominion->{$row->resource} -= $row->amount;
-                }
-
-                if ($defensivePower < $minDefense) {
-                    throw new GameException('You cannot leave protection with less than the minimum defense.');
-                }
-
-                if ($dominion->round->daysInRound() > 1) {
-                    $aiHelper = app(AIHelper::class);
-                    $botDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand));
-                    if ($defensivePower < $botDefense) {
-                        throw new GameException(sprintf('You cannot leave protection at this size with less than %s defense.', $botDefense));
-                    }
-                }
+                // Check minimum defense is met
+                $automationService->checkDefense($dominion);
             }
         } catch (GameException $e) {
             return redirect()->back()

@@ -1381,7 +1381,7 @@ class MilitaryCalculator
             $landSize = $this->landCalculator->getTotalLand($dominion);
         }
 
-        $minimumDefense = 15 * $landSize - 5750;
+        $minimumDefense = 10 * $landSize - 3250;
 
         return max(750, $minimumDefense);
     }

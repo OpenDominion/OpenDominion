@@ -5,8 +5,10 @@ namespace OpenDominion\Services\Dominion;
 use DB;
 use Illuminate\Support\Arr;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Spell;
@@ -115,6 +117,10 @@ class AutomationService
                         // Don't process 'skipped' ticks for Quick Start
                         $actions = [];
                     }
+                    if ($dominion->protection_ticks_remaining == 1) {
+                        // Check minimum defense is met
+                        $this->checkDefense($dominion);
+                    }
                     DB::transaction(function () use ($dominion, $hour, $actions) {
                         foreach ($actions as $action) {
                             $this->lastAction = $action;
@@ -158,6 +164,12 @@ class AutomationService
                 }
             }
         } catch (GameException $e) {
+            if (!isset($this->lastHour)) {
+                $this->lastHour = $dominion->protection_ticks - $dominion->protection_ticks_remaining + 1;
+            }
+            if (!isset($this->lastAction)) {
+                $this->lastAction = ['line' => 0];
+            }
             throw new GameException("Error processing hour {$this->lastHour} line {$this->lastAction['line']} - " . $e->getMessage());
         }
     }
@@ -262,6 +274,44 @@ class AutomationService
     protected function processTrain(Dominion $dominion, array $data)
     {
         $this->trainActionService->train($dominion, $data);
+    }
+
+    public function checkDefense(Dominion $dominion)
+    {
+        $landCalculator = app(LandCalculator::class);
+        $militaryCalculator = app(MilitaryCalculator::class);
+
+        // Queues for next tick
+        $incomingQueue = DB::table('dominion_queue')
+            ->where('dominion_id', $dominion->id)
+            ->where('hours', '=', 1)
+            ->get();
+
+        foreach ($incomingQueue as $row) {
+            // Temporarily add next hour's resources for accurate calculations
+            $dominion->{$row->resource} += $row->amount;
+        }
+
+        $totalLand = $landCalculator->getTotalLand($dominion);
+        $defensivePower = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, false, true);
+        $minDefense = $militaryCalculator->getMinimumDefense($dominion);
+
+        foreach ($incomingQueue as $row) {
+            // Reset current resources
+            $dominion->{$row->resource} -= $row->amount;
+        }
+
+        if ($defensivePower < $minDefense) {
+            throw new GameException(sprintf('You cannot leave protection at this size with less than %s defense.', $minDefense));
+        }
+
+        if ($dominion->round->daysInRound() > 1) {
+            $aiHelper = app(AIHelper::class);
+            $botDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand));
+            if ($defensivePower < $botDefense) {
+                throw new GameException(sprintf('You cannot leave protection at this size with less than %s defense.', $botDefense));
+            }
+        }
     }
 
     public function setConfig(Dominion $dominion, array $data)
