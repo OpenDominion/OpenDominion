@@ -170,13 +170,16 @@ class TickService
                     $race = $races->random();
                 }
                 // Calculate size
-                if ($cnt < $npdCount * 0.6) {
+                if ($cnt < $npdCount * 0.8) {
                     // 70% of NPDs between 400 and 525
                     // Standard distribution centered on 487.5 (650a EG)
                     //   with a standard deviation of 37.5 (600a EG - 700a EG)
-                    // Outliers set to exactly 525 (~10-15% of all NPDs)
+                    // Outliers set to exactly 460 and 525 (~10-15% of all NPDs)
                     $landSize = (int) random_distribution(487.5, 37.5);
-                    if ($landSize < 400 || $landSize > 525) {
+                    if ($landSize < 400) {
+                        $landSize = 460;
+                    }
+                    if ($landSize > 525) {
                         $landSize = 525;
                     }
                 } else {
