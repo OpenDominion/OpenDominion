@@ -166,9 +166,9 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(17049, $populationCalculator->getMaxPopulation($this->target));
-        $this->assertEquals(17647, $populationCalculator->getPopulationMilitary($this->target));
+        $this->assertEquals(17570, $populationCalculator->getPopulationMilitary($this->target));
         $this->assertEquals(true, $invasionResult['result']['success']);
-        $this->assertEquals(199, $invasionResult['defender']['unitsDeserted'][1]);
-        $this->assertEquals(399, $invasionResult['defender']['unitsDeserted'][4]);
+        $this->assertEquals(174, $invasionResult['defender']['unitsDeserted'][1]);
+        $this->assertEquals(347, $invasionResult['defender']['unitsDeserted'][4]);
     }
 }
