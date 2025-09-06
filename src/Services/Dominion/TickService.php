@@ -160,8 +160,8 @@ class TickService
             $names = collect($names_json->dominion_names);
             $races = Race::where('playable', true)->get();
             $realm = $round->realms()->where('number', 0)->first();
-            // Number of NPDs to spawn (60% of the number of real players)
-            $npdCount = round($round->dominions()->count() * 0.6);
+            // Number of NPDs to spawn (80% of the number of real players)
+            $npdCount = round($round->dominions()->count() * 0.8);
             for ($cnt=0; $cnt<$npdCount; $cnt++) {
                 // Select race
                 if ($realm->alignment != 'neutral') {
@@ -170,20 +170,20 @@ class TickService
                     $race = $races->random();
                 }
                 // Calculate size
-                if ($cnt < $npdCount * 0.8) {
-                    // 70% of NPDs between 400 and 525
-                    // Standard distribution centered on 487.5 (650a EG)
-                    //   with a standard deviation of 37.5 (600a EG - 700a EG)
-                    // Outliers set to exactly 460 and 525 (~10-15% of all NPDs)
-                    $landSize = (int) random_distribution(487.5, 37.5);
-                    if ($landSize < 400) {
+                if ($cnt < $npdCount * 0.75) {
+                    // 75% of NPDs between 420 and 525
+                    // Standard distribution centered on 480 (640a EG)
+                    //   with a standard deviation of 45 (580a EG - 700a EG)
+                    // Outliers set to exactly 460 and 525 (~15% of all NPDs)
+                    $landSize = (int) random_distribution(480, 45);
+                    if ($landSize < 420) {
                         $landSize = 460;
                     }
                     if ($landSize > 525) {
                         $landSize = 525;
                     }
                 } else {
-                    // Remaining 30% of NPDs between 526-600
+                    // Remaining 25% of NPDs between 526-600
                     // These spawn with increased defense
                     $landSize = mt_rand(526, 600);
                 }
