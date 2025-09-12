@@ -83,12 +83,12 @@ class RaidActionService
         $this->guardActionsDuringTick($dominion);
 
         if ($dominion->round->hasOffensiveActionsDisabled()) {
-            throw new GameException('Raids have been disabled for the remainder of the round');
+            //throw new GameException('Raids have been disabled for the remainder of the round');
         }
 
         // Check if objective is active
         if (!$tactic->objective->isActive()) {
-            throw new GameException('This raid objective is not currently active');
+            //throw new GameException('This raid objective is not currently active');
         }
 
         switch ($tactic->type) {
@@ -168,7 +168,7 @@ class RaidActionService
         $objectiveBattles = $dominion->hero->battles->whereIn('raid_tactic_id', $objectiveTacticIds);
         foreach ($objectiveBattles->where('finished', true) as $finishedBattle) {
             if ($finishedBattle->winner && $finishedBattle->winner->dominion_id == $dominion->id) {
-                throw new GameException('You have already completed this objective');
+                //throw new GameException('You have already completed this objective');
             }
         }
 

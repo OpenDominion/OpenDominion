@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Helpers;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroCombatant;
@@ -244,24 +245,102 @@ class HeroHelper
         return implode($separator, $perkStrings);
     }
 
-    public function getCombatActions(): array
+    public function getCombatActions(): Collection
     {
-        return [
-            'attack',
-            'defend',
-            'focus',
-            'counter',
-            'recover'
-        ];
+        return collect([
+            'attack' => [
+                'name' => 'Attack',
+                'processor' => 'attack',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => false,
+                'messages' => [
+                    'hit' => '%s deals %s damage to %s.',
+                    'evaded' => '%s deals %s damage, but %s evades, reducing damage to %s.',
+                    'countered' => '%s deals %s damage to %s, who then counters for %s damage.',
+                    'evaded_countered' => '%s deals %s damage, but %s evades, reducing damage to %s, then %s counters for %s damage.'
+                ]
+            ],
+            'defend' => [
+                'name' => 'Defend',
+                'processor' => 'defend',
+                'type' => 'self',
+                'limited' => false,
+                'special' => false,
+                'messages' => [
+                    'defend' => '%s takes a defensive stance.'
+                ]
+            ],
+            'focus' => [
+                'name' => 'Focus',
+                'processor' => 'focus',
+                'type' => 'self',
+                'limited' => true,
+                'special' => false,
+                'messages' => [
+                    'focus' => '%s focuses their energy for the next attack.'
+                ]
+            ],
+            'counter' => [
+                'name' => 'Counter',
+                'processor' => 'counter',
+                'type' => 'self',
+                'limited' => true,
+                'special' => false,
+                'messages' => [
+                    'counter' => '%s prepares to counter-attack.'
+                ]
+            ],
+            'recover' => [
+                'name' => 'Recover',
+                'processor' => 'recover',
+                'type' => 'self',
+                'limited' => true,
+                'special' => false,
+                'messages' => [
+                    'recover' => '%s recovers %s health.'
+                ]
+            ],
+            'forge' => [
+                'name' => 'Forge',
+                'processor' => 'stat',
+                'type' => 'self',
+                'limited' => false,
+                'special' => true,
+                'class' => 'alchemist',
+                'attributes' => [
+                    'stat' => 'attack',
+                    'value' => 2
+                ],
+                'messages' => [
+                    'stat' => '%s increases attack value by 2.'
+                ]
+            ],
+        ]);
     }
 
-    public function getLimitedCombatActions(): array
+    public function getLimitedCombatActions(): Collection
     {
-        return [
-            'focus',
-            'counter',
-            'recover'
-        ];
+        return $this->getCombatActions()
+            ->where('limited', true)
+            ->keys();
+    }
+
+    public function getAvailableCombatActions(HeroCombatant $combatant = null): Collection
+    {
+        $combatActions = $this->getCombatActions();
+
+        return $combatActions->filter(function ($action) use ($combatant) {
+            if (!$action['special']) {
+                return true;
+            }
+            if ($combatant !== null && $combatant->hero !== null) {
+                if (isset($action['class'])) {
+                    return $combatant->hero->class == $action['class'];
+                }
+            }
+            return false;
+        });
     }
 
     public function getCombatStatTooltip(string $stat): string
@@ -290,7 +369,12 @@ class HeroHelper
 
     public function canUseCombatAction(HeroCombatant $combatant, string $action): bool
     {
-        $limitedActions = $this->getLimitedCombatActions();
+        $actionDefinitions = $this->getCombatActions();
+        $actionDef = $actionDefinitions->get($action);
+
+        if ($actionDef === null) {
+            return false;
+        }
 
         $queue = $combatant->actions ?? [];
         if (count($queue) > 0) {
@@ -306,7 +390,7 @@ class HeroHelper
             // TODO: check for double focus without attack in between
         }
 
-        if (in_array($action, $limitedActions) && $action == $lastAction) {
+        if ($actionDef['limited'] && $action == $lastAction) {
             return false;
         }
 

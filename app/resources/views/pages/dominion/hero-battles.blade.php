@@ -60,15 +60,19 @@
                                                     </tbody>
                                                     @if ($battle->combatants->count() > 2 && $playerCombatant->id !== $combatant->id && !$battle->finished)
                                                         <tfoot>
-                                                            <tr>
-                                                                <td colspan=2>
-                                                                    <a class="btn btn-block btn-primary"
-                                                                        href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>'attack']) }}"
-                                                                        {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
-                                                                        Attack
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
+                                                            @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
+                                                                @if ($actionData['type'] == 'hostile')
+                                                                    <tr>
+                                                                        <td colspan=2>
+                                                                            <a class="btn btn-block btn-primary"
+                                                                                href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}"
+                                                                                {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
+                                                                                {{ $actionData['name'] }}
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endif
+                                                            @endforeach
                                                         </tfoot>
                                                     @endif
                                                 </table>
@@ -110,21 +114,21 @@
                                                             Perform/Queue an action
                                                         </label>
                                                         <div>
-                                                            @foreach ($heroHelper->getCombatActions() as $action)
-                                                                @if ($action == 'attack')
+                                                            @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
+                                                                @if ($actionData['type'] == 'hostile')
                                                                     @if ($battle->combatants->count() == 2)
                                                                         @php $target = $battle->combatants->where('id', '!=', $playerCombatant->id)->first(); @endphp
-                                                                        <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$action]) }}">
-                                                                            {{ ucwords($action) }}
+                                                                        <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$actionKey]) }}">
+                                                                            {{ $actionData['name'] }}
                                                                         </a>
                                                                     @endif
-                                                                @elseif (!$heroHelper->canUseCombatAction($playerCombatant, $action) || $playerCombatant->time_bank <= 0)
+                                                                @elseif (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
                                                                     <a class="btn btn-block btn-default" disabled>
-                                                                        {{ ucwords($action) }}
+                                                                        {{ $actionData['name'] }}
                                                                     </a>
                                                                 @else
-                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$action]) }}">
-                                                                        {{ ucwords($action) }}
+                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$actionKey]) }}">
+                                                                        {{ $actionData['name'] }}
                                                                     </a>
                                                                 @endif
                                                             @endforeach

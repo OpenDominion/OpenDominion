@@ -302,7 +302,7 @@ class HeroBattleService
         return true;
     }
 
-    private function determineAction(HeroCombatant $combatant): array
+    public function determineAction(HeroCombatant $combatant): array
     {
         $queuedActions = $combatant->actions ?? [];
 
@@ -310,7 +310,7 @@ class HeroBattleService
             $limitedActions = $this->heroHelper->getLimitedCombatActions();
             $nextAction = array_shift($queuedActions);
             $combatant->actions = $queuedActions;
-            if (!in_array($nextAction['action'], $limitedActions) || $nextAction['action'] != $combatant->last_action) {
+            if (!$limitedActions->contains($nextAction['action']) || $nextAction['action'] != $combatant->last_action) {
                 return $nextAction;
             }
         }
@@ -343,9 +343,9 @@ class HeroBattleService
         return ['action' => $this->randomAction($options, $combatant->last_action), 'target' => null];
     }
 
-    private function randomAction(Collection $options, ?string $last_action): string
+    public function randomAction(Collection $options, ?string $last_action): string
     {
-        $limitedActions = collect($this->heroHelper->getLimitedCombatActions());
+        $limitedActions = $this->heroHelper->getLimitedCombatActions();
 
         foreach ($limitedActions as $action) {
             if ($action == $last_action) {
@@ -356,87 +356,143 @@ class HeroBattleService
         return random_choice_weighted($options->toArray());
     }
 
-    private function processAction(HeroCombatant $combatant, HeroCombatant $target): array
+    public function processAction(HeroCombatant $combatant, HeroCombatant $target): array
     {
-        $damage = 0;
-        $health = 0;
-        $description = '';
+        $actionDefinitions = $this->heroHelper->getAvailableCombatActions($combatant);
+        $actionDef = $actionDefinitions->get($combatant->current_action);
 
-        switch ($combatant->current_action) {
-            case 'attack':
-                $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
-                $evaded = $this->heroCalculator->calculateCombatEvade($target);
-                $combatant->has_focus = false;
-                $countered = false;
-                if ($target->current_action == 'counter') {
-                    $countered = true;
-                    $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
-                    $health = -$counterDamage;
-                }
-                if ($damage > 0 && $evaded) {
-                    $damageEvaded = $damage;
-                    $damage = round($damage / 2);
-                    if ($countered) {
-                        $description = sprintf(
-                            '%s deals %s damage, but %s evades, reducing damage to %s, then %s counters for %s damage.',
-                            $combatant->name,
-                            $damageEvaded,
-                            $target->name,
-                            $damage,
-                            $target->name,
-                            $counterDamage
-                        );
-                    } else {
-                        $description = sprintf(
-                            '%s deals %s damage, but %s evades, reducing damage to %s.',
-                            $combatant->name,
-                            $damageEvaded,
-                            $target->name,
-                            $damage
-                        );
-                    }
-                } else {
-                    if ($countered) {
-                        $description = sprintf(
-                            '%s deals %s damage to %s, who then counters for %s damage.',
-                            $combatant->name,
-                            $damage,
-                            $target->name,
-                            $counterDamage
-                        );
-                    } else {
-                        $description = sprintf(
-                            '%s deals %s damage to %s.',
-                            $combatant->name,
-                            $damage,
-                            $target->name
-                        );
-                    }
-                }
-                break;
-            case 'defend':
-                break;
-            case 'focus':
-                $combatant->has_focus = true;
-                break;
-            case 'counter':
-                break;
-            case 'recover':
-                $health = $this->heroCalculator->calculateCombatHeal($combatant);
+        if ($actionDef === null) {
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => ''
+            ];
+        }
+
+        $processorMethod = 'process' . ucfirst($actionDef['processor']) . 'Action';
+
+        return $this->$processorMethod($combatant, $target, $actionDef);
+    }
+
+    public function processAttackAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
+        $evaded = $this->heroCalculator->calculateCombatEvade($target);
+        $combatant->has_focus = false;
+        $health = 0;
+        $countered = false;
+
+        if ($target->current_action == 'counter') {
+            $countered = true;
+            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
+            $health = -$counterDamage;
+        }
+
+        $messages = $actionDef['messages'];
+
+        if ($damage > 0 && $evaded) {
+            $damageEvaded = $damage;
+            $damage = round($damage / 2);
+            if ($countered) {
                 $description = sprintf(
-                    '%s recovers %s health.',
+                    $messages['evaded_countered'],
                     $combatant->name,
-                    $health
+                    $damageEvaded,
+                    $target->name,
+                    $damage,
+                    $target->name,
+                    $counterDamage
                 );
-                break;
-            default:
-                break;
+            } else {
+                $description = sprintf(
+                    $messages['evaded'],
+                    $combatant->name,
+                    $damageEvaded,
+                    $target->name,
+                    $damage
+                );
+            }
+        } else {
+            if ($countered) {
+                $description = sprintf(
+                    $messages['countered'],
+                    $combatant->name,
+                    $damage,
+                    $target->name,
+                    $counterDamage
+                );
+            } else {
+                $description = sprintf(
+                    $messages['hit'],
+                    $combatant->name,
+                    $damage,
+                    $target->name
+                );
+            }
         }
 
         return [
             'damage' => $damage,
             'health' => $health,
             'description' => $description
+        ];
+    }
+
+    public function processDefendAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($actionDef['messages']['defend'], $combatant->name)
+        ];
+    }
+
+    public function processFocusAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $combatant->has_focus = true;
+
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($actionDef['messages']['focus'], $combatant->name)
+        ];
+    }
+
+    public function processCounterAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($actionDef['messages']['counter'], $combatant->name)
+        ];
+    }
+
+    public function processRecoverAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $health = $this->heroCalculator->calculateCombatHeal($combatant);
+
+        return [
+            'damage' => 0,
+            'health' => $health,
+            'description' => sprintf($actionDef['messages']['recover'], $combatant->name, $health)
+        ];
+    }
+
+    public function processStatAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $stat = $actionDef['attributes']['stat'];
+        $value = $actionDef['attributes']['value'];
+
+        if ($actionDef['type'] == 'self') {
+            $combatant->increment($stat, $value);
+        } else {
+            $target->increment($stat, $value);
+        }
+
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($actionDef['messages']['stat'], $combatant->name)
         ];
     }
 

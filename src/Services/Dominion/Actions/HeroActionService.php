@@ -314,8 +314,8 @@ class HeroActionService
             throw new GameException('You ran out of time and can no longer set manual actions.');
         }
 
-        $validActions = $this->heroHelper->getCombatActions($combatant);
-        if (!in_array($action, $validActions)) {
+        $validActions = $this->heroHelper->getAvailableCombatActions($combatant)->keys();
+        if (!$validActions->contains($action)) {
             throw new GameException('Invalid action.');
         }
 
