@@ -406,10 +406,29 @@ class HeroCalculator
         return $combatStats;
     }
 
+    public function getCombatStat(HeroCombatant $combatant, string $stat): int
+    {
+        if ($stat == 'attack') {
+            // Enrage
+            if (in_array('enrage', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
+                return $combatant->attack + 10;
+            }
+        }
+
+        if ($stat == 'defense') {
+            // Rally
+            if (in_array('rally', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
+                return $combatant->defense + 10;
+            }
+        }
+
+        return $combatant->{$stat};
+    }
+
     public function calculateCombatDamage(HeroCombatant $combatant, HeroCombatant $target, bool $counterAttack = false): int
     {
-        $baseDamage = $combatant->attack;
-        $baseDefense = $target->defense;
+        $baseDamage = $this->getCombatStat($combatant, 'attack');
+        $baseDefense = $this->getCombatStat($target, 'defense');
 
         if ($counterAttack) {
             $baseDamage += $combatant->counter;

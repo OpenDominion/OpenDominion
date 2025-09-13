@@ -116,7 +116,7 @@ class HeroBattleService
         $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
         $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
         $nonPlayerStats['name'] = 'Evil Twin';
-        $nonPlayerStats['strategy'] = 'pirate';
+        $nonPlayerStats['abilities'] = ['enrage'];
         $practiceCombatant = $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
 
         return $heroBattle;
@@ -139,7 +139,8 @@ class HeroBattleService
             'current_health' => $combatStats['health'],
             'time_bank' => 0,
             'automated' => true,
-            'strategy' => $combatStats['strategy'] ?? self::DEFAULT_STRATEGY
+            'strategy' => $combatStats['strategy'] ?? self::DEFAULT_STRATEGY,
+            'abilities' => $combatStats['abilities'] ?? null,
         ]);
     }
 

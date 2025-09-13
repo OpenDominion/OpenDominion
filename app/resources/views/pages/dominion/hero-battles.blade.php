@@ -19,6 +19,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         @foreach ($battle->combatants as $combatant)
+                                            @php $combatantTooltip = $heroHelper->getSpecialAbilitiesTooltip($combatant); @endphp
                                             @if ($combatant->hero_id == $hero->id)
                                                 @php $playerCombatant = $combatant; @endphp
                                                 <input type="hidden" name="combatant" value="{{ $combatant->id }}">
@@ -31,6 +32,9 @@
                                                                 {{ $combatant->name }}
                                                                 @if ($combatant->hero_id == $hero->id)
                                                                     (you)
+                                                                @endif
+                                                                @if ($combatantTooltip)
+                                                                    <i class="fa fa-question-circle" title="{!! $combatantTooltip !!}" data-toggle="tooltip"></i>
                                                                 @endif
                                                             </th>
                                                         </tr>
@@ -47,8 +51,8 @@
                                                                     @if ($stat == 'health')
                                                                         {{ $combatant->current_health }} /
                                                                     @endif
-                                                                    <span class="{{ $combatant->hero_id !== null &&$combatant->{$stat} != $value ? 'text-green' : null }}">
-                                                                        {{ $combatant->{$stat} }}
+                                                                    <span class="{{ $combatant->hero_id !== null && $heroCalculator->getCombatStat($combatant, $stat) != $value ? 'text-green' : null }}">
+                                                                        {{ $heroCalculator->getCombatStat($combatant, $stat) }}
                                                                     </span>
                                                                 </td>
                                                             </tr>

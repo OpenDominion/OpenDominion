@@ -28,6 +28,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property int $time_bank
  * @property bool|null $automated
  * @property string|null $strategy
+ * @property array|null $abilities
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\HeroBattle $battle
@@ -40,7 +41,10 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  */
 class HeroCombatant extends AbstractModel
 {
-    protected $casts = ['actions' => 'array'];
+    protected $casts = [
+        'actions' => 'array',
+        'abilities' => 'array',
+    ];
 
     protected $dates = ['last_action_at', 'created_at', 'updated_at'];
 

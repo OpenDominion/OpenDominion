@@ -380,6 +380,30 @@ class HeroHelper
         return $combatStats[$stat];
     }
 
+    public function getSpecialAbilitiesTooltip(HeroCombatant $combatant): string
+    {
+        $descriptions = [
+            'blade_flurry' => 'Blade Flurry: Attack twice for 75% damage each time.',
+            'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
+            'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
+            'rally' => 'Rally: When at 40 health or less, defense value is increased by 10.',
+        ];
+
+        $combatantDescriptions = [];
+        foreach ($this->getAvailableCombatActions($combatant)->where('special', true)->keys() as $specialAction) {
+            if (isset($descriptions[$specialAction])) {
+                $combatantDescriptions[] = $descriptions[$specialAction];
+            }
+        }
+        foreach ($combatant->abilities ?? [] as $ability) {
+            if (isset($descriptions[$ability])) {
+                $combatantDescriptions[] = $descriptions[$ability];
+            }
+        }
+
+        return implode('<br><br>', $combatantDescriptions);
+    }
+
     public function getCombatStrategies(): Collection
     {
         return collect([
