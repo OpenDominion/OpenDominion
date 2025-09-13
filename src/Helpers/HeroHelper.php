@@ -316,6 +316,23 @@ class HeroHelper
                     'stat' => '%s increases attack value by 2.'
                 ]
             ],
+            'blade_flurry' => [
+                'name' => 'Blade Flurry',
+                'processor' => 'flurry',
+                'type' => 'hostile',
+                'limited' => true,
+                'special' => true,
+                'attributes' => [
+                    'attacks' => 2,
+                    'penalty' => 0.75
+                ],
+                'messages' => [
+                    'hit' => '%s unleashes a blade flurry, striking %s times for %s damage to %s.',
+                    'evaded' => '%s unleashes a blade flurry, striking %s times for %s damage, but %s evades, reducing damage to %s.',
+                    'countered' => '%s unleashes a blade flurry, striking %s times for %s damage to %s, who then counters %s times for %s damage.',
+                    'evaded_countered' => '%s unleashes a blade flurry, striking %s times for %s damage, but %s evades, reducing damage to %s, then %s counters %s times for %s damage.'
+                ]
+            ]
         ]);
     }
 
@@ -329,6 +346,11 @@ class HeroHelper
     public function getAvailableCombatActions(HeroCombatant $combatant = null): Collection
     {
         $combatActions = $this->getCombatActions();
+
+        if ($combatant->hero_id === null) {
+            // NPCs have access to all actions
+            return $combatActions;
+        }
 
         return $combatActions->filter(function ($action) use ($combatant) {
             if (!$action['special']) {
@@ -358,13 +380,35 @@ class HeroHelper
         return $combatStats[$stat];
     }
 
-    public function getCombatStrategies(): array
+    public function getCombatStrategies(): Collection
     {
-        return [
-            'balanced',
-            'aggressive',
-            'defensive',
-        ];
+        return collect([
+            'balanced' => [
+                'name' => 'Balanced',
+                'type' => 'basic',
+                'options' => ['attack' => 4, 'defend' => 1, 'focus' => 1, 'counter' => 1, 'recover' => 1]
+            ],
+            'aggressive' => [
+                'name' => 'Aggressive',
+                'type' => 'basic',
+                'options' => ['attack' => 5, 'focus' => 3, 'counter' => 1, 'recover' => 1]
+            ],
+            'defensive' => [
+                'name' => 'Defensive',
+                'type' => 'basic',
+                'options' => ['attack' => 3, 'defend' => 1, 'counter' => 1, 'recover' => 1]
+            ],
+            'counter' => [
+                'name' => 'Counter-Heavy',
+                'type' => 'npc',
+                'options' => ['attack' => 3, 'defend' => 1, 'counter' => 3, 'recover' => 1]
+            ],
+            'pirate' => [
+                'name' => 'Pirate',
+                'type' => 'npc',
+                'options' => ['attack' => 2, 'blade_flurry' => 3, 'focus' => 1, 'counter' => 1, 'recover' => 1]
+            ]
+        ]);
     }
 
     public function canUseCombatAction(HeroCombatant $combatant, string $action): bool

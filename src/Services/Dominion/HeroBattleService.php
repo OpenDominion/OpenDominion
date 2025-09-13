@@ -116,6 +116,7 @@ class HeroBattleService
         $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
         $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
         $nonPlayerStats['name'] = 'Evil Twin';
+        $nonPlayerStats['strategy'] = 'pirate';
         $practiceCombatant = $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
 
         return $heroBattle;
@@ -241,10 +242,13 @@ class HeroBattleService
 
         // Perform the actions and persist results
         foreach ($combatants as $combatant) {
+            $actionDefinitions = $this->heroHelper->getAvailableCombatActions($combatant);
+            $actionDef = $actionDefinitions->get($combatant->current_action);
+
             if ($combatant->current_target !== null) {
                 // Use specified target
                 $target = $combatants->where('id', $combatant->current_target)->first();
-            } elseif ($combatant->current_action == 'attack') {
+            } elseif ($actionDef['type'] == 'hostile') {
                 // Attack a random opponent
                 $target = $combatants->where('hero_id', '!=', $combatant->hero_id)->random();
             } else {
@@ -252,7 +256,7 @@ class HeroBattleService
                 $target = $combatant;
             }
 
-            $result = $this->processAction($combatant, $target);
+            $result = $this->processAction($combatant, $target, $actionDef);
 
             $combatant->current_health += $result['health'];
             $target->current_health -= $result['damage'];
@@ -315,20 +319,9 @@ class HeroBattleService
             }
         }
 
-        switch ($combatant->strategy) {
-            case 'aggressive':
-                $options = collect(['attack' => 5, 'focus' => 3, 'counter' => 1, 'recover' => 1]);
-                break;
-            case 'defensive':
-                $options = collect(['attack' => 3, 'defend' => 1, 'counter' => 1, 'recover' => 1]);
-                break;
-            case 'counter':
-                $options = collect(['attack' => 3, 'defend' => 1, 'counter' => 3, 'recover' => 1]);
-                break;
-            default:
-                $options = collect(['attack' => 4, 'defend' => 1, 'focus' => 1, 'counter' => 1, 'recover' => 1]);
-                break;
-        }
+        $strategies = $this->heroHelper->getCombatStrategies();
+        $strategy = $strategies->get($combatant->strategy) ?? $strategies->get('balanced');
+        $options = collect($strategy['options']);
 
         if ($combatant->has_focus) {
             $options->forget('focus');
@@ -356,11 +349,8 @@ class HeroBattleService
         return random_choice_weighted($options->toArray());
     }
 
-    public function processAction(HeroCombatant $combatant, HeroCombatant $target): array
+    public function processAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
     {
-        $actionDefinitions = $this->heroHelper->getAvailableCombatActions($combatant);
-        $actionDef = $actionDefinitions->get($combatant->current_action);
-
         if ($actionDef === null) {
             return [
                 'damage' => 0,
@@ -475,6 +465,79 @@ class HeroBattleService
             'damage' => 0,
             'health' => $health,
             'description' => sprintf($actionDef['messages']['recover'], $combatant->name, $health)
+        ];
+    }
+
+    public function processFlurryAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $attackCount = $actionDef['attributes']['attacks'] ?? 1;
+        $damagePenalty = $actionDef['attributes']['penalty'] ?? 1;
+
+        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target) * $attackCount * $damagePenalty);
+        $evaded = $this->heroCalculator->calculateCombatEvade($target);
+        $combatant->has_focus = false;
+        $health = 0;
+        $countered = false;
+
+        if ($target->current_action == 'counter') {
+            $countered = true;
+            $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, true) * $attackCount);
+            $health = -$counterDamage;
+        }
+
+        $messages = $actionDef['messages'];
+
+        if ($damage > 0 && $evaded) {
+            $damageEvaded = $damage;
+            $damage = round($damage / 2);
+            if ($countered) {
+                $description = sprintf(
+                    $messages['evaded_countered'],
+                    $combatant->name,
+                    $attackCount,
+                    $damageEvaded,
+                    $target->name,
+                    $damage,
+                    $target->name,
+                    $attackCount,
+                    $counterDamage
+                );
+            } else {
+                $description = sprintf(
+                    $messages['evaded'],
+                    $combatant->name,
+                    $attackCount,
+                    $damageEvaded,
+                    $target->name,
+                    $damage
+                );
+            }
+        } else {
+            if ($countered) {
+                $description = sprintf(
+                    $messages['countered'],
+                    $combatant->name,
+                    $attackCount,
+                    $damage,
+                    $target->name,
+                    $attackCount,
+                    $counterDamage
+                );
+            } else {
+                $description = sprintf(
+                    $messages['hit'],
+                    $combatant->name,
+                    $attackCount,
+                    $damage,
+                    $target->name
+                );
+            }
+        }
+
+        return [
+            'damage' => $damage,
+            'health' => $health,
+            'description' => $description
         ];
     }
 

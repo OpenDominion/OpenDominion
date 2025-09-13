@@ -64,11 +64,17 @@
                                                                 @if ($actionData['type'] == 'hostile')
                                                                     <tr>
                                                                         <td colspan=2>
-                                                                            <a class="btn btn-block btn-primary"
-                                                                                href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}"
-                                                                                {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
-                                                                                {{ $actionData['name'] }}
-                                                                            </a>
+                                                                            @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
+                                                                                <a class="btn btn-block btn-default" disabled>
+                                                                                    {{ $actionData['name'] }}
+                                                                                </a>
+                                                                            @else
+                                                                                <a class="btn btn-block btn-primary"
+                                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}"
+                                                                                    {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
+                                                                                    {{ $actionData['name'] }}
+                                                                                </a>
+                                                                            @endif
                                                                         </td>
                                                                     </tr>
                                                                 @endif
@@ -115,17 +121,17 @@
                                                         </label>
                                                         <div>
                                                             @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
-                                                                @if ($actionData['type'] == 'hostile')
+                                                                @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
+                                                                    <a class="btn btn-block btn-default" disabled>
+                                                                        {{ $actionData['name'] }}
+                                                                    </a>
+                                                                @elseif ($actionData['type'] == 'hostile')
                                                                     @if ($battle->combatants->count() == 2)
                                                                         @php $target = $battle->combatants->where('id', '!=', $playerCombatant->id)->first(); @endphp
                                                                         <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$actionKey]) }}">
                                                                             {{ $actionData['name'] }}
                                                                         </a>
                                                                     @endif
-                                                                @elseif (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                    <a class="btn btn-block btn-default" disabled>
-                                                                        {{ $actionData['name'] }}
-                                                                    </a>
                                                                 @else
                                                                     <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$actionKey]) }}">
                                                                         {{ $actionData['name'] }}
@@ -141,8 +147,8 @@
                                                             Strategy <small>(for turns taken while offline)</small>
                                                         </label>
                                                         <select name="strategy" class="form-control">
-                                                            @foreach ($heroHelper->getCombatStrategies() as $strategy)
-                                                                <option value="{{ $strategy }}" {{ $strategy == $playerCombatant->strategy ? 'selected' : null }}>{{ ucwords($strategy) }}</option>
+                                                            @foreach ($heroHelper->getCombatStrategies()->where('type', 'basic') as $key => $strategy)
+                                                                <option value="{{ $key }}" {{ $strategy == $playerCombatant->strategy ? 'selected' : null }}>{{ $strategy['name'] }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -175,7 +181,8 @@
                                             <tr><td>Turn {{ $turn }}</td></tr>
                                             <tr><td>
                                                 @foreach ($actions as $action)
-                                                    {{ $action->combatant->name }} selected {{ ucwords($action->action) }}.<br/>
+                                                    @php $actionDef = $heroHelper->getCombatActions()->get($action->action); @endphp
+                                                    {{ $action->combatant->name }} selected {{ $actionDef['name'] ?? ucwords($action->action) }}.<br/>
                                                 @endforeach
                                                 @foreach ($actions->where('description', '!=', '') as $action)
                                                     {{ $action->description }}<br/>

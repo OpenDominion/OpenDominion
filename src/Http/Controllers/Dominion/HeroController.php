@@ -215,6 +215,7 @@ class HeroController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $heroActionService = app(HeroActionService::class);
         $heroBattleService = app(HeroBattleService::class);
+        $heroHelper = app(HeroHelper::class);
 
         try {
             $action = $request->get('action');
@@ -234,10 +235,11 @@ class HeroController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
+        $actionDisplay = $heroHelper->getCombatActions()->get($action)['name'];
         if ($turnProcessed) {
-            $request->session()->flash('alert-success', "{$combatant->name} performed {$action}!");
+            $request->session()->flash('alert-success', "{$combatant->name} performed {$actionDisplay}!");
         } else {
-            $request->session()->flash('alert-success', "Queued action for {$combatant->name}: {$action}.");
+            $request->session()->flash('alert-success', "Queued action for {$combatant->name}: {$actionDisplay}.");
         }
         return redirect()->route('dominion.heroes.battles');
     }

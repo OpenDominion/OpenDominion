@@ -72,7 +72,8 @@
                                     <tr><td>Turn {{ $turn }}</td></tr>
                                     <tr><td>
                                         @foreach ($actions as $action)
-                                            {{ $action->combatant->name }} selected {{ ucwords($action->action) }}.<br/>
+                                            @php $actionDef = $heroHelper->getCombatActions()->get($action->action); @endphp
+                                            {{ $action->combatant->name }} selected {{ $actionDef['name'] ?? ucwords($action->action) }}.<br/>
                                         @endforeach
                                         @foreach ($actions->where('description', '!=', '') as $action)
                                             {{ $action->description }}<br/>
