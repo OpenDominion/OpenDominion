@@ -301,13 +301,33 @@ class HeroHelper
                     'recover' => '%s recovers %s health.'
                 ]
             ],
+            'volatile_mixture' => [
+                'name' => 'Volatile Mixture',
+                'processor' => 'volatile',
+                'type' => 'hostile',
+                'limited' => true,
+                'special' => true,
+                'class' => 'alchemist',
+                'attributes' => [
+                    'success_chance' => 0.8,
+                    'attack_bonus' => 1.5
+                ],
+                'messages' => [
+                    'success' => '%s hurls an unstable concoction, dealing %s damage to %s.',
+                    'backfire' => '%s\'s volatile mixture explodes prematurely! %s is caught in the blast, taking %s damage.',
+                    'success_evaded' => '%s\'s explosive mixture detonates, but %s evades most of the blast, taking only %s damage.',
+                    'success_countered' => '%s hurls an unstable concoction, dealing %s damage to %s, who then counters for %s damage.',
+                    'success_evaded_countered' => '%s\'s explosive mixture detonates, but %s evades most of the blast, taking only %s damage, then %s counters for %s damage.',
+                    'backfire_countered' => '%s\'s volatile mixture explodes prematurely! %s is caught in the blast for %s damage, then %s counters the distracted alchemist for %s damage.'
+                ]
+            ],
             'forge' => [
                 'name' => 'Forge',
                 'processor' => 'stat',
                 'type' => 'self',
                 'limited' => false,
                 'special' => true,
-                'class' => 'alchemist',
+                'class' => 'blacksmith',
                 'attributes' => [
                     'stat' => 'attack',
                     'value' => 2
@@ -352,14 +372,12 @@ class HeroHelper
             return $combatActions;
         }
 
-        return $combatActions->filter(function ($action) use ($combatant) {
+        return $combatActions->filter(function ($action, $key) use ($combatant) {
             if (!$action['special']) {
                 return true;
             }
-            if ($combatant !== null && $combatant->hero !== null) {
-                if (isset($action['class'])) {
-                    return $combatant->hero->class == $action['class'];
-                }
+            if ($combatant !== null && $combatant->abilities !== null) {
+                return in_array($key, $combatant->abilities);
             }
             return false;
         });
@@ -387,14 +405,10 @@ class HeroHelper
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
             'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 10.',
+            'volatile_mixture' => 'Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.',
         ];
 
         $combatantDescriptions = [];
-        foreach ($this->getAvailableCombatActions($combatant)->where('special', true)->keys() as $specialAction) {
-            if (isset($descriptions[$specialAction])) {
-                $combatantDescriptions[] = $descriptions[$specialAction];
-            }
-        }
         foreach ($combatant->abilities ?? [] as $ability) {
             if (isset($descriptions[$ability])) {
                 $combatantDescriptions[] = $descriptions[$ability];

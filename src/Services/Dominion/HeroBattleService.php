@@ -79,6 +79,8 @@ class HeroBattleService
     public function createCombatant(HeroBattle $heroBattle, Hero $hero): HeroCombatant
     {
         $combatStats = $this->heroCalculator->getHeroCombatStats($hero);
+        $combatActions = $this->heroHelper->getCombatActions();
+        $classAbilities = $combatActions->where('class', $hero->class)->keys();
 
         return HeroCombatant::create([
             'hero_battle_id' => $heroBattle->id,
@@ -94,7 +96,8 @@ class HeroBattleService
             'recover' => $combatStats['recover'],
             'current_health' => $combatStats['health'],
             'time_bank' => self::DEFAULT_TIME_BANK,
-            'strategy' => self::DEFAULT_STRATEGY
+            'strategy' => self::DEFAULT_STRATEGY,
+            'abilities' => $classAbilities->toArray(),
         ]);
     }
 
@@ -531,6 +534,102 @@ class HeroBattleService
                     $attackCount,
                     $damage,
                     $target->name
+                );
+            }
+        }
+
+        return [
+            'damage' => $damage,
+            'health' => $health,
+            'description' => $description
+        ];
+    }
+
+    public function processVolatileAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $successChance = $actionDef['attributes']['success_chance'] ?? 1;
+        $attackBonus = $actionDef['attributes']['attack_bonus'] ?? 1;
+        $isSuccess = mt_rand(1, 100) <= ($successChance * 100);
+
+        $combatant->has_focus = false;
+        $health = 0;
+        $damage = 0;
+        $countered = false;
+
+        if ($target->current_action == 'counter') {
+            $countered = true;
+            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
+            $health = -$counterDamage;
+        }
+
+        $messages = $actionDef['messages'];
+
+        if ($isSuccess) {
+            // Success - deal bonus damage to target
+            $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target) * $attackBonus);
+            $evaded = $this->heroCalculator->calculateCombatEvade($target);
+
+            if ($damage > 0 && $evaded) {
+                $damageEvaded = $damage;
+                $damage = round($damage / 2);
+                if ($countered) {
+                    $description = sprintf(
+                        $messages['success_evaded_countered'],
+                        $combatant->name,
+                        $damageEvaded,
+                        $target->name,
+                        $damage,
+                        $target->name,
+                        $counterDamage
+                    );
+                } else {
+                    $description = sprintf(
+                        $messages['success_evaded'],
+                        $combatant->name,
+                        $damageEvaded,
+                        $target->name,
+                        $damage
+                    );
+                }
+            } else {
+                if ($countered) {
+                    $description = sprintf(
+                        $messages['success_countered'],
+                        $combatant->name,
+                        $damage,
+                        $target->name,
+                        $counterDamage
+                    );
+                } else {
+                    $description = sprintf(
+                        $messages['success'],
+                        $combatant->name,
+                        $damage,
+                        $target->name
+                    );
+                }
+            }
+        } else {
+            // Backfire - damage to self instead
+            $backfireDamage = $this->heroCalculator->calculateCombatDamage($combatant, $combatant);
+            $health = -$backfireDamage;
+            $damage = 0;
+
+            if ($countered) {
+                $description = sprintf(
+                    $messages['backfire_countered'],
+                    $combatant->name,
+                    $combatant->name,
+                    $backfireDamage,
+                    $target->name,
+                    $counterDamage
+                );
+            } else {
+                $description = sprintf(
+                    $messages['backfire'],
+                    $combatant->name,
+                    $combatant->name,
+                    $backfireDamage
                 );
             }
         }
