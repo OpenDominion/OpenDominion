@@ -321,6 +321,21 @@ class HeroHelper
                     'backfire_countered' => '%s\'s volatile mixture explodes prematurely! %s is caught in the blast for %s damage, then %s counters the distracted alchemist for %s damage.'
                 ]
             ],
+            'fortify' => [
+                'name' => 'Fortify',
+                'processor' => 'stat',
+                'type' => 'self',
+                'limited' => false,
+                'special' => true,
+                'class' => 'architect',
+                'attributes' => [
+                    'stat' => 'defense',
+                    'value' => 1
+                ],
+                'messages' => [
+                    'stat' => '%s increases defense value by 1.'
+                ]
+            ],
             'forge' => [
                 'name' => 'Forge',
                 'processor' => 'stat',
@@ -335,6 +350,30 @@ class HeroHelper
                 'messages' => [
                     'stat' => '%s increases attack value by 2.'
                 ]
+            ],
+            'hardiness' => [
+                'name' => 'Hardiness',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+                'class' => 'farmer',
+            ],
+            'mending' => [
+                'name' => 'Mending',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+                'class' => 'healer',
+            ],
+            'channeling' => [
+                'name' => 'Channeling',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+                'class' => 'sorcerer',
             ],
             'blade_flurry' => [
                 'name' => 'Blade Flurry',
@@ -402,9 +441,13 @@ class HeroHelper
     {
         $descriptions = [
             'blade_flurry' => 'Blade Flurry: Attack twice for 75% damage each time.',
+            'channeling' => 'Channeling: Focus can be used while already active, stacking bonus damage.',
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
             'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
-            'rally' => 'Rally: When at 40 health or less, defense value is increased by 10.',
+            'fortify' => 'Fortify: Increases defense value by 1 for the remainder of the battle.',
+            'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',
+            'mending' => 'Mending: Focus enhances your Recover ability, increasing healing.',
+            'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'volatile_mixture' => 'Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.',
         ];
 
@@ -465,15 +508,18 @@ class HeroHelper
             $lastAction = $combatant->last_action;
         }
 
+        if ($actionDef['limited'] && $action == $lastAction) {
+            return false;
+        }
+
         if ($action == 'focus') {
+            if (in_array('channeling', $combatant->abilities ?? [])) {
+                return true;
+            }
             if ($combatant->has_focus && count($queue) == 0) {
                 return false;
             }
             // TODO: check for double focus without attack in between
-        }
-
-        if ($actionDef['limited'] && $action == $lastAction) {
-            return false;
         }
 
         return true;

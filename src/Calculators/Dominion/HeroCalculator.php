@@ -418,7 +418,14 @@ class HeroCalculator
         if ($stat == 'defense') {
             // Rally
             if (in_array('rally', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
-                return $combatant->defense + 10;
+                return $combatant->defense + 5;
+            }
+        }
+
+        if ($stat == 'recover') {
+            // Mending
+            if (in_array('mending', $combatant->abilities ?? []) && $combatant->has_focus) {
+                return $combatant->recover + $combatant->focus;
             }
         }
 
@@ -459,7 +466,7 @@ class HeroCalculator
 
     public function calculateCombatHeal(HeroCombatant $combatant): int
     {
-        return $combatant->recover;
+        return $this->getCombatStat($combatant, 'recover');
     }
 
     public function calculateRatingChange(float $currentRating, float $opponentRating, float $result): int

@@ -265,6 +265,9 @@ class HeroBattleService
             $combatant->current_health += $result['health'];
             $target->current_health -= $result['damage'];
 
+            $result['description'] .= $this->processPostCombat($combatant);
+            $result['description'] .= $this->processPostCombat($target);
+
             $action = HeroBattleAction::create([
                 'hero_battle_id' => $heroBattle->id,
                 'combatant_id' => $combatant->id,
@@ -353,6 +356,29 @@ class HeroBattleService
         return random_choice_weighted($options->toArray());
     }
 
+    public function spendFocus(HeroCombatant $combatant): void
+    {
+        if (in_array('channeling', $combatant->abilities ?? []) && $combatant->has_focus) {
+            if ($combatant->hero !== null) {
+                $combatStats = $this->heroCalculator->getHeroCombatStats($combatant->hero);
+                $combatant->focus = $combatStats['focus'];
+            }
+        }
+
+        $combatant->has_focus = false;
+    }
+
+    public function spendAbility(HeroCombatant $combatant, string $ability): void
+    {
+        $abilities = $combatant->abilities ?? [];
+
+        if ($key = in_array($ability, $abilities)) {
+            $index = array_search($ability, $abilities);
+            unset($abilities[$index]);
+            $combatant->abilities = $abilities;
+        }
+    }
+
     public function processAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
     {
         if ($actionDef === null) {
@@ -372,7 +398,7 @@ class HeroBattleService
     {
         $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
         $evaded = $this->heroCalculator->calculateCombatEvade($target);
-        $combatant->has_focus = false;
+        $this->spendFocus($combatant);
         $health = 0;
         $countered = false;
 
@@ -443,6 +469,13 @@ class HeroBattleService
 
     public function processFocusAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
     {
+        if (in_array('channeling', $combatant->abilities ?? []) && $combatant->has_focus) {
+            if ($combatant->hero !== null) {
+                $combatStats = $this->heroCalculator->getHeroCombatStats($combatant->hero);
+                $combatant->focus += $combatStats['focus'];
+            }
+        }
+
         $combatant->has_focus = true;
 
         return [
@@ -465,6 +498,10 @@ class HeroBattleService
     {
         $health = $this->heroCalculator->calculateCombatHeal($combatant);
 
+        if (in_array('mending', $combatant->abilities ?? [])) {
+            $this->spendFocus($combatant);
+        }
+
         return [
             'damage' => 0,
             'health' => $health,
@@ -479,7 +516,7 @@ class HeroBattleService
 
         $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target) * $attackCount * $damagePenalty);
         $evaded = $this->heroCalculator->calculateCombatEvade($target);
-        $combatant->has_focus = false;
+        $this->spendFocus($combatant);
         $health = 0;
         $countered = false;
 
@@ -551,7 +588,7 @@ class HeroBattleService
         $attackBonus = $actionDef['attributes']['attack_bonus'] ?? 1;
         $isSuccess = mt_rand(1, 100) <= ($successChance * 100);
 
-        $combatant->has_focus = false;
+        $this->spendFocus($combatant);
         $health = 0;
         $damage = 0;
         $countered = false;
@@ -657,6 +694,17 @@ class HeroBattleService
             'health' => 0,
             'description' => sprintf($actionDef['messages']['stat'], $combatant->name)
         ];
+    }
+
+    public function processPostCombat(HeroCombatant $combatant): string
+    {
+        if (in_array('hardiness', $combatant->abilities ?? []) && $combatant->current_health < 1) {
+            $combatant->current_health = 1;
+            $this->spendAbility($combatant, 'hardiness');
+            return " {$combatant->name} clings to life with 1 health.";
+        }
+
+        return '';
     }
 
     protected function setWinner(HeroBattle $heroBattle, ?HeroCombatant $winner): void

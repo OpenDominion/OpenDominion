@@ -136,7 +136,7 @@
                                                                             {{ $actionData['name'] }}
                                                                         </a>
                                                                     @endif
-                                                                @else
+                                                                @elseif ($actionData['type'] == 'self')
                                                                     <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$actionKey]) }}">
                                                                         {{ $actionData['name'] }}
                                                                     </a>
