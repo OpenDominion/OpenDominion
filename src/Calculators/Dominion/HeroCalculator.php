@@ -432,12 +432,13 @@ class HeroCalculator
         return $combatant->{$stat};
     }
 
-    public function calculateCombatDamage(HeroCombatant $combatant, HeroCombatant $target, bool $counterAttack = false): int
+    public function calculateCombatDamage(HeroCombatant $combatant, HeroCombatant $target, array $actionDef, bool $counterAttack = false): int
     {
         $baseDamage = $this->getCombatStat($combatant, 'attack');
         $baseDefense = $this->getCombatStat($target, 'defense');
+        $defendModifier = $actionDef['attributes']['defend'] ?? 0;
 
-        if ($counterAttack) {
+        if ($combatant->current_action == 'counter') {
             $baseDamage += $combatant->counter;
         } elseif ($combatant->has_focus) {
             $baseDamage += $combatant->focus;
@@ -449,6 +450,7 @@ class HeroCalculator
 
         if ($target->current_action == 'defend') {
             $baseDefense *= 2;
+            $baseDefense += $defendModifier;
         }
 
         $damage = max(0, $baseDamage - $baseDefense);
@@ -456,11 +458,13 @@ class HeroCalculator
         return round($damage);
     }
 
-    public function calculateCombatEvade(HeroCombatant $target): bool
+    public function calculateCombatEvade(HeroCombatant $target, array $actionDef): bool
     {
-        if ($target->current_action == 'recover') {
-            return false;
+        $evaded = $actionDef['attributes']['evade'] ?? null;
+        if ($evaded !== null) {
+            return $evaded;
         }
+
         return mt_rand(0, 100) < $target->evasion;
     }
 

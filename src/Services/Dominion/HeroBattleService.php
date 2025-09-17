@@ -396,15 +396,15 @@ class HeroBattleService
 
     public function processAttackAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
     {
-        $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target);
-        $evaded = $this->heroCalculator->calculateCombatEvade($target);
+        $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef);
+        $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
         $this->spendFocus($combatant);
         $health = 0;
         $countered = false;
 
         if ($target->current_action == 'counter') {
             $countered = true;
-            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
+            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
             $health = -$counterDamage;
         }
 
@@ -514,15 +514,15 @@ class HeroBattleService
         $attackCount = $actionDef['attributes']['attacks'] ?? 1;
         $damagePenalty = $actionDef['attributes']['penalty'] ?? 1;
 
-        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target) * $attackCount * $damagePenalty);
-        $evaded = $this->heroCalculator->calculateCombatEvade($target);
+        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackCount * $damagePenalty);
+        $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
         $this->spendFocus($combatant);
         $health = 0;
         $countered = false;
 
         if ($target->current_action == 'counter') {
             $countered = true;
-            $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, true) * $attackCount);
+            $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef) * $attackCount);
             $health = -$counterDamage;
         }
 
@@ -595,7 +595,7 @@ class HeroBattleService
 
         if ($target->current_action == 'counter') {
             $countered = true;
-            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, true);
+            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
             $health = -$counterDamage;
         }
 
@@ -603,8 +603,8 @@ class HeroBattleService
 
         if ($isSuccess) {
             // Success - deal bonus damage to target
-            $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target) * $attackBonus);
-            $evaded = $this->heroCalculator->calculateCombatEvade($target);
+            $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackBonus);
+            $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
 
             if ($damage > 0 && $evaded) {
                 $damageEvaded = $damage;
@@ -648,7 +648,7 @@ class HeroBattleService
             }
         } else {
             // Backfire - damage to self instead
-            $backfireDamage = $this->heroCalculator->calculateCombatDamage($combatant, $combatant);
+            $backfireDamage = $this->heroCalculator->calculateCombatDamage($combatant, $combatant, $actionDef);
             $health = -$backfireDamage;
             $damage = 0;
 
@@ -685,14 +685,16 @@ class HeroBattleService
 
         if ($actionDef['type'] == 'self') {
             $combatant->increment($stat, $value);
+            $description = sprintf($actionDef['messages']['stat'], $combatant->name);
         } else {
             $target->increment($stat, $value);
+            $description = sprintf($actionDef['messages']['stat'], $combatant->name, $target->name);
         }
 
         return [
             'damage' => 0,
             'health' => 0,
-            'description' => sprintf($actionDef['messages']['stat'], $combatant->name)
+            'description' => $description
         ];
     }
 

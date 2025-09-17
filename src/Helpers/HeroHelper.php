@@ -325,7 +325,7 @@ class HeroHelper
                 'name' => 'Fortify',
                 'processor' => 'stat',
                 'type' => 'self',
-                'limited' => false,
+                'limited' => true,
                 'special' => true,
                 'class' => 'architect',
                 'attributes' => [
@@ -340,7 +340,7 @@ class HeroHelper
                 'name' => 'Forge',
                 'processor' => 'stat',
                 'type' => 'self',
-                'limited' => false,
+                'limited' => true,
                 'special' => true,
                 'class' => 'blacksmith',
                 'attributes' => [
@@ -349,6 +349,21 @@ class HeroHelper
                 ],
                 'messages' => [
                     'stat' => '%s increases attack value by 2.'
+                ]
+            ],
+            'tactical_awareness' => [
+                'name' => 'Tactical Awareness',
+                'processor' => 'stat',
+                'type' => 'hostile',
+                'limited' => true,
+                'special' => true,
+                'class' => 'engineer',
+                'attributes' => [
+                    'stat' => 'counter',
+                    'value' => -2,
+                ],
+                'messages' => [
+                    'stat' => '%s decreases %s\'s counter value by 2.'
                 ]
             ],
             'hardiness' => [
@@ -366,6 +381,37 @@ class HeroHelper
                 'limited' => false,
                 'special' => true,
                 'class' => 'healer',
+            ],
+            'shadow_strike' => [
+                'name' => 'Shadow Strike',
+                'processor' => 'attack',
+                'type' => 'hostile',
+                'limited' => true,
+                'special' => true,
+                'class' => 'infiltrator',
+                'attributes' => [
+                    'evade' => false,
+                    'defend' => -2,
+                ],
+                'messages' => [
+                    'hit' => '%s strikes from the shadows, dealing %s damage to %s.',
+                    'countered' => '%s strikes from the shadows, dealing %s damage to %s, who then counters for %s damage.',
+                ]
+            ],
+            'combat_analysis' => [
+                'name' => 'Combat Analysis',
+                'processor' => 'stat',
+                'type' => 'hostile',
+                'limited' => true,
+                'special' => true,
+                'class' => 'scholar',
+                'attributes' => [
+                    'stat' => 'defense',
+                    'value' => -1,
+                ],
+                'messages' => [
+                    'stat' => '%s decreases %s\'s defense value by 1.'
+                ]
             ],
             'channeling' => [
                 'name' => 'Channeling',
@@ -442,12 +488,15 @@ class HeroHelper
         $descriptions = [
             'blade_flurry' => 'Blade Flurry: Attack twice for 75% damage each time.',
             'channeling' => 'Channeling: Focus can be used while already active, stacking bonus damage.',
+            'combat_analysis' => 'Combat Analysis: Decreases target\'s defense value by 1 for the remainder of the battle.',
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
             'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
             'fortify' => 'Fortify: Increases defense value by 1 for the remainder of the battle.',
             'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',
             'mending' => 'Mending: Focus enhances your Recover ability, increasing healing.',
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
+            'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
+            'tactical_awareness' => 'Tactical Awareness: Reduces target\'s counter value by 2 for the remainder of the battle.',
             'volatile_mixture' => 'Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.',
         ];
 
