@@ -408,28 +408,34 @@ class HeroCalculator
 
     public function getCombatStat(HeroCombatant $combatant, string $stat): int
     {
+        $multiplier = 1;
+
+        if (in_array('last_stand', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
+            $multiplier = 1.1;
+        }
+
         if ($stat == 'attack') {
             // Enrage
             if (in_array('enrage', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
-                return $combatant->attack + 10;
+                return round($combatant->attack * $multiplier) + 10;
             }
         }
 
         if ($stat == 'defense') {
             // Rally
             if (in_array('rally', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
-                return $combatant->defense + 5;
+                return round($combatant->defense * $multiplier) + 5;
             }
         }
 
         if ($stat == 'recover') {
             // Mending
             if (in_array('mending', $combatant->abilities ?? []) && $combatant->has_focus) {
-                return $combatant->recover + $combatant->focus;
+                return round($combatant->recover * $multiplier) + round($combatant->focus * $multiplier);
             }
         }
 
-        return $combatant->{$stat};
+        return round($combatant->{$stat} * $multiplier);
     }
 
     public function calculateCombatDamage(HeroCombatant $combatant, HeroCombatant $target, array $actionDef, bool $counterAttack = false): int
@@ -439,9 +445,9 @@ class HeroCalculator
         $defendModifier = $actionDef['attributes']['defend'] ?? 0;
 
         if ($combatant->current_action == 'counter') {
-            $baseDamage += $combatant->counter;
+            $baseDamage += $this->getCombatStat($combatant, 'counter');
         } elseif ($combatant->has_focus) {
-            $baseDamage += $combatant->focus;
+            $baseDamage += $this->getCombatStat($combatant, 'focus');
         }
 
         if ($target->current_action == 'recover') {
@@ -465,7 +471,7 @@ class HeroCalculator
             return $evaded;
         }
 
-        return mt_rand(0, 100) < $target->evasion;
+        return mt_rand(0, 100) < $this->getCombatStat($target, 'evasion');
     }
 
     public function calculateCombatHeal(HeroCombatant $combatant): int

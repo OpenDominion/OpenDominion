@@ -413,6 +413,14 @@ class HeroHelper
                     'stat' => '%s decreases %s\'s defense value by 1.'
                 ]
             ],
+            'last_stand' => [
+                'name' => 'Last Stand',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+                'class' => 'scion',
+            ],
             'channeling' => [
                 'name' => 'Channeling',
                 'processor' => null,
@@ -493,6 +501,7 @@ class HeroHelper
             'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
             'fortify' => 'Fortify: Increases defense value by 1 for the remainder of the battle.',
             'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',
+            'last_stand' => 'Last Stand: When at 40 health or less, all combat stats are increased by 10%.',
             'mending' => 'Mending: Focus enhances your Recover ability, increasing healing.',
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
