@@ -136,7 +136,7 @@ class HeroHelper
     {
         $helpStrings = [
             'casualties' => '%+.2f%% casualties',
-            'construction_cost' => '%+.2f%% construction platinum cost',
+            'construction_cost' => '%+.2f%% construction cost',
             'explore_cost' => '%+.2f%% exploring platinum cost',
             'food_production' => '%+.2f%% food production',
             'gem_production' => '%+.2f%% gem production',
