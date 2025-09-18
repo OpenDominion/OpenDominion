@@ -113,11 +113,7 @@ class TrainingCalculator
                     }
 
                     if ($lumber > 0) {
-                        $cost['lumber'] = $lumber;
-
-                        if ($dominion->race->key !== 'wood-elf-rework') {
-                            $cost['lumber'] = (int)rceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
-                        }
+                        $cost['lumber'] = (int)rceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion, $proficiency));
                     }
 
                     if ($gems > 0) {
