@@ -97,7 +97,8 @@ class HeroBattleService
             'current_health' => $combatStats['health'],
             'time_bank' => self::DEFAULT_TIME_BANK,
             'strategy' => self::DEFAULT_STRATEGY,
-            'abilities' => $classAbilities->toArray(),
+            //'abilities' => $classAbilities->toArray(),
+            'abilities' => null
         ]);
     }
 
@@ -687,8 +688,12 @@ class HeroBattleService
             $combatant->increment($stat, $value);
             $description = sprintf($actionDef['messages']['stat'], $combatant->name);
         } else {
-            $target->increment($stat, $value);
-            $description = sprintf($actionDef['messages']['stat'], $combatant->name, $target->name);
+            if ($value < 0 && $target->{$stat} <= 5) {
+                $description = "{$combatant->name} uses {$actionDef['name']}, but it has no effect.";
+            } else {
+                $target->increment($stat, $value);
+                $description = sprintf($actionDef['messages']['stat'], $combatant->name, $target->name);
+            }
         }
 
         return [
