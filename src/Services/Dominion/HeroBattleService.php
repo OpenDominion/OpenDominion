@@ -121,7 +121,6 @@ class HeroBattleService
         $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
         $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
         $nonPlayerStats['name'] = 'Evil Twin';
-        $nonPlayerStats['abilities'] = ['enrage'];
         $practiceCombatant = $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
 
         return $heroBattle;
