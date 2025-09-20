@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use Illuminate\Support\Collection;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
+use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
@@ -766,8 +767,9 @@ class HeroBattleService
             $tactic = $heroBattle->tactic;
 
             // Modify score by realm activity
-            $pointsEarned = $this->raidCalculator->getTacticPointsEarned($dominion, $tactic);
-            $score = $this->raidCalculator->getTacticScore($dominion, $tactic);
+            $raidCalculator = app(RaidCalculator::class);
+            $pointsEarned = $raidCalculator->getTacticPointsEarned($dominion, $tactic);
+            $score = $raidCalculator->getTacticScore($dominion, $tactic);
 
             // Save dominion changes
             $dominion->stat_raid_score += $pointsEarned;
@@ -778,6 +780,7 @@ class HeroBattleService
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
                 'raid_objective_id' => $tactic->raid_objective_id,
+                'raid_tactic_id' => $tactic->id,
                 'type' => $tactic->type,
                 'score' => $score,
             ]);
