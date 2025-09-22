@@ -285,7 +285,7 @@ class HeroActionService
         }
 
         $validStrategies = $this->heroHelper->getCombatStrategies()->where('type', 'basic')->keys();
-        if (!in_array($strategy, $validStrategies)) {
+        if (!$validStrategies->contains($strategy)) {
             throw new GameException('Invalid strategy.');
         }
 

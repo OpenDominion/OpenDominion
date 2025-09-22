@@ -152,7 +152,7 @@
                                                         </label>
                                                         <select name="strategy" class="form-control">
                                                             @foreach ($heroHelper->getCombatStrategies()->where('type', 'basic') as $key => $strategy)
-                                                                <option value="{{ $key }}" {{ $strategy == $playerCombatant->strategy ? 'selected' : null }}>{{ $strategy['name'] }}</option>
+                                                                <option value="{{ $key }}" {{ $playerCombatant->strategy == $key ? 'selected' : null }}>{{ $strategy['name'] }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
