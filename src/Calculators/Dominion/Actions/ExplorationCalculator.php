@@ -76,7 +76,7 @@ class ExplorationCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('explore_platinum_cost');
 
         // Heroes
-        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'max_population');
+        $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'explore_cost');
 
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion) && $dominion->user_id !== null) {
