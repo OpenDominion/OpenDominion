@@ -130,7 +130,14 @@ class HeroBattleService
         } else {
             $nonPlayerStats = $this->heroEncounterHelper->getPracticeBattles()->get($enemy);
         }
-        $practiceCombatant = $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
+        $enemyName = $nonPlayerStats['name'];
+        $enemyCount = $nonPlayerStats['enemy_count'] ?? 1;
+        foreach (range(1, $enemyCount) as $idx) {
+            if ($enemyCount > 1) {
+                $nonPlayerStats['name'] = "{$enemyName} #{$idx}";
+            }
+            $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
+        }
 
         return $heroBattle;
     }
