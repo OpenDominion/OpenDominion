@@ -256,7 +256,7 @@
                     @include('partials.dominion.hero-combat')
                     @if ($activeBattles->where('finished', false)->count() == 0)
                         <a class="btn btn-primary btn-block" href="{{ route('dominion.heroes.battles.practice') }}">
-                            Start Practice Battle
+                            Practice Battles
                         </a>
                         @if ($hero->isInQueue())
                             <a class="btn btn-danger btn-block" href="{{ route('dominion.heroes.battles.dequeue') }}">

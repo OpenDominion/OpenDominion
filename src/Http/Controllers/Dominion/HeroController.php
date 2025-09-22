@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\HeroEncounterHelper;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
@@ -269,11 +270,29 @@ class HeroController extends AbstractDominionController
     public function getPracticeBattle(Request $request)
     {
         $dominion = $this->getSelectedDominion();
+        $heroCalculator = app(HeroCalculator::class);
+        $heroEncounterHelper = app(HeroEncounterHelper::class);
+        $heroHelper = app(HeroHelper::class);
+
+        if ($dominion->hero === null) {
+            return redirect()->route('dominion.heroes');
+        }
+
+        return view('pages.dominion.hero-battle-practice', compact(
+            'heroCalculator',
+            'heroEncounterHelper',
+            'heroHelper',
+        ));
+    }
+
+    public function postPracticeBattle(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
         $heroBattleService = app(HeroBattleService::class);
 
         try {
             $this->guardLockedDominion($dominion);
-            $result = $heroBattleService->createPracticeBattle($dominion);
+            $result = $heroBattleService->createPracticeBattle($dominion, $request->get('enemy'));
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

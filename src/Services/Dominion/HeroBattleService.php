@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\HeroEncounterHelper;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
@@ -24,6 +25,9 @@ class HeroBattleService
     /** @var HeroCalculator */
     protected $heroCalculator;
 
+    /** @var HeroEncounterHelper */
+    protected $heroEncounterHelper;
+
     /** @var HeroHelper */
     protected $heroHelper;
 
@@ -36,6 +40,7 @@ class HeroBattleService
     public function __construct()
     {
         $this->heroCalculator = app(HeroCalculator::class);
+        $this->heroEncounterHelper = app(HeroEncounterHelper::class);
         $this->heroHelper = app(HeroHelper::class);
         $this->protectionService = app(ProtectionService::class);
     }
@@ -103,7 +108,7 @@ class HeroBattleService
         ]);
     }
 
-    public function createPracticeBattle(Dominion $dominion): HeroBattle
+    public function createPracticeBattle(Dominion $dominion, string $enemy = 'default'): HeroBattle
     {
         if ($this->protectionService->isUnderProtection($dominion)) {
             throw new GameException('You cannot battle while under protection');
@@ -119,8 +124,12 @@ class HeroBattleService
 
         $heroBattle = HeroBattle::create(['round_id' => $dominion->round_id, 'pvp' => false]);
         $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
-        $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
-        $nonPlayerStats['name'] = 'Evil Twin';
+        if ($enemy == 'default') {
+            $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
+            $nonPlayerStats['name'] = 'Evil Twin';
+        } else {
+            $nonPlayerStats = $this->heroEncounterHelper->getPracticeBattles()->get($enemy);
+        }
         $practiceCombatant = $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
 
         return $heroBattle;
