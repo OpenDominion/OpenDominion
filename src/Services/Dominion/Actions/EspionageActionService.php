@@ -207,7 +207,7 @@ class EspionageActionService
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;
-                $spyStrengthLost += $dominion->getSpellPerk('theft_strength_cost');
+                $spyStrengthLost += $dominion->getSpellPerkValue('theft_strength_cost');
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
             } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
                 if ($this->espionageHelper->isWarOperation($operationKey)) {
@@ -428,7 +428,7 @@ class EspionageActionService
         $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
 
         // Spells
-        $successRate += $this->getSpellPerkMultiplier('theft_chance');
+        $successRate += $dominion->getSpellPerkMultiplier('theft_chance');
 
         // Wonders
         $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
