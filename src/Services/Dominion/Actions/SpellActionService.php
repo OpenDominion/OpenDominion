@@ -820,6 +820,13 @@ class SpellActionService
             $applyBurning = false;
             $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($target, $spell->key, $dominion);
 
+            // Critical Success
+            if ($blackGuard && !$criticalFailure && random_chance(0.25)) {
+                $criticalSuccess = true;
+                $damageMultiplier *= 1.5;
+                $dominion->chaos += $this->opsCalculator->getChaosChange($dominion, true);
+            }
+
             foreach ($spell->perks as $perk) {
                 $perksToIgnore = collect(['war_cancels']);
                 if (Str::startsWith($perk->key, 'destroy_')) {
@@ -865,12 +872,6 @@ class SpellActionService
                         if ($attr == 'resource_food') {
                             $baseDamage = 0;
                         }
-                    }
-                    // Critical Success
-                    if (!$criticalFailure && random_chance(0.25)) {
-                        $criticalSuccess = true;
-                        $damageMultiplier += 0.5;
-                        $dominion->chaos += $this->opsCalculator->getChaosChange($dominion, true);
                     }
                 }
                 $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
