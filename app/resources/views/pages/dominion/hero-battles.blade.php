@@ -49,7 +49,11 @@
                                                                 </td>
                                                                 <td>
                                                                     @if ($stat == 'health')
-                                                                        {{ $combatant->current_health }} /
+                                                                        {{ $combatant->current_health }}
+                                                                        @if ($combatant->shield > 0)
+                                                                            + <span class="text-aqua">{{ $combatant->shield }}</span>
+                                                                        @endif
+                                                                        /
                                                                     @endif
                                                                     <span class="{{ $combatant->hero_id !== null && $heroCalculator->getCombatStat($combatant, $stat) != $value ? 'text-green' : null }}">
                                                                         {{ $heroCalculator->getCombatStat($combatant, $stat) }}

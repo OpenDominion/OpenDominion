@@ -20,6 +20,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property int $focus
  * @property int $counter
  * @property int $recover
+ * @property int $shield
  * @property int $current_health
  * @property bool $has_focus
  * @property array|null $actions
@@ -29,6 +30,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property bool|null $automated
  * @property string|null $strategy
  * @property array|null $abilities
+ * @property array|null $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\HeroBattle $battle

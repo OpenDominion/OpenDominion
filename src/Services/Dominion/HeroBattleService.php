@@ -280,6 +280,11 @@ class HeroBattleService
             $result = $this->processAction($combatant, $target, $actionDef);
 
             $combatant->current_health += $result['health'];
+            if ($target->shield > 0) {
+                $shield_damage = min($target->shield, $result['damage']);
+                $target->shield -= $shield_damage;
+                $result['damage'] -= $shield_damage;
+            }
             $target->current_health -= $result['damage'];
 
             $result['description'] .= $this->processPostCombat($combatant);
@@ -701,6 +706,9 @@ class HeroBattleService
         $value = $actionDef['attributes']['value'];
 
         if ($actionDef['type'] == 'self') {
+            if ($stat == 'shield' && $combatant->shield > 0) {
+                $value = $value - $combatant->shield;
+            }
             $combatant->increment($stat, $value);
             $description = sprintf($actionDef['messages']['stat'], $combatant->name);
         } else {

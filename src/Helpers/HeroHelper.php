@@ -329,11 +329,11 @@ class HeroHelper
                 'special' => true,
                 'class' => 'architect',
                 'attributes' => [
-                    'stat' => 'defense',
-                    'value' => 1
+                    'stat' => 'shield',
+                    'value' => 20
                 ],
                 'messages' => [
-                    'stat' => '%s increases defense value by 1.'
+                    'stat' => '%s constructs defenses that will absorb 20 damage.'
                 ]
             ],
             'forge' => [
@@ -499,7 +499,7 @@ class HeroHelper
             'combat_analysis' => 'Combat Analysis: Decreases target\'s defense value by 1 for the remainder of the battle.',
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
             'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
-            'fortify' => 'Fortify: Increases defense value by 1 for the remainder of the battle.',
+            'fortify' => 'Fortify: Prevent the next 20 non-counter damage dealt.',
             'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',
             'last_stand' => 'Last Stand: When at 40 health or less, all combat stats are increased by 10%.',
             'mending' => 'Mending: Focus enhances your Recover ability, increasing healing.',
