@@ -80,15 +80,8 @@ class HeroEncounterHelper
                 'counter' => 10,
                 'recover' => 20,
                 'strategy' => 'balanced',
-            ]
-        ]);
-    }
-
-    public function getPracticeBattles(): Collection
-    {
-        return collect([
+            ],
             'rabid_bunny' => [
-                'source' => 'Seasonal Battle (Round 44)',
                 'name' => 'Rabid Bunny',
                 'health' => 100,
                 'attack' => 40,
@@ -100,7 +93,6 @@ class HeroEncounterHelper
                 'strategy' => 'balanced',
             ],
             'dragonkin' => [
-                'source' => 'Raid (Lair of the Dragon)',
                 'name' => 'Dragonkin',
                 'health' => 60,
                 'attack' => 40,
@@ -110,10 +102,8 @@ class HeroEncounterHelper
                 'counter' => 10,
                 'recover' => 20,
                 'strategy' => 'balanced',
-                'enemy_count' => 3,
             ],
             'gate_warden' => [
-                'source' => 'Raid (Ironhold Citadel)',
                 'name' => 'Gate Warden',
                 'health' => 150,
                 'attack' => 40,
@@ -125,7 +115,6 @@ class HeroEncounterHelper
                 'strategy' => 'counter',
             ],
             'rebel_corsair' => [
-                'source' => 'Raid (The Island Fortress)',
                 'name' => 'Rebel Corsair',
                 'health' => 60,
                 'attack' => 35,
@@ -136,10 +125,9 @@ class HeroEncounterHelper
                 'recover' => 20,
                 'strategy' => 'pirate',
                 'abilities' => ['blade_flurry'],
-                'enemy_count' => 3,
             ],
             'rebel_admiral' => [
-                'source' => 'Raid (The Island Fortress)',
+                // TODO: Use this name if not provided elsewhere
                 'name' => 'Rebel Admiral',
                 'health' => 150,
                 'attack' => 40,
@@ -150,6 +138,51 @@ class HeroEncounterHelper
                 'recover' => 20,
                 'strategy' => 'pirate',
                 'abilities' => ['blade_flurry', 'enrage'],
+            ],
+        ]);
+    }
+
+    public function getPracticeBattles(): Collection
+    {
+        return collect([
+            'rabid_bunny' => [
+                'name' => 'Rabid Bunny',
+                'source' => 'Seasonal Battle (Round 44)',
+                'enemies' => [
+                    ['key' => 'rabid_bunny', 'name' => 'Rabid Bunny'],
+                ],
+            ],
+            'dragonkin' => [
+                'name' => 'Dragonkin',
+                'source' => 'Raid (Lair of the Dragon)',
+                'enemies' => [
+                    ['key' => 'dragonkin', 'name' => 'Dragonkin #1'],
+                    ['key' => 'dragonkin', 'name' => 'Dragonkin #2'],
+                    ['key' => 'dragonkin', 'name' => 'Dragonkin #3'],
+                ],
+            ],
+            'gate_warden' => [
+                'name' => 'Gate Warden',
+                'source' => 'Raid (Ironhold Citadel)',
+                'enemies' => [
+                    ['key' => 'gate_warden', 'name' => 'Gate Warden'],
+                ],
+            ],
+            'rebel_corsair' => [
+                'name' => 'Rebel Corsairs',
+                'source' => 'Raid (The Island Fortress)',
+                'enemies' => [
+                    ['key' => 'rebel_corsair', 'name' => 'Rebel Corsair #1'],
+                    ['key' => 'rebel_corsair', 'name' => 'Rebel Corsair #2'],
+                    ['key' => 'rebel_corsair', 'name' => 'Rebel Corsair #3'],
+                ],
+            ],
+            'rebel_admiral' => [
+                'name' => 'Rebel Admiral',
+                'source' => 'Raid (The Island Fortress)',
+                'enemies' => [
+                    ['key' => 'rebel_admiral', 'name' => 'Rebel Admiral'],
+                ],
             ],
         ]);
     }

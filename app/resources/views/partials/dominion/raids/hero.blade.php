@@ -18,7 +18,7 @@
                     <thead>
                         <tr>
                             <th>Challenge</th>
-                            <th>Opponent</th>
+                            <th>Encounter</th>
                             <th>Points</th>
                             <th>Actions</th>
                         </tr>

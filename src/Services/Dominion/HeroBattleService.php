@@ -124,19 +124,21 @@ class HeroBattleService
 
         $heroBattle = HeroBattle::create(['round_id' => $dominion->round_id, 'pvp' => false]);
         $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
+
         if ($enemy == 'default') {
             $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
             $nonPlayerStats['name'] = 'Evil Twin';
-        } else {
-            $nonPlayerStats = $this->heroEncounterHelper->getPracticeBattles()->get($enemy);
-        }
-        $enemyName = $nonPlayerStats['name'];
-        $enemyCount = $nonPlayerStats['enemy_count'] ?? 1;
-        foreach (range(1, $enemyCount) as $idx) {
-            if ($enemyCount > 1) {
-                $nonPlayerStats['name'] = "{$enemyName} #{$idx}";
-            }
             $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
+        } else {
+            $practiceBattle = $this->heroEncounterHelper->getPracticeBattles()->get($enemy);
+            $enemies = $practiceBattle['enemies'];
+            $enemyDefinitions = $this->heroEncounterHelper->getEnemies();
+
+            foreach ($enemies as $enemy) {
+                $enemyStats = $enemyDefinitions->get($enemy['key']);
+                $enemyStats['name'] = $enemy['name'];
+                $this->createNonPlayerCombatant($heroBattle, $enemyStats);
+            }
         }
 
         return $heroBattle;

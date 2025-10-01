@@ -16,13 +16,13 @@
                         <table class="table">
                             <colgroup>
                                 <col width="5%">
-                                <col width="25%">
-                                <col width="70%">
+                                <col width="35%">
+                                <col width="60%">
                             </colgroup>
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Enemy</th>
+                                    <th>Encounter</th>
                                     <th>Source</th>
                                 </tr>
                             </thead>
