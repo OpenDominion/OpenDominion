@@ -797,6 +797,14 @@ class HeroBattleService
             }
         }
 
+        // Summoning
+        if (in_array('summon_skeleton', $combatant->abilities ?? [])) {
+            $actionDef = $this->heroHelper->getCombatActions()->get('summon_skeleton');
+            if (($combatant->battle->current_turn % $actionDef['attributes']['turns']) == 0) {
+                $description = "A summoning circle begins to glow around {$combatant->name}.";
+            }
+        }
+
         if ($description !== '') {
             HeroBattleAction::create([
                 'hero_battle_id' => $combatant->battle->id,
