@@ -71,7 +71,7 @@
                                 @foreach ($battle->actions->sortByDesc('turn')->groupBy('turn') as $turn => $actions)
                                     <tr><td>Turn {{ $turn }}</td></tr>
                                     <tr><td>
-                                        @foreach ($actions as $action)
+                                        @foreach ($actions->where('action', '!=', 'status') as $action)
                                             @php $actionDef = $heroHelper->getCombatActions()->get($action->action); @endphp
                                             {{ $action->combatant->name }} selected {{ $actionDef['name'] ?? ucwords($action->action) }}.<br/>
                                         @endforeach

@@ -324,14 +324,7 @@ class RaidSeeder extends Seeder
             'type' => 'hero',
             'name' => 'Champion Duel',
             'attributes' => [
-                'name' => 'Champion Duel with Ancient Dragon',
-                'health' => 100,
-                'attack' => 40,
-                'defense' => 20,
-                'evasion' => 10,
-                'focus' => 10,
-                'counter' => 10,
-                'recover' => 20,
+                'encounter' => 'gate_warden',
                 'points_awarded' => 800,
             ],
             'bonuses' => [

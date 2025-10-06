@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 class HeroEncounterHelper
 {
-    public function getEncounters(): Collection
+    public function getStoryEncounters(): Collection
     {
         return collect([
             [
@@ -27,7 +27,7 @@ class HeroEncounterHelper
                 'level' => 3,
                 'description' => 'Dark rituals disturb the nearby land.',
                 'enemies' => [
-                    'fire_imp' => 1,
+                    'imp' => 1,
                     'cultist' => 2
                 ],
             ]
@@ -59,8 +59,8 @@ class HeroEncounterHelper
                 'recover' => 20,
                 'strategy' => 'counter',
             ],
-            'fire_imp' => [
-                'name' => 'Fire Imp',
+            'imp' => [
+                'name' => 'Imp',
                 'health' => 60,
                 'attack' => 20,
                 'defense' => 10,
@@ -139,10 +139,70 @@ class HeroEncounterHelper
                 'strategy' => 'pirate',
                 'abilities' => ['blade_flurry', 'enrage'],
             ],
+            'warrior_king' => [
+                'name' => 'The Warrior King',
+                'health' => 80,
+                'attack' => 30,
+                'defense' => 10,
+                'evasion' => 10,
+                'focus' => 20,
+                'counter' => 10,
+                'recover' => 20,
+                'strategy' => 'aggressive',
+                'abilities' => ['undying'],
+            ],
+            'sorcerer_king' => [
+                'name' => 'The Sorcerer King',
+                'health' => 60,
+                'attack' => 20,
+                'defense' => 20,
+                'evasion' => 0,
+                'focus' => 10,
+                'counter' => 10,
+                'recover' => 30,
+                'strategy' => 'defensive',
+                'abilities' => ['undying'],
+            ],
+            'betrayer_king' => [
+                'name' => 'The Betrayer King',
+                'health' => 80,
+                'attack' => 25,
+                'defense' => 15,
+                'evasion' => 25,
+                'focus' => 10,
+                'counter' => 15,
+                'recover' => 20,
+                'strategy' => 'balanced',
+                'abilities' => ['undying'],
+            ],
+            'eternal_guardian' => [
+                'name' => 'The Eternal Guardian',
+                'health' => 90,
+                'attack' => 30,
+                'defense' => 20,
+                'evasion' => 0,
+                'focus' => 0,
+                'counter' => 0,
+                'recover' => 10,
+                'strategy' => 'summoner',
+                'abilities' => ['undying_legion', 'summon_skeleton'],
+            ],
+            'skeleton_warrior' => [
+                'name' => 'Skeleton Warrior',
+                'health' => 40,
+                'attack' => 28,
+                'defense' => 20,
+                'evasion' => 0,
+                'focus' => 0,
+                'counter' => 0,
+                'recover' => 0,
+                'strategy' => 'attack',
+                'abilities' => ['undying'],
+            ],
         ]);
     }
 
-    public function getPracticeBattles(): Collection
+    public function getEncounters(): Collection
     {
         return collect([
             'rabid_bunny' => [
@@ -182,6 +242,22 @@ class HeroEncounterHelper
                 'source' => 'Raid (The Island Fortress)',
                 'enemies' => [
                     ['key' => 'rebel_admiral', 'name' => 'Rebel Admiral'],
+                ],
+            ],
+            'fallen_kings' => [
+                'name' => 'The Fallen Kings',
+                'source' => 'Raid (The Tomb of Kings)',
+                'enemies' => [
+                    ['key' => 'betrayer_king', 'name' => 'The Betrayer King'],
+                    ['key' => 'sorcerer_king', 'name' => 'The Sorcerer King'],
+                    ['key' => 'warrior_king', 'name' => 'The Warrior King'],
+                ],
+            ],
+            'eternal_guardian' => [
+                'name' => 'The Guardian of the Throne',
+                'source' => 'Raid (The Tomb of Kings)',
+                'enemies' => [
+                    ['key' => 'eternal_guardian', 'name' => 'The Eternal Guardian'],
                 ],
             ],
         ]);

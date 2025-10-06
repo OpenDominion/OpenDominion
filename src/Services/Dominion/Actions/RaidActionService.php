@@ -184,11 +184,13 @@ class RaidActionService
         ]);
         $dominionCombatant = $heroBattleService->createCombatant($heroBattle, $dominion->hero);
 
-        $enemies = $tactic->attributes['enemies'] ?? [];
         $heroEncounterHelper = app(\OpenDominion\Helpers\HeroEncounterHelper::class);
+        $encounterDefinitions = $heroEncounterHelper->getEncounters();
         $enemyDefinitions = $heroEncounterHelper->getEnemies();
 
-        foreach ($enemies as $enemy) {
+        $encounterKey = $tactic->attributes['encounter'];
+        $encounter = $encounterDefinitions->get($encounterKey);
+        foreach ($encounter['enemies'] as $enemy) {
             $enemyStats = $enemyDefinitions->get($enemy['key']);
             $enemyStats['name'] = $enemy['name'];
             $heroBattleService->createNonPlayerCombatant($heroBattle, $enemyStats);

@@ -426,6 +426,17 @@ class HeroCalculator
             if (in_array('rally', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
                 return round($combatant->defense * $multiplier) + 5;
             }
+            // Undying Legion
+            if (in_array('undying_legion', $combatant->abilities ?? [])) {
+                $livingMinions = $combatant->battle->combatants
+                    ->where('id', '!=', $combatant->id)
+                    ->where('hero_id', null)
+                    ->where('current_health', '>', 0)
+                    ->count();
+                if ($livingMinions > 0) {
+                    return 999;
+                }
+            }
         }
 
         if ($stat == 'recover') {

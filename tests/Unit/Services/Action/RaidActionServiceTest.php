@@ -467,13 +467,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'name' => 'Test Hero Action',
             'attributes' => [
                 'name' => 'Ancient Dragon',
-                'health' => 100,
-                'attack' => 50,
-                'defense' => 40,
-                'evasion' => 20,
-                'focus' => 15,
-                'counter' => 10,
-                'recover' => 25,
+                'encounter' => 'dragonkin',
                 'points_awarded' => 400,
             ],
         ]);
@@ -498,13 +492,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'name' => 'Test Hero Action',
             'attributes' => [
                 'name' => 'Ancient Dragon',
-                'health' => 100,
-                'attack' => 50,
-                'defense' => 40,
-                'evasion' => 20,
-                'focus' => 15,
-                'counter' => 10,
-                'recover' => 25,
+                'encounter' => 'dragonkin',
                 'points_awarded' => 400,
             ],
         ]);

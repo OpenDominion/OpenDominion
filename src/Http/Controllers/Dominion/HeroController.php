@@ -292,7 +292,7 @@ class HeroController extends AbstractDominionController
 
         try {
             $this->guardLockedDominion($dominion);
-            $result = $heroBattleService->createPracticeBattle($dominion, $request->get('enemy'));
+            $result = $heroBattleService->createPracticeBattle($dominion, $request->get('encounter'));
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

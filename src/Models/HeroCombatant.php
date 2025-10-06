@@ -46,6 +46,7 @@ class HeroCombatant extends AbstractModel
     protected $casts = [
         'actions' => 'array',
         'abilities' => 'array',
+        'status' => 'array',
     ];
 
     protected $dates = ['last_action_at', 'created_at', 'updated_at'];

@@ -108,7 +108,7 @@ class HeroBattleService
         ]);
     }
 
-    public function createPracticeBattle(Dominion $dominion, string $enemy = 'default'): HeroBattle
+    public function createPracticeBattle(Dominion $dominion, string $encounter = 'default'): HeroBattle
     {
         if ($this->protectionService->isUnderProtection($dominion)) {
             throw new GameException('You cannot battle while under protection');
@@ -125,16 +125,16 @@ class HeroBattleService
         $heroBattle = HeroBattle::create(['round_id' => $dominion->round_id, 'pvp' => false]);
         $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
 
-        if ($enemy == 'default') {
+        if ($encounter == 'default') {
             $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
             $nonPlayerStats['name'] = 'Evil Twin';
             $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
         } else {
-            $practiceBattle = $this->heroEncounterHelper->getPracticeBattles()->get($enemy);
-            $enemies = $practiceBattle['enemies'];
+            $encounterDefinitions = $this->heroEncounterHelper->getEncounters();
             $enemyDefinitions = $this->heroEncounterHelper->getEnemies();
 
-            foreach ($enemies as $enemy) {
+            $encounter = $encounterDefinitions->get($encounter);
+            foreach ($encounter['enemies'] as $enemy) {
                 $enemyStats = $enemyDefinitions->get($enemy['key']);
                 $enemyStats['name'] = $enemy['name'];
                 $this->createNonPlayerCombatant($heroBattle, $enemyStats);
@@ -247,33 +247,33 @@ class HeroBattleService
             return false;
         }
 
-        $combatants = $heroBattle->combatants->where('current_health', '>', '0');
+        $livingCombatants = $heroBattle->combatants->where('current_health', '>', '0');
 
         // Eject if not all combatants are ready
-        foreach ($combatants as $combatant) {
+        foreach ($livingCombatants as $combatant) {
             if (!$combatant->isReady()) {
                 return false;
             }
         }
 
         // Determine which action to take via queue or automated strategy
-        foreach ($combatants as $combatant) {
+        foreach ($livingCombatants as $combatant) {
             $nextAction = $this->determineAction($combatant);
             $combatant->current_action = $nextAction['action'];
             $combatant->current_target = $nextAction['target'];
         }
 
         // Perform the actions and persist results
-        foreach ($combatants as $combatant) {
+        foreach ($livingCombatants as $combatant) {
             $actionDefinitions = $this->heroHelper->getAvailableCombatActions($combatant);
             $actionDef = $actionDefinitions->get($combatant->current_action);
 
             if ($combatant->current_target !== null) {
                 // Use specified target
-                $target = $combatants->where('id', $combatant->current_target)->first();
+                $target = $livingCombatants->where('id', $combatant->current_target)->first();
             } elseif ($actionDef['type'] == 'hostile') {
                 // Attack a random opponent
-                $target = $combatants->where('hero_id', '!=', $combatant->hero_id)->random();
+                $target = $livingCombatants->where('hero_id', '!=', $combatant->hero_id)->random();
             } else {
                 // Default to self
                 $target = $combatant;
@@ -305,7 +305,7 @@ class HeroBattleService
         }
 
         // Prepare combatants for next turn
-        foreach ($combatants as $combatant) {
+        foreach ($livingCombatants as $combatant) {
             if ($combatant->current_health > $combatant->health) {
                 $combatant->current_health = $combatant->health;
             }
@@ -315,7 +315,11 @@ class HeroBattleService
             $combatant->save();
         }
 
-        $livingCombatants = $combatants->where('current_health', '>', '0');
+        foreach ($heroBattle->combatants as $combatant) {
+            $this->processStatus($combatant);
+        }
+
+        $livingCombatants = $heroBattle->combatants->where('current_health', '>', '0');
         if ($livingCombatants->count() == 0) {
             // Everyone was eliminated (draw)
             $this->setWinner($heroBattle, null);
@@ -347,6 +351,14 @@ class HeroBattleService
             $combatant->actions = $queuedActions;
             if (!$limitedActions->contains($nextAction['action']) || $nextAction['action'] != $combatant->last_action) {
                 return $nextAction;
+            }
+        }
+
+        // Summoning
+        if (in_array('summon_skeleton', $combatant->abilities ?? [])) {
+            $actionDef = $this->heroHelper->getCombatActions()->get('summon_skeleton');
+            if ((($combatant->battle->current_turn - 1) % $actionDef['attributes']['turns']) == 0) {
+                return ['action' => 'summon_skeleton', 'target' => null];
             }
         }
 
@@ -533,75 +545,29 @@ class HeroBattleService
         ];
     }
 
-    public function processFlurryAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    public function processStatAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
     {
-        $attackCount = $actionDef['attributes']['attacks'] ?? 1;
-        $damagePenalty = $actionDef['attributes']['penalty'] ?? 1;
+        $stat = $actionDef['attributes']['stat'];
+        $value = $actionDef['attributes']['value'];
 
-        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackCount * $damagePenalty);
-        $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
-        $this->spendFocus($combatant);
-        $health = 0;
-        $countered = false;
-
-        if ($target->current_action == 'counter') {
-            $countered = true;
-            $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef) * $attackCount);
-            $health = -$counterDamage;
-        }
-
-        $messages = $actionDef['messages'];
-
-        if ($damage > 0 && $evaded) {
-            $damageEvaded = $damage;
-            $damage = round($damage / 2);
-            if ($countered) {
-                $description = sprintf(
-                    $messages['evaded_countered'],
-                    $combatant->name,
-                    $attackCount,
-                    $damageEvaded,
-                    $target->name,
-                    $damage,
-                    $target->name,
-                    $attackCount,
-                    $counterDamage
-                );
-            } else {
-                $description = sprintf(
-                    $messages['evaded'],
-                    $combatant->name,
-                    $attackCount,
-                    $damageEvaded,
-                    $target->name,
-                    $damage
-                );
+        if ($actionDef['type'] == 'self') {
+            if ($stat == 'shield' && $combatant->shield > 0) {
+                $value = $value - $combatant->shield;
             }
+            $combatant->increment($stat, $value);
+            $description = sprintf($actionDef['messages']['stat'], $combatant->name);
         } else {
-            if ($countered) {
-                $description = sprintf(
-                    $messages['countered'],
-                    $combatant->name,
-                    $attackCount,
-                    $damage,
-                    $target->name,
-                    $attackCount,
-                    $counterDamage
-                );
+            if ($value < 0 && $target->{$stat} <= 5) {
+                $description = "{$combatant->name} uses {$actionDef['name']}, but it has no effect.";
             } else {
-                $description = sprintf(
-                    $messages['hit'],
-                    $combatant->name,
-                    $attackCount,
-                    $damage,
-                    $target->name
-                );
+                $target->increment($stat, $value);
+                $description = sprintf($actionDef['messages']['stat'], $combatant->name, $target->name);
             }
         }
 
         return [
-            'damage' => $damage,
-            'health' => $health,
+            'damage' => 0,
+            'health' => 0,
             'description' => $description
         ];
     }
@@ -702,30 +668,94 @@ class HeroBattleService
         ];
     }
 
-    public function processStatAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    public function processFlurryAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
     {
-        $stat = $actionDef['attributes']['stat'];
-        $value = $actionDef['attributes']['value'];
+        $attackCount = $actionDef['attributes']['attacks'] ?? 1;
+        $damagePenalty = $actionDef['attributes']['penalty'] ?? 1;
 
-        if ($actionDef['type'] == 'self') {
-            if ($stat == 'shield' && $combatant->shield > 0) {
-                $value = $value - $combatant->shield;
-            }
-            $combatant->increment($stat, $value);
-            $description = sprintf($actionDef['messages']['stat'], $combatant->name);
-        } else {
-            if ($value < 0 && $target->{$stat} <= 5) {
-                $description = "{$combatant->name} uses {$actionDef['name']}, but it has no effect.";
+        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackCount * $damagePenalty);
+        $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
+        $this->spendFocus($combatant);
+        $health = 0;
+        $countered = false;
+
+        if ($target->current_action == 'counter') {
+            $countered = true;
+            $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef) * $attackCount);
+            $health = -$counterDamage;
+        }
+
+        $messages = $actionDef['messages'];
+
+        if ($damage > 0 && $evaded) {
+            $damageEvaded = $damage;
+            $damage = round($damage / 2);
+            if ($countered) {
+                $description = sprintf(
+                    $messages['evaded_countered'],
+                    $combatant->name,
+                    $attackCount,
+                    $damageEvaded,
+                    $target->name,
+                    $damage,
+                    $target->name,
+                    $attackCount,
+                    $counterDamage
+                );
             } else {
-                $target->increment($stat, $value);
-                $description = sprintf($actionDef['messages']['stat'], $combatant->name, $target->name);
+                $description = sprintf(
+                    $messages['evaded'],
+                    $combatant->name,
+                    $attackCount,
+                    $damageEvaded,
+                    $target->name,
+                    $damage
+                );
+            }
+        } else {
+            if ($countered) {
+                $description = sprintf(
+                    $messages['countered'],
+                    $combatant->name,
+                    $attackCount,
+                    $damage,
+                    $target->name,
+                    $attackCount,
+                    $counterDamage
+                );
+            } else {
+                $description = sprintf(
+                    $messages['hit'],
+                    $combatant->name,
+                    $attackCount,
+                    $damage,
+                    $target->name
+                );
             }
         }
 
         return [
+            'damage' => $damage,
+            'health' => $health,
+            'description' => $description
+        ];
+    }
+
+    public function processSummonAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $message = $actionDef['messages']['summon'];
+        $enemy = $actionDef['attributes']['enemy'] ?? 'imp';
+        $enemies = $this->heroEncounterHelper->getEnemies();
+        $enemyStats = $enemies->get($enemy);
+
+        $minionCount = $combatant->battle->combatants->where('hero_id', null)->count();
+        $enemyStats['name'] .= " #{$minionCount}";
+        $this->createNonPlayerCombatant($combatant->battle, $enemyStats);
+
+        return [
             'damage' => 0,
             'health' => 0,
-            'description' => $description
+            'description' => sprintf($message, $combatant->name)
         ];
     }
 
@@ -738,6 +768,47 @@ class HeroBattleService
         }
 
         return '';
+    }
+
+    public function processStatus(HeroCombatant $combatant): void
+    {
+        $damage = 0;
+        $health = 0;
+        $description = '';
+
+        if (in_array('undying', $combatant->abilities ?? [])) {
+            if ($combatant->current_health <= 0) {
+                $status = $combatant->status ?? [];
+                if (!isset($status['undying'])) {
+                    $status['undying'] = 5;
+                    $description = "{$combatant->name} will return from the dead in {$status['undying']} turns.";
+                } else {
+                    $status['undying'] -= 1;
+                    if ($status['undying'] == 0) {
+                        unset($status['undying']);
+                        $health = round($combatant->health / 2);
+                        $combatant->update(['current_health' => $health, 'health' => $health, 'has_focus' => false]);
+                        $description = "{$combatant->name} has returned to life.";
+                    } else {
+                        $description = "{$combatant->name} will return from the dead in {$status['undying']} turns.";
+                    }
+                }
+                $combatant->update(['status' => $status]);
+            }
+        }
+
+        if ($description !== '') {
+            HeroBattleAction::create([
+                'hero_battle_id' => $combatant->battle->id,
+                'combatant_id' => $combatant->id,
+                'target_combatant_id' => null,
+                'turn' => $combatant->battle->current_turn,
+                'action' => 'status',
+                'damage' => $damage,
+                'health' => $health,
+                'description' => $description
+            ]);
+        }
     }
 
     protected function setWinner(HeroBattle $heroBattle, ?HeroCombatant $winner): void

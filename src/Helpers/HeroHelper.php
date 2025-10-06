@@ -445,7 +445,41 @@ class HeroHelper
                     'countered' => '%s unleashes a blade flurry, striking %s times for %s damage to %s, who then counters %s times for %s damage.',
                     'evaded_countered' => '%s unleashes a blade flurry, striking %s times for %s damage, but %s evades, reducing damage to %s, then %s counters %s times for %s damage.'
                 ]
-            ]
+            ],
+            'undying' => [
+                'name' => 'Undying',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'turns' => 5,
+                ],
+                'messages' => [
+                    'undying' => '%s will return from the dead in 5 turns.'
+                ]
+            ],
+            'undying_legion' => [
+                'name' => 'Undying Legion',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+            ],
+            'summon_skeleton' => [
+                'name' => 'Summon Skeleton',
+                'processor' => 'summon',
+                'type' => 'self',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'enemy' => 'skeleton_warrior',
+                    'turns' => 4,
+                ],
+                'messages' => [
+                    'summon' => '%s has summoned a Skeleton Warrior.'
+                ]
+            ],
         ]);
     }
 
@@ -505,7 +539,10 @@ class HeroHelper
             'mending' => 'Mending: Focus enhances your Recover ability, increasing healing.',
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
+            'summon_skeleton' => 'Summon: Summons a Skeleton Warrior every 4th turn.',
             'tactical_awareness' => 'Tactical Awareness: Reduces target\'s counter value by 2 for the remainder of the battle.',
+            'undying' => 'Undying: Returns from the dead 5 turns after being defeated.',
+            'undying_legion' => 'Undying Legion: Immune to damage while any minions are alive.',
             'volatile_mixture' => 'Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.',
         ];
 
@@ -537,6 +574,11 @@ class HeroHelper
                 'type' => 'basic',
                 'options' => ['attack' => 3, 'defend' => 1, 'counter' => 1, 'recover' => 1]
             ],
+            'attack' => [
+                'name' => 'Mindless Attacker',
+                'type' => 'npc',
+                'options' => ['attack' => 1]
+            ],
             'counter' => [
                 'name' => 'Counter-Heavy',
                 'type' => 'npc',
@@ -546,7 +588,12 @@ class HeroHelper
                 'name' => 'Pirate',
                 'type' => 'npc',
                 'options' => ['attack' => 2, 'blade_flurry' => 3, 'focus' => 1, 'counter' => 1, 'recover' => 1]
-            ]
+            ],
+            'summoner' => [
+                'name' => 'Summoner',
+                'type' => 'npc',
+                'options' => ['attack' => 0, 'defend' => 4, 'recover' => 1]
+            ],
         ]);
     }
 

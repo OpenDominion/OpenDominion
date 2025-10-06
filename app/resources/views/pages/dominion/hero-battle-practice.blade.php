@@ -28,14 +28,14 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><input type="radio" id="enemy-default" name="enemy" value="default" checked /></td>
-                                    <td><label for="enemy-default" style="font-weight: normal;">Evil Twin</label></td>
+                                    <td><input type="radio" id="encounter-default" name="encounter" value="default" checked /></td>
+                                    <td><label for="encounter-default" style="font-weight: normal;">Evil Twin</label></td>
                                     <td>Clone with your current stats</td>
                                 </tr>
-                                @foreach ($heroEncounterHelper->getPracticeBattles() as $key => $practiceBattle)
+                                @foreach ($heroEncounterHelper->getEncounters() as $key => $practiceBattle)
                                     <tr>
-                                        <td><input type="radio" id="enemy-{{ $key }}" name="enemy" value="{{ $key }}" /></td>
-                                        <td><label for="enemy-{{ $key }}" style="font-weight: normal;">{{ $practiceBattle['name'] }}</label></td>
+                                        <td><input type="radio" id="encounter-{{ $key }}" name="encounter" value="{{ $key }}" /></td>
+                                        <td><label for="encounter-{{ $key }}" style="font-weight: normal;">{{ $practiceBattle['name'] }}</label></td>
                                         <td>{{ $practiceBattle['source'] }}</td>
                                     </tr>
                                 @endforeach
