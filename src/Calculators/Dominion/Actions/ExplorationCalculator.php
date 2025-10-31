@@ -45,7 +45,7 @@ class ExplorationCalculator
     public function getPlatinumCost(Dominion $dominion): int
     {
         $totalLand = $this->landCalculator->getTotalLand($dominion);
-        $platinum = max(0.6 * ($totalLand ** 1.299), 850);
+        $platinum = (0.00045 * ($totalLand ** 2)) + (5.45 * $totalLand) - 800;
 
         return round($platinum * $this->getPlatinumCostMultiplier($dominion));
     }
