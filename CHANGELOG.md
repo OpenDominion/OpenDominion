@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lizardfolk: offensive spy power perk increased to 35% (from 25%)
 - Sylvan: defensive wizard power perk removed
 - Sylvan Dryad: now counts as 0.18 of a wizard (from 0.15)
+- Vampire: gains +100% to hero bonuses
 
 ## [1.46.1] - 2025-08-30
 ### Added

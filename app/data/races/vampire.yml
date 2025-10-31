@@ -12,6 +12,7 @@ perks:
   max_population: 7.5
   food_consumption: -75
   immortal_wizards: 1
+  hero_bonus: 100
 units:
   - name: Dire Bat
     cost:
