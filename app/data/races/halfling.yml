@@ -12,7 +12,7 @@ perks:
   max_population: 5
   defense: 10
   food_consumption: -30
-  spy_power_defense: 25
+  spy_power_defense: 35
 units:
   - name: Slinger
     cost:
