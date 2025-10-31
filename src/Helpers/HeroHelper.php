@@ -199,7 +199,7 @@ class HeroHelper
             'invest_bonus' => '%+g%% castle investment bonus',
             'martyrdom' => 'Reduces the cost of spy and wizard training by 1%% per %g prestige (max 50%%) for 24 hours',
             'offense' => '%+g%% offensive power',
-            'raze_mod_building_discount' => 'Destroying military buildings (Gryphon Nests, Guard Towers, and Temples) awards discounted land',
+            'raze_mod_building_discount' => 'Destroying military buildings (Docks, Gryphon Nests, Guard Towers, Smithies, and Temples) awards discounted land',
             'tech_production' => '%+g%% research point production',
             'tech_refund' => 'Reset all techs, then gain RP to unlock up to 5 techs lost plus  %g%% of the remaining techs lost',
         ];

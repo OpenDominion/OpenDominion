@@ -77,7 +77,7 @@ class DestroyActionService
             $dominion->{'building_' . $buildingType} -= $amount;
             // Heroes
             if ($dominion->hero !== null) {
-                if ($dominion->hero->getPerkValue('raze_mod_building_discount') && in_array($buildingType, ['gryphon_nest', 'guard_tower', 'temple'])) {
+                if ($dominion->hero->getPerkValue('raze_mod_building_discount') && in_array($buildingType, ['dock', 'gryphon_nest', 'guard_tower', 'smithy', 'temple'])) {
                     $discountedAcres += $amount;
                 }
             }
