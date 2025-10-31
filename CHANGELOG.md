@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.47.0] - 2025-10-31
 ### Changed
 - Explore platinum cost formula adjusted
 - Starting bot DP reduced slightly across the board, but reduced significantly between 526 and ~560 acres
@@ -20,7 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Prestige loss on invasion now capped at the amount the attacker gained (before recently invaded penalties)
 - Dark Elf: offensive wizard power perk removed
 - Dark Elf Adept: now counts as 0.18 of a wizard (from 0.15)
-- Demon Corruption: reduced to -2.5% platinum (from 5%)
+- Demon Corruption: reduced to -2.5% platinum (from -5%)
 - Halfling: defensive spy power perk increased to 35% (from 25%)
 - Lizardfolk: offensive spy power perk increased to 35% (from 25%)
 - Sylvan: defensive wizard power perk removed

@@ -179,12 +179,12 @@ class TickService
                     if ($landSize < 420) {
                         $landSize = 460;
                     }
-                    if ($landSize > 525) {
+                    if ($landSize > 600) {
                         $landSize = 525;
                     }
                 } else {
                     // Remaining 25% of NPDs between 526-600
-                    // These spawn with increased defense
+                    // These spawn with slightly higher defense
                     $landSize = mt_rand(526, 600);
                 }
                 $dominion = null;
