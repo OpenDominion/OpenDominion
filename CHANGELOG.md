@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Explore platinum cost formula adjusted
 - Starting bot DP reduced slightly across the board, but reduced significantly between 526 and ~560 acres
 - Disarmament upgrade (Scion) now includes Docks and Smithies
+- Scholar max population per level changed to 0.1% (from 0.2%)
 - Cooldown to change hero classes reduced to 72 (from 96)
 - Shrines now increase hero bonuses and XP gains by 40% per 1% owned, up to a maximum of 200% at 5% owned (was 25%, max 200% at 8% owned)
 - XP per bounty changed to normal XP + 6 (from flat 8)

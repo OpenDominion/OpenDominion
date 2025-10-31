@@ -82,7 +82,7 @@ class HeroHelper
                 'key' => 'scholar',
                 'class_type' => 'advanced',
                 'perk_type' => 'max_population',
-                'coefficient' => 0.2,
+                'coefficient' => 0.1,
                 'perks' => ['pursuit_of_knowledge'],
                 'icon' => 'ra-graduate-cap',
                 'requirement_stat' => 'resource_tech',
