@@ -4,6 +4,21 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Explore platinum cost formula adjusted
+- Disarmament upgrade (Scion) now includes Docks and Smithies
+- Cooldown to change hero classes reduced to 72 (from 96)
+- Shrines now increase hero bonuses and XP gains by 40% per 1% owned, up to a maximum of 200% at 5% owned (was 25%, max 200% at 8% owned)
+- XP per black op spell changed to 7 (from 4) [to be in line with the increase we did to info]
+- XP per war spell changed to 8 (from 6) [to be in line with the increase we did to info]
+- Damage multiplier for magic/espionage raid tactics slightly reduced
+- Prestige gain from completing a raid objective slightly reduced
+- Dark Elf: offensive wizard power perk removed
+- Dark Elf Adept: now counts as 0.18 of a wizard (from 0.15)
+- Halfling: defensive spy power perk increased to 35% (from 25%)
+- Lizardfolk: offensive spy power perk increased to 35% (from 25%)
+- Sylvan: defensive wizard power perk removed
+- Sylvan Dryad: now counts as 0.18 of a wizard (from 0.15)
 
 ## [1.46.1] - 2025-08-30
 ### Added

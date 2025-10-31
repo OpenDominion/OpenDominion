@@ -207,9 +207,9 @@ class SpellActionService
                 }
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
                 if ($this->spellHelper->isWarSpell($spell)) {
-                    $xpGain = 6;
+                    $xpGain = 8;
                 } else {
-                    $xpGain = 4;
+                    $xpGain = 7;
                 }
                 $result = $this->castHostileSpell($dominion, $spell, $target);
                 if (isset($result['damage']) && $result['damage'] == 0) {
