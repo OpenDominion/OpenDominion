@@ -15,7 +15,7 @@ class BountyService
     public const DAILY_XP_LIMIT = 8;
     public const REWARD_RESOURCE = 'resource_tech';
     public const REWARD_AMOUNT = 10;
-    public const XP_AMOUNT = 8;
+    public const XP_AMOUNT = 6;
 
     /**
      * Get bounties for a realm

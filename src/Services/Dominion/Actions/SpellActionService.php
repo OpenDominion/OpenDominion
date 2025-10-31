@@ -260,7 +260,7 @@ class SpellActionService
                         $bountyRewardString = '';
                         $rewards = $result['bounty'];
                         if (isset($rewards['xp']) && $rewards['xp']) {
-                            $xpGain = max($xpGain, $rewards['xp']);
+                            $xpGain += $rewards['xp'];
                         }
                         if (isset($rewards['resource']) && isset($rewards['amount'])) {
                             $dominion->{$rewards['resource']} += $rewards['amount'];
