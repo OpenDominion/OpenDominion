@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Prestige loss on invasion now capped at the amount the attacker gained (before recently invaded penalties)
 - Dark Elf: offensive wizard power perk removed
 - Dark Elf Adept: now counts as 0.18 of a wizard (from 0.15)
+- Demon Corruption: reduced to -2.5% platinum (from 5%)
 - Halfling: defensive spy power perk increased to 35% (from 25%)
 - Lizardfolk: offensive spy power perk increased to 35% (from 25%)
 - Sylvan: defensive wizard power perk removed
