@@ -19,7 +19,7 @@ class HeroCalculator
     /**
      * @var int Hours required between class changes
      */
-    public const CLASS_CHANGE_COOLDOWN_HOURS = 96;
+    public const CLASS_CHANGE_COOLDOWN_HOURS = 72;
 
     /** @var HeroHelper */
     protected $heroHelper;
@@ -59,7 +59,7 @@ class HeroCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $xpPerShrine = 25;
+        $xpPerShrine = 40;
         $xpPerShrineMax = 200;
 
         $multiplier += min(
@@ -157,7 +157,7 @@ class HeroCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $bonusPerShrine = 25;
+        $bonusPerShrine = 40;
         $bonusPerShrineMax = 200;
 
         $multiplier += min(
