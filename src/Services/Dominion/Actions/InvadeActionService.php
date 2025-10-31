@@ -430,7 +430,7 @@ class InvadeActionService
             $attackerPrestigeChange = $this->prestigeCalculator->getPrestigePenalty($dominion, $target);
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = $this->prestigeCalculator->getPrestigeGain($dominion, $target);
-            $targetPrestigeChange = $this->prestigeCalculator->getPrestigeLoss($target);
+            $targetPrestigeChange = $this->prestigeCalculator->getPrestigeLoss($target, $attackerPrestigeChange);
 
             // Penalty for habitual invasions
             $habitualHits = $this->militaryCalculator->getHabitualInvasionCount($dominion, $target);

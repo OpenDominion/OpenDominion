@@ -117,6 +117,9 @@ class PrestigeCalculator
     {
         $multiplier = 1;
 
+        // Morale
+        $multiplier -= ((100 - $dominion->morale) / 100);
+
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('prestige_gains');
 
@@ -151,13 +154,26 @@ class PrestigeCalculator
         return (int)round($prestigeLoss);
     }
 
-    public function getPrestigeLoss(Dominion $target): int
+    public function getPrestigeLoss(Dominion $target, int $prestigeGain = null): int
     {
         $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
-        $prestigeLossPercentage = min(
-            (static::PRESTIGE_LOSS_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $weeklyInvadedCount),
-            (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
-        );
-        return (int)round($target->prestige * -($prestigeLossPercentage));
+
+        // Calculate base prestige loss
+        $baseLoss = $target->prestige * (static::PRESTIGE_LOSS_PERCENTAGE / 100);
+
+        // Cap at prestige gain if provided
+        if ($prestigeGain !== null) {
+            $baseLoss = min($baseLoss, $prestigeGain);
+        }
+
+        // Calculate additional loss from invasions
+        $additionalLossPercentage = (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100) * $weeklyInvadedCount;
+        $additionalLoss = $target->prestige * $additionalLossPercentage;
+
+        // Calculate total loss
+        $maxLoss = $target->prestige * (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100);
+        $totalLoss = min($baseLoss + $additionalLoss, $maxLoss);
+
+        return (int)round(-$totalLoss);
     }
 }

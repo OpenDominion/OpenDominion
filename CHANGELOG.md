@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - XP per war spell changed to 8 (from 6) [to be in line with the increase we did to info]
 - Damage multiplier for magic/espionage raid tactics slightly reduced
 - Prestige gain from completing a raid objective slightly reduced
+- Prestige gains now modified by morale
+- Prestige loss on invasion now capped at the amount the attacker gained (before recently invaded penalties)
 - Dark Elf: offensive wizard power perk removed
 - Dark Elf Adept: now counts as 0.18 of a wizard (from 0.15)
 - Halfling: defensive spy power perk increased to 35% (from 25%)
