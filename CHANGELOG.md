@@ -14,8 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Cooldown to change hero classes reduced to 72 (from 96)
 - Shrines now increase hero bonuses and XP gains by 40% per 1% owned, up to a maximum of 200% at 5% owned (was 25%, max 200% at 8% owned)
 - XP per bounty changed to normal XP + 6 (from flat 8)
-- XP per black op spell changed to 7 (from 4) [to be in line with the increase we did to info]
-- XP per war spell changed to 8 (from 6) [to be in line with the increase we did to info]
+- XP per black op spell changed to 7 (from 4)
+- XP per war spell changed to 8 (from 6)
 - Damage multiplier for magic/espionage raid tactics slightly reduced
 - Prestige gain from completing a raid objective slightly reduced
 - Prestige gains now modified by morale

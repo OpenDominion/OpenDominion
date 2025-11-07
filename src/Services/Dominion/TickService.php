@@ -160,32 +160,54 @@ class TickService
             $names = collect($names_json->dominion_names);
             $races = Race::where('playable', true)->get();
             $realm = $round->realms()->where('number', 0)->first();
+
             // Number of NPDs to spawn (80% of the number of real players)
             $npdCount = round($round->dominions()->count() * 0.8);
-            for ($cnt=0; $cnt<$npdCount; $cnt++) {
+
+            // Calculate starting land sizes using a Stratified Sampling Distribution
+            // Each bucket defines a land size range and percentage of total NPDs
+            // Sample distribution for 100 NPDs:
+            //   420-434: ████
+            //   435-449: ██████████
+            //   450-464: ████████████████████
+            //   465-479: ███████████████
+            //   480-494: ██████████
+            //   495-509: ███████
+            //   510-524: █████
+            //   525-539: ████████
+            //   540-554: ██████
+            //   555-569: ██████
+            //   570-584: █████
+            //   585-599: █████
+            $stratifiedDistribution = [
+                ['min' => 420, 'max' => 434, 'percentage' => 0.04],
+                ['min' => 435, 'max' => 449, 'percentage' => 0.10],
+                ['min' => 450, 'max' => 464, 'percentage' => 0.20],
+                ['min' => 465, 'max' => 479, 'percentage' => 0.15],
+                ['min' => 480, 'max' => 494, 'percentage' => 0.10],
+                ['min' => 495, 'max' => 509, 'percentage' => 0.07],
+                ['min' => 510, 'max' => 524, 'percentage' => 0.05],
+                ['min' => 525, 'max' => 539, 'percentage' => 0.075],
+                ['min' => 540, 'max' => 554, 'percentage' => 0.0575],
+                ['min' => 555, 'max' => 569, 'percentage' => 0.055],
+                ['min' => 570, 'max' => 584, 'percentage' => 0.0525],
+                ['min' => 585, 'max' => 599, 'percentage' => 0.05],
+            ];
+            $landSizes = [];
+            foreach ($stratifiedDistribution as $bucket) {
+                $bucketCount = (int)round($npdCount * $bucket['percentage']);
+                for ($i = 0; $i < $bucketCount; $i++) {
+                    $landSizes[] = mt_rand($bucket['min'], $bucket['max']);
+                }
+            }
+
+            // Create NPDs with pre-calculated land sizes
+            foreach ($landSizes as $landSize) {
                 // Select race
                 if ($realm->alignment != 'neutral') {
                     $race = $races->where('alignment', $realm->alignment)->random();
                 } else {
                     $race = $races->random();
-                }
-                // Calculate size
-                if ($cnt < $npdCount * 0.75) {
-                    // 75% of NPDs between 420 and 525
-                    // Standard distribution centered on 480 (640a EG)
-                    //   with a standard deviation of 45 (580a EG - 700a EG)
-                    // Outliers set to exactly 460 and 525 (~15% of all NPDs)
-                    $landSize = (int) random_distribution(480, 45);
-                    if ($landSize < 420) {
-                        $landSize = 460;
-                    }
-                    if ($landSize > 600) {
-                        $landSize = 525;
-                    }
-                } else {
-                    // Remaining 25% of NPDs between 526-600
-                    // These spawn with slightly higher defense
-                    $landSize = mt_rand(526, 600);
                 }
                 $dominion = null;
                 $failCount = 0;
