@@ -293,7 +293,7 @@ class AutomationService
         }
 
         $totalLand = $landCalculator->getTotalLand($dominion);
-        $defensivePower = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, false, true);
+        $defensivePower = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, true, true);
         $minDefense = $militaryCalculator->getMinimumDefense($dominion);
 
         foreach ($incomingQueue as $row) {
