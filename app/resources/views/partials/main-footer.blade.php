@@ -51,6 +51,7 @@
                         <label for="description">Description:</label>
                         <textarea name="description" class="form-control" id="description" rows=5></textarea>
                         <span class="help-block">Please be as detailed as possible to help us address the issue.</span>
+                        <span class="help-block">We investigate every issue. If the situation calls for it, you may receive a response (to the email address associated with your account), but this is rare.</span>
                     </div>
                 </div>
                 <div class="modal-footer">
