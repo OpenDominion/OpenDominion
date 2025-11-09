@@ -10,11 +10,11 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Dominion\History;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\UserActivity;
+use OpenDominion\Models\UserOrigin;
 use OpenDominion\Services\Activity\ActivityEvent;
 use OpenDominion\Services\Activity\ActivityService;
 
@@ -54,56 +54,17 @@ class DominionController extends AbstractController
             ->whereNotIn('ip', ['', '127.0.0.1'])
             ->count();
 
-        $userIps = UserActivity::select('ip')
-            ->where('user_id', '=', $dominion->user_id)
-            ->where('created_at', '>', $dominion->round->created_at)
-            ->where('created_at', '<', $dominion->round->end_date)
-            ->whereIn('key', ['user.login', 'user.logout'])
-            ->whereNotIn('ip', ['', '127.0.0.1'])
-            ->distinct('ip')
-            ->pluck('ip');
+        $ipsUsed = UserOrigin::select('ip_address')
+            ->where('dominion_id', '=', $dominion->id)
+            ->distinct('ip_address');
 
-        $historyIps = $dominion->history()
-            ->where('event', '!=', 'tick')
-            ->where('event', '!=', 'invade')
-            ->where('event', '!=', 'invaded')
-            ->where('event', '!=', 'wonder destroyed')
-            ->where('event', '!=', 'received spell')
-            ->where('event', '!=', 'received espionage operation')
-            ->where('delta', 'NOT LIKE', '%source_dominion_id%')
-            ->whereNotIn('ip', ['', '127.0.0.1'])
-            ->groupBy('ip')
-            ->pluck('ip');
+        $ipsUsedCount = $ipsUsed->count();
 
-        $ipsUsedCount = $userIps->merge($historyIps)->unique()->count();
+        $otherUserIps = UserOrigin::query()
+            ->whereIn('ip_address', $ipsUsed)
+            ->distinct('user_id');
 
-        $otherUserLogins = UserActivity::query()
-            ->where('created_at', '>', $dominion->round->created_at)
-            ->where('created_at', '<', $dominion->round->end_date)
-            ->whereIn('ip', $userIps->merge($historyIps)->unique())
-            ->whereIn('key', ['user.login', 'user.logout'])
-            ->distinct('user_id')
-            ->pluck('user_id');
-
-        $otherDominionsHistory = History::query()
-            ->where('created_at', '>', $dominion->round->created_at)
-            ->where('created_at', '<', $dominion->round->end_date)
-            ->where('event', '!=', 'tick')
-            ->where('event', '!=', 'invade')
-            ->where('event', '!=', 'invaded')
-            ->where('event', '!=', 'wonder destroyed')
-            ->where('event', '!=', 'received spell')
-            ->where('event', '!=', 'received espionage operation')
-            ->where('delta', 'NOT LIKE', '%source_dominion_id%')
-            ->whereIn('ip', $userIps->merge($historyIps)->unique())
-            ->distinct('dominion_id')
-            ->pluck('dominion_id');
-
-        $otherUsersHistory = Dominion::query()
-            ->whereIn('id', $otherDominionsHistory)
-            ->pluck('user_id');
-
-        $otherUserCount = $otherUserLogins->merge($otherUsersHistory)->unique()->count() - 1;
+        $otherUserCount = $otherUserIps->count() - 1;
 
         return view('pages.staff.moderator.dominions.show', [
             'dominion' => $dominion,
@@ -182,8 +143,6 @@ class DominionController extends AbstractController
             ->whereIn('user_id', $sharedUserActivity->pluck('user_id'))
             ->get()
             ->keyBy('user_id');
-
-        // TODO: dominion_history ips
 
         return view('pages.staff.moderator.dominions.showUserActivity', [
             'selectedDominionId' => $selectedDominionId,

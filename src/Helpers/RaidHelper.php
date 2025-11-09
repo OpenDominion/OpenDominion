@@ -54,20 +54,38 @@ class RaidHelper
     public function getTacticAttributeSchema(string $type): array
     {
         $schemas = [
-            'espionage' => 'array', // list of available operations [key => {name, strength_cost, points_awarded}]
-            'exploration' => 'array', // list of available operation [key => {name, morale_cost, draftee_cost, points_awarded}]
+            'espionage' => [
+                'strength_cost' => 15,
+                'morale_cost' => 10,
+                'points_awarded' => 2,
+                'limit' => 10,
+            ],
+            'exploration' => [
+                'draftee_cost' => 1000,
+                'morale_cost' => 10,
+                'points_awarded' => 6000,
+                'limit' => 10,
+            ],
             'hero' => [
-                'name' => 'string',
-                // combat stats
-                // key => 'integer'
-                'points_awarded' => 'integer',
+                'name' => 'Boss Name',
+                'encounter' => 'encounter_key',
+                'points_awarded' => 5000,
             ],
             'invasion' => [
-                'casualties' => 'float', // percentage of units lost
-                // points_awarded is calculated dynamically based on damage dealt
+                'casualties' => 3.5,
             ],
-            'investment' => 'array', // [key => {name, resource, amount, points_awarded}]
-            'magic' => 'array', // [key => {name, mana_cost, strength_cost, points_awarded}]
+            'investment' => [
+                'resource' => 'ore',
+                'amount' => 10000,
+                'points_awarded' => 10000,
+                'limit' => 10,
+            ],
+            'magic' => [
+                'mana_cost' => 1.5,
+                'strength_cost' => 10,
+                'points_awarded' => 2,
+                'limit' => 10,
+            ],
         ];
 
         return $schemas[$type] ?? [];

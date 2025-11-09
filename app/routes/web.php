@@ -366,6 +366,33 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');
         $router->resource('users', 'Staff\Administrator\UserController');
 
+        // Raids
+        $router->get('raids', 'Staff\Administrator\RaidController@getIndex')->name('raids.index');
+        $router->get('raids/create', 'Staff\Administrator\RaidController@getCreate')->name('raids.create');
+        $router->post('raids/create', 'Staff\Administrator\RaidController@postCreate');
+        $router->get('raids/{raid}', 'Staff\Administrator\RaidController@getShow')->name('raids.show');
+        $router->get('raids/{raid}/edit', 'Staff\Administrator\RaidController@getEdit')->name('raids.edit');
+        $router->post('raids/{raid}/edit', 'Staff\Administrator\RaidController@postEdit');
+        $router->get('raids/{raid}/delete', 'Staff\Administrator\RaidController@getDelete')->name('raids.delete');
+        $router->post('raids/{raid}/delete', 'Staff\Administrator\RaidController@postDelete');
+
+        // Raid Objectives
+        $router->get('raids/{raid}/objectives/create', 'Staff\Administrator\RaidController@getCreateObjective')->name('raids.objectives.create');
+        $router->post('raids/{raid}/objectives/create', 'Staff\Administrator\RaidController@postCreateObjective');
+        $router->get('raids/{raid}/objectives/{objective}', 'Staff\Administrator\RaidController@getShowObjective')->name('raids.objectives.show');
+        $router->get('raids/{raid}/objectives/{objective}/edit', 'Staff\Administrator\RaidController@getEditObjective')->name('raids.objectives.edit');
+        $router->post('raids/{raid}/objectives/{objective}/edit', 'Staff\Administrator\RaidController@postEditObjective');
+        $router->get('raids/{raid}/objectives/{objective}/delete', 'Staff\Administrator\RaidController@getDeleteObjective')->name('raids.objectives.delete');
+        $router->post('raids/{raid}/objectives/{objective}/delete', 'Staff\Administrator\RaidController@postDeleteObjective');
+
+        // Raid Objective Tactics
+        $router->get('raids/{raid}/objectives/{objective}/tactics/create', 'Staff\Administrator\RaidController@getCreateTactic')->name('raids.objectives.tactics.create');
+        $router->post('raids/{raid}/objectives/{objective}/tactics/create', 'Staff\Administrator\RaidController@postCreateTactic');
+        $router->get('raids/{raid}/objectives/{objective}/tactics/{tactic}/edit', 'Staff\Administrator\RaidController@getEditTactic')->name('raids.objectives.tactics.edit');
+        $router->post('raids/{raid}/objectives/{objective}/tactics/{tactic}/edit', 'Staff\Administrator\RaidController@postEditTactic');
+        $router->get('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@getDeleteTactic')->name('raids.objectives.tactics.delete');
+        $router->post('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@postDeleteTactic');
+
     });
 
     // Moderator
