@@ -29,7 +29,7 @@
     @endphp
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-bar-chart"></i> {{ $selectedDominion->name }} Overview</h3>
+            <h3 class="box-title"><i class="fa fa-bar-chart"></i> Overview - {{ $selectedDominion->name }}</h3>
             <a href="{{ route('dominion.misc.settings') }}" title="Resource Display Settings" data-toggle="tooltip">
                 <i class="fa fa-cog fa-sm"></i>
             </a>

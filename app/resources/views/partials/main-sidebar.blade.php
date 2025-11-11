@@ -1,7 +1,7 @@
 <aside class="main-sidebar">
     <section class="sidebar">
         @php
-            $hiddenLinks = array_get($selectedDominion->settings, 'hidden_links', []);
+            $hiddenLinks = $selectedDominion->settings['hidden_links'] ?? [];
         @endphp
 
         @if (isset($selectedDominion))

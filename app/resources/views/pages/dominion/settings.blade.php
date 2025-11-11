@@ -104,70 +104,70 @@
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="explore_land"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('explore_land', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('explore_land', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Explore Land
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="hero_battles"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('hero_battles', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('hero_battles', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Hero Battles
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="hero_tournament"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('hero_tournament', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('hero_tournament', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Hero Tournament
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="journal"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('journal', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('journal', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Journal
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="invade"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('invade', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('invade', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Invade
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="calculators"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('calculators', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('calculators', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Calculators
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="world"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('world', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('world', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             The World
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="council"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('council', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('council', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             The Council
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="rankings"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('rankings', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('rankings', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Rankings
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="hidden_links[]" value="forum"
-                                                {{ isset($selectedDominion->settings['hidden_links']) && in_array('forum', $selectedDominion->settings['hidden_links']) ? 'checked' : null }} />
+                                                {{ in_array('forum', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
                                             Round Forum
                                         </label>
                                     </div>
