@@ -783,7 +783,8 @@ class RealmAssignmentService
         });
         if ($potentialRealms->isEmpty()) {
             // Ignore size restrictions if no other options
-            $potentialRealms = $this->realms;
+            $potentialRealms = $this->realms->where('rating', '<', $this->targetRealmStrength);
+            // TODO: if still empty???
         }
 
         foreach ($potentialRealms as $realm) {

@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Helpers\AIHelper;
+use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
 use OpenDominion\Models\Pack;
@@ -449,6 +450,7 @@ class MiscController extends AbstractDominionController
         }
 
         return view('pages.dominion.settings', [
+            'miscHelper' => app(MiscHelper::class),
             'rankingsHelper' => app(RankingsHelper::class),
         ]);
     }
@@ -460,9 +462,10 @@ class MiscController extends AbstractDominionController
             $this->guardLockedDominion($dominion);
 
             $settings = $dominion->settings;
-            $settings['preferred_title'] = $request->get('title');
+            $settings['preferred_title'] = $request->get('preferred_title');
             $settings['show_icon'] = $request->get('show_icon');
             $settings['black_guard_icon'] = $request->get('black_guard_icon');
+            $settings['resources_overview'] = $request->get('resources_overview');
 
             $dominion->settings = $settings;
             $dominion->save();

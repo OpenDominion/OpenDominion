@@ -4,6 +4,41 @@ namespace OpenDominion\Helpers;
 
 class MiscHelper
 {
+    public function getResourceOverviewOptions(): array
+    {
+        return [
+            'Defense',
+            'Draftees',
+            'Employment',
+            'Food',
+            'Gems',
+            'Jobs',
+            'Land',
+            'Lumber',
+            'Mana',
+            'Morale',
+            'Networth',
+            'Ore',
+            'Peasants',
+            'Platinum',
+            'Prestige',
+            'Research',
+            'Spy Ratio',
+            'Spy Str',
+            'Wiz Ratio',
+            'Wiz Str',
+        ];
+    }
+
+    public function getResourceOverviewDefaultSettings(): array
+    {
+        return [
+            ['Land', 'Platinum', 'Food', 'Ore'],
+            ['Networth', 'Lumber', 'Mana', 'Gems'],
+            ['Peasants', 'Draftees', 'Spy Str', 'Research'],
+        ];
+    }
+
     public function getResourceHelpString(string $resource): ?string {
         $helpStrings = [
             'platinum' => 'Produced via alchemies and peasants paying taxes.',

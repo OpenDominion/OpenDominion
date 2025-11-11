@@ -9,7 +9,9 @@ use Illuminate\Contracts\View\View;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
-use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Bounty;
 use OpenDominion\Models\MessageBoard;
@@ -157,7 +159,9 @@ class ComposerServiceProvider extends AbstractServiceProvider
         // todo: do we need this here in this class?
         view()->composer('partials.resources-overview', function (View $view) {
             $view->with('landCalculator', app(LandCalculator::class));
-            $view->with('networthCalculator', app(NetworthCalculator::class));
+            $view->with('militaryCalculator', app(MilitaryCalculator::class));
+            $view->with('miscHelper', app(MiscHelper::class));
+            $view->with('populationCalculator', app(PopulationCalculator::class));
             $view->with('techCalculator', app(TechCalculator::class));
         });
 
