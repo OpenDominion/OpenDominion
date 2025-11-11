@@ -4,8 +4,8 @@ namespace OpenDominion\Http\Controllers\Staff\Administrator;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Helpers\RaidHelper;
+use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\RaidObjective;
 use OpenDominion\Models\RaidObjectiveTactic;
