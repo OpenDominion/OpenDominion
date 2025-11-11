@@ -1,5 +1,8 @@
 <aside class="main-sidebar">
     <section class="sidebar">
+        @php
+            $hiddenLinks = array_get($selectedDominion->settings, 'hidden_links', []);
+        @endphp
 
         @if (isset($selectedDominion))
             <div class="user-panel">
@@ -66,7 +69,9 @@
                 </li>
 
                 <li class="header">DOMINION</li>
-                <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="ra ra-telescope ra-fw"></i> <span>Explore Land</span></a></li>
+                <li class="{{ Route::is('dominion.explore') ? 'active' : null }} {{ in_array('explore_land', $hiddenLinks) ? 'hidden' : null }}">
+                    <a href="{{ route('dominion.explore') }}"><i class="ra ra-telescope ra-fw"></i> <span>Explore Land</span></a>
+                </li>
                 @if ($selectedDominion->isBuildingPhase())
                     <li class="{{ Route::is('dominion.protection.buildings') ? 'active' : null }}">
                         <a href="{{ route('dominion.protection.buildings') }}">
@@ -94,9 +99,15 @@
                         </a>
                     </li>
                 @endif
-                <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}"><a href="{{ route('dominion.rezone') }}"><i class="fa fa-refresh fa-fw"></i> <span>Re-zone Land</span></a></li>
-                <li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>
-                <li class="{{ Route::is('dominion.bank') ? 'active' : null }}"><a href="{{ route('dominion.bank') }}"><i class="fa fa-money fa-fw"></i> <span>National Bank</span></a></li>
+                <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}">
+                    <a href="{{ route('dominion.rezone') }}"><i class="fa fa-refresh fa-fw"></i> <span>Re-zone Land</span></a>
+                </li>
+                <li class="{{ Route::is('dominion.improvements') ? 'active' : null }}">
+                    <a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a>
+                </li>
+                <li class="{{ Route::is('dominion.bank') ? 'active' : null }}">
+                    <a href="{{ route('dominion.bank') }}"><i class="fa fa-money fa-fw"></i> <span>National Bank</span></a>
+                </li>
                 <li class="{{ Route::is('dominion.techs') ? 'active' : null }}">
                     <a href="{{ route('dominion.techs') }}">
                         <i class="fa fa-flask fa-fw"></i> <span>Technology</span>
@@ -122,7 +133,7 @@
                     </a>
                 </li>
                 @if ($selectedDominion->hero)
-                    <li class="{{ Route::is('dominion.heroes.battles') ? 'active' : null }}">
+                    <li class="{{ Route::is('dominion.heroes.battles') ? 'active' : null }} {{ in_array('hero_battles', $hiddenLinks) ? 'hidden' : null }}">
                         <a href="{{ route('dominion.heroes.battles') }}">
                             <i class="ra ra-axe ra-fw"></i> <span>Hero Battles</span>
                             @if ($selectedDominion->hero->combatActionRequired() > 0)
@@ -136,7 +147,7 @@
                     </li>
                 @endif
                 @if ($selectedDominion->round->tournaments()->count() > 0)
-                    <li class="{{ Route::is('dominion.heroes.tournaments') ? 'active' : null }}">
+                    <li class="{{ Route::is('dominion.heroes.tournaments') ? 'active' : null }} {{ in_array('hero_tournament', $hiddenLinks) ? 'hidden' : null }}">
                         <a href="{{ route('dominion.heroes.tournaments') }}">
                             <i class="fa fa-trophy fa-fw"></i> <span>Hero Tournament</span>
                             @if ($selectedDominion->round->tournaments()->where('start_date', '>', now())->count() > 0)
@@ -161,11 +172,17 @@
                         @endif
                     </a>
                 </li>
-                <li class="{{ Route::is('dominion.journal') ? 'active' : null }}"><a href="{{ route('dominion.journal') }}"><i class="ra ra-scroll-quill ra-fw"></i> <span>Journal</span></a></li>
+                <li class="{{ Route::is('dominion.journal') ? 'active' : null }} {{ in_array('journal', $hiddenLinks) ? 'hidden' : null }}">
+                    <a href="{{ route('dominion.journal') }}"><i class="ra ra-scroll-quill ra-fw"></i> <span>Journal</span></a>
+                </li>
 
                 <li class="header">OPERATIONS</li>
-                <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
-                <li class="{{ Route::is('dominion.invade') ? 'active' : null }}"><a href="{{ route('dominion.invade') }}"><i class="ra ra-crossed-swords ra-fw"></i> <span>Invade</span></a></li>
+                <li class="{{ Route::is('dominion.military') ? 'active' : null }}">
+                    <a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a>
+                </li>
+                <li class="{{ Route::is('dominion.invade') ? 'active' : null }} {{ in_array('invade', $hiddenLinks) ? 'hidden' : null }}">
+                    <a href="{{ route('dominion.invade') }}"><i class="ra ra-crossed-swords ra-fw"></i> <span>Invade</span></a>
+                </li>
                 <li class="{{ Route::is('dominion.magic') ? 'active' : null }}">
                     <a href="{{ route('dominion.magic') }}">
                         <i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span>
@@ -191,11 +208,17 @@
 
                     </a>
                 </li>
-                <li class="{{ Route::is('dominion.espionage') ? 'active' : null }}"><a href="{{ route('dominion.espionage') }}"><i class="fa fa-user-secret fa-fw"></i> <span>Espionage</span></a></li>
+                <li class="{{ Route::is('dominion.espionage') ? 'active' : null }}">
+                    <a href="{{ route('dominion.espionage') }}"><i class="fa fa-user-secret fa-fw"></i> <span>Espionage</span></a>
+                </li>
                 @if ($selectedDominion->black_guard_active_at !== null)
-                    <li class="{{ Route::is('dominion.black-guard') ? 'active' : null }}"><a href="{{ route('dominion.black-guard') }}"><i class="ra ra-fire-shield ra-fw"></i> <span>Chaos League</span></a></li>
+                    <li class="{{ Route::is('dominion.black-guard') ? 'active' : null }}">
+                        <a href="{{ route('dominion.black-guard') }}"><i class="ra ra-fire-shield ra-fw"></i> <span>Chaos League</span></a>
+                    </li>
                 @endif
-                <li class="{{ Route::is('dominion.op-center*') ? 'active' : null }}"><a href="{{ route('dominion.op-center') }}"><i class="ra ra-scroll-unfurled ra-fw"></i> <span>Op Center</span></a></li>
+                <li class="{{ Route::is('dominion.op-center*') ? 'active' : null }}">
+                    <a href="{{ route('dominion.op-center') }}"><i class="ra ra-scroll-unfurled ra-fw"></i> <span>Op Center</span></a>
+                </li>
                 <li class="{{ Route::is('dominion.bounty-board') ? 'active' : null }}">
                     <a href="{{ route('dominion.bounty-board') }}">
                         <i class="ra ra-hanging-sign ra-fw"></i> <span>Bounty Board</span>
@@ -215,13 +238,21 @@
                         @endif
                     </a>
                 </li>
-                <li class="{{ Route::is('dominion.calculations') ? 'active' : null }}"><a href="{{ route('dominion.calculations') }}"><i class="fa fa-calculator fa-fw"></i> <span>Calculators</span></a></li>
+                <li class="{{ Route::is('dominion.calculations') ? 'active' : null }} {{ in_array('calculators', $hiddenLinks) ? 'hidden' : null }}">
+                    <a href="{{ route('dominion.calculations') }}"><i class="fa fa-calculator fa-fw"></i> <span>Calculators</span></a>
+                </li>
 
                 <li class="header">RELATIONS</li>
-                <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>Realms</span></a></li>
-                <li class="{{ Route::is('dominion.world') ? 'active' : null }}"><a href="{{ route('dominion.world') }}"><i class="fa fa-globe fa-fw"></i> <span>The World</span></a></li>
-                <li class="{{ Route::is('dominion.search') ? 'active' : null }}"><a href="{{ route('dominion.search') }}"><i class="fa fa-search fa-fw"></i> <span>Search</span></a></li>
-                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}">
+                <li class="{{ Route::is('dominion.realm') ? 'active' : null }}">
+                    <a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>Realms</span></a>
+                </li>
+                <li class="{{ Route::is('dominion.world') ? 'active' : null }} {{ in_array('world', $hiddenLinks) ? 'hidden' : null }}">
+                    <a href="{{ route('dominion.world') }}"><i class="fa fa-globe fa-fw"></i> <span>The World</span></a>
+                </li>
+                <li class="{{ Route::is('dominion.search') ? 'active' : null }}">
+                    <a href="{{ route('dominion.search') }}"><i class="fa fa-search fa-fw"></i> <span>Search</span></a>
+                </li>
+                <li class="{{ Route::is('dominion.council*') ? 'active' : null }} {{ in_array('council', $hiddenLinks) ? 'hidden' : null }}">
                     <a href="{{ route('dominion.council') }}">
                         <i class="fa fa-group fa-fw"></i> <span>The Council</span>
                         @if ($councilUnreadCount > 0 && !Route::is('dominion.council'))
@@ -231,7 +262,9 @@
                         @endif
                     </a>
                 </li>
-                <li class="{{ Route::is('dominion.government') ? 'active' : null }}"><a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span></a></li>
+                <li class="{{ Route::is('dominion.government') ? 'active' : null }}">
+                    <a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span></a>
+                </li>
                 <li class="{{ Route::is('dominion.wonders') ? 'active' : null }}">
                     <a href="{{ route('dominion.wonders') }}">
                         <i class="ra ra-pyramids ra-fw ra-lg"></i> <span>Wonders</span>
@@ -242,8 +275,10 @@
                         @endif
                     </a>
                 </li>
-                <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a></li>
-                <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}">
+                <li class="{{ Route::is('dominion.rankings') ? 'active' : null }} {{ in_array('rankings', $hiddenLinks) ? 'hidden' : null }}">
+                    <a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a>
+                </li>
+                <li class="{{ Route::is('dominion.forum*') ? 'active' : null }} {{ in_array('forum', $hiddenLinks) ? 'hidden' : null }}">
                     <a href="{{ route('dominion.forum') }}">
                         <i class="fa fa-comments fa-fw"></i> <span>Round Forum</span>
                         @if ($forumUnreadCount > 0 && !Route::is('dominion.forum'))
