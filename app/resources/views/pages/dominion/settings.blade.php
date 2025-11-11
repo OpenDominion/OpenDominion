@@ -11,9 +11,9 @@
             $config = $selectedDominion->settings['resources_overview'];
         }
         // Fill in any missing rows with defaults
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             if (!isset($config[$i])) {
-                $config[$i] = $defaultConfig[$i] ?? ['Land', 'Platinum', 'Food', 'Ore'];
+                $config[$i] = $defaultConfig[$i] ?? ['Defense', 'Jobs', 'Wiz Str', 'Morale'];
             }
         }
         $rowCount = isset($selectedDominion->settings['resources_overview']) ? count($selectedDominion->settings['resources_overview']) : 3;
@@ -39,11 +39,12 @@
                                             <option value="1" {{ $rowCount == 1 ? 'selected' : '' }}>1 Row</option>
                                             <option value="2" {{ $rowCount == 2 ? 'selected' : '' }}>2 Rows</option>
                                             <option value="3" {{ $rowCount == 3 ? 'selected' : '' }}>3 Rows</option>
+                                            <option value="4" {{ $rowCount == 4 ? 'selected' : '' }}>4 Rows</option>
                                         </select>
                                         <button type="button" class="btn btn-default" id="resetButton">Reset to Default</button>
                                     </div>
                                 </div>
-                                @for ($row = 0; $row < 3; $row++)
+                                @for ($row = 0; $row < 4; $row++)
                                     <div class="form-group row resource-row" data-row="{{ $row }}">
                                         @for ($col = 0; $col < 4; $col++)
                                             <div class="col-xs-3">
