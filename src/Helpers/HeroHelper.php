@@ -310,7 +310,7 @@ class HeroHelper
                 'class' => 'alchemist',
                 'attributes' => [
                     'success_chance' => 0.8,
-                    'attack_bonus' => 1.5
+                    'attack_bonus' => 1.5,
                 ],
                 'messages' => [
                     'success' => '%s hurls an unstable concoction, dealing %s damage to %s.',
@@ -330,7 +330,7 @@ class HeroHelper
                 'class' => 'architect',
                 'attributes' => [
                     'stat' => 'shield',
-                    'value' => 20
+                    'value' => 20,
                 ],
                 'messages' => [
                     'stat' => '%s constructs defenses that will absorb 20 damage.'
@@ -345,7 +345,7 @@ class HeroHelper
                 'class' => 'blacksmith',
                 'attributes' => [
                     'stat' => 'attack',
-                    'value' => 2
+                    'value' => 2,
                 ],
                 'messages' => [
                     'stat' => '%s increases attack value by 2.'
@@ -437,7 +437,7 @@ class HeroHelper
                 'special' => true,
                 'attributes' => [
                     'attacks' => 2,
-                    'penalty' => 0.75
+                    'penalty' => 0.75,
                 ],
                 'messages' => [
                     'hit' => '%s unleashes a blade flurry, striking %s times for %s damage to %s.',
@@ -479,6 +479,28 @@ class HeroHelper
                 'messages' => [
                     'summon' => '%s has summoned a Skeleton Warrior.'
                 ]
+            ],
+            'darkness' => [
+                'name' => 'Darkness',
+                'processor' => 'stat',
+                'type' => 'self',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'turns' => 2,
+                    'stat' => 'evasion',
+                    'value' => 20,
+                ],
+                'messages' => [
+                    'stat' => '%s increases evasion value by 25.'
+                ]
+            ],
+            'elusive' => [
+                'name' => 'Elusive',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
             ],
         ]);
     }
@@ -531,7 +553,10 @@ class HeroHelper
             'blade_flurry' => 'Blade Flurry: Attack twice for 75% damage each time.',
             'channeling' => 'Channeling: Focus can be used while already active, stacking bonus damage.',
             'combat_analysis' => 'Combat Analysis: Decreases target\'s defense value by 1 for the remainder of the battle.',
+            'darkness' => 'Darkness: Increases evasion value by 25.',
+            'dying_light' => 'Dying Light: Upon death, reduces the Nightbringer\'s evasion to 0.',
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
+            'elusive' => 'Elusive: When evading a non-focused attack, damage is reduced to 0 instead of half.',
             'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
             'fortify' => 'Fortify: Prevent the next 20 non-counter damage dealt.',
             'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',

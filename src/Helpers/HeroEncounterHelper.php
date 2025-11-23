@@ -199,6 +199,30 @@ class HeroEncounterHelper
                 'strategy' => 'attack',
                 'abilities' => ['undying'],
             ],
+            'nightbringer' => [
+                'name' => 'The Nightbringer',
+                'health' => 200,
+                'attack' => 50,
+                'defense' => 20,
+                'evasion' => 0,
+                'focus' => 0,
+                'counter' => 20,
+                'recover' => 0,
+                'strategy' => 'counter',
+                'abilities' => ['elusive', 'darkness'],
+            ],
+            'nox_cultist' => [
+                'name' => 'Nox Cultist',
+                'health' => 60,
+                'attack' => 25,
+                'defense' => 15,
+                'evasion' => 0,
+                'focus' => 10,
+                'counter' => 10,
+                'recover' => 0,
+                'strategy' => 'aggressive',
+                'abilities' => ['dying_light'],
+            ],
         ]);
     }
 
@@ -258,6 +282,15 @@ class HeroEncounterHelper
                 'source' => 'Raid (The Tomb of Kings)',
                 'enemies' => [
                     ['key' => 'eternal_guardian', 'name' => 'The Eternal Guardian'],
+                ],
+            ],
+            'nightbringer' => [
+                'name' => 'The Nightbringer',
+                'source' => 'Raid (Rise of the Nightbringer)',
+                'enemies' => [
+                    ['key' => 'nightbringer', 'name' => 'The Nightbringer'],
+                    ['key' => 'nox_cultist', 'name' => 'Nox Cultist #1'],
+                    ['key' => 'nox_cultist', 'name' => 'Nox Cultist #2'],
                 ],
             ],
         ]);

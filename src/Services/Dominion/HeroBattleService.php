@@ -354,6 +354,14 @@ class HeroBattleService
             }
         }
 
+        // Darkness
+        if (in_array('darkness', $combatant->abilities ?? []) && $combatant->evasion < 100) {
+            $actionDef = $this->heroHelper->getCombatActions()->get('darkness');
+            if ((($combatant->battle->current_turn - 1) % $actionDef['attributes']['turns']) == 0) {
+                return ['action' => 'darkness', 'target' => null];
+            }
+        }
+
         // Summoning
         if (in_array('summon_skeleton', $combatant->abilities ?? [])) {
             $actionDef = $this->heroHelper->getCombatActions()->get('summon_skeleton');
@@ -434,6 +442,10 @@ class HeroBattleService
     {
         $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef);
         $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
+        $evadeMultiplier = 0.5;
+        if (in_array('elusive', $target->abilities ?? []) && !$combatant->has_focus) {
+            $evadeMultiplier = 0;
+        }
         $this->spendFocus($combatant);
         $health = 0;
         $countered = false;
@@ -448,7 +460,7 @@ class HeroBattleService
 
         if ($damage > 0 && $evaded) {
             $damageEvaded = $damage;
-            $damage = round($damage / 2);
+            $damage = round($damage * $evadeMultiplier);
             if ($countered) {
                 $description = sprintf(
                     $messages['evaded_countered'],
@@ -578,6 +590,11 @@ class HeroBattleService
         $attackBonus = $actionDef['attributes']['attack_bonus'] ?? 1;
         $isSuccess = mt_rand(1, 100) <= ($successChance * 100);
 
+        $evadeMultiplier = 0.5;
+        if (in_array('elusive', $target->abilities ?? []) && !$combatant->has_focus) {
+            $evadeMultiplier = 0;
+        }
+
         $this->spendFocus($combatant);
         $health = 0;
         $damage = 0;
@@ -598,7 +615,7 @@ class HeroBattleService
 
             if ($damage > 0 && $evaded) {
                 $damageEvaded = $damage;
-                $damage = round($damage / 2);
+                $damage = round($damage * $evadeMultiplier);
                 if ($countered) {
                     $description = sprintf(
                         $messages['success_evaded_countered'],
@@ -675,6 +692,10 @@ class HeroBattleService
 
         $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackCount * $damagePenalty);
         $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
+        $evadeMultiplier = 0.5;
+        if (in_array('elusive', $target->abilities ?? []) && !$combatant->has_focus) {
+            $evadeMultiplier = 0;
+        }
         $this->spendFocus($combatant);
         $health = 0;
         $countered = false;
@@ -689,7 +710,7 @@ class HeroBattleService
 
         if ($damage > 0 && $evaded) {
             $damageEvaded = $damage;
-            $damage = round($damage / 2);
+            $damage = round($damage * $evadeMultiplier);
             if ($countered) {
                 $description = sprintf(
                     $messages['evaded_countered'],
@@ -761,6 +782,24 @@ class HeroBattleService
 
     public function processPostCombat(HeroCombatant $combatant): string
     {
+        if (in_array('dying_light', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
+            $this->spendAbility($combatant, 'dying_light');
+
+            // Find the Nightbringer in this battle
+            $nightbringer = $combatant->battle->combatants
+                ->where('name', 'The Nightbringer')
+                ->first();
+
+            if ($nightbringer) {
+                // Reduce Nightbringer's evasion to 0
+                $nightbringer->evasion = 0;
+                $nightbringer->save();
+                return " {$combatant->name} explodes in a blast of light, exposing the Nightbringer!";
+            }
+
+            return " {$combatant->name} explodes in a blast of light.";
+        }
+
         if (in_array('hardiness', $combatant->abilities ?? []) && $combatant->current_health < 1) {
             $combatant->current_health = 1;
             $this->spendAbility($combatant, 'hardiness');
@@ -794,6 +833,14 @@ class HeroBattleService
                     }
                 }
                 $combatant->update(['status' => $status]);
+            }
+        }
+
+        // Darkness
+        if (in_array('darkness', $combatant->abilities ?? []) && $combatant->evasion < 100) {
+            $actionDef = $this->heroHelper->getCombatActions()->get('darkness');
+            if (($combatant->battle->current_turn % $actionDef['attributes']['turns']) == 0) {
+                $description = "Darkness surrounds {$combatant->name}.";
             }
         }
 
