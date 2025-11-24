@@ -208,7 +208,7 @@ class HeroEncounterHelper
                 'focus' => 0,
                 'counter' => 20,
                 'recover' => 0,
-                'strategy' => 'counter',
+                'strategy' => 'balanced',
                 'abilities' => ['elusive', 'darkness'],
             ],
             'nox_cultist' => [
@@ -217,7 +217,7 @@ class HeroEncounterHelper
                 'attack' => 25,
                 'defense' => 15,
                 'evasion' => 0,
-                'focus' => 10,
+                'focus' => 5,
                 'counter' => 10,
                 'recover' => 0,
                 'strategy' => 'aggressive',
