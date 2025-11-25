@@ -30,7 +30,7 @@
                                             @elseif ($raid->isActive())
                                                 <i class="fa fa-clock-o"></i> Ends in {{ $raid->timeUntilEnd() }}
                                             @else
-                                                <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($raid->start_date) }} ago
+                                                <i class="fa fa-clock-o"></i> Ended {{ now()->longAbsoluteDiffForHumans($raid->end_date) }} ago
                                             @endif
                                             <br/>
                                             <i class="fa fa-calendar"></i>

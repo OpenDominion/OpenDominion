@@ -492,7 +492,7 @@ class HeroHelper
                     'value' => 20,
                 ],
                 'messages' => [
-                    'stat' => '%s increases evasion value by 25.'
+                    'stat' => '%s increases evasion value by 20.'
                 ]
             ],
             'elusive' => [
