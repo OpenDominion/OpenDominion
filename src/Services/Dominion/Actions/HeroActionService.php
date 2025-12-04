@@ -211,10 +211,12 @@ class HeroActionService
                         return in_array($selectedClass['key'], $upgrade->classes);
                     });
                 foreach ($advancedUpgrades as $advancedUpgrade) {
-                    HeroHeroUpgrade::create([
-                        'hero_id' => $dominion->hero->id,
-                        'hero_upgrade_id' => $advancedUpgrade->id
-                    ]);
+                    if (!$dominion->hero->upgrades->pluck('key')->contains($advancedUpgrade->key)) {
+                        HeroHeroUpgrade::create([
+                            'hero_id' => $dominion->hero->id,
+                            'hero_upgrade_id' => $advancedUpgrade->id
+                        ]);
+                    }
                 }
             }
 
