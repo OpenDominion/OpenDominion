@@ -163,6 +163,7 @@ class HeroBattleService
             'automated' => true,
             'strategy' => $combatStats['strategy'] ?? self::DEFAULT_STRATEGY,
             'abilities' => $combatStats['abilities'] ?? null,
+            'status' => $combatStats['status'] ?? null,
         ]);
     }
 
@@ -316,6 +317,8 @@ class HeroBattleService
         }
 
         foreach ($heroBattle->combatants as $combatant) {
+            // Refresh combatant from database to get latest status updates
+            $combatant->refresh();
             $this->processStatus($combatant);
         }
 
@@ -384,7 +387,15 @@ class HeroBattleService
             $options->forget('focus');
             $options['recover'] = $options['attack'] * 2;
         }
-        return ['action' => $this->randomAction($options, $combatant->last_action), 'target' => null];
+
+        $action = $this->randomAction($options, $combatant->last_action);
+
+        // Upgrade attack to crushing_blow if ability is active
+        if ($action == 'attack' && in_array('crushing_blow', $combatant->abilities ?? [])) {
+            $action = 'crushing_blow';
+        }
+
+        return ['action' => $action, 'target' => null];
     }
 
     public function randomAction(Collection $options, ?string $last_action): string
@@ -497,6 +508,12 @@ class HeroBattleService
                     $target->name
                 );
             }
+        }
+
+        if (in_array('lifesteal', $combatant->abilities ?? []) && $damage > 0) {
+            $healing = round($damage / 2);
+            $health += $healing;
+            $description .= sprintf(' %s heals for %s health.', $combatant->name, $healing);
         }
 
         return [
@@ -806,7 +823,99 @@ class HeroBattleService
             return " {$combatant->name} clings to life with 1 health.";
         }
 
+        // Power source: when this combatant dies, weakens the specified target
+        if (in_array('power_source', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
+            $this->spendAbility($combatant, 'power_source');
+
+            $status = $combatant->status ?? [];
+            $powerSourceConfig = $status['power_source'] ?? null;
+
+            if ($powerSourceConfig) {
+                $targetName = $powerSourceConfig['target_name'] ?? null;
+                $statReductions = $powerSourceConfig['stat_reductions'] ?? [];
+
+                if ($targetName && !empty($statReductions)) {
+                    $target = $combatant->battle->combatants
+                        ->where('name', $targetName)
+                        ->first();
+
+                    if ($target !== null) {
+                        $changes = [];
+                        foreach ($statReductions as $stat => $reduction) {
+                            $oldValue = $target->$stat;
+                            $target->$stat = max(0, $oldValue - $reduction);
+                            $changes[] = "{$stat} -{$reduction}";
+                        }
+                        $target->save();
+
+                        if (!empty($changes)) {
+                            return " {$combatant->name} crumbles to dust, severing its connection to {$targetName} (" . implode(', ', $changes) . ")!";
+                        }
+                    }
+                }
+            }
+        }
+
         return '';
+    }
+
+    /**
+     * Apply abilities for a phase-cycling ability
+     *
+     * @param HeroCombatant $combatant The combatant with the phase-cycling ability
+     * @param string $cyclerAbility The key of the phase-cycling ability
+     * @param array $phaseDef The phase definition from ability attributes
+     * @return string Phase transition message
+     */
+    protected function applyPhaseAbilities(HeroCombatant $combatant, string $cyclerAbility, array $phaseDef): string
+    {
+        $message = '';
+
+        // Update combatant's own abilities
+        if (isset($phaseDef['self_abilities'])) {
+            $status = $combatant->status ?? [];
+
+            // Store base abilities on first phase change
+            if (!isset($status['base_abilities'])) {
+                $status['base_abilities'] = $combatant->abilities ?? [];
+                $combatant->status = $status;
+            }
+
+            // Merge base abilities with phase abilities
+            $combatant->abilities = array_unique(array_merge(
+                $status['base_abilities'],
+                $phaseDef['self_abilities']
+            ));
+            $combatant->save();
+
+            if (isset($phaseDef['message'])) {
+                $message = sprintf($phaseDef['message'], $combatant->name);
+            }
+        }
+
+        // Update allied NPC abilities
+        if (isset($phaseDef['ally_abilities'])) {
+            $allies = $combatant->battle->combatants
+                ->where('id', '!=', $combatant->id)
+                ->where('hero_id', null)
+                ->where('current_health', '>', 0);
+
+            foreach ($allies as $ally) {
+                $allyStatus = $ally->status ?? [];
+                if (!isset($allyStatus['base_abilities'])) {
+                    $allyStatus['base_abilities'] = $ally->abilities ?? [];
+                }
+
+                $ally->abilities = array_unique(array_merge(
+                    $allyStatus['base_abilities'],
+                    $phaseDef['ally_abilities']
+                ));
+                $ally->status = $allyStatus;
+                $ally->save();
+            }
+        }
+
+        return $message;
     }
 
     public function processStatus(HeroCombatant $combatant): void
@@ -849,6 +958,45 @@ class HeroBattleService
             $actionDef = $this->heroHelper->getCombatActions()->get('summon_skeleton');
             if (($combatant->battle->current_turn % $actionDef['attributes']['turns']) == 0) {
                 $description = "A summoning circle begins to glow around {$combatant->name}.";
+            }
+        }
+
+        // Generic phase-cycling ability processing
+        foreach ($combatant->abilities ?? [] as $abilityKey) {
+            $actionDef = $this->heroHelper->getCombatActions()->get($abilityKey);
+
+            if (!$actionDef || !isset($actionDef['attributes']['phases'])) {
+                continue;
+            }
+
+            $turnsPerPhase = $actionDef['attributes']['turns_per_phase'] ?? 4;
+            $maxPhase = $actionDef['attributes']['max_phase'] ?? 5;
+            $cyclePhases = $actionDef['attributes']['cycle_phases'] ?? false;
+            $currentTurn = $combatant->battle->current_turn;
+
+            if ($cyclePhases) {
+                // Cycle back to phase 1 after reaching max phase
+                $currentPhase = (int) ((floor(($currentTurn - 1) / $turnsPerPhase) % $maxPhase) + 1);
+            } else {
+                // Stay at max phase after reaching it
+                $currentPhase = (int) min($maxPhase, floor(($currentTurn - 1) / $turnsPerPhase) + 1);
+            }
+
+            $status = $combatant->status ?? [];
+            $lastPhase = $status["{$abilityKey}_phase"] ?? null;
+
+            // Only apply phase changes if the combatant is still alive
+            if ($currentPhase !== $lastPhase && $combatant->current_health > 0) {
+                $status["{$abilityKey}_phase"] = $currentPhase;
+                $combatant->update(['status' => $status]);
+
+                $phaseDef = $actionDef['attributes']['phases'][$currentPhase] ?? null;
+                if ($phaseDef) {
+                    $phaseDescription = $this->applyPhaseAbilities($combatant, $abilityKey, $phaseDef);
+                    if ($phaseDescription !== '') {
+                        $description .= $phaseDescription;
+                    }
+                }
             }
         }
 

@@ -223,6 +223,39 @@ class HeroEncounterHelper
                 'strategy' => 'aggressive',
                 'abilities' => ['dying_light'],
             ],
+            'tome_of_power' => [
+                'name' => 'Tome of Power',
+                'health' => 60,
+                'attack' => 25,
+                'defense' => 30,
+                'evasion' => 50,
+                'focus' => 0,
+                'counter' => 10,
+                'recover' => 10,
+                'strategy' => 'defensive',
+                'abilities' => ['tome_of_power', 'power_source'],
+                'status' => [
+                    'power_source' => [
+                        'target_name' => 'Lich King',
+                        'stat_reductions' => [
+                            'defense' => 10,
+                            'evasion' => 25,
+                        ],
+                    ],
+                ],
+            ],
+            'lich_king' => [
+                'name' => 'The Lich King',
+                'health' => 150,
+                'attack' => 30,
+                'defense' => 30,
+                'evasion' => 25,
+                'focus' => 10,
+                'counter' => 15,
+                'recover' => 20,
+                'strategy' => 'aggressive',
+                'abilities' => ['enrage'],
+            ],
         ]);
     }
 
@@ -291,6 +324,14 @@ class HeroEncounterHelper
                     ['key' => 'nightbringer', 'name' => 'The Nightbringer'],
                     ['key' => 'nox_cultist', 'name' => 'Nox Cultist #1'],
                     ['key' => 'nox_cultist', 'name' => 'Nox Cultist #2'],
+                ],
+            ],
+            'lich_king' => [
+                'name' => 'The Lich King',
+                'source' => 'Raid (The Lich King\'s Fury)',
+                'enemies' => [
+                    ['key' => 'lich_king', 'name' => 'Lich King'],
+                    ['key' => 'tome_of_power', 'name' => 'Tome of Power'],
                 ],
             ],
         ]);

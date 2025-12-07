@@ -426,6 +426,14 @@ class HeroCalculator
             if (in_array('rally', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
                 return round($combatant->defense * $multiplier) + 5;
             }
+            // Arcane Shield
+            if (in_array('arcane_shield', $combatant->abilities ?? [])) {
+                return round($combatant->defense * $multiplier) + 10;
+            }
+            // Weakened
+            if (in_array('weakened', $combatant->abilities ?? [])) {
+                return round($combatant->defense * $multiplier) - 15;
+            }
             // Undying Legion
             if (in_array('undying_legion', $combatant->abilities ?? [])) {
                 $livingMinions = $combatant->battle->combatants
@@ -446,6 +454,13 @@ class HeroCalculator
             }
         }
 
+        if ($stat == 'counter') {
+            // Retribution
+            if (in_array('retribution', $combatant->abilities ?? [])) {
+                return round($combatant->counter * $multiplier) + 15;
+            }
+        }
+
         return round($combatant->{$stat} * $multiplier);
     }
 
@@ -454,12 +469,16 @@ class HeroCalculator
         $baseDamage = $this->getCombatStat($combatant, 'attack');
         $baseDefense = $this->getCombatStat($target, 'defense');
         $defendModifier = $actionDef['attributes']['defend'] ?? 0;
+        $bonusDamage = $actionDef['attributes']['bonus_damage'] ?? 0;
 
         if ($combatant->current_action == 'counter') {
             $baseDamage += $this->getCombatStat($combatant, 'counter');
         } elseif ($combatant->has_focus) {
             $baseDamage += $this->getCombatStat($combatant, 'focus');
         }
+
+        // Add bonus damage
+        $baseDamage += $bonusDamage;
 
         if ($target->current_action == 'recover') {
             $baseDefense -= 5;
