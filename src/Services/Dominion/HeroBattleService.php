@@ -849,7 +849,8 @@ class HeroBattleService
                         $target->save();
 
                         if (!empty($changes)) {
-                            return " {$combatant->name} crumbles to dust, severing its connection to {$targetName} (" . implode(', ', $changes) . ")!";
+                            $changesString = implode(', ', $changes);
+                            return " {$combatant->name} crumbles to dust, severing its connection to {$targetName} ({$changesString})!";
                         }
                     }
                 }
