@@ -85,6 +85,8 @@ if (!function_exists('dominion_attr_display')) {
             'resource_ore' => 'ore',
             'resource_tech' => 'research points',
             'land_water' => 'water',
+            'techCount' => 'unlocked techs',
+            'attacking_success' => 'successful attacks',
         ];
 
         if (isset($pluralAttributeDisplay[$attribute])) {

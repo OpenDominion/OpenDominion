@@ -85,8 +85,8 @@ class HeroHelper
                 'coefficient' => 0.1,
                 'perks' => ['pursuit_of_knowledge'],
                 'icon' => 'ra-graduate-cap',
-                'requirement_stat' => 'resource_tech',
-                'requirement_value' => 7500
+                'requirement_stat' => 'techCount',
+                'requirement_value' => 2
             ],
             [
                 'name' => 'Scion',
@@ -96,8 +96,8 @@ class HeroHelper
                 'coefficient' => -0.25,
                 'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
                 'icon' => 'ra-ankh',
-                'requirement_stat' => 'prestige',
-                'requirement_value' => 500
+                'requirement_stat' => 'stat_attacking_success',
+                'requirement_value' => 6
             ]
         ])->keyBy('key');
     }
