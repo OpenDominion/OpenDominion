@@ -49,23 +49,23 @@ class APIController extends AbstractDominionController
         if (isset($calc['draftees'])) {
             $units[0] = $calc['draftees'];
         } elseif (isset($calc['draftees_home'])) {
-            $units[0] = (int) ($calc['draftees_home'] / $accuracy);
+            $units[0] = rceil($calc['draftees_home'] / $accuracy);
         }
         foreach(range(1, 4) as $slot) {
             if (isset($calc["unit{$slot}"])) {
                 $units[$slot] = $calc["unit{$slot}"];
                 if (isset($calc["unit{$slot}_away"])) {
-                    $unitsAway = (int) ($calc["unit{$slot}_away"] * $accuracy);
+                    $unitsAway = rfloor($calc["unit{$slot}_away"] * $accuracy);
                     $units[$slot] = max($units[$slot] - $unitsAway, 0);
                     if (isset($calc["unit{$slot}_home"]) && $unitsAway > 0) {
-                        $unitsHome = (int) ($calc["unit{$slot}_home"] / $accuracy);
+                        $unitsHome = rceil($calc["unit{$slot}_home"] / $accuracy);
                         if ($unitsHome < $units[$slot]) {
                             $units[$slot] = $unitsHome;
                         }
                     }
                 }
             } elseif (isset($calc["unit{$slot}_home"])) {
-                $units[$slot] = (int) ($calc["unit{$slot}_home"] / $accuracy);
+                $units[$slot] = rceil($calc["unit{$slot}_home"] / $accuracy);
             }
             if (isset($calc["unit{$slot}_inc"])) {
                 $units[$slot] += $calc["unit{$slot}_inc"];
