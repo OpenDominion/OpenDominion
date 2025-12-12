@@ -276,7 +276,7 @@
             </div>
 
             <div class="box">
-            <div class="box-header with-border">
+                <div class="box-header with-border">
                     <h3 class="box-title">Class-Based Abilities</h3>
                 </div>
                 <div class="box-body">
