@@ -103,8 +103,7 @@ class HeroBattleService
             'current_health' => $combatStats['health'],
             'time_bank' => self::DEFAULT_TIME_BANK,
             'strategy' => self::DEFAULT_STRATEGY,
-            //'abilities' => $classAbilities->toArray(),
-            'abilities' => null
+            'abilities' => $classAbilities->toArray(),
         ]);
     }
 
