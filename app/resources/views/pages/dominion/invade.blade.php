@@ -143,7 +143,6 @@
                                                        data-amount="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
                                                        data-op="{{ $unit->power_offense }}"
                                                        data-dp="{{ $unit->power_defense }}"
-                                                       data-need-boat="{{ $militaryCalculator->getUnitNeedBoats($dominion, $unit) }}"
                                                        {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             </td>
                                             <td class="text-center" id="unit{{ $unitSlot }}_stats">
