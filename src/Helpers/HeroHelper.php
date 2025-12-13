@@ -345,10 +345,10 @@ class HeroHelper
                 'class' => 'blacksmith',
                 'attributes' => [
                     'stat' => 'attack',
-                    'value' => 2,
+                    'value' => 1,
                 ],
                 'messages' => [
-                    'stat' => '%s increases attack value by 2.'
+                    'stat' => '%s increases attack value by 1.'
                 ]
             ],
             'tactical_awareness' => [
@@ -648,7 +648,7 @@ class HeroHelper
             'dying_light' => 'Dying Light: Upon death, reduces the Nightbringer\'s evasion to 0.',
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
             'elusive' => 'Elusive: When evading a non-focused attack, damage is reduced to 0 instead of half.',
-            'forge' => 'Forge: Increases attack value by 2 for the remainder of the battle.',
+            'forge' => 'Forge: Increases attack value by 1 for the remainder of the battle.',
             'fortify' => 'Fortify: Prevent the next 20 non-counter damage dealt.',
             'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',
             'last_stand' => 'Last Stand: When at 40 health or less, all combat stats are increased by 10%.',

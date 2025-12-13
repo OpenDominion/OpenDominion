@@ -160,7 +160,7 @@
                     <ul>
                         <li>Alchemist - Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.</li>
                         <li>Architect - Fortify: Prevent the next 20 non-counter damage dealt.</li>
-                        <li>Blacksmith - Forge: Increases attack value by 2 for the remainder of the battle.</li>
+                        <li>Blacksmith - Forge: Increases attack value by 1 for the remainder of the battle.</li>
                         <li>Engineer - Tactical Awareness: Reduces target's counter value by 2 for the remainder of the battle.</li>
                         <li>Farmer - Hardiness: Remain on 1 health the first time your health would be reduced below 1.</li>
                         <li>Healer - Mending: Focus enhances your Recover ability, increasing healing.</li>
