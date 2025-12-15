@@ -611,7 +611,6 @@ class HeroBattleService
             $evadeMultiplier = 0;
         }
 
-        $this->spendFocus($combatant);
         $health = 0;
         $damage = 0;
         $countered = false;
@@ -628,6 +627,7 @@ class HeroBattleService
             // Success - deal bonus damage to target
             $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackBonus);
             $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
+            $this->spendFocus($combatant);
 
             if ($damage > 0 && $evaded) {
                 $damageEvaded = $damage;
@@ -636,7 +636,6 @@ class HeroBattleService
                     $description = sprintf(
                         $messages['success_evaded_countered'],
                         $combatant->name,
-                        $damageEvaded,
                         $target->name,
                         $damage,
                         $target->name,
@@ -646,7 +645,6 @@ class HeroBattleService
                     $description = sprintf(
                         $messages['success_evaded'],
                         $combatant->name,
-                        $damageEvaded,
                         $target->name,
                         $damage
                     );
