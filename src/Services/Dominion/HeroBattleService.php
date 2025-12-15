@@ -463,7 +463,7 @@ class HeroBattleService
         if ($target->current_action == 'counter') {
             $countered = true;
             $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
-            $health = -$counterDamage;
+            $health -= $counterDamage;
         }
 
         $messages = $actionDef['messages'];
@@ -618,7 +618,7 @@ class HeroBattleService
         if ($target->current_action == 'counter') {
             $countered = true;
             $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
-            $health = -$counterDamage;
+            $health -= $counterDamage;
         }
 
         $messages = $actionDef['messages'];
@@ -670,7 +670,7 @@ class HeroBattleService
         } else {
             // Backfire - damage to self instead
             $backfireDamage = $this->heroCalculator->calculateCombatDamage($combatant, $combatant, $actionDef);
-            $health = -$backfireDamage;
+            $health -= $backfireDamage;
             $damage = 0;
 
             if ($countered) {
@@ -717,7 +717,7 @@ class HeroBattleService
         if ($target->current_action == 'counter') {
             $countered = true;
             $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef) * $attackCount);
-            $health = -$counterDamage;
+            $health -= $counterDamage;
         }
 
         $messages = $actionDef['messages'];
