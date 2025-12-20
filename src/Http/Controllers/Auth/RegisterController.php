@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use OpenDominion\Events\UserActivatedEvent;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Http\Controllers\AbstractController;
+use OpenDominion\Http\Requests\TurnstileRule;
 use OpenDominion\Models\User;
 
 class RegisterController extends AbstractController
@@ -41,12 +42,20 @@ class RegisterController extends AbstractController
      */
     public function register(Request $request)
     {
-        $this->validate($request, [
+        $messages = [];
+        $rules = [
             'display_name' => 'required|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
             'agreement_rules' => 'required',
-        ]);
+        ];
+
+        if (config('turnstile.enabled')) {
+            $messages = ['cf-turnstile-response.required' => 'Please complete the CAPTCHA verification.'];
+            $rules['cf-turnstile-response'] = ['required', new TurnstileRule()];
+        }
+
+        $this->validate($request, $rules, $messages);
 
         $user = $this->create($request->all());
 

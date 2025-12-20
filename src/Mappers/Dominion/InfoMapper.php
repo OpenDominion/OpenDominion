@@ -144,28 +144,28 @@ class InfoMapper
         $military_unit4 = $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4);
 
         $data['military_draftees'] = random_int(
-            round($military_draftees * $militaryAccuracy),
-            round($military_draftees / $militaryAccuracy)
+            rceil($military_draftees * $militaryAccuracy),
+            rfloor($military_draftees / $militaryAccuracy)
         );
 
         $data['military_unit1'] = random_int(
-            round($military_unit1 * $militaryAccuracy),
-            round($military_unit1 / $militaryAccuracy)
+            rceil($military_unit1 * $militaryAccuracy),
+            rfloor($military_unit1 / $militaryAccuracy)
         );
 
         $data['military_unit2'] = random_int(
-            round($military_unit2 * $militaryAccuracy),
-            round($military_unit2 / $militaryAccuracy)
+            rceil($military_unit2 * $militaryAccuracy),
+            rfloor($military_unit2 / $militaryAccuracy)
         );
 
         $data['military_unit3'] = random_int(
-            round($military_unit3 * $militaryAccuracy),
-            round($military_unit3 / $militaryAccuracy)
+            rceil($military_unit3 * $militaryAccuracy),
+            rfloor($military_unit3 / $militaryAccuracy)
         );
 
         $data['military_unit4'] = random_int(
-            round($military_unit4 * $militaryAccuracy),
-            round($military_unit4 / $militaryAccuracy)
+            rceil($military_unit4 * $militaryAccuracy),
+            rfloor($military_unit4 / $militaryAccuracy)
         );
 
         return $data;
@@ -239,8 +239,8 @@ class InfoMapper
         }
 
         array_set($data, 'units.home.draftees', random_int(
-            round($dominion->military_draftees * $accuracyMultiplier),
-            round($dominion->military_draftees / $accuracyMultiplier)
+            rceil($dominion->military_draftees * $accuracyMultiplier),
+            rfloor($dominion->military_draftees / $accuracyMultiplier)
         ));
 
         foreach (range(1, 4) as $slot) {
@@ -248,8 +248,8 @@ class InfoMapper
 
             if ($amountAtHome !== 0) {
                 $amountAtHome = random_int(
-                    round($amountAtHome * $accuracyMultiplier),
-                    round($amountAtHome / $accuracyMultiplier)
+                    rceil($amountAtHome * $accuracyMultiplier),
+                    rfloor($amountAtHome / $accuracyMultiplier)
                 );
             }
 
@@ -264,8 +264,8 @@ class InfoMapper
             $unitType = str_replace('military_', '', $row->resource);
 
             $amount = random_int(
-                round($row->amount * $accuracyMultiplier),
-                round($row->amount / $accuracyMultiplier)
+                rceil($row->amount * $accuracyMultiplier),
+                rfloor($row->amount / $accuracyMultiplier)
             );
 
             array_set($data, "units.returning.{$unitType}.{$row->hours}", $amount);

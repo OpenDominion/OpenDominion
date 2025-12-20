@@ -150,6 +150,27 @@
                     @include('partials.dominion.hero-combat')
                 </div>
             </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Class-Based Abilities</h3>
+                </div>
+                <div class="box-body">
+                    Each hero gains one ability based on their currently active class:
+                    <ul>
+                        <li>Alchemist - Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.</li>
+                        <li>Architect - Fortify: Prevent the next 20 non-counter damage dealt.</li>
+                        <li>Blacksmith - Forge: Increases attack value by 1 for the remainder of the battle.</li>
+                        <li>Engineer - Tactical Awareness: Reduces target's counter value by 2 for the remainder of the battle.</li>
+                        <li>Farmer - Hardiness: Remain on 1 health the first time your health would be reduced below 1.</li>
+                        <li>Healer - Mending: Focus enhances your Recover ability, increasing healing.</li>
+                        <li>Infiltrator - Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.</li>
+                        <li>Sorcerer - Channeling: Focus can be used while already active, stacking bonus damage.</li>
+                        <li>Scholar - Combat Analysis: Decreases target's defense value by 1 for the remainder of the battle.</li>
+                        <li>Scion - Last Stand: When at 40 health or less, all combat stats are increased by 10%.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
     </div>

@@ -103,8 +103,7 @@ class HeroBattleService
             'current_health' => $combatStats['health'],
             'time_bank' => self::DEFAULT_TIME_BANK,
             'strategy' => self::DEFAULT_STRATEGY,
-            //'abilities' => $classAbilities->toArray(),
-            'abilities' => null
+            'abilities' => $classAbilities->toArray(),
         ]);
     }
 
@@ -464,7 +463,7 @@ class HeroBattleService
         if ($target->current_action == 'counter') {
             $countered = true;
             $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
-            $health = -$counterDamage;
+            $health -= $counterDamage;
         }
 
         $messages = $actionDef['messages'];
@@ -612,7 +611,6 @@ class HeroBattleService
             $evadeMultiplier = 0;
         }
 
-        $this->spendFocus($combatant);
         $health = 0;
         $damage = 0;
         $countered = false;
@@ -620,7 +618,7 @@ class HeroBattleService
         if ($target->current_action == 'counter') {
             $countered = true;
             $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
-            $health = -$counterDamage;
+            $health -= $counterDamage;
         }
 
         $messages = $actionDef['messages'];
@@ -629,6 +627,7 @@ class HeroBattleService
             // Success - deal bonus damage to target
             $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackBonus);
             $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
+            $this->spendFocus($combatant);
 
             if ($damage > 0 && $evaded) {
                 $damageEvaded = $damage;
@@ -637,7 +636,6 @@ class HeroBattleService
                     $description = sprintf(
                         $messages['success_evaded_countered'],
                         $combatant->name,
-                        $damageEvaded,
                         $target->name,
                         $damage,
                         $target->name,
@@ -647,7 +645,6 @@ class HeroBattleService
                     $description = sprintf(
                         $messages['success_evaded'],
                         $combatant->name,
-                        $damageEvaded,
                         $target->name,
                         $damage
                     );
@@ -673,7 +670,7 @@ class HeroBattleService
         } else {
             // Backfire - damage to self instead
             $backfireDamage = $this->heroCalculator->calculateCombatDamage($combatant, $combatant, $actionDef);
-            $health = -$backfireDamage;
+            $health -= $backfireDamage;
             $damage = 0;
 
             if ($countered) {
@@ -720,7 +717,7 @@ class HeroBattleService
         if ($target->current_action == 'counter') {
             $countered = true;
             $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef) * $attackCount);
-            $health = -$counterDamage;
+            $health -= $counterDamage;
         }
 
         $messages = $actionDef['messages'];
