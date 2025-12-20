@@ -15,7 +15,7 @@ return [
     /*
      * Enable or disable Turnstile verification
      */
-    'enabled' => env('TURNSTILE_ENABLED', true),
+    'enabled' => env('TURNSTILE_ENABLED', false),
 
     /*
      * Verification endpoint
