@@ -64,7 +64,7 @@ return [
             ]) : [],
             'dump' => [
                 'use_single_transaction',
-                'timeout' => 60 * 5,
+                'timeout' => 60 * 10,
                 'add_extra_option' => '--quick',
             ],
         ],
