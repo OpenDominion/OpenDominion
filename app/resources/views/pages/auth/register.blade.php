@@ -67,6 +67,15 @@
                             </div>
                         </div>
 
+                        {{-- Turnstile CAPTCHA --}}
+                        @if (config('turnstile.enabled'))
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <div class="cf-turnstile" data-sitekey="{{ config('turnstile.site_key') }}"></div>
+                                </div>
+                            </div>
+                        @endif
+
                         <ul class="text-muted">
                             <li>We will not share your data with anyone.</li>
                             <li>We will only send game-related emails to your email address.</li>
@@ -107,6 +116,9 @@
 @endsection
 
 @push('inline-scripts')
+    @if(config('turnstile.enabled'))
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    @endif
     <script type="text/javascript">
         (function ($) {
             $('#agreement_rules').change(function() {
