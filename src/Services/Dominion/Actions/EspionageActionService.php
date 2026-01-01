@@ -230,6 +230,16 @@ class EspionageActionService
                 $xpGain = 0;
             }
 
+            // No XP for repeat ops
+            $latestOp = $dominion->realm->infoOps()
+                ->where('target_dominion_id', $target->id)
+                ->where('type', $operationKey)
+                ->where('latest', true)
+                ->first();
+            if ($latestOp !== null && !$latestOp->isStale()) {
+                $xpGain = 0;
+            }
+
             $dominion->spy_strength -= $spyStrengthLost;
 
             if ($result['success']) {

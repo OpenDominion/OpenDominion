@@ -228,6 +228,16 @@ class SpellActionService
                 $xpGain = 0;
             }
 
+            // No XP for repeat ops
+            $latestOp = $dominion->realm->infoOps()
+                ->where('target_dominion_id', $target->id)
+                ->where('type', $spell['key'])
+                ->where('latest', true)
+                ->first();
+            if ($latestOp !== null && !$latestOp->isStale()) {
+                $xpGain = 0;
+            }
+
             // Amplify Magic
             if ($this->spellCalculator->isSpellActive($dominion, 'amplify_magic')) {
                 if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {

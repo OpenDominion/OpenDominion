@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Changed
 - Heroes
-  - Experience is no longer gained or lost for bottomfeeds
+  - XP is no longer gained or lost for bottomfeeds
+  - XP is no longer gained when taking multiple info ops of the same type in the same hour
 
 ## [1.47.1] - 2025-12-11
 ### Changed
