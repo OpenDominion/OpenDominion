@@ -194,30 +194,31 @@ class SpellActionService
         $xpMessage = '';
 
         DB::transaction(function () use ($dominion, $target, $manaCost, $spell, &$result, &$bountyMessage, &$xpMessage) {
-            $xpGain = 0;
+            $xpValue = 0;
+            $latestOp = $dominion->realm->infoOps()
+                ->where('target_dominion_id', $target->id)
+                ->where('type', $spell->key)
+                ->where('latest', true)
+                ->first();
             $wizardStrengthLost = $this->spellCalculator->getStrengthCost($dominion, $spell);
 
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
             } elseif ($this->spellHelper->isInfoOpSpell($spell)) {
-                $xpGain = 3;
-                $result = $this->castInfoOpSpell($dominion, $spell, $target);
                 if ($this->guardMembershipService->isBlackGuardMember($dominion)) {
                     $wizardStrengthLost = 1;
                 }
+                $xpValue = $wizardStrengthLost;
+                $result = $this->castInfoOpSpell($dominion, $spell, $target);
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
-                if ($this->spellHelper->isWarSpell($spell)) {
-                    $xpGain = 8;
-                } else {
-                    $xpGain = 7;
-                }
+                $xpValue = $wizardStrengthLost;
                 $result = $this->castHostileSpell($dominion, $spell, $target);
                 if (isset($result['damage']) && $result['damage'] == 0) {
-                    $xpGain = 0;
+                    $xpValue = 0;
                 }
                 $dominion->resetAbandonment();
             } elseif ($this->spellHelper->isFriendlySpell($spell)) {
-                $xpGain = 4;
+                $xpValue = $wizardStrengthLost;
                 $result = $this->castFriendlySpell($dominion, $spell, $target);
             } else {
                 throw new LogicException("Unknown type for spell {$spell->key}");
@@ -225,17 +226,12 @@ class SpellActionService
 
             // No XP for bots
             if ($target && $target->user_id == null) {
-                $xpGain = 0;
+                $xpValue = 0;
             }
 
             // No XP for repeat ops
-            $latestOp = $dominion->realm->infoOps()
-                ->where('target_dominion_id', $target->id)
-                ->where('type', $spell['key'])
-                ->where('latest', true)
-                ->first();
             if ($latestOp !== null && !$latestOp->isStale()) {
-                $xpGain = 0;
+                $xpValue = 0;
             }
 
             // Amplify Magic
@@ -264,6 +260,7 @@ class SpellActionService
 
             if (!$this->spellHelper->isSelfSpell($spell)) {
                 if ($result['success']) {
+                    $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpValue, 'magic');
                     $dominion->stat_spell_success += 1;
                     // Bounty result
                     if (isset($result['bounty']) && $result['bounty']) {
@@ -280,7 +277,6 @@ class SpellActionService
                     }
                     // Hero Experience
                     if ($dominion->hero && $xpGain) {
-                        $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpGain);
                         $dominion->hero->experience += $xpGain;
                         $dominion->hero->save();
                         $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);

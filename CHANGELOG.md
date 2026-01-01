@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Heroes
   - XP is no longer gained or lost for bottomfeeds
   - XP is no longer gained when taking multiple info ops of the same type in the same hour
+  - Shrines no longer modify the bonus XP from bounties
+  - XP gain from spy ops reduced to 0.5 XP per strength spent
+  - XP gain from magic ops reduced to 1 XP per strength spent
+  - XP gain from exploration increased to 0.6 per acre (from 0.25)
 
 ## [1.47.1] - 2025-12-11
 ### Changed

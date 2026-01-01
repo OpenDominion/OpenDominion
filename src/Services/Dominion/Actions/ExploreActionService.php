@@ -20,11 +20,6 @@ class ExploreActionService
 {
     use DominionGuardsTrait;
 
-    /**
-     * @var float XP gain per acre explored
-     */
-    protected const XP_PER_ACRE = 0.25;
-
     /** @var ExplorationCalculator */
     protected $explorationCalculator;
 
@@ -167,7 +162,7 @@ class ExploreActionService
         // Hero Experience
         if ($dominion->hero && !$this->protectionService->isUnderProtection($dominion)) {
             $heroCalculator = app(HeroCalculator::class);
-            $xpGain = $heroCalculator->getExperienceGain($dominion, $totalLandToExplore * static::XP_PER_ACRE);
+            $xpGain = $heroCalculator->getExperienceGain($dominion, $totalLandToExplore, 'exploration');
             $dominion->hero->experience += $xpGain;
             $dominion->hero->save();
         }

@@ -11,7 +11,7 @@
                 <div class="col-md-12">
                     <p>Each dominion can select one hero that gains experience and levels up, increasing a passive bonus based on its class and unlocking new upgrades.</p>
                     <p>
-                        Heroes gain 1 XP per acre gained from invasion, 0.25 XP per acre explored, 2-3 XP per successful info operation (excluding bots), 7 XP per successful black operation, and 8 XP per successful war operation.
+                        Heroes gain 1 XP per acre gained from invasion (against dominions at least 75% of your size), 0.6 XP per acre explored, 0.5 XP per spy strength spent on successful espionage operations (excluding theft), and 1 XP per wizard strength spent on successful magic operations.
                         Heroes lose 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.
                     </p>
                     <p>You can change your hero class at any time, but you'll lose any progress you've made toward the next level. Any bonuses you've acquired from other classes will be halved while inactive.</p>

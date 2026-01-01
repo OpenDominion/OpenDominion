@@ -40,12 +40,24 @@ class HeroCalculator
      * Returns the Dominion's experience gain.
      *
      * @param Dominion $dominion
-     * @param int $xpGain
+     * @param int $value
      * @return float
      */
-    public function getExperienceGain(Dominion $dominion, float $xpGain, string $source = 'ops'): float
+    public function getExperienceGain(Dominion $dominion, int $value, string $source): float
     {
-        return $xpGain * $this->getExperienceMultiplier($dominion);
+        if ($source == 'invasion') {
+            $coefficient = 1;
+        } elseif ($source == 'exploration') {
+            $coefficient = 0.6;
+        } elseif ($source == 'spy') {
+            $coefficient = 0.5;
+        } elseif ($source == 'magic') {
+            $coefficient = 1;
+        } else {
+            $coefficient = 1;
+        }
+
+        return $coefficient * $value * $this->getExperienceMultiplier($dominion);;
     }
 
     /**
