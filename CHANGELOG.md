@@ -4,6 +4,7 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+## [1.47.1] - 2025-12-11
 ### Changed
 - Heroes
   - Scholar now requires 2 unlocked techs to unlock (from 7,500 research points)
