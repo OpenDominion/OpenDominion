@@ -282,17 +282,18 @@ class InvadeActionService
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
             // Hero Experience
-            $heroCalculator = app(HeroCalculator::class);
-            if ($dominion->hero && $this->invasionResult['result']['success']) {
-                $xpGain = $heroCalculator->getExperienceGain($dominion, $this->invasionResult['attacker']['landGained']);
-                $this->invasionResult['attacker']['xpGain'] = $xpGain;
-            }
-            if ($target->hero && $this->invasionResult['result']['success']) {
-                // Hero cannot lose a level
-                $levels = $heroCalculator->getExperienceLevels();
-                $currentLevel = $heroCalculator->getHeroLevel($target->hero);
-                $currentLevelXP = $levels->firstWhere('level', $currentLevel)['xp'];
-                if ($range >= 75) {
+            if ($this->invasionResult['result']['success'] && $range >= 75) {
+                // No XP changes for bouncing or bottom feeding
+                $heroCalculator = app(HeroCalculator::class);
+                if ($dominion->hero) {
+                    $xpGain = $heroCalculator->getExperienceGain($dominion, $this->invasionResult['attacker']['landGained'], 'invasion');
+                    $this->invasionResult['attacker']['xpGain'] = $xpGain;
+                }
+                if ($target->hero) {
+                    // Hero cannot lose a level
+                    $levels = $heroCalculator->getExperienceLevels();
+                    $currentLevel = $heroCalculator->getHeroLevel($target->hero);
+                    $currentLevelXP = $levels->firstWhere('level', $currentLevel)['xp'];
                     $xpLoss = min($target->hero->experience - $currentLevelXP, $this->invasionResult['defender']['landLost']);
                     $this->invasionResult['defender']['xpLoss'] = $xpLoss;
                 }

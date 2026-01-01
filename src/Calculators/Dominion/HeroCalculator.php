@@ -43,7 +43,7 @@ class HeroCalculator
      * @param int $xpGain
      * @return float
      */
-    public function getExperienceGain(Dominion $dominion, float $xpGain): float
+    public function getExperienceGain(Dominion $dominion, float $xpGain, string $source = 'ops'): float
     {
         return $xpGain * $this->getExperienceMultiplier($dominion);
     }
