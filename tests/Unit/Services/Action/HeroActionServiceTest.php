@@ -41,18 +41,18 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'alchemist',
-            'experience' => 1750, // Level 6 (min 1500) with 250 excess XP
+            'experience' => 2000, // Level 4 (min 1750) with 250 excess XP
             'class_data' => []
         ]);
 
         // Act - Change class
         $this->heroActionService->changeClass($this->dominion, 'blacksmith');
 
-        // Assert - XP should be capped at level minimum (1500)
+        // Assert - XP should be capped at level minimum (1750)
         $hero->refresh();
         $this->assertEquals('blacksmith', $hero->class);
         $this->assertEquals(0, $hero->experience); // New class starts at 0
-        $this->assertEquals(1500, $hero->class_data['alchemist']['experience']); // Capped at level 6 minimum
+        $this->assertEquals(1750, $hero->class_data['alchemist']['experience']); // Capped at level 4 minimum
     }
 
     public function testChangeClass_ExactlyAtLevelMinimum_NoXpLoss()
@@ -62,7 +62,7 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'alchemist',
-            'experience' => 1500, // Exactly level 6 minimum
+            'experience' => 1750, // Exactly level 4 minimum
             'class_data' => []
         ]);
 
@@ -71,7 +71,7 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert - No XP should be lost
         $hero->refresh();
-        $this->assertEquals(1500, $hero->class_data['alchemist']['experience']);
+        $this->assertEquals(1750, $hero->class_data['alchemist']['experience']);
     }
 
     public function testChangeClass_BetweenLevelMinimums_CapsAtCurrentLevelMinimum()
@@ -81,16 +81,16 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'alchemist',
-            'experience' => 1400, // Level 4 (1000-1499) - should cap at 1000
+            'experience' => 2000, // Level 4 (1750-2299) - should cap at 1750
             'class_data' => []
         ]);
 
         // Act - Change class
         $this->heroActionService->changeClass($this->dominion, 'blacksmith');
 
-        // Assert - XP should be capped at level 4 minimum (1000)
+        // Assert - XP should be capped at level 4 minimum (1750)
         $hero->refresh();
-        $this->assertEquals(1000, $hero->class_data['alchemist']['experience']);
+        $this->assertEquals(1750, $hero->class_data['alchemist']['experience']);
     }
 
     public function testChangeClass_Level0_NoXpLoss()
@@ -146,7 +146,7 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'alchemist',
-            'experience' => 1250, // Level 4 (min 1000) with 250 excess XP
+            'experience' => 2000, // Level 4 (min 1750) with 250 excess XP
             'class_data' => $existingClassData
         ]);
 
@@ -155,7 +155,7 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert - Both old classes should be preserved
         $hero->refresh();
-        $this->assertEquals(1000, $hero->class_data['alchemist']['experience']); // Capped at level 4 minimum
+        $this->assertEquals(1750, $hero->class_data['alchemist']['experience']); // Capped at level 3 minimum
         $this->assertEquals(800, $hero->class_data['farmer']['experience']); // Preserved
     }
 
@@ -174,7 +174,7 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'alchemist',
-            'experience' => 1750, // Level 6 with excess XP
+            'experience' => 2000, // Level 6 with excess XP
             'class_data' => $existingClassData
         ]);
 
@@ -185,6 +185,6 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
         $hero->refresh();
         $this->assertEquals('blacksmith', $hero->class);
         $this->assertEquals(2500, $hero->experience); // Restored blacksmith XP
-        $this->assertEquals(1500, $hero->class_data['alchemist']['experience']); // Capped alchemist XP at level 6 minimum
+        $this->assertEquals(1750, $hero->class_data['alchemist']['experience']); // Capped alchemist XP at level 4 minimum
     }
 }

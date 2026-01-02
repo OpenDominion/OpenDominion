@@ -36,20 +36,20 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
 
     public function testGetPassiveBonus_ActiveClass_FullBonus()
     {
-        // Arrange - Create hero with alchemist class at level 5
+        // Arrange - Create hero with alchemist class at level 4
         $hero = Hero::create([
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'alchemist',
-            'experience' => 1500, // Level 5
+            'experience' => 1750, // Level 4
             'class_data' => []
         ]);
 
         // Act - Get bonus for active class (alchemist = platinum_production)
         $bonus = $this->heroCalculator->getPassiveBonus($hero, 'platinum_production');
 
-        // Assert - Should get full bonus (level 5 * coefficient)
-        // Alchemist coefficient is 0.2, so level 5 = 1.0%
+        // Assert - Should get full bonus (level 4 * coefficient)
+        // Alchemist coefficient is 0.25, so level 4 = 1.0%
         $this->assertGreaterThan(0, $bonus);
         $this->assertEquals(1.0, $bonus, 'Active class should get full bonus', 0.01);
     }
@@ -61,11 +61,11 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'blacksmith',
-            'experience' => 500, // Current class level
+            'experience' => 750, // Current class level
             'class_data' => [
                 'alchemist' => [
                     'key' => 'alchemist',
-                    'experience' => 1500, // Level 5
+                    'experience' => 1750, // Level 4
                     'perk_type' => 'platinum_production'
                 ]
             ]
@@ -74,8 +74,8 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         // Act - Get bonus for inactive class (alchemist)
         $bonus = $this->heroCalculator->getPassiveBonus($hero, 'platinum_production');
 
-        // Assert - Should get half bonus (level 5 * coefficient * 0.5)
-        // Alchemist coefficient is 0.2, so level 5 * 0.5 = 0.5%
+        // Assert - Should get half bonus (level 4 * coefficient * 0.5)
+        // Alchemist coefficient is 0.25, so level 4 * 0.5 = 0.5%
         $this->assertGreaterThan(0, $bonus);
         $this->assertEquals(0.5, $bonus, 'Inactive class should get half bonus', 0.01);
     }
@@ -105,16 +105,16 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'engineer', // Current class
-            'experience' => 1000, // Level 4
+            'experience' => 1750, // Level 4
             'class_data' => [
                 'alchemist' => [
                     'key' => 'alchemist',
-                    'experience' => 1500, // Level 5
+                    'experience' => 3000, // Level 5
                     'perk_type' => 'platinum_production'
                 ],
                 'farmer' => [
                     'key' => 'farmer',
-                    'experience' => 600, // Level 3
+                    'experience' => 1250, // Level 3
                     'perk_type' => 'food_production'
                 ]
             ]
@@ -123,20 +123,20 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         // Act & Assert - Test active class (full bonus)
         $engineerBonus = $this->heroCalculator->getPassiveBonus($hero, 'invest_bonus');
         $this->assertGreaterThan(0, $engineerBonus);
-        // Level 4 engineer (coefficient 0.75) = 3.0%
-        $this->assertEquals(3.0, $engineerBonus, 'Active engineer should get full bonus', 0.01);
+        // Level 4 engineer (coefficient 0.5) = 2.0%
+        $this->assertEquals(2.0, $engineerBonus, 'Active engineer should get full bonus');
 
         // Act & Assert - Test inactive alchemist (half bonus)
         $alchemistBonus = $this->heroCalculator->getPassiveBonus($hero, 'platinum_production');
         $this->assertGreaterThan(0, $alchemistBonus);
-        // Level 5 alchemist (coefficient 0.2) * 0.5 = 0.5%
-        $this->assertEquals(0.5, $alchemistBonus, 'Inactive alchemist should get half bonus', 0.01);
+        // Level 5 alchemist (coefficient 0.25) * 0.5 = 0.75%
+        $this->assertEquals(0.75, $alchemistBonus, 'Inactive alchemist should get half bonus');
 
         // Act & Assert - Test inactive farmer (half bonus)
         $farmerBonus = $this->heroCalculator->getPassiveBonus($hero, 'food_production');
         $this->assertGreaterThan(0, $farmerBonus);
         // Level 3 farmer (coefficient 1.5) * 0.5 = 2.25%
-        $this->assertEquals(2.25, $farmerBonus, 'Inactive farmer should get half bonus', 0.01);
+        $this->assertEquals(2.25, $farmerBonus, 'Inactive farmer should get half bonus');
     }
 
     public function testGetHeroPerkMultiplier_CombinesActiveAndInactiveBonuses()
@@ -146,7 +146,7 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
             'dominion_id' => $this->dominion->id,
             'name' => 'Test Hero',
             'class' => 'alchemist', // Active class
-            'experience' => 1000, // Level 4
+            'experience' => 2500, // Level 4
             'class_data' => []
         ]);
 
@@ -163,12 +163,12 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
 
     public function testCalculatePassiveBonus_DifferentLevels()
     {
-        // Test that passive bonus scales correctly with level using alchemist (coefficient 0.2)
+        // Test that passive bonus scales correctly with level using alchemist (coefficient 0.25)
         $testCases = [
             ['level' => 0, 'expected' => 0],
-            ['level' => 1, 'expected' => 0.2],
-            ['level' => 5, 'expected' => 1.0],
-            ['level' => 10, 'expected' => 2.0],
+            ['level' => 1, 'expected' => 0.25],
+            ['level' => 5, 'expected' => 1.25],
+            ['level' => 10, 'expected' => 2.5],
         ];
 
         foreach ($testCases as $testCase) {
@@ -182,12 +182,12 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         $testCases = [
             ['xp' => 0, 'expectedLevel' => 0],
             ['xp' => 50, 'expectedLevel' => 0],
-            ['xp' => 100, 'expectedLevel' => 1],
-            ['xp' => 299, 'expectedLevel' => 1],
-            ['xp' => 300, 'expectedLevel' => 2],
-            ['xp' => 1500, 'expectedLevel' => 5],
-            ['xp' => 1750, 'expectedLevel' => 5], // Between level 5 and 6
-            ['xp' => 2250, 'expectedLevel' => 6],
+            ['xp' => 200, 'expectedLevel' => 1],
+            ['xp' => 699, 'expectedLevel' => 1],
+            ['xp' => 700, 'expectedLevel' => 2],
+            ['xp' => 1800, 'expectedLevel' => 4],
+            ['xp' => 2500, 'expectedLevel' => 5], // Between level 5 and 6
+            ['xp' => 3000, 'expectedLevel' => 6],
             ['xp' => 10000, 'expectedLevel' => 12],
             ['xp' => 15000, 'expectedLevel' => 12], // Beyond max level
         ];
@@ -202,9 +202,9 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
     {
         $testCases = [
             ['xp' => 50, 'expectedMinimum' => 0],    // Level 0
-            ['xp' => 150, 'expectedMinimum' => 100], // Level 1
-            ['xp' => 1250, 'expectedMinimum' => 1000], // Level 4
-            ['xp' => 1750, 'expectedMinimum' => 1500], // Level 5
+            ['xp' => 250, 'expectedMinimum' => 200], // Level 1
+            ['xp' => 1800, 'expectedMinimum' => 1750], // Level 4
+            ['xp' => 3000, 'expectedMinimum' => 2900], // Level 5
             ['xp' => 15000, 'expectedMinimum' => 10000], // Level 12 (max)
         ];
 
@@ -233,10 +233,10 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetNextLevelXP_ReturnsCorrectNextLevel()
     {
         $testCases = [
-            ['xp' => 50, 'expectedNext' => 100],   // Level 0 -> 1
-            ['xp' => 150, 'expectedNext' => 300],  // Level 1 -> 2
-            ['xp' => 1250, 'expectedNext' => 1500], // Level 4 -> 5
-            ['xp' => 1750, 'expectedNext' => 2250], // Level 5 -> 6
+            ['xp' => 50, 'expectedNext' => 200],   // Level 0 -> 1
+            ['xp' => 250, 'expectedNext' => 700],  // Level 1 -> 2
+            ['xp' => 1250, 'expectedNext' => 1750], // Level 3 -> 4
+            ['xp' => 2350, 'expectedNext' => 2900], // Level 5 -> 6
             ['xp' => 15000, 'expectedNext' => 99999], // Level 12 (max) -> beyond
         ];
 

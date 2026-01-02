@@ -195,11 +195,6 @@ class SpellActionService
 
         DB::transaction(function () use ($dominion, $target, $manaCost, $spell, &$result, &$bountyMessage, &$xpMessage) {
             $xpValue = 0;
-            $latestOp = $dominion->realm->infoOps()
-                ->where('target_dominion_id', $target->id)
-                ->where('type', $spell->key)
-                ->where('latest', true)
-                ->first();
             $wizardStrengthLost = $this->spellCalculator->getStrengthCost($dominion, $spell);
 
             if ($this->spellHelper->isSelfSpell($spell)) {
@@ -230,8 +225,15 @@ class SpellActionService
             }
 
             // No XP for repeat ops
-            if ($latestOp !== null && !$latestOp->isStale()) {
-                $xpValue = 0;
+            if ($this->spellHelper->isInfoOpSpell($spell)) {
+                $latestOp = $dominion->realm->infoOps()
+                    ->where('target_dominion_id', $target->id)
+                    ->where('type', $spell->key)
+                    ->where('latest', true)
+                    ->first();
+                if ($latestOp !== null && !$latestOp->isStale()) {
+                    $xpValue = 0;
+                }
             }
 
             // Amplify Magic
@@ -260,7 +262,10 @@ class SpellActionService
 
             if (!$this->spellHelper->isSelfSpell($spell)) {
                 if ($result['success']) {
-                    $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpValue, 'magic');
+                    $xpGain = 0;
+                    if ($dominion->hero) {
+                        $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpValue, 'magic');
+                    }
                     $dominion->stat_spell_success += 1;
                     // Bounty result
                     if (isset($result['bounty']) && $result['bounty']) {
