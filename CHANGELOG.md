@@ -19,10 +19,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Blacksmith bonus reduced to 0.2 per level (from 0.25)
   - Engineer bonus reduced to 0.5 per level (from 0.75)
   - Healer bonus reduced to 0.75 per level (from 1)
-  - Pursuit of Knowledg upgrade (Scholar) research point production reduced to 25% (from 30%)
+  - Pursuit of Knowledge upgrade (Scholar) research point production reduced to 25% (from 30%)
 - New Hero Upgrades
   - Lead from the Front: Experience gains from invasion and exploration are doubled, but experience cannot be gained from magic and espionage
-  - Lead from the Shadows: 	Experience gains from magic and espionage are doubled
+  - Lead from the Shadows: Experience gains from magic and espionage are doubled
 
 ## [1.47.1] - 2025-12-11
 ### Changed

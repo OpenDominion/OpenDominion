@@ -394,7 +394,9 @@ class HeroCalculator
         }
 
         // Add doctrines
-        $unlockLevels[] = 1;
+        if ($heroLevel > 0) {
+            $unlockLevels[] = 1;
+        }
 
         if ($hero->class === 'scion') {
             $unlockLevels[] = 0;
