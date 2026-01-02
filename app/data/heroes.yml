@@ -161,3 +161,18 @@ anti_magic_sigils:
   perks:
     enemy_spell_duration: -2
     combat_evasion: 7
+lead_from_the_front:
+  name: Lead from the Front
+  level: 1
+  type: doctrine
+  icon: ra-vertical-banner
+  perks:
+    xp_from_land_gain_bonus: 100
+    xp_from_ops_penalty: 100
+lead_from_the_shadows:
+  name: Lead from the Shadows
+  level: 1
+  type: doctrine
+  icon: ra-cloak-and-dagger
+  perks:
+    xp_from_ops_bonus: 100

@@ -45,19 +45,41 @@ class HeroCalculator
      */
     public function getExperienceGain(Dominion $dominion, int $value, string $source): float
     {
+        $landGainBonus = $dominion->hero->getPerkMultiplier('xp_from_land_gain_bonus');
+        $opsBonus = $dominion->hero->getPerkMultiplier('xp_from_ops_bonus');
+        $opsPenalty = $dominion->hero->getPerkMultiplier('xp_from_ops_penalty');
+
         if ($source == 'invasion') {
             $coefficient = 1;
+            if ($landGainBonus != 0) {
+                $coefficient *= (1 + $landGainBonus);
+            }
         } elseif ($source == 'exploration') {
             $coefficient = 0.6;
+            if ($landGainBonus != 0) {
+                $coefficient *= (1 + $landGainBonus);
+            }
         } elseif ($source == 'spy') {
             $coefficient = 0.5;
+            if ($opsBonus != 0) {
+                $coefficient *= (1 + $opsBonus);
+            }
+            if ($opsPenalty != 0) {
+                $coefficient *= (1 - $opsPenalty);
+            }
         } elseif ($source == 'magic') {
             $coefficient = 1;
+            if ($opsBonus != 0) {
+                $coefficient *= (1 + $opsBonus);
+            }
+            if ($opsPenalty != 0) {
+                $coefficient *= (1 - $opsPenalty);
+            }
         } else {
             $coefficient = 1;
         }
 
-        return $coefficient * $value * $this->getExperienceMultiplier($dominion);;
+        return $coefficient * $value * $this->getExperienceMultiplier($dominion);
     }
 
     /**
@@ -356,25 +378,29 @@ class HeroCalculator
             return 0;
         }
 
+        // TODO: Refactor this
         $maxUnlockLevel = 6;
         $heroLevel = min($this->getHeroLevel($hero), $maxUnlockLevel);
         $upgradeLevels = $hero->upgrades->where('type', '!=', 'directive')->pluck('level')->all();
 
         if ($heroLevel < 2) {
-            $evenLevels = [];
+            $unlockLevels = [];
         } elseif ($heroLevel < 4) {
-            $evenLevels = [2];
+            $unlockLevels = [2];
         } elseif ($heroLevel < 6) {
-            $evenLevels = [2, 4];
+            $unlockLevels = [2, 4];
         } else {
-            $evenLevels = range(2, $heroLevel, 2);
+            $unlockLevels = range(2, $heroLevel, 2);
         }
+
+        // Add doctrines
+        $unlockLevels[] = 1;
 
         if ($hero->class === 'scion') {
-            $evenLevels[] = 0;
+            $unlockLevels[] = 0;
         }
 
-        return count(array_diff($evenLevels, $upgradeLevels));
+        return count(array_diff($unlockLevels, $upgradeLevels));
     }
 
     public function canUnlockUpgrade(Hero $hero, HeroUpgrade $upgrade): bool

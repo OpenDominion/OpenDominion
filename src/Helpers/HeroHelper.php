@@ -174,6 +174,11 @@ class HeroHelper
     public function getHeroUpgradePerkStrings()
     {
         return [
+            // Doctrine
+            'xp_from_land_gain_bonus' => 'Experience gains from invasion and exploration are doubled',
+            'xp_from_ops_bonus' => 'Experience gains from magic and espionage are doubled',
+            'xp_from_ops_penalty' => 'Experience cannot be gained from magic and espionage',
+
             // Magic
             'enemy_lightning_bolt_damage' => '%+g%% enemy lightning bolt damage',
             'enemy_spy_losses' => '%+g%% enemy spy losses on failed operations',
