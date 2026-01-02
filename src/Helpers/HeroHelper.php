@@ -18,7 +18,7 @@ class HeroHelper
                 'key' => 'alchemist',
                 'class_type' => 'basic',
                 'perk_type' => 'platinum_production',
-                'coefficient' => 0.2,
+                'coefficient' => 0.25,
                 'icon' => 'ra-gold-bar'
             ],
             [
@@ -26,7 +26,7 @@ class HeroHelper
                 'key' => 'architect',
                 'class_type' => 'basic',
                 'perk_type' => 'construction_cost',
-                'coefficient' => -1.2,
+                'coefficient' => -1.25,
                 'icon' => 'ra-quill-ink'
             ],
             [
@@ -34,7 +34,7 @@ class HeroHelper
                 'key' => 'blacksmith',
                 'class_type' => 'basic',
                 'perk_type' => 'military_cost',
-                'coefficient' => -0.25,
+                'coefficient' => -0.2,
                 'icon' => 'ra-anvil'
             ],
             [
@@ -42,7 +42,7 @@ class HeroHelper
                 'key' => 'engineer',
                 'class_type' => 'basic',
                 'perk_type' => 'invest_bonus',
-                'coefficient' => 0.75,
+                'coefficient' => 0.5,
                 'icon' => 'ra-hammer'
             ],
             [
@@ -58,7 +58,7 @@ class HeroHelper
                 'key' => 'healer',
                 'class_type' => 'basic',
                 'perk_type' => 'casualties',
-                'coefficient' => -1,
+                'coefficient' => -0.75,
                 'icon' => 'ra-apothecary'
             ],
             [

@@ -132,7 +132,7 @@ pursuit_of_knowledge:
   type: directive
   icon: ra-archive-research
   perks:
-    tech_production: 30
+    tech_production: 25
     invest_bonus: -20
   classes:
     - scholar

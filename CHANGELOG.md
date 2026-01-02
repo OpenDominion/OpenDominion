@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - XP gain from magic ops reduced to 1 XP per strength spent
   - XP gain from exploration increased to 0.6 per acre (from 0.25)
   - Cooldown to change hero classes reverted to 96 hours (from 72)
+  - Alchemist bonus increased to 0.25 per level (from 0.2)
+  - Architect bonus increased to 1.25 per level (from 1.2)
+  - Blacksmith bonus reduced to 0.2 per level (from 0.25)
+  - Engineer bonus reduced to 0.5 per level (from 0.75)
+  - Healer bonus reduced to 0.75 per level (from 1)
+  - Pursuit of Knowledg upgrade (Scholar) research point production reduced to 25% (from 30%)
 - New Hero Upgrades
   - Lead from the Front: Experience gains from invasion and exploration are doubled, but experience cannot be gained from magic and espionage
   - Lead from the Shadows: 	Experience gains from magic and espionage are doubled
