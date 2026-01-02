@@ -119,11 +119,26 @@
                                                     <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Current Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i>
                                                 </div>
                                                 @if (isset($upgrades[0]))
-                                                    @foreach ($upgrades[0] as $upgrade)
+                                                    @foreach ($upgrades[0]->where('type', 'directive') as $upgrade)
                                                         <div class="col-xs-6 text-center">
                                                             {!! $heroHelper->getUpgradeIcon($upgrade) !!}
                                                         </div>
                                                     @endforeach
+                                                @else
+                                                    <div class="col-xs-6 text-center">
+                                                        {!! $heroHelper->getLockIcon(0) !!}
+                                                    </div>
+                                                @endif
+                                                @if (isset($upgrades[1]))
+                                                    @foreach ($upgrades[1] as $upgrade)
+                                                        <div class="col-xs-6 text-center">
+                                                            {!! $heroHelper->getUpgradeIcon($upgrade) !!}
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div class="col-xs-6 text-center">
+                                                        {!! $heroHelper->getLockIcon(1) !!}
+                                                    </div>
                                                 @endif
                                                 @if (isset($upgrades[2]))
                                                     @foreach ($upgrades[2] as $upgrade)
