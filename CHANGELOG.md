@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Changed
 - Heroes
+  - XP requirement to level up has been increased for levels 1-7
   - XP is no longer gained or lost for bottomfeeds
   - XP is no longer gained when taking multiple info ops of the same type in the same hour
   - Shrines no longer modify the bonus XP from bounties
