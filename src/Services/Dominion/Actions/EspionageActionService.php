@@ -191,6 +191,11 @@ class EspionageActionService
 
         DB::transaction(function () use ($dominion, $target, $operationKey, &$result, &$bountyMessage, &$xpMessage) {
             $xpValue = 0;
+            $latestOp = $dominion->realm->infoOps()
+                ->where('target_dominion_id', $target->id)
+                ->where('type', $operationKey)
+                ->where('latest', true)
+                ->first();
 
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
                 $spyStrengthLost = 2;
@@ -231,11 +236,6 @@ class EspionageActionService
 
             // No XP for repeat ops
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $latestOp = $dominion->realm->infoOps()
-                    ->where('target_dominion_id', $target->id)
-                    ->where('type', $operationKey)
-                    ->where('latest', true)
-                    ->first();
                 if ($latestOp !== null && !$latestOp->isStale()) {
                     $xpValue = 0;
                 }
