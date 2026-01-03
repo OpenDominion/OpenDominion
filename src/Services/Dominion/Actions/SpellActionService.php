@@ -195,12 +195,14 @@ class SpellActionService
 
         DB::transaction(function () use ($dominion, $target, $manaCost, $spell, &$result, &$bountyMessage, &$xpMessage) {
             $xpValue = 0;
-            $latestOp = $dominion->realm->infoOps()
-                ->where('target_dominion_id', $target->id)
-                ->where('type', $spell->key)
-                ->where('latest', true)
-                ->first();
             $wizardStrengthLost = $this->spellCalculator->getStrengthCost($dominion, $spell);
+            if ($this->spellHelper->isInfoOpSpell($spell)) {
+                $latestOp = $dominion->realm->infoOps()
+                    ->where('target_dominion_id', $target->id)
+                    ->where('type', $spell->key)
+                    ->where('latest', true)
+                    ->first();
+            }
 
             if ($this->spellHelper->isSelfSpell($spell)) {
                 $result = $this->castSelfSpell($dominion, $spell);
