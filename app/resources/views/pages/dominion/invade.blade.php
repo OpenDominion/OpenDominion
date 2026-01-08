@@ -397,6 +397,13 @@
                 updateUnitStats();
             });
 
+            $('input[name^=\'unit\']').on('input', function (e) {
+                if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                    invasionForceOPElement.removeClass('text-green');
+                    invasionForceOPElement.removeClass('text-red');
+                }
+            });
+
             function updateUnitStats() {
                 // Update unit stats
                 $.get(
