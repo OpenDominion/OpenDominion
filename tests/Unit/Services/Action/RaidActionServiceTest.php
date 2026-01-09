@@ -122,7 +122,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'investment',
             'name' => 'Fund Campaign (Platinum)',
             'attributes' => [
-                'resource' => 'platinum',
+                'resource' => 'resource_platinum',
                 'amount' => 5000,
                 'points_awarded' => 500,
             ],
@@ -155,7 +155,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'investment',
             'name' => 'Fund Campaign (Platinum)',
             'attributes' => [
-                'resource' => 'platinum',
+                'resource' => 'resource_platinum',
                 'amount' => 200000, // More than available
                 'points_awarded' => 20000,
             ],
@@ -592,7 +592,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'investment',
             'name' => 'Fund Campaign - First (Platinum)',
             'attributes' => [
-                'resource' => 'platinum',
+                'resource' => 'resource_platinum',
                 'amount' => 3000,
                 'points_awarded' => 300,
             ],
@@ -603,7 +603,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'investment',
             'name' => 'Fund Campaign - Second (Platinum)',
             'attributes' => [
-                'resource' => 'platinum',
+                'resource' => 'resource_platinum',
                 'amount' => 2000,
                 'points_awarded' => 200,
             ],
