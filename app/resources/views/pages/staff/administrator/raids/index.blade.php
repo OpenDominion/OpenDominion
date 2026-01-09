@@ -59,14 +59,14 @@
                                 </td>
                                 <td class="text-center">
                                     @if ($raid->reward_resource && $raid->reward_amount)
-                                        {{ number_format($raid->reward_amount) }} {{ str_replace('resource_', '', $raid->reward_resource) }}
+                                        {{ number_format($raid->reward_amount) }} {{ dominion_attr_display($raid->reward_resource, $raid->reward_amount) }}
                                     @else
                                         <span class="text-muted">None</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
                                     @if ($raid->completion_reward_resource && $raid->completion_reward_amount)
-                                        {{ number_format($raid->completion_reward_amount) }} {{ $raid->completion_reward_resource }}
+                                        {{ number_format($raid->completion_reward_amount) }} {{ dominion_attr_display($raid->completion_reward_resource, $raid->completion_reward_amount) }}
                                     @else
                                         <span class="text-muted">None</span>
                                     @endif

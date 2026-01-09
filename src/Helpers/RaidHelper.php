@@ -75,7 +75,7 @@ class RaidHelper
                 'casualties' => 3.5,
             ],
             'investment' => [
-                'resource' => 'ore',
+                'resource' => 'resource_ore',
                 'amount' => 10000,
                 'points_awarded' => 10000,
                 'limit' => 10,

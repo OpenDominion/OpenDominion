@@ -339,10 +339,10 @@ class RaidActionService
             case 'investment':
                 $resourceType = $tactic->attributes['resource'];
                 $resourceCost = $tactic->attributes['amount'];
-                if ($dominion->{"resource_{$resourceType}"} < $resourceCost) {
+                if ($dominion->{$resourceType} < $resourceCost) {
                     throw new GameException("You do not have enough {$resourceType}");
                 }
-                $costs["resource_{$resourceType}"] = $resourceCost;
+                $costs[$resourceType] = $resourceCost;
                 break;
 
             case 'magic':

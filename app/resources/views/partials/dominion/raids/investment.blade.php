@@ -31,11 +31,11 @@
                                 $resourceType = $tactic->attributes['resource'];
                                 $amount = $tactic->attributes['amount'];
                                 $pointsAwarded = $raidCalculator->getTacticScore($selectedDominion, $tactic);
-                                $canPerform = $selectedDominion->{"resource_{$resourceType}"} >= $amount;
+                                $canPerform = $selectedDominion->{$resourceType} >= $amount;
                             @endphp
                             <tr>
                                 <td>{{ $tactic->name }}</td>
-                                <td>{{ ucfirst($resourceType) }}</td>
+                                <td>{{ ucfirst(dominion_attr_display($resourceType, $amount)) }}</td>
                                 <td>{{ number_format($amount) }}</td>
                                 <td>
                                     {{ number_format($pointsAwarded) }}
@@ -64,7 +64,7 @@
                             <td></td>
                             <td colspan=3>
                                 <small class="text-muted">
-                                    {{ ucwords($resourceType) }}: {{ number_format($selectedDominion->{"resource_{$resourceType}"}) }}
+                                    {{ ucwords($resourceType) }}: {{ number_format($selectedDominion->{$resourceType}) }}
                                 </small>
                             </td>
                         </tr>
