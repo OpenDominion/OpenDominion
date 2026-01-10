@@ -90,9 +90,9 @@ class RaidController extends AbstractController
 
         $raid = Raid::create($validated);
 
-        return redirect()
-            ->route('staff.administrator.raids.show', $raid)
-            ->with('success', 'Raid created successfully.');
+        $request->session()->flash('alert-success', 'Raid created successfully.');
+
+        return redirect()->route('staff.administrator.raids.show', $raid);
     }
 
     /**
@@ -151,9 +151,9 @@ class RaidController extends AbstractController
 
         $raid->update($validated);
 
-        return redirect()
-            ->route('staff.administrator.raids.show', $raid)
-            ->with('success', 'Raid updated successfully.');
+        $request->session()->flash('alert-success', 'Raid updated successfully.');
+
+        return redirect()->route('staff.administrator.raids.show', $raid);
     }
 
     /**
@@ -171,14 +171,14 @@ class RaidController extends AbstractController
     /**
      * Remove the specified raid from storage.
      */
-    public function postDelete(Raid $raid)
+    public function postDelete(Request $request, Raid $raid)
     {
         $roundId = $raid->round_id;
         $raid->delete();
 
-        return redirect()
-            ->route('staff.administrator.raids.index', ['round' => $roundId])
-            ->with('success', 'Raid deleted successfully.');
+        $request->session()->flash('alert-success', 'Raid deleted successfully.');
+
+        return redirect()->route('staff.administrator.raids.index', ['round' => $roundId]);
     }
 
     /**
@@ -218,9 +218,9 @@ class RaidController extends AbstractController
 
         $objective = $raid->objectives()->create($validated);
 
-        return redirect()
-            ->route('staff.administrator.raids.objectives.show', [$raid, $objective])
-            ->with('success', 'Objective created successfully.');
+        $request->session()->flash('alert-success', 'Objective created successfully.');
+
+        return redirect()->route('staff.administrator.raids.objectives.show', [$raid, $objective]);
     }
 
     /**
@@ -275,9 +275,9 @@ class RaidController extends AbstractController
 
         $objective->update($validated);
 
-        return redirect()
-            ->route('staff.administrator.raids.objectives.show', [$raid, $objective])
-            ->with('success', 'Objective updated successfully.');
+        $request->session()->flash('alert-success', 'Objective updated successfully.');
+
+        return redirect()->route('staff.administrator.raids.objectives.show', [$raid, $objective]);
     }
 
     /**
@@ -296,13 +296,13 @@ class RaidController extends AbstractController
     /**
      * Remove the specified objective from storage.
      */
-    public function postDeleteObjective(Raid $raid, RaidObjective $objective)
+    public function postDeleteObjective(Request $request, Raid $raid, RaidObjective $objective)
     {
         $objective->delete();
 
-        return redirect()
-            ->route('staff.administrator.raids.show', $raid)
-            ->with('success', 'Objective deleted successfully.');
+        $request->session()->flash('alert-success', 'Objective deleted successfully.');
+
+        return redirect()->route('staff.administrator.raids.show', $raid);
     }
 
     /**
@@ -340,9 +340,9 @@ class RaidController extends AbstractController
 
         $tactic = $objective->tactics()->create($validated);
 
-        return redirect()
-            ->route('staff.administrator.raids.objectives.show', [$raid, $objective])
-            ->with('success', 'Tactic created successfully.');
+        $request->session()->flash('alert-success', 'Tactic created successfully.');
+
+        return redirect()->route('staff.administrator.raids.objectives.show', [$raid, $objective]);
     }
 
     /**
@@ -381,9 +381,9 @@ class RaidController extends AbstractController
 
         $tactic->update($validated);
 
-        return redirect()
-            ->route('staff.administrator.raids.objectives.show', [$raid, $objective])
-            ->with('success', 'Tactic updated successfully.');
+        $request->session()->flash('alert-success', 'Tactic updated successfully.');
+
+        return redirect()->route('staff.administrator.raids.objectives.show', [$raid, $objective]);
     }
 
     /**
@@ -401,12 +401,12 @@ class RaidController extends AbstractController
     /**
      * Remove the specified tactic from storage.
      */
-    public function postDeleteTactic(Raid $raid, RaidObjective $objective, RaidObjectiveTactic $tactic)
+    public function postDeleteTactic(Request $request, Raid $raid, RaidObjective $objective, RaidObjectiveTactic $tactic)
     {
         $tactic->delete();
 
-        return redirect()
-            ->route('staff.administrator.raids.objectives.show', [$raid, $objective])
-            ->with('success', 'Tactic deleted successfully.');
+        $request->session()->flash('alert-success', 'Tactic deleted successfully.');
+
+        return redirect()->route('staff.administrator.raids.objectives.show', [$raid, $objective]);
     }
 }
