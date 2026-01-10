@@ -35,7 +35,7 @@
                             @endphp
                             <tr>
                                 <td>{{ $tactic->name }}</td>
-                                <td>{{ ucfirst(dominion_attr_display($resourceType, $amount)) }}</td>
+                                <td>{{ ucwords(dominion_attr_display($resourceType, $amount)) }}</td>
                                 <td>{{ number_format($amount) }}</td>
                                 <td>
                                     {{ number_format($pointsAwarded) }}
@@ -53,7 +53,7 @@
                                         </form>
                                     @else
                                         <button type="button" class="btn btn-block btn-sm btn-primary" disabled>
-                                            Insufficient {{ ucfirst($resourceType) }}
+                                            Insufficient {{ ucwords(dominion_attr_display($resourceType, $amount)) }}
                                         </button>
                                     @endif
                                 </td>
@@ -64,7 +64,7 @@
                             <td></td>
                             <td colspan=3>
                                 <small class="text-muted">
-                                    {{ ucwords($resourceType) }}: {{ number_format($selectedDominion->{$resourceType}) }}
+                                    {{ ucwords(dominion_attr_display($resourceType, 100)) }}: {{ number_format($selectedDominion->{$resourceType}) }}
                                 </small>
                             </td>
                         </tr>
