@@ -71,17 +71,17 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
     {
         return [
             // [totalLand, multiplier, expectedPlatinumCost]
-            [250, 1.0, 591],
-            [500, 1.0, 2038],
-            [1000, 1.0, 5100],
-            [2000, 1.0, 11900],
-            [3000, 1.0, 19600],
+            [250, 1.0, 604],
+            [500, 1.0, 2036],
+            [1000, 1.0, 5050],
+            [2000, 1.0, 11646],
+            [3000, 1.0, 19721],
             // Test with cost reduction multiplier
-            [1000, 0.9, 4590],
-            [1000, 0.8, 4080],
+            [1000, 0.9, 4545],
+            [1000, 0.8, 4040],
             // Test with cost increase multiplier (Elite Guard)
-            [1000, 1.25, 6375],
-            [2000, 1.25, 14875],
+            [1000, 1.25, 6313],
+            [2000, 1.25, 14558],
         ];
     }
 
