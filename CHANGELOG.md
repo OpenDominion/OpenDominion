@@ -4,25 +4,33 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [1.48.0] - 2025-01-14
 ### Changed
 - Heroes
   - XP requirement to level up has been increased for levels 1-7
   - XP is no longer gained or lost for bottomfeeds
   - XP is no longer gained when taking multiple info ops of the same type in the same hour
   - Shrines no longer modify the bonus XP from bounties
+  - Bonus XP from bounties increased to +10 XP (from +6)
   - XP gain from spy ops reduced to 0.5 XP per strength spent
   - XP gain from magic ops reduced to 1 XP per strength spent
   - XP gain from exploration increased to 0.6 per acre (from 0.25)
   - Cooldown to change hero classes reverted to 96 hours (from 72)
-  - Alchemist bonus increased to 0.25 per level (from 0.2)
+  - Alchemist bonus increased to 0.3 per level (from 0.2)
   - Architect bonus increased to 1.25 per level (from 1.2)
   - Blacksmith bonus reduced to 0.2 per level (from 0.25)
   - Engineer bonus reduced to 0.5 per level (from 0.75)
-  - Healer bonus reduced to 0.75 per level (from 1)
+  - Scholar bonus increased to 0.15 per level (from 0.1)
   - Pursuit of Knowledge upgrade (Scholar) research point production reduced to 25% (from 30%)
 - New Hero Upgrades
-  - Lead from the Front: Experience gains from invasion and exploration are doubled, but experience cannot be gained from magic and espionage
-  - Lead from the Shadows: Experience gains from magic and espionage are doubled
+  - Lead from the Front: Experience gains from invasion and exploration are increased by 150%, but experience cannot be gained from magic and espionage
+  - Lead from the Shadows: Experience gains from magic and espionage are increased by 100%
+- Explore cost reverted to previous levels after ~1500
+- Platinum theft limited to 35p per spy (was 45p)
+- Demon Corruption: increased to -5% platinum (from -2.5%)
+- Nomad: construction platinum cost increased by 10%
+- Vampire: racial hero bonus perk removed (was +100%)
 
 ## [1.47.1] - 2025-12-11
 ### Changed
@@ -2578,7 +2586,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.47.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.48.0...HEAD
+[1.48.0]: https://github.com/OpenDominion/OpenDominion/compare/1.47.1...1.48.0
+[1.47.1]: https://github.com/OpenDominion/OpenDominion/compare/1.47.0...1.47.1
 [1.47.0]: https://github.com/OpenDominion/OpenDominion/compare/1.46.1...1.47.0
 [1.46.1]: https://github.com/OpenDominion/OpenDominion/compare/1.46.0...1.46.1
 [1.46.0]: https://github.com/OpenDominion/OpenDominion/compare/1.45.1...1.46.0

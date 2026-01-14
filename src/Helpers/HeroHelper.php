@@ -18,7 +18,7 @@ class HeroHelper
                 'key' => 'alchemist',
                 'class_type' => 'basic',
                 'perk_type' => 'platinum_production',
-                'coefficient' => 0.25,
+                'coefficient' => 0.3,
                 'icon' => 'ra-gold-bar'
             ],
             [
@@ -58,7 +58,7 @@ class HeroHelper
                 'key' => 'healer',
                 'class_type' => 'basic',
                 'perk_type' => 'casualties',
-                'coefficient' => -0.75,
+                'coefficient' => -1,
                 'icon' => 'ra-apothecary'
             ],
             [
@@ -82,7 +82,7 @@ class HeroHelper
                 'key' => 'scholar',
                 'class_type' => 'advanced',
                 'perk_type' => 'max_population',
-                'coefficient' => 0.1,
+                'coefficient' => 0.15,
                 'perks' => ['pursuit_of_knowledge'],
                 'icon' => 'ra-graduate-cap',
                 'requirement_stat' => 'techCount',
@@ -175,8 +175,8 @@ class HeroHelper
     {
         return [
             // Doctrine
-            'xp_from_land_gain_bonus' => 'Experience gains from invasion and exploration are doubled',
-            'xp_from_ops_bonus' => 'Experience gains from magic and espionage are doubled',
+            'xp_from_land_gain_bonus' => 'Experience gains from invasion and exploration are multiplied by 2.5x',
+            'xp_from_ops_bonus' => 'Experience gains from magic and espionage are multiplied by 2x',
             'xp_from_ops_penalty' => 'Experience cannot be gained from magic and espionage',
 
             // Magic

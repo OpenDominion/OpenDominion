@@ -483,7 +483,7 @@ class EspionageActionService
                 $constraints = [
                     'target_amount' => 2,
                     'self_production' => 75,
-                    'spy_carries' => 45,
+                    'spy_carries' => 35,
                 ];
                 break;
 

@@ -11,6 +11,7 @@ home_land_type: plain
 perks:
   extra_barren_max_population: 20
   tech_production_invasion: 100
+  construction_cost: 10
 units:
   - name: Lancer
     cost:

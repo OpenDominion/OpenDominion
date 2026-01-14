@@ -49,9 +49,9 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         $bonus = $this->heroCalculator->getPassiveBonus($hero, 'platinum_production');
 
         // Assert - Should get full bonus (level 4 * coefficient)
-        // Alchemist coefficient is 0.25, so level 4 = 1.0%
+        // Alchemist coefficient is 0.3, so level 4 = 1.2%
         $this->assertGreaterThan(0, $bonus);
-        $this->assertEquals(1.0, $bonus, 'Active class should get full bonus', 0.01);
+        $this->assertEquals(1.2, $bonus, 'Active class should get full bonus', 0.01);
     }
 
     public function testGetPassiveBonus_InactiveClass_HalfBonus()
@@ -75,9 +75,9 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         $bonus = $this->heroCalculator->getPassiveBonus($hero, 'platinum_production');
 
         // Assert - Should get half bonus (level 4 * coefficient * 0.5)
-        // Alchemist coefficient is 0.25, so level 4 * 0.5 = 0.5%
+        // Alchemist coefficient is 0.3, so level 4 * 0.5 = 0.6%
         $this->assertGreaterThan(0, $bonus);
-        $this->assertEquals(0.5, $bonus, 'Inactive class should get half bonus', 0.01);
+        $this->assertEquals(0.6, $bonus, 'Inactive class should get half bonus', 0.01);
     }
 
     public function testGetPassiveBonus_NoExperienceInClass_ZeroBonus()
@@ -109,7 +109,7 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
             'class_data' => [
                 'alchemist' => [
                     'key' => 'alchemist',
-                    'experience' => 3000, // Level 5
+                    'experience' => 2500, // Level 5
                     'perk_type' => 'platinum_production'
                 ],
                 'farmer' => [
@@ -129,7 +129,7 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         // Act & Assert - Test inactive alchemist (half bonus)
         $alchemistBonus = $this->heroCalculator->getPassiveBonus($hero, 'platinum_production');
         $this->assertGreaterThan(0, $alchemistBonus);
-        // Level 5 alchemist (coefficient 0.25) * 0.5 = 0.75%
+        // Level 5 alchemist (coefficient 0.3) * 0.5 = 0.75%
         $this->assertEquals(0.75, $alchemistBonus, 'Inactive alchemist should get half bonus');
 
         // Act & Assert - Test inactive farmer (half bonus)
@@ -163,12 +163,12 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
 
     public function testCalculatePassiveBonus_DifferentLevels()
     {
-        // Test that passive bonus scales correctly with level using alchemist (coefficient 0.25)
+        // Test that passive bonus scales correctly with level using alchemist (coefficient 0.3)
         $testCases = [
             ['level' => 0, 'expected' => 0],
-            ['level' => 1, 'expected' => 0.25],
-            ['level' => 5, 'expected' => 1.25],
-            ['level' => 10, 'expected' => 2.5],
+            ['level' => 1, 'expected' => 0.3],
+            ['level' => 5, 'expected' => 1.5],
+            ['level' => 10, 'expected' => 3],
         ];
 
         foreach ($testCases as $testCase) {
