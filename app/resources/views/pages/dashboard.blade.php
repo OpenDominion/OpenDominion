@@ -12,6 +12,16 @@
                 <p>Welcome back, {{ Auth::user()->display_name }}.</p>
                 <p>Select one of your dominions below to go to its status screen.</p>
             @endif
+
+            @if ($currentRound !== null && !$currentRound->hasEnded())
+                The current round is <b>{{ $currentRound->name }}</b>
+                @if (!$currentRound->hasStarted())
+                    and starts in {{ $currentRound->timeUntilStart() }}
+                @endif
+                @if (!$currentRound->userAlreadyRegistered(Auth::user()))
+                    <a class="btn btn-primary btn-xs" href="{{ route('round.register', $currentRound) }}">Register</a>
+                @endif
+            @endif
         </div>
     </div>
 

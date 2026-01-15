@@ -29,7 +29,10 @@ class DashboardController extends AbstractController
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $currentRound = $rounds->sortByDesc('created_at')->first();
+
         return view('pages.dashboard', [
+            'currentRound' => $currentRound,
             'dominions' => $dominions,
             'rankings' => $rankings,
             'rounds' => $rounds,
