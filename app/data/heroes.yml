@@ -169,6 +169,7 @@ lead_from_the_front:
   perks:
     xp_from_land_gain_bonus: 150
     xp_from_ops_penalty: 100
+    combat_health: 5
 lead_from_the_shadows:
   name: Lead from the Shadows
   level: 1
@@ -176,3 +177,4 @@ lead_from_the_shadows:
   icon: ra-cloak-and-dagger
   perks:
     xp_from_ops_bonus: 100
+    combat_health: 5

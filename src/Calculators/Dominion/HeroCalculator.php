@@ -420,7 +420,7 @@ class HeroCalculator
     public function getBaseCombatStats(int $level = 0): array
     {
         return [
-            'health' => 80 + (5 * $level),
+            'health' => 60 + (5 * $level),
             'attack' => 40,
             'defense' => 20,
             'evasion' => 10,
