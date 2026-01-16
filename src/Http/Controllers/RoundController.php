@@ -53,7 +53,14 @@ class RoundController extends AbstractController
 
         $hasDiscord = true;
         $user = Auth::user();
-        if ($user->discordUser === null && $user->dominions()->count() > 1) {
+        $roundsPlayed = $user->dominions()->count();
+        $endorsements = $user->endorsements()->get();
+        $positive = $user->endorsements()->where('endorsed', true)->count();
+        $negative = $user->endorsements()->where('endorsed', false)->count();
+        if ($negative > (2 * $positive)) {
+            $hasDiscord = false;
+        }
+        if ($user->discordUser === null && $user->dominions()->count() > 0) {
             $hasDiscord = false;
         }
 

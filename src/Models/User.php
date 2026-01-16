@@ -108,6 +108,11 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         return $this->hasMany(UserFeedback::class, 'source_id');
     }
 
+    public function endorsements()
+    {
+        return $this->hasMany(UserFeedback::class, 'target_id');
+    }
+
     /**
      * {@inheritdoc}
      */
