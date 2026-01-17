@@ -176,7 +176,6 @@ return [
         // OpenDominion\Providers\BroadcastServiceProvider::class,
         OpenDominion\Providers\ComposerServiceProvider::class,
         OpenDominion\Providers\EventServiceProvider::class,
-        OpenDominion\Providers\TelescopeServiceProvider::class,
         OpenDominion\Providers\RouteServiceProvider::class,
 
     ],
@@ -234,7 +233,7 @@ return [
 
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
-        'Gravatar' => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,
+        'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
 
