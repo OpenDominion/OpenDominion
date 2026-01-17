@@ -29,7 +29,11 @@ use \Illuminate\Database\Eloquent\Builder;
  */
 class HeroBattle extends AbstractModel
 {
-    protected $dates = ['last_processed_at', 'created_at', 'updated_at'];
+    protected $casts = [
+        'last_processed_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function round()
     {

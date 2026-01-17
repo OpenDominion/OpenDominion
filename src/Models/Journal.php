@@ -20,7 +20,10 @@ class Journal extends AbstractModel
 {
     protected $table = 'dominion_journals';
 
-    protected $dates = ['created_at', 'updated_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function dominion()
     {

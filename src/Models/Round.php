@@ -42,12 +42,12 @@ use Illuminate\Support\Str;
  */
 class Round extends AbstractModel
 {
-    protected $dates = [
-        'start_date',
-        'end_date',
-        'offensive_actions_prohibited_at',
-        'created_at',
-        'updated_at'
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'offensive_actions_prohibited_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // Eloquent Relations

@@ -24,7 +24,9 @@ class Queue extends AbstractModel
 
     protected $guarded = ['created_at'];
 
-    protected $dates = ['created_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
 
     const UPDATED_AT = null;
 }

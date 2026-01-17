@@ -37,9 +37,10 @@ class Hero extends AbstractModel
 
     protected $casts = [
         'class_data' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'last_class_change_at' => 'datetime',
     ];
-
-    protected $dates = ['created_at', 'updated_at', 'last_class_change_at'];
 
     public function dominion()
     {

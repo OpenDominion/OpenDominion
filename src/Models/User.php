@@ -4,7 +4,7 @@ namespace OpenDominion\Models;
 
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
-use Gravatar;
+use Creativeorange\Gravatar\Facades\Gravatar;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Support\Arr;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -57,9 +57,10 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     protected $casts = [
         'settings' => 'array',
         'affinities' => 'array',
+        'last_online' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-
-    protected $dates = ['last_online', 'created_at', 'updated_at'];
 
     protected $hidden = ['password', 'remember_token', 'activation_code'];
 
@@ -148,7 +149,7 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
             return asset("storage/uploads/avatars/{$this->avatar}");
         }
 
-        return Gravatar::src($this->email, 200);
+        return Gravatar::get($this->email, ['size' => 200]);
 
     }
 

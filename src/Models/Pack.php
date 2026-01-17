@@ -29,7 +29,11 @@ use Carbon\Carbon;
  */
 class Pack extends AbstractModel
 {
-    protected $dates = ['closed_at', 'created_at', 'updated_at'];
+    protected $casts = [
+        'closed_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function creatorDominion()
     {
