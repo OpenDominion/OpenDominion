@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Helpers;
 
+use Illuminate\Support\Str;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Unit;
 
@@ -232,11 +233,11 @@ class UnitHelper
                 $nestedArrays = false;
                 // todo: refactor all of this
                 // partially copied from Race::getUnitPerkValueForUnitSlot
-                if (str_contains($perkValue, ',') || str_contains($perkValue, ';')) {
+                if (Str::contains($perkValue, ',') || Str::contains($perkValue, ';')) {
                     $perkValue = explode(',', $perkValue);
 
                     foreach ($perkValue as $key => $value) {
-                        if (!str_contains($value, ';')) {
+                        if (!Str::contains($value, ';')) {
                             continue;
                         }
 
@@ -254,7 +255,7 @@ class UnitHelper
 
                     $perkValue[0] = $pairedUnit->name;
                     if ($perkValue[1] > 1) {
-                        $perkValue[0] = str_plural($perkValue[0]);
+                        $perkValue[0] = Str::plural($perkValue[0]);
                     }
                 }
 
@@ -270,7 +271,7 @@ class UnitHelper
                     $perkValue[0] = $unitToConvertTo->name;
                     $perkValue[1] = $amount;
                     if ($perkValue[1] > 1) {
-                        $perkValue[0] = str_plural($perkValue[0]);
+                        $perkValue[0] = Str::plural($perkValue[0]);
                     }
                 }
 

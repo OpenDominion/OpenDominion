@@ -1267,7 +1267,7 @@ class SpellActionService
         $unitsKilledStringParts = [];
         foreach ($unitsKilled as $name => $amount) {
             $amountLabel = number_format($amount);
-            $unitLabel = str_plural(str_singular($name), $amount);
+            $unitLabel = Str::plural(Str::singular($name), $amount);
             $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
         }
         $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);

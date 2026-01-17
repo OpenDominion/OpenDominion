@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
@@ -48,7 +49,7 @@ class ProtectionController extends AbstractDominionController
             }
 
             $data = $request->get('construct') ?? [];
-            $data = array_only($data, array_map(function ($value) {
+            $data = Arr::only($data, array_map(function ($value) {
                 return "building_{$value}";
             }, $buildingHelper->getBuildingTypes()));
             $data = array_map('\intval', $data);

@@ -60,7 +60,7 @@ if (!function_exists('generate_sentence_from_array')) {
         string $delimiter = ', ',
         string $lastDelimiter = ', and '
     ): string {
-        return str_replace_last($delimiter, $lastDelimiter, implode($delimiter, $stringParts));
+        return Str::replaceLast($delimiter, $lastDelimiter, implode($delimiter, $stringParts));
     }
 }
 
@@ -95,9 +95,9 @@ if (!function_exists('dominion_attr_display')) {
             if (strpos($attribute, '_') !== false) {
                 $stringParts = explode('_', $attribute);
                 array_shift($stringParts);
-                return str_plural(str_singular(implode(' ', $stringParts)), $value);
+                return Str::plural(Str::singular(implode(' ', $stringParts)), $value);
             } else {
-                return str_plural(str_singular($attribute), $value);
+                return Str::plural(Str::singular($attribute), $value);
             }
         }
     }

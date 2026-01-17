@@ -3,6 +3,8 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
@@ -69,7 +71,7 @@ class ExploreActionService
             throw new GameException('Exploration has been disabled for the remainder of the round.');
         }
 
-        $data = array_only($data, array_map(function ($value) {
+        $data = Arr::only($data, array_map(function ($value) {
             return "land_{$value}";
         }, $this->landHelper->getLandTypes()));
 
@@ -172,7 +174,7 @@ class ExploreActionService
                 'Exploration begun at a cost of %s platinum and %s %s. Your orders for exploration disheartens the military, and morale drops %d%%.',
                 number_format($platinumCost),
                 number_format($drafteeCost),
-                str_plural('draftee', $drafteeCost),
+                Str::plural('draftee', $drafteeCost),
                 $moraleDrop
             ),
             'data' => [

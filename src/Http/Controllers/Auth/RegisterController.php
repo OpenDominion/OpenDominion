@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use OpenDominion\Events\UserActivatedEvent;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Http\Controllers\AbstractController;
@@ -115,7 +116,7 @@ class RegisterController extends AbstractController
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'display_name' => $data['display_name'],
-            'activation_code' => str_random(),
+            'activation_code' => Str::random(),
         ]);
     }
 }

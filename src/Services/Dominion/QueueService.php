@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion;
 use BadMethodCallException;
 use DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
 use Throwable;
@@ -244,7 +245,7 @@ class QueueService
         preg_match_all('/((?:^|[A-Z])[a-z]+)/', $name, $matches);
         $methodParts = $matches[1];
 
-        if (!((array_get($methodParts, '0') === 'get') && (array_get($methodParts, '2') === 'Queue'))) {
+        if (!((Arr::get($methodParts, '0') === 'get') && (Arr::get($methodParts, '2') === 'Queue'))) {
             throw new BadMethodCallException(sprintf(
                 'Method %s->%s does not exist.',
                 static::class,
@@ -252,8 +253,8 @@ class QueueService
             ));
         }
 
-        $source = strtolower(array_get($methodParts, '1'));
-        $method = implode('', array_except($methodParts, '1'));
+        $source = strtolower(Arr::get($methodParts, '1'));
+        $method = implode('', Arr::except($methodParts, '1'));
         array_unshift($arguments, $source);
 
         return \call_user_func_array([$this, $method], $arguments);

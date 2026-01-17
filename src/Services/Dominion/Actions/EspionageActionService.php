@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use Exception;
+use Illuminate\Support\Str;
 use LogicException;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
@@ -931,7 +932,7 @@ class EspionageActionService
         $unitsKilledStringParts = [];
         foreach ($unitsKilled as $name => $amount) {
             $amountLabel = number_format($amount);
-            $unitLabel = str_plural(str_singular($name), $amount);
+            $unitLabel = Str::plural(Str::singular($name), $amount);
             $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
         }
         $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);

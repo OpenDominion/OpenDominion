@@ -3,6 +3,8 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
@@ -58,10 +60,10 @@ class ReleaseActionService
         }
 
         $units = [
-            1 => array_get($data, 'unit1', 0),
-            2 => array_get($data, 'unit2', 0),
-            3 => array_get($data, 'unit3', 0),
-            4 => array_get($data, 'unit4', 0)
+            1 => Arr::get($data, 'unit1', 0),
+            2 => Arr::get($data, 'unit2', 0),
+            3 => Arr::get($data, 'unit3', 0),
+            4 => Arr::get($data, 'unit4', 0)
         ];
 
         // Check for excessive DP reduction
@@ -133,7 +135,7 @@ class ReleaseActionService
         // Draftees into peasants
         if (isset($troopsReleased['draftees'])) {
             $amount = $troopsReleased['draftees'];
-            $stringParts[] = sprintf('%s %s into the peasantry', number_format($amount), str_plural('draftee', $amount));
+            $stringParts[] = sprintf('%s %s into the peasantry', number_format($amount), Str::plural('draftee', $amount));
         }
 
         // Troops into draftees
@@ -143,8 +145,8 @@ class ReleaseActionService
                 continue;
             }
 
-            $unitName = str_singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race)));
-            $troopsParts[] = (number_format($amount) . ' ' . str_plural($unitName, $amount));
+            $unitName = Str::singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race)));
+            $troopsParts[] = (number_format($amount) . ' ' . Str::plural($unitName, $amount));
         }
 
         if (!empty($troopsParts)) {

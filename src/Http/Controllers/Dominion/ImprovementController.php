@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\ImprovementHelper;
@@ -61,7 +62,7 @@ class ImprovementController extends AbstractDominionController
         $selectedDominion = $this->getSelectedDominion();
         $settings = ($selectedDominion->settings ?? []);
 
-        if (array_get($settings, 'preferredInvestmentResource') != $newResource) {
+        if (Arr::get($settings, 'preferredInvestmentResource') != $newResource) {
             $settings['preferredInvestmentResource'] = $newResource;
             $selectedDominion->settings = $settings;
             $selectedDominion->save();

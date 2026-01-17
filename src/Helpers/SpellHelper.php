@@ -3,6 +3,7 @@
 namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\SpellPerkType;
@@ -289,7 +290,7 @@ class SpellHelper
     {
         $raceStrings = [];
         foreach ($spell->races as $race) {
-            if (!str_contains($race, '-legacy') && !in_array($race, ['dark-elf', 'kobold', 'nomad', 'spirit', 'undead'])) {
+            if (!Str::contains($race, '-legacy') && !in_array($race, ['dark-elf', 'kobold', 'nomad', 'spirit', 'undead'])) {
                 $raceStrings[] = ucwords(str_replace('-', ' ', str_replace('-rework', ' ', $race)));
             }
         }

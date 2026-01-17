@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Gravatar;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Support\Arr;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -153,20 +154,20 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     public function getSetting(string $key)
     {
-        if (!array_has($this->settings, $key)) {
+        if (!Arr::has($this->settings, $key)) {
             return null;
         }
 
-        return array_get($this->settings, $key);
+        return Arr::get($this->settings, $key);
     }
 
     public function getAffinity(string $key)
     {
-        if (!array_has($this->affinities, $key)) {
+        if (!Arr::has($this->affinities, $key)) {
             return 50;
         }
 
-        return array_get($this->affinities, $key);
+        return Arr::get($this->affinities, $key);
     }
 
     /**

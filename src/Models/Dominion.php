@@ -4,6 +4,7 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Arr;
 use OpenDominion\Events\DominionSavedEvent;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -779,11 +780,11 @@ class Dominion extends AbstractModel
 
     public function getSetting(string $key)
     {
-        if (!array_has($this->settings, $key)) {
+        if (!Arr::has($this->settings, $key)) {
             return null;
         }
 
-        return array_get($this->settings, $key);
+        return Arr::get($this->settings, $key);
     }
 
     public function inRealmAndSharesAdvisors(Dominion $target): bool

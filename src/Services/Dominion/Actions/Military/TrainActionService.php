@@ -3,6 +3,8 @@
 namespace OpenDominion\Services\Dominion\Actions\Military;
 
 use DB;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
@@ -48,7 +50,7 @@ class TrainActionService
         $this->guardLockedDominion($dominion);
         $this->guardActionsDuringTick($dominion);
 
-        $data = array_only($data, array_map(function ($value) {
+        $data = Arr::only($data, array_map(function ($value) {
             return "military_{$value}";
         }, $this->unitHelper->getUnitTypes()));
 
@@ -119,8 +121,8 @@ class TrainActionService
 
         // Specialists train in 9 hours
         $nineHourData = [
-            'military_unit1' => array_get($data, 'military_unit1', 0),
-            'military_unit2' => array_get($data, 'military_unit2', 0),
+            'military_unit1' => Arr::get($data, 'military_unit1', 0),
+            'military_unit2' => Arr::get($data, 'military_unit2', 0),
         ];
         unset($data['military_unit1'], $data['military_unit2']);
 
@@ -170,7 +172,7 @@ class TrainActionService
             if ($amount > 0) {
                 $unitName = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
 
-                // str_plural() isn't perfect for certain unit names. This array
+                // Str::plural() isn't perfect for certain unit names. This array
                 // serves as an override to use (see issue #607)
                 // todo: Might move this to UnitHelper, especially if more
                 //       locations need unit name overrides
@@ -187,7 +189,7 @@ class TrainActionService
                         $unitLabel = $overridePluralUnitNames[$unitName];
                     }
                 } else {
-                    $unitLabel = str_plural(str_singular($unitName), $amount);
+                    $unitLabel = Str::plural(Str::singular($unitName), $amount);
                 }
 
                 $unitsToTrainStringParts[] = "{$amountLabel} {$unitLabel}";
@@ -202,9 +204,9 @@ class TrainActionService
                 continue;
             }
 
-            $costType = str_singular($costType);
+            $costType = Str::singular($costType);
             if (!\in_array($costType, ['platinum', 'ore', 'mana', 'lumber', 'gems'], true)) {
-                $costType = str_plural($costType, $cost);
+                $costType = Str::plural($costType, $cost);
             }
             $trainingCostsStringParts[] = (number_format($cost) . ' ' . $costType);
 

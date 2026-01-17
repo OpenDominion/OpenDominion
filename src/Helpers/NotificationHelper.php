@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Helpers;
 
+use Illuminate\Support\Str;
 use LogicException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -290,7 +291,7 @@ class NotificationHelper
                 return sprintf(
                     'Exploration for %s %s of land completed.',
                     number_format($acres),
-                    str_plural('acre', $acres)
+                    Str::plural('acre', $acres)
                 );
 
             case 'hourly_dominion.construction_completed':
@@ -299,7 +300,7 @@ class NotificationHelper
                 return sprintf(
                     'Construction of %s %s completed.',
                     number_format($buildings),
-                    str_plural('building', $buildings)
+                    Str::plural('building', $buildings)
                 );
 
             case 'hourly_dominion.training_completed':
@@ -308,7 +309,7 @@ class NotificationHelper
                 return sprintf(
                     'Training of %s %s completed.',
                     number_format($units),
-                    str_plural('unit', $units)
+                    Str::plural('unit', $units)
                 );
 
             case 'hourly_dominion.returning_completed':
@@ -325,7 +326,7 @@ class NotificationHelper
                     return sprintf(
                         '%s %s returned from battle.',
                         number_format($units),
-                        str_plural('unit', $units)
+                        Str::plural('unit', $units)
                     );
                 }
 
@@ -337,7 +338,7 @@ class NotificationHelper
                 return sprintf(
                     '%s beneficial magic %s dissipated.',
                     number_format($effects),
-                    str_plural('effect', $effects)
+                    Str::plural('effect', $effects)
                 );
 
             case 'hourly_dominion.harmful_magic_dissipated':
@@ -346,7 +347,7 @@ class NotificationHelper
                 return sprintf(
                     '%s harmful magic %s dissipated.',
                     number_format($effects),
-                    str_plural('effect', $effects)
+                    Str::plural('effect', $effects)
                 );
 
             case 'hourly_dominion.starvation_occurred':
@@ -355,7 +356,7 @@ class NotificationHelper
                 return sprintf(
                     '%s %s died due to starvation.',
                     number_format($units),
-                    str_plural('unit', $units)
+                    Str::plural('unit', $units)
                 );
 
             case 'irregular_dominion.realm_role_added':

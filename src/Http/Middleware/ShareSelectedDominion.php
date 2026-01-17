@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Middleware;
 use Bugsnag;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class ShareSelectedDominion
@@ -40,7 +41,7 @@ class ShareSelectedDominion
             Bugsnag::registerCallback(function (Bugsnag\Report $report) use ($dominion) {
                 /** @noinspection NullPointerExceptionInspection */
                 $report->setMetaData([
-                    'dominion' => array_except($dominion->toArray(), ['race', 'realm']),
+                    'dominion' => Arr::except($dominion->toArray(), ['race', 'realm']),
                 ]);
             });
 
