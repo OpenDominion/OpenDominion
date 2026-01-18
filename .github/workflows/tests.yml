@@ -4,14 +4,16 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.2'
+        extensions: mbstring, pdo, pdo_mysql, xml, ctype, json, bcmath, curl
+        coverage: none
 
     - name: Shut down MySQL server
       run: sudo service mysql stop
@@ -20,7 +22,7 @@ jobs:
     - name: Set up MariaDB
       uses: getong/mariadb-action@v1.1
       with:
-        mariadb version: '10.0.38'
+        mariadb version: '10.11'
         mysql database: opendominion
         mysql user: opendominion-user
         mysql password: opendominion-password
