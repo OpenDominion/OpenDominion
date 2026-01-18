@@ -9,10 +9,9 @@ use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\ImprovementCalculator
- */
+#[CoversClass(ImprovementCalculator::class)]
 class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|HeroCalculator */
@@ -37,19 +36,11 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor()
     {
         $this->assertInstanceOf(ImprovementCalculator::class, $this->app->make(ImprovementCalculator::class));
     }
 
-    /**
-     * @covers ::getImprovementMultiplierBonus
-     * @covers ::getImprovementMaximum
-     * @covers ::getImprovementCoefficient
-     */
     public function testGetImprovementMultiplierBonus()
     {
         $tests = [

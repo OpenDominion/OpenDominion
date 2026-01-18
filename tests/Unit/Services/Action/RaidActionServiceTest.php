@@ -547,7 +547,7 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->expectException(\ErrorException::class);
-        $this->expectExceptionMessage('Trying to access array offset on value of type null');
+        $this->expectExceptionMessage('Trying to access array offset on null');
 
         // Create a tactic with invalid attributes
         $invalidTactic = new RaidObjectiveTactic();

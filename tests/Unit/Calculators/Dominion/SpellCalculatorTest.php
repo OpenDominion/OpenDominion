@@ -14,10 +14,9 @@ use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Hero;
 use OpenDominion\Models\Spell;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\SpellCalculator
- */
+#[CoversClass(SpellCalculator::class)]
 class SpellCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */

@@ -12,10 +12,10 @@ use OpenDominion\Models\RaidObjective;
 use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\RaidCalculator
- */
+#[CoversClass(RaidCalculator::class)]
 class RaidCalculatorTest extends AbstractBrowserKitTestCase
 {
     use DatabaseTransactions;
@@ -154,9 +154,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(100.0, $progress);
     }
 
-    /**
-     * @dataProvider completionScenarioProvider
-     */
+    #[DataProvider('completionScenarioProvider')]
     public function testIsObjectiveCompleted_WithVariousScores_ReturnsCorrectStatus($score, $expectedCompleted)
     {
         // Arrange
@@ -178,7 +176,7 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expectedCompleted, $completed);
     }
 
-    public function completionScenarioProvider(): array
+    public static function completionScenarioProvider(): array
     {
         return [
             'no_contributions' => [0, false],

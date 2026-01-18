@@ -15,10 +15,10 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\PopulationCalculator
- */
+#[CoversClass(PopulationCalculator::class)]
 class PopulationCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */
@@ -236,9 +236,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, $result);
     }
 
-    /**
-     * @dataProvider getPopulationPeasantGrowthProvider
-     */
+    #[DataProvider('getPopulationPeasantGrowthProvider')]
     public function testGetPopulationPeasantGrowth(
         /** @noinspection PhpDocSignatureInspection */
         int $expected,
@@ -267,7 +265,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function getPopulationPeasantGrowthProvider()
+    public static function getPopulationPeasantGrowthProvider()
     {
         return [
             [39, 1300, 0, 2358, 1600, 39],

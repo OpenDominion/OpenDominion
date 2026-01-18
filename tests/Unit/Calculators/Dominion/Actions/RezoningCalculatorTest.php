@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class RezoningCalculatorTest extends AbstractBrowserKitTestCase
 {
@@ -63,9 +64,7 @@ class RezoningCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @dataProvider getGetMaxAffordProvider
-     */
+    #[DataProvider('getGetMaxAffordProvider')]
     public function testGetMaxAfford(
         /** @noinspection PhpDocSignatureInspection */
         int $totalLand,
@@ -90,37 +89,15 @@ class RezoningCalculatorTest extends AbstractBrowserKitTestCase
 
     }
 
-    public function getGetMaxAffordProvider()
+    public static function getGetMaxAffordProvider()
     {
         return [
-            [ // new dominion - barren limited
-                'totalLand' => 250,
-                'platinum' => 100000,
-                'expectedMaxAfford' => 150,
-                'stat_total_conquered_land' => 0,
-                'stat_total_land_lost' => 0,
-            ],
-            [
-                'totalLand' => 250,
-                'platinum' => 27500,
-                'expectedMaxAfford' => 110,
-                'stat_total_conquered_land' => 0,
-                'stat_total_land_lost' => 0,
-            ],
-            [
-                'totalLand' => 5000,
-                'platinum' => 310000,
-                'expectedMaxAfford' => 100,
-                'stat_total_conquered_land' => 0,
-                'stat_total_land_lost' => 0,
-            ],
-            [
-                'totalLand' => 5000,
-                'platinum' => 150000,
-                'expectedMaxAfford' => 100,
-                'stat_total_conquered_land' => 4000,
-                'stat_total_land_lost' => 0,
-            ],
+            // totalLand, platinum, expectedMaxAfford, stat_total_land_conquered, stat_total_land_lost
+            // new dominion - barren limited
+            [250, 100000, 150, 0, 0],
+            [250, 27500, 110, 0, 0],
+            [5000, 310000, 100, 0, 0],
+            [5000, 150000, 100, 4000, 0],
         ];
     }
 }

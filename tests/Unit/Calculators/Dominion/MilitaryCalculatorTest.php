@@ -18,10 +18,9 @@ use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\MilitaryCalculator
- */
+#[CoversClass(MilitaryCalculator::class)]
 class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 {
 
@@ -72,17 +71,11 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor()
     {
         $this->assertInstanceOf(MilitaryCalculator::class, $this->app->make(MilitaryCalculator::class));
     }
 
-    /**
-     * @covers ::getUnitPowerFromLandBasedPerk
-     */
     public function testGetUnitPowerFromLandBasedPerk()
     {
         $tests = [
@@ -174,9 +167,6 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @covers ::getUnitPowerFromBuildingBasedPerk
-     */
     public function testGetUnitPowerFromBuildingBasedPerk()
     {
         $tests = [
@@ -319,9 +309,6 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @covers ::getUnitPowerFromRawWizardRatioPerk
-     */
     public function testGetUnitPowerFromRawWizardRatioPerk()
     {
         $tests = [
@@ -390,9 +377,6 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @covers ::getUnitPowerFromStaggeredLandRangePerk
-     */
     public function testGetUnitPowerFromStaggeredLandRangePerk()
     {
         $tests = [
@@ -482,9 +466,6 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @covers ::getUnitPowerFromVersusRacePerk
-     */
     public function testGetUnitPowerFromVersusRacePerk()
     {
         $tests = [
@@ -559,9 +540,6 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @covers ::getWizardStrengthRegen
-     */
     public function testGetWizardStrengthRegen()
     {
         /** @var Mock|Dominion $dominion */

@@ -11,6 +11,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
 {
@@ -46,9 +47,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @dataProvider getPlatinumCostProvider
-     */
+    #[DataProvider('getPlatinumCostProvider')]
     public function testGetPlatinumCost(
         int $totalLand,
         float $multiplier,
@@ -67,7 +66,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expectedPlatinumCost, $this->sut->getPlatinumCost($this->dominionMock));
     }
 
-    public function getPlatinumCostProvider()
+    public static function getPlatinumCostProvider()
     {
         return [
             // [totalLand, multiplier, expectedPlatinumCost]
@@ -214,9 +213,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(1.25, $this->sut->getPlatinumCostMultiplier($this->dominionMock));
     }
 
-    /**
-     * @dataProvider getPlatinumCostMultiplierExcludedRacesProvider
-     */
+    #[DataProvider('getPlatinumCostMultiplierExcludedRacesProvider')]
     public function testGetPlatinumCostMultiplier_ExcludedRaces(
         string $raceKey,
         float $techBonus,
@@ -257,7 +254,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expectedMultiplier, $this->sut->getPlatinumCostMultiplier($this->dominionMock));
     }
 
-    public function getPlatinumCostMultiplierExcludedRacesProvider()
+    public static function getPlatinumCostMultiplierExcludedRacesProvider()
     {
         return [
             // Excluded races get half tech bonus
@@ -326,9 +323,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0.9975, $this->sut->getPlatinumCostMultiplier($this->dominionMock));
     }
 
-    /**
-     * @dataProvider getDrafteeCostProvider
-     */
+    #[DataProvider('getDrafteeCostProvider')]
     public function testGetDrafteeCost(
         int $totalLand,
         int $techPerkValue,
@@ -347,7 +342,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expectedDrafteeCost, $this->sut->getDrafteeCost($this->dominionMock));
     }
 
-    public function getDrafteeCostProvider()
+    public static function getDrafteeCostProvider()
     {
         return [
             // [totalLand, techPerkValue, expectedDrafteeCost]
@@ -362,9 +357,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getMaxAffordProvider
-     */
+    #[DataProvider('getMaxAffordProvider')]
     public function testGetMaxAfford(
         int $platinum,
         int $draftees,
@@ -395,7 +388,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expectedMaxAfford, $this->sut->getMaxAfford($this->dominionMock));
     }
 
-    public function getMaxAffordProvider()
+    public static function getMaxAffordProvider()
     {
         return [
             // [platinum, draftees, platinumCost, drafteeCost, expectedMaxAfford]
@@ -412,9 +405,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getMoraleDropProvider
-     */
+    #[DataProvider('getMoraleDropProvider')]
     public function testGetMoraleDrop(
         int $totalLand,
         int $amount,
@@ -428,7 +419,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expectedMoraleDrop, $this->sut->getMoraleDrop($this->dominionMock, $amount));
     }
 
-    public function getMoraleDropProvider()
+    public static function getMoraleDropProvider()
     {
         return [
             // [totalLand, amount, expectedMoraleDrop]
