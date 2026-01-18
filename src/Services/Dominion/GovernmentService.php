@@ -140,7 +140,7 @@ class GovernmentService
         $cancelDate = $war->active_at->copy()->addHours(self::WAR_CANCEL_WAIT_IN_HOURS);
 
         if ($cancelDate > now()->startOfHour()) {
-            return $cancelDate->diffInHours(now()->startOfHour());
+            return (int) $cancelDate->diffInHours(now()->startOfHour(), absolute: true);
         }
 
         return 0;
@@ -156,7 +156,7 @@ class GovernmentService
         $endingDate = $war->created_at->copy()->addHours(self::WAR_MAXIMUM_DURATION)->startOfHour();
 
         if ($endingDate > now()->startOfHour()) {
-            return $endingDate->diffInHours(now()->startOfHour());
+            return (int) $endingDate->diffInHours(now()->startOfHour(), absolute: true);
         }
 
         return 0;
@@ -172,7 +172,7 @@ class GovernmentService
         if ($war->active_at->startOfHour() <= now()->startOfHour()) {
             return 0;
         }
-        return $war->active_at->diffInHours(now()->startOfHour());
+        return (int) $war->active_at->diffInHours(now()->startOfHour(), absolute: true);
     }
 
     /**
@@ -185,7 +185,7 @@ class GovernmentService
         if ($war->inactive_at == null || $war->inactive_at->startOfHour() <= now()->startOfHour()) {
             return 0;
         }
-        return $war->inactive_at->diffInHours(now()->startOfHour());
+        return (int) $war->inactive_at->diffInHours(now()->startOfHour(), absolute: true);
     }
 
     /**

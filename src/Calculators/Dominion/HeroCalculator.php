@@ -589,7 +589,7 @@ class HeroCalculator
             $changeDate = $hero->last_class_change_at->copy()->addHours(self::CLASS_CHANGE_COOLDOWN_HOURS);
 
             if ($changeDate > now()->startOfHour()) {
-                return $changeDate->diffInHours(now()->startOfHour());
+                return (int) $changeDate->diffInHours(now()->startOfHour(), absolute: true);
             }
         }
 

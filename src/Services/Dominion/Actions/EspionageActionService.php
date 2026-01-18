@@ -160,7 +160,7 @@ class EspionageActionService
         }
 
         if ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
-            if (now()->diffInHours($dominion->round->start_date) < self::THEFT_HOURS_AFTER_ROUND_START) {
+            if (now()->diffInHours($dominion->round->start_date, absolute: true) < self::THEFT_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot perform resource theft for the first three days of the round');
             }
             if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
@@ -170,7 +170,7 @@ class EspionageActionService
                 throw new GameException('You cannot perform resource theft on bots');
             }
         } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
-            if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
+            if (now()->diffInHours($dominion->round->start_date, absolute: true) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot perform black ops for the first three days of the round');
             }
             if ($target->user_id == null) {

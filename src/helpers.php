@@ -1,7 +1,83 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+
+// Laravel 12 compatibility: array_get was removed
+if (!function_exists('array_get')) {
+    /**
+     * Get an item from an array using "dot" notation.
+     *
+     * @param array $array
+     * @param string|int|null $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function array_get($array, $key, $default = null)
+    {
+        return Arr::get($array, $key, $default);
+    }
+}
+
+// Laravel 12 compatibility: array_has was removed
+if (!function_exists('array_has')) {
+    /**
+     * Check if an item exists in an array using "dot" notation.
+     *
+     * @param array $array
+     * @param string|array $keys
+     * @return bool
+     */
+    function array_has($array, $keys)
+    {
+        return Arr::has($array, $keys);
+    }
+}
+
+// Laravel 12 compatibility: starts_with was removed
+if (!function_exists('starts_with')) {
+    /**
+     * Determine if a given string starts with a given substring.
+     *
+     * @param string $haystack
+     * @param string|string[] $needles
+     * @return bool
+     */
+    function starts_with($haystack, $needles)
+    {
+        return Str::startsWith($haystack, $needles);
+    }
+}
+
+// Laravel 12 compatibility: str_plural was removed
+if (!function_exists('str_plural')) {
+    /**
+     * Get the plural form of an English word.
+     *
+     * @param string $value
+     * @param int|array|\Countable $count
+     * @return string
+     */
+    function str_plural($value, $count = 2)
+    {
+        return Str::plural($value, $count);
+    }
+}
+
+// Laravel 12 compatibility: str_random was removed
+if (!function_exists('str_random')) {
+    /**
+     * Generate a more truly "random" alpha-numeric string.
+     *
+     * @param int $length
+     * @return string
+     */
+    function str_random($length = 16)
+    {
+        return Str::random($length);
+    }
+}
 
 if (!function_exists('carbon')) {
     /**

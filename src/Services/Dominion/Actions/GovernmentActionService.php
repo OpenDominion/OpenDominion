@@ -160,7 +160,7 @@ class GovernmentActionService
                 ->orderByDesc('created_at')
                 ->first();
             if ($history !== null) {
-                $hoursRemaining = 48 - now()->diffInHours($history->created_at);
+                $hoursRemaining = 48 - now()->diffInHours($history->created_at, absolute: true);
                 throw new GameException("You cannot appoint a new {$role} for {$hoursRemaining} more hours.");
             }
         }
@@ -246,7 +246,7 @@ class GovernmentActionService
             }
         }
 
-        if (now()->diffInHours($dominion->round->start_date) < self::WAR_HOURS_AFTER_ROUND_START) {
+        if (now()->diffInHours($dominion->round->start_date, absolute: true) < self::WAR_HOURS_AFTER_ROUND_START) {
             throw new GameException('You cannot declare war for the first two days of the round.');
         }
 
