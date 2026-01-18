@@ -11,7 +11,7 @@ jobs:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.4'
         extensions: mbstring, pdo, pdo_mysql, xml, ctype, json, bcmath, curl
         coverage: none
 
