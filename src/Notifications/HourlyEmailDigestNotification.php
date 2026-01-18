@@ -4,10 +4,10 @@ namespace OpenDominion\Notifications;
 
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Arr;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Arr;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Dominion;
 

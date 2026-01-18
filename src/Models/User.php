@@ -3,10 +3,9 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
-use Database\Factories\UserFactory;
 use Creativeorange\Gravatar\Facades\Gravatar;
+use Database\Factories\UserFactory;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Support\Arr;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -14,6 +13,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Arr;
 use OpenDominion\Notifications\User\ResetPasswordNotification;
 use Spatie\Permission\Traits\HasRoles;
 
