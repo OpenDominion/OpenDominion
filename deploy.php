@@ -14,8 +14,10 @@ set('ssh_multiplexing', false);
 // Hosts
 
 host('opendominion.net')
-    ->set('deploy_path', '/var/www/opendominion.net')
-    ->configFile('~/.ssh/config');
+    ->set('hostname', 'opendominion.net')
+    ->set('remote_user', 'ec2-user')
+    ->set('http_user', 'nginx')
+    ->set('deploy_path', '/var/www/opendominion.net');
 
 // Task definitions
 
@@ -48,46 +50,22 @@ task('php-fpm:reload', function () {
     run('sudo service php-fpm reload');
 });
 
-desc('Restart supervisor workers');
-task('supervisorctl:restart', function () {
-    run('sudo supervisorctl restart all');
-});
-
-desc('Enable maintenance mode');
-task('artisan:down', function () {
-    $output = run('if [ -f {{deploy_path}}/current/artisan ]; then {{bin/php}} {{deploy_path}}/current/artisan down --retry=120; fi');
-    writeln('<info>' . $output . '</info>');
-});
-
 // Execute tasks
 
 // Task list is based off the Laravel recipe
 task('deploy', [
-    'deploy:info',
     'deploy:prepare',
-    'deploy:lock',
-    'deploy:release',
-    'deploy:update_code',
-    'deploy:shared',
     'deploy:vendors',
     'npm install', // custom made
     'npm run prod', // custom made
-    'deploy:writable',
     'artisan:storage:link',
-    'artisan:down', // custom inserted
-    'artisan:view:cache',
     'artisan:config:cache',
-    'artisan:migrate', // custom inserted
+    'artisan:route:cache',
+    'artisan:view:cache',
+    'artisan:event:cache',
+    'artisan:migrate',
     'artisan:game:data:sync', // custom made
     'artisan:version:update', // custom made
-    'artisan:optimize',
-    'deploy:symlink',
+    'deploy:publish',
     'php-fpm:reload', // custom made
-    //'supervisorctl:restart', // custom made
-    'artisan:up', // custom inserted
-    'deploy:unlock',
-    'cleanup',
 ]);
-
-after('deploy:failed', 'deploy:unlock');
-after('deploy:failed', 'artisan:up');
