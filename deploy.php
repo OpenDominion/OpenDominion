@@ -8,8 +8,9 @@ require 'recipe/laravel.php';
 
 set('repository', 'git@github.com:OpenDominion/OpenDominion.git');
 set('branch', 'master');
-
-set('ssh_multiplexing', false);
+set('update_code_strategy', 'clone');
+set('git_tty', true);
+set('keep_releases', 3);
 
 // Hosts
 
