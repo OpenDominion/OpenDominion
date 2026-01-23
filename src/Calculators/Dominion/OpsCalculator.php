@@ -400,7 +400,7 @@ class OpsCalculator
      * @param Dominion $target
      * @return float
      */
-    public function getSpellDamageMultiplier(Dominion $target, string $spellKey = '', Dominion $dominion = null): float
+    public function getSpellDamageMultiplier(Dominion $target, string $spellKey = '', ?Dominion $dominion = null): float
     {
         $modifier = 1;
 

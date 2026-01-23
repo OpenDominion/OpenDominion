@@ -108,9 +108,9 @@ class MilitaryCalculator
      */
     public function getOffensivePower(
         Dominion $dominion,
-        Dominion $target = null,
-        float $landRatio = null,
-        array $units = null
+        ?Dominion $target = null,
+        ?float $landRatio = null,
+        ?array $units = null
     ): float
     {
         $op = $this->getOffensivePowerRaw($dominion, $target, $landRatio, $units);
@@ -131,9 +131,9 @@ class MilitaryCalculator
      */
     public function getOffensivePowerRaw(
         Dominion $dominion,
-        Dominion $target = null,
-        float $landRatio = null,
-        array $units = null
+        ?Dominion $target = null,
+        ?float $landRatio = null,
+        ?array $units = null
     ): float
     {
         $op = 0;
@@ -165,7 +165,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getOffensivePowerMultiplier(Dominion $dominion, Dominion $target = null): float
+    public function getOffensivePowerMultiplier(Dominion $dominion, ?Dominion $target = null): float
     {
         $multiplier = 1;
 
@@ -362,9 +362,9 @@ class MilitaryCalculator
      */
     public function getDefensivePower(
         Dominion $dominion,
-        Dominion $target = null,
-        float $landRatio = null,
-        array $units = null,
+        ?Dominion $target = null,
+        ?float $landRatio = null,
+        ?array $units = null,
         float $multiplierReduction = 0,
         bool $ignoreDraftees = false,
         bool $ignoreMinDefense = false
@@ -394,9 +394,9 @@ class MilitaryCalculator
      */
     public function getDefensivePowerRaw(
         Dominion $dominion,
-        Dominion $target = null,
-        float $landRatio = null,
-        array $units = null,
+        ?Dominion $target = null,
+        ?float $landRatio = null,
+        ?array $units = null,
         bool $ignoreDraftees = false
     ): float
     {
@@ -748,7 +748,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromStaggeredLandRangePerk(Dominion $dominion, float $landRatio = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromStaggeredLandRangePerk(Dominion $dominion, ?float $landRatio = null, Unit $unit, string $powerType): float
     {
         $staggeredLandRangePerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
@@ -779,7 +779,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromSpellPerk(Dominion $dominion, float $landRatio = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromSpellPerk(Dominion $dominion, ?float $landRatio = null, Unit $unit, string $powerType): float
     {
         // Special Case for Infernal Command
         if ($dominion->race->key == 'demon' && $unit->slot == 1 && $powerType == 'offense') {
@@ -814,7 +814,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, Dominion $target = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, ?Dominion $target = null, Unit $unit, string $powerType): float
     {
         if ($target === null) {
             return 0;
@@ -831,7 +831,7 @@ class MilitaryCalculator
         return $versusRacePerk;
     }
 
-    protected function getBonusPowerFromPairingPerk(Dominion $dominion, Unit $unit, string $powerType, array $units = null): float
+    protected function getBonusPowerFromPairingPerk(Dominion $dominion, Unit $unit, string $powerType, ?array $units = null): float
     {
         $pairingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_pairing", null);
 
@@ -855,7 +855,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion $target = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, ?Dominion $target = null, Unit $unit, string $powerType): float
     {
         if ($target === null && $dominion->calc === null) {
             return 0;
@@ -1216,7 +1216,7 @@ class MilitaryCalculator
      * @param Dominion $attacker
      * @return int
      */
-    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, bool $success_only = false, Dominion $attacker = null): int
+    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, bool $success_only = false, ?Dominion $attacker = null): int
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()

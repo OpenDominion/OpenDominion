@@ -324,7 +324,7 @@ class UnitHelper
         return $unitHelpString ?: null;
     }
 
-    public function getUnitTypeIconHtml(string $unitType, Race $race = null): string
+    public function getUnitTypeIconHtml(string $unitType, ?Race $race = null): string
     {
         switch ($unitType) {
             case 'draftees':

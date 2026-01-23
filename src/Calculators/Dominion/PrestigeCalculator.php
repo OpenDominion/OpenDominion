@@ -154,7 +154,7 @@ class PrestigeCalculator
         return (int)round($prestigeLoss);
     }
 
-    public function getPrestigeLoss(Dominion $target, int $prestigeGain = null): int
+    public function getPrestigeLoss(Dominion $target, ?int $prestigeGain = null): int
     {
         $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
 

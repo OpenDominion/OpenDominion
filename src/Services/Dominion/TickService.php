@@ -246,7 +246,7 @@ class TickService
      *
      * @throws Exception|Throwable
      */
-    public function performTick(Round $round, Dominion $dominion = null)
+    public function performTick(Round $round, ?Dominion $dominion = null)
     {
         if ($dominion == null) {
             $where = [

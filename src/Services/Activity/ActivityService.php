@@ -110,7 +110,7 @@ class ActivityService
      * @param int|null $dominion_id
      * @return void
      */
-    public function recordOrigin(User $user, ?string $ip_address, int $dominion_id = null): void
+    public function recordOrigin(User $user, ?string $ip_address, ?int $dominion_id = null): void
     {
         if (!$ip_address || $ip_address == '127.0.0.1') {
             return;

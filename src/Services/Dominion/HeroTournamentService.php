@@ -27,7 +27,7 @@ class HeroTournamentService
     protected const DEFAULT_NAME = 'The Grand Tournament';
     protected const TOURNAMENT_TIME_BANK = 12 * 60 * 60;
 
-    public function createTournament(Round $round, int $dayOfRound = null, string $name = self::DEFAULT_NAME): HeroTournament
+    public function createTournament(Round $round, ?int $dayOfRound = null, string $name = self::DEFAULT_NAME): HeroTournament
     {
         $startDate = $round->start_date->addDays($dayOfRound - 1);
 
