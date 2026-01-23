@@ -748,7 +748,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromStaggeredLandRangePerk(Dominion $dominion, float|null $landRatio = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromStaggeredLandRangePerk(Dominion $dominion, float|null $landRatio, Unit $unit, string $powerType): float
     {
         $staggeredLandRangePerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
@@ -779,7 +779,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromSpellPerk(Dominion $dominion, float|null $landRatio = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromSpellPerk(Dominion $dominion, float|null $landRatio, Unit $unit, string $powerType): float
     {
         // Special Case for Infernal Command
         if ($dominion->race->key == 'demon' && $unit->slot == 1 && $powerType == 'offense') {
@@ -814,7 +814,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, Dominion|null $target = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, Dominion|null $target, Unit $unit, string $powerType): float
     {
         if ($target === null) {
             return 0;
@@ -855,7 +855,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion|null $target = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion|null $target, Unit $unit, string $powerType): float
     {
         if ($target === null && $dominion->calc === null) {
             return 0;
