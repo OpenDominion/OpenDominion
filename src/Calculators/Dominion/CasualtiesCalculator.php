@@ -211,7 +211,7 @@ class CasualtiesCalculator
      * @param int|null $slot Null is for non-racial units and thus used as draftees casualties multiplier
      * @return float
      */
-    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot, ?array $units): float
+    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, int|null $slot, array|null $units): float
     {
         $multiplier = 1;
 

@@ -80,7 +80,7 @@ class ActivityService
      * @param string|null $user_agent
      * @return void
      */
-    public function recordIdentity(User $user, ?string $fingerprint, ?string $user_agent): void
+    public function recordIdentity(User $user, string|null $fingerprint, string|null $user_agent): void
     {
         if (!$fingerprint) {
             return;
@@ -110,7 +110,7 @@ class ActivityService
      * @param int|null $dominion_id
      * @return void
      */
-    public function recordOrigin(User $user, ?string $ip_address, ?int $dominion_id = null): void
+    public function recordOrigin(User $user, string|null $ip_address, int|null $dominion_id = null): void
     {
         if (!$ip_address || $ip_address == '127.0.0.1') {
             return;
@@ -144,7 +144,7 @@ class ActivityService
      * @param string|null $ip_address
      * @return void
      */
-    public function performLookup(User $user, ?string $ip_address): void
+    public function performLookup(User $user, string|null $ip_address): void
     {
         if (!$ip_address || $ip_address == '127.0.0.1') {
             return;

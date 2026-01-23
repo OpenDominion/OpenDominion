@@ -475,7 +475,7 @@ class WonderActionService
      * @param Dominion $dominion
      * @param Realm $currentRealm
      */
-    protected function handleWonderDestroyed(RoundWonder $wonder, Dominion $dominion, ?Realm $currentRealm): void
+    protected function handleWonderDestroyed(RoundWonder $wonder, Dominion $dominion, Realm|null $currentRealm): void
     {
         $this->attackResult['wonder']['destroyedByRealmId'] = $dominion->realm->id;
         $this->attackResult['wonder']['destroyed'] = true;

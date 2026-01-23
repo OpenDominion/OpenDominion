@@ -137,7 +137,7 @@ class WonderService
      * @param Round $round
      * @param Wonder $wonder
      */
-    public function createWonder(Round $round, Wonder $wonder = null)
+    public function createWonder(Round $round, Wonder|null $wonder = null)
     {
         if ($wonder == null) {
             $availableWonders = $this->getAvailableWonders($round);

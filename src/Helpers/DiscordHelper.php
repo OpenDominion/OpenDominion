@@ -22,7 +22,7 @@ class DiscordHelper
         return config('app.discord_bot_token');
     }
 
-    public function getDiscordConnectUrl(?string $callbackType): string
+    public function getDiscordConnectUrl(string|null $callbackType): string
     {
         if ($callbackType == 'join') {
             $callback = $this->getDiscordGuildCallbackUrl();

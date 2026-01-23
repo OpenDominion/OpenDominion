@@ -397,7 +397,7 @@ class HeroBattleService
         return ['action' => $action, 'target' => null];
     }
 
-    public function randomAction(Collection $options, ?string $last_action): string
+    public function randomAction(Collection $options, string|null $last_action): string
     {
         $limitedActions = $this->heroHelper->getLimitedCombatActions();
 
@@ -1012,7 +1012,7 @@ class HeroBattleService
         }
     }
 
-    protected function setWinner(HeroBattle $heroBattle, ?HeroCombatant $winner): void
+    protected function setWinner(HeroBattle $heroBattle, HeroCombatant|null $winner): void
     {
         $heroBattle->winner_combatant_id = $winner ? $winner->id : null;
         $heroBattle->finished = true;

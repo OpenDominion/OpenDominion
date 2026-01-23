@@ -20,7 +20,7 @@ class RealmFactory
      * @return Realm
      * @throws LogicException
      */
-    public function create(Round $round, ?string $alignment = null, ?Pack $pack = null): Realm
+    public function create(Round $round, string|null $alignment = null, Pack|null $pack = null): Realm
     {
         $results = DB::table('realms')
             ->select(DB::raw('MAX(realms.number) AS max_realm_number'))

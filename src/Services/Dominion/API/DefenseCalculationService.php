@@ -49,7 +49,7 @@ class DefenseCalculationService
      * @param array $calc
      * @return array
      */
-    public function calculate(Dominion $dominion, ?array $calc): array
+    public function calculate(Dominion $dominion, array|null $calc): array
     {
         // Sanitize input
         if($calc !== null) {

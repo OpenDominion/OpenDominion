@@ -28,7 +28,7 @@ class SpellHelper
      * @param string|null $category
      * @return Collection
      */
-    public function getSpells(?Race $race = null, ?string $category = null): Collection
+    public function getSpells(Race|null $race, string|null $category = null): Collection
     {
         $spells = Spell::with('perks')
             ->active()
@@ -61,7 +61,7 @@ class SpellHelper
      * @param Race|null $race
      * @return Collection
      */
-    public function getSpellsWithPerk($perks, ?Race $race = null): Collection
+    public function getSpellsWithPerk($perks, Race|null $race = null): Collection
     {
         if (!is_array($perks)) {
             $perks = [$perks];

@@ -246,7 +246,7 @@ class TickService
      *
      * @throws Exception|Throwable
      */
-    public function performTick(Round $round, ?Dominion $dominion = null)
+    public function performTick(Round $round, Dominion|null $dominion = null)
     {
         if ($dominion == null) {
             $where = [
@@ -881,7 +881,7 @@ class TickService
             ->delete();
     }
 
-    public function precalculateTick(Dominion $dominion, ?bool $saveHistory = false): void
+    public function precalculateTick(Dominion $dominion, bool|null $saveHistory = false): void
     {
         /** @var Tick $tick */
         $tick = Tick::firstOrCreate(

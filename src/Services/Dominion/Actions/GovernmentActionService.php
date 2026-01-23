@@ -57,7 +57,7 @@ class GovernmentActionService
      * @param int $monarch_id
      * @throws GameException
      */
-    public function voteForMonarch(Dominion $dominion, ?int $monarch_id)
+    public function voteForMonarch(Dominion $dominion, int|null $monarch_id)
     {
         $this->guardLockedDominion($dominion);
         $this->guardGraveyardRealm($dominion->realm);
@@ -83,7 +83,7 @@ class GovernmentActionService
      * @param string $name
      * @throws GameException
      */
-    public function updateRealm(Dominion $dominion, ?string $motd, ?string $name)
+    public function updateRealm(Dominion $dominion, string|null $motd, string|null $name)
     {
         $this->guardLockedDominion($dominion);
         $this->guardGraveyardRealm($dominion->realm);

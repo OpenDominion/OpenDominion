@@ -244,7 +244,7 @@ class AdvisorsController extends AbstractDominionController
         ]);
     }
 
-    private function guardPackRealm(?Dominion $target)
+    private function guardPackRealm(Dominion|null $target)
     {
         if($target == null) {
             return;

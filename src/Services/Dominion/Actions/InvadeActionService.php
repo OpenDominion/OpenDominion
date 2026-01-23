@@ -169,7 +169,7 @@ class InvadeActionService
      * @return array
      * @throws GameException
      */
-    public function invade(Dominion $dominion, Dominion $target, array $units, ?bool $cancel_leave_range): array
+    public function invade(Dominion $dominion, Dominion $target, array $units, bool|null $cancel_leave_range): array
     {
         $this->guardLockedDominion($dominion);
         $this->guardLockedDominion($target);

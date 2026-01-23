@@ -84,7 +84,7 @@ class GovernmentService
      * @param Realm $realm
      * @param int $monarch_dominion_id
      */
-    protected function setRealmMonarch(Realm $realm, ?int $monarch_dominion_id)
+    protected function setRealmMonarch(Realm $realm, int|null $monarch_dominion_id)
     {
         $realm->monarch_dominion_id = $monarch_dominion_id;
         $realm->save();

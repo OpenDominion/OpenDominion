@@ -358,7 +358,7 @@ class HeroCalculator
      * @param Hero $hero
      * @return float
      */
-    public function getPassiveDescription(Hero $hero, ?string $perkType = null): string
+    public function getPassiveDescription(Hero $hero, string|null $perkType = null): string
     {
         if ($perkType === null) {
             $perkType = $this->heroHelper->getPassivePerkType($hero->class);
@@ -372,7 +372,7 @@ class HeroCalculator
         return $helpString;
     }
 
-    public function getUnlockableUpgradeCount(?Hero $hero): int
+    public function getUnlockableUpgradeCount(Hero|null $hero): int
     {
         if ($hero === null) {
             return 0;

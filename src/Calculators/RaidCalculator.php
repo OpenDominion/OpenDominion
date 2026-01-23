@@ -137,7 +137,7 @@ class RaidCalculator
      * If no realm is provided, returns the total score for all realms.
      * If a realm is provided, returns the score for that specific realm.
      */
-    public function getObjectiveScore(RaidObjective $objective, ?Realm $realm = null): int
+    public function getObjectiveScore(RaidObjective $objective, Realm|null $realm = null): int
     {
         if ($realm !== null) {
             return $objective->contributions->where('realm_id', $realm->id)->sum('score');
@@ -151,7 +151,7 @@ class RaidCalculator
      * If no realm is provided, returns the progress for all realms combined.
      * If a realm is provided, returns the progress for that specific realm.
      */
-    public function getObjectiveProgress(RaidObjective $objective, ?Realm $realm = null): float
+    public function getObjectiveProgress(RaidObjective $objective, Realm|null $realm = null): float
     {
         $currentScore = $this->getObjectiveScore($objective, $realm);
         $requiredScore = $objective->score_required;
@@ -168,7 +168,7 @@ class RaidCalculator
      * If no realm is provided, checks if any realm has completed it.
      * If a realm is provided, checks if that specific realm has completed it.
      */
-    public function isObjectiveCompleted(RaidObjective $objective, ?Realm $realm = null): bool
+    public function isObjectiveCompleted(RaidObjective $objective, Realm|null $realm = null): bool
     {
         return $this->getObjectiveScore($objective, $realm) >= $objective->score_required;
     }

@@ -160,7 +160,7 @@ class DominionFactory
      * @param string $protectionType
      * @throws GameException
      */
-    public function restart(Dominion $dominion, Race $race, ?string $name, ?string $rulerName, ?string $protectionType): void
+    public function restart(Dominion $dominion, Race $race, string|null $name, string|null $rulerName, string|null $protectionType): void
     {
         // Reset Queues
         DB::table('dominion_queue')
