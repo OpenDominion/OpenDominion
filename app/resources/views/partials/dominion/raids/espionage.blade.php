@@ -32,9 +32,15 @@
                                 $strengthCost = $tactic->attributes['strength_cost'];
                                 $pointsAwarded = $raidCalculator->getTacticScore($selectedDominion, $tactic);
                                 $canPerform = $selectedDominion->spy_strength >= $strengthCost;
+                                $bonusDescriptions = $raidHelper->getTacticBonusDescription($tactic->bonuses ?? []);
                             @endphp
                             <tr>
-                                <td>{{ $tactic->name }}</td>
+                                <td>
+                                    {{ $tactic->name }}
+                                    @if ($bonusDescriptions)
+                                        <br/><small class="text-muted">{{ $bonusDescriptions }}</small>
+                                    @endif
+                                </td>
                                 <td>{{ $moraleCost }}%</td>
                                 <td>{{ $strengthCost }}%</td>
                                 <td>

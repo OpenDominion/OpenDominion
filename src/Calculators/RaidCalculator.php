@@ -5,6 +5,7 @@ namespace OpenDominion\Calculators;
 use Illuminate\Support\Collection;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
+use OpenDominion\Models\DailyRanking;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\RaidContribution;
@@ -58,20 +59,89 @@ class RaidCalculator
     public function getTacticPointsEarned(Dominion $dominion, RaidObjectiveTactic $tactic): float
     {
         $basePoints = $tactic->attributes['points_awarded'];
+        $typeMultiplier = 1.0;
 
         // Apply espionage score multiplier for espionage tactics
         if ($tactic->type === 'espionage') {
-            $multiplier = $this->opsCalculator->getEspionageScoreMultiplier($dominion);
-            return $basePoints * $multiplier;
+            $typeMultiplier = $this->opsCalculator->getEspionageScoreMultiplier($dominion);
         }
 
         // Apply magic score multiplier for magic tactics
         if ($tactic->type === 'magic') {
-            $multiplier = $this->opsCalculator->getMagicScoreMultiplier($dominion);
-            return $basePoints * $multiplier;
+            $typeMultiplier = $this->opsCalculator->getMagicScoreMultiplier($dominion);
         }
 
-        return $basePoints;
+        // Apply tactic-specific bonuses (race, hero_class, alignment, daily_ranking)
+        $bonusMultiplier = $this->getTacticBonusMultiplier($dominion, $tactic);
+
+        return $basePoints * $typeMultiplier * $bonusMultiplier;
+    }
+
+    /**
+     * Get the bonus multiplier for a tactic based on dominion attributes.
+     * Supports race, hero_class, alignment, tech, and daily_ranking bonuses.
+     * Only the highest applicable bonus is applied (bonuses do not stack).
+     */
+    public function getTacticBonusMultiplier(Dominion $dominion, RaidObjectiveTactic $tactic): float
+    {
+        $bonuses = $tactic->bonuses ?? [];
+        if (empty($bonuses)) {
+            return 1.0;
+        }
+
+        $applicableMultipliers = [];
+
+        // Race bonus
+        if (isset($bonuses['race'])) {
+            $raceKey = $dominion->race->key;
+            if (isset($bonuses['race'][$raceKey])) {
+                $applicableMultipliers[] = (float) $bonuses['race'][$raceKey];
+            }
+        }
+
+        // Hero class bonus
+        if (isset($bonuses['hero_class']) && $dominion->hero !== null) {
+            $heroClass = $dominion->hero->class;
+            if (isset($bonuses['hero_class'][$heroClass])) {
+                $applicableMultipliers[] = (float) $bonuses['hero_class'][$heroClass];
+            }
+        }
+
+        // Alignment bonus
+        if (isset($bonuses['alignment'])) {
+            $alignment = $dominion->race->alignment;
+            if (isset($bonuses['alignment'][$alignment])) {
+                $applicableMultipliers[] = (float) $bonuses['alignment'][$alignment];
+            }
+        }
+
+        // Tech bonus
+        if (isset($bonuses['tech'])) {
+            $unlockedTechKeys = $dominion->techs->pluck('key')->all();
+            foreach ($bonuses['tech'] as $techKey => $techValue) {
+                if (in_array($techKey, $unlockedTechKeys)) {
+                    $applicableMultipliers[] = (float) $techValue;
+                }
+            }
+        }
+
+        // Daily ranking bonus (rank 1 only)
+        if (isset($bonuses['daily_ranking'])) {
+            foreach ($bonuses['daily_ranking'] as $rankingKey => $rankValue) {
+                $ranking = DailyRanking::where([
+                    'dominion_id' => $dominion->id,
+                    'round_id' => $dominion->round_id,
+                    'key' => $rankingKey,
+                    'rank' => 1
+                ])->first();
+                if ($ranking !== null) {
+                    $applicableMultipliers[] = (float) $rankValue;
+                }
+            }
+        }
+
+        // Return the highest multiplier, or 1.0 if none apply
+        return empty($applicableMultipliers) ? 1.0 : max($applicableMultipliers);
     }
 
     /**

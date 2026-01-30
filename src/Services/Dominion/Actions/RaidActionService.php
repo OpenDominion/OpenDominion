@@ -218,6 +218,11 @@ class RaidActionService
             $multiplier += $dominion->getTechPerkMultiplier('raid_attack_damage');
 
             $damageDealt *= $multiplier;
+
+            // Apply tactic-specific bonuses (race, hero_class, alignment, daily_ranking)
+            $bonusMultiplier = $this->raidCalculator->getTacticBonusMultiplier($dominion, $tactic);
+            $damageDealt *= $bonusMultiplier;
+
             $this->attackResult['attacker']['damage'] = $damageDealt;
 
             $this->handleBoats($dominion, $units);

@@ -60,7 +60,9 @@
                             <label for="bonuses">Bonuses (JSON)</label>
                             <textarea name="bonuses" id="bonuses" class="form-control" rows="6">{{ old('bonuses', '{}') }}</textarea>
                             <small class="text-muted">
-                                <strong>Format example:</strong> {"race": {"halfling": 1.2, "elf": 1.1}, "tech": {"spy_networks": 1.15}}
+                                <strong>Format:</strong> {"hero_class": {"infiltrator": 1.25}, "race": {"halfling": 1.2}, "tech": {"tech_13_1": 1.15}}
+                                <br>
+                                Multipliers: 1.2 = 20% bonus, 0.9 = 10% penalty. Multiple bonuses do not stack.
                             </small>
                             @if ($errors->has('bonuses'))
                                 <span class="help-block text-red">{{ $errors->first('bonuses') }}</span>

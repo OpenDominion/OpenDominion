@@ -4,13 +4,16 @@ namespace OpenDominion\Tests\Unit\Calculators;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\RaidCalculator;
+use OpenDominion\Models\DailyRanking;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Hero;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Raid;
 use OpenDominion\Models\RaidContribution;
 use OpenDominion\Models\RaidObjective;
 use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Tech;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 /**
@@ -916,6 +919,285 @@ class RaidCalculatorTest extends AbstractBrowserKitTestCase
 
         // Assert - Should return base points without activity multiplier
         $this->assertEquals(100, $pointsEarned);
+    }
+
+    // Tests for getTacticBonusMultiplier
+    public function testGetTacticBonusMultiplier_WithNoBonuses_ReturnsOne()
+    {
+        // Arrange
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.0, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithMatchingRaceBonus_ReturnsRaceMultiplier()
+    {
+        // Arrange
+        $raceKey = $this->dominion->race->key;
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['race' => [$raceKey => 1.25]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.25, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithNonMatchingRaceBonus_ReturnsOne()
+    {
+        // Arrange
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['race' => ['nonexistent_race' => 1.5]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.0, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithMatchingHeroClassBonus_ReturnsHeroClassMultiplier()
+    {
+        // Arrange - Create a hero for the dominion
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'infiltrator',
+            'experience' => 0,
+        ]);
+        $this->dominion->setRelation('hero', $hero);
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['hero_class' => ['infiltrator' => 1.3]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.3, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithNoHero_IgnoresHeroClassBonus()
+    {
+        // Arrange - Dominion has no hero
+        $this->dominion->setRelation('hero', null);
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['hero_class' => ['infiltrator' => 1.3]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.0, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithMatchingAlignmentBonus_ReturnsAlignmentMultiplier()
+    {
+        // Arrange
+        $alignment = $this->dominion->race->alignment;
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['alignment' => [$alignment => 1.15]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.15, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithMatchingTechBonus_ReturnsTechMultiplier()
+    {
+        // Arrange - Find an existing tech and attach it to the dominion
+        $tech = Tech::first();
+        if ($tech) {
+            $this->dominion->techs()->attach($tech->id);
+            $this->dominion->load('techs');
+
+            $tactic = RaidObjectiveTactic::create([
+                'raid_objective_id' => $this->objective->id,
+                'type' => 'investment',
+                'name' => 'Test Tactic',
+                'attributes' => ['points_awarded' => 100],
+                'bonuses' => ['tech' => [$tech->key => 1.2]],
+            ]);
+
+            // Act
+            $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+            // Assert
+            $this->assertEquals(1.2, $multiplier);
+        } else {
+            $this->markTestSkipped('No techs available in the database');
+        }
+    }
+
+    public function testGetTacticBonusMultiplier_WithUnlockedTech_IgnoresTechBonus()
+    {
+        // Arrange - Dominion has no techs
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['tech' => ['some_tech_key' => 1.2]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.0, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithDailyRankingBonus_WhenRankOne_ReturnsMultiplier()
+    {
+        // Arrange - Create a daily ranking where dominion is rank 1
+        DailyRanking::create([
+            'round_id' => $this->dominion->round_id,
+            'dominion_id' => $this->dominion->id,
+            'dominion_name' => $this->dominion->name,
+            'race_name' => $this->dominion->race->name,
+            'realm_number' => $this->dominion->realm->number,
+            'realm_name' => $this->dominion->realm->name,
+            'key' => 'spy-mastery',
+            'value' => 1000,
+            'rank' => 1,
+            'previous_rank' => 2,
+        ]);
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['daily_ranking' => ['spy-mastery' => 1.5]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.5, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithDailyRankingBonus_WhenNotRankOne_ReturnsOne()
+    {
+        // Arrange - Create a daily ranking where dominion is NOT rank 1
+        DailyRanking::create([
+            'round_id' => $this->dominion->round_id,
+            'dominion_id' => $this->dominion->id,
+            'dominion_name' => $this->dominion->name,
+            'race_name' => $this->dominion->race->name,
+            'realm_number' => $this->dominion->realm->number,
+            'realm_name' => $this->dominion->realm->name,
+            'key' => 'spy-mastery',
+            'value' => 500,
+            'rank' => 5, // Not rank 1
+            'previous_rank' => 6,
+        ]);
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['daily_ranking' => ['spy-mastery' => 1.5]],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(1.0, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithMultipleBonuses_ReturnsHighestOnly()
+    {
+        // Arrange - Create a hero and set up multiple bonuses
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'infiltrator',
+            'experience' => 0,
+        ]);
+        $this->dominion->setRelation('hero', $hero);
+
+        $raceKey = $this->dominion->race->key;
+        $alignment = $this->dominion->race->alignment;
+
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => [
+                'race' => [$raceKey => 1.2],        // 20% bonus
+                'hero_class' => ['infiltrator' => 1.5], // 50% bonus (highest)
+                'alignment' => [$alignment => 1.1],  // 10% bonus
+            ],
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert - Should return the highest multiplier (1.5), not stacked
+        $this->assertEquals(1.5, $multiplier);
+    }
+
+    public function testGetTacticBonusMultiplier_WithPenaltyBonus_ReturnsPenaltyMultiplier()
+    {
+        // Arrange - Test with a penalty (multiplier < 1)
+        $raceKey = $this->dominion->race->key;
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'investment',
+            'name' => 'Test Tactic',
+            'attributes' => ['points_awarded' => 100],
+            'bonuses' => ['race' => [$raceKey => 0.8]], // 20% penalty
+        ]);
+
+        // Act
+        $multiplier = $this->calculator->getTacticBonusMultiplier($this->dominion, $tactic);
+
+        // Assert
+        $this->assertEquals(0.8, $multiplier);
     }
 
     // Helper methods for reward tests

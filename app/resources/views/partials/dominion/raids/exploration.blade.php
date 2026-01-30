@@ -32,9 +32,15 @@
                                 $moraleCost = $tactic->attributes['morale_cost'];
                                 $pointsAwarded = $raidCalculator->getTacticScore($selectedDominion, $tactic);
                                 $canPerform = $selectedDominion->military_draftees >= $drafteeCost;
+                                $bonusDescriptions = $raidHelper->getTacticBonusDescription($tactic->bonuses ?? []);
                             @endphp
                             <tr>
-                                <td>{{ $tactic->name }}</td>
+                                <td>
+                                    {{ $tactic->name }}
+                                    @if ($bonusDescriptions)
+                                        <br/><small class="text-muted">{{ $bonusDescriptions }}</small>
+                                    @endif
+                                </td>
                                 <td>{{ $moraleCost }}%</td>
                                 <td>{{ number_format($drafteeCost) }}</td>
                                 <td>
