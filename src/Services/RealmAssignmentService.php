@@ -1550,7 +1550,7 @@ class RealmAssignmentService
      */
     public function createPlaceholderRealm(Realm $realm): PlaceholderRealm
     {
-        $players = $realm->dominions->map(function ($dominion) {
+        $players = $realm->dominions()->human()->get()->map(function ($dominion) {
             return new Player([
                 'id' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
