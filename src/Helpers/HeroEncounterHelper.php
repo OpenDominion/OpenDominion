@@ -350,9 +350,9 @@ class HeroEncounterHelper
                 'name' => 'Void Constructs',
                 'source' => 'Raid (Planewalker Incursion)',
                 'enemies' => [
-                    ['key' => 'golem', 'name' => 'Golem'],
-                    ['key' => 'golem', 'name' => 'Golem'],
-                    ['key' => 'golem', 'name' => 'Golem'],
+                    ['key' => 'golem', 'name' => 'Golem #1'],
+                    ['key' => 'golem', 'name' => 'Golem #2'],
+                    ['key' => 'golem', 'name' => 'Golem #3'],
                 ],
             ],
         ]);
