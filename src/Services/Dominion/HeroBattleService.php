@@ -103,7 +103,7 @@ class HeroBattleService
             'current_health' => $combatStats['health'],
             'time_bank' => self::DEFAULT_TIME_BANK,
             'strategy' => self::DEFAULT_STRATEGY,
-            'abilities' => $classAbilities->toArray(),
+            //'abilities' => $classAbilities->toArray(),
         ]);
     }
 
@@ -378,6 +378,9 @@ class HeroBattleService
 
         if ($combatant->has_focus) {
             $options->forget('focus');
+        }
+        if ($combatant->shield > 0) {
+            $options->forget('fortify');
         }
         if ($combatant->health < ($combatant->current_health + $combatant->recover)) {
             $options->forget('recover');
