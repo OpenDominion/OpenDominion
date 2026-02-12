@@ -720,6 +720,11 @@ class HeroHelper
                 'type' => 'npc',
                 'options' => ['attack' => 0, 'defend' => 4, 'recover' => 1]
             ],
+            'fortify' => [
+                'name' => 'Fortify',
+                'type' => 'npc',
+                'options' => ['attack' => 3, 'fortify' => 3, 'counter' => 2]
+            ]
         ]);
     }
 

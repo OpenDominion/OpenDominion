@@ -1,4 +1,7 @@
 @foreach ($tactics as $tactic)
+    @php
+        $bonusDescriptions = $raidHelper->getTacticBonusDescription($tactic->bonuses ?? []);
+    @endphp
     <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post" role="form" id="invasion_form_{{ $tactic->id }}">
         @csrf
         <input type="hidden" name="calc[wonder]" value="1" />
@@ -6,6 +9,9 @@
             <div class="box-header with-border">
                 <div class="box-title"><i class="ra ra-crossed-swords"></i> {{ $tactic->name }}</div>
                 <div class="box-tools pull-right">
+                    @if ($bonusDescriptions)
+                        <small class="text-muted">{{ $bonusDescriptions }}</small>
+                    @endif
                     <div class="label label-primary">Invasion</div>
                 </div>
             </div>

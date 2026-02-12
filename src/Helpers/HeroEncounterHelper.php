@@ -256,6 +256,18 @@ class HeroEncounterHelper
                 'strategy' => 'aggressive',
                 'abilities' => ['enrage'],
             ],
+            'golem' => [
+                'name' => 'Void Golem',
+                'health' => 50,
+                'attack' => 25,
+                'defense' => 20,
+                'evasion' => 20,
+                'focus' => 0,
+                'counter' => 10,
+                'recover' => 0,
+                'strategy' => 'fortify',
+                'abilities' => ['fortify', 'hardiness'],
+            ],
         ]);
     }
 
@@ -332,6 +344,15 @@ class HeroEncounterHelper
                 'enemies' => [
                     ['key' => 'lich_king', 'name' => 'Lich King'],
                     ['key' => 'tome_of_power', 'name' => 'Tome of Power'],
+                ],
+            ],
+            'planewalker_golems' => [
+                'name' => 'Void Constructs',
+                'source' => 'Raid (Planewalker Incursion)',
+                'enemies' => [
+                    ['key' => 'golem', 'name' => 'Golem #1'],
+                    ['key' => 'golem', 'name' => 'Golem #2'],
+                    ['key' => 'golem', 'name' => 'Golem #3'],
                 ],
             ],
         ]);
