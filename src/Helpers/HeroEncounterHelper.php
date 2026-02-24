@@ -268,6 +268,18 @@ class HeroEncounterHelper
                 'strategy' => 'fortify',
                 'abilities' => ['fortify', 'hardiness'],
             ],
+            'planewalker' => [
+                'name' => 'The Planewalker',
+                'health' => 200,
+                'attack' => 40,
+                'defense' => 10,
+                'evasion' => 50,
+                'focus' => 20,
+                'counter' => 20,
+                'recover' => 20,
+                'strategy' => 'balanced',
+                'abilities' => ['elusive', 'summon_golem', 'wounded_retreat'],
+            ],
         ]);
     }
 
@@ -353,6 +365,13 @@ class HeroEncounterHelper
                     ['key' => 'golem', 'name' => 'Golem #1'],
                     ['key' => 'golem', 'name' => 'Golem #2'],
                     ['key' => 'golem', 'name' => 'Golem #3'],
+                ],
+            ],
+            'planewalker' => [
+                'name' => 'The Planewalker',
+                'source' => 'Raid (Planewalker Incursion)',
+                'enemies' => [
+                    ['key' => 'planewalker', 'name' => 'The Planewalker'],
                 ],
             ],
         ]);

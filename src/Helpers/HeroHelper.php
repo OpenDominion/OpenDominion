@@ -459,7 +459,7 @@ class HeroHelper
                 'special' => true,
                 'attributes' => [
                     'attacks' => 2,
-                    'penalty' => 0.75,
+                    'multiplier' => 0.75,
                 ],
                 'messages' => [
                     'hit' => '%s unleashes a blade flurry, striking %s times for %s damage to %s.',
@@ -519,6 +519,46 @@ class HeroHelper
             ],
             'elusive' => [
                 'name' => 'Elusive',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+            ],
+            'great_flood' => [
+                'name' => 'Great Flood',
+                'processor' => 'aoe',
+                'type' => 'self',
+                'limited' => true,
+                'special' => true,
+                'class' => 'sorcerer',
+                'attributes' => [
+                    'multiplier' => 0.75,
+                    'evade' => false,
+                    'bypass_fortify' => true,
+                    'bypass_hardiness' => true,
+                ],
+                'messages' => [
+                    'hit' => '%s calls down a Great Flood, sweeping all enemies for %s damage each!',
+                    'no_targets' => '%s calls down a Great Flood, but no enemies remain!',
+                ],
+            ],
+            'summon_golem' => [
+                'name' => 'Summon Golem',
+                'processor' => 'summon',
+                'type' => 'passive',
+                'limited' => false,
+                'special' => false,
+                'class' => null,
+                'attributes' => [
+                    'enemy' => 'golem',
+                    'turns' => 4,
+                ],
+                'messages' => [
+                    'summon' => '%s tears a rift and summons a Void Construct!',
+                ],
+            ],
+            'wounded_retreat' => [
+                'name' => 'Wounded Retreat',
                 'processor' => null,
                 'type' => 'passive',
                 'limited' => false,
@@ -670,6 +710,9 @@ class HeroHelper
             'undying_legion' => 'Undying Legion: Immune to damage while any minions are alive.',
             'volatile_mixture' => 'Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.',
             'weakened' => 'Weakened: Defense value is decreased by 15.',
+            'wounded_retreat' => 'Wounded Retreat: Upon defeat, this entity retreats across the planes rather than being destroyed.',
+            'great_flood' => 'Great Flood: Strike all living enemies for 75% attack damage, bypassing all defenses.',
+            'summon_golem' => 'Summon Golem: Summons a Void Golem at regular intervals.',
         ];
 
         $combatantDescriptions = [];

@@ -190,9 +190,44 @@ class RaidActionService
 
         $encounterKey = $tactic->attributes['encounter'];
         $encounter = $encounterDefinitions->get($encounterKey);
+
+        // Count prior realm wins for this tactic (Realm Wounds)
+        $priorWins = RaidContribution::where('raid_tactic_id', $tactic->id)
+            ->where('realm_id', $dominion->realm_id)
+            ->count();
+
+        // HP reduction: 10% per win, capped at 50%
+        $hpMultiplier = max(0.5, 1 - ($priorWins * 0.1));
+
+        // Evasion reduction: 10% per win, capped at 50%
+        $evadeMultiplier = max(0.5, 1 - ($priorWins * 0.1));
+
+        // Summon interval: base 4, +1 per 2 win, capped at +5
+        $summonInterval = 4 + $priorWins;
+
+        // Inject special abilities for the Planewalker encounter
+        if ($encounterKey == 'planewalker') {
+            if ($dominion->hero->class == 'infiltrator') {
+                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['shadow_strike']);
+            }
+            if ($dominion->hero->class == 'sorcerer') {
+                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['great_flood']);
+            }
+            $dominionCombatant->save();
+        }
+
         foreach ($encounter['enemies'] as $enemy) {
             $enemyStats = $enemyDefinitions->get($enemy['key']);
             $enemyStats['name'] = $enemy['name'];
+
+            if ($encounterKey == 'planewalker' && $enemy['key'] == 'planewalker' && $priorWins > 0) {
+                $enemyStats['current_health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
+                $enemyStats['evasion'] = max(1, (int) round($enemyStats['evasion'] * $evadeMultiplier));
+                $enemyStats['status'] = array_merge($enemyStats['status'] ?? [], [
+                    'summon_interval' => $summonInterval,
+                ]);
+            }
+
             $heroBattleService->createNonPlayerCombatant($heroBattle, $enemyStats);
         }
 

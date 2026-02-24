@@ -124,6 +124,17 @@ class HeroBattleService
         $heroBattle = HeroBattle::create(['round_id' => $dominion->round_id, 'pvp' => false]);
         $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
 
+        // Inject special abilities for the Planewalker encounter
+        if ($encounter === 'planewalker') {
+            if ($dominion->hero->class == 'infiltrator') {
+                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['shadow_strike']);
+            }
+            if ($dominion->hero->class == 'sorcerer') {
+                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['great_flood']);
+            }
+            $dominionCombatant->save();
+        }
+
         if ($encounter == 'default') {
             $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
             $nonPlayerStats['name'] = 'Evil Twin';
@@ -157,6 +168,7 @@ class HeroBattleService
             'focus' => $combatStats['focus'],
             'counter' => $combatStats['counter'],
             'recover' => $combatStats['recover'],
+            'shield' => $combatStats['shield'] ?? 0,
             'current_health' => $combatStats['health'],
             'time_bank' => 0,
             'automated' => true,
@@ -321,6 +333,37 @@ class HeroBattleService
             $this->processStatus($combatant);
         }
 
+        // Wounded retreat: check after all actions and heals have resolved
+        $retreatedBoss = $heroBattle->combatants
+            ->where('hero_id', null)
+            ->first(function ($c) {
+                return $c->current_health <= 0 && in_array('wounded_retreat', $c->abilities ?? []);
+            });
+
+        if ($retreatedBoss !== null) {
+            $minions = $heroBattle->combatants
+                ->where('hero_id', null)
+                ->where('id', '!=', $retreatedBoss->id)
+                ->filter(function ($c) { return $c->current_health > 0; });
+
+            if ($minions->isNotEmpty()) {
+                foreach ($minions as $minion) {
+                    $minion->current_health = 0;
+                    $minion->save();
+                }
+                HeroBattleAction::create([
+                    'hero_battle_id' => $heroBattle->id,
+                    'combatant_id' => $retreatedBoss->id,
+                    'target_combatant_id' => null,
+                    'turn' => $heroBattle->current_turn,
+                    'action' => 'status',
+                    'damage' => 0,
+                    'health' => 0,
+                    'description' => 'Without their master, the Void Constructs crumble and collapse!',
+                ]);
+            }
+        }
+
         $livingCombatants = $heroBattle->combatants->where('current_health', '>', '0');
         if ($livingCombatants->count() == 0) {
             // Everyone was eliminated (draw)
@@ -369,6 +412,15 @@ class HeroBattleService
             $actionDef = $this->heroHelper->getCombatActions()->get('summon_skeleton');
             if ((($combatant->battle->current_turn - 1) % $actionDef['attributes']['turns']) == 0) {
                 return ['action' => 'summon_skeleton', 'target' => null];
+            }
+        }
+
+        // Golem Summoning
+        if (in_array('summon_golem', $combatant->abilities ?? [])) {
+            $actionDef = $this->heroHelper->getCombatActions()->get('summon_golem');
+            $interval = ($combatant->status['summon_interval'] ?? null) ?? $actionDef['attributes']['turns'];
+            if ((($combatant->battle->current_turn - 1) % $interval) == 0) {
+                return ['action' => 'summon_golem', 'target' => null];
             }
         }
 
@@ -705,9 +757,9 @@ class HeroBattleService
     public function processFlurryAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
     {
         $attackCount = $actionDef['attributes']['attacks'] ?? 1;
-        $damagePenalty = $actionDef['attributes']['penalty'] ?? 1;
+        $damageMultiplier = $actionDef['attributes']['multiplier'] ?? 1;
 
-        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackCount * $damagePenalty);
+        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackCount * $damageMultiplier);
         $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
         $evadeMultiplier = 0.5;
         if (in_array('elusive', $target->abilities ?? []) && !$combatant->has_focus) {
@@ -776,6 +828,51 @@ class HeroBattleService
             'damage' => $damage,
             'health' => $health,
             'description' => $description
+        ];
+    }
+
+    public function processAoeAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $multiplier = $actionDef['attributes']['multiplier'] ?? 1.0;
+        $bypassHardiness = $actionDef['attributes']['bypass_hardiness'] ?? false;
+
+        // Flat damage from attacker only — ignores all enemy defense, evasion, and shield
+        $baseDamage = $this->heroCalculator->getCombatStat($combatant, 'attack');
+        if ($combatant->has_focus) {
+            $baseDamage += $this->heroCalculator->getCombatStat($combatant, 'focus');
+        }
+        $this->spendFocus($combatant);
+
+        $damage = (int) round($baseDamage * $multiplier);
+
+        // Target all living enemy combatants (NPCs)
+        $enemies = $combatant->battle->combatants
+            ->where('hero_id', null)
+            ->filter(function ($c) { return $c->current_health > 0; });
+
+        if ($enemies->isEmpty()) {
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => sprintf($actionDef['messages']['no_targets'], $combatant->name),
+            ];
+        }
+
+        foreach ($enemies as $enemy) {
+            if ($bypassHardiness) {
+                // Pre-spend hardiness so processPostCombat() won't trigger revival
+                $this->spendAbility($enemy, 'hardiness');
+            }
+
+            // Apply identical flat damage to every target (bypasses defense, shield, fortify)
+            $enemy->current_health = max(0, $enemy->current_health - $damage);
+            $enemy->save();
+        }
+
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($actionDef['messages']['hit'], $combatant->name, $damage),
         ];
     }
 
@@ -962,6 +1059,15 @@ class HeroBattleService
             }
         }
 
+        // Golem Summoning
+        if (in_array('summon_golem', $combatant->abilities ?? [])) {
+            $actionDef = $this->heroHelper->getCombatActions()->get('summon_golem');
+            $interval = ($combatant->status['summon_interval'] ?? null) ?? $actionDef['attributes']['turns'];
+            if (($combatant->battle->current_turn % $interval) == 0) {
+                $description = "A void rift begins to tear open near {$combatant->name}.";
+            }
+        }
+
         // Generic phase-cycling ability processing
         foreach ($combatant->abilities ?? [] as $abilityKey) {
             $actionDef = $this->heroHelper->getCombatActions()->get($abilityKey);
@@ -1084,6 +1190,24 @@ class HeroBattleService
                 'type' => $tactic->type,
                 'score' => $score,
             ]);
+
+            // Wounded retreat narrative
+            $retreated = $heroBattle->combatants
+                ->where('hero_id', null)
+                ->first(function ($c) { return in_array('wounded_retreat', $c->abilities ?? []); });
+
+            if ($retreated) {
+                HeroBattleAction::create([
+                    'hero_battle_id' => $heroBattle->id,
+                    'combatant_id' => $winner->id,
+                    'target_combatant_id' => null,
+                    'turn' => $heroBattle->current_turn,
+                    'action' => 'status',
+                    'damage' => 0,
+                    'health' => 0,
+                    'description' => 'The Planewalker howls in agony as its form becomes unstable. It tears a rift in the fabric of reality and retreats across the planes — grievously wounded, but not destroyed...',
+                ]);
+            }
         }
     }
 
