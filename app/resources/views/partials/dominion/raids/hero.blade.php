@@ -60,7 +60,8 @@
                                                 @endif
                                                 <br/>
                                                 <small class="text-muted">
-                                                    <strong>Sorcerers</strong> can unleash Great Flood to strike all summoned Golems at once.<br/>
+                                                    <strong>Engineers</strong> can use explosives to damage all enemies at once.<br/>
+                                                    <strong>Sorcerers</strong> can unleash Great Flood to damage all enemies at once.<br/>
                                                     <strong>Infiltrators</strong> can pierce through the Planewalker's evasion with Shadow Strike.
                                                 </small>
                                             </div>

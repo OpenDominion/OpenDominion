@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\RaidCalculator;
@@ -43,6 +44,9 @@ class RaidActionService
     /** @var RaidCalculator */
     protected $raidCalculator;
 
+    /** @var HeroCalculator */
+    protected $heroCalculator;
+
     /** @var RaidHelper */
     protected $raidHelper;
 
@@ -65,6 +69,7 @@ class RaidActionService
      */
     public function __construct()
     {
+        $this->heroCalculator = app(HeroCalculator::class);
         $this->invasionService = app(InvasionService::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
@@ -207,11 +212,14 @@ class RaidActionService
 
         // Inject special abilities for the Planewalker encounter
         if ($encounterKey == 'planewalker') {
-            if ($dominion->hero->class == 'infiltrator') {
+            if ($this->heroCalculator->heroHasClass($dominion->hero, 'infiltrator')) {
                 $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['shadow_strike']);
             }
-            if ($dominion->hero->class == 'sorcerer') {
+            if ($this->heroCalculator->heroHasClass($dominion->hero, 'sorcerer')) {
                 $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['great_flood']);
+            }
+            if ($this->heroCalculator->heroHasClass($dominion->hero, 'engineer')) {
+                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['demolish']);
             }
             $dominionCombatant->save();
         }

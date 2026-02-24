@@ -371,6 +371,24 @@ class HeroHelper
                     'stat' => '%s decreases %s\'s counter value by 2.'
                 ]
             ],
+            'demolish' => [
+                'name' => 'Demolish',
+                'processor' => 'aoe',
+                'type' => 'self',
+                'limited' => true,
+                'special' => true,
+                'class' => 'engineer',
+                'attributes' => [
+                    'multiplier' => 0.75,
+                    'evade' => false,
+                    'bypass_fortify' => true,
+                    'bypass_hardiness' => true,
+                ],
+                'messages' => [
+                    'hit' => '%s detonates a chain of precision charges, dealing %s damage to all enemies!',
+                    'no_targets' => '%s primes the charges, but no enemies remain!',
+                ],
+            ],
             'hardiness' => [
                 'name' => 'Hardiness',
                 'processor' => null,
@@ -690,11 +708,13 @@ class HeroHelper
             'combat_analysis' => 'Combat Analysis: Decreases target\'s defense value by 1 for the remainder of the battle.',
             'crushing_blow' => 'Crushing Blow: Deals 15 additional damage if the target is not defending.',
             'darkness' => 'Darkness: Increases evasion value by 25.',
+            'demolish' => 'Demolish: Detonate explosives against all enemies for 200% attack damage, bypassing all defenses.',
             'dying_light' => 'Dying Light: Upon death, reduces the Nightbringer\'s evasion to 0.',
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
             'elusive' => 'Elusive: When evading a non-focused attack, damage is reduced to 0 instead of half.',
             'forge' => 'Forge: Increases attack value by 1 for the remainder of the battle.',
             'fortify' => 'Fortify: Prevent the next 20 non-counter damage dealt.',
+            'great_flood' => 'Great Flood: Strike all living enemies for 75% attack damage, bypassing all defenses.',
             'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',
             'last_stand' => 'Last Stand: When at 40 health or less, all combat stats are increased by 10%.',
             'lifesteal' => 'Lifesteal: Attacks heal for 50% of the damage dealt.',
@@ -703,6 +723,7 @@ class HeroHelper
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'retribution' => 'Retribution: Counter attack damage is increased by 15.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
+            'summon_golem' => 'Summon Golem: Summons a Void Golem at regular intervals.',
             'summon_skeleton' => 'Summon: Summons a Skeleton Warrior every 4th turn.',
             'tactical_awareness' => 'Tactical Awareness: Reduces target\'s counter value by 2 for the remainder of the battle.',
             'tome_of_power' => 'Tome of Power: Cycles through 4 chapters every 3rd turn, granting different abilities each chapter.',
@@ -711,8 +732,6 @@ class HeroHelper
             'volatile_mixture' => 'Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.',
             'weakened' => 'Weakened: Defense value is decreased by 15.',
             'wounded_retreat' => 'Wounded Retreat: Upon defeat, this entity retreats across the planes rather than being destroyed.',
-            'great_flood' => 'Great Flood: Strike all living enemies for 75% attack damage, bypassing all defenses.',
-            'summon_golem' => 'Summon Golem: Summons a Void Golem at regular intervals.',
         ];
 
         $combatantDescriptions = [];

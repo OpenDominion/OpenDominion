@@ -126,11 +126,14 @@ class HeroBattleService
 
         // Inject special abilities for the Planewalker encounter
         if ($encounter === 'planewalker') {
-            if ($dominion->hero->class == 'infiltrator') {
+            if ($this->heroCalculator->heroHasClass($dominion->hero, 'infiltrator')) {
                 $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['shadow_strike']);
             }
-            if ($dominion->hero->class == 'sorcerer') {
+            if ($this->heroCalculator->heroHasClass($dominion->hero, 'sorcerer')) {
                 $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['great_flood']);
+            }
+            if ($this->heroCalculator->heroHasClass($dominion->hero, 'engineer')) {
+                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['demolish']);
             }
             $dominionCombatant->save();
         }
