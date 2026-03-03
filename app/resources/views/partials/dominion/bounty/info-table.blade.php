@@ -2,38 +2,38 @@
     <thead>
         <tr>
             <th class="text-center">
-                <i class="fa fa-eye" title="Observation" data-toggle="tooltip"></i>
+                <i class="fa fa-eye" title="Observation" data-bs-toggle="tooltip"></i>
             </th>
             <th class="text-center" style="padding: 9px 0 7px 0;">
-                <i class="ra ra-heavy-shield" title="Guard Status" data-toggle="tooltip"></i>
+                <i class="ra ra-heavy-shield" title="Guard Status" data-bs-toggle="tooltip"></i>
             </th>
             <th>Dominion</th>
             <th class="text-center">Race</th>
             <th class="text-center">Land</th>
             <th class="text-center">Range</th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Clear Sight (Magic)">CS</span>
+                <span data-bs-toggle="tooltip" title="Clear Sight (Magic)">CS</span>
             </th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Revelation (Magic)">Rev</span>
+                <span data-bs-toggle="tooltip" title="Revelation (Magic)">Rev</span>
             </th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Castle Spy (Espionage)">Cas</span>
+                <span data-bs-toggle="tooltip" title="Castle Spy (Espionage)">Cas</span>
             </th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Barracks Spy (Espionage)">BS</span>
+                <span data-bs-toggle="tooltip" title="Barracks Spy (Espionage)">BS</span>
             </th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Survey Dominion (Espionage)">Sur</span>
+                <span data-bs-toggle="tooltip" title="Survey Dominion (Espionage)">Sur</span>
             </th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Land Spy (Espionage)">Lan</span>
+                <span data-bs-toggle="tooltip" title="Land Spy (Espionage)">Lan</span>
             </th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Vision (Magic)">Vis</span>
+                <span data-bs-toggle="tooltip" title="Vision (Magic)">Vis</span>
             </th>
             <th class="text-center">
-                <span data-toggle="tooltip" title="Disclosure (Magic)">Dis</span>
+                <span data-bs-toggle="tooltip" title="Disclosure (Magic)">Dis</span>
             </th>
         </tr>
     </thead>
@@ -48,25 +48,25 @@
                     <td class="text-center">
                         @if ($selectedDominion->isMonarch() || $selectedDominion->isSpymaster())
                             @if (in_array($targetDominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
-                                <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-toggle="tooltip" title="Cancel Observation">
+                                <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-bs-toggle="tooltip" title="Cancel Observation">
                                     <i class="fa fa-eye-slash text-red"></i>
                                 </a>
                             @else
-                                <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-toggle="tooltip" title="Mark for Observation">
+                                <a href="{{ route('dominion.bounty-board.observe', $targetDominion->id) }}" data-bs-toggle="tooltip" title="Mark for Observation">
                                     <i class="fa fa-eye text-green"></i>
                                 </a>
                             @endif
                         @elseif (in_array($targetDominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
-                            <span data-toggle="tooltip" title="Marked for Observation">
+                            <span data-bs-toggle="tooltip" title="Marked for Observation">
                                 <i class="fa fa-eye text-aqua"></i>
                             </span>
                         @endif
                     </td>
                     <td class="text-center" style="padding: 9px 0 7px 0;">
                         @if ($guardMembershipService->isEliteGuardMember($targetDominion))
-                            <i class="ra ra-heavy-shield text-yellow" title="Elite Guard" data-toggle="tooltip"></i>
+                            <i class="ra ra-heavy-shield text-yellow" title="Elite Guard" data-bs-toggle="tooltip"></i>
                         @elseif ($guardMembershipService->isRoyalGuardMember($targetDominion))
-                            <i class="ra ra-heavy-shield text-green" title="Royal Guard" data-toggle="tooltip"></i>
+                            <i class="ra ra-heavy-shield text-green" title="Royal Guard" data-bs-toggle="tooltip"></i>
                         @endif
                     </td>
                     <td>

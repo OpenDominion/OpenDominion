@@ -3,11 +3,11 @@
 @section('page-header', 'Users')
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">Users</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Users</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table table-hover" id="users-table">
                 <colgroup>
                     <col width="50">
@@ -55,8 +55,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="box-footer">
-            <div class="pull-right">
+        <div class="card-footer">
+            <div class="float-end">
                 {{ $users->links() }}
             </div>
         </div>
@@ -64,12 +64,12 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap5.css') }}">
 @endpush
 
 @push('page-scripts')
     <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap5.js') }}"></script>
 @endpush
 
 @push('inline-scripts')

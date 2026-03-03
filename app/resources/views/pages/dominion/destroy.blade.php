@@ -6,13 +6,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-danger">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-demolish"></i> Destroy Buildings</h3>
+            <div class="card border-danger">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-demolish"></i> Destroy Buildings</h3>
                 </div>
                 <form action="{{ route('dominion.destroy') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body no-padding">
+                    <div class="card-body no-padding">
                         <div class="row">
 
                             <div class="col-md-12 col-lg-6">
@@ -39,7 +39,7 @@
 
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-danger" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Destroy</button>
                     </div>
                 </form>
@@ -47,11 +47,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p><b>Warning</b>: You are about to destroy buildings to reclaim barren land.</p>
                     <p>Any platinum and lumber used to construct any destroyed buildings <b>will be lost</b>.</p>
                     <p>Destroying buildings processes <b>instantly</b>.</p>

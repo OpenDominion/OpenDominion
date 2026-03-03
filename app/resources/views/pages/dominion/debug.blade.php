@@ -10,11 +10,11 @@
     <div class="row">
         <div class="col-sm-12 col-md-4">
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Networth Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Networth Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         Realm Networth: <b>{{ number_format($networthCalculator->getRealmNetworth($selectedDominion->realm)) }}</b><br>
                         Dominion Networth: <b>{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</b><br>
@@ -22,11 +22,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Dominion</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Dominion</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @php
                         $dominion = clone $selectedDominion;
                         unset($dominion->race);
@@ -40,11 +40,11 @@
         </div>
         <div class="col-sm-12 col-md-4">
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Building Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Building Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($buildingCalculator, [
                             'getTotalBuildings',
@@ -53,11 +53,11 @@
                 </div>
             </div>
 
-            <div class="box box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Land Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Land Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($landCalculator, [
                             'getTotalLand',
@@ -69,11 +69,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Military Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Military Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($militaryCalculator, [
                             'getOffensivePower',
@@ -103,11 +103,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Casualties Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Casualties Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($casualtiesCalculator, [
                             'getOffensiveCasualtiesMultiplier',
@@ -117,11 +117,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Population Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Population Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($populationCalculator, [
                             'getPopulation',
@@ -145,11 +145,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Production Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Production Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($productionCalculator, [
                             'getPlatinumProduction',
@@ -191,11 +191,11 @@
         </div>
         <div class="col-sm-12 col-md-4">
 
-            {{--<div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Banking Calculator</h3>
+            {{--<div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Banking Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($bankingCalculator, [
                             'getResources',
@@ -204,11 +204,11 @@
                 </div>
             </div>--}}
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Construction Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Construction Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($constructionCalculator, [
                             'getPlatinumCost',
@@ -224,11 +224,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Exploration Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Exploration Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($explorationCalculator, [
                             'getPlatinumCost',
@@ -239,11 +239,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Rezoning Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Rezoning Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($rezoningCalculator, [
                             'getPlatinumCost',
@@ -254,11 +254,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Training Calculator</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Training Calculator</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($trainingCalculator, [
                             'getTrainingCostsPerUnit',
@@ -270,11 +270,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Guard Membership Service</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Guard Membership Service</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($guardMembershipService, [
                             'canJoinGuards',

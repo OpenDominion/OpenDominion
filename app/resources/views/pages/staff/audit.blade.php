@@ -3,11 +3,11 @@
 @section('page-header', 'Audit Log')
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">Audit Log</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Audit Log</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table table-hover">
                 <colgroup>
                     <col>
@@ -55,8 +55,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="box-footer">
-            <div class="pull-right">
+        <div class="card-footer">
+            <div class="float-end">
                 {{ $activities->links() }}
             </div>
         </div>

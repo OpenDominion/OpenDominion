@@ -6,13 +6,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-danger">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-cycle"></i> Release Troops</h3>
+            <div class="card border-danger">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-cycle"></i> Release Troops</h3>
                 </div>
                 <form action="{{ route('dominion.military.release') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -30,7 +30,7 @@
                                 <tr>
                                     <td>
                                         {!! $unitHelper->getUnitTypeIconHtml('draftees', $selectedDominion->race) !!}
-                                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $selectedDominion->race) }}">
+                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $selectedDominion->race) }}">
                                             Draftees
                                         </span>
                                     </td>
@@ -50,7 +50,7 @@
                                     <tr>
                                         <td>
                                             {!! $unitHelper->getUnitTypeIconHtml($unitType, $selectedDominion->race) !!}
-                                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
                                             </span>
                                         </td>
@@ -63,7 +63,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-danger" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Release</button>
                     </div>
                 </form>
@@ -71,11 +71,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p><b>Warning</b>: You are about to release your troops.</p>
                     <p>Draftees will release into the peasantry. Other troops into draftees.</p>
                     <p>Any resources (including spies and wizards) used to train any released unit <b>will be lost</b>.</p>

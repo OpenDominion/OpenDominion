@@ -2,23 +2,23 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-8 offset-sm-2">
             <p><img src="{{ asset('assets/app/images/opendominion.png') }}" class="img-responsive center-block" alt="OpenDominion"></p>
         </div>
     </div>
 
     <div class="row">
 
-        <div class="col-sm-3 hidden-xs">
+        <div class="col-sm-3 d-none d-sm-block">
             <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-responsive center-block" alt="Human Thief"></p>
         </div>
 
         <div class="col-sm-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Welcome to OpenDominion!</h3>
+            <div class="card border-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Welcome to OpenDominion!</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with other dominions and you must work together to make your realm the wealthiest and most powerful in the land and crush your enemies!</p>
 
                     <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="http://dominion.opendominion.net/GameOver.htm" target="_blank">stopping indefinitely <i class="fa fa-external-link"></i></a>.</p>
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="col-sm-3 hidden-xs">
+        <div class="col-sm-3 d-none d-sm-block">
             <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-responsive center-block" alt="Dark Elf Mage"></p>
         </div>
 
@@ -54,9 +54,9 @@
     <div class="row">
 
         <div class="col-sm-3">
-            <div class="box">
-                <div class="box-header with-border text-center">
-                    <h3 class="box-title">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3 class="card-title">
                         @if ($currentRound === null)
                             Current Round
                         @else
@@ -65,10 +65,10 @@
                     </h3>
                 </div>
                 @if ($currentRound === null || $currentRound->hasEnded())
-                    <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
+                    <div class="card-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
                         <p style="font-size: 1.5em;" class="text-red">Inactive</p>
                     </div>
-                    <div class="box-body text-center">
+                    <div class="card-body text-center">
                         <p><strong>There is no ongoing round.</strong></p>
                         @if ($discordInviteLink = config('app.discord_invite_link'))
                             <p>Check the Discord for more information.</p>
@@ -82,27 +82,27 @@
                     </div>
                 @else
                     @if ($currentRound->realmAssignmentDate() > now())
-                        <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
+                        <div class="card-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
                             <p style="font-size: 1.5em;" class="text-yellow">Open for Registration</p>
                         </div>
-                        <div class="box-body text-center">
+                        <div class="card-body text-center">
                             <p>The deadline to register a pack is in {{ $currentRound->timeUntilRealmAssignment() }} ({{ $currentRound->realmAssignmentDate() }}).</p>
                             <p>The round will start in {{ $currentRound->timeUntilStart() }} ({{ $currentRound->start_date }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
                         </div>
                     @elseif ($currentRound->start_date > now())
-                        <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
+                        <div class="card-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
                             <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
                         </div>
-                        <div class="box-body text-center">
+                        <div class="card-body text-center">
                             <p>Individual registration is still open!</p>
                             <p>The round will start in {{ $currentRound->timeUntilStart() }} ({{ $currentRound->start_date }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
                         </div>
                     @else
-                        <div class="box-body text-center" style="padding: 0;">
+                        <div class="card-body text-center" style="padding: 0;">
                             <p style="font-size: 1.5em;" class="text-green">Active</p>
                         </div>
                     @endif
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="50%">
@@ -126,7 +126,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer text-center">
+                    <div class="card-footer text-center">
                         @if ($currentRound->daysUntilEnd() < 7)
                             <p>
                                 <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }} and {{ $currentRound->hoursUntilReset() - 1 }} {{ str_plural('hour', $currentRound->hoursUntilReset() - 1) }}.</em>
@@ -148,14 +148,14 @@
 
         <div class="col-sm-6">
             @if ($currentRound !== null)
-                <div class="box">
-                    <div class="box-header with-border text-center">
-                        <h3 class="box-title">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3 class="card-title">
                             {{ $currentRound->hasStarted() && !$currentRound->hasEnded() ? 'Current' : 'Previous' }} Round Rankings
                         </h3>
                     </div>
                     @if ($currentRankings !== null && !$currentRankings->isEmpty())
-                        <div class="box-body table-responsive text-center no-padding">
+                        <div class="card-body table-responsive text-center no-padding">
                             <table class="table">
                                 <colgroup>
                                     <col>
@@ -191,7 +191,7 @@
                             </table>
                         </div>
                     @else
-                        <div class="box-body text-center">
+                        <div class="card-body text-center">
                             No rankings recorded yet.
                         </div>
                     @endif
@@ -199,7 +199,7 @@
             @endif
         </div>
 
-        <div class="col-sm-3 hidden-xs">
+        <div class="col-sm-3 d-none d-sm-block">
             <div class="text-center">
                 <iframe src="https://discord.com/widget?id=325315157335212032&theme={{ Auth::user() && Auth::user()->skin == 'skin-classic' ? 'dark' : 'light' }}" width="255" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             </div>
@@ -208,11 +208,11 @@
     </div>
     <div class="row">
 
-        <div class="col-sm-3 hidden visible-xs">
+        <div class="col-sm-3 hidden d-block d-sm-none">
             <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-responsive center-block" alt="Human Thief"></p>
         </div>
 
-        <div class="col-sm-3 hidden visible-xs">
+        <div class="col-sm-3 hidden d-block d-sm-none">
             <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-responsive center-block" alt="Dark Elf Mage"></p>
         </div>
 

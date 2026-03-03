@@ -3,11 +3,11 @@
 @section('page-header', 'Staff')
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">Staff Members</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Staff Members</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table table-hover">
                 <colgroup>
                     <col>

@@ -11,7 +11,7 @@
     }
 @endphp
 
-<div class="pull-right">
+<div class="float-end">
     <span class="badge">
         Server: <span id="ticker-server">{{ date('H:i:s') }}</span>
     </span>

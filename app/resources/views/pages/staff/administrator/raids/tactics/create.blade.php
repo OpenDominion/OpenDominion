@@ -3,14 +3,14 @@
 @section('page-header', 'Create Tactic')
 
 @section('content')
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Create New Tactic for: {{ $objective->name }}</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Create New Tactic for: {{ $objective->name }}</h3>
         </div>
         <form action="{{ route('staff.administrator.raids.objectives.tactics.create', [$raid, $objective]) }}" method="POST">
             @csrf
 
-            <div class="box-body">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -24,7 +24,7 @@
                                 @endforeach
                             </select>
                             @if ($errors->has('type'))
-                                <span class="help-block text-red">{{ $errors->first('type') }}</span>
+                                <span class="form-text text-red">{{ $errors->first('type') }}</span>
                             @endif
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                             <label for="name">Tactic Name *</label>
                             <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required>
                             @if ($errors->has('name'))
-                                <span class="help-block text-red">{{ $errors->first('name') }}</span>
+                                <span class="form-text text-red">{{ $errors->first('name') }}</span>
                             @endif
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                                 Schema will auto-populate when you select a tactic type. You can then customize the values.
                             </small>
                             @if ($errors->has('attributes'))
-                                <span class="help-block text-red">{{ $errors->first('attributes') }}</span>
+                                <span class="form-text text-red">{{ $errors->first('attributes') }}</span>
                             @endif
                         </div>
                     </div>
@@ -65,18 +65,18 @@
                                 Multipliers: 1.2 = 20% bonus, 0.9 = 10% penalty. Multiple bonuses do not stack.
                             </small>
                             @if ($errors->has('bonuses'))
-                                <span class="help-block text-red">{{ $errors->first('bonuses') }}</span>
+                                <span class="form-text text-red">{{ $errors->first('bonuses') }}</span>
                             @endif
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="box-footer">
+            <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-check"></i> Create Tactic
                 </button>
-                <a href="{{ route('staff.administrator.raids.objectives.show', [$raid, $objective]) }}" class="btn btn-default">
+                <a href="{{ route('staff.administrator.raids.objectives.show', [$raid, $objective]) }}" class="btn btn-secondary">
                     <i class="fa fa-times"></i> Cancel
                 </a>
             </div>

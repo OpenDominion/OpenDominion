@@ -3,11 +3,11 @@
 @section('page-header', "Dominion: {$dominion->name}")
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">{{ $dominion->name }} (#{{ $dominion->realm->number }})</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">{{ $dominion->name }} (#{{ $dominion->realm->number }})</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -79,19 +79,19 @@
                 </tbody>
             </table>
         </div>
-        <div class="box-footer">
+        <div class="card-footer">
             @if ($dominion->locked_at !== null)
-                <div class="pull-left">
+                <div class="float-start">
                     Locked at {{ $dominion->locked_at }}
                 </div>
-                <div class="pull-right">
+                <div class="float-end">
                     <form action="{{ route('staff.moderator.dominion.unlock', [$dominion]) }}" method="post">
                         @csrf
                         <button class="btn btn-primary">Unlock Dominion</a>
                     </form>
                 </div>
             @else
-                <div class="pull-right">
+                <div class="float-end">
                     <form action="{{ route('staff.moderator.dominion.lock', [$dominion]) }}" method="post">
                         @csrf
                         <button class="btn btn-danger">Lock Dominion</a>

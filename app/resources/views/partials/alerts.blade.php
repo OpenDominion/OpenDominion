@@ -36,8 +36,8 @@
 @endif
 
 @if (!$errors->isEmpty())
-    <div class="alert alert-danger alert-dismissible">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         <h4>One or more errors occurred:</h4>
         <ul>
             @foreach ($errors->all() as $error)
@@ -49,8 +49,8 @@
 
 @foreach (['danger', 'warning', 'success', 'info'] as $alert_type)
     @if (Session::has('alert-' . $alert_type))
-        <div class="alert alert-{{ $alert_type }} alert-dismissible">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <div class="alert alert-{{ $alert_type }} alert-dismissible fade show">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             <p>{{ Session::get('alert-' . $alert_type) }}</p>
         </div>
     @endif

@@ -3,12 +3,12 @@
 @section('page-header', "Dominion: {$dominion->name}")
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
                 Shared logins for: {{ $dominion->name }}
             </h3>
-            <select id="dominion-select" class="form-control pull-right">
+            <select id="dominion-select" class="form-control float-end">
                 <option value="">
                     All
                 </option>
@@ -21,7 +21,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -77,11 +77,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -98,7 +96,7 @@
                 }
             });
 
-            $('#dominion-select + .select2-container').addClass('pull-right');
+            $('#dominion-select + .select2-container').addClass('float-end');
         })(jQuery);
     </script>
 @endpush

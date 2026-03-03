@@ -106,7 +106,7 @@
 
 <h4 class="text-center">FAQ</h4>
 <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-6 offset-sm-3">
         <p>
             <div class="text-bold">Q. Can I create multiple accounts?</div>
             <div>A. No. Creating multiple accounts is a violation of rule 2, which will result in your account being suspended.</div>
@@ -144,7 +144,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="active">
+            <tr class="table-active">
                 <td rowspan="3" style="vertical-align: middle;">
                     Farming: possible violations of 2a, 3b, 3c, 3d, and 3e
                 </td>
@@ -155,7 +155,7 @@
                     Account(s) locked. Land gains will be reduced by at least 25% unless the RC decides otherwise. Following an investigation, the player will be interviewed and allowed to regain access to the account after a commitment to train some DP.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Intentional (ex: released DP after bouncing)
@@ -164,7 +164,7 @@
                     Account(s) locked. Land gains will be reduced by at least 50% unless the Rules Committee decides otherwise. Player is suspended for at least the duration of the current round.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Malicious (ex: created additional accounts to invade)
@@ -202,7 +202,7 @@
                     Account(s) locked. Players will be suspended for at least the duration of the round.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <td rowspan="3" style="vertical-align: middle;">
                     Creating Multiple Same-Round Accounts: violations of 2a, 2d, possibly 3c and 3e
                 </td>
@@ -213,7 +213,7 @@
                     N/A
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Intentional (ex: for fun; playing two at once without record of abuse)
@@ -222,7 +222,7 @@
                     Accounts locked. Players will be suspended for no less than one week unless the RC decides otherwise. The player will be able to regain access to one account after a commitment to using only one dominion.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Malicious (ex: for gain such as realm hopping or farming)
@@ -260,7 +260,7 @@
                     Account locked. Player will be suspended for no less than two weeks unless the RC decides otherwise. Player will be able to regain access to their account after a commitment to abiding by the information sharing rules.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <td rowspan="3" style="vertical-align: middle;">
                     Multiple Dominions Playing from Same IP: possible violations of 2a, 2d, and 2f
                 </td>
@@ -271,7 +271,7 @@
                     Based on evidence of zero malicious behavior, the players will be instructed to disclose their relationship to the RC in the future.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Intentional (ex: a husband and wife play from the same house on the same device in different realms without disclosing to RC)
@@ -280,7 +280,7 @@
                     Following an investigation, the players will receive punishment appropriate to the violation. This may include merging two randoms together on a first-time offense without evidence of malicious behavior, up to a round-long suspension of at least one dominion.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Malicious (ex: a player tries to pass a multi off for a family member)
@@ -318,7 +318,7 @@
                     All associated accounts locked. Players will be suspended for at least the duration of the current round. Players may be prohibited from joining any pack in following rounds.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <td rowspan="3" style="vertical-align: middle;">
                     Avoiding Matchmaking System with Multiple Lifetime Accounts: violation of 2a
                 </td>
@@ -329,7 +329,7 @@
                     Player will be asked to notify the development team as soon as possible and the situation will be resolved by them.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Intentional (ex: attempting to favorably game the matchmaking and realm placement system)
@@ -338,7 +338,7 @@
                     Account locked. Player will be suspended for at least the duration of the current round.
                 </td>
             </tr>
-            <tr class="active">
+            <tr class="table-active">
                 <!-- <td></td> -->
                 <td>
                     Malicious (ex: conspiring with other players to favorably game the matchmaking and realm placement system as a group)

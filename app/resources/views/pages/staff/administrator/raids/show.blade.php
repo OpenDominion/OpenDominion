@@ -5,25 +5,25 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ $raid->name }}</h3>
-                    <div class="pull-right">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ $raid->name }}</h3>
+                    <div class="float-end">
                         <a href="{{ route('staff.administrator.raids.edit', $raid) }}" class="btn btn-primary btn-sm">
                             <i class="fa fa-edit"></i> Edit
                         </a>
                         <a href="{{ route('staff.administrator.raids.delete', $raid) }}" class="btn btn-danger btn-sm">
                             <i class="fa fa-trash"></i> Delete
                         </a>
-                        <a href="{{ route('staff.administrator.raids.index', ['round' => $raid->round_id]) }}" class="btn btn-default btn-sm">
+                        <a href="{{ route('staff.administrator.raids.index', ['round' => $raid->round_id]) }}" class="btn btn-secondary btn-sm">
                             <i class="fa fa-arrow-left"></i> Back to List
                         </a>
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th width="200">Round</th>
                                     <td>{{ $raid->round->name }}</td>
@@ -43,7 +43,7 @@
                             </table>
                         </div>
                         <div class="col-md-6">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th width="200">Reward</th>
                                     <td>
@@ -85,16 +85,16 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Objectives</h3>
-                    <div class="pull-right">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Objectives</h3>
+                    <div class="float-end">
                         <a href="{{ route('staff.administrator.raids.objectives.create', $raid) }}" class="btn btn-success btn-sm">
                             <i class="fa fa-plus"></i> Create New Objective
                         </a>
                     </div>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     @if ($raid->objectives->isEmpty())
                         <p class="text-center text-muted">No objectives found for this raid.</p>
                     @else
@@ -134,13 +134,13 @@
                                             <span class="badge bg-blue">{{ $objective->tactics->count() }}</span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ route('staff.administrator.raids.objectives.show', [$raid, $objective]) }}" class="btn btn-xs btn-primary" title="View">
+                                            <a href="{{ route('staff.administrator.raids.objectives.show', [$raid, $objective]) }}" class="btn btn-sm btn-primary" title="View">
                                                 <i class="fa fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('staff.administrator.raids.objectives.edit', [$raid, $objective]) }}" class="btn btn-xs btn-info" title="Edit">
+                                            <a href="{{ route('staff.administrator.raids.objectives.edit', [$raid, $objective]) }}" class="btn btn-sm btn-info" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <a href="{{ route('staff.administrator.raids.objectives.delete', [$raid, $objective]) }}" class="btn btn-xs btn-danger" title="Delete">
+                                            <a href="{{ route('staff.administrator.raids.objectives.delete', [$raid, $objective]) }}" class="btn btn-sm btn-danger" title="Delete">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         </td>

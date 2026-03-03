@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-xs-12 col-sm-4">
+    <div class="col-12 col-sm-4">
         <table class="table">
             <colgroup>
                 <col width="50%">
@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('networth') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('networth') }}">
                             Networth:
                         </span>
                     </td>
@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('peasants') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('peasants') }}">
                             Peasants:
                         </span>
                     </td>
@@ -48,7 +48,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('employment') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('employment') }}">
                             Employment:
                         </span>
                     </td>
@@ -56,7 +56,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('prestige') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('prestige') }}">
                             Prestige:
                         </span>
                     </td>
@@ -64,7 +64,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('resilience') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('resilience') }}">
                             Resilience:
                         </span>
                     </td>
@@ -79,7 +79,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('spy_mastery') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('spy_mastery') }}">
                             Spy Mastery:
                         </span>
                     </td>
@@ -87,7 +87,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('wizard_mastery') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('wizard_mastery') }}">
                             Wizard Mastery:
                         </span>
                     </td>
@@ -96,7 +96,7 @@
             </tbody>
         </table>
     </div>
-    <div class="col-xs-12 col-sm-4">
+    <div class="col-12 col-sm-4">
         <table class="table">
             <colgroup>
                 <col width="50%">
@@ -110,7 +110,7 @@
             <tbody>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('platinum') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('platinum') }}">
                             Platinum:
                         </span>
                     </td>
@@ -118,7 +118,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('food') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('food') }}">
                             Food:
                         </span>
                     </td>
@@ -126,7 +126,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('lumber') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('lumber') }}">
                             Lumber:
                         </span>
                     </td>
@@ -134,7 +134,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('mana') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('mana') }}">
                             Mana:
                         </span>
                     </td>
@@ -142,7 +142,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('ore') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('ore') }}">
                             Ore:
                         </span>
                     </td>
@@ -150,7 +150,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('gems') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('gems') }}">
                             Gems:
                         </span>
                     </td>
@@ -158,7 +158,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('tech') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('tech') }}">
                             Research Points:
                         </span>
                     </td>
@@ -166,7 +166,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString('boats') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getResourceHelpString('boats') }}">
                             Boats:
                         </span>
                     </td>
@@ -175,7 +175,7 @@
                 @php $spa = array_get($data, 'spa', -1); @endphp
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('spa') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('spa') }}">
                             Spy Ratio:
                         </span>
                     </td>
@@ -184,7 +184,7 @@
                 @php $wpa = array_get($data, 'wpa', -1); @endphp
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('wpa') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('wpa') }}">
                             Wizard Ratio:
                         </span>
                     </td>
@@ -193,7 +193,7 @@
             </tbody>
         </table>
     </div>
-    <div class="col-xs-12 col-sm-4">
+    <div class="col-12 col-sm-4">
         <table class="table">
             <colgroup>
                 <col width="50%">
@@ -207,7 +207,7 @@
             <tbody>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString('morale') }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('morale') }}">
                             Morale:
                         </span>
                     </td>
@@ -215,7 +215,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $race, true) }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $race, true) }}">
                             Draftees:
                         </span>
                     </td>
@@ -229,7 +229,7 @@
                     @endphp
                     <tr>
                         <td>
-                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $race, true) }}">
+                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $race, true) }}">
                                 {{ $unitHelper->getUnitName($unitType, $race) }}:
                             </span>
                         </td>

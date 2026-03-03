@@ -8,14 +8,14 @@
         <div class="col-sm-12 col-md-9">
             @if (!$raids->isEmpty())
                 @foreach ($raids as $raid)
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-castle-flag"></i> {{ $raid->name }}</h3>
-                            <div class="pull-right">
+                    <div class="card border-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-castle-flag"></i> {{ $raid->name }}</h3>
+                            <div class="float-end">
                                 {!! $raidHelper->getStatusLabel($raid->status) !!}
                             </div>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row form-group">
@@ -47,7 +47,7 @@
                                         </div>
                                     </div>
                                     <div class="table-responsive">
-                                        <table class="table table-condensed">
+                                        <table class="table table-sm">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -72,7 +72,7 @@
                                                             {{ $objective->name }}
                                                         </a>
                                                         @if ($realmCompleted)
-                                                            <span class="label label-success">Completed</span>
+                                                            <span class="badge text-bg-success">Completed</span>
                                                         @endif
                                                     </td>
                                                     <td>{{ $objective->description }}</td>
@@ -81,7 +81,7 @@
                                                     <td>{{ number_format($realmScore) }} ({{ number_format($realmProgress, 1) }}%)</td>
                                                     <td>
                                                         @foreach ($objective->tactics->unique('type') as $tactic)
-                                                            <div class="label label-primary">{{ ucwords($tactic->type) }}</div>
+                                                            <div class="badge text-bg-primary">{{ ucwords($tactic->type) }}</div>
                                                         @endforeach
                                                     </td>
                                                 </tr>
@@ -89,7 +89,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-12 text-right">
+                                <div class="col-md-12 text-end">
                                     <a href="{{ route('dominion.raids.leaderboard', $raid) }}" class="btn btn-sm btn-info">
                                         <i class="fa fa-list"></i> Raid Leaderboard
                                     </a>
@@ -99,11 +99,11 @@
                     </div>
                 @endforeach
             @else
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-castle-flag"></i> Raids</h3>
+                <div class="card border-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-castle-flag"></i> Raids</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         There are currently no raids scheduled for this round.
                     </div>
                 </div>
@@ -111,11 +111,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <h4>Participation Rewards</h4>
                     <p class="small">Rewards are earned based on your contribution.</p>
                     <ul class="small">

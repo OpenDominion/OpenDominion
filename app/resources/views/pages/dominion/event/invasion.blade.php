@@ -23,20 +23,20 @@
         }
     @endphp
     <div class="row">
-        <div class="col-sm-12 col-md-8 col-md-offset-2">
-            <div class="box box-{{ $boxColor }}">
-                <div class="box-header with-border">
-                    <h3 class="box-title">
+        <div class="col-sm-12 col-md-8 offset-md-2">
+            <div class="card border-{{ $boxColor }}">
+                <div class="card-header">
+                    <h3 class="card-title">
                         <i class="ra ra-crossed-swords"></i>
                         {{ $event->source->name }} (#{{ $event->source->realm->number }})
                         vs
                         {{ $event->target->name }} (#{{ $event->target->realm->number }})
                     </h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="card-body no-padding">
                     <div class="row">
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -64,7 +64,7 @@
                                         <tr>
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml($unitType, $event->source->race) !!}
-                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->source->race) }}">
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->source->race) }}">
                                                     {{ $event->source->race->units->where('slot', $unitSlot)->first()->name }}
                                                 </span>
                                             </td>
@@ -83,7 +83,7 @@
                             </table>
                         </div>
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -118,7 +118,7 @@
                                             <tr>
                                                 <td>
                                                     {!! $unitHelper->getUnitTypeIconHtml($unitType, $event->target->race) !!}
-                                                    <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->target->race) }}">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->target->race) }}">
                                                         @if ($unitType === 'draftees')
                                                             Draftees
                                                         @else
@@ -142,7 +142,7 @@
                             </table>
                         </div>
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">

@@ -6,11 +6,11 @@
         $title .= ' for '.$targetDominion->name;
     }
 @endphp
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title"><i class="fa fa-question-circle"></i> {{ $title }}</h3>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fa fa-question-circle"></i> {{ $title }}</h3>
     </div>
-    <div class="box-body text-center">
+    <div class="card-body text-center">
 
         <a href="{{ route($baseRoute.'op-center', $targetDominion) }}" class="btn btn-app">
             <i class="fa fa-globe"></i> Op Center

@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <div class="box box-info">
+            <div class="card border-info">
                 <pre>{{ print_r(json_decode($dominion), true) }}</pre>
             </div>
         </div>

@@ -18,7 +18,7 @@
                 </p>
 
                 @slot('boxFooter')
-                    <div class="pull-right">
+                    <div class="float-end">
                         <a href="{{ route('dominion.op-center.show', $dominion) }}" class="btn btn-sm btn-primary">Back to Overview</a>
                     </div>
                 @endslot
@@ -26,12 +26,12 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
-                <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old. Recast your info ops before performing any offensive operations during this hour.</p>
+                <div class="card-body">
+                <p>Sections marked as <span class="badge text-bg-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="badge text-bg-danger">invalid</span> are more than 12 hours old. Recast your info ops before performing any offensive operations during this hour.</p>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                         @endphp
 
                         @if ($recentlyInvadedCount > 0)
-                            <p class="text-center" style="margin-bottom: 0.5em;" data-toggle="tooltip" title="Defensive casualties reduced by {{ 20 * $recentlyInvadedCount }}%.<br/>Prestige gains reduced by {{ 10 * $recentlyInvadedCount }}% (min 20).">
+                            <p class="text-center" style="margin-bottom: 0.5em;" data-bs-toggle="tooltip" title="Defensive casualties reduced by {{ 20 * $recentlyInvadedCount }}%.<br/>Prestige gains reduced by {{ 10 * $recentlyInvadedCount }}% (min 20).">
                                 This dominion has been invaded <strong>{{ $recentlyInvadedCount }}</strong> time(s) in the last 24 hours.
                             </p>
                         @endif
@@ -76,13 +76,13 @@
                             @if ($infoOp !== null)
                                 <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                 @if ($infoOp->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -125,7 +125,7 @@
                                             {{ $activeSpell['duration'] }}
                                         </td>
                                         <td>
-                                            <div data-toggle="tooltip" data-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
                                                 {{ $spellHelper->getSpellDescription($spell) }}
                                             </div>
                                         </td>
@@ -157,13 +157,13 @@
                             @if ($infoOp !== null)
                                 <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                 @if ($infoOp->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -184,13 +184,13 @@
                             @if ($infoOp !== null)
                                 <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                 @if ($infoOp->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -213,13 +213,13 @@
                                     @if ($infoOp !== null)
                                         <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                         @if ($infoOp->isInvalid())
-                                            <span class="label label-danger">Invalid</span>
+                                            <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
-                                            <span class="label label-warning">Stale</span>
+                                            <span class="badge text-bg-warning">Stale</span>
                                         @endif
                                         <br>
-                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -249,7 +249,7 @@
 
                                 @slot('noPadding', true)
                                 @slot('titleExtra')
-                                    <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($infoOp->data, 'barren_land')) }}</strong> <small>({{ number_format((array_get($infoOp->data, 'barren_land') / array_get($infoOp->data, 'total_land', 250)) * 100, 2) }}%)</small></span>
+                                    <span class="float-end">Barren Land: <strong>{{ number_format(array_get($infoOp->data, 'barren_land')) }}</strong> <small>({{ number_format((array_get($infoOp->data, 'barren_land') / array_get($infoOp->data, 'total_land', 250)) * 100, 2) }}%)</small></span>
                                 @endslot
 
                                 @include('partials.dominion.info.construction-constructed-table', ['data' => $infoOp->data])
@@ -258,13 +258,13 @@
                                     @if ($infoOp !== null)
                                         <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                         @if ($infoOp->isInvalid())
-                                            <span class="label label-danger">Invalid</span>
+                                            <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
-                                            <span class="label label-warning">Stale</span>
+                                            <span class="badge text-bg-warning">Stale</span>
                                         @endif
                                         <br>
-                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -300,13 +300,13 @@
                                     @if ($infoOp !== null)
                                         <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                         @if ($infoOp->isInvalid())
-                                            <span class="label label-danger">Invalid</span>
+                                            <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
-                                            <span class="label label-warning">Stale</span>
+                                            <span class="badge text-bg-warning">Stale</span>
                                         @endif
                                         <br>
-                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -395,13 +395,13 @@
                                     @if ($infoOp !== null)
                                         <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                         @if ($infoOp->isInvalid())
-                                            <span class="label label-danger">Invalid</span>
+                                            <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
-                                            <span class="label label-warning">Stale</span>
+                                            <span class="badge text-bg-warning">Stale</span>
                                         @endif
                                         <br>
-                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -441,7 +441,7 @@
 
                             @foreach ($infoOp->data as $hero)
                                 <h4 class="text-center">{{ $hero['name'] }}</h4>
-                                <table class="table table-condensed">
+                                <table class="table table-sm">
                                     <colgroup>
                                         <col width="30%">
                                         <col width="10%">
@@ -484,13 +484,13 @@
                             @if ($infoOp !== null)
                                 <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                 @if ($infoOp->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
