@@ -22,4 +22,6 @@ function formatBytes(bytes, decimals) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-export { formatBytes };
+module.exports = {
+    formatBytes,
+};

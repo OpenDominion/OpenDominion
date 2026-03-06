@@ -1,7 +1,7 @@
 'use strict';
 
-import './momentum.js';
-import './bootstrap.js';
+require('./momentum.js');
+require('./bootstrap');
 
 $(() => {
     // Ticker

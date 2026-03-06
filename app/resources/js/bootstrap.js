@@ -1,10 +1,8 @@
 'use strict';
 
-import _ from 'lodash';
-window._ = _;
+window._ = require('lodash');
 
-import axios from 'axios';
-window.axios = axios;
+window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -16,8 +14,6 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
-import { formatBytes } from './helpers.js';
-window.formatBytes = formatBytes;
+window.formatBytes = require('./helpers').formatBytes;
 
-import ticker from './ticker.js';
-window.ticker = ticker;
+window.ticker = require('./ticker');
