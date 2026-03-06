@@ -7,7 +7,7 @@
 <script type="text/javascript" src="{{ asset('assets/vendor/admin-lte/js/adminlte.min.js') }}"></script>
 
 {{-- App scripts --}}
-<script type="text/javascript" src="{{ mix('assets/app/js/app.js') }}"></script>
+@vite(['app/resources/js/app.js'])
 
 {{-- Page specific scripts --}}
 @stack('page-scripts')

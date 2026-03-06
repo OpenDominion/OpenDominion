@@ -17,4 +17,4 @@
 <link rel="stylesheet" href="{{ asset('assets/app/css/skin-classic.css') }}">
 
 {{-- App styles --}}
-<link rel="stylesheet" href="{{ mix('assets/app/css/app.css') }}">
+@vite(['app/resources/sass/app.scss'])

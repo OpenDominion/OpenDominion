@@ -139,4 +139,4 @@ class Ticker {
     }
 }
 
-module.exports = new Ticker;
+export default new Ticker;
