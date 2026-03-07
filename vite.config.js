@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import { fileURLToPath } from 'url';
 
 export default defineConfig({
     plugins: [
@@ -13,12 +14,11 @@ export default defineConfig({
             refresh: ['app/resources/views/**'],
         }),
     ],
-    build: {
-        rollupOptions: {
-            external: ['jquery'],
-            output: {
-                globals: { jquery: 'jQuery' },
-            },
+    resolve: {
+        alias: {
+            // Satisfy `import $ from 'jquery'` in the bundle by returning the
+            // jQuery instance already loaded via the synchronous classic <script>.
+            jquery: fileURLToPath(new URL('./app/resources/js/jquery-global.js', import.meta.url)),
         },
     },
     css: {

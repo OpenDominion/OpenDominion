@@ -1,7 +1,6 @@
 'use strict';
 
-import $ from 'jquery';
-window.$ = window.jQuery = $;
+import $ from 'jquery'; // resolves to jquery-global.js shim → window.jQuery
 
 import 'bootstrap';
 import { Tooltip } from 'bootstrap';
