@@ -2,6 +2,8 @@
 @import 'admin-lte/src/scss/adminlte';
 
 // Font Awesome 6 + v4 compatibility shim (keeps fa fa-* working)
+// Point to a static vendor path so Vite doesn't try to resolve the font URLs at build time.
+$fa-font-path: '/assets/vendor/font-awesome/webfonts';
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
 @import '@fortawesome/fontawesome-free/scss/solid';
 @import '@fortawesome/fontawesome-free/scss/regular';

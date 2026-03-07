@@ -13,4 +13,22 @@ export default defineConfig({
             refresh: ['app/resources/views/**'],
         }),
     ],
+    build: {
+        rollupOptions: {
+            external: ['jquery'],
+            output: {
+                globals: { jquery: 'jQuery' },
+            },
+        },
+    },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                api: 'modern-compiler',
+                // Silence deprecations in upstream packages (Bootstrap, AdminLTE)
+                // that we cannot fix without modifying node_modules.
+                silenceDeprecations: ['import', 'global-builtin', 'if-function', 'color-functions'],
+            },
+        },
+    },
 });
