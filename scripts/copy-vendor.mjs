@@ -39,8 +39,12 @@ function copyFile(src, dest) {
 
 const nm = path.join(root, 'node_modules');
 const vendor = path.join(root, 'public', 'assets', 'vendor');
+const app = path.join(root, 'public', 'assets', 'app');
 
 const copies = [
+    // App images — static assets not processed by Vite (replaces Laravel Mix's mix.copy)
+    [path.join(root, 'app', 'resources', 'images'), path.join(app, 'images')],
+
     // DataTables Bootstrap 5 — loaded as a static asset per-page, not bundled
     [path.join(nm, 'datatables.net-bs5', 'js'),  path.join(vendor, 'datatables', 'js')],
     [path.join(nm, 'datatables.net-bs5', 'css'), path.join(vendor, 'datatables', 'css')],

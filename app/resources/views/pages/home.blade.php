@@ -3,14 +3,14 @@
 @section('content')
     <div class="row">
         <div class="col-sm-8 offset-sm-2">
-            <p><img src="{{ asset('assets/app/images/opendominion.png') }}" class="img-responsive center-block" alt="OpenDominion"></p>
+            <p><img src="{{ asset('assets/app/images/opendominion.png') }}" class="img-fluid d-block mx-auto" alt="OpenDominion"></p>
         </div>
     </div>
 
     <div class="row">
 
         <div class="col-sm-3 d-none d-sm-block">
-            <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-responsive center-block" alt="Human Thief"></p>
+            <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-fluid d-block mx-auto" alt="Human Thief"></p>
         </div>
 
         <div class="col-sm-6">
@@ -47,7 +47,7 @@
         </div>
 
         <div class="col-sm-3 d-none d-sm-block">
-            <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-responsive center-block" alt="Dark Elf Mage"></p>
+            <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-fluid d-block mx-auto" alt="Dark Elf Mage"></p>
         </div>
 
     </div>
@@ -75,7 +75,7 @@
 
                             <p style="padding: 0 20px;">
                                 <a href="{{ $discordInviteLink }}" target="_blank">
-                                    <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive">
+                                    <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-fluid">
                                 </a>
                             </p>
                         @endif
@@ -141,7 +141,7 @@
 
             <div>
                 <a href="https://anchor.fm/riol-talk" target="_blank">
-                    <img class="img-responsive" src="https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/19200887/19200887-1636311189500-b3f26a6c8046e.jpg" />
+                    <img class="img-fluid" src="https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/19200887/19200887-1636311189500-b3f26a6c8046e.jpg" />
                 </a>
             </div>
         </div>
@@ -201,7 +201,19 @@
 
         <div class="col-sm-3 d-none d-sm-block">
             <div class="text-center">
-                <iframe src="https://discord.com/widget?id=325315157335212032&theme={{ Auth::user() && Auth::user()->skin == 'skin-classic' ? 'dark' : 'light' }}" width="255" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                <iframe id="discord-widget" src="https://discord.com/widget?id=325315157335212032&theme=dark" width="255" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                <script>
+                (function () {
+                    var mode = localStorage.getItem('color-mode') || 'auto';
+                    var resolved = mode === 'auto'
+                        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                        : mode;
+                    var widget = document.getElementById('discord-widget');
+                    if (widget) {
+                        widget.src = 'https://discord.com/widget?id=325315157335212032&theme=' + resolved;
+                    }
+                })();
+                </script>
             </div>
         </div>
 
@@ -209,11 +221,11 @@
     <div class="row">
 
         <div class="col-sm-3 hidden d-block d-sm-none">
-            <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-responsive center-block" alt="Human Thief"></p>
+            <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-fluid d-block mx-auto" alt="Human Thief"></p>
         </div>
 
         <div class="col-sm-3 hidden d-block d-sm-none">
-            <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-responsive center-block" alt="Dark Elf Mage"></p>
+            <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-fluid d-block mx-auto" alt="Dark Elf Mage"></p>
         </div>
 
     </div>
