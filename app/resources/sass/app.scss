@@ -1,3 +1,7 @@
+// Override Bootstrap SCSS variables before the import so they compile into
+// CSS custom properties automatically (--bs-body-font-family, etc.).
+$font-family-sans-serif: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+
 // AdminLTE 4 (includes Bootstrap 5 internally)
 @import 'admin-lte/src/scss/adminlte';
 
