@@ -8,6 +8,7 @@ import 'select2';
 
 import './momentum.js';
 import './bootstrap-app.js';
+import './color-mode.js';
 
 $(() => {
     // Ticker
