@@ -1,4 +1,9 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <div class="sidebar-brand">
+        <a href="{{ url('') }}" class="brand-link">
+            Open<b>Dominion</b>
+        </a>
+    </div>
     <div class="sidebar-wrapper">
         @php
             $hiddenLinks = $selectedDominion->settings['hidden_links'] ?? [];

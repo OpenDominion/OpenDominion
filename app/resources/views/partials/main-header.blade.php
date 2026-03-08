@@ -10,11 +10,6 @@
             </li>
         </ul>
 
-        <!-- Brand -->
-        <a href="{{ url('') }}" class="navbar-brand ms-2">
-            Open<b>Dominion</b>
-        </a>
-
         <!-- Navbar Right Menu -->
         <ul class="navbar-nav ms-auto">
             @include('partials.color-mode-nav')

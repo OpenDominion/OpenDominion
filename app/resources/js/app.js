@@ -4,6 +4,7 @@ import $ from 'jquery'; // resolves to jquery-global.js shim → window.jQuery
 
 import 'bootstrap';
 import { Tooltip } from 'bootstrap';
+import 'admin-lte';
 import 'select2';
 
 import './momentum.js';

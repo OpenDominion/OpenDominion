@@ -35,7 +35,7 @@
 
     @include('partials.analytics')
 </head>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<body class="sidebar-expand-lg bg-body-tertiary">
 
 <div class="app-wrapper">
 
