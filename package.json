@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/copy-vendor.mjs",
     "preview": "vite preview",
     "vendor:copy": "node scripts/copy-vendor.mjs",
     "postinstall": "node scripts/copy-vendor.mjs"

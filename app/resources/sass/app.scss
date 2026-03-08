@@ -46,32 +46,13 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
   margin: 0;
 }
 
+.card {
+  margin-bottom: 1.5rem;
+}
+
 .card-body > p:last-child,
 .card-footer > p:last-child {
   margin-bottom: 0;
-}
-
-// Override primary color for borders (brand teal)
-.border-primary {
-  border-color: #005566 !important;
-}
-
-// card-primary uses brand teal instead of Bootstrap blue
-.card.card-primary {
-  --bs-card-cap-bg: #005566;
-}
-.card.card-primary .card-header {
-  color: #fff;
-  background-color: #005566;
-}
-.card.card-primary.card-outline {
-  --bs-card-cap-bg: var(--bs-card-bg);
-  border-top: 3px solid #005566;
-}
-.card.card-primary.card-outline .card-header {
-  color: inherit;
-  background-color: var(--bs-card-bg);
-  border-bottom-color: #29252a;
 }
 
 .nyi {
@@ -192,6 +173,29 @@ html.hourchange:after {
   .card.border-danger        { border-top-color: #A61000 !important; }
   .card .border-start,
   .card .border-end          { border-color: #666 !important; }
+
+  // Override primary color for borders (brand teal)
+  .border-primary {
+    border-color: #005566 !important;
+  }
+
+  // card-primary uses brand teal instead of Bootstrap blue
+  .card.card-primary {
+    --bs-card-cap-bg: #005566;
+  }
+  .card.card-primary .card-header {
+    color: #fff;
+    background-color: #005566;
+  }
+  .card.card-primary.card-outline {
+    --bs-card-cap-bg: var(--bs-card-bg);
+    border-top: 3px solid #005566;
+  }
+  .card.card-primary.card-outline .card-header {
+    color: inherit;
+    background-color: var(--bs-card-bg);
+    border-bottom-color: #29252a;
+  }
 
   // ── Dropdowns ─────────────────────────────────────────────────────────────
   .dropdown-menu {

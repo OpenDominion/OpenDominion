@@ -12,13 +12,12 @@
 
         <!-- Navbar Right Menu -->
         <ul class="navbar-nav ms-auto">
-            @include('partials.color-mode-nav')
-
             @include('partials.scribes-nav')
             @include('partials.valhalla-nav')
             @include('partials.staff-nav')
             @include('partials.wiki-nav')
             @include('partials.notification-nav')
+            @include('partials.color-mode-nav')
             @include('partials.auth-user-nav')
         </ul>
 

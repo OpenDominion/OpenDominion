@@ -1,3 +1,3 @@
 <li>
-    <a href="{{ route('scribes.overview') }}">Scribes</a>
+    <a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a>
 </li>
