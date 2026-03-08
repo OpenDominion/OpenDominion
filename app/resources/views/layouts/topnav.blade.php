@@ -50,7 +50,7 @@
 <div class="app-wrapper">
 
     <!-- Header -->
-    <nav class="app-header navbar navbar-expand-lg bg-body" data-bs-theme="dark">
+    <nav class="app-header navbar navbar-expand-lg bg-body">
         <div class="container">
 
             <a href="{{ url('') }}" class="navbar-brand">Open<b>Dominion</b></a>

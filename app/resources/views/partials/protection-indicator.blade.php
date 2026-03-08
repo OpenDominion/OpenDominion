@@ -1,5 +1,5 @@
 @if (isset($selectedDominion) && $protectionService->isUnderProtection($selectedDominion))
-    <div class="alert-info text-center" style="padding: 10px 15px; font-size: 13px;">
+    <div class="alert alert-info small text-center border-0 rounded-0 p-2 mb-0">
         <div class="row">
             <div class="col-2 text-start">
                 @if ($selectedDominion->protection_ticks_remaining <= $selectedDominion->protection_ticks)

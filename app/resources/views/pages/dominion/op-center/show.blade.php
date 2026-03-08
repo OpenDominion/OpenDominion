@@ -205,7 +205,7 @@
                                     <a class="btn btn-primary" onclick="copyJson('ops_json')">
                                         <i class="fa fa-copy"></i> Copy ops
                                     </a>
-                                    <textarea class="hidden" name="ops_json" id="ops_json">{{ json_encode($spellHelper->obfuscateInfoOps($infoOps), JSON_PRETTY_PRINT) }}</textarea>
+                                    <textarea class="d-none" name="ops_json" id="ops_json">{{ json_encode($spellHelper->obfuscateInfoOps($infoOps), JSON_PRETTY_PRINT) }}</textarea>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>

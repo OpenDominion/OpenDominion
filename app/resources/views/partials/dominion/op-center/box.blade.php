@@ -10,7 +10,7 @@
                     <a class="btn btn-primary float-end" style="padding: 0px 4px 0px 4px" onclick="copyJson('{{ $opKey }}')">
                         <i class="fa fa-copy"></i>
                     </a>
-                    <textarea class="hidden" name="{{ $opKey }}" id="{{ $opKey }}">{{ json_encode($opData, JSON_PRETTY_PRINT) }}</textarea>
+                    <textarea class="d-none" name="{{ $opKey }}" id="{{ $opKey }}">{{ json_encode($opData, JSON_PRETTY_PRINT) }}</textarea>
                 @endisset
             @endisset
                 @isset ($titleExtra)

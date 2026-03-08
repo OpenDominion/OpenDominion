@@ -113,8 +113,8 @@
                                 <col width="100">
                                 <col width="100">
                                 <col width="100">
-                                <col width="100" class="hidden">
-                                <col width="100" class="hidden">
+                                <col width="100" class="d-none">
+                                <col width="100" class="d-none">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -162,14 +162,14 @@
                                                 <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
                                                     {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
                                                 </td>
-                                                <td class="hidden">
+                                                <td class="d-none">
                                                     @if ($rangeCalculator->isInRange($selectedDominion, $dominion) && $selectedDominion->realm_id != $dominion->realm_id)
                                                         true
                                                     @else
                                                         false
                                                     @endif
                                                 </td>
-                                                <td class="hidden">
+                                                <td class="d-none">
                                                     @if ($dominion->user_id == null)
                                                         true
                                                     @else

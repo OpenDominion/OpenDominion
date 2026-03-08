@@ -28,10 +28,6 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
   }
 }
 
-.app-header a {
-  color: #ffffff;
-}
-
 .sidebar-menu .nav-link > .ra {
   display: inline-block;
   width: 20px;
@@ -50,6 +46,7 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
   margin-bottom: 1.5rem;
 }
 
+.alert > p:last-child,
 .card-body > p:last-child,
 .card-footer > p:last-child {
   margin-bottom: 0;

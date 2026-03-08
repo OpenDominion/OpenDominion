@@ -1,4 +1,4 @@
-<nav class="app-header navbar navbar-expand bg-body" data-bs-theme="dark">
+<nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
 
         <!-- Sidebar toggle -->

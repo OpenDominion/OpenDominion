@@ -6,7 +6,7 @@
             <span class="d-none d-md-inline">{{ Auth::user()->display_name }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-            <li class="user-header bg-primary">
+            <li class="user-header">
                 <img src="{{ Auth::user()->getAvatarUrl() }}" class="rounded-circle shadow" alt="{{ Auth::user()->display_name }}">
                 <p>
                     {{ Auth::user()->display_name }}

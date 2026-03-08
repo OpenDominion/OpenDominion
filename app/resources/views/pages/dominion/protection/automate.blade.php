@@ -16,7 +16,7 @@
                         <div class="form-group">
                             <label class="form-label">Log (from Excel Simulator):</label>
                             <textarea name="log" class="form-control" rows="20" readonly>{{ $log }}</textarea>
-                            <textarea name="logJSON" class="hidden" readonly>{{ json_encode($logJSON) }}</textarea>
+                            <textarea name="logJSON" class="d-none" readonly>{{ json_encode($logJSON) }}</textarea>
                         </div>
                     </div>
                     <div class="card-footer">
