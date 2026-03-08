@@ -31,11 +31,13 @@
     <script>
     (function () {
         var stored = localStorage.getItem('color-mode') || 'auto';
-        var resolved = stored === 'auto'
-            ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-            : stored;
-        document.documentElement.setAttribute('data-bs-theme', resolved);
+        var bsTheme = (stored === 'classic' || stored === 'dark') ? 'dark'
+                    : stored === 'auto'
+                      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : 'light';
+        document.documentElement.setAttribute('data-bs-theme', bsTheme);
         document.documentElement.setAttribute('data-color-mode', stored);
+        if (stored === 'classic') document.documentElement.setAttribute('data-color-scheme', 'classic');
     })();
     </script>
 

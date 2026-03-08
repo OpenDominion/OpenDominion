@@ -155,14 +155,12 @@ html.hourchange:after {
   100% { opacity: 1; }
 }
 
-// ─── Dark Mode ────────────────────────────────────────────────────────────────
-// Applied automatically via data-bs-theme="dark" on <html>.
-// Override Bootstrap/AdminLTE CSS variables first; only add explicit selectors
-// for things that can't be expressed as variable overrides (AdminLTE layout,
-// Select2, DataTables, etc.).
-// To add a future custom color mode, duplicate this block with a new attribute.
+// ─── Classic Theme ────────────────────────────────────────────────────────────
+// Applied when data-bs-theme="dark" + data-color-scheme="classic" are both set.
+// "dark" alone uses AdminLTE's default dark styles; "classic" layers these
+// custom teal-palette overrides on top.
 
-[data-bs-theme="dark"] {
+[data-bs-theme="dark"][data-color-scheme="classic"] {
 
   // ── Core palette ──────────────────────────────────────────────────────────
   color-scheme: dark;

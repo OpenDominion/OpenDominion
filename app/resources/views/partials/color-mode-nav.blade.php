@@ -16,6 +16,12 @@
             </button>
         </li>
         <li>
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="classic">
+                <i class="fa fa-shield-halved fa-fw"></i> Classic
+                <i class="fa fa-check ms-auto color-mode-check"></i>
+            </button>
+        </li>
+        <li>
             <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="auto">
                 <i class="fa fa-circle-half-stroke fa-fw"></i> Auto
                 <i class="fa fa-check ms-auto color-mode-check"></i>

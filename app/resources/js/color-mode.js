@@ -3,14 +3,16 @@
 const STORAGE_KEY = 'color-mode';
 
 const ICONS = {
-    light: 'fa-sun',
-    dark:  'fa-moon',
-    auto:  'fa-circle-half-stroke',
+    light:   'fa-sun',
+    dark:    'fa-moon',
+    classic: 'fa-shield-halved',
+    auto:    'fa-circle-half-stroke',
 };
 
 const THEME_COLORS = {
-    dark:  '#005566',
-    light: '#ffffff',
+    dark:    '#1a1a2e',
+    classic: '#005566',
+    light:   '#ffffff',
 };
 
 function getStoredMode() {
@@ -25,15 +27,26 @@ function resolveMode(mode) {
 }
 
 function applyMode(mode) {
-    const resolved = resolveMode(mode);
+    // 'classic' is built on top of dark; everything else maps directly.
+    const bsTheme = (mode === 'classic' || mode === 'dark') ? 'dark'
+                  : (mode === 'auto')
+                    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                  : 'light';
 
-    document.documentElement.setAttribute('data-bs-theme', resolved);
+    document.documentElement.setAttribute('data-bs-theme', bsTheme);
     document.documentElement.setAttribute('data-color-mode', mode);
+
+    if (mode === 'classic') {
+        document.documentElement.setAttribute('data-color-scheme', 'classic');
+    } else {
+        document.documentElement.removeAttribute('data-color-scheme');
+    }
+
     localStorage.setItem(STORAGE_KEY, mode);
 
     const metaThemeColor = document.getElementById('meta-theme-color');
     if (metaThemeColor) {
-        metaThemeColor.setAttribute('content', THEME_COLORS[resolved] ?? THEME_COLORS.light);
+        metaThemeColor.setAttribute('content', THEME_COLORS[mode] ?? THEME_COLORS[bsTheme] ?? THEME_COLORS.light);
     }
 
     updateUI(mode);
