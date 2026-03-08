@@ -1,7 +1,7 @@
 @extends('layouts.topnav')
 
 @section('content')
-    <div class="card border-primary">
+    <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title"><i class="ra ra-angel-wings"></i> Valhalla for {{ $league->description }}</h3>
         </div>

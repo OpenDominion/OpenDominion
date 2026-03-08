@@ -51,7 +51,7 @@
                 <div class="row">
                     <div class="col-sm-8 offset-sm-2">
 
-                        <div class="card border-primary">
+                        <div class="card card-outline card-primary">
                             <div class="card-header">
                                 <h3 class="card-title">Status 503: Service Unavailable</h3>
                             </div>

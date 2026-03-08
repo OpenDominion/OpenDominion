@@ -16,7 +16,7 @@
     <div class="row">
 
         <div class="col-md-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-industry"></i> {{ $pageHeader }}</h3>
                 </div>
@@ -374,7 +374,7 @@
     <div class="row">
 
         <div class="col-md-12">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-mining-diamonds"></i> Resource Expenditure</h3>
                 </div>
@@ -510,7 +510,7 @@
         </div>
 
         <div class="col-md-12">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-money"></i> Expenditure Bonuses</h3>
                 </div>

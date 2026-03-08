@@ -1,4 +1,4 @@
-<div class="card border-primary">
+<div class="card card-outline card-primary">
     <div class="card-header">
         <div class="card-title"><i class="ra ra-fairy-wand ra-fw"></i> Magic Spells</div>
         <div class="card-tools float-end">

@@ -28,7 +28,7 @@
     <div class="row">
 
         <div class="col-lg-6">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-capitol ra-fw"></i> Dominions</h3>
                 </div>
@@ -123,7 +123,7 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-clock-o fa-fw"></i> Rounds</h3>
                 </div>

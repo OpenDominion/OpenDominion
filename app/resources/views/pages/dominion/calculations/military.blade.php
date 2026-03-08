@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <form action="" method="get" role="form" id="calculate-defense-form" class="calculate-form">
                 @csrf
-                <div class="card border-primary">
+                <div class="card card-outline card-primary">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fa fa-calculator"></i> Defense Calculator</h3>
                     </div>
@@ -560,7 +560,7 @@
         <div class="col-sm-12 col-md-9">
             <form action="" method="get" role="form" id="calculate-offense-form" class="calculate-form">
                 @csrf
-                <div class="card border-primary">
+                <div class="card card-outline card-primary">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fa fa-calculator"></i> Offense Calculator</h3>
                     </div>

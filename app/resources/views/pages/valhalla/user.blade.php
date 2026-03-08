@@ -1,7 +1,7 @@
 @extends('layouts.topnav')
 
 @section('content')
-    <div class="card border-primary">
+    <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title">Achievements</h3>
         </div>
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div class="card border-primary">
+    <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title">Lifetime Ranking</h3>
         </div>

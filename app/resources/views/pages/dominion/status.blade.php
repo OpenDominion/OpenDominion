@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</h3>
                 </div>
@@ -98,7 +98,7 @@
         @endif
 
         <div class="col-sm-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-newspaper-o"></i> Recent News</h3>
                 </div>

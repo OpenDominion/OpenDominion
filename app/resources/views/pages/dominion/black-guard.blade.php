@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card border-primary">
+                    <div class="card card-outline card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><i class="ra ra-burning-embers"></i> Chaos Operations</h3>
                         </div>
@@ -200,7 +200,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card border-primary">
+                    <div class="card card-outline card-primary">
                         <div class="card-header">
                             <h3 class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</h3>
                         </div>

@@ -920,7 +920,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-12">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header" id="recent-invasions">
                     <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Recent Invasions</h3>
                 </div>

@@ -9,7 +9,7 @@
             <div class="row">
 
                 <div class="col-md-12">
-                    <div class="card border-primary">
+                    <div class="card card-outline card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
                         </div>
@@ -245,7 +245,7 @@
                 </div>
 
                 <div class="col-md-12">
-                    <div class="card border-primary">
+                    <div class="card card-outline card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
                         </div>
@@ -321,7 +321,7 @@
     <div class="row">
 
         <div class="col-md-12 col-md-9">
-        <div class="card border-primary">
+        <div class="card card-outline card-primary">
             <div class="card-header">
                 <h3 class="card-title"><i class="ra ra-burning-embers"></i> Spells affecting your dominion</h3>
             </div>

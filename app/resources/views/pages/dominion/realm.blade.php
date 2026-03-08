@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-circle-of-circles"></i> {{ $realm->name }} (#{{ $realm->number }})</h3>
                 </div>
@@ -210,7 +210,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-crossed-axes"></i> War</h3>
                 </div>
@@ -276,7 +276,7 @@
                 </div>
             </div>
 
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonder</h3>
                 </div>

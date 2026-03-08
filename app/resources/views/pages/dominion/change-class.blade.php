@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <form class="form-horizontal" action="{{ route('dominion.heroes.change-class', $targetClass['key']) }}" method="post" role="form">
                 @csrf
-                <div class="card border-primary">
+                <div class="card card-outline card-primary">
                     <div class="card-header">
                         <h3 class="card-title"><i class="ra ra-knight-helmet"></i> Hero Class Change</h3>
                     </div>
@@ -37,7 +37,7 @@
                 </div>
             </form>
 
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Heroes</h3>
                 </div>

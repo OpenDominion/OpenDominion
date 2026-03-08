@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-hanging-sign"></i> Bounty Board</h3>
                 </div>
@@ -17,7 +17,7 @@
                 </div>
             </div>
 
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-hanging-sign"></i> Recently Bountied</h3>
                 </div>

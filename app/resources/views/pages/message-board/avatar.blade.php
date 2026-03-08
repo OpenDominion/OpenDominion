@@ -8,7 +8,7 @@
         <div class="col-sm-12">
             <form action="{{ route('message-board.avatar') }}" method="post" class="form-horizontal" role="form">
                 @csrf
-                <div class="card border-primary">
+                <div class="card card-outline card-primary">
                     <div class="card-header">
                         <h3 class="card-title"><i class="ra ra-wooden-sign"></i> Message Board: Change Avatar</h3>
                         <div class="float-end">

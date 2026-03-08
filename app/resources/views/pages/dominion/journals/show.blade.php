@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="ra ra-scroll-quill"></i> Journal</h3>
                 </div>
@@ -38,7 +38,7 @@
             </div>
 
             @foreach ($journals as $journal)
-                <div class="card border-primary">
+                <div class="card card-outline card-primary">
                     <div class="card-header">
                         <h3 class="card-title">
                             Day {{ $journal->daysInRound() }}, Hour {{ $journal->hoursInDay() }}

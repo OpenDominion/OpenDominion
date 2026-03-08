@@ -3,7 +3,7 @@
 {{-- todo: refactor this --}}
 
 @section('content')
-    <div class="card border-primary">
+    <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title">{{ ucwords(str_replace('-', ' ', $type)) }} in {{ $round->name }}</h3>
         </div>

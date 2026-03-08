@@ -51,6 +51,29 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
   margin-bottom: 0;
 }
 
+// Override primary color for borders (brand teal)
+.border-primary {
+  border-color: #005566 !important;
+}
+
+// card-primary uses brand teal instead of Bootstrap blue
+.card.card-primary {
+  --bs-card-cap-bg: #005566;
+}
+.card.card-primary .card-header {
+  color: #fff;
+  background-color: #005566;
+}
+.card.card-primary.card-outline {
+  --bs-card-cap-bg: var(--bs-card-bg);
+  border-top: 3px solid #005566;
+}
+.card.card-primary.card-outline .card-header {
+  color: inherit;
+  background-color: var(--bs-card-bg);
+  border-bottom-color: #29252a;
+}
+
 .nyi {
   color: #aaa;
   cursor: not-allowed;
@@ -159,14 +182,13 @@ html.hourchange:after {
   .card {
     --bs-card-bg:           #332f35;
     --bs-card-cap-bg:       #332f35;
-    --bs-card-border-color: #005566;
     --bs-card-color:        #ACB9BB;
   }
   .card-title                { color: #d5e3e6; }
   .card-header a,
   .card-header .btn          { color: #d5e3e6; }
   .card.border-info          { border-top-color: #003F4B !important; }
-  .card.border-primary       { border-top-color: #003344 !important; }
+  .card.border-primary       { border-top-color: #005566 !important; }
   .card.border-success       { border-top-color: #005C14 !important; }
   .card.border-warning       { border-top-color: #A67200 !important; }
   .card.border-danger        { border-top-color: #A61000 !important; }

@@ -16,7 +16,7 @@
     <div class="row">
 
         <div class="col-md-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-trophy"></i> {{ $pageHeader }}</h3>
                 </div>
@@ -100,7 +100,7 @@
                 </div>
             </div>
 
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Titles Held</h3>
                 </div>

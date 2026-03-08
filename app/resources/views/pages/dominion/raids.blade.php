@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             @if (!$raids->isEmpty())
                 @foreach ($raids as $raid)
-                    <div class="card border-primary">
+                    <div class="card card-outline card-primary">
                         <div class="card-header">
                             <h3 class="card-title"><i class="ra ra-castle-flag"></i> {{ $raid->name }}</h3>
                             <div class="float-end">
@@ -99,7 +99,7 @@
                     </div>
                 @endforeach
             @else
-                <div class="card border-primary">
+                <div class="card card-outline card-primary">
                     <div class="card-header">
                         <h3 class="card-title"><i class="ra ra-castle-flag"></i> Raids</h3>
                     </div>

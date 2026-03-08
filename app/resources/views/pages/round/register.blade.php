@@ -3,7 +3,7 @@
 @section('page-header', "Register to round {$round->number} ({$round->league->description})")
 
 @section('content')
-    <div class="card border-primary">
+    <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title">Register to round {{ $round->name }} (#{{ $round->number }})</h3>
         </div>

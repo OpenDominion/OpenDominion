@@ -8,7 +8,7 @@
             $defaultBuildings = $buildingHelper->getDefaultBuildings($selectedDominion->protection_type == 'quick');
         @endphp
         <div class="col-sm-12 col-md-9">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-home"></i> Select Starting Buildings</h3>
                 </div>

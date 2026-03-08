@@ -14,7 +14,7 @@
         </div>
 
         <div class="col-sm-6">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Welcome to OpenDominion!</h3>
                 </div>

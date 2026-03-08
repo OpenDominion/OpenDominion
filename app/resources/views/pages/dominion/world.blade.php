@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12">
-            <div class="card border-primary">
+            <div class="card card-outline card-primary">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fa fa-globe"></i> The World</h3>
                 </div>
