@@ -13,8 +13,8 @@ jobs:
 
       - name: Check site responds with expected content
         run: |
-          set -o pipefail
-          curl -f http://localhost | grep -q 'OpenDominion'
+          curl -f http://localhost -o page.html
+          grep -q 'OpenDominion' page.html
 
       - name: Dump logs on failure
         if: failure()
