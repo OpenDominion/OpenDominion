@@ -5,8 +5,23 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-24.04
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_DATABASE: opendominion
+          MYSQL_USER: opendominion-user
+          MYSQL_PASSWORD: opendominion-password
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
@@ -18,15 +33,6 @@ jobs:
     - name: Shut down MySQL server
       run: sudo service mysql stop
 
-    # Using MariaDB instead of MYSQL since it breaks the TickTest
-    - name: Set up MariaDB
-      uses: getong/mariadb-action@v1.1
-      with:
-        mariadb version: '10.11'
-        mysql database: opendominion
-        mysql user: opendominion-user
-        mysql password: opendominion-password
-
     - name: Install PHP dependencies
       run: composer install --no-interaction --prefer-dist
 
@@ -37,9 +43,6 @@ jobs:
 
     - name: Create dummy mix-manifest.json file
       run: echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
-
-    - name: Wait for MySQL
-      run: sleep 10
 
     - name: Run database migrations
       run: php artisan migrate
