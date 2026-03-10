@@ -30,9 +30,6 @@ jobs:
         extensions: mbstring, pdo, pdo_mysql, xml, ctype, json, bcmath, curl
         coverage: none
 
-    - name: Shut down MySQL server
-      run: sudo service mysql stop
-
     - name: Install PHP dependencies
       run: composer install --no-interaction --prefer-dist
 
