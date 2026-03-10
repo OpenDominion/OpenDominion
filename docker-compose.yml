@@ -28,7 +28,7 @@ services:
       DB_PASSWORD: '${DB_PASSWORD:-secret}'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost']
-      start_period: 120s
+      start_period: 360s
       interval: 15s
       retries: 3
       timeout: 5s
