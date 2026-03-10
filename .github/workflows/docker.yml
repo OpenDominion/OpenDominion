@@ -1,5 +1,7 @@
 name: Docker
 
+# Ensures the Docker Compose setup builds successfully with the current
+# dependency set and that the app remains accessible via the container stack.
 on: [push, pull_request]
 
 jobs:
