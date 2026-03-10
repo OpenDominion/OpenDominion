@@ -4,6 +4,9 @@ set -e
 echo "==> Fixing storage permissions..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+echo "==> Clearing bootstrap cache..."
+rm -f /var/www/html/bootstrap/cache/packages.php /var/www/html/bootstrap/cache/services.php
+
 echo "==> Setting up .env..."
 if [ ! -f /var/www/html/.env ]; then
     cp /var/www/html/.env.example /var/www/html/.env
@@ -11,7 +14,7 @@ if [ ! -f /var/www/html/.env ]; then
 fi
 
 echo "==> Installing PHP dependencies..."
-if [ ! -d /var/www/html/vendor ]; then
+if [ ! -f /var/www/html/vendor/autoload.php ]; then
     composer install --no-interaction --prefer-dist --no-scripts
 fi
 
@@ -31,8 +34,8 @@ if [ "$SEEDED" = "0" ]; then
 fi
 
 echo "==> Installing Node dependencies..."
-if [ ! -d /var/www/html/node_modules ]; then
-    npm install
+if [ ! -f /var/www/html/node_modules/.yarn-integrity ]; then
+    yarn install --frozen-lockfile --ignore-optional
 fi
 
 echo "==> Compiling assets..."
