@@ -12,7 +12,9 @@ jobs:
         run: docker compose up -d --build --wait --wait-timeout 360
 
       - name: Check site responds with expected content
-        run: curl -f http://localhost | grep -q 'OpenDominion'
+        run: |
+          set -o pipefail
+          curl -f http://localhost | grep -q 'OpenDominion'
 
       - name: Dump logs on failure
         if: failure()
