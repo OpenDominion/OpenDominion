@@ -123,7 +123,7 @@ class SpellActionService
      * @throws GameException
      * @throws LogicException
      */
-    public function castSpell(Dominion $dominion, string $spellKey, ?Dominion $target = null): array
+    public function castSpell(Dominion $dominion, string $spellKey, Dominion|null $target = null): array
     {
         $this->guardLockedDominion($dominion);
         if ($target !== null) {
@@ -592,7 +592,7 @@ class SpellActionService
             throw new GameException('Black ops have been disabled for the remainder of the round');
         }
 
-        if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
+        if (now()->diffInHours($dominion->round->start_date, absolute: true) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
             throw new GameException('You cannot perform black ops for the first three days of the round');
         }
 
@@ -1267,7 +1267,7 @@ class SpellActionService
         $unitsKilledStringParts = [];
         foreach ($unitsKilled as $name => $amount) {
             $amountLabel = number_format($amount);
-            $unitLabel = str_plural(str_singular($name), $amount);
+            $unitLabel = Str::plural(Str::singular($name), $amount);
             $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
         }
         $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);

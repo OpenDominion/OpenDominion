@@ -23,10 +23,9 @@ class UserActivity extends AbstractModel // todo: AbstractReadOnlyModel
 {
     protected $guarded = ['id', 'created_at'];
 
-    protected $dates = ['created_at'];
-
     protected $casts = [
         'context' => 'array',
+        'created_at' => 'datetime',
     ];
 
     public function user()

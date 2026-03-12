@@ -47,9 +47,10 @@ class HeroCombatant extends AbstractModel
         'actions' => 'array',
         'abilities' => 'array',
         'status' => 'array',
+        'last_action_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-
-    protected $dates = ['last_action_at', 'created_at', 'updated_at'];
 
     public function battle()
     {

@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -91,7 +92,7 @@ class ImproveActionService
         return sprintf(
             'You invest %s %s into %s.',
             number_format($totalResourcesToInvest),
-            ($resource === 'gems') ? str_plural('gem', $totalResourcesToInvest) : $resource,
+            ($resource === 'gems') ? Str::plural('gem', $totalResourcesToInvest) : $resource,
             $investmentString
         );
     }

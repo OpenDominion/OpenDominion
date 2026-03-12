@@ -3,6 +3,7 @@
 namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 /**
  * OpenDominion\Models\Race
@@ -105,11 +106,11 @@ class Race extends AbstractModel
         }
 
         $perkValue = $perkCollection->first()->pivot->value;
-        if (str_contains($perkValue, ',') || str_contains($perkValue, ';')) {
+        if (Str::contains($perkValue, ',') || Str::contains($perkValue, ';')) {
             $perkValue = explode(',', $perkValue);
 
             foreach($perkValue as $key => $value) {
-                if (!str_contains($value, ';')) {
+                if (!Str::contains($value, ';')) {
                     continue;
                 }
 

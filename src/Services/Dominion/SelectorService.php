@@ -97,10 +97,10 @@ class SelectorService
             }
 
             // Set bit for this day/hour to 1
-            $index = $this->selectedDominion->round->getTick();
+            $index = (int) $this->selectedDominion->round->getTick();
             $hourlyActivity = $this->selectedDominion->hourly_activity;
-            if ($index < (47 * 24) && !$hourlyActivity[$index]) {
-                $hourlyActivity[$index] = 1;
+            if ($hourlyActivity !== null && is_string($hourlyActivity) && $index >= 0 && $index < strlen($hourlyActivity) && $hourlyActivity[$index] === '0') {
+                $hourlyActivity[$index] = '1';
                 $this->selectedDominion->hourly_activity = $hourlyActivity;
                 $this->selectedDominion->save();
             }

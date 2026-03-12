@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
 {
@@ -114,9 +115,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @dataProvider getGetMaxAffordProvider
-     */
+    #[DataProvider('getGetMaxAffordProvider')]
     public function testGetMaxAfford(
         /** @noinspection PhpDocSignatureInspection */
         int $totalBuildings,
@@ -150,53 +149,15 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
 
     }
 
-    public function getGetMaxAffordProvider()
+    public static function getGetMaxAffordProvider()
     {
         return [
-            [ // new dominion
-                'totalBuildings' => 90,
-                'totalLand' => 250,
-                'totalBarrenLand' => 160,
-                'platinum' => 100000,
-                'lumber' => 15000,
-                'discounted_land' => 0,
-                'expectedMaxAfford' => 117,
-                'stat_total_conquered_land' => 0,
-                'stat_total_land_lost' => 0,
-            ],
-            [
-                'totalBuildings' => 2000,
-                'totalLand' => 5000,
-                'totalBarrenLand' => 3000,
-                'platinum' => 1000000,
-                'lumber' => 150000,
-                'discounted_land' => 0,
-                'expectedMaxAfford' => 104,
-                'stat_total_conquered_land' => 0,
-                'stat_total_land_lost' => 0,
-            ],
-            [
-                'totalBuildings' => 4000,
-                'totalLand' => 8000,
-                'totalBarrenLand' => 4000,
-                'platinum' => 10000000,
-                'lumber' => 1500000,
-                'discounted_land' => 0,
-                'expectedMaxAfford' => 653,
-                'stat_total_conquered_land' => 0,
-                'stat_total_land_lost' => 0,
-            ],
-            [ // discounted_land, 1150p
-                'totalBuildings' => 450,
-                'totalLand' => 500,
-                'totalBarrenLand' => 50,
-                'platinum' => 10000,
-                'lumber' => 15000,
-                'discounted_land' => 10,
-                'expectedMaxAfford' => 13,
-                'stat_total_conquered_land' => 50,
-                'stat_total_land_lost' => 0,
-            ],
+            // new dominion: totalBuildings, totalLand, totalBarrenLand, platinum, lumber, discountedLand, expectedMaxAfford, stat_total_land_conquered, stat_total_land_lost
+            [90, 250, 160, 100000, 15000, 0, 117, 0, 0],
+            [2000, 5000, 3000, 1000000, 150000, 0, 104, 0, 0],
+            [4000, 8000, 4000, 10000000, 1500000, 0, 653, 0, 0],
+            // discounted_land scenario
+            [450, 500, 50, 10000, 15000, 10, 13, 50, 0],
         ];
     }
 }

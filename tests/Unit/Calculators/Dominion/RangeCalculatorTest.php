@@ -13,10 +13,9 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\RangeCalculator
- */
+#[CoversClass(RangeCalculator::class)]
 class RangeCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */

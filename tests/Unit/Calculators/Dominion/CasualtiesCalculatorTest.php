@@ -13,10 +13,9 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\CasualtiesCalculator
- */
+#[CoversClass(CasualtiesCalculator::class)]
 class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */
@@ -42,18 +41,11 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor()
     {
         $this->assertInstanceOf(CasualtiesCalculator::class, $this->app->make(CasualtiesCalculator::class));
     }
 
-    /**
-     * @covers ::getStarvationCasualtiesByUnitType
-     * @covers ::getStarvationUnitTypes
-     */
     public function testGetStarvationCasualtiesByUnitType()
     {
         $tests = [
@@ -142,9 +134,6 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    /**
-     * @covers ::getOffensiveCasualtiesMultiplierForUnitSlot
-     */
     public function testGetOffensiveCasualtiesMultiplierForUnitSlot()
     {
         $user = $this->createAndImpersonateUser();

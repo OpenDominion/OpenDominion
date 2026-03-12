@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Arr;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Dominion;
 
@@ -90,7 +91,7 @@ class IrregularDominionEmailNotification extends Notification implements ShouldQ
             $subjectParts[] = ('(+' . ($amountNotifications - 1) . ')');
         }
 
-        $firstNotification = array_first($this->notifications);
+        $firstNotification = Arr::first($this->notifications);
 
         $subjectParts[] = $this->notificationHelper->getNotificationMessage(
             $firstNotification['category'],

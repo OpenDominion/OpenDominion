@@ -51,7 +51,7 @@ class OffenseCalculationService
      * @param float $landRatio
      * @return array
      */
-    public function calculate(Dominion $dominion, ?array $calc, ?Dominion $target, ?float $landRatio): array
+    public function calculate(Dominion $dominion, array|null $calc, Dominion|null $target, float|null $landRatio): array
     {
         // Sanitize input
         if($calc !== null) {

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -79,7 +80,7 @@ class DailyBonusesActionService
             'message' => sprintf(
                 'You gain %d acres of %s.',
                 $landGained,
-                str_plural($dominion->race->home_land_type)
+                Str::plural($dominion->race->home_land_type)
             ),
             'data' => [
                 'landGained' => $landGained,

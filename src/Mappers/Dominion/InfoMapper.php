@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Mappers\Dominion;
 
+use Illuminate\Support\Arr;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
@@ -192,27 +193,27 @@ class InfoMapper
         $data = [];
 
         foreach ($this->improvementHelper->getImprovementTypes() as $type) {
-            array_set($data, "{$type}.points", $dominion->{'improvement_' . $type});
-            array_set(
+            Arr::set($data, "{$type}.points", $dominion->{'improvement_' . $type});
+            Arr::set(
                 $data,
                 "{$type}.rating",
                 $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type)
             );
             if ($type == 'spires' || $type == 'harbor') {
-                array_set(
+                Arr::set(
                     $data,
                     "{$type}.rating_secondary",
                     $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type, true)
                 );
             }
-            array_set(
+            Arr::set(
                 $data,
                 "{$type}.incoming",
                 $this->queueService->getQueueTotalByResource('operations', $dominion, "improvement_{$type}")
             );
         }
 
-        array_set($data, 'total', $this->improvementCalculator->getImprovementTotal($dominion));
+        Arr::set($data, 'total', $this->improvementCalculator->getImprovementTotal($dominion));
 
         return $data;
     }
@@ -232,13 +233,13 @@ class InfoMapper
         if($isOp) {
             $accuracyMultiplier = 0.85;
         } else {
-            array_set($data, 'units.home.spies', $dominion->military_spies);
-            array_set($data, 'units.home.assassins', $dominion->military_assassins);
-            array_set($data, 'units.home.wizards', $dominion->military_wizards);
-            array_set($data, 'units.home.archmages', $dominion->military_archmages);
+            Arr::set($data, 'units.home.spies', $dominion->military_spies);
+            Arr::set($data, 'units.home.assassins', $dominion->military_assassins);
+            Arr::set($data, 'units.home.wizards', $dominion->military_wizards);
+            Arr::set($data, 'units.home.archmages', $dominion->military_archmages);
         }
 
-        array_set($data, 'units.home.draftees', random_int(
+        Arr::set($data, 'units.home.draftees', random_int(
             rceil($dominion->military_draftees * $accuracyMultiplier),
             rfloor($dominion->military_draftees / $accuracyMultiplier)
         ));
@@ -253,7 +254,7 @@ class InfoMapper
                 );
             }
 
-            array_set($data, "units.home.unit{$slot}", $amountAtHome);
+            Arr::set($data, "units.home.unit{$slot}", $amountAtHome);
         }
 
         $this->queueService->getInvasionQueue($dominion)->each(static function ($row) use (&$data, $accuracyMultiplier) {
@@ -268,13 +269,13 @@ class InfoMapper
                 rfloor($row->amount / $accuracyMultiplier)
             );
 
-            array_set($data, "units.returning.{$unitType}.{$row->hours}", $amount);
+            Arr::set($data, "units.returning.{$unitType}.{$row->hours}", $amount);
         });
 
         $this->queueService->getTrainingQueue($dominion)->each(static function ($row) use (&$data) {
             $unitType = str_replace('military_', '', $row->resource);
 
-            array_set($data, "units.training.{$unitType}.{$row->hours}", $row->amount);
+            Arr::set($data, "units.training.{$unitType}.{$row->hours}", $row->amount);
         });
 
         return $data;
@@ -285,17 +286,17 @@ class InfoMapper
         $data = [];
 
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
-            array_set($data, "constructed.{$buildingType}", $dominion->{'building_' . $buildingType});
+            Arr::set($data, "constructed.{$buildingType}", $dominion->{'building_' . $buildingType});
         }
 
         $this->queueService->getConstructionQueue($dominion)->each(static function ($row) use (&$data) {
             $buildingType = str_replace('building_', '', $row->resource);
 
-            array_set($data, "constructing.{$buildingType}.{$row->hours}", $row->amount);
+            Arr::set($data, "constructing.{$buildingType}.{$row->hours}", $row->amount);
         });
 
-        array_set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($dominion));
-        array_set($data, 'total_land', $this->landCalculator->getTotalLand($dominion));
+        Arr::set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($dominion));
+        Arr::set($data, 'total_land', $this->landCalculator->getTotalLand($dominion));
 
         return $data;
     }
@@ -319,14 +320,14 @@ class InfoMapper
         foreach ($this->landHelper->getLandTypes() as $landType) {
             $amount = $dominion->{'land_' . $landType};
 
-            array_set($data, "explored.{$landType}.amount", $amount);
-            array_set(
+            Arr::set($data, "explored.{$landType}.amount", $amount);
+            Arr::set(
                 $data,
                 "explored.{$landType}.percentage",
                 (($amount / $totalLand) * 100)
             );
 
-            array_set(
+            Arr::set(
                 $data,
                 "explored.{$landType}.barren",
                 $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)
@@ -334,13 +335,13 @@ class InfoMapper
 
             $totalConstructedForLandType = $this->buildingCalculator->getTotalBuildingsForLandType($dominion, $landType);
 
-            array_set(
+            Arr::set(
                 $data,
                 "explored.{$landType}.constructed",
                 $totalConstructedForLandType
             );
 
-            array_set(
+            Arr::set(
                 $data,
                 "explored.{$landType}.constructedPercentage",
                 (($totalConstructedForLandType / $totalConstructedLand) * 100)
@@ -350,10 +351,10 @@ class InfoMapper
         $this->queueService->getExplorationQueue($dominion)->each(static function ($row) use (&$data) {
             $landType = str_replace('land_', '', $row->resource);
 
-            array_set(
+            Arr::set(
                 $data,
                 "incoming.{$landType}.{$row->hours}",
-                (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                (Arr::get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
             );
         });
 
@@ -364,10 +365,10 @@ class InfoMapper
 
             $landType = str_replace('land_', '', $row->resource);
 
-            array_set(
+            Arr::set(
                 $data,
                 "incoming.{$landType}.{$row->hours}",
-                (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                (Arr::get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
             );
         });
 
@@ -424,10 +425,10 @@ class InfoMapper
 
             $resourceType = str_replace('resource_', '', $row->resource);
 
-            array_set(
+            Arr::set(
                 $data,
                 "incoming.{$resourceType}.{$row->hours}",
-                (array_get($data, "incoming.{$resourceType}.{$row->hours}", 0) + $row->amount)
+                (Arr::get($data, "incoming.{$resourceType}.{$row->hours}", 0) + $row->amount)
             );
         });
 

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -77,7 +78,7 @@ class RezoneActionService
 
             $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType);
             if ($landToRemove > $landAvailable) {
-                throw new GameException('You do not have enough barren land to re-zone ' . $landToRemove . ' ' . str_plural($landType, $landAvailable));
+                throw new GameException('You do not have enough barren land to re-zone ' . $landToRemove . ' ' . Str::plural($landType, $landAvailable));
             }
         }
 

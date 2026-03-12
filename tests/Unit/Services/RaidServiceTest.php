@@ -14,10 +14,9 @@ use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\RaidService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Services\RaidService
- */
+#[CoversClass(RaidService::class)]
 class RaidServiceTest extends AbstractBrowserKitTestCase
 {
     use DatabaseTransactions;

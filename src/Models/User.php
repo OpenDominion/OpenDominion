@@ -3,8 +3,8 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use Creativeorange\Gravatar\Facades\Gravatar;
 use Database\Factories\UserFactory;
-use Gravatar;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -13,6 +13,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Arr;
 use OpenDominion\Notifications\User\ResetPasswordNotification;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -56,9 +57,10 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     protected $casts = [
         'settings' => 'array',
         'affinities' => 'array',
+        'last_online' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-
-    protected $dates = ['last_online', 'created_at', 'updated_at'];
 
     protected $hidden = ['password', 'remember_token', 'activation_code'];
 
@@ -147,26 +149,26 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
             return asset("storage/uploads/avatars/{$this->avatar}");
         }
 
-        return Gravatar::src($this->email, 200);
+        return Gravatar::get($this->email, ['size' => 200]);
 
     }
 
     public function getSetting(string $key)
     {
-        if (!array_has($this->settings, $key)) {
+        if (!Arr::has($this->settings, $key)) {
             return null;
         }
 
-        return array_get($this->settings, $key);
+        return Arr::get($this->settings, $key);
     }
 
     public function getAffinity(string $key)
     {
-        if (!array_has($this->affinities, $key)) {
+        if (!Arr::has($this->affinities, $key)) {
             return 50;
         }
 
-        return array_get($this->affinities, $key);
+        return Arr::get($this->affinities, $key);
     }
 
     /**

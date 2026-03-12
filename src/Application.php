@@ -71,9 +71,9 @@ class Application extends LaravelApplication
     /**
      * {@inheritdoc}
      */
-    public function langPath()
+    public function langPath($path = ''): string
     {
-        return ($this->appPath . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'lang');
+        return ($this->appPath . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'lang' . $this->getSuffixPath($path));
     }
 
     /**

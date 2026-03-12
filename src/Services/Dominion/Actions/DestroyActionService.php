@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
@@ -135,7 +136,7 @@ class DestroyActionService
             'message' => sprintf(
                 'Destruction of %s %s is complete.%s',
                 number_format($totalBuildingsToDestroy),
-                str_plural('building', $totalBuildingsToDestroy),
+                Str::plural('building', $totalBuildingsToDestroy),
                 $destructionRefundString
             ),
             'data' => [

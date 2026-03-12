@@ -28,7 +28,10 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  */
 class HeroBattleAction extends AbstractModel
 {
-    protected $dates = ['created_at', 'updated_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function battle()
     {

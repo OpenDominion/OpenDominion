@@ -43,5 +43,5 @@ return [
     /*
      * This switch determines if the honeypot protection should be activated.
      */
-    'enabled' => true,
+    'enabled' => env('HONEYPOT_ENABLED', true),
 ];

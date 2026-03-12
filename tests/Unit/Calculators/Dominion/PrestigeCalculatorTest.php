@@ -12,10 +12,10 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\PrestigeCalculator
- */
+#[CoversClass(PrestigeCalculator::class)]
 class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */
@@ -52,9 +52,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @dataProvider getPrestigeGainProvider
-     */
+    #[DataProvider('getPrestigeGainProvider')]
     public function testGetPrestigeGain(
         /** @noinspection PhpDocSignatureInspection */
         int $expected,
@@ -88,7 +86,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function getPrestigeGainProvider()
+    public static function getPrestigeGainProvider()
     {
         return [
             [83, 1000, 2000, false, false],
@@ -100,9 +98,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getPrestigePenaltyProvider
-     */
+    #[DataProvider('getPrestigePenaltyProvider')]
     public function testGetPrestigePenalty(
         /** @noinspection PhpDocSignatureInspection */
         int $expected,
@@ -127,7 +123,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function getPrestigePenaltyProvider()
+    public static function getPrestigePenaltyProvider()
     {
         return [
             [-45, 250, 1000, 599],
@@ -137,9 +133,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getPrestigeGainMultiplierMoraleProvider
-     */
+    #[DataProvider('getPrestigeGainMultiplierMoraleProvider')]
     public function testGetPrestigeGainMultiplier_WithMorale(
         int $morale,
         float $expectedMultiplier
@@ -195,7 +189,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function getPrestigeGainMultiplierMoraleProvider()
+    public static function getPrestigeGainMultiplierMoraleProvider()
     {
         return [
             // [morale, expectedMultiplier]
@@ -209,9 +203,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getPrestigeLossProvider
-     */
+    #[DataProvider('getPrestigeLossProvider')]
     public function testGetPrestigeLoss(
         int $targetPrestige,
         int $weeklyInvadedCount,
@@ -233,7 +225,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function getPrestigeLossProvider()
+    public static function getPrestigeLossProvider()
     {
         return [
             // [targetPrestige, weeklyInvadedCount, expectedPrestigeLoss]
@@ -256,9 +248,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getPrestigeLossWithCapProvider
-     */
+    #[DataProvider('getPrestigeLossWithCapProvider')]
     public function testGetPrestigeLoss_WithPrestigeGainCap(
         int $targetPrestige,
         int $prestigeGain,
@@ -281,7 +271,7 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function getPrestigeLossWithCapProvider()
+    public static function getPrestigeLossWithCapProvider()
     {
         return [
             // [targetPrestige, prestigeGain, weeklyInvadedCount, expectedPrestigeLoss]

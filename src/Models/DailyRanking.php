@@ -28,9 +28,9 @@ namespace OpenDominion\Models;
  */
 class DailyRanking extends AbstractModel
 {
-    protected $dates = [
-        'created_at',
-        'updated_at'
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // Eloquent Relations

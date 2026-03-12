@@ -114,11 +114,10 @@ class Tick extends AbstractModel
         'building_dock' => 'integer',
         'starvation_casualties' => 'array',
         'expiring_spells' => 'array',
+        'updated_at' => 'datetime',
     ];
 
     protected $guarded = ['id', 'updated_at'];
-
-    protected $dates = ['updated_at'];
 
     public function dominion()
     {

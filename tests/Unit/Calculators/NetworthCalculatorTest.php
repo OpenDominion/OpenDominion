@@ -13,10 +13,9 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\NetworthCalculator
- */
+#[CoversClass(NetworthCalculator::class)]
 class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|BuildingCalculator */
@@ -45,17 +44,11 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor()
     {
         $this->assertInstanceOf(NetworthCalculator::class, app(NetworthCalculator::class));
     }
 
-    /**
-     * @covers ::getRealmNetworth
-     */
     public function testGetRealmNetworth()
     {
         /** @var Mock|Realm $realm */
@@ -76,9 +69,6 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(500, $this->sut->getRealmNetworth($realm));
     }
 
-    /**
-     * @covers ::getDominionNetworth
-     */
     public function testGetDominionNetworthFresh()
     {
         /** @var Mock|Dominion $dominion */
@@ -117,9 +107,6 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(8700, $this->sut->getDominionNetworth($dominion, true));
     }
 
-    /**
-     * @covers ::getDominionNetworth
-     */
     public function testGetDominionNetworthWithEmptyPreCalculatedNetworthForcesCalculation()
     {
         /** @var Mock|Dominion $dominion */
@@ -158,9 +145,6 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(8700, $this->sut->getDominionNetworth($dominion, false));
     }
 
-    /**
-     * @covers ::getDominionNetworth
-     */
     public function testGetDominionNetworthWithPreCalculatedNetworth()
     {
         /** @var Mock|Dominion $dominion */
@@ -199,9 +183,6 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(1000, $this->sut->getDominionNetworth($dominion, false));
     }
 
-    /**
-     * @covers ::getUnitNetworth
-     */
     public function testGetUnitNetworth()
     {
         $dominion = m::mock(Dominion::class);

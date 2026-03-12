@@ -42,12 +42,12 @@ use Illuminate\Support\Str;
  */
 class Round extends AbstractModel
 {
-    protected $dates = [
-        'start_date',
-        'end_date',
-        'offensive_actions_prohibited_at',
-        'created_at',
-        'updated_at'
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'offensive_actions_prohibited_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // Eloquent Relations
@@ -290,7 +290,7 @@ class Round extends AbstractModel
             return false;
         }
 
-        return now()->diffInHours($this->end_date) < 15;
+        return now()->diffInHours($this->end_date, absolute: true) < 15;
     }
 
     /**
@@ -408,7 +408,7 @@ class Round extends AbstractModel
         );
 
         if ($this->isActive()) {
-            $hours = now()->startOfHour()->diffInHours($date->startOfHour());
+            $hours = (int) now()->startOfHour()->diffInHours($date->startOfHour(), absolute: true);
             $tooltip .= sprintf(
                 '<br>(%s %s ago)',
                 $hours,

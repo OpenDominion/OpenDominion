@@ -169,7 +169,7 @@ class InvasionService
      * @param array $units
      * @return bool
      */
-    public function passes40PercentRule(Dominion $dominion, ?Dominion $target, array $units): bool
+    public function passes40PercentRule(Dominion $dominion, Dominion|null $target, array $units): bool
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
@@ -202,7 +202,7 @@ class InvasionService
      * @param bool $rawOffense
      * @return bool
      */
-    public function passes54RatioRule(Dominion $dominion, ?Dominion $target, ?float $landRatio, array $units, bool $rawOffense = false): bool
+    public function passes54RatioRule(Dominion $dominion, Dominion|null $target, float|null $landRatio, array $units, bool $rawOffense = false): bool
     {
         $unitsHome = [
             0 => $dominion->military_draftees,

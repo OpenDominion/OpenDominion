@@ -282,7 +282,7 @@ class ValhallaController extends AbstractController
         return null;
     }
 
-    protected function getStrongestDominions(Round $round, Race $race = null, ?string $alignment = null)
+    protected function getStrongestDominions(Round $round, Race $race = null, string|null $alignment = null)
     {
         $networthCalculator = app(NetworthCalculator::class);
 
@@ -338,7 +338,7 @@ class ValhallaController extends AbstractController
             });
     }
 
-    protected function getStrongestRealms(Round $round, ?string $alignment = null)
+    protected function getStrongestRealms(Round $round, string|null $alignment = null)
     {
         $networthCalculator = app(NetworthCalculator::class);
 
@@ -413,7 +413,7 @@ class ValhallaController extends AbstractController
             });
     }
 
-    protected function getLargestDominions(Round $round, Race $race = null, ?string $alignment = null)
+    protected function getLargestDominions(Round $round, Race $race = null, string|null $alignment = null)
     {
         $landCalculator = app(LandCalculator::class);
 
@@ -469,7 +469,7 @@ class ValhallaController extends AbstractController
             });
     }
 
-    protected function getLargestRealms(Round $round, ?string $alignment = null)
+    protected function getLargestRealms(Round $round, string|null $alignment = null)
     {
         $landCalculator = app(LandCalculator::class);
 

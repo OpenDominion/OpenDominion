@@ -5,6 +5,8 @@ namespace OpenDominion\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Image;
 use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Helpers\NotificationHelper;
@@ -63,7 +65,7 @@ class SettingsController extends AbstractController
 
         $data = (string)$image;
         $path = 'uploads/avatars';
-        $fileName = (str_slug($user->display_name) . '.png');
+        $fileName = (Str::slug($user->display_name) . '.png');
 
         if (!Storage::disk('public')->put(($path . '/' . $fileName), $data)) {
             throw new RuntimeException('Failed to upload avatar');
@@ -121,8 +123,8 @@ class SettingsController extends AbstractController
         // Get list of all ingame notifications (for default values)
         foreach ($notificationCategories as $key => $types) {
             foreach ($types as $type => $channels) {
-                array_set($newNotifications, "{$key}.{$type}.ingame", false);
-                array_set($newNotifications, "{$key}.{$type}.email", false);
+                Arr::set($newNotifications, "{$key}.{$type}.ingame", false);
+                Arr::set($newNotifications, "{$key}.{$type}.email", false);
             }
         }
 
@@ -131,7 +133,7 @@ class SettingsController extends AbstractController
             foreach ($types as $type => $channels) {
                 foreach ($channels as $channel => $enabled) {
                     if ($enabled === 'on') {
-                        array_set($newNotifications, "{$key}.{$type}.{$channel}", true);
+                        Arr::set($newNotifications, "{$key}.{$type}.{$channel}", true);
                     }
                 }
             }

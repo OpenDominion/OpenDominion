@@ -20,10 +20,10 @@ class UserFeedback extends AbstractModel
 {
     protected $guarded = ['id', 'created_at'];
 
-    protected $dates = ['created_at', 'updated_at'];
-
     protected $casts = [
-        'endorsed' => 'boolean'
+        'endorsed' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function source()

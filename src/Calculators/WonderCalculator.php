@@ -155,7 +155,7 @@ class WonderCalculator
      *
      * @return float
      */
-    public function getDamageContribution(RoundWonder $wonder, Dominion $dominion, ?string $source = null): float
+    public function getDamageContribution(RoundWonder $wonder, Dominion $dominion, string|null $source = null): float
     {
         $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
         $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, $source);

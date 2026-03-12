@@ -3,6 +3,7 @@
 namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use OpenDominion\Services\Realm\HistoryService;
 
 /**
@@ -187,11 +188,11 @@ class Realm extends AbstractModel
 
     public function getSetting(string $key)
     {
-        if (!array_has($this->settings, $key)) {
+        if (!Arr::has($this->settings, $key)) {
             return null;
         }
 
-        return array_get($this->settings, $key);
+        return Arr::get($this->settings, $key);
     }
 
     // todo: move to eloquent events, see $dispatchesEvents

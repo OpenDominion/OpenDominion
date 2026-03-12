@@ -26,7 +26,11 @@ use \Illuminate\Database\Eloquent\Builder;
  */
 class HeroTournament extends AbstractModel
 {
-    protected $dates = ['start_date', 'created_at', 'updated_at'];
+    protected $casts = [
+        'start_date' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function round()
     {

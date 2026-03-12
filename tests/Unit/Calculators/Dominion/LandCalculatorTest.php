@@ -12,10 +12,9 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\LandCalculator
- */
+#[CoversClass(LandCalculator::class)]
 class LandCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */
@@ -47,17 +46,11 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor()
     {
         $this->assertInstanceOf(LandCalculator::class, $this->app->make(LandCalculator::class));
     }
 
-    /**
-     * @covers ::getTotalLand
-     */
     public function testGetTotalLand()
     {
         $expected = 0;
@@ -70,9 +63,6 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expected, $this->sut->getTotalLand($this->dominion));
     }
 
-    /**
-     * @covers ::getTotalBarrenLand
-     */
     public function testGetTotalBarrenLand()
     {
         foreach ($this->getLandTypes() as $landType) {
@@ -85,17 +75,11 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(67, $this->sut->getTotalBarrenLand($this->dominion));
     }
 
-    /**
-     * @covers ::getTotalBarrenLandByLandType
-     */
     public function testGetTotalBarrenLandByLandType()
     {
         $this->markTestIncomplete();
     }
 
-    /**
-     * @covers ::getBarrenLandByLandType
-     */
     public function testGetBarrenLandByLandType()
     {
         /** @var Mock|Race $raceMock */

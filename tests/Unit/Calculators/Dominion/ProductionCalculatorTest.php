@@ -14,10 +14,9 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\ProductionCalculator
- */
+#[CoversClass(ProductionCalculator::class)]
 class ProductionCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */

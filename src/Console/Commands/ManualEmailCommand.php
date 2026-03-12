@@ -3,6 +3,7 @@
 namespace OpenDominion\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\User;
 use OpenDominion\Notifications\ManualEmailNotification;
@@ -52,7 +53,7 @@ class ManualEmailCommand extends Command implements CommandInterface
         }
 
         if ($user !== null) {
-            $shouldSendGenericNotification = array_get($user->settings['notifications'], 'general.generic.email', false);
+            $shouldSendGenericNotification = Arr::get($user->settings['notifications'], 'general.generic.email', false);
 
             if (!$shouldSendGenericNotification) {
                 $this->info("Skipping user {$user->display_name} because of notification settings");

@@ -7,6 +7,7 @@ use DateInterval;
 use DB;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
@@ -154,7 +155,7 @@ class DominionController extends AbstractController
             if (isset($data->target_dominion_id)) {
                 $target_id = $data->target_dominion_id;
                 if (!isset($theft[$action->dominion_id][$target_id])) {
-                    array_set($theft, "{$action->dominion_id}.{$target_id}", 0);
+                    Arr::set($theft, "{$action->dominion_id}.{$target_id}", 0);
                 }
                 $theft[$action->dominion_id][$target_id]++;
             }

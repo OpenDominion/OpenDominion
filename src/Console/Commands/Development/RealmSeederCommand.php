@@ -4,6 +4,7 @@ namespace OpenDominion\Console\Commands\Development;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
@@ -45,7 +46,7 @@ class RealmSeederCommand extends Command implements CommandInterface
                     $races = Race::get(['id'])->toArray();
                     $dom_count = Dominion::where('realm_id', $realm->id)->count();
                     $user = User::factory()->count($round->realm_size - $dom_count)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
-                        $randomString = str_random(10);
+                        $randomString = Str::random(10);
 
                         $dominionFactory->create(
                             $user,
@@ -62,7 +63,7 @@ class RealmSeederCommand extends Command implements CommandInterface
                     $realm = app(RealmFactory::class)->create($round, $alignment);
                     $races = Race::get(['id'])->toArray();
                     $user = User::factory()->count($round->realm_size)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
-                        $randomString = str_random(10);
+                        $randomString = Str::random(10);
 
                         $dominionFactory->create(
                             $user,

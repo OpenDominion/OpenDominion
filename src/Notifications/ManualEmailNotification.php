@@ -32,7 +32,7 @@ class ManualEmailNotification extends Notification implements ShouldQueue
      * @param array $lines
      * @param array|null $action [Label => URL]
      */
-    public function __construct(string $subject, string $greeting, array $lines, ?array $action = null)
+    public function __construct(string $subject, string $greeting, array $lines, array|null $action = null)
     {
         $this->subject = $subject;
         $this->greeting = $greeting;

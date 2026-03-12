@@ -26,9 +26,9 @@ class UserOriginLookup extends AbstractModel
 {
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    protected $dates = ['created_at', 'updated_at'];
-
     protected $casts = [
         'data' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }

@@ -664,7 +664,7 @@ class HeroHelper
             ->keys();
     }
 
-    public function getAvailableCombatActions(HeroCombatant $combatant = null): Collection
+    public function getAvailableCombatActions(HeroCombatant|null $combatant = null): Collection
     {
         $combatActions = $this->getCombatActions();
 

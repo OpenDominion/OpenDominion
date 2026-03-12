@@ -9,10 +9,9 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \OpenDominion\Calculators\Dominion\BuildingCalculator
- */
+#[CoversClass(BuildingCalculator::class)]
 class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */
@@ -36,17 +35,11 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
         ])->makePartial();
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructor()
     {
         $this->assertInstanceOf(BuildingCalculator::class, $this->app->make(BuildingCalculator::class));
     }
 
-    /**
-     * @covers ::getTotalBuildings
-     */
     public function testGetTotalBuildings()
     {
         $buildingTypes = [
