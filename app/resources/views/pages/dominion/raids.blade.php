@@ -76,7 +76,7 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $objective->description }}</td>
-                                                    <td>{{ $objective->start_date->diffInHours($objective->end_date) }} hours</td>
+                                                    <td>{{ (int) $objective->start_date->diffInHours($objective->end_date) }} hours</td>
                                                     <td>{{ number_format($objective->score_required) }}</td>
                                                     <td>{{ number_format($realmScore) }} ({{ number_format($realmProgress, 1) }}%)</td>
                                                     <td>

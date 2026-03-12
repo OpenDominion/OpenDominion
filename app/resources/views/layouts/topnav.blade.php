@@ -66,6 +66,7 @@
                     <li class="nav-item {{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a></li>
                     <li class="nav-item {{ Route::is('scribes.*') ? 'active' : null }}"><a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a></li>
                     @include('partials.wiki-nav')
+                    @include('partials.staff-nav')
                     <li class="nav-item {{ Route::is('user-agreement') ? 'active' : null }}"><a href="{{ route('user-agreement') }}" class="nav-link">Rules</a></li>
                     @auth
                         @if ($selectorService->hasUserSelectedDominion())

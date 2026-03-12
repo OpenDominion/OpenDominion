@@ -370,7 +370,7 @@ class Round extends AbstractModel
         if ($datetime < $this->start_date) {
             return 1;
         }
-        return $this->start_date->copy()->subDays(1)->diffInDays($datetime);
+        return (int) $this->start_date->copy()->subDays(1)->diffInDays($datetime);
     }
 
     /**

@@ -34,7 +34,7 @@
                 <i class="fa fa-cog fa-sm"></i>
             </a>
         </div>
-        <div class="card-body">
+        <div class="card-body small">
             @foreach ($config as $row)
                 @if (isset($row) && is_array($row))
                     <div class="row">

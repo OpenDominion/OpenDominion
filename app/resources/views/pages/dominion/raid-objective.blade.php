@@ -118,7 +118,7 @@
                     </p>
                     <p>
                         <strong>Duration:</strong><br>
-                        {{ $objective->start_date->diffInHours($objective->end_date) }} hours
+                        {{ (int) $objective->start_date->diffInHours($objective->end_date) }} hours
                     </p>
                     @if($objective->isActive())
                         <p>
