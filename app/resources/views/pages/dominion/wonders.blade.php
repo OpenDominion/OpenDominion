@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-pyramids ra-lg"></i> Wonders of the World</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonders of the World</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     <table class="table">
                         <colgroup>
                             <col>
@@ -64,11 +64,11 @@
             </div>
 
             @if ($protectionService->isUnderProtection($selectedDominion))
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         You are currently under protection for
                         @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
                             <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
@@ -82,13 +82,13 @@
                 <form action="{{ route('dominion.wonders') }}" method="post" role="form" id="attack_form">
                     @csrf
                     <input type="hidden" name="calc[wonder]" value="1" />
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Attack</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Attack</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <div class="row">
-                                <div class="col-xs-9 col-lg-10">
+                                <div class="col-9 col-lg-10">
                                     <label for="target_wonder">Select a target</label>
                                     <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option></option>
@@ -104,7 +104,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-xs-3 col-lg-2">
+                                <div class="col-3 col-lg-2">
                                     @foreach ($spellHelper->getSpells(null, 'wonder') as $spell)
                                         <div class="text-center" style="margin-top: 25px;">
                                             <button type="submit"
@@ -128,11 +128,11 @@
                         </div>
                     </div>
 
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="fa fa-users"></i> Units to send</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa fa-users"></i> Units to send</h3>
                         </div>
-                        <div class="box-body table-responsive no-padding">
+                        <div class="card-body table-responsive no-padding">
                             <table class="table">
                                 <colgroup>
                                     <col>
@@ -177,7 +177,7 @@
                                         <tr>
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}", $selectedDominion->race) !!}
-                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
                                                     {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
                                                 </span>
                                             </td>
@@ -217,11 +217,11 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
 
-                            <div class="box box-danger">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title"><i class="ra ra-sword"></i> Invasion force</h3>
+                            <div class="card border-danger">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="ra ra-sword"></i> Invasion force</h3>
                                 </div>
-                                <div class="box-body table-responsive no-padding">
+                                <div class="card-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -250,8 +250,8 @@
                                                 <td>
                                                     Max OP:
                                                     <i class="fa fa-question-circle"
-                                                        data-toggle="tooltip"
-                                                        data-placement="top"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
                                                         title="You may send out a maximum of 125% of your new home DP in OP. (5:4 rule)"></i>
                                                 </td>
                                                 <td id="invasion-force-max-op" data-amount="0">0</td>
@@ -259,7 +259,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="box-footer">
+                                <div class="card-footer">
                                     <button type="submit"
                                             name="action"
                                             value="attack"
@@ -275,11 +275,11 @@
                         </div>
                         <div class="col-sm-12 col-md-6">
 
-                            <div class="box">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title"><i class="fa fa-home"></i> New home forces</h3>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fa fa-home"></i> New home forces</h3>
                                 </div>
-                                <div class="box-body table-responsive no-padding">
+                                <div class="card-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -308,8 +308,8 @@
                                                 <td>
                                                     Min DP:
                                                     <i class="fa fa-question-circle"
-                                                        data-toggle="tooltip"
-                                                        data-placement="top"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
                                                         title="You must leave at least 40% of your total DP at home. (40% rule)"></i>
                                                 </td>
                                                 <td id="home-forces-min-dp" data-amount="0">0</td>
@@ -327,11 +327,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
                     <p>The first wave of wonders will appear at the start of the round. An additional wonder will appear every 48 hours starting on Day 2. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
                     <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>3.5% casualties</b> (including immortal units). Each dominion that attacks a wonder controlled by another realm is awarded prestige if they destroy and rebuild it in their realm.</p>
@@ -349,11 +349,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -516,11 +514,11 @@
 
             warStatus = '';
             if (war == 1) {
-                warStatus = '<div class="pull-left">&nbsp;<span class="text-red">WAR</span></div>';
+                warStatus = '<div class="float-start">&nbsp;<span class="text-red">WAR</span></div>';
             }
 
             return $(`
-                <div class="pull-left">${state.text}</div>
+                <div class="float-start">${state.text}</div>
                 ${warStatus}
                 <div style="clear:both;"></div>
             `);

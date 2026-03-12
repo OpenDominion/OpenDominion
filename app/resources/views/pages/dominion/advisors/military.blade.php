@@ -19,13 +19,13 @@
 
     <div class="row">
         <div class="col-md-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-bar-chart"></i> {{ $pageHeader }}</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-bar-chart"></i> {{ $pageHeader }}</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="card-body no-padding">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -82,7 +82,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -133,7 +133,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -209,30 +209,30 @@
     <div class="row">
 
         <div class="col-md-12 col-md-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-sword"></i> Units in training and home</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-sword"></i> Units in training and home</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.military-training-table', ['data' => $militaryData, 'isOp' => false, 'race' => $target->race ])
                 </div>
             </div>
         </div>
 
         <div class="col-md-12 col-md-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Units returning from battle</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Units returning from battle</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.military-returning-table', ['data' => $militaryData, 'isOp' => false, 'race' => $target->race ])
                 </div>
             </div>
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Resources returning from battle</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Resources returning from battle</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.resources-incoming-table', ['data' => $resourceData])
                 </div>
             </div>

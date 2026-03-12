@@ -6,14 +6,14 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-sword"></i> Military</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-sword"></i> Military</h3>
                 </div>
                 <form action="{{ route('dominion.military.train') }}" method="post" role="form">
                     @csrf
                     @include('partials.user.client-id-field')
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -40,7 +40,7 @@
                                     <tr>
                                         <td>
                                             {!! $unitHelper->getUnitTypeIconHtml($unitType, $selectedDominion->race) !!}
-                                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
                                             </span>
                                         </td>
@@ -107,9 +107,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Train</button>
-                        <div class="pull-right">
+                        <div class="float-end">
                             You have <strong>{{ number_format($selectedDominion->military_draftees) }}</strong> {{ str_plural('draftee', $selectedDominion->military_draftees) }} available to train.
                         </div>
                     </div>
@@ -118,25 +118,25 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.advisors.military') }}" class="pull-right">Military Advisor</a>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
+                    <a href="{{ route('dominion.advisors.military') }}" class="float-end">Military Advisor</a>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Here you can train your draftees into stronger military units. Until your draft rate is met, 1% of your peasants will join your military each hour.</p>
                     <p>Training specialist units take <b>9 hours</b> to process, while training your other units take <b>12 hours</b>.</p>
                     <p><a href="{{ route('dominion.military.release') }}" class="btn btn-danger">Release Troops</a></p>
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Draft Rate</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Draft Rate</h3>
                 </div>
                 <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table" style="margin-bottom: 0px;">
                             <colgroup>
                                 <col width="50%">
@@ -170,7 +170,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             Change
                         </button>
@@ -181,38 +181,38 @@
 
 
         <div class="col-sm-12 col-md-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-sword"></i> Units in training and home</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-sword"></i> Units in training and home</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.military-training-table', ['data' => $infoMapper->mapMilitary($selectedDominion, false), 'isOp' => false, 'race' => $selectedDominion->race ])
                 </div>
             </div>
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Units returning from battle</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Units returning from battle</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.military-returning-table', ['data' => $infoMapper->mapMilitary($selectedDominion, false), 'isOp' => false, 'race' => $selectedDominion->race ])
                 </div>
             </div>
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Resources returning from battle</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Resources returning from battle</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.resources-incoming-table', ['data' => $infoMapper->mapResources($selectedDominion)])
                 </div>
             </div>
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.land-incoming-table', ['data' => $infoMapper->mapLand($selectedDominion), 'race' => $selectedDominion->race])
                 </div>
             </div>

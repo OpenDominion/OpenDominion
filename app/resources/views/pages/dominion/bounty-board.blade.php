@@ -5,11 +5,11 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-hanging-sign"></i> Bounty Board</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-hanging-sign"></i> Bounty Board</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     @include('partials.dominion.bounty.info-table', [
                         'bounties' => $bountiesActive,
                         'emptyMessage' => 'No bounties available.'
@@ -17,11 +17,11 @@
                 </div>
             </div>
 
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-hanging-sign"></i> Recently Bountied</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-hanging-sign"></i> Recently Bountied</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     @include('partials.dominion.bounty.info-table', [
                         'bounties' => $bountiesInactive,
                         'emptyMessage' => ''
@@ -33,11 +33,11 @@
         <div class="col-sm-12 col-md-3">
             <div class="row">
                 <div class="col-sm-12 col-md-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Information</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Information</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <p>Info ops that you have requested to be collected by your realmies appear here.</p>
                             <p>The first {{ $bountyService::DAILY_RP_LIMIT }} bounties per day will award {{ $bountyService::REWARD_AMOUNT }} research points.</p>
                             <p>The first {{ $bountyService::DAILY_XP_LIMIT }} bounties per day will award an additional {{ $bountyService::XP_AMOUNT }} XP.</p>

@@ -12,13 +12,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-home"></i> Construct Buildings</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-home"></i> Construct Buildings</h3>
                 </div>
                 <form action="{{ route('dominion.construct') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body no-padding">
+                    <div class="card-body no-padding">
                         <div class="row">
 
                             <div class="col-md-12 col-lg-6">
@@ -45,9 +45,9 @@
 
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Build</button>
-                        <div class="pull-right">
+                        <div class="float-end">
                             You have {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} {{ str_plural('acre', $landCalculator->getTotalLand($selectedDominion)) }} of land.
                         </div>
                     </div>
@@ -56,12 +56,12 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.construct') }}#advisor" class="pull-right">Construction Advisor</a>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
+                    <a href="{{ route('dominion.construct') }}#advisor" class="float-end">Construction Advisor</a>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Construction will let you construct additional buildings and will take <b>12 hours</b> to process.</p>
                     <p>Each building houses 15 people and employs 20 peasants unless noted otherwise. Barren land houses 5 people.</p>
                     <p>Construction per building will come at a cost of 1 acre of barren land of the building type, {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
@@ -76,23 +76,23 @@
         </div>
 
         <div class="col-sm-12 col-md-6" id="advisor">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-home"></i> Construction Advisor</h3>
-                    <span class="pull-right">Barren Land: <strong>{{ number_format($totalBarrenLand) }}</strong> <small>({{ number_format(($totalBarrenLand / $totalLand) * 100, 2) }}%)</small></span>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-home"></i> Construction Advisor</h3>
+                    <span class="float-end">Barren Land: <strong>{{ number_format($totalBarrenLand) }}</strong> <small>({{ number_format(($totalBarrenLand / $totalLand) * 100, 2) }}%)</small></span>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.construction-constructed-table', ['data' => $data])
                 </div>
             </div>
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Incoming building breakdown</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Incoming building breakdown</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.construction-constructing-table', ['data' => $data])
                 </div>
             </div>

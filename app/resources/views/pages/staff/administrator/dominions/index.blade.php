@@ -3,12 +3,12 @@
 @section('page-header', 'Dominions')
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
                 Dominions - {{ $round->name }}
             </h3>
-            <select id="round-select" class="form-control pull-right">
+            <select id="round-select" class="form-control float-end">
                 @foreach ($rounds as $roundOption)
                     <option value="{{ $roundOption->id }}" {{ $roundOption->id == $round->id ? 'selected' : null }}>
                         {{ $roundOption->name }}
@@ -16,7 +16,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table table-hover" id="dominions-table">
                 <colgroup>
                     <col width="50">
@@ -49,7 +49,7 @@
                             </td>
                             <td class="text-center">
                                 @if ($dominion->user)
-                                    <a href="{{ route('staff.administrator.users.show', $dominion->user) }}" data-toggle="tooltip" title="{{ $dominion->user->display_name }}">
+                                    <a href="{{ route('staff.administrator.users.show', $dominion->user) }}" data-bs-toggle="tooltip" title="{{ $dominion->user->display_name }}">
                                         Human Player
                                     </a>
                                 @else
@@ -74,14 +74,12 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap5.css') }}">
 @endpush
 
 @push('page-scripts')
     <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap5.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -96,7 +94,7 @@
                 var selectedRound = $(this).val();
                 window.location.href = "{!! route('staff.administrator.dominions.index') !!}/?round=" + selectedRound;
             });
-            $('#round-select + .select2-container').addClass('pull-right');
+            $('#round-select + .select2-container').addClass('float-end');
         })(jQuery);
     </script>
 @endpush

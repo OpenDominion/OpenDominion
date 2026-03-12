@@ -33,23 +33,23 @@
             @endphp
             <tr>
                 <td>
-                    <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
+                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
                         {{ $buildingHelper->getBuildingName($buildingType) }}
                     </span>
                 </td>
                 <td class="text-center">{{ number_format($amount) }}</td>
-                <td class="text-left"><small>({{ number_format((($amount / $totalLand) * 100), 2) }}%)</small></td>
+                <td class="text-start"><small>({{ number_format((($amount / $totalLand) * 100), 2) }}%)</small></td>
                 <td class="text-center">{{ number_format($amountWithIncoming) }}</td>
-                <td class="text-left"><small>({{ number_format((($amountWithIncoming / $totalLand) * 100), 2) }}%)</small></td>
+                <td class="text-start"><small>({{ number_format((($amountWithIncoming / $totalLand) * 100), 2) }}%)</small></td>
             </tr>
         @endforeach
         <tr>
             <td>Total</td>
             <td class="text-center">{{ number_format($totalConstructedLand) }}</td>
-            <td class="text-left"><small>({{ number_format(($totalConstructedLand / $totalLand) * 100, 2) }}%)</small></td>
+            <td class="text-start"><small>({{ number_format(($totalConstructedLand / $totalLand) * 100, 2) }}%)</small></td>
 
             <td class="text-center">{{ number_format($totalConstructedLandWithIncoming) }}</td>
-            <td class="text-left"><small>({{ number_format(($totalConstructedLandWithIncoming / $totalLand) * 100, 2) }}%)</small></td>
+            <td class="text-start"><small>({{ number_format(($totalConstructedLandWithIncoming / $totalLand) * 100, 2) }}%)</small></td>
         </tr>
     </tbody>
 </table>

@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-search"></i> Search Dominions</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-search"></i> Search Dominions</h3>
                 </div>
-                <div class="box-body" id="dominion-search">
+                <div class="card-body" id="dominion-search">
                     <div class="row no-margin">
                         <div class="col-sm-6 col-lg-4 form-horizontal">
                             <div class="form-group">
@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-lg-offset-1 col-lg-7 form-horizontal">
+                        <div class="col-sm-12 offset-lg-1 col-lg-7 form-horizontal">
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <div class="row no-margin" style="padding-top: 8px">
@@ -98,7 +98,7 @@
                                 </div>
                             </div>
                             <div class="form-group no-margin">
-                                <div class="col-sm-6 col-sm-offset-6 no-padding">
+                                <div class="col-sm-6 offset-sm-6 no-padding">
                                     <button id="dominion-search" class="btn btn-block btn-primary">Search</button>
                                 </div>
                             </div>
@@ -113,8 +113,8 @@
                                 <col width="100">
                                 <col width="100">
                                 <col width="100">
-                                <col width="100" class="hidden">
-                                <col width="100" class="hidden">
+                                <col width="100" class="d-none">
+                                <col width="100" class="d-none">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -143,9 +143,9 @@
                                                     @endif
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                                     @if ($dominion->locked_at !== null)
-                                                        <span class="label label-danger">Locked</span>
+                                                        <span class="badge text-bg-danger">Locked</span>
                                                     @elseif ($dominion->isAbandoned())
-                                                        <span class="label label-warning">Abandoned</span>
+                                                        <span class="badge text-bg-warning">Abandoned</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
@@ -162,14 +162,14 @@
                                                 <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
                                                     {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
                                                 </td>
-                                                <td class="hidden">
+                                                <td class="d-none">
                                                     @if ($rangeCalculator->isInRange($selectedDominion, $dominion) && $selectedDominion->realm_id != $dominion->realm_id)
                                                         true
                                                     @else
                                                         false
                                                     @endif
                                                 </td>
-                                                <td class="hidden">
+                                                <td class="d-none">
                                                     @if ($dominion->user_id == null)
                                                         true
                                                     @else
@@ -188,11 +188,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Advanced search for locating dominions in other realms.</p>
                     <p>By default, it is limited to targets that you can perform actions against due to range restrictions.</p>
                     @if (!$selectedDominion->round->hasStarted())
@@ -206,7 +206,7 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap5.css') }}">
     <style>
         #dominion-search #dominions-table_filter { display: none !important; }
     </style>
@@ -214,7 +214,7 @@
 
 @push('page-scripts')
     <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap5.js') }}"></script>
 @endpush
 
 @push('inline-scripts')

@@ -1,12 +1,12 @@
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title">
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
             <i class="ra ra-axe"></i>
             Military Power Mods
         </h3>
     </div>
-    <div class="box-body">
-        <table class="table table-condensed">
+    <div class="card-body">
+        <table class="table table-sm">
             <colgroup>
                 <col width="40%">
                 <col width="30%">

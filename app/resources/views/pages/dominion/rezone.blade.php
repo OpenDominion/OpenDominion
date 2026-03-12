@@ -6,13 +6,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-refresh"></i> Re-zone Land</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-refresh"></i> Re-zone Land</h3>
                 </div>
                 <form action="{{ route('dominion.rezone') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -65,7 +65,7 @@
                             @endforeach
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Re-Zone</button>
                     </div>
                 </form>
@@ -73,12 +73,12 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.explore') }}#advisor" class="pull-right">Land Advisor</a>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
+                    <a href="{{ route('dominion.explore') }}#advisor" class="float-end">Land Advisor</a>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Rezoning is the art of converting land of one type into another type. Rezoning land processes <b>instantly</b>.</p>
                     <p>Each acre of barren land being converted will come at a cost of: {{ $rezoningCalculator->getPlatinumCost($selectedDominion) }} platinum.</p>
                     <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} {{ str_plural('acre', $landCalculator->getTotalBarrenLand($selectedDominion)) }} of barren land and {{ number_format($selectedDominion->resource_platinum) }} platinum.</p>

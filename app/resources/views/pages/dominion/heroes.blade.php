@@ -9,11 +9,11 @@
             @if ($hero === null)
                 <form class="form-horizontal" action="{{ route('dominion.heroes.create') }}" method="post" role="form">
                     @csrf
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -22,7 +22,7 @@
                                             <div class="input-group">
                                                 <input name="name" id="name" class="form-control" />
                                                 <div class="input-group-btn">
-                                                    <button id="randomize" class="btn btn-default" type="button">Randomize</button>
+                                                    <button id="randomize" class="btn btn-secondary" type="button">Randomize</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -42,16 +42,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="box-footer">
+                        <div class="card-footer">
                             <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Create Hero</button>
                         </div>
                     </div>
 
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Level Bonuses</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Level Bonuses</h3>
                         </div>
-                        <div class="box-body table-responsive">
+                        <div class="card-body table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -82,11 +82,11 @@
             @else
                 <form action="{{ route('dominion.heroes') }}" method="post" role="form">
                     @csrf
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <div class="row">
                                 @php
                                     $heroClass = $heroHelper->getClasses()[$hero->class];
@@ -115,68 +115,68 @@
                                                 Upgrades
                                             </div>
                                             <div class="row" style="font-size: 64px; margin-top: 20px;">
-                                                <div class="col-xs-6 text-center">
-                                                    <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Current Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-toggle="tooltip"></i>
+                                                <div class="col-6 text-center">
+                                                    <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Current Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-bs-toggle="tooltip"></i>
                                                 </div>
                                                 @if (isset($upgrades[0]))
                                                     @foreach ($upgrades[0]->where('type', 'directive') as $upgrade)
-                                                        <div class="col-xs-6 text-center">
+                                                        <div class="col-6 text-center">
                                                             {!! $heroHelper->getUpgradeIcon($upgrade) !!}
                                                         </div>
                                                     @endforeach
                                                 @else
-                                                    <div class="col-xs-6 text-center">
+                                                    <div class="col-6 text-center">
                                                         {!! $heroHelper->getLockIcon(0) !!}
                                                     </div>
                                                 @endif
                                                 @if (isset($upgrades[1]))
                                                     @foreach ($upgrades[1] as $upgrade)
-                                                        <div class="col-xs-6 text-center">
+                                                        <div class="col-6 text-center">
                                                             {!! $heroHelper->getUpgradeIcon($upgrade) !!}
                                                         </div>
                                                     @endforeach
                                                 @else
-                                                    <div class="col-xs-6 text-center">
+                                                    <div class="col-6 text-center">
                                                         {!! $heroHelper->getLockIcon(1) !!}
                                                     </div>
                                                 @endif
                                                 @if (isset($upgrades[2]))
                                                     @foreach ($upgrades[2] as $upgrade)
-                                                        <div class="col-xs-6 text-center">
+                                                        <div class="col-6 text-center">
                                                             {!! $heroHelper->getUpgradeIcon($upgrade) !!}
                                                         </div>
                                                     @endforeach
                                                 @else
-                                                    <div class="col-xs-6 text-center">
+                                                    <div class="col-6 text-center">
                                                         {!! $heroHelper->getLockIcon(2) !!}
                                                     </div>
                                                 @endif
                                                 @if (isset($upgrades[4]))
                                                     @foreach ($upgrades[4] as $upgrade)
-                                                        <div class="col-xs-6 text-center">
+                                                        <div class="col-6 text-center">
                                                             {!! $heroHelper->getUpgradeIcon($upgrade) !!}
                                                         </div>
                                                     @endforeach
                                                 @else
-                                                    <div class="col-xs-6 text-center">
+                                                    <div class="col-6 text-center">
                                                         {!! $heroHelper->getLockIcon(4) !!}
                                                     </div>
                                                 @endif
                                                 @if (isset($upgrades[6]))
                                                     @foreach ($upgrades[6] as $upgrade)
-                                                        <div class="col-xs-6 text-center">
+                                                        <div class="col-6 text-center">
                                                             {!! $heroHelper->getUpgradeIcon($upgrade) !!}
                                                         </div>
                                                     @endforeach
                                                 @else
-                                                    <div class="col-xs-6 text-center">
+                                                    <div class="col-6 text-center">
                                                         {!! $heroHelper->getLockIcon(6) !!}
                                                     </div>
                                                 @endif
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-6">
-                                            <table class="table table-condensed">
+                                            <table class="table table-sm">
                                                 <thead>
                                                     <tr>
                                                         <th colspan=2 class="text-center">Combat Stats</th>
@@ -185,7 +185,7 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <span title="PvP Rating" data-toggle="tooltip">Rating</span>
+                                                            <span title="PvP Rating" data-bs-toggle="tooltip">Rating</span>
                                                         </td>
                                                         <td>
                                                             {{ $hero->combat_rating }}
@@ -193,7 +193,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <span title="Win - Loss - Draw" data-toggle="tooltip">Record</span>
+                                                            <span title="Win - Loss - Draw" data-bs-toggle="tooltip">Record</span>
                                                         </td>
                                                         <td>
                                                             {{ sprintf('%s-%s-%s', $hero->stat_combat_wins, $hero->stat_combat_losses, $hero->stat_combat_draws) }}
@@ -202,7 +202,7 @@
                                                     @foreach ($heroCalculator->getHeroCombatStats($hero) as $stat => $value)
                                                         <tr>
                                                             <td>
-                                                                <span data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
+                                                                <span data-bs-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
                                                                     {{ ucwords($stat) }}
                                                                 </span>
                                                             </td>
@@ -220,7 +220,7 @@
                                 </div>
                                 <div class="col-sm-12 col-lg-6">
                                     <div class="table-responsive" style="margin-top: 15px;">
-                                        <table class="table table-condensed table-striped">
+                                        <table class="table table-sm table-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Level</th>
@@ -247,7 +247,7 @@
                                 <div class="col-md-12">
                                     <h4>Hero Bonuses</h4>
                                     <div class="table-responsive">
-                                        <table class="table table-condensed table-striped">
+                                        <table class="table table-sm table-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Class Name</th>
@@ -260,13 +260,13 @@
                                             <tbody>
                                                 @foreach ($heroHelper->getClasses() as $class)
                                                     @if ($hero->class == $class['key'])
-                                                        <tr class="active">
+                                                        <tr class="table-active">
                                                             <td>{{ $heroHelper->getClassDisplayName($hero->class) }}</td>
                                                             <td>{{ $heroCalculator->getHeroLevel($hero) }}</td>
                                                             <td>{{ $hero->experience }}</td>
                                                             <td>{{ $heroCalculator->getPassiveDescription($hero) }}</td>
                                                             <td>
-                                                                <span class="btn btn-primary btn-xs" disabled>
+                                                                <span class="btn btn-primary btn-sm" disabled>
                                                                     Select
                                                                 </span>
                                                             </td>
@@ -284,7 +284,7 @@
                                                             <td>{{ $experience }}</td>
                                                             <td>{{ $heroCalculator->getPassiveDescription($hero, $class['perk_type']) }}</td>
                                                             <td>
-                                                                <a href="{{ route('dominion.heroes.change-class', $class['key']) }}" class="btn btn-primary btn-xs" {{ !$heroCalculator->canChangeClass($hero) ? 'disabled' : null }}>
+                                                                <a href="{{ route('dominion.heroes.change-class', $class['key']) }}" class="btn btn-primary btn-sm" {{ !$heroCalculator->canChangeClass($hero) ? 'disabled' : null }}>
                                                                     Select
                                                                 </a>
                                                             </td>
@@ -359,7 +359,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="box-footer">
+                        <div class="card-footer">
                             <button type="submit" class="btn btn-primary" {{ (!$heroCalculator->getUnlockableUpgradeCount($hero) || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                         </div>
                     </div>
@@ -368,11 +368,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Your hero gains experience and levels up, increasing its class bonuses and unlocking new upgrades.</p>
                     <p>Your hero gains 1 XP per acre gained from invasion (against dominions at least 75% of your size), 0.6 XP per acre explored, 0.5 XP per spy strength spent on successful espionage operations (excluding theft), and 1 XP per wizard strength spent on successful magic operations.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>

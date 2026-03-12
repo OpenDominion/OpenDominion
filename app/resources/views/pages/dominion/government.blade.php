@@ -5,11 +5,11 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-queen-crown"></i> Monarchy</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-queen-crown"></i> Monarchy</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         @if ($selectedDominion->isMonarch() || $selectedDominion->isJester())
                             <div class="col-md-12">
@@ -30,7 +30,7 @@
                                                 <input type="text" class="form-control" name="realm_name" id="realm_name" value="{{ $selectedDominion->realm->name }}" maxlength="64" autocomplete="off" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
                                             </div>
                                         </div>
-                                        <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
+                                        <div class="offset-6 col-6 offset-sm-8 col-sm-4 offset-lg-10 col-lg-2">
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     Change
@@ -65,7 +65,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                    <div class="offset-6 col-6 offset-sm-0 col-sm-4 col-lg-2">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 Vote
@@ -77,7 +77,7 @@
                             <form action="{{ route('dominion.government.advisors') }}" method="post" role="form">
                                 @csrf
                                 <div class="form-group table-responsive">
-                                    <table class="table table-condensed">
+                                    <table class="table table-sm">
                                         <colgroup>
                                             <col>
                                             <col>
@@ -135,7 +135,7 @@
                                     </table>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
+                                    <div class="offset-6 col-6 offset-sm-8 col-sm-4 offset-lg-10 col-lg-2">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 Update
@@ -151,11 +151,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Here you can vote for the monarch of your realm. You can change your vote at any time.</p>
                     <p>The monarch has the power to declare war, update the realm's message of the day, and moderate council posts.</p>
                     <p>You can share your advisors with other members of your realm. Players who have access to your advisors can see your username and all data about your dominion. It can be turned on by default for packmates in <a href="{{ route('settings') }}">User Settings</a>.</p>
@@ -167,14 +167,14 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-crown"></i> The Royal Court</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-crown"></i> The Royal Court</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 table-responsive">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>Role</th>
@@ -242,7 +242,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
+                                        <div class="offset-6 col-6 offset-sm-8 col-sm-4 offset-lg-10 col-lg-2">
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-primary btn-block" {{ (!$selectedDominion->isMonarch() || $selectedDominion->isLocked()) ? 'disabled' : null }}>
                                                     Submit
@@ -259,11 +259,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The monarch of a realm may appoint fellow dominions to their royal court, who are then granted access to special perks and responsibilities.</p>
                     <p>The <b>General</b> has the power to cancel and declare wars.</p>
                     <p>The <b>Spymaster</b> can post recurring and black op bounties.</p>
@@ -277,14 +277,14 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-crossed-axes"></i> War</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 table-responsive">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>Realm</th>
@@ -311,12 +311,12 @@
                                         <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
-                                                <span class="label label-success">Active</span>
-                                                <span class="label label-danger">Expiring</span>
+                                                <span class="badge text-bg-success">Active</span>
+                                                <span class="badge text-bg-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
-                                                <span class="label label-success">Active</span>
+                                                <span class="badge text-bg-success">Active</span>
                                             @else
-                                                <span class="label label-warning">Pending</span>
+                                                <span class="badge text-bg-warning">Pending</span>
                                             @endif
                                         </td>
                                         <td>
@@ -349,12 +349,12 @@
                                         <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
-                                                <span class="label label-success">Active</span>
-                                                <span class="label label-danger">Expiring</span>
+                                                <span class="badge text-bg-success">Active</span>
+                                                <span class="badge text-bg-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
-                                                <span class="label label-success">Active</span>
+                                                <span class="badge text-bg-success">Active</span>
                                             @else
-                                                <span class="label label-warning">Pending</span>
+                                                <span class="badge text-bg-warning">Pending</span>
                                             @endif
                                         </td>
                                         <td>
@@ -397,7 +397,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                            <div class="offset-6 col-6 offset-sm-0 col-sm-4 col-lg-2">
                                                 <div class="form-group">
                                                     <button type="submit" class="btn btn-danger btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                         Declare War
@@ -421,7 +421,7 @@
                                                         <br/><small class="text-warning">You cannot cancel this war for {{ $governmentService->getHoursBeforeCancelWar($war) }} hours.</small>
                                                     @endif
                                                 </div>
-                                                <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                                <div class="offset-6 col-6 offset-sm-0 col-sm-4 col-lg-2">
                                                     <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $governmentService->getHoursBeforeCancelWar($war) > 0 ? 'disabled' : null }}>
                                                         Cancel War
                                                     </button>
@@ -438,11 +438,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 4th day of the round. Successful war operations increase your masteries, which increase your ops capabilities.</p>
                     <p>24 hours after war is declared, dominions in both realms have +4% offense as well as +10% land and prestige gains, which remain active for 12 hours after war is cancelled. If both realms have an active war bonus, that increases to +8% offense and +20% land and prestige gains.</p>
                     <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, negative status effects are extended by 18 hours.</p>
@@ -453,11 +453,11 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-university"></i> Guard Membership</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-university"></i> Guard Membership</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         @if (!$canJoinGuards)
                             <div class="col-sm-12 text-center">
@@ -469,7 +469,7 @@
                                 <i class="ra ra-heavy-shield" title="Royal Guard"></i>
                                 The Emperor's Royal Guard
                             </h4>
-                            <ul class="text-left" style="padding: 0 30px;">
+                            <ul class="text-start" style="padding: 0 30px;">
                                 <li>Cannot interact with Wonders or Dominions less than 60% or greater than 166% of your land size.</li>
                                 <li>Hourly platinum production reduced by 2%.</li>
                             </ul>
@@ -498,7 +498,7 @@
                                 <i class="ra ra-heavy-shield" title="Elite Guard"></i>
                                 The Emperor's Elite Guard
                             </h4>
-                            <ul class="text-left" style="padding: 0 30px;">
+                            <ul class="text-start" style="padding: 0 30px;">
                                 <li>Cannot interact with Wonders or Dominions less than 75% or greater than 133% of your land size.</li>
                                 <li>Hourly platinum production reduced by 2% (from Royal Guard).</li>
                                 <li>Exploration platinum cost increased by 25%.</li>
@@ -528,7 +528,7 @@
                                 <i class="ra ra-fire-shield" title="Chaos League"></i>
                                 The Chaos League
                             </h4>
-                            <ul class="text-left" style="padding: 0 30px;">
+                            <ul class="text-start" style="padding: 0 30px;">
                             <li>Enables all war and black operations between members.</li>
                                 <li>War spells between members are now CHAOS spells.</li>
                                 <ul>
@@ -581,11 +581,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Joining the Royal or Elite Guard will reduce the range other dominions can perform hostile interactions against you. In turn, you also can not perform hostile interactions against wonders or dominions outside of your guard range.</p>
                     <p>Upon requesting to join a guard it takes 24 hours for your request to be accepted. If you perform any hostile operations against dominions outside of that guard range, your application is reset back to 24 hours.</p>
                     <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 3rd day of the round.</p>
@@ -631,11 +631,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -670,8 +668,8 @@
             }
 
             return $(`
-                <div class="pull-left">${state.text} - ${race}</div>
-                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
+                <div class="float-start">${state.text} - ${race}</div>
+                <div class="float-end">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);
         }

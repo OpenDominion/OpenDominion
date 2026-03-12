@@ -12,9 +12,9 @@
 
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#account" data-toggle="tab">Account</a></li>
-                <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
-                {{--<li><a href="#security" data-toggle="tab">Security</a></li>--}}
+                <li class="table-active"><a href="#account" data-bs-toggle="tab">Account</a></li>
+                <li><a href="#notifications" data-bs-toggle="tab">Notifications</a></li>
+                {{--<li><a href="#security" data-bs-toggle="tab">Security</a></li>--}}
             </ul>
             <div class="tab-content">
 
@@ -29,8 +29,8 @@
                                 <label class="col-sm-3 control-label">Display Name</label>
                                 <div class="col-sm-9">
                                     <p class="form-control-static">{{ $user->display_name }}</p>
-                                    <p class="help-block">Visible on your <a href="{{ route('valhalla.user', $user->id) }}">public profile</a>.</p>
-                                    <p class="help-block">Your display name can only be changed by an admin.</p>
+                                    <p class="form-text">Visible on your <a href="{{ route('valhalla.user', $user->id) }}">public profile</a>.</p>
+                                    <p class="form-text">Your display name can only be changed by an admin.</p>
                                 </div>
                             </div>
 
@@ -39,7 +39,7 @@
                                 <label for="email" class="col-sm-3 control-label">Email</label>
                                 <div class="col-sm-9">
                                     <input type="email" name="account_email" id="email" class="form-control" value="{{ $user->email }}" readonly>
-                                    <p class="help-block">Your email address can only be changed by an admin.</p>
+                                    <p class="form-text">Your email address can only be changed by an admin.</p>
                                 </div>
                             </div>
 
@@ -51,7 +51,7 @@
                                         <option value="skin-blue">Default Blue</option>
                                         <option value="skin-classic" {{ Auth::user()->skin == 'skin-classic' ? 'selected' : null }}>Classic Dark</option>
                                     </select>
-                                    <p class="help-block">Select a new color scheme for the website.</p>
+                                    <p class="form-text">Select a new color scheme for the website.</p>
                                 </div>
                             </div>
 
@@ -71,7 +71,7 @@
                                             Allow <b>realmmates</b> to view your advisors.
                                         </label>
                                     </div>
-                                    <p class="help-block">Shared advisors can still be enabled/disabled per dominion on the government page, these settings only determine the default values (does not apply to late starters).</p>
+                                    <p class="form-text">Shared advisors can still be enabled/disabled per dominion on the government page, these settings only determine the default values (does not apply to late starters).</p>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="shareusername" {{ $user->getSetting('shareusername') === false ? null : 'checked' }} />
@@ -87,7 +87,7 @@
                                     @if ($discordUser = $user->discordUser()->first())
                                         <label for="skin" class="col-sm-3 control-label">Discord Account</label>
                                         <div class="col-sm-9">
-                                            <p class="help-block">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
+                                            <p class="form-text">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
                                             <a href="{{ route('discord-unlink') }}" class="btn btn-danger">
                                                 <i class="fa fa-unlink"></i> Unlink account
                                             </a>
@@ -109,24 +109,24 @@
 
                             {{-- Avatar --}}
                             <div class="form-group">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <div style="margin-bottom: 10px;">
                                         <img src="{{ $user->getAvatarUrl() }}" class="img-responsive" alt="Avatar of {{ $user->display_name }}">
                                     </div>
                                     @if ($user->avatar === null)
-                                        <p class="help-block">Your are currently using your <a href="https://en.gravatar.com/" target="_blank">Gravatar <i class="fa fa-external-link"></i></a>.</p>
+                                        <p class="form-text">Your are currently using your <a href="https://en.gravatar.com/" target="_blank">Gravatar <i class="fa fa-external-link"></i></a>.</p>
                                     {{--@else--}}
-                                        {{--<p class="help-block">You are using a custom uploaded avatar. <a href="#">Reset to Gravatar</a>.</p>--}}
+                                        {{--<p class="form-text">You are using a custom uploaded avatar. <a href="#">Reset to Gravatar</a>.</p>--}}
                                     @endif
 
-                                    <label class="btn btn-default btn-file">
+                                    <label class="btn btn-secondary btn-file">
                                         Upload new avatar <input type="file" name="account_avatar" accept="image/*">
                                     </label>
 
                                     <span class="new-avatar-filename" style="padding-left: 8px;"></span>
 
-                                    <p class="help-block">Uploaded avatars will be cropped/resized to 200x200 pixels and converted to PNG. Upload a square image for best results.</p>
-                                    <p class="help-block">Supported formats are JPG, PNG, WebP and non-animated GIF.</p>
+                                    <p class="form-text">Uploaded avatars will be cropped/resized to 200x200 pixels and converted to PNG. Upload a square image for best results.</p>
+                                    <p class="form-text">Supported formats are JPG, PNG, WebP and non-animated GIF.</p>
                                 </div>
                             </div>
 
@@ -201,7 +201,7 @@
                             {{--<div class="form-group">
                                 <label>Digest Irregular Email Notifications</label>
                                 <br>
-                                <div class="btn-group" data-toggle="buttons">
+                                <div class="btn-group" data-bs-toggle="buttons">
                                     @foreach ([
                                         'off' => 'Off',
                                         '5min' => '5 Min',
@@ -215,7 +215,7 @@
                                             $isActive = ($user->getSetting('notification_digest')  === $notificationKey);
                                         }
                                         @endphp
-                                        <label class="btn btn-default {{ $isActive ? 'active' : null }}">
+                                        <label class="btn btn-secondary {{ $isActive ? 'active' : null }}">
                                             <input type="radio" name="notification_digest" value="{{ $notificationKey }}" autocomplete="off" {{ $isActive ? 'checked' : null }}>
                                             {{ $label }}
                                         </label>

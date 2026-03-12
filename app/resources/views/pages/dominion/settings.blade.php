@@ -21,33 +21,33 @@
     <div class="row">
 
         <div class="col-sm-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-cog"></i> Dominion Settings</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-cog"></i> Dominion Settings</h3>
                 </div>
                 <form class="form" action="{{ route('dominion.misc.settings') }}" method="post">
                     @csrf
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="clearfix">
-                                    <label class="form-label pull-left" style="margin-top: 20px;">
+                                    <label class="form-label float-start" style="margin-top: 20px;">
                                         Resources Overview:
                                     </label>
-                                    <div class="pull-right">
+                                    <div class="float-end">
                                         <select class="form-control" id="rowCountSelect" style="width: auto; display: inline-block; margin-bottom: 5px; margin-right: 5px;">
                                             <option value="1" {{ $rowCount == 1 ? 'selected' : '' }}>1 Row</option>
                                             <option value="2" {{ $rowCount == 2 ? 'selected' : '' }}>2 Rows</option>
                                             <option value="3" {{ $rowCount == 3 ? 'selected' : '' }}>3 Rows</option>
                                             <option value="4" {{ $rowCount == 4 ? 'selected' : '' }}>4 Rows</option>
                                         </select>
-                                        <button type="button" class="btn btn-default" id="resetButton">Reset to Default</button>
+                                        <button type="button" class="btn btn-secondary" id="resetButton">Reset to Default</button>
                                     </div>
                                 </div>
                                 @for ($row = 0; $row < 4; $row++)
                                     <div class="form-group row resource-row" data-row="{{ $row }}">
                                         @for ($col = 0; $col < 4; $col++)
-                                            <div class="col-xs-3">
+                                            <div class="col-3">
                                                 <select class="form-control resource-select-{{ $row }}" name="resources_overview[{{ $row }}][{{ $col }}]" data-default="{{ $defaultConfig[$row][$col] ?? '' }}">
                                                     @foreach ($resourceOptions as $resourceOption)
                                                         <option value="{{ $resourceOption }}" {{ isset($config[$row][$col]) && $config[$row][$col] == $resourceOption ? 'selected' : '' }}>
@@ -175,7 +175,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Update Settings</button>
                     </div>
                 </form>

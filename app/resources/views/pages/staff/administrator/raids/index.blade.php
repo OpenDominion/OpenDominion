@@ -3,12 +3,12 @@
 @section('page-header', 'Raids')
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
                 Raids - {{ $round->name }}
             </h3>
-            <div class="pull-right">
+            <div class="float-end">
                 <a href="{{ route('staff.administrator.raids.create', ['round' => $round->id]) }}" class="btn btn-success">
                     <i class="fa fa-plus"></i> Create New Raid
                 </a>
@@ -21,7 +21,7 @@
                 </select>
             </div>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             @if ($raids->isEmpty())
                 <p class="text-center text-muted">No raids found for this round.</p>
             @else
@@ -86,11 +86,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')

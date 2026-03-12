@@ -14,11 +14,11 @@
         <div class="row">
 
             <div class="col-sm-12 col-md-9">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-flask"></i> Technological Advances</h3>
                     </div>
-                    <div class="box-body no-padding">
+                    <div class="card-body no-padding">
                         <div class="row">
                             @if ($techVersion !== 1)
                                 <div class="col-md-6">
@@ -30,18 +30,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" {{ ($techCalculator->getTechCost($selectedDominion) > $selectedDominion->resource_tech || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                     </div>
                 </div>
             </div>
 
             <div class="col-sm-12 col-md-3">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Information</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Information</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
                         <p>You can obtain technical advancements by reaching appropriate levels of research points. The base cost of each advancement is 2.5x highest land achieved and increases by 50 after each unlock (min 3750). Most advancements require unlocking another before you can select them.</p>
                         <p><a href="{{ route('scribes.techs') }}?{{ implode('&', array_map(function($key) { return str_replace('tech_', '', $key); }, $unlockedTechs)) }}">View as Interactive Tree</a> in the Scribes.</p>
@@ -64,11 +64,11 @@
         <div class="row">
 
             <div class="col-sm-12 col-md-9">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-flask"></i> Technological Advances</h3>
                     </div>
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="5%">
@@ -116,7 +116,7 @@
                                 @endforeach
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" {{ ($techCalculator->getTechCost($selectedDominion) > $selectedDominion->resource_tech || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                     </div>
                 </div>

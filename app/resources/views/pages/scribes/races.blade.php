@@ -2,11 +2,11 @@
 
 @section('content')
     @include('partials.scribes.nav')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Races</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Races</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     <p>Players must choose a race for their dominion. Each race has unique bonuses, military units, and spells.</p>
@@ -16,11 +16,11 @@
                 </div>
             </div>
         </div>
-        <div class="box-footer">
-            <div class="pull-left">
+        <div class="card-footer">
+            <div class="float-start">
                 <a href="{{ route('scribes.all-races') }}">View All Playable Races</a>
             </div>
-            <div class="pull-right">
+            <div class="float-end">
                 @if ($legacy)
                     <a href="{{ route('scribes.races') }}">View Playable Races</a>
                 @else
@@ -29,12 +29,12 @@
             </div>
         </div>
     </div>
-    <div class="box">
-        <div class="box-body no-padding">
+    <div class="card">
+        <div class="card-body no-padding">
             <div class="row">
                 <div class="col-md-12 col-md-6">
-                    <div class="box-header with-border">
-                        <h4 class="box-title">Good Alignment</h4>
+                    <div class="card-header">
+                        <h4 class="card-title">Good Alignment</h4>
                     </div>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <tbody>
@@ -49,8 +49,8 @@
                     </table>
                 </div>
                 <div class="col-md-12 col-md-6">
-                    <div class="box-header with-border">
-                        <h4 class="box-title">Evil Alignment</h4>
+                    <div class="card-header">
+                        <h4 class="card-title">Evil Alignment</h4>
                     </div>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <tbody>

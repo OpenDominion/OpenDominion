@@ -5,6 +5,7 @@ namespace OpenDominion\Providers;
 use Bugsnag;
 use Cache;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Blade;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
@@ -88,13 +89,18 @@ class AppServiceProvider extends AbstractServiceProvider
      */
     public function boot()
     {
-        Paginator::useBootstrapThree();
+        Paginator::useBootstrap();
         Schema::defaultStringLength(191);
 
         // Set Bugsnag app version
         if (($appVersion = Cache::get('version')) !== null) {
             Bugsnag::getConfig()->setAppVersion($appVersion);
         }
+
+        // Register @vite Blade directive for Laravel 8 (native support added in Laravel 9.1)
+        Blade::directive('vite', function ($expression) {
+            return "<?php echo \\OpenDominion\\Helpers\\ViteHelper::tags($expression); ?>";
+        });
     }
 
     /**

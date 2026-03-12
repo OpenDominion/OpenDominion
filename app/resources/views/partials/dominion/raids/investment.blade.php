@@ -1,11 +1,11 @@
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <div class="box-title"><i class="fa fa-money fa-fw"></i> Resource Investments</div>
-        <div class="box-tools pull-right">
-            <div class="label label-primary">Investment</div>
+<div class="card card-outline card-primary">
+    <div class="card-header">
+        <div class="card-title"><i class="fa fa-money fa-fw"></i> Resource Investments</div>
+        <div class="card-tools float-end">
+            <div class="badge text-bg-primary">Investment</div>
         </div>
     </div>
-    <div class="box-body">
+    <div class="card-body">
         <div class="row">
             <div class="col-md-12 table-responsive">
                 <table class="table">

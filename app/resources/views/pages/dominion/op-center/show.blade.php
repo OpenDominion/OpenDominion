@@ -122,7 +122,7 @@
                     @endphp
 
                     @if ($recentlyInvadedCount > 0)
-                        <p class="text-center" style="margin-bottom: 0.5em;" data-toggle="tooltip" title="Defensive casualties reduced by {{ 20 * $recentlyInvadedCount }}%.">
+                        <p class="text-center" style="margin-bottom: 0.5em;" data-bs-toggle="tooltip" title="Defensive casualties reduced by {{ 20 * $recentlyInvadedCount }}%.">
                             This dominion has been invaded <strong>{{ $recentlyInvadedCount }}</strong> time(s) in the last 24 hours.
                         </p>
                     @endif
@@ -130,21 +130,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestClearSight !== null)
                                 <em>Revealed {{ $latestClearSight->created_at }} by {{ $latestClearSight->sourceDominion->name }}</em>
                                 @if ($latestClearSight->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestClearSight->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestClearSight->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestClearSight->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestClearSight->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestClearSight->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -176,19 +176,19 @@
         <div class="col-sm-12 col-md-3">
             <div class="row">
                 <div class="col-sm-12 col-md-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Information</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Information</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             @if (!$inRealm)
                                 <p>
                                     This page contains the data that your realmies have gathered about dominion
-                                    @if (in_array($dominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))<i class="fa fa-eye" title="Marked for Observation" data-toggle="tooltip"></i>@endif
+                                    @if (in_array($dominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))<i class="fa fa-eye" title="Marked for Observation" data-bs-toggle="tooltip"></i>@endif
                                     <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.
                                 </p>
 
-                                <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
+                                <p>Sections marked as <span class="badge text-bg-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="badge text-bg-danger">invalid</span> are more than 12 hours old.</p>
 
                                 <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
                             @endif
@@ -196,23 +196,23 @@
                             <p>You can automatically load data into the calculator or copy all data as JSON.</p>
 
                             <div>
-                                <div class="pull-left">
+                                <div class="float-start">
                                     <a href="{{ route('dominion.calculations.military') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
                                         <i class="fa fa-calculator"></i> Calculate
                                     </a>
                                 </div>
-                                <div class="pull-right">
+                                <div class="float-end">
                                     <a class="btn btn-primary" onclick="copyJson('ops_json')">
                                         <i class="fa fa-copy"></i> Copy ops
                                     </a>
-                                    <textarea class="hidden" name="ops_json" id="ops_json">{{ json_encode($spellHelper->obfuscateInfoOps($infoOps), JSON_PRETTY_PRINT) }}</textarea>
+                                    <textarea class="d-none" name="ops_json" id="ops_json">{{ json_encode($spellHelper->obfuscateInfoOps($infoOps), JSON_PRETTY_PRINT) }}</textarea>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
 
-                        <div class="box-footer">
-                            <table class="table table-condensed" style="margin-bottom: 10px;">
+                        <div class="card-footer">
+                            <table class="table table-sm" style="margin-bottom: 10px;">
                                 <thead>
                                     <tr>
                                         <th>{{ $dominion->race->name }} Perks</th>
@@ -240,30 +240,30 @@
                                 <div class="text-center">
                                     <a href="{{ route('dominion.invade') }}?dominion={{ $dominion->id }}"
                                         class="btn btn-danger" style="font-size: 20px; padding: 3px 6px 0px;"
-                                        title="Invade" data-toggle="tooltip">
+                                        title="Invade" data-bs-toggle="tooltip">
                                         <i class="ra ra-crossed-swords"></i>
                                     </a>
                                     <a href="{{ route('dominion.magic') }}?dominion={{ $dominion->id }}"
                                         class="btn btn-warning" style="font-size: 20px; padding: 3px 6px 0px;"
-                                        title="Magic" data-toggle="tooltip">
+                                        title="Magic" data-bs-toggle="tooltip">
                                         <i class="ra ra-fairy-wand"></i>
                                     </a>
                                     <a href="{{ route('dominion.espionage') }}?dominion={{ $dominion->id }}"
                                         class="btn btn-warning" style="font-size: 20px; padding: 3px 6px 0px;"
-                                        title="Espionage" data-toggle="tooltip">
+                                        title="Espionage" data-bs-toggle="tooltip">
                                         <i class="fa fa-user-secret"></i>
                                     </a>
                                     @if ($selectedDominion->isMonarch() || $selectedDominion->isSpymaster())
                                         @if (in_array($dominion->id, $selectedDominion->realm->getSetting('observeDominionIds') ?? []))
                                             <a href="{{ route('dominion.bounty-board.observe', $dominion->id) }}"
                                                 class="btn btn-danger" style="font-size: 20px; padding: 3px 6px 0px;"
-                                                title="Cancel Observation" data-toggle="tooltip">
+                                                title="Cancel Observation" data-bs-toggle="tooltip">
                                                 <i class="fa fa-eye-slash"></i>
                                             </a>
                                         @else
                                             <a href="{{ route('dominion.bounty-board.observe', $dominion->id) }}"
                                               class="btn btn-info" style="font-size: 20px; padding: 3px 6px 0px;"
-                                              title="Mark for Observation" data-toggle="tooltip">
+                                              title="Mark for Observation" data-bs-toggle="tooltip">
                                                 <i class="fa fa-eye"></i>
                                             </a>
                                         @endif
@@ -318,7 +318,7 @@
                                     </td>
                                     <td class="text-center">{{ $activeSpell['duration'] }}</td>
                                     <td>
-                                        <div data-toggle="tooltip" data-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
+                                        <div data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $spellHelper->getSpellDescription($spell) }}">
                                             {{ $spellHelper->getSpellDescription($spell) }}
                                         </div>
                                     </td>
@@ -349,21 +349,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestRevelation !== null)
                                 <em>Revealed {{ $latestRevelation->created_at }} by {{ $latestRevelation->sourceDominion->name }}</em>
                                 @if ($latestRevelation->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestRevelation->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestRevelation->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestRevelation->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestRevelation->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestRevelation->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -410,21 +410,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestCastle !== null)
                                 <em>Revealed {{ $latestCastle->created_at }} by {{ $latestCastle->sourceDominion->name }}</em>
                                 @if ($latestCastle->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestCastle->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestCastle->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestCastle->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestCastle->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestCastle->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -474,21 +474,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestBarracks !== null)
                                 <em>Revealed {{ $latestBarracks->created_at }} by {{ $latestBarracks->sourceDominion->name }}</em>
                                 @if ($latestBarracks->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestBarracks->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestBarracks->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestBarracks->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestBarracks->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestBarracks->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -548,7 +548,7 @@
                 @else
                     @slot('noPadding', true)
                     @slot('titleExtra')
-                        <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($latestSurvey->data, 'barren_land')) }}</strong> <small>({{ number_format((array_get($latestSurvey->data, 'barren_land') / array_get($latestSurvey->data, 'total_land', 250)) * 100, 2) }}%)</small></span>
+                        <span class="float-end">Barren Land: <strong>{{ number_format(array_get($latestSurvey->data, 'barren_land')) }}</strong> <small>({{ number_format((array_get($latestSurvey->data, 'barren_land') / array_get($latestSurvey->data, 'total_land', 250)) * 100, 2) }}%)</small></span>
                     @endslot
 
                     @include('partials.dominion.info.construction-constructed-table', ['data' => $latestSurvey->data])
@@ -556,21 +556,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestSurvey !== null)
                                 <em>Revealed {{ $latestSurvey->created_at }} by {{ $latestSurvey->sourceDominion->name }}</em>
                                 @if ($latestSurvey->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestSurvey->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestSurvey->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestSurvey->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestSurvey->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestSurvey->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -636,21 +636,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestLand !== null)
                                 <em>Revealed {{ $latestLand->created_at }} by {{ $latestLand->sourceDominion->name }}</em>
                                 @if ($latestLand->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestLand->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestLand->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestLand->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestLand->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestLand->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -717,21 +717,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestVision !== null)
                                 <em>Revealed {{ $latestVision->created_at }} by {{ $latestVision->sourceDominion->name }}</em>
                                 @if ($latestVision->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestVision->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestVision->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestVision->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestVision->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestVision->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -795,7 +795,7 @@
 
                     @foreach ($latestDisclosure->data as $hero)
                         <h4 class="text-center">{{ $hero['name'] }}</h4>
-                        <table class="table table-condensed">
+                        <table class="table table-sm">
                             <colgroup>
                                 <col width="30%">
                                 <col width="10%">
@@ -836,21 +836,21 @@
 
                 @if (!$inRealm)
                     @slot('boxFooter')
-                        <div class="pull-left">
+                        <div class="float-start">
                             @if ($latestDisclosure !== null)
                                 <em>Revealed {{ $latestDisclosure->created_at }} by {{ $latestDisclosure->sourceDominion->name }}</em>
                                 @if ($latestDisclosure->isInvalid())
-                                    <span class="label label-danger">Invalid</span>
+                                    <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestDisclosure->isStale())
-                                    <span class="label label-warning">Stale</span>
+                                    <span class="badge text-bg-warning">Stale</span>
                                 @endif
                                 <br>
-                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestDisclosure->created_at) }}</span>
-                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestDisclosure->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestDisclosure->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestDisclosure->created_at) }}</span>
                             @endif
                         </div>
 
-                        <div class="pull-right">
+                        <div class="float-end">
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
                                 @include('partials.dominion.bounty.show-item', [
@@ -891,7 +891,7 @@
                     @slot('noPadding', true)
 
                     @foreach ($latestDisclosure->data as $hero)
-                        <table class="table table-condensed">
+                        <table class="table table-sm">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -920,11 +920,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-12">
-            <div class="box box-primary">
-                <div class="box-header" id="recent-invasions">
-                    <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Recent Invasions</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header" id="recent-invasions">
+                    <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Recent Invasions</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     <table class="table">
                         <tbody>
                             @foreach($latestGameEvents as $gameEvent)
@@ -933,7 +933,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="box-footer text-center">
+                <div class="card-footer text-center">
                     <a href="{{ route('dominion.town-crier') }}?dominion={{ $dominion->id }}">View All Events</a>
                 </div>
             </div>

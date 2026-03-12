@@ -16,11 +16,11 @@
     <div class="row">
 
         <div class="col-md-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-trophy"></i> {{ $pageHeader }}</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-trophy"></i> {{ $pageHeader }}</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     <table class="table table-striped">
                         <colgroup>
                             <col>
@@ -32,7 +32,7 @@
                         <thead>
                             <tr>
                                 <th>Ranking</th>
-                                <th class="text-right">Statistic</th>
+                                <th class="text-end">Statistic</th>
                                 <th></th>
                                 <th class="text-center">Rank</th>
                                 <th class="text-center">Change</th>
@@ -43,12 +43,12 @@
                             @foreach ($rankingsHelper->getRankings() as $ranking)
                                 <tr>
                                     <td>
-                                        <i class="ra ra-fw {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $ranking['name'] }}"></i>
+                                        <i class="ra ra-fw {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-bs-toggle="tooltip" title="{{ $ranking['name'] }}"></i>
                                         <a href="{{ route('dominion.rankings', $ranking['key']) }}">
                                             {{ $ranking['name'] }}
                                         </a>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-end">
                                         {{ $ranking['stat_label'] }}:
                                     </td>
                                     @if (isset($myRankings[$ranking['key']]))
@@ -90,27 +90,27 @@
         </div>
 
         <div class="col-md-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The rankings advisor tells you how you are doing in the world compared to other dominions.</p>
                     <p>Rankings are updated every day.</p>
                 </div>
             </div>
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Titles Held</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Titles Held</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p style="font-size: 16px; line-height: 26px;">
                         @if ($myRankings)
                             @foreach ($rankingsHelper->getRankings() as $ranking)
                                 @if (isset($myRankings[$ranking['key']]) && $myRankings[$ranking['key']]->rank == 1)
                                     @if ($ranking['title'])
-                                        <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $ranking['name'] }}" style="font-size: 22px; vertical-align: text-bottom;"></i>
+                                        <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-bs-toggle="tooltip" title="{{ $ranking['name'] }}" style="font-size: 22px; vertical-align: text-bottom;"></i>
                                         {{ $ranking['title'] }}<br/>
                                     @endif
                                 @endif

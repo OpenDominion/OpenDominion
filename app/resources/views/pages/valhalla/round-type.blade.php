@@ -3,13 +3,13 @@
 {{-- todo: refactor this --}}
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">{{ ucwords(str_replace('-', ' ', $type)) }} in {{ $round->name }}</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">{{ ucwords(str_replace('-', ' ', $type)) }} in {{ $round->name }}</h3>
         </div>
 
         @if (!$data->isEmpty())
-            <div class="box-body table-responsive no-padding">
+            <div class="card-body table-responsive no-padding">
                 @php($headersPrinted = false)
                 <table class="table table-striped">
                     <colgroup>
@@ -49,7 +49,7 @@
                 </table>
             </div>
         @else
-            <div class="box-body">
+            <div class="card-body">
                 <p>No records found.</p>
             </div>
         @endif

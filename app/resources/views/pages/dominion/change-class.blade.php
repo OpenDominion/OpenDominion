@@ -8,11 +8,11 @@
         <div class="col-sm-12 col-md-9">
             <form class="form-horizontal" action="{{ route('dominion.heroes.change-class', $targetClass['key']) }}" method="post" role="form">
                 @csrf
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-knight-helmet"></i> Hero Class Change</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-knight-helmet"></i> Hero Class Change</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <h4>{{ $hero->name }} - Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }} - {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP</h4>
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             Confirm
                         </button>
@@ -37,11 +37,11 @@
                 </div>
             </form>
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Heroes</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Heroes</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
                             <h4>Basic Classes</h4>
@@ -118,7 +118,7 @@
                                 @foreach ($heroHelper->getHeroUpgrades()->where('active', true)->where('level', 0) as $upgrade)
                                     <tr>
                                         <td style="font-size: 24px";>
-                                            <i class="ra ra-fw {{ $upgrade->icon }}" title="{{ ucwords($upgrade->type) }}" data-toggle="tooltip"></i>
+                                            <i class="ra ra-fw {{ $upgrade->icon }}" title="{{ ucwords($upgrade->type) }}" data-bs-toggle="tooltip"></i>
                                         </td>
                                         <td>{{ $upgrade->name }}</td>
                                         <td>{{ count($upgrade->classes) ? ucwords(implode(', ', $upgrade->classes)) : '--' }}</td>
@@ -131,11 +131,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Level Bonuses</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Level Bonuses</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
@@ -165,11 +165,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Your hero gains experience and levels up, increasing its class bonuses and unlocking new upgrades.</p>
                     <p>Your hero gains 1 XP per acre gained from invasion (against dominions at least 75% of your size), 0.6 XP per acre explored, 0.5 XP per spy strength spent on successful espionage operations (excluding theft), and 1 XP per wizard strength spent on successful magic operations.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>

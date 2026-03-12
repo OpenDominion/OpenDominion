@@ -16,18 +16,18 @@
     <div class="row">
 
         <div class="col-md-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-bar-chart"></i> {{ $pageHeader }}</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-bar-chart"></i> {{ $pageHeader }}</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="card-body no-padding">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12">
-                            <div class="box-header with-border">
-                                <h4 class="box-title">Espionage</h4>
+                        <div class="col-12 col-sm-12">
+                            <div class="card-header">
+                                <h4 class="card-title">Espionage</h4>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -102,7 +102,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -165,7 +165,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -219,12 +219,12 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12">
-                            <div class="box-header with-border">
-                                <h4 class="box-title">Magic</h4>
+                        <div class="col-12 col-sm-12">
+                            <div class="card-header">
+                                <h4 class="card-title">Magic</h4>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -299,7 +299,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -389,7 +389,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -474,16 +474,16 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="box-header with-border">
-                                        <h4 class="box-title">Land Gain</h4>
+                                <div class="col-12">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Land Gain</h4>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -524,16 +524,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="box-header with-border">
-                                        <h4 class="box-title">Wonders</h4>
+                                <div class="col-12">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Wonders</h4>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -562,16 +562,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="box-header with-border">
-                                        <h4 class="box-title">Other</h4>
+                                <div class="col-12">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Other</h4>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -619,11 +619,11 @@
             </div>
         </div>
         <div class="col-md-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The statistics advisor gives you statistics regarding your current dominion state.</p>
                     <p>Ratio numbers are total number of units per acre of land.</p>
                 </div>

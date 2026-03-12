@@ -3,13 +3,13 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h4 class="box-title">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h4 class="card-title">
                         Privacy Policy
                     </h4>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <h3>1. Introduction</h3>
                     <p>Welcome to OpenDominion ("we," "our," or "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our online game and related services (collectively, the "Service"). Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Service.</p>
                     <p><strong>Important:</strong> By using our Service, you consent to the collection and use of information in accordance with this Privacy Policy. We reserve the right to make changes to this Privacy Policy at any time and for any reason.</p>

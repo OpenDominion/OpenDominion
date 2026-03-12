@@ -6,21 +6,21 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}</h3>
-                    <div class="pull-right">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}</h3>
+                    <div class="float-end">
                         {!! $raidHelper->getStatusLabel($objective->status) !!}
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row form-group">
                                 <div class="col-md-9">
                                     {{ $objective->description }}
                                 </div>
-                                <div class="col-md-3 text-right">
+                                <div class="col-md-3 text-end">
                                     @if (!$objective->hasStarted())
                                         <i class="fa fa-clock-o"></i> Starts in {{ $objective->timeUntilStart() }}
                                     @elseif ($objective->isActive())
@@ -57,7 +57,7 @@
                                 <div class="col-md-6">
                                     <b>Realm Progress:</b> {{ number_format($realmScore) }} / {{ number_format($objective->score_required) }} ({{ number_format($realmProgress, 1) }}%)
                                     @if ($realmCompleted)
-                                        <span class="label label-success">Completed!</span>
+                                        <span class="badge text-bg-success">Completed!</span>
                                     @endif
                                     <br>
                                     <b>Your Contribution:</b> {{ number_format($dominionContribution) }} ({{ number_format($dominionPercentage, 1) }}% of realm)
@@ -74,7 +74,7 @@
                                         <span class="text-muted">0%</span>
                                     @endif
                                 </div>
-                                <div class="col-md-6 text-right">
+                                <div class="col-md-6 text-end">
                                     <a href="{{ route('dominion.raids') }}" class="btn btn-primary btn-sm">
                                         <i class="fa fa-arrow-left"></i> Back to Raids
                                     </a>
@@ -100,11 +100,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Objective Details</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Objective Details</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>
                         <strong>Score Required:</strong><br>
                         {{ number_format($objective->score_required) }} points
@@ -113,7 +113,7 @@
                         <strong>Available Tactics:</strong><br>
                         @php $tacticsByType = $objective->tactics->unique('type'); @endphp
                         @foreach($tacticsByType as $tactic)
-                            <span class="label label-primary">{{ ucwords($tactic->type) }}</span>
+                            <span class="badge text-bg-primary">{{ ucwords($tactic->type) }}</span>
                         @endforeach
                     </p>
                     <p>
@@ -137,11 +137,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Recent Actions</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Actions</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @php
                         $recentContributions = $raidCalculator->getRecentContributions($objective, $selectedDominion->realm, 10);
                     @endphp
@@ -151,7 +151,7 @@
                             <br/>
                             {{ ucwords(str_replace('_', ' ', $contribution['type'])) }} -
                             <span class="text-muted">{{ $contribution['created_at']->diffForHumans() }}</span>
-                            <div class="pull-right text-success">+{{ number_format($contribution['score']) }}</div>
+                            <div class="float-end text-success">+{{ number_format($contribution['score']) }}</div>
                         </div>
                     @empty
                         <div class="text-muted">No recent contributions.</div>

@@ -8,13 +8,13 @@
         <div class="col-sm-12 col-md-9">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-burning-embers"></i> Chaos Operations</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-burning-embers"></i> Chaos Operations</h3>
                         </div>
 
                         @if ($protectionService->isUnderProtection($selectedDominion))
-                            <div class="box-body">
+                            <div class="card-body">
                                 You are currently under protection for
                                 @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
                                     <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
@@ -24,7 +24,7 @@
                                 and may not cast any offensive spells during that time.
                             </div>
                         @elseif ($isBlackGuardMember)
-                            <div class="box-body">
+                            <div class="card-body">
                                 <form action="{{ route('dominion.black-guard.spell') }}" method="post" role="form">
                                     @csrf
 
@@ -62,7 +62,7 @@
                                             @php
                                                 $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                             @endphp
-                                            <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                            <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                 <div class="form-group">
                                                     <button type="submit"
                                                             name="spell"
@@ -85,7 +85,7 @@
                                             @php
                                                 $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                             @endphp
-                                            <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                            <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                 <div class="form-group">
                                                     <button type="submit"
                                                             name="spell"
@@ -118,7 +118,7 @@
                                                 $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
                                             @endphp
-                                            <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                            <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                 <div class="form-group">
                                                     <button type="submit"
                                                             name="spell"
@@ -155,7 +155,7 @@
 
                                     <div class="row">
                                         @foreach ($espionageHelper->getWarOperations() as $operation)
-                                            <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                            <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                 <div class="form-group">
                                                     <button type="submit"
                                                             name="operation"
@@ -172,7 +172,7 @@
 
                                     <div class="row">
                                         @foreach ($espionageHelper->getBlackOperations() as $operation)
-                                            <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                            <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                 <div class="form-group">
                                                     <button type="submit"
                                                             name="operation"
@@ -189,7 +189,7 @@
                                 </form>
                             </div>
                         @else
-                            <div class="box-body">
+                            <div class="card-body">
                                 You are not currently a member of the Chaos League.
                             </div>
                         @endif
@@ -200,13 +200,13 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</h3>
                         </div>
 
-                        <div class="box-body">
-                            <ul class="text-left" style="padding: 0 30px;">
+                        <div class="card-body">
+                            <ul class="text-start" style="padding: 0 30px;">
                                 <li>Enables all war and black operations between members.</li>
                                 <li>War spells between members are now CHAOS spells.</li>
                                 <ul>
@@ -259,11 +259,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>You can perform all war and black operations against other members of the Chaos League.</p>
                     <p>War spells are empowered in the Chaos League, changing their effects. They also have a 25% chance of critical success, which deals 50% more damage. They also have a chance of critical failure, which deals damage to yourself.</p>
                     <p>War and black ops cannot be performed until the 4th day of the round.<p>
@@ -291,11 +291,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -347,15 +345,15 @@
 
             warStatus = '';
             if (friendly == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-green">FRIENDLY</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-green">FRIENDLY</span></div>';
             } else {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">HOSTILE</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-red">HOSTILE</span></div>';
             }
 
             return $(`
-                <div class="pull-left">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
+                <div class="float-start">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
                 ${warStatus}
-                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
+                <div class="float-end">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);
         }

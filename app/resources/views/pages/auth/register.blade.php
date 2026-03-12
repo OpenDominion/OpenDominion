@@ -2,17 +2,17 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
+        <div class="col-sm-6 offset-sm-3">
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Register</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Register</h3>
                 </div>
                 <form action="{{ route('auth.register') }}" method="post" class="form-horizontal" role="form">
                     @csrf
                     @honeypot
 
-                    <div class="box-body">
+                    <div class="card-body">
 
                         <p>Unlike classic Dominion, you only need to register for a user account once.</p>
                         <p>Once you activate your user account, you can sign up for an active round and start playing. Your user account will be persistent across rounds and dominions.</p>
@@ -22,7 +22,7 @@
                             <label for="display_name" class="col-sm-3 control-label">Display Name</label>
                             <div class="col-sm-9">
                                 <input type="text" name="display_name" id="display_name" class="form-control" placeholder="Display Name" value="{{ old('display_name') }}" required autofocus>
-                                <span class="help-block">
+                                <span class="form-text">
                                     Your display name will be shown on your public profile and in Valhalla (leaderboards).
                                 </span>
                             </div>
@@ -33,7 +33,7 @@
                             <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
-                                <span class="help-block">
+                                <span class="form-text">
                                     Please use a valid email address, since you need to validate your account before you can start playing.
                                 </span>
                             </div>
@@ -57,11 +57,11 @@
 
                         {{-- Terms and Conditions --}}
                         <div class="form-group">
-                            <div class="col-sm-offset-3 col-sm-9">
+                            <div class="offset-sm-3 col-sm-9">
                                 <div class="checkbox">
                                     <label>
                                         <input type="checkbox" id="agreement_rules" name="agreement_rules" />
-                                        I will adhere to the rules described in the <a href="#" data-toggle="modal" data-target="#user-agreement">User Agreement</a>
+                                        I will adhere to the rules described in the <a href="#" data-bs-toggle="modal" data-bs-target="#user-agreement">User Agreement</a>
                                     </label>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                         {{-- Turnstile CAPTCHA --}}
                         @if (config('turnstile.enabled'))
                             <div class="form-group">
-                                <div class="col-sm-offset-3 col-sm-9">
+                                <div class="offset-sm-3 col-sm-9">
                                     <div class="cf-turnstile" data-sitekey="{{ config('turnstile.site_key') }}"></div>
                                 </div>
                             </div>
@@ -83,9 +83,9 @@
                         </ul>
                     </div>
 
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" id="register_submit" disabled>Register</button>
-                        <div class="pull-right">
+                        <div class="float-end">
                             Already have an account? <a href="{{ route('auth.login') }}">Login</a>
                         </div>
                     </div>
@@ -101,14 +101,14 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="user-agreement-label">User Agreement</h4>
+                <h5 class="modal-title" id="user-agreement-label">User Agreement</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 @include('partials.user-agreement')
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
             </div>
         </div>

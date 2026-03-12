@@ -5,17 +5,17 @@
     <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post" role="form" id="invasion_form_{{ $tactic->id }}">
         @csrf
         <input type="hidden" name="calc[wonder]" value="1" />
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <div class="box-title"><i class="ra ra-crossed-swords"></i> {{ $tactic->name }}</div>
-                <div class="box-tools pull-right">
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <div class="card-title"><i class="ra ra-crossed-swords"></i> {{ $tactic->name }}</div>
+                <div class="card-tools float-end">
                     @if ($bonusDescriptions)
                         <small class="text-muted">{{ $bonusDescriptions }}</small>
                     @endif
-                    <div class="label label-primary">Invasion</div>
+                    <div class="badge text-bg-primary">Invasion</div>
                 </div>
             </div>
-            <div class="box-body table-responsive no-padding">
+            <div class="card-body table-responsive no-padding">
                 <table class="table">
                     <colgroup>
                         <col>
@@ -60,7 +60,7 @@
                             <tr>
                                 <td>
                                     {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}", $selectedDominion->race) !!}
-                                    <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
+                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
                                         {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
                                     </span>
                                 </td>
@@ -100,11 +100,11 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-6">
-                <div class="box box-danger">
-                    <div class="box-header with-border">
-                        <div class="box-title"><i class="ra ra-sword"></i> Invasion force</div>
+                <div class="card border-danger">
+                    <div class="card-header">
+                        <div class="card-title"><i class="ra ra-sword"></i> Invasion force</div>
                     </div>
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="50%">
@@ -133,8 +133,8 @@
                                     <td>
                                         Max OP:
                                         <i class="fa fa-question-circle"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
                                             title="You may send out a maximum of 125% of your new home DP in OP. (5:4 rule)"></i>
                                     </td>
                                     <td id="invasion-force-max-op-{{ $tactic->id }}" data-amount="0">0</td>
@@ -142,7 +142,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit"
                                 id="attack-button-{{ $tactic->id }}"
                                 class="btn btn-danger"
@@ -154,11 +154,11 @@
                 </div>
             </div>
             <div class="col-sm-12 col-md-6">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <div class="box-title"><i class="fa fa-home"></i> New home forces</div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa fa-home"></i> New home forces</div>
                     </div>
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="50%">
@@ -187,8 +187,8 @@
                                     <td>
                                         Min DP:
                                         <i class="fa fa-question-circle"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
                                             title="You must leave at least 40% of your total DP at home. (40% rule)"></i>
                                     </td>
                                     <td id="home-forces-min-dp-{{ $tactic->id }}" data-amount="0">0</td>

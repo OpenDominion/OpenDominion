@@ -7,19 +7,19 @@
         <div class="col-sm-12 col-md-9">
             <form action="{{ route('dominion.calculations') }}" method="post" role="form" class="calculate-form">
                 @csrf
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-calculator"></i> General Calculator</h3>
-                        <div class="pull-right text-red">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-calculator"></i> General Calculator</h3>
+                        <div class="float-end text-red">
                             Experimental
                         </div>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Race
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-3">
                                 <input type="hidden"
                                         name="attrs[race_id]"
                                         value="{{ $targetDominion->race->id }}" />
@@ -27,10 +27,10 @@
                                         value="{{ $targetDominion->race->name }}"
                                         readonly />
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Land
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="calc[land]"
                                         class="form-control text-center"
@@ -42,10 +42,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Prestige
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="attrs[prestige]"
                                         class="form-control text-center"
@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <b>Buildings</b>
                             </div>
                         </div>
@@ -64,10 +64,10 @@
                         @foreach (collect($buildingHelper->getBuildingTypes())->chunk(2) as $chunk)
                             <div class="form-group row">
                                 @foreach ($chunk as $building)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         {{ $buildingHelper->getBuildingName($building) }}
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 name="attrs[building_{{ $building }}]"
                                                 class="form-control text-center"
@@ -84,10 +84,10 @@
                             </div>
                             @if ($loop->last)
                                 <div class="form-group row">
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         Barren
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 name="calc[barren]"
                                                 class="form-control text-center"
@@ -100,7 +100,7 @@
                         @endforeach
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <b>Improvements</b>
                             </div>
                         </div>
@@ -108,10 +108,10 @@
                         @foreach (collect($improvementHelper->getImprovementTypes())->chunk(2) as $chunk)
                             <div class="form-group row">
                                 @foreach ($chunk as $improvement)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         {{ $improvementHelper->getImprovementName($improvement) }}
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 name="attrs[improvement_{{ $improvement }}]"
                                                 class="form-control text-center"
@@ -124,16 +124,16 @@
                         @endforeach
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <b>Military</b>
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Draftees
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="attrs[military_draftees]"
                                         class="form-control text-center"
@@ -146,10 +146,10 @@
                         @foreach (collect($unitHelper->getUnitTypes())->chunk(2) as $chunk)
                             <div class="form-group row">
                                 @foreach ($chunk as $unit)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         {{ $unitHelper->getUnitName($unit, $targetDominion->race) }}
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 name="attrs[military_{{ $unit }}]"
                                                 class="form-control text-center"
@@ -167,15 +167,15 @@
                         @endforeach
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <b>Spells</b>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-9">
                                 <a
                                    class="text-bold"
                                    href="#spell-wrapper"
-                                   data-toggle="collapse"
-                                   data-target="#spell-wrappper"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#spell-wrappper"
                                    aria-expanded="false"
                                    aria-controls="tech-wrappper"
                                 >
@@ -191,10 +191,10 @@
                             @foreach ($spellHelper->getSpells($targetDominion->race, 'self')->chunk(2) as $chunk)
                                 <div class="form-group row">
                                     @foreach ($chunk as $spell)
-                                        <div class="col-xs-3 text-right">
+                                        <div class="col-3 text-end">
                                             {{ $spell->name }}
                                         </div>
-                                        <div class="col-xs-3 text-left">
+                                        <div class="col-3 text-start">
                                             <input type="checkbox"
                                                     step="any"
                                                     name="spells[{{ $spell->key }}]"
@@ -209,15 +209,15 @@
                             $unlockedTechs = $targetDominion->techs->keyBy('key')->keys();
                         @endphp
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <b>Techs</b>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-9">
                                 <a
                                    class="text-bold"
                                    href="#tech-wrapper"
-                                   data-toggle="collapse"
-                                   data-target="#tech-wrappper"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#tech-wrappper"
                                    aria-expanded="false"
                                    aria-controls="tech-wrappper"
                                 >
@@ -230,10 +230,10 @@
                             @foreach ($techHelper->getTechs()->chunk(2) as $chunk)
                                 <div class="form-group row">
                                     @foreach ($chunk as $tech)
-                                        <div class="col-xs-3 text-right">
+                                        <div class="col-3 text-end">
                                             {{ $tech->name }}
                                         </div>
-                                        <div class="col-xs-3 text-left">
+                                        <div class="col-3 text-start">
                                             <input type="checkbox"
                                                     step="any"
                                                     name="techs[{{ $tech->key }}]"
@@ -251,10 +251,10 @@
                         <!-- TODO: Day In Round -->
 
                         <div class="row">
-                            <div class="col-xs-9 text-right">
+                            <div class="col-9 text-end">
                                 &nbsp;
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <button class="btn btn-primary btn-block" type="submit">Calculate</button>
                             </div>
                         </div>
@@ -264,11 +264,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>I heard you like calculators.</p>
                 </div>
             </div>
@@ -278,12 +278,12 @@
     @if (Request::isMethod('post'))
         <div class="row">
             <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Production</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Production</h3>
                     </div>
-                    <div class="box-body">
-                        <table class="table table-condensed">
+                    <div class="card-body">
+                        <table class="table table-sm">
                             @foreach ([
                                 'getPlatinumProduction',
                                 'getPlatinumProductionRaw',
@@ -328,12 +328,12 @@
             </div>
 
             <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Population</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Population</h3>
                     </div>
-                    <div class="box-body">
-                        <table class="table table-condensed">
+                    <div class="card-body">
+                        <table class="table table-sm">
                             <tr>
                                 <td>Peasants:</td>
                                 <td>{{ $targetDominion->peasants }}</td>
@@ -367,12 +367,12 @@
                         </table>
                     </div>
                 </div>
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Improvements</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Improvements</h3>
                     </div>
-                    <div class="box-body">
-                        <table class="table table-condensed">
+                    <div class="card-body">
+                        <table class="table table-sm">
                             @foreach ($improvementHelper->getImprovementTypes() as $improvement)
                                 @php
                                     $result = class_method_display($improvementCalculator, 'getImprovementMultiplierBonus', $targetDominion, [$improvement])
@@ -408,12 +408,12 @@
             </div>
 
             <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Black Ops</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Black Ops</h3>
                     </div>
-                    <div class="box-body">
-                        <table class="table table-condensed">
+                    <div class="card-body">
+                        <table class="table table-sm">
                             @foreach ([
                                 'getSpellDamageMultiplier',
                                 'getPeasantVulnerablilityModifier',
@@ -439,7 +439,6 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('inline-styles')
@@ -457,7 +456,6 @@
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')

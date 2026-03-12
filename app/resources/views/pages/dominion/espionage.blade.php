@@ -6,13 +6,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-user-secret"></i> Offensive Operations</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-user-secret"></i> Offensive Operations</h3>
                 </div>
 
                 @if ($protectionService->isUnderProtection($selectedDominion))
-                    <div class="box-body">
+                    <div class="card-body">
                         You are currently under protection for
                         @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
                             <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
@@ -29,7 +29,7 @@
                             $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
                         @endphp
 
-                        <div class="box-body">
+                        <div class="card-body">
 
                             <div class="row">
                                 <div class="col-md-12">
@@ -63,7 +63,7 @@
                             @foreach ($espionageHelper->getInfoGatheringOperations()->chunk(4) as $operations)
                                 <div class="row">
                                     @foreach ($operations as $operation)
-                                        <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                        <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                             <div class="form-group">
                                                 <button type="submit" name="operation" value="{{ $operation['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
@@ -84,7 +84,7 @@
                             @foreach ($espionageHelper->getResourceTheftOperations()->chunk(4) as $operations)
                                 <div class="row">
                                     @foreach ($operations as $operation)
-                                        <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                        <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                             <div class="form-group">
                                                 <button type="submit"
                                                         name="operation"
@@ -109,7 +109,7 @@
                             @foreach ($espionageHelper->getBlackOperations()->chunk(4) as $operations)
                                 <div class="row">
                                     @foreach ($operations as $operation)
-                                        <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                        <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                             <div class="form-group">
                                                 <button type="submit"
                                                         name="operation"
@@ -134,7 +134,7 @@
                             @foreach ($espionageHelper->getWarOperations()->chunk(4) as $operations)
                                 <div class="row">
                                     @foreach ($operations as $operation)
-                                        <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                        <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                             <div class="form-group">
                                                 <button type="submit"
                                                         name="operation"
@@ -157,11 +157,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Here you can perform espionage operations on hostile dominions to gain important information for you and your realmies.</p>
                     <p>Any obtained data after successfully performing an information gathering operation gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
                     <p>Theft can only be performed on dominions greater than your size. Theft and black ops cannot be performed until the 4th day of the round.</p>
@@ -175,11 +175,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -232,17 +230,17 @@
 
             warStatus = '';
             if (war == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">WAR</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-red">WAR</span></div>';
             } else if (guard == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">SHADOW LEAGUE</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-red">SHADOW LEAGUE</span></div>';
             } else if (revenge == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">REVENGE</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-red">REVENGE</span></div>';
             }
 
             return $(`
-                <div class="pull-left">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
+                <div class="float-start">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
                 ${warStatus}
-                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
+                <div class="float-end">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);
         }

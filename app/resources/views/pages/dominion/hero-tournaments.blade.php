@@ -7,22 +7,22 @@
 
         <div class="col-sm-12 col-md-9">
             @if ($tournaments->isEmpty())
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-trophy"></i> Hero Tournament</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-trophy"></i> Hero Tournament</h3>
                     </div>
-                    <div class="box-body table-responsive">
+                    <div class="card-body table-responsive">
                         There is no tournament at the moment.
                     </div>
                 </div>
             @endif
             @foreach ($tournaments as $tournament)
                 @if ($tournament->start_date && !$tournament->hasStarted())
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <div class="alert alert-info">
                                 <p>The tournament grounds buzz with anticipation as warriors from across the land prepare for the ultimate test of skill and valor. Preparations are underway, banners are being raised, and crowds are gathering to witness the legendary battles to come.</p>
                                 <p><strong>The tournament begins in {{ $tournament->start_date->longAbsoluteDiffForHumans() }}.</strong></p>
@@ -51,18 +51,18 @@
                         </div>
                     </div>
                 @else
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             @if (!$tournament->finished && !$tournament->battles->where('finished', true)->isEmpty())
                                 @php $battle = $tournament->battles->where('finished', true)->sortByDesc('updated_at')->first(); @endphp
                                 <div class="panel panel-info">
-                                    <div class="panel-body">
+                                    <div class="card-body">
                                         <div class="form-group">
                                             <i class="fa fa-clock-o"></i> Most Recent Battle - {{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}
-                                            <div class="pull-right text-muted">{{ $battle->updated_at->diffForHumans() }}</div>
+                                            <div class="float-end text-muted">{{ $battle->updated_at->diffForHumans() }}</div>
                                         </div>
                                         {{ $heroHelper->getBattleResult($battle) }}
                                     </div>
@@ -70,7 +70,7 @@
                             @endif
                             <h4>Standings {{ $tournament->finished ? '- Final' : null }}</h4>
                             <div class="table-responsive">
-                                <table class="table table-condensed">
+                                <table class="table table-sm">
                                     <colgroup>
                                         <col width="100">
                                         <col>
@@ -105,7 +105,7 @@
                             </div>
                             <h4>Results {{ $tournament->finished ? '- Final' : null }}</h4>
                             <div class="table-responsive">
-                                <table class="table table-condensed">
+                                <table class="table table-sm">
                                     <colgroup>
                                         <col width="100">
                                         <col>
@@ -142,20 +142,20 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @include('partials.dominion.hero-combat')
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Class-Based Abilities</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Class-Based Abilities</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     Each hero gains one ability based on their currently active class:
                     <ul>
                         <li>Alchemist - Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.</li>

@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-axe"></i> Active Battles</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-axe"></i> Active Battles</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @php $playerCombatant = null; @endphp
                     @foreach ($activeBattles as $battle)
                         <form class="form-horizontal" action="{{ route('dominion.heroes.battles') }}" method="post" role="form">
@@ -25,7 +25,7 @@
                                                 <input type="hidden" name="combatant" value="{{ $combatant->id }}">
                                             @endif
                                             <div class="col-sm-6">
-                                                <table class="table table-condensed">
+                                                <table class="table table-sm">
                                                     <thead>
                                                         <tr>
                                                             <th colspan=2 class="text-center">
@@ -34,7 +34,7 @@
                                                                     (you)
                                                                 @endif
                                                                 @if ($combatantTooltip)
-                                                                    <i class="fa fa-question-circle" title="{!! $combatantTooltip !!}" data-toggle="tooltip"></i>
+                                                                    <i class="fa fa-question-circle" title="{!! $combatantTooltip !!}" data-bs-toggle="tooltip"></i>
                                                                 @endif
                                                             </th>
                                                         </tr>
@@ -43,7 +43,7 @@
                                                         @foreach ($heroCalculator->getBaseCombatStats($combatant->level) as $stat => $value)
                                                             <tr>
                                                                 <td>
-                                                                    <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green' : null }} {{ in_array($stat, ['focus', 'counter', 'recover']) && $stat == $combatant->last_action ? 'text-warning' : null }}" data-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
+                                                                    <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green' : null }} {{ in_array($stat, ['focus', 'counter', 'recover']) && $stat == $combatant->last_action ? 'text-warning' : null }}" data-bs-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
                                                                         {{ ucwords($stat) }}
                                                                     </span>
                                                                 </td>
@@ -62,7 +62,7 @@
                                                             </tr>
                                                         @endforeach
                                                         <tr>
-                                                            <td><span data-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
+                                                            <td><span data-bs-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
                                                             <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
                                                         </tr>
                                                     </tbody>
@@ -73,7 +73,7 @@
                                                                     <tr>
                                                                         <td colspan=2>
                                                                             @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                                <a class="btn btn-block btn-default" disabled>
+                                                                                <a class="btn btn-block btn-secondary" disabled>
                                                                                     {{ $actionData['name'] }}
                                                                                 </a>
                                                                             @else
@@ -109,7 +109,7 @@
                                                         <label class="form-label">
                                                             Actions in queue
                                                         </label>
-                                                        <table class="table-condensed">
+                                                        <table class="table-sm">
                                                             @foreach ($playerCombatant->actions ?? [] as $idx => $action)
                                                                 <tr>
                                                                     <td>{{ $battle->current_turn + $idx }}</td>
@@ -130,7 +130,7 @@
                                                         <div>
                                                             @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
                                                                 @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                    <a class="btn btn-block btn-default" disabled>
+                                                                    <a class="btn btn-block btn-secondary" disabled>
                                                                         {{ $actionData['name'] }}
                                                                     </a>
                                                                 @elseif ($actionData['type'] == 'hostile')
@@ -179,7 +179,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6" style="max-height: {{ $battle->finished ? '272px' : '645px' }}; overflow-y: scroll;">
-                                    <table class="table table-condensed">
+                                    <table class="table table-sm">
                                         <thead>
                                             <tr>
                                                 <th>Combat Log</th>
@@ -205,17 +205,17 @@
                 </div>
             </div>
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-axe"></i> Previous Battles</h3>
-                    <div class="pull-right">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-axe"></i> Previous Battles</h3>
+                    <div class="float-end">
                         <a href="{{ route('dominion.heroes.battles.leaderboard') }}">View Leaderboard</a>
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>Result</th>
@@ -252,11 +252,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @include('partials.dominion.hero-combat')
                     @if ($activeBattles->where('finished', false)->count() == 0)
                         <a class="btn btn-primary btn-block" href="{{ route('dominion.heroes.battles.practice') }}">
@@ -275,11 +275,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Class-Based Abilities</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Class-Based Abilities</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     Each hero gains one ability based on their currently active class:
                     <ul>
                         <li>Alchemist - Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.</li>

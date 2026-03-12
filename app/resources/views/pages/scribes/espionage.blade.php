@@ -2,11 +2,11 @@
 
 @section('content')
     @include('partials.scribes.nav')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Espionage</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Espionage</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     <p>Espionage is when you send your spies to take actions against a target in so-called spy-ops.</p>
@@ -17,11 +17,11 @@
             </div>
         </div>
     </div>
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Operations</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Operations</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <div class="row">
                 <div class="col-md-12 col-md-6">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Information gathering</h4>

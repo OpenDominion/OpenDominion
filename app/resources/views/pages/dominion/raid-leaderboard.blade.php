@@ -6,23 +6,23 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
                         <i class="ra ra-castle-flag"></i> {{ $raid->name }} - Overall Leaderboard
                     </h3>
-                    <div class="pull-right">
+                    <div class="float-end">
                         {!! $raidHelper->getStatusLabel($raid->status) !!}
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row form-group">
                                 <div class="col-md-9">
                                     {!! $raid->description !!}
                                 </div>
-                                <div class="col-md-3 text-right">
+                                <div class="col-md-3 text-end">
                                     @if (!$raid->hasStarted())
                                         <i class="fa fa-clock-o"></i> Starts in {{ $raid->timeUntilStart() }}
                                     @elseif ($raid->isActive())
@@ -99,7 +99,7 @@
                                                 <td>
                                                     {{ $entry['realm_name'] }} (#{{ $entry['realm_number'] }})
                                                     @if ($entry['realm_id'] == $selectedDominion->realm_id)
-                                                        <span class="label label-info">Your Realm</span>
+                                                        <span class="badge text-bg-info">Your Realm</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -135,7 +135,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-12 text-right">
+                                <div class="col-md-12 text-end">
                                     <a href="{{ route('dominion.raids') }}" class="btn btn-primary btn-sm">
                                         <i class="fa fa-arrow-left"></i> Back to Raids
                                     </a>
@@ -147,13 +147,13 @@
             </div>
 
             @if (!empty($playerBreakdown))
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Realm Participation</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Realm Participation</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>Player</th>
@@ -167,7 +167,7 @@
                                             <td>
                                                 {{ $player['dominion_name'] }}
                                                 @if($player['dominion_id'] == $selectedDominion->id)
-                                                    <span class="label label-info">You</span>
+                                                    <span class="badge text-bg-info">You</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -189,11 +189,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Your Realm Performance</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Your Realm Performance</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @php
                         $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedDominion->realm_id);
                         $yourRank = $yourRealmData ? array_search($yourRealmData, $leaderboard) + 1 : 'N/A';
@@ -221,11 +221,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Objectives</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Objectives</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @foreach($raid->objectives->sortBy('order') as $objective)
                         @php
                             $isCompleted = $raidCalculator->isObjectiveCompleted($objective, $selectedDominion->realm);

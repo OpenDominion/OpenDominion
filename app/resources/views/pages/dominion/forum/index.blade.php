@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-comments"></i> Round Forum: {{ $round->name }}</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-comments"></i> Round Forum: {{ $round->name }}</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <table class="table table-hover">
                         <colgroup>
                             <col>
@@ -51,7 +51,7 @@
                                                 @if ($pageCount > 1)
                                                     <span class="small" style="margin-left: 10px;">
                                                         @foreach (range(1, $pageCount) as $page)
-                                                            <a href="{{ route('dominion.forum.thread', $thread) }}?page={{ $page }}"><span class="label label-primary">{{ $page }}</span></a>
+                                                            <a href="{{ route('dominion.forum.thread', $thread) }}?page={{ $page }}"><span class="badge text-bg-primary">{{ $page }}</span></a>
                                                         @endforeach
                                                     </span>
                                                 @endif
@@ -88,13 +88,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="box-footer">
+                <div class="card-footer">
                     @if (!$selectedDominion->isLocked())
                         <a href="{{ route('dominion.forum.create') }}" class="btn btn-primary">New Thread</a>
                     @else
                         <button class="btn btn-primary disabled">New Thread</button>
                     @endif
-                    <div class="pull-right">
+                    <div class="float-end">
                         {{ $forumThreads->links() }}
                     </div>
                 </div>
@@ -102,11 +102,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here. You may also <a href="{{ route('dominion.misc.settings') }}">select your title</a>.</p>
                     <p>There {{ ($forumThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($forumThreads->count()) }} {{ str_plural('thread', $forumThreads->count()) }} in the forum.</p>
                     @include('partials.forum-rules')

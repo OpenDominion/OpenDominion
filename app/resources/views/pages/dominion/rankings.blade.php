@@ -6,12 +6,12 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
                         <i class="fa fa-trophy"></i> Rankings
                     </h3>
-                    <select id="ranking-select" class="form-control pull-right">
+                    <select id="ranking-select" class="form-control float-end">
                         @foreach ($rankings as $ranking)
                             <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>
                                 {{ $ranking['name'] }}
@@ -19,7 +19,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     <table class="table">
                         <colgroup>
                             <col width="50">
@@ -45,7 +45,7 @@
                                     <td class="text-center">{{ $row->rank }}</td>
                                     <td>
                                         @if ($row->rank == 1)
-                                            <i class="ra {{ $rankings[$type]['title_icon'] ? $rankings[$type]['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $rankings[$type]['title'] }}"></i>
+                                            <i class="ra {{ $rankings[$type]['title_icon'] ? $rankings[$type]['title_icon'] : 'ra-trophy' }}" data-bs-toggle="tooltip" title="{{ $rankings[$type]['title'] }}"></i>
                                         @endif
                                         @if ($selectedDominion->id === (int)$row->dominion_id)
                                             <b>{{ $row->dominion_name }}</b> (you)
@@ -75,8 +75,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="box-footer">
-                    <div class="pull-right">
+                <div class="card-footer">
+                    <div class="float-end">
                         {{ $daily_rankings->links() }}
                     </div>
                 </div>
@@ -84,11 +84,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>This page shows you the rankings of all dominions in this round and is updated every 24 hours starting on the 2nd day of the round.</p>
                     @if (!empty($daily_rankings) && $selectedDominion->round->start_date <= now()->subDays(4))
                         @php
@@ -109,11 +109,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -123,7 +121,7 @@
                 var selectedRanking = $(this).val();
                 window.location.href = "{!! route('dominion.rankings') !!}/" + selectedRanking;
             });
-            $('#ranking-select + .select2-container').addClass('pull-right');
+            $('#ranking-select + .select2-container').addClass('float-end');
         })(jQuery);
     </script>
 @endpush

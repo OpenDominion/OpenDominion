@@ -3,11 +3,11 @@
 @section('page-header', 'Delete Tactic')
 
 @section('content')
-    <div class="box box-danger">
-        <div class="box-header with-border">
-            <h3 class="box-title">Confirm Deletion</h3>
+    <div class="card border-danger">
+        <div class="card-header">
+            <h3 class="card-title">Confirm Deletion</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <p class="lead">Are you sure you want to delete this tactic?</p>
 
             <div class="alert alert-warning">
@@ -22,7 +22,7 @@
                 </tr>
                 <tr>
                     <th>Type</th>
-                    <td><span class="label label-primary">{{ ucfirst($tactic->type) }}</span></td>
+                    <td><span class="badge text-bg-primary">{{ ucfirst($tactic->type) }}</span></td>
                 </tr>
                 <tr>
                     <th>Objective</th>
@@ -48,14 +48,14 @@
                 @endif
             </table>
         </div>
-        <div class="box-footer">
+        <div class="card-footer">
             <form action="{{ route('staff.administrator.raids.objectives.tactics.delete', [$raid, $objective, $tactic]) }}" method="POST" style="display: inline;">
                 @csrf
                 <button type="submit" class="btn btn-danger">
                     <i class="fa fa-trash"></i> Yes, Delete This Tactic
                 </button>
             </form>
-            <a href="{{ route('staff.administrator.raids.objectives.show', [$raid, $objective]) }}" class="btn btn-default">
+            <a href="{{ route('staff.administrator.raids.objectives.show', [$raid, $objective]) }}" class="btn btn-secondary">
                 <i class="fa fa-times"></i> Cancel
             </a>
         </div>

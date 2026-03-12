@@ -2,11 +2,11 @@
 
 @section('content')
     @include('partials.scribes.nav')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Heroes</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Heroes</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     <p>Each dominion can select one hero that gains experience and levels up, increasing a passive bonus based on its class and unlocking new upgrades.</p>
@@ -100,7 +100,7 @@
                             @foreach ($heroHelper->getHeroUpgrades()->where('active', true) as $upgrade)
                                 <tr>
                                     <td style="font-size: 24px";>
-                                        <i class="ra ra-fw {{ $upgrade->icon }}" title="{{ ucwords($upgrade->type) }}" data-toggle="tooltip"></i>
+                                        <i class="ra ra-fw {{ $upgrade->icon }}" title="{{ ucwords($upgrade->type) }}" data-bs-toggle="tooltip"></i>
                                     </td>
                                     <td>{{ $upgrade->name }}</td>
                                     <td>{{ $upgrade->type === 'directive' ? '--' : $upgrade->level }}</td>
@@ -117,11 +117,11 @@
             </em>
         </div>
     </div>
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Level Bonuses</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Level Bonuses</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table">
                 <thead>
                     <tr>

@@ -6,24 +6,24 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
                         <i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}
                         - Leaderboard
                     </h3>
-                    <div class="pull-right">
+                    <div class="float-end">
                         {!! $raidHelper->getStatusLabel($objective->status) !!}
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row form-group">
                                 <div class="col-md-9">
                                     {{ $objective->description }}
                                 </div>
-                                <div class="col-md-3 text-right">
+                                <div class="col-md-3 text-end">
                                     @if (!$objective->hasStarted())
                                         <i class="fa fa-clock-o"></i> Starts in {{ $objective->timeUntilStart() }}
                                     @elseif ($objective->isActive())
@@ -83,7 +83,7 @@
                                                 <td>
                                                     {{ $entry['realm_name'] }} (#{{ $entry['realm_number'] }})
                                                     @if ($entry['realm_id'] == $selectedDominion->realm_id)
-                                                        <span class="label label-info">Your Realm</span>
+                                                        <span class="badge text-bg-info">Your Realm</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -116,7 +116,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-12 text-right">
+                                <div class="col-md-12 text-end">
                                     <a href="{{ route('dominion.raids.objective', $objective) }}" class="btn btn-primary btn-sm">
                                         <i class="fa fa-arrow-left"></i> Back to Objective
                                     </a>
@@ -132,11 +132,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Your Realm Performance</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Your Realm Performance</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @php
                         $yourRealmData = collect($leaderboard)->firstWhere('realm_id', $selectedDominion->realm_id);
                         $yourRank = $yourRealmData ? array_search($yourRealmData, $leaderboard) + 1 : 'N/A';
@@ -154,11 +154,11 @@
                 </div>
             </div>
             @if (!empty($topContributors))
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Top Contributors</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Top Contributors</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <ol>
                             @foreach ($topContributors as $contributor)
                                 <li>

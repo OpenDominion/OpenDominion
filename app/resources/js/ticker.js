@@ -112,12 +112,7 @@ class Ticker {
      * @private
      */
     static pad(value) {
-        if (window.document.documentMode) {
-            // Detect IE
-            return ('00' + value).slice(-2);
-        } else {
-            return value.toString().padStart(2, '0');
-        }
+        return value.toString().padStart(2, '0');
     }
 
     /**
@@ -139,4 +134,4 @@ class Ticker {
     }
 }
 
-module.exports = new Ticker;
+export default new Ticker;

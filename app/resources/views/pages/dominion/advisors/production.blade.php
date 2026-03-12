@@ -16,14 +16,14 @@
     <div class="row">
 
         <div class="col-md-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-industry"></i> {{ $pageHeader }}</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-industry"></i> {{ $pageHeader }}</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="card-body no-padding">
                     <div class="row">
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -143,7 +143,7 @@
                             </table>
                         </div>
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -208,7 +208,7 @@
                             </table>
                         </div>
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -220,7 +220,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="hidden-xs">
+                                    <tr class="d-none d-sm-block">
                                         <td colspan="2">&nbsp;</td>
                                     </tr>
                                     <tr>
@@ -263,13 +263,13 @@
         </div>
 
         <div class="col-md-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The production advisor tells you about your resource production, population, and jobs.</p>
-                    <table class="table table-condensed">
+                    <table class="table table-sm">
                         <colgroup>
                             <col width="50%">
                             <col width="50%">
@@ -320,7 +320,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <span data-toggle="tooltip" data-placement="top" title="You should acquire additional peasants, since you have idle jobs.<br>Employed peasants pay their income tax in platinum to the dominion.">
+                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="You should acquire additional peasants, since you have idle jobs.<br>Employed peasants pay their income tax in platinum to the dominion.">
                                             Opportunity Cost:
                                         </span>
                                     </td>
@@ -342,7 +342,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <span data-toggle="tooltip" data-placement="top" title="You should construct additional job buildings, since you have idle peasants.<br>Only employed peasants pay their income tax in platinum to the dominion.">
+                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="You should construct additional job buildings, since you have idle peasants.<br>Only employed peasants pay their income tax in platinum to the dominion.">
                                             Opportunity Cost:
                                         </span>
                                     </td>
@@ -351,7 +351,7 @@
                             @endif
                             <tr>
                                 <td>
-                                    <span data-toggle="tooltip" data-placement="top" title="Each barracks houses 36 trained or training military units.<br>Does not increase in capacity for population bonuses.">
+                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="Each barracks houses 36 trained or training military units.<br>Does not increase in capacity for population bonuses.">
                                         Barracks Housing:
                                     </span>
                                 </td>
@@ -374,13 +374,13 @@
     <div class="row">
 
         <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-mining-diamonds"></i> Resource Expenditure</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-mining-diamonds"></i> Resource Expenditure</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="table-responsive text-nowrap">
-                        <table class="table table-condensed table-striped">
+                        <table class="table table-sm table-striped">
                             <colgroup>
                                 <col>
                                 <col width="11%">
@@ -510,14 +510,14 @@
         </div>
 
         <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-money"></i> Expenditure Bonuses</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-money"></i> Expenditure Bonuses</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="card-body no-padding">
                     <div class="row">
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -557,7 +557,7 @@
                             </table>
                         </div>
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
@@ -597,7 +597,7 @@
                             </table>
                         </div>
 
-                        <div class="col-xs-12 col-sm-4">
+                        <div class="col-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">

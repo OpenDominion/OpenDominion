@@ -5,13 +5,13 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-arrow-up fa-fw"></i> Improvements</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-arrow-up fa-fw"></i> Improvements</h3>
                 </div>
                 <form action="{{ route('dominion.improvements') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="15%">
@@ -32,7 +32,7 @@
                                     <tr>
                                         <td>
                                             {{ $improvementHelper->getImprovementName($improvementType) }}
-                                            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
+                                            <i class="fa fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
                                         </td>
                                         <td>
                                             {!! sprintf(
@@ -71,8 +71,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
-                        <div class="pull-right">
+                    <div class="card-footer">
+                        <div class="float-end">
                             <select name="resource" class="form-control">
                                 <option value="platinum" data-amount="{{ $selectedDominion->resource_platinum }}" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
                                 <option value="lumber" data-amount="{{ $selectedDominion->resource_lumber }}" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
@@ -81,7 +81,7 @@
                             </select>
                         </div>
 
-                        <div class="pull-right" style="padding: 7px 8px 0 0">
+                        <div class="float-end" style="padding: 7px 8px 0 0">
                             Resource to invest:
                         </div>
 
@@ -92,11 +92,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Invest resources in your castle to improve certain parts of your dominion. Improving processes <b>instantly</b>.</p>
                     <p>Resources are converted to points. Each gem is worth 12 points, lumber and ore are worth 2 points and platinum is worth 1 point.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_lumber) }} lumber, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->resource_gems) }} {{ str_plural('gem', $selectedDominion->resource_gems) }}.</p>
@@ -110,13 +110,13 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Settings</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Settings</h3>
                 </div>
                 <form action="{{ route('dominion.improvements.resource') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="50%">
@@ -137,7 +137,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit"
                                 class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Change
                         </button>

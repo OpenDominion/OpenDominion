@@ -1,11 +1,11 @@
-<table class="table table-condensed">
+<table class="table table-sm">
     <colgroup>
         <col width="150">
         <col>
     </colgroup>
     <thead>
         <tr>
-            <th class="text-right">Total Bonus</th>
+            <th class="text-end">Total Bonus</th>
             <th>Description</th>
         </tr>
     </thead>
@@ -38,7 +38,7 @@
                 $techPerk = explode(' ', $techPerkString, 2);
             @endphp
             <tr>
-                <td class="text-right">{{ $techPerk[0] }}</td>
+                <td class="text-end">{{ $techPerk[0] }}</td>
                 <td>{{ $techPerk[1] }}</td>
             </tr>
         @endforeach

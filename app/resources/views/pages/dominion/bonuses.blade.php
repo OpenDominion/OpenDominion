@@ -6,13 +6,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-plus"></i> Daily bonuses</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-plus"></i> Daily bonuses</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
-                        <div class="col-xs-6 text-center">
+                        <div class="col-6 text-center">
                             <form action="{{ route('dominion.bonuses.land') }}" method="post" role="form">
                                 @csrf
                                 <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || $selectedDominion->daily_land ? 'disabled' : null }}>
@@ -21,7 +21,7 @@
                                 </button>
                             </form>
                         </div>
-                        <div class="col-xs-6 text-center">
+                        <div class="col-6 text-center">
                             <form action="{{ route('dominion.bonuses.platinum') }}" method="post" role="form">
                                 @csrf
                                 <button type="submit" name="platinum" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || $selectedDominion->daily_platinum ? 'disabled' : null }}>
@@ -34,8 +34,8 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-body">
+            <div class="card">
+                <div class="card-body">
                     <p>While you're here, consider supporting the project in one (or more) of the following ways:</p>
 
                     <div class="row">
@@ -72,17 +72,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
+                <div class="card-footer">
                     <p>Thank you for your attention, and please enjoy playing OpenDominion!</p>
                 </div>
             </div>
 
             @if (!$selectedDominion->protection_finished || !$selectedDominion->round->hasStarted())
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-history"></i> Protection History</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-history"></i> Protection History</h3>
                     </div>
-                    <div class="box-body table-responsive">
+                    <div class="card-body table-responsive">
                         @foreach ($log as $line)
                             <div>{{ $line }}</div>
                         @endforeach
@@ -92,11 +92,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The Platinum Bonus instantly gives you 4 platinum per peasant (currently {{ number_format($selectedDominion->peasants * 4) }}) and 350 research points.</p>
                     <p>The Land Bonus instantly gives you 20 acres of {{ str_plural($selectedDominion->race->home_land_type) }}.</p>
                     <p>Both bonuses can be claimed once per day.</p>

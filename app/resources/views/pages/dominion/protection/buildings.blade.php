@@ -8,17 +8,17 @@
             $defaultBuildings = $buildingHelper->getDefaultBuildings($selectedDominion->protection_type == 'quick');
         @endphp
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-home"></i> Select Starting Buildings</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-home"></i> Select Starting Buildings</h3>
                 </div>
                 <form action="{{ route('dominion.protection.buildings') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="row">
 
                             <div class="col-md-12 col-lg-6">
-                                <table class="table table-condensed" style="margin-bottom: 0px;">
+                                <table class="table table-sm" style="margin-bottom: 0px;">
                                     <colgroup>
                                         <col width="50%">
                                         <col width="50%">
@@ -39,7 +39,7 @@
                                             @foreach ($buildingTypes as $buildingType)
                                                 <tr>
                                                     <td>
-                                                        <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
+                                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
                                                             {{ $buildingHelper->getBuildingName($buildingType) }}
                                                         </span>
                                                     </td>
@@ -54,7 +54,7 @@
                             </div>
                             
                             <div class="col-md-12 col-lg-6">
-                                <table class="table table-condensed" style="margin-bottom: 0px;">
+                                <table class="table table-sm" style="margin-bottom: 0px;">
                                     <colgroup>
                                         <col width="50%">
                                         <col width="50%">
@@ -75,7 +75,7 @@
                                             @foreach ($buildingTypes as $buildingType)
                                                 <tr>
                                                     <td>
-                                                        <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
+                                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
                                                             {{ $buildingHelper->getBuildingName($buildingType) }}
                                                         </span>
                                                     </td>
@@ -91,9 +91,9 @@
 
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }} disabled>Build</button>
-                        <div class="pull-right">
+                        <div class="float-end">
                             <h4>
                                 Total Buildings:
                                 <span id="total_buildings">600</span>
@@ -107,11 +107,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>You can choose to start with whichever buildings you want.</p>
                     <p>You have <b>{{ number_format($landCalculator->getTotalLand($selectedDominion)) }} acres</b> of land.</p>
                     @if ($selectedDominion->protection_type == 'quick')

@@ -2,11 +2,11 @@
 
 @section('content')
     @include('partials.scribes.nav')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Construction</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Construction</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     <p>Buildings are the backbone of your dominion and provide you with production and various bonuses.</p>
@@ -18,11 +18,11 @@
             </div>
         </div>
     </div>
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Buildings</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Buildings</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <div class="row">
                 <div class="col-md-12">
                     <table class="table table-striped" style="margin-bottom: 0">

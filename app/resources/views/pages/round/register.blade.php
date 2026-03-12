@@ -3,21 +3,21 @@
 @section('page-header', "Register to round {$round->number} ({$round->league->description})")
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Register to round {{ $round->name }} (#{{ $round->number }})</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Register to round {{ $round->name }} (#{{ $round->number }})</h3>
         </div>
         <form action="{{ route('round.register', $round) }}" method="post" class="form-horizontal" role="form">
             @csrf
 
-            <div class="box-body">
+            <div class="card-body">
 
                 <!-- Dominion Name -->
                 <div class="form-group">
                     <label for="dominion_name" class="col-sm-3 control-label">Dominion Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="dominion_name" id="dominion_name" class="form-control" placeholder="Dominion Name" value="{{ old('dominion_name') }}" required autofocus>
-                        <p class="help-block">Your dominion name is shown when viewing and interacting with other players. Must contain 3 consecutive alphanumeric characters.</p>
+                        <p class="form-text">Your dominion name is shown when viewing and interacting with other players. Must contain 3 consecutive alphanumeric characters.</p>
                     </div>
                 </div>
 
@@ -26,7 +26,7 @@
                     <label for="ruler_name" class="col-sm-3 control-label">Ruler Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="{{ Auth::user()->display_name }}" value="{{ old('ruler_name') }}">
-                        <p class="help-block">This is your personal alias in the round and is visible to everyone. Defaults to your display name '{{ Auth::user()->display_name }}' if omitted.</p>
+                        <p class="form-text">This is your personal alias in the round and is visible to everyone. Defaults to your display name '{{ Auth::user()->display_name }}' if omitted.</p>
                     </div>
                 </div>
 
@@ -35,7 +35,7 @@
                     <label for="race" class="col-sm-3 control-label">Race</label>
                     <div class="col-sm-9">
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <div class="text-center">
                                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Good Aligned Races</h4>
                                 </div>
@@ -55,7 +55,7 @@
                                                 <tr>
                                                     <td>
                                                         <label for="{{ $race->key }}" class="radio-row-label"
-                                                            data-toggle="tooltip" data-html="true"
+                                                            data-bs-toggle="tooltip" data-html="true"
                                                             title='@foreach ($race->perks as $perk){!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br/>@endforeach'
                                                         >
                                                             <input type="radio" name="race" id="{{ $race->key }}" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required />
@@ -90,7 +90,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <div class="text-center">
                                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Evil Aligned Races</h4>
                                 </div>
@@ -110,7 +110,7 @@
                                                 <tr>
                                                     <td>
                                                         <label for="{{ $race->key }}" class="radio-row-label"
-                                                            data-toggle="tooltip" data-html="true"
+                                                            data-bs-toggle="tooltip" data-html="true"
                                                             title='@foreach ($race->perks as $perk){!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br/>@endforeach'
                                                         >
                                                             <input type="radio" name="race" id="{{ $race->key }}" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required />
@@ -160,7 +160,7 @@
                                 Advanced Simulation{{ $isLateStart ? ' (unavailable after round start)' : '' }}
                             </option>
                         </select>
-                        <p class="help-block">
+                        <p class="form-text">
                             <span class="text-muted">You can change your selection after registration.</span>
                         </p>
                     </div>
@@ -177,7 +177,7 @@
                                 <option value="create_pack" {{ (old('realm_type') === 'create_pack') ? 'selected' : null }}>Create a new pack</option>
                             @endif
                         </select>
-                        <p class="help-block">
+                        <p class="form-text">
                             @if ($round->packRegistrationOpen())
                                 <span class="text-muted">You can join a pack after registration, but you cannot leave a pack.</span>
                             @else
@@ -192,8 +192,8 @@
                     <label for="pack_name" class="col-sm-3 control-label">Pack Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="pack_name" id="pack_name" class="form-control" placeholder="Pack Name" value="{{ old('pack_name') }}">
-                        <p class="help-block create-pack-only">This is the name of your pack. This will be recorded and will eventually be shown in Valhalla.</p>
-                        <p class="help-block join-pack-only">You need the pack name and password from the player whose pack you want to join.</p>
+                        <p class="form-text create-pack-only">This is the name of your pack. This will be recorded and will eventually be shown in Valhalla.</p>
+                        <p class="form-text join-pack-only">You need the pack name and password from the player whose pack you want to join.</p>
                     </div>
                 </div>
 
@@ -202,7 +202,7 @@
                     <label for="pack_password" class="col-sm-3 control-label">Pack Password</label>
                     <div class="col-sm-9">
                         <input type="text" name="pack_password" id="pack_password" class="form-control" placeholder="Pack Password" value="{{ old('pack_password') }}">
-                        <p class="help-block create-pack-only">Your packies need both your pack name and pack password in order to join.</p>
+                        <p class="form-text create-pack-only">Your packies need both your pack name and pack password in order to join.</p>
                     </div>
                 </div>
 
@@ -215,7 +215,7 @@
                                 <option value="{{ $i }}" {{ (old('pack_size') == $i) ? 'selected' : null }}>{{ $i }}</option>
                             @endfor
                         </select>
-                        <p class="help-block">
+                        <p class="form-text">
                             The amount of players that will be in your pack (including yourself).<br/>
                             <span class="text-danger">Packs of size <b>{{ $round->pack_size }}</b> require each player to select a unique race.</span>
                         </p>
@@ -230,7 +230,7 @@
                             <option value="yes" {{ (old('discord') === 'yes') ? 'selected' : null }}>Place me in a Discord-enabled realm (recommended)</option>
                             <option value="no" {{ ((old('discord') === 'no') || (old('discord') === null) && !$hasDiscord) ? 'selected' : null }}>I do not plan to use Discord</option>
                         </select>
-                        <p class="help-block">
+                        <p class="form-text">
                             <span class="text-muted">Discord is a third party chat program used to communicate with your realm.</span>
                         </p>
                     </div>
@@ -243,7 +243,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" id="agreement_rules" name="agreement_rules" />
-                                I will adhere to the rules described in the OpenDominion <a href="#" data-toggle="modal" data-target="#user-agreement">User Agreement</a>.
+                                I will adhere to the rules described in the OpenDominion <a href="#" data-bs-toggle="modal" data-bs-target="#user-agreement">User Agreement</a>.
                             </label>
                         </div>
                     </div>
@@ -251,7 +251,7 @@
 
             </div>
 
-            <div class="box-footer">
+            <div class="card-footer">
                 <button type="submit" class="btn btn-primary" id="register_submit" disabled>Register</button>
             </div>
 
@@ -263,14 +263,14 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="user-agreement-label">User Agreement</h4>
+                <h5 class="modal-title" id="user-agreement-label">User Agreement</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 @include('partials.user-agreement')
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
             </div>
         </div>

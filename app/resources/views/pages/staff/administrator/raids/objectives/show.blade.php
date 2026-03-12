@@ -5,25 +5,25 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ $objective->name }}</h3>
-                    <div class="pull-right">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ $objective->name }}</h3>
+                    <div class="float-end">
                         <a href="{{ route('staff.administrator.raids.objectives.edit', [$raid, $objective]) }}" class="btn btn-primary btn-sm">
                             <i class="fa fa-edit"></i> Edit
                         </a>
                         <a href="{{ route('staff.administrator.raids.objectives.delete', [$raid, $objective]) }}" class="btn btn-danger btn-sm">
                             <i class="fa fa-trash"></i> Delete
                         </a>
-                        <a href="{{ route('staff.administrator.raids.show', $raid) }}" class="btn btn-default btn-sm">
+                        <a href="{{ route('staff.administrator.raids.show', $raid) }}" class="btn btn-secondary btn-sm">
                             <i class="fa fa-arrow-left"></i> Back to Raid
                         </a>
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th width="200">Raid</th>
                                     <td><a href="{{ route('staff.administrator.raids.show', $raid) }}">{{ $raid->name }}</a></td>
@@ -43,7 +43,7 @@
                             </table>
                         </div>
                         <div class="col-md-6">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th width="200">Start Date</th>
                                     <td>Day {{ $raid->round->daysInRound($objective->start_date) }} ({{ $objective->start_date->format('M d, Y H:i') }})</td>
@@ -77,16 +77,16 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Tactics</h3>
-                    <div class="pull-right">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tactics</h3>
+                    <div class="float-end">
                         <a href="{{ route('staff.administrator.raids.objectives.tactics.create', [$raid, $objective]) }}" class="btn btn-success btn-sm">
                             <i class="fa fa-plus"></i> Create New Tactic
                         </a>
                     </div>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     @if ($objective->tactics->isEmpty())
                         <p class="text-center text-muted">No tactics found for this objective.</p>
                     @else
@@ -106,7 +106,7 @@
                                     <tr>
                                         <td class="text-center">{{ $tactic->id }}</td>
                                         <td>
-                                            <span class="label label-primary">{{ ucfirst($tactic->type) }}</span>
+                                            <span class="badge text-bg-primary">{{ ucfirst($tactic->type) }}</span>
                                         </td>
                                         <td>
                                             <strong>{{ $tactic->name }}</strong>
@@ -130,10 +130,10 @@
                                             </small>
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ route('staff.administrator.raids.objectives.tactics.edit', [$raid, $objective, $tactic]) }}" class="btn btn-xs btn-info" title="Edit">
+                                            <a href="{{ route('staff.administrator.raids.objectives.tactics.edit', [$raid, $objective, $tactic]) }}" class="btn btn-sm btn-info" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <a href="{{ route('staff.administrator.raids.objectives.tactics.delete', [$raid, $objective, $tactic]) }}" class="btn btn-xs btn-danger" title="Delete">
+                                            <a href="{{ route('staff.administrator.raids.objectives.tactics.delete', [$raid, $objective, $tactic]) }}" class="btn btn-sm btn-danger" title="Delete">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         </td>

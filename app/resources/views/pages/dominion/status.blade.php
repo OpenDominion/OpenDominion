@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="card-body no-padding">
                     @include('partials.dominion.info.status', ['data' => $infoMapper->mapStatus($selectedDominion, false), 'race' => $selectedDominion->race, ])
                 </div>
             </div>
@@ -18,11 +18,11 @@
 
         <div class="col-sm-12 col-md-3">
             @if ($protectionService->isUnderProtection($selectedDominion))
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-shield text-aqua"></i> Under Protection</h3>
+                <div class="card border-warning">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-shield text-aqua"></i> Under Protection</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Restart or Rename</a></p>
                         <p>You are under a magical state of protection. During this time you cannot be attacked or attack other dominions. Nor can you cast any offensive spells or engage in espionage.</p>
                         @php
@@ -39,18 +39,18 @@
                     </div>
                 </div>
             @else
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Information</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Information</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <p>This section gives you a quick overview of your dominion.</p>
 
-                        <table class="table table-condensed" style="margin-bottom: 10px;">
+                        <table class="table table-sm" style="margin-bottom: 10px;">
                             <thead>
                                 <tr>
                                     <th>{{ $selectedDominion->race->name }} Perks</th>
-                                    <th class="text-right">Value</th>
+                                    <th class="text-end">Value</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,7 +58,7 @@
                                     <td>
                                         Home land
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-end">
                                         {{ ucwords($selectedDominion->race->home_land_type) }}
                                     </td>
                                 </tr>
@@ -70,7 +70,7 @@
                                         <td>
                                             {!! $perkDescription['description'] !!}
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                             {!! $perkDescription['value']  !!}
                                         </td>
                                     </tr>
@@ -89,7 +89,7 @@
         @if ($selectedDominion->realm->motd && ($selectedDominion->realm->motd_updated_at > now()->subDays(3)))
             <div class="col-sm-12 col-md-9">
                 <div class="panel panel-info">
-                    <div class="panel-body">
+                    <div class="card-body">
                         <b>Message of the Day:</b> {{ $selectedDominion->realm->motd }}
                         <br/><small class="text-muted">Posted {{ $selectedDominion->realm->motd_updated_at }}</small>
                     </div>
@@ -98,18 +98,18 @@
         @endif
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-newspaper-o"></i> Recent News</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-newspaper-o"></i> Recent News</h3>
                 </div>
 
                 @if ($notifications->isEmpty())
-                    <div class="box-body">
+                    <div class="card-body">
                         <p>No recent news.</p>
                     </div>
                 @else
-                    <div class="box-body">
-                        <table class="table table-condensed no-border">
+                    <div class="card-body">
+                        <table class="table table-sm no-border">
                             <colgroup>
                                 <col width="150">
                                 <col>
@@ -141,8 +141,8 @@
                             @endforeach
                         </table>
                     </div>
-                    <div class="box-footer">
-                        <div class="pull-right">
+                    <div class="card-footer">
+                        <div class="float-end">
                             {{ $notifications->links() }}
                         </div>
                     </div>
@@ -152,11 +152,11 @@
 
         @if ($selectedDominion->pack !== null)
             <div class="col-sm-12 col-md-3">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Pack</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pack</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <p>You are a member of <b>{{ $selectedDominion->pack->name }}</b> ({{ $selectedDominion->pack->password }}) with:</p>
                         <ul>
                             @foreach ($selectedDominion->pack->dominions as $dominion)
@@ -200,13 +200,13 @@
             </div>
         @elseif (!$selectedDominion->round->hasAssignedRealms())
             <div class="col-sm-12 col-md-3">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Join a Pack</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Join a Pack</h3>
                     </div>
                     <form action="{{ route('dominion.misc.join-pack') }}" method="post">
                         @csrf
-                        <div class="box-body">
+                        <div class="card-body">
                             <div class="form-group">
                                 <input type="text" name="pack_name" id="pack_name" class="form-control" placeholder="Pack Name" required>
                             </div>

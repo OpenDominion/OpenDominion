@@ -7,7 +7,7 @@
  * @param {number} decimals
  * @returns {string}
  */
-function formatBytes(bytes, decimals) {
+export function formatBytes(bytes, decimals) {
     if (bytes === 0) {
         return '0 Bytes';
     } else if (bytes === 1) {
@@ -21,7 +21,3 @@ function formatBytes(bytes, decimals) {
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
-
-module.exports = {
-    formatBytes,
-};

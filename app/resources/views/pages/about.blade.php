@@ -3,13 +3,13 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
                         About the Project
                     </h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before stopping indefinitely.</p>
 
                     <h4>Vision Statement</h4>

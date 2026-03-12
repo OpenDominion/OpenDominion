@@ -2,16 +2,16 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
+        <div class="col-sm-6 offset-sm-3">
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Login</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Login</h3>
                 </div>
                 <form action="{{ route('auth.login') }}" method="post" class="form-horizontal" role="form">
                     @csrf
 
-                    <div class="box-body">
+                    <div class="card-body">
 
                         {{-- Email --}}
                         <div class="form-group">
@@ -26,7 +26,7 @@
                             <label for="password" class="col-sm-3 control-label">Password</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                                <span class="help-block" style="margin-bottom: 0">
+                                <span class="form-text" style="margin-bottom: 0">
                                     Forgot your password? <a href="{{ route('auth.password.request') }}">Reset Password</a>
                                 </span>
                             </div>
@@ -34,7 +34,7 @@
 
                         {{-- Remember Me --}}
                         <div class="form-group">
-                            <div class="col-sm-offset-3 col-sm-9">
+                            <div class="offset-sm-3 col-sm-9">
                                 <div class="checkbox">
                                     <label>
                                         <input type="checkbox" name="remember" checked> Remember me
@@ -45,9 +45,9 @@
 
                     </div>
 
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Login</button>
-                        <div class="pull-right">
+                        <div class="float-end">
                             Don't have an account? <a href="{{ route('auth.register') }}">Register</a>
                         </div>
                     </div>

@@ -4,8 +4,8 @@
     @include('partials.scribes.nav')
     <div class="row">
         <div class="col-md-3">
-            <div class="box box-primary">
-                <div class="box-body table-responsive no-padding">
+            <div class="card card-outline card-primary">
+                <div class="card-body table-responsive no-padding">
                     <ul class="nav">
                         <li><a href="#game-overview">Game Overview</a></li>
                         <li><a href="#status">Status</a></li>
@@ -26,11 +26,11 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border text-center">
-                    <h3 class="box-title">Game Overview</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <h3 class="card-title">Game Overview</h3>
                 </div>
-                <div class="box-body" id="scribes" style="padding: 10px 25px;">
+                <div class="card-body" id="scribes" style="padding: 10px 25px;">
                     <div id="game-overview">
                         <p>Dominion is a medieval strategy persistent browser-based game. You take control of a plot of land, called a "Dominion", that is within a Realm, each with a unique identification number, called "Realm Number". The other Dominions in your realm are your allies, and the ultimate goal of Dominion is to be the biggest, strongest Realm in all of the land. Individually, you are working both towards that goal and to become the biggest, strongest Dominion. The better you coordinate your efforts with the rest of your Realm, the better of you are at completing both of those goals. In order to accomplish this, you must carefully balance the needs of your dominion and work closely with your realm mates.</p>
                         <p>Accomplishing those feats involve understanding all the facets of the game. When you create your account, you must select a race for you and your people. The good races include Humans, Dwarves, Wood Elves, Gnomes, Merfolk, Firewalkers, Sylvans and Halflings. The evil races span Icekin, Trolls, Goblins, Dark Elves, Kobolds, Lycanthropes, Lizardfolk, The Nox and the Undead. Each race has a unique set of bonuses and military units that are important to understand.</p>

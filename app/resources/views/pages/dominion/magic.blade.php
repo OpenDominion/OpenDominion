@@ -9,9 +9,9 @@
             <div class="row">
 
                 <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
                         </div>
 
                         @php
@@ -22,7 +22,7 @@
                         @endphp
 
                         @if ($protectionService->isUnderProtection($selectedDominion))
-                            <div class="box-body">
+                            <div class="card-body">
                                 You are currently under protection for
                                 @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
                                     <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
@@ -39,7 +39,7 @@
                                     $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
                                 @endphp
 
-                                <div class="box-body">
+                                <div class="card-body">
 
                                     <div class="row">
                                         <div class="col-md-12">
@@ -79,7 +79,7 @@
                                                 @php
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
-                                                <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                                <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
                                                         <button type="submit" name="spell" value="{{ $spell->key }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
                                                             {{ $spell->name }}
@@ -110,7 +110,7 @@
                                                 @php
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
-                                                <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                                <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
                                                         <button type="submit"
                                                                 name="spell"
@@ -145,7 +145,7 @@
                                                 @php
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
-                                                <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                                <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group war-non-chaos">
                                                         <button type="submit"
                                                                 name="spell"
@@ -212,7 +212,7 @@
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                     $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
                                                 @endphp
-                                                <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                                <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
                                                         <button type="submit"
                                                                 name="spell"
@@ -245,18 +245,18 @@
                 </div>
 
                 <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
                         </div>
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
                             @csrf
 
-                            <div class="box-body">
+                            <div class="card-body">
                                 @foreach ($spellHelper->getSpells($selectedDominion->race, 'self')->chunk(4) as $spells)
                                     <div class="row">
                                         @foreach ($spells as $spell)
-                                            <div class="col-xs-6 col-md-3 text-center">
+                                            <div class="col-6 col-md-3 text-center">
                                                 @php
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                     $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
@@ -300,12 +300,12 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.advisors.magic') }}" class="pull-right">Magic Advisor</a>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
+                    <a href="{{ route('dominion.advisors.magic') }}" class="float-end">Magic Advisor</a>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Here you may cast spells which temporarily benefit your dominion or hinder opposing dominions. You can also perform information gathering operations with magic.</p>
                     <p>Self spells last for <b>12 hours</b>, unless stated otherwise while Black Op spells last for <b>8 hours</b> outside of war, <b>10 hours</b> when at war, and <b>12 hours</b> when at mutual war.</p>
                     <p>Any obtained data after successfully casting an information gathering spell gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
@@ -321,11 +321,11 @@
     <div class="row">
 
         <div class="col-md-12 col-md-9">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title"><i class="ra ra-burning-embers"></i> Spells affecting your dominion</h3>
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title"><i class="ra ra-burning-embers"></i> Spells affecting your dominion</h3>
             </div>
-            <div class="box-body table-responsive no-padding">
+            <div class="card-body table-responsive no-padding">
                 <table class="table table-hover">
                     <colgroup>
                         <col width="150">
@@ -365,11 +365,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -438,19 +436,19 @@
 
             warStatus = '';
             if (friendly == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-green">FRIENDLY</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-green">FRIENDLY</span></div>';
             } else if (war == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">WAR</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-red">WAR</span></div>';
             } else if (guard == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">SHADOW LEAGUE</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-red">SHADOW LEAGUE</span></div>';
             } else if (revenge == 1) {
-                warStatus = '<div class="pull-left">&nbsp;|&nbsp;<span class="text-red">REVENGE</span></div>';
+                warStatus = '<div class="float-start">&nbsp;|&nbsp;<span class="text-red">REVENGE</span></div>';
             }
 
             return $(`
-                <div class="pull-left">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
+                <div class="float-start">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
                 ${warStatus}
-                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
+                <div class="float-end">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);
         }

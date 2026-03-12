@@ -27,20 +27,20 @@
             $config = $selectedDominion->settings['resources_overview'];
         }
     @endphp
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-bar-chart"></i> Overview - {{ $selectedDominion->name }}</h3>
-            <a href="{{ route('dominion.misc.settings') }}" title="Resource Display Settings" data-toggle="tooltip">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fa fa-bar-chart"></i> Overview - {{ $selectedDominion->name }}</h3>
+            <a href="{{ route('dominion.misc.settings') }}" title="Resource Display Settings" data-bs-toggle="tooltip">
                 <i class="fa fa-cog fa-sm"></i>
             </a>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             @foreach ($config as $row)
                 @if (isset($row) && is_array($row))
                     <div class="row">
                         @foreach ($row as $column)
                             @if (isset($resources[$column]))
-                                <div class="col-xs-3">
+                                <div class="col-3">
                                     <div class="row">
                                         <div class="col-lg-6"><b>{{ $column }}:</b></div>
                                         <div class="col-lg-6">{{ $resources[$column] }}</div>

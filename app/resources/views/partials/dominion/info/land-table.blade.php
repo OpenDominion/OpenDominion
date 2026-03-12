@@ -58,13 +58,13 @@
                 <td class="text-center">
                     {{ number_format(array_get($data, "explored.{$landType}.amount")) }}
                 </td>
-                <td class="text-left">
+                <td class="text-start">
                     <small>({{ number_format(array_get($data, "explored.{$landType}.percentage"), 2) }}%)</small>
                 </td>
                 <td class="text-center">
                     {{ number_format($amountWithIncoming) }}
                 </td>
-                <td class="text-left">
+                <td class="text-start">
                     <small>({{ number_format(($amountWithIncoming / $totalLandWithIncoming) * 100, 2) }}%)</small>
                 </td>
             </tr>

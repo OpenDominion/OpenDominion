@@ -22,7 +22,7 @@
     <tbody>
         <tr>
             <td>
-                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $race, true) }}">
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $race, true) }}">
                     Draftees:
                 </span>
             </td>
@@ -34,7 +34,7 @@
         @foreach ($unitHelper->getUnitTypes() as $unitType)
             <tr>
                 <td>
-                    <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $race, true) }}">
+                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $race, true) }}">
                         {{ $unitHelper->getUnitName($unitType, $race) }}:
                     </span>
                 </td>

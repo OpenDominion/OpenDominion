@@ -1,3 +1,3 @@
-<li class="hidden-xs">
-    <a href="{{ route('valhalla.index') }}">Valhalla</a>
+<li>
+    <a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a>
 </li>

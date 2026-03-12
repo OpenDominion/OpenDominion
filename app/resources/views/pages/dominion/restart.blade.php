@@ -6,13 +6,13 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-undo"></i> Restart</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-undo"></i> Restart</h3>
                 </div>
                 <form id="restart-dominion" class="form" action="{{ route('dominion.misc.restart') }}" method="post">
                     @csrf
-                    <div class="box-body">
+                    <div class="card-body">
                         <p>You can restart your dominion at any time while still under protection.</p>
                         <div class="form-group">
                             <label class="form-label">Race:</label>
@@ -46,7 +46,7 @@
                             <p>Advanced Simulation requires clicking through the first 48 ticks.</p>
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Restart</button>
                     </div>
                 </form>
@@ -54,13 +54,13 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-edit"></i> Change Name</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-edit"></i> Change Name</h3>
                 </div>
                 <form id="rename-dominion" class="form" action="{{ route('dominion.misc.rename') }}" method="post">
                     @csrf
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="form-group">
                             <label class="form-label">Dominion Name:</label>
                             <input name="dominion_name" class="form-control" type="text" placeholder="{{ $selectedDominion->name }}" />
@@ -70,7 +70,7 @@
                             <input name="ruler_name" class="form-control" type="text" placeholder="{{ $selectedDominion->ruler_name }}" />
                         </div>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>

@@ -3,16 +3,16 @@
 @section('page-header', "Dominion: {$dominion->name}")
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
                 {{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})
                 invaded
                 {{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})
                 at
                 <span>{{ $gameEvent->created_at }}</span>
             </h3>
-            <select id="realm-select" class="form-control pull-right">
+            <select id="realm-select" class="form-control float-end">
                 <option value="">
                     All
                 </option>
@@ -23,7 +23,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -72,11 +72,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -93,7 +91,7 @@
                 }
             });
 
-            $('#realm-select + .select2-container').addClass('pull-right');
+            $('#realm-select + .select2-container').addClass('float-end');
         })(jQuery);
     </script>
 @endpush

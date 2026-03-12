@@ -6,17 +6,17 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-axe"></i> Battle Report</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-axe"></i> Battle Report</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="row">
                                 @foreach ($battle->combatants as $combatant)
                                     <div class="col-sm-6">
-                                        <table class="table table-condensed">
+                                        <table class="table table-sm">
                                             <thead>
                                                 <tr>
                                                     <th colspan=2 class="text-center">
@@ -38,7 +38,7 @@
                                                 </tr>
                                             @endforeach
                                             <tr>
-                                                <td><span data-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
+                                                <td><span data-bs-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
                                                 <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
                                             </tr>
                                         </table>
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>Combat Log</th>
@@ -88,11 +88,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @include('partials.dominion.hero-combat')
                 </div>
             </div>

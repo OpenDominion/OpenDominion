@@ -11,11 +11,11 @@
     @endphp
 
     @include('partials.scribes.nav')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Techs</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Techs</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     <p>The tech tree is a map of advancements that your dominion obtain as you reach appropriate levels of research points.</p>
@@ -27,8 +27,8 @@
                 </div>
             </div>
         </div>
-        <div class="box-footer">
-            <div class="pull-right">
+        <div class="card-footer">
+            <div class="float-end">
                 @if ($legacy)
                     <a href="{{ route('scribes.techs') }}">View Latest Techs</a>
                 @else
@@ -38,11 +38,11 @@
         </div>
     </div>
     @if ($techVersion !== 1)
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Technological Advances</h3>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Technological Advances</h3>
             </div>
-            <div class="box-body table-responsive">
+            <div class="card-body table-responsive">
                 <div class="row">
                     <div class="col-md-6">
                         @include('partials.dominion.tech-tree', ['version' => $techVersion])
@@ -50,7 +50,7 @@
                     <div class="col-md-6">
                         <h5>Techs Selected: <span id="tech-total">0</span></h5>
                         <h5 style="margin-top: 20px;">Total Bonuses</h5>
-                        <table class="table table-condensed">
+                        <table class="table table-sm">
                             <tbody id="tech-bonuses"></tbody>
                         </table>
                     </div>
@@ -58,11 +58,11 @@
             </div>
         </div>
     @endif
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Technological Advances</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Technological Advances</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             <div class="row">
                 <div class="col-md-12">
                     <table class="table table-striped" style="margin-bottom: 0">
@@ -210,7 +210,7 @@
                 var techPerks = Object.keys(techBonuses).sort();
                 var techHtml = '';
                 for (let key in techPerks) {
-                    techHtml += "<tr><td class='text-right'>";
+                    techHtml += "<tr><td class='text-end'>";
                     if (techBonuses[techPerks[key]] > 0) techHtml += '+';
                     techHtml += techBonuses[techPerks[key]];
                     techHtml += "</td><td>";

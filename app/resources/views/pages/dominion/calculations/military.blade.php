@@ -7,23 +7,23 @@
         <div class="col-sm-12 col-md-9">
             <form action="" method="get" role="form" id="calculate-defense-form" class="calculate-form">
                 @csrf
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-calculator"></i> Defense Calculator</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-calculator"></i> Defense Calculator</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Race
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-3">
                                 <input type="hidden" name="race" value="{{ $race->id }}" />
                                 <input class="form-control text-center" value="{{ $race->name }}" readonly />
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Land
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="calc[land]"
                                         class="form-control text-center"
@@ -33,12 +33,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-xs-3">&nbsp;</div>
-                            <div class="col-xs-3">&nbsp;</div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3">&nbsp;</div>
+                            <div class="col-3">&nbsp;</div>
+                            <div class="col-3 text-end">
                                 Morale
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="calc[morale]"
                                         class="form-control text-center"
@@ -62,7 +62,7 @@
                                     }
                                 }
                             @endphp
-                            <table class="table table-condensed" style="margin-bottom: 0px;">
+                            <table class="table table-sm" style="margin-bottom: 0px;">
                                 <colgroup>
                                     <col>
                                     <col width="10%">
@@ -78,22 +78,22 @@
                                         <th>DP</th>
                                         <th></th>
                                         <th class="text-center">
-                                            <span data-toggle="tooltip" data-placement="top" title="Total units from a Clear Sight">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Total units from a Clear Sight">
                                                 Accurate
                                             </span>
                                         </th>
                                         <th class="text-center">
-                                            <span data-toggle="tooltip" data-placement="top" title="Estimated units home from a Barracks Spy<br><br>Ignored if accurate count is provided without also providing an away count">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Estimated units home from a Barracks Spy<br><br>Ignored if accurate count is provided without also providing an away count">
                                                 Home
                                             </span>
                                         </th>
                                         <th class="text-center">
-                                            <span data-toggle="tooltip" data-placement="top" title="Estimated units away from a Barracks Spy<br><br>Ignored if accurate count is not provided">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Estimated units away from a Barracks Spy<br><br>Ignored if accurate count is not provided">
                                                 Away
                                             </span>
                                         </th>
                                         <th class="text-center">
-                                            <span data-toggle="tooltip" data-placement="top" title="Incoming units from a Barracks Spy">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Incoming units from a Barracks Spy">
                                                 Incoming
                                             </span>
                                         </th>
@@ -158,7 +158,7 @@
                                         <tr>
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
-                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) }}">
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) }}">
                                                     {{ $unitHelper->getUnitName("unit{$unit->slot}", $race) }}
                                                 </span>
                                             </td>
@@ -221,7 +221,7 @@
                                             <div class="checkbox text-center" style="margin: 0px;">
                                                 <label>
                                                     <input type="checkbox" name="calc[accurate]" style="margin-top: 8px;" {{ ($targetDominion !== null && $targetDominion->realm_id == $selectedDominion->realm_id) ? 'checked' : null }} />
-                                                    <span data-toggle="tooltip" data-placement="top" title="The unit counts entered into the Home/Away fields should be treated as 100% accurate">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="The unit counts entered into the Home/Away fields should be treated as 100% accurate">
                                                         Use exact unit counts
                                                     </span>
                                                 </label>
@@ -231,7 +231,7 @@
                                             <div class="checkbox text-center" style="margin: 0px;">
                                                 <label>
                                                     <input type="checkbox" id="dp-inc" style="margin-top: 8px;" />
-                                                    <span data-toggle="tooltip" data-placement="top" title="Calculate defense including units in training">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="Calculate defense including units in training">
                                                         Include
                                                     </span>
                                                 </label>
@@ -245,12 +245,12 @@
                                 @php
                                     $racialSpell = $spellHelper->getSpellsWithPerk('defense', $race)->first();
                                 @endphp
-                                <div class="col-xs-3 text-right">
+                                <div class="col-3 text-end">
                                     @if ($racialSpell)
                                         {{ $racialSpell->name }}
                                     @endif
                                 </div>
-                                <div class="col-xs-3 text-left">
+                                <div class="col-3 text-start">
                                     @if ($racialSpell)
                                         <input type="checkbox"
                                                 name="calc[{{ $racialSpell->key }}]"
@@ -258,10 +258,10 @@
                                     @endif
                                 </div>
                                 @foreach ($buildingFieldsRequired as $building)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         {{ $buildingHelper->getBuildingName($building) }} %
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 step="any"
                                                 name="calc[{{ $building }}_percent]"
@@ -272,10 +272,10 @@
                                     </div>
                                 @endforeach
                                 @foreach ($landFieldsRequired as $land)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         {{ ucwords(dominion_attr_display("land_{$land}")) }} %
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 step="any"
                                                 name="calc[{{ $land }}_percent]"
@@ -286,10 +286,10 @@
                                     </div>
                                 @endforeach
                                 @if ($prestigeRequired)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         Prestige
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 name="calc[prestige]"
                                                 class="form-control text-center"
@@ -302,18 +302,18 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Ares Call
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="checkbox"
                                         name="calc[ares_call]"
                                         checked />
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Walls %
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         step="any"
                                         name="calc[walls_percent]"
@@ -325,10 +325,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Attacker's Temples %
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <div class="input-group">
                                     <input type="number"
                                             step="any"
@@ -347,10 +347,10 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Guard Tower %
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         step="any"
                                         name="calc[guard_tower_percent]"
@@ -365,10 +365,10 @@
                         @if (isset($wonders['temple_of_the_damned']))
                             <div class="form-group row">
                                 @php $attackerPerk = $wonders['temple_of_the_damned']->perks->where('key', 'enemy_defense')->first(); @endphp
-                                <div class="col-xs-3 text-right">
+                                <div class="col-3 text-end">
                                     Temple of the Damned (Attacker)
                                 </div>
-                                <div class="col-xs-3 text-left">
+                                <div class="col-3 text-start">
                                     <input type="hidden"
                                             name="calc[wonder_enemy_defense]"
                                             value="{{ $attackerPerk->pivot->value }}" />
@@ -376,10 +376,10 @@
                                             name="calc[temple_of_the_damned_attacker]" />
                                 </div>
                                 @php $targetPerk = $wonders['temple_of_the_damned']->perks->where('key', 'defense')->first(); @endphp
-                                <div class="col-xs-3 text-right">
+                                <div class="col-3 text-end">
                                     Temple of the Damned (Target)
                                 </div>
-                                <div class="col-xs-3 text-left">
+                                <div class="col-3 text-start">
                                     <input type="hidden"
                                             name="calc[wonder_defense]"
                                             value="{{ $targetPerk->pivot->value }}" />
@@ -391,10 +391,10 @@
                         @endif
 
                         <div class="row">
-                            <div class="col-xs-9 text-right">
+                            <div class="col-9 text-end">
                                 &nbsp;
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <button class="btn btn-primary btn-block" type="button" id="calculate-defense-button">Calculate</button>
                             </div>
                         </div>
@@ -404,21 +404,21 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Results</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Results</h3>
                     @if ($targetDominion->realm_id !== $selectedDominion->realm_id)
-                        <div class="box-tools pull-right">
+                        <div class="card-tools float-end">
                             <a href="{{ route('dominion.invade') }}?dominion={{ $targetDominion->id }}"
                                 id="invade-button"
                                 class="btn btn-danger" style="font-size: 18px; padding: 2px 4px 0px;"
-                                title="Invade" data-toggle="tooltip">
+                                title="Invade" data-bs-toggle="tooltip">
                                 <i class="ra ra-crossed-swords"></i>
                             </a>
                         </div>
                     @endif
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     <table class="table">
                         @if ($targetDominion !== null)
                             <thead>
@@ -456,12 +456,12 @@
             </div>
 
             @if ($targetDominion !== null && $selectedDominion->realm_id !== $targetDominion->realm_id)
-                <div class="box target-dominion-dp">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Info Ops</h3>
+                <div class="card target-dominion-dp">
+                    <div class="card-header">
+                        <h3 class="card-title">Info Ops</h3>
                     </div>
-                    <div class="box-body table-responsive">
-                        <table class="table table-condensed">
+                    <div class="card-body table-responsive">
+                        <table class="table table-sm">
                             <thead>
                                 <tr>
                                     <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
@@ -473,14 +473,14 @@
                                     <td>
                                         @if ($targetInfoOps->has('clear_sight'))
                                             @if ($targetInfoOps['clear_sight']->isInvalid())
-                                                <span class="label label-danger">Invalid</span>
+                                                <span class="badge text-bg-danger">Invalid</span>
                                             @elseif ($targetInfoOps['clear_sight']->isStale())
-                                                <span class="label label-warning">Stale</span>
+                                                <span class="badge text-bg-warning">Stale</span>
                                             @else
-                                                <span class="label label-success">Current</span>
+                                                <span class="badge text-bg-success">Current</span>
                                             @endif
                                         @else
-                                            <span class="label label-danger">Missing</span>
+                                            <span class="badge text-bg-danger">Missing</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -489,14 +489,14 @@
                                     <td>
                                         @if ($targetInfoOps->has('barracks_spy'))
                                             @if ($targetInfoOps['barracks_spy']->isInvalid())
-                                                <span class="label label-danger">Invalid</span>
+                                                <span class="badge text-bg-danger">Invalid</span>
                                             @elseif ($targetInfoOps['barracks_spy']->isStale())
-                                                <span class="label label-warning">Stale</span>
+                                                <span class="badge text-bg-warning">Stale</span>
                                             @else
-                                                <span class="label label-success">Current</span>
+                                                <span class="badge text-bg-success">Current</span>
                                             @endif
                                         @else
-                                            <span class="label label-danger">Missing</span>
+                                            <span class="badge text-bg-danger">Missing</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -505,14 +505,14 @@
                                     <td>
                                         @if ($targetInfoOps->has('castle_spy'))
                                             @if ($targetInfoOps['castle_spy']->isInvalid())
-                                                <span class="label label-danger">Invalid</span>
+                                                <span class="badge text-bg-danger">Invalid</span>
                                             @elseif ($targetInfoOps['castle_spy']->isStale())
-                                                <span class="label label-warning">Stale</span>
+                                                <span class="badge text-bg-warning">Stale</span>
                                             @else
-                                                <span class="label label-success">Current</span>
+                                                <span class="badge text-bg-success">Current</span>
                                             @endif
                                         @else
-                                            <span class="label label-danger">Missing</span>
+                                            <span class="badge text-bg-danger">Missing</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -521,14 +521,14 @@
                                     <td>
                                         @if ($targetInfoOps->has('survey_dominion'))
                                             @if ($targetInfoOps['survey_dominion']->isInvalid())
-                                                <span class="label label-danger">Invalid</span>
+                                                <span class="badge text-bg-danger">Invalid</span>
                                             @elseif ($targetInfoOps['survey_dominion']->isStale())
-                                                <span class="label label-warning">Stale</span>
+                                                <span class="badge text-bg-warning">Stale</span>
                                             @else
-                                                <span class="label label-success">Current</span>
+                                                <span class="badge text-bg-success">Current</span>
                                             @endif
                                         @else
-                                            <span class="label label-danger">Missing</span>
+                                            <span class="badge text-bg-danger">Missing</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -537,14 +537,14 @@
                                     <td>
                                         @if ($targetInfoOps->has('land_spy'))
                                             @if ($targetInfoOps['land_spy']->isInvalid())
-                                                <span class="label label-danger">Invalid</span>
+                                                <span class="badge text-bg-danger">Invalid</span>
                                             @elseif ($targetInfoOps['land_spy']->isStale())
-                                                <span class="label label-warning">Stale</span>
+                                                <span class="badge text-bg-warning">Stale</span>
                                             @else
-                                                <span class="label label-success">Current</span>
+                                                <span class="badge text-bg-success">Current</span>
                                             @endif
                                         @else
-                                            <span class="label label-danger">Missing</span>
+                                            <span class="badge text-bg-danger">Missing</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -560,23 +560,23 @@
         <div class="col-sm-12 col-md-9">
             <form action="" method="get" role="form" id="calculate-offense-form" class="calculate-form">
                 @csrf
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-calculator"></i> Offense Calculator</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-calculator"></i> Offense Calculator</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Race
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-3">
                                 <input type="hidden" name="race" value="{{ $race->id }}" />
                                 <input class="form-control text-center" value="{{ $race->name }}" readonly />
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Land
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="calc[land]"
                                         class="form-control text-center"
@@ -587,10 +587,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Prestige
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="calc[prestige]"
                                         class="form-control text-center"
@@ -598,10 +598,10 @@
                                         min="0"
                                         value="{{ ($targetDominion !== null && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "prestige") : null }}" />
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Morale
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         name="calc[morale]"
                                         class="form-control text-center"
@@ -621,7 +621,7 @@
                                 $targetLandRequired = false;
                                 $targetRaceRequired = false;
                             @endphp
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <colgroup>
                                     <col>
                                     <col width="10%">
@@ -635,12 +635,12 @@
                                         <th>OP</th>
                                         <th></th>
                                         <th class="text-center">
-                                            <span data-toggle="tooltip" data-placement="top" title="Total units from a Clear Sight">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Total units from a Clear Sight">
                                                 Accurate
                                             </span>
                                         </th>
                                         <th class="text-center">
-                                            <span data-toggle="tooltip" data-placement="top" title="Incoming units from a Barracks Spy">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Incoming units from a Barracks Spy">
                                                 Incoming
                                             </span>
                                         </th>
@@ -683,7 +683,7 @@
                                         <tr>
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
-                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) }}">
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) }}">
                                                     {{ $unitHelper->getUnitName("unit{$unit->slot}", $race) }}
                                                 </span>
                                             </td>
@@ -723,7 +723,7 @@
                                             <div class="checkbox text-center" style="margin: 0px;">
                                                 <label>
                                                     <input type="checkbox" id="op-inc" style="margin-top: 8px;" checked />
-                                                    <span data-toggle="tooltip" data-placement="top" title="Calculate offense including units in training">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="Calculate offense including units in training">
                                                         Include
                                                     </span>
                                                 </label>
@@ -737,12 +737,12 @@
                                 @php
                                     $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land', 'offense_from_spell', 'offense_unit1'], $race)->first();
                                 @endphp
-                                <div class="col-xs-3 text-right">
+                                <div class="col-3 text-end">
                                     @if ($racialSpell)
                                         {{ $racialSpell->name }}
                                     @endif
                                 </div>
-                                <div class="col-xs-3 text-left">
+                                <div class="col-3 text-start">
                                     @if ($racialSpell)
                                         <input type="checkbox"
                                                 name="calc[{{ $racialSpell->key }}]"
@@ -750,10 +750,10 @@
                                     @endif
                                 </div>
                                 @if ($race->key == 'nomad-rework')
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         Barren Land %
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 step="any"
                                                 name="calc[barren_percent]"
@@ -764,10 +764,10 @@
                                     </div>
                                 @endif
                                 @foreach ($buildingFieldsRequired as $building)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         {{ $buildingHelper->getBuildingName($building) }} %
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 step="any"
                                                 name="calc[{{ $building }}_percent]"
@@ -778,10 +778,10 @@
                                     </div>
                                 @endforeach
                                 @foreach ($landFieldsRequired as $land)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         {{ ucwords(dominion_attr_display("land_{$land}")) }} %
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 step="any"
                                                 name="calc[{{ $land }}_percent]"
@@ -792,10 +792,10 @@
                                     </div>
                                 @endforeach
                                 @if ($wizardRatioRequired)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         Raw Wizard Ratio
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 name="calc[wizard_ratio]"
                                                 class="form-control text-center"
@@ -805,10 +805,10 @@
                                     </div>
                                 @endif
                                 @foreach ($targetBuildingFieldsRequired as $building)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         Target {{ $buildingHelper->getBuildingName($building) }} %
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 step="any"
                                                 name="calc[target_{{ $building }}_percent]"
@@ -818,10 +818,10 @@
                                     </div>
                                 @endforeach
                                 @if ($targetLandRequired)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         Target Land
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <input type="number"
                                                 name="calc[target_land]"
                                                 class="form-control text-center"
@@ -830,10 +830,10 @@
                                     </div>
                                 @endif
                                 @if ($targetRaceRequired)
-                                    <div class="col-xs-3 text-right">
+                                    <div class="col-3 text-end">
                                         Target Race
                                     </div>
-                                    <div class="col-xs-3 text-left">
+                                    <div class="col-3 text-start">
                                         <select name="calc[target_race]" class="form-control">
                                             <option></option>
                                             @foreach ($races as $targetRace)
@@ -848,20 +848,20 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Tech
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <select name="calc[tech_offense]" class="form-control">
                                     <option value="0"></option>
                                     <option value="2.5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_13_13")) ? 'selected' : null }}>Ares' Favor +2.5%</option>
                                     <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>Avatar of Ares +5%</option>
                                 </select>
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Forges %
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         step="any"
                                         name="calc[forges_percent]"
@@ -873,20 +873,20 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 War
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <select name="calc[war_bonus]" class="form-control">
                                     <option value="0"></option>
                                     <option value="4">Single +4%</option>
                                     <option value="8">Mutual +8%</option>
                                 </select>
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Gryphon Nest %
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="number"
                                         step="any"
                                         name="calc[gryphon_nest_percent]"
@@ -899,10 +899,10 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-9 text-right">
+                            <div class="col-9 text-end">
                                 &nbsp;
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 <button class="btn btn-primary btn-block" type="button" id="calculate-offense-button">Calculate</button>
                             </div>
                         </div>
@@ -912,11 +912,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Results</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Results</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     <table class="table">
                         @if ($targetDominion !== null)
                             <thead>
@@ -955,11 +955,11 @@
                 </div>
             </div>
 
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The calculator can be pre-filled with data from the ops center.</p>
                     <p>Values will be taken from their corresponding op. Land spy is needed to get a pre-filled land percentage for races with units that depend on it.</p>
                     <p>Old ops (except for Barracks Spy) will be pre-filled.</p>
@@ -971,7 +971,6 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('inline-styles')
@@ -989,7 +988,6 @@
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')

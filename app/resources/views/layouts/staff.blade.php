@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>@yield('title', 'OpenDominion')</title>
 
@@ -31,67 +31,60 @@
 
     @include('partials.styles')
 
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
     @include('partials.analytics')
 </head>
-<body class="hold-transition {{ Auth::user() && Auth::user()->skin ? Auth::user()->skin : 'skin-blue' }} sidebar-mini">
+<body class="layout-fixed sidebar-expand-lg{{ Auth::user() && Auth::user()->skin == 'skin-classic' ? ' skin-classic bg-body-secondary' : ' bg-body-tertiary' }}">
 
-<div class="wrapper">
+<div class="app-wrapper">
 
     @include('partials.main-header')
 
     @include('partials.main-sidebar')
 
-    <div class="content-wrapper">
+    <main class="app-main">
+
         @include('partials.beta-indicator')
 
         @hasSection('page-header')
-            <div class="content-header">
-                <h1>
-                    @yield('page-header')
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <h3 class="mb-0">
+                        @yield('page-header')
 
-                    @hasSection('page-subheader')
-                        <small>
-                            @yield('page-subheader')
-                        </small>
-                    @endif
+                        @hasSection('page-subheader')
+                            <small class="text-muted">
+                                @yield('page-subheader')
+                            </small>
+                        @endif
 
-                    @include('partials.tickers')
-
-                </h1>
-                {{--<ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                    <li class="active">Foo</li>
-                </ol>--}}
+                        @include('partials.tickers')
+                    </h3>
+                </div>
             </div>
         @endif
 
-        <section class="content">
+        <div class="app-content">
+            <div class="container-fluid">
 
-            @include('partials.alerts')
+                @include('partials.alerts')
 
-            <div class="row">
+                <div class="row">
 
-                <div class="col-md-2">
-                    @include('partials.staff.nav')
-                </div>
-                <div class="col-md-10">
-                    @yield('content')
+                    <div class="col-md-2">
+                        @include('partials.staff.nav')
+                    </div>
+                    <div class="col-md-10">
+                        @yield('content')
+                    </div>
+
                 </div>
 
             </div>
+        </div>
 
-        </section>
-
-    </div>
+    </main>
 
     @include('partials.main-footer')
-
-    @include('partials.control-sidebar')
 
 </div>
 

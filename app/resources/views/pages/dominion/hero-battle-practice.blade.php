@@ -8,11 +8,11 @@
         <div class="col-sm-12 col-md-9">
             <form class="form-horizontal" action="{{ route('dominion.heroes.battles.practice') }}" method="post" role="form">
                 @csrf
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-axe"></i> Practice Battles</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-axe"></i> Practice Battles</h3>
                     </div>
-                    <div class="box-body table-responsive">
+                    <div class="card-body table-responsive">
                         <table class="table">
                             <colgroup>
                                 <col width="5%">
@@ -42,7 +42,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button class="btn btn-primary" type="submit">Start Practice Battle</button>
                     </div>
                 </div>
@@ -51,11 +51,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @include('partials.dominion.hero-combat')
                 </div>
             </div>

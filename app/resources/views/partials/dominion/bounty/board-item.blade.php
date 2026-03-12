@@ -25,7 +25,7 @@
 @endphp
 
 @if ($bounty == null)
-    <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, $opType]) }}" data-toggle="tooltip" title="Request a {{ format_string($opType) }}<br><small>{{ $updatedString }}</small>">
+    <a href="{{ route('dominion.bounty-board.create', [$targetDominion->id, $opType]) }}" data-bs-toggle="tooltip" title="Request a {{ format_string($opType) }}<br><small>{{ $updatedString }}</small>">
         <i class="fa fa-star-o {{ $iconClass }}" style="margin-top: 4px;"></i>
     </a>
 @else
@@ -35,8 +35,8 @@
         <input type="hidden" name="{{ $name }}" value="{{ $opType }}">
         <button
             type="submit"
-            class="btn btn-xs btn-primary"
-            data-toggle="tooltip"
+            class="btn btn-sm btn-primary"
+            data-bs-toggle="tooltip"
             title="{{ $label }}<br><small>requested by {{ $bounty->sourceDominion->name }}<br>{{ $bounty->updated_at->diffForHumans() }}</small>"
             {{ ($bounty->sourceDominion->id == $selectedDominion->id) ? 'disabled' : null }}
         >

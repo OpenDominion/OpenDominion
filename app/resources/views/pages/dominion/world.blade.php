@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-globe"></i> The World</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-globe"></i> The World</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     <table class="table">
                         <thead>
                             <tr>
@@ -20,7 +20,7 @@
                                 <th>Wonder</th>
                                 <th>Titles</th>
                                 <th class="text-center">
-                                    <i class="ra ra-fire-shield ra-lg text-purple" title="Chaos League" data-toggle="tooltip"></i>
+                                    <i class="ra ra-fire-shield ra-lg text-purple" title="Chaos League" data-bs-toggle="tooltip"></i>
                                 </th>
                                 <th>Valor</th>
                                 <th>Land</th>

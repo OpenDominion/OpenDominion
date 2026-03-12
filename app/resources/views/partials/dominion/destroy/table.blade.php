@@ -14,7 +14,7 @@
         <thead>
             <tr>
                 <th colspan="3">
-                    <span class="pull-right barren-land">Barren: <strong>{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</strong></span>
+                    <span class="float-end barren-land">Barren: <strong>{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</strong></span>
                     <h4>{{ ucfirst($landType) }}</h4>
                 </th>
             </tr>
@@ -29,7 +29,7 @@
             @foreach ($buildingTypes as $buildingType)
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
                             {{ $buildingHelper->getBuildingName($buildingType) }}
                         </span>
                     </td>

@@ -3,8 +3,8 @@
 @section('page-header', 'Dashboard')
 
 @section('content')
-    <div class="box">
-        <div class="box-body">
+    <div class="card">
+        <div class="card-body">
             @if ($dominions->isEmpty())
                 <p>Welcome to OpenDominion.</p>
                 <p>To start playing, please register in a round below.</p>
@@ -19,7 +19,7 @@
                     and starts in {{ $currentRound->timeUntilStart() }}
                 @endif
                 @if (!$currentRound->userAlreadyRegistered(Auth::user()))
-                    <a class="btn btn-primary btn-xs" href="{{ route('round.register', $currentRound) }}">Register</a>
+                    <a class="btn btn-primary btn-sm" href="{{ route('round.register', $currentRound) }}">Register</a>
                 @endif
             @endif
         </div>
@@ -28,20 +28,20 @@
     <div class="row">
 
         <div class="col-lg-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-capitol ra-fw"></i> Dominions</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-capitol ra-fw"></i> Dominions</h3>
                 </div>
 
                 @if ($dominions->isEmpty())
 
-                    <div class="box-body">
+                    <div class="card-body">
                         <p>You have no active dominions. Register in a round to create a dominion.</p>
                     </div>
 
                 @else
 
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -68,33 +68,33 @@
                                                 <a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a>
 
                                                 @if (!$dominion->round->hasStarted())
-                                                    <span class="label label-warning">Starting soon</span>
+                                                    <span class="badge text-bg-warning">Starting soon</span>
                                                 @elseif (!$dominion->round->hasEnded())
-                                                    <span class="label label-info">In Progress</span>
+                                                    <span class="badge text-bg-info">In Progress</span>
                                                 @endif
 
                                                 @if ($dominion->locked_at !== null)
-                                                    <span class="label label-danger">Locked</span>
+                                                    <span class="badge text-bg-danger">Locked</span>
                                                 @elseif ($dominion->isAbandoned())
-                                                    <span class="label label-warning">Abandoned</span>
+                                                    <span class="badge text-bg-warning">Abandoned</span>
                                                 @endif
 
-                                                <span class="label label-success">Selected</span>
+                                                <span class="badge text-bg-success">Selected</span>
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                     @csrf
                                                     <button type="submit" class="btn btn-link" style="padding: 0;">{{ $dominion->name }}</button>
 
                                                     @if (!$dominion->round->hasStarted())
-                                                        <span class="label label-warning">Starting soon</span>
+                                                        <span class="badge text-bg-warning">Starting soon</span>
                                                     @elseif (!$dominion->round->hasEnded())
-                                                        <span class="label label-info">In Progress</span>
+                                                        <span class="badge text-bg-info">In Progress</span>
                                                     @endif
 
                                                     @if ($dominion->locked_at !== null)
-                                                        <span class="label label-danger">Locked</span>
+                                                        <span class="badge text-bg-danger">Locked</span>
                                                     @elseif ($dominion->isAbandoned())
-                                                        <span class="label label-warning">Abandoned</span>
+                                                        <span class="badge text-bg-warning">Abandoned</span>
                                                     @endif
                                                 </form>
                                             @endif
@@ -123,20 +123,20 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o fa-fw"></i> Rounds</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-clock-o fa-fw"></i> Rounds</h3>
                 </div>
 
                 @if ($rounds->isEmpty())
 
-                    <div class="box-body">
+                    <div class="card-body">
                         <p>There are currently no active rounds.</p>
                     </div>
 
                 @else
 
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="5%">
@@ -196,7 +196,7 @@
                                             @elseif ($userAlreadyRegistered && !$round->hasStarted())
                                                 Registered
                                             @else
-                                                <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>
+                                                <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-sm">Register</a>
                                             @endif
                                         </td>
                                     </tr>

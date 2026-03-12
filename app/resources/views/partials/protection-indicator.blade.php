@@ -1,18 +1,18 @@
 @if (isset($selectedDominion) && $protectionService->isUnderProtection($selectedDominion))
-    <div class="alert-info text-center" style="padding: 10px 15px; font-size: 13px;">
+    <div class="alert alert-info small text-center border-0 rounded-0 p-2 mb-0">
         <div class="row">
-            <div class="col-xs-2 text-left">
+            <div class="col-2 text-start">
                 @if ($selectedDominion->protection_ticks_remaining <= $selectedDominion->protection_ticks)
-                    <a href="{{ route('dominion.misc.undo-tick') }}" class="btn btn-xs btn-danger disable-after-click" style="margin-right: 20px;">
+                    <a href="{{ route('dominion.misc.undo-tick') }}" class="btn btn-sm btn-danger disable-after-click" style="margin-right: 20px;">
                         &laquo; Undo
                     </a>
                 @else
-                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-xs btn-primary" style="margin-right: 20px;">
+                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-sm btn-primary" style="margin-right: 20px;">
                         Import
                     </a>
                 @endif
             </div>
-            <div class="col-xs-8 text-center">
+            <div class="col-8 text-center">
                 <i class="icon ra ra-shield"></i>
                 @if ($selectedDominion->isBuildingPhase())
                     <a href="{{ route('dominion.protection.buildings') }}">Starting Building Phase</a>
@@ -31,9 +31,9 @@
                     </span>
                 @endif
             </div>
-            <div class="col-xs-2 text-right">
+            <div class="col-2 text-end">
                 @if (!$selectedDominion->protection_finished)
-                    <a href="{{ route('dominion.misc.tick') }}" class="btn btn-xs btn-primary disable-after-click">
+                    <a href="{{ route('dominion.misc.tick') }}" class="btn btn-sm btn-primary disable-after-click">
                         Next &raquo;
                     </a>
                 @endif

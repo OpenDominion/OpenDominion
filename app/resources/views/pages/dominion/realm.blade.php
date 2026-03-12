@@ -5,11 +5,11 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-circle-of-circles"></i> {{ $realm->name }} (#{{ $realm->number }})</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-circle-of-circles"></i> {{ $realm->name }} (#{{ $realm->number }})</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
 
                     <table class="table">
                         <colgroup>
@@ -57,21 +57,21 @@
                                                 @php
                                                     $role = $governmentHelper->getCourtAppointment($dominion->getCourtSeat());
                                                 @endphp
-                                                <i class="{{ $role['icon'] }} ra-lg text-{{ $role['icon-color'] }}" title="{{ $role['name'] }}" data-toggle="tooltip"></i>
+                                                <i class="{{ $role['icon'] }} ra-lg text-{{ $role['icon-color'] }}" title="{{ $role['name'] }}" data-bs-toggle="tooltip"></i>
                                             @endif
 
                                             @if ($protectionService->isUnderProtection($dominion))
-                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection" data-toggle="tooltip"></i>
+                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection" data-bs-toggle="tooltip"></i>
                                             @endif
 
                                             @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard" data-toggle="tooltip"></i>
+                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard" data-bs-toggle="tooltip"></i>
                                             @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard" data-toggle="tooltip"></i>
+                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard" data-bs-toggle="tooltip"></i>
                                             @endif
 
                                             @if ($guardMembershipService->isBlackGuardMember($dominion) && ((isset($dominion->settings['black_guard_icon']) && $dominion->settings['black_guard_icon'] == 'public') || $guardMembershipService->isBlackGuardMember($selectedDominion) || ($dominion->realm_id == $selectedDominion->realm_id)))
-                                                <i class="ra ra-fire-shield ra-lg text-purple" title="Chaos League" data-toggle="tooltip"></i>
+                                                <i class="ra ra-fire-shield ra-lg text-purple" title="Chaos League" data-bs-toggle="tooltip"></i>
                                             @endif
 
                                             @if (isset($dominion->settings['show_icon']) && $dominion->settings['show_icon'] == 'on')
@@ -93,21 +93,21 @@
                                             @endif
 
                                             @if ($dominion->user == null)
-                                                <span class="label label-info">Bot</span>
+                                                <span class="badge text-bg-info">Bot</span>
                                             @else
                                                 @if ($isOwnRealm && $round->hasAssignedRealms() && !$round->hasEnded() && $dominion->user->isOnline())
-                                                    <span class="label label-success">Online</span>
+                                                    <span class="badge text-bg-success">Online</span>
                                                 @endif
                                             @endif
 
                                             @if ($dominion->locked_at !== null)
-                                                <span class="label label-danger">Locked</span>
+                                                <span class="badge text-bg-danger">Locked</span>
                                             @elseif ($dominion->isAbandoned())
-                                                <span class="label label-warning">Abandoned</span>
+                                                <span class="badge text-bg-warning">Abandoned</span>
                                             @endif
 
                                             @if (!$round->hasEnded() && $dominion->user_id == $selectedDominion->user_id)
-                                                <a href="{{ route('dominion.misc.settings') }}" title="Icon Settings" data-toggle="tooltip">
+                                                <a href="{{ route('dominion.misc.settings') }}" title="Icon Settings" data-bs-toggle="tooltip">
                                                     <i class="fa fa-cog fa-lg"></i>
                                                 </a>
                                             @endif
@@ -117,7 +117,7 @@
                                                 <td class="text-center">
                                                     <a href="{{ route('valhalla.user', $dominion->user_id) }}"
                                                         @if ($isOwnRealm && !$round->hasEnded())
-                                                            title="Last online {{ now()->longAbsoluteDiffForHumans($dominion->user->last_online, 2) }} ago" data-toggle="tooltip" data-placement="right"
+                                                            title="Last online {{ now()->longAbsoluteDiffForHumans($dominion->user->last_online, 2) }} ago" data-bs-toggle="tooltip" data-bs-placement="right"
                                                         @endif
                                                     >
                                                         {{ $dominion->user->display_name }}
@@ -127,7 +127,7 @@
                                                             href="{{ route('api.user.feedback') }}?user_id={{ $dominion->user_id }}&endorsed=1"
                                                             class="upvote_user{{ $selectedDominion->user->hasUpvotedUser($dominion->user_id, $selectedDominion->round_id) ? ' text-green' : null }}"
                                                             title="Upvote"
-                                                            data-toggle="tooltip"
+                                                            data-bs-toggle="tooltip"
                                                         >
                                                             <i class="fa fa-thumbs-up" style="margin-left: 2px;"></i>
                                                         </a>
@@ -135,7 +135,7 @@
                                                             href="{{ route('api.user.feedback') }}?user_id={{ $dominion->user_id }}&endorsed=0"
                                                             class="downvote_user{{ $selectedDominion->user->hasDownvotedUser($dominion->user_id, $selectedDominion->round_id) ? ' text-red' : null }}"
                                                             title="Downvote"
-                                                            data-toggle="tooltip"
+                                                            data-bs-toggle="tooltip"
                                                         >
                                                             <i class="fa fa-thumbs-down" style="margin-left: 2px;"></i>
                                                         </a>
@@ -161,11 +161,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
                     <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> {{ str_plural('dominion', $dominions->count()) }}, its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>, and it controls <strong>{{ number_format($landCalculator->getRealmLand($realm)) }}</strong> acres of land.</p>
                     @if ($realm->valor)
@@ -180,21 +180,21 @@
                     @endif
                 </div>
                 @if (($prevRealm !== null) || ($nextRealm !== null))
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <div class="row">
-                            <div class="col-xs-4">
+                            <div class="col-4">
                                 @if ($prevRealm !== null)
                                     <a href="{{ route('dominion.realm', $prevRealm->number) }}">&lt; Previous</a><br>
                                     <small class="text-muted">{{ $prevRealm->name }} (# {{  $prevRealm->number }})</small>
                                 @endif
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-4">
                                 <form action="{{ route('dominion.realm.change-realm') }}" method="post" role="form">
                                     @csrf
                                     <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}" min="0" max="{{ $realmCount - 1 }}">
                                 </form>
                             </div>
-                            <div class="col-xs-4 text-right">
+                            <div class="col-4 text-end">
                                 @if ($nextRealm !== null)
                                     <a href="{{ route('dominion.realm', $nextRealm->number) }}">Next &gt;</a><br>
                                     <small class="text-muted">{{ $nextRealm->name }} (# {{  $nextRealm->number }})</small>
@@ -210,14 +210,14 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-crossed-axes"></i> War</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 table-responsive">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th>Realm</th>
                                     <th>Declared By</th>
@@ -238,12 +238,12 @@
                                         <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
-                                                <span class="label label-success">Active</span>
-                                                <span class="label label-danger">Expiring</span>
+                                                <span class="badge text-bg-success">Active</span>
+                                                <span class="badge text-bg-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
-                                                <span class="label label-success">Active</span>
+                                                <span class="badge text-bg-success">Active</span>
                                             @else
-                                                <span class="label label-warning">Pending</span>
+                                                <span class="badge text-bg-warning">Pending</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -260,12 +260,12 @@
                                         <td>{{ $war->inactive_at }}</td>
                                         <td>
                                             @if ($war->inactive_at != null)
-                                                <span class="label label-success">Active</span>
-                                                <span class="label label-danger">Expiring</span>
+                                                <span class="badge text-bg-success">Active</span>
+                                                <span class="badge text-bg-danger">Expiring</span>
                                             @elseif ($activeHours == 0)
-                                                <span class="label label-success">Active</span>
+                                                <span class="badge text-bg-success">Active</span>
                                             @else
-                                                <span class="label label-warning">Pending</span>
+                                                <span class="badge text-bg-warning">Pending</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -276,14 +276,14 @@
                 </div>
             </div>
 
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-pyramids ra-lg"></i> Wonder</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonder</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 table-responsive">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th>Name</th>
                                     <th>Power</th>
@@ -311,11 +311,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Here you view which realms currently have war relations with this one.</p>
                     <p>While a war is active, dominions in both realms gain 4% offense when attacking members of the opposing realm. If both realms have an active war bonus, that increases to 8% offense.</p>
                 </div>

@@ -7,11 +7,11 @@
 
         <div class="col-sm-12 col-md-9">
             @if ($protectionService->isUnderProtection($selectedDominion))
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         You are currently under protection for
                         @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
                             <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
@@ -22,11 +22,11 @@
                     </div>
                 </div>
             @elseif ($selectedDominion->morale < 80)
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                     </div>
-                    <div class="box-body">
+                    <div class="card-body">
                         Your military needs at least 80% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
                     </div>
                 </div>
@@ -34,11 +34,11 @@
                 <form action="{{ route('dominion.invade') }}" method="post" role="form" id="invade_form">
                     @csrf
 
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <div class="form-group">
                                 <label for="target_dominion">Select a target</label>
                                 <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
@@ -61,11 +61,11 @@
                         </div>
                     </div>
 
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="fa fa-users"></i> Units to send</h3>
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa fa-users"></i> Units to send</h3>
                         </div>
-                        <div class="box-body table-responsive no-padding">
+                        <div class="card-body table-responsive no-padding">
                             <table class="table">
                                 <colgroup>
                                     <col>
@@ -119,7 +119,7 @@
                                         <tr>
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}", $selectedDominion->race) !!}
-                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
                                                     {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
                                                 </span>
                                             </td>
@@ -152,7 +152,7 @@
                                     @endforeach
                                     @foreach ($offenseVsBuildingTypes as $buildingType)
                                         <tr>
-                                            <td colspan="3" class="text-right">
+                                            <td colspan="3" class="text-end">
                                                 <b>Enter target {{ $buildingHelper->getBuildingName($buildingType) }} percentage:</b>
                                             </td>
                                             <td>
@@ -176,11 +176,11 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
 
-                            <div class="box box-danger">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title"><i class="ra ra-sword"></i> Invasion force</h3>
+                            <div class="card border-danger">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="ra ra-sword"></i> Invasion force</h3>
                                 </div>
-                                <div class="box-body table-responsive no-padding">
+                                <div class="card-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -209,8 +209,8 @@
                                                 <td>
                                                     Max OP:
                                                     <i class="fa fa-question-circle"
-                                                       data-toggle="tooltip"
-                                                       data-placement="top"
+                                                       data-bs-toggle="tooltip"
+                                                       data-bs-placement="top"
                                                        title="You may send out a maximum of 125% of your new home DP in OP. (5:4 rule)"></i>
                                                 </td>
                                                 <td id="invasion-force-max-op" data-amount="0">0</td>
@@ -219,8 +219,8 @@
                                                 <td>
                                                     Target Min DP:
                                                     <i class="fa fa-question-circle"
-                                                       data-toggle="tooltip"
-                                                       data-placement="top"
+                                                       data-bs-toggle="tooltip"
+                                                       data-bs-placement="top"
                                                        title="The minimum defense for a dominion is 10x their land size minus 3250."></i>
                                                 </td>
                                                 <td id="target-min-dp" data-amount="0">0</td>
@@ -228,7 +228,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="box-footer">
+                                <div class="card-footer">
                                     <button type="submit"
                                             class="btn btn-danger"
                                             id="invade-button"
@@ -242,11 +242,11 @@
                         </div>
                         <div class="col-sm-12 col-md-6">
 
-                            <div class="box">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title"><i class="fa fa-home"></i> New home forces</h3>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fa fa-home"></i> New home forces</h3>
                                 </div>
-                                <div class="box-body table-responsive no-padding">
+                                <div class="card-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -275,8 +275,8 @@
                                                 <td>
                                                     Min DP:
                                                     <i class="fa fa-question-circle"
-                                                       data-toggle="tooltip"
-                                                       data-placement="top"
+                                                       data-bs-toggle="tooltip"
+                                                       data-bs-placement="top"
                                                        title="You must leave at least 40% of your total DP at home. (40% rule)"></i>
                                                 </td>
                                                 <td id="home-forces-min-dp" data-amount="0">0</td>
@@ -322,11 +322,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Here you can invade other players to try to capture some of their land and to gain prestige. Invasions are successful if you send more OP than they have DP.</p>
                     <p>Find targets using <a href="{{ route('dominion.magic') }}">magic</a>,  <a href="{{ route('dominion.espionage') }}">espionage</a> and the <a href="{{ route('dominion.op-center') }}">Op Center</a>. Communicate with your realmies using the <a href="{{ route('dominion.council') }}">council</a> to coordinate attacks.</p>
                     <p>Be sure to calculate your OP vs your target's DP to avoid blindly sending your units to their doom.</p>
@@ -340,11 +340,9 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
@@ -550,13 +548,13 @@
 
             warStatus = '';
             if (war == 1) {
-                warStatus = '<div class="pull-left">&nbsp;<span class="text-red">WAR</span></div>';
+                warStatus = '<div class="float-start">&nbsp;<span class="text-red">WAR</span></div>';
             }
 
             return $(`
-                <div class="pull-left">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
+                <div class="float-start">${state.text.replace(/\</g,"&lt;")} - ${race}</div>
                 ${warStatus}
-                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
+                <div class="float-end">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);
         }

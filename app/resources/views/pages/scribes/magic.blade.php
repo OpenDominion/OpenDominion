@@ -2,11 +2,11 @@
 
 @section('content')
     @include('partials.scribes.nav')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Magic</h3>
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Magic</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     <p>Magic will let your wizards cast a variety of spells, giving temporary bonuses, information or damaging your enemies.</p>
@@ -19,11 +19,11 @@
             </div>
         </div>
     </div>
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Spells</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Spells</h3>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             @foreach ($spellHelper->getSpells()->groupBy('category') as $category => $categorySpells)
                 <div class="row">
                     <div class="col-md-12">

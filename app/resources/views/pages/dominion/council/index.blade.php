@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-group"></i> Council: {{ $realm->name }} (#{{ number_format($realm->number) }})</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-group"></i> Council: {{ $realm->name }} (#{{ number_format($realm->number) }})</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <table class="table table-hover">
                         <colgroup>
                             {{--<col width="50">--}}
@@ -44,7 +44,7 @@
                                             @if ($pageCount > 1)
                                                 <span class="small" style="margin-left: 10px;">
                                                     @foreach (range(1, $pageCount) as $page)
-                                                        <a href="{{ route('dominion.council.thread', $thread) }}?page={{ $page }}"><span class="label label-primary">{{ $page }}</span></a>
+                                                        <a href="{{ route('dominion.council.thread', $thread) }}?page={{ $page }}"><span class="badge text-bg-primary">{{ $page }}</span></a>
                                                     @endforeach
                                                 </span>
                                             @endif
@@ -96,13 +96,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="box-footer">
+                <div class="card-footer">
                     @if (!$selectedDominion->isLocked())
                         <a href="{{ route('dominion.council.create') }}" class="btn btn-primary">New Thread</a>
                     @else
                         <button class="btn btn-primary disabled">New Thread</button>
                     @endif
-                    <div class="pull-right">
+                    <div class="float-end">
                         {{ $councilThreads->links() }}
                     </div>
                 </div>
@@ -110,11 +110,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The council is where you can communicate with the rest of your realm. Only you and other dominions inside your realm can view and post here.</p>
                     {{--<p>Your realm monarch is X and has the power to moderate the council board.</p>--}}
                     <p>There {{ ($councilThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($councilThreads->count()) }} {{ str_plural('thread', $councilThreads->count()) }} in the council.</p>

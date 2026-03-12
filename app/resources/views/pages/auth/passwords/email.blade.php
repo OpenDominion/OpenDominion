@@ -2,16 +2,16 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
+        <div class="col-sm-6 offset-sm-3">
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Reset Password</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Reset Password</h3>
                 </div>
                 <form action="{{ route('auth.password.email') }}" method="post" class="form-horizontal" role="form">
                     @csrf
 
-                    <div class="box-body">
+                    <div class="card-body">
 
                         {{-- Email --}}
                         <div class="form-group">
@@ -22,7 +22,7 @@
                         </div>
 
                     </div>
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Send Password Reset Link</button>
                     </div>
 

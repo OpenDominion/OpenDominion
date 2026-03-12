@@ -17,11 +17,11 @@
     @include('partials.dominion.advisor-selector')
     <div class="row">
         <div class="col-md-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-burning-embers"></i> {{ $boxTitle }}</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-burning-embers"></i> {{ $boxTitle }}</h3>
                 </div>
-                <div class="box-body table-responsive no-padding">
+                <div class="card-body table-responsive no-padding">
                     <table class="table table-hover">
                         <colgroup>
                             <col width="150">
@@ -59,11 +59,11 @@
         </div>
 
         <div class="col-md-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>The magic advisor tells you the current spells affecting your dominion and their remaining duration.</p>
                 </div>
             </div>
@@ -73,11 +73,11 @@
     @if ($selectedDominion->id === $target->id)
         <div class="row">
             <div class="col-md-12 col-md-9">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-lightning-trio"></i> Spells affecting other dominions</h3>
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ra ra-lightning-trio"></i> Spells affecting other dominions</h3>
                     </div>
-                    <div class="box-body table-responsive no-padding">
+                    <div class="card-body table-responsive no-padding">
                         <table class="table table-hover">
                             <colgroup>
                                 <col width="150">

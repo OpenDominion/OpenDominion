@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-robot-arm"></i> Automated Actions</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-robot-arm"></i> Automated Actions</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             @php
@@ -30,7 +30,7 @@
                                 @if (!$selectedDominion->ai_enabled || empty($selectedDominion->ai_config))
                                     <p><i>No automated actions scheduled.</i></p>
                                 @else
-                                    <table class="table table-condensed">
+                                    <table class="table table-sm">
                                         <colgroup>
                                             <col width="15%">
                                             <col width="15%">
@@ -97,7 +97,7 @@
                                                             @csrf
                                                             <input type="hidden" name="tick" value="{{ $tick }}" />
                                                             <input type="hidden" name="key" value="{{ $index }}" />
-                                                            <button class="btn btn-link no-padding pull-right" type="submit" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                            <button class="btn btn-link no-padding float-end" type="submit" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                                 <i class="fa fa-trash text-danger"></i>
                                                             </button>
                                                         </form>
@@ -205,7 +205,7 @@
                                         <option value="platinum">Platinum</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary pull-right" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                <button type="submit" class="btn btn-primary float-end" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     Save
                                 </button>
                             </form>
@@ -216,11 +216,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>You can schedule {{ $allowedActions }} automations per day, which reset with your daily bonuses.</p>
                     <p>Each tick that you automate can consist of up to 10 actions in sequence.</p>
                     <p>Actions cannot be scheduled more than 12 hours in advance and are performed ~30 minutes into the hour.</p>

@@ -1,5 +1,5 @@
-<div class="box box-primary">
-    <div class="box-body no-padding">
+<div class="card card-outline card-primary">
+    <div class="card-body no-padding">
         <div class="row">
             <div class="col-md-12 col-md-12">
                 <div class="navbar-collapse">

@@ -6,11 +6,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-scroll-unfurled"></i> Op Center</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ra ra-scroll-unfurled"></i> Op Center</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     <table class="table table-hover" id="dominions-table">
                         <colgroup>
                             <col>
@@ -37,9 +37,9 @@
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }} (#{{ $lastInfoOp->targetDominion->realm->number }})</a>
                                         @if ($lastInfoOp->isInvalid())
-                                            <span class="label label-danger">Invalid</span>
+                                            <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($lastInfoOp->isStale())
-                                            <span class="label label-warning">Stale</span>
+                                            <span class="badge text-bg-warning">Stale</span>
                                         @endif
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->targetDominion->race->name }}">
@@ -81,11 +81,11 @@
             </div>
 
             {{--
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title">Clairvoyance Realms</h3>
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Clairvoyance Realms</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     <table class="table table-hover" id="clairvoyance-table">
                         <colgroup>
                             <col>
@@ -133,11 +133,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Information</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p>Whenever you or someone else in your realm performs an information gathering espionage operation or magic spell, the information gathered is posted in the Op Center.</p>
                     <p>Through this page, you can help one another find targets and scout threats to one another.</p>
                 </div>
@@ -148,12 +148,12 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap5.css') }}">
 @endpush
 
 @push('page-scripts')
     <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/vendor/datatables/js/dataTables.bootstrap5.js') }}"></script>
 @endpush
 
 @push('inline-scripts')
