@@ -14,7 +14,7 @@ perks:
 units:
   - name: Raider
     cost:
-      platinum: 350
+      platinum: 380
       ore: 25
     power:
       offense: 3

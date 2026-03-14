@@ -14,7 +14,7 @@ perks:
 units:
   - name: Spearman
     cost:
-      platinum: 275
+      platinum: 315
       ore: 25
     power:
       offense: 3
