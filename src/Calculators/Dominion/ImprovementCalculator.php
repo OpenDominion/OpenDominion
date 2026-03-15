@@ -78,7 +78,7 @@ class ImprovementCalculator
     {
         $maximumPercentages = [
             'science' => 20,
-            'keep' => 30,
+            'keep' => 25,
             'spires' => 60,
             'forges' => 30,
             'walls' => 30,
