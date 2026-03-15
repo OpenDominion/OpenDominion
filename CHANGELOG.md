@@ -27,7 +27,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lycanthrope Scavenger: +35p (from 325p)
 - Merfolk: gem production penalty removed (was -10%)
 - Merfolk Merman: +15p (from 285p)
-- Merfolk Merman: +30p (from 285p)
 - Nomad Lancer: +45p (from 325p)
 - Spirit Phantom: +35p (from 300p)
 - Sylvan Satyr: +40p (from 275p)
