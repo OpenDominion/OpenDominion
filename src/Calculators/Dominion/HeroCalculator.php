@@ -220,6 +220,26 @@ class HeroCalculator
     }
 
     /**
+     * Returns true if the hero currently has or has previously reached level 1+ in the given class.
+     *
+     * @param Hero $hero
+     * @param string $class
+     * @return bool
+     */
+    public function heroHasClass(Hero $hero, string $class): bool
+    {
+        if ($hero->class === $class) {
+            return true;
+        }
+        foreach (collect($hero->class_data ?? []) as $classEntry) {
+            if (($classEntry['key'] ?? null) === $class) {
+                return $this->getExperienceLevel($classEntry['experience'] ?? 0) >= 1;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns the level by experience total.
      *
      * @param float $experience

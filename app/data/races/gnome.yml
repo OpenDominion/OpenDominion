@@ -16,7 +16,7 @@ perks:
 units:
   - name: Suicide Squad
     cost:
-      platinum: 200
+      platinum: 225
       ore: 50
     power:
       offense: 4

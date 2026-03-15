@@ -5,6 +5,39 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.49.0] - 2026-03-15
+### Changed
+- Keep improvement decreased to max 25% (from 30%)
+- Masonry castle bonus increased to 2.75% per 1% owned (from 2.6% per 1% owned)
+- Prestige loss no longer increases beyond 5% (was up to 15% based on recent invasions)
+- Dark Elf: Spellwright's Calling can no longer be cast in protection
+- Demon Infernal Imp: +35p (from 280p)
+- Dwarf Soldier: +40p (from 275p)
+- Dwarf Cleric: increased OP to 4 (from 3.5), +20p (from 880p)
+- Firewalker: Alchemist Flame now also adds 15 points to Forges per Alchemy every hour
+- Firewalker Fire Sprite: +25p (from 300p)
+- Goblin: gem production bonus reduced to 10% (from 15%)
+- Goblin Raider: +30p (from 350p)
+- Gnome Suicide Squad: +25p (from 200p)
+- Halfling: added +10% population growth
+- Halfling Slinger: +40p (from 275p)
+- Human Spearman: +40p (from 275p)
+- Kobold Underling: +20p (from 295p)
+- Lizardfolk Reptile: +40p (from 275p)
+- Lycanthrope Scavenger: +35p (from 325p)
+- Merfolk: gem production penalty removed (was -10%)
+- Merfolk Merman: +15p (from 285p)
+- Nomad Lancer: +45p (from 325p)
+- Spirit Phantom: +35p (from 300p)
+- Sylvan Satyr: +40p (from 275p)
+- Undead: Death and Decay reduced to 0.5% of peasants (from 0.6%)
+- Undead Zombie: +25p (from 200p)
+- Vampire Dire Bat: +40p (from 275p)
+- Scholar now requires 2 unlocked techs to select (was 7,500 research points)
+- Scion now requires 6 successful 75% attacks to select (was 350 prestige)
+- School of War increased to +4 barracks housing (from +3)
+- Altar of Heroes is disabled until it can be reworked
+
 ## [1.48.0] - 2025-01-14
 ### Changed
 - Heroes
@@ -2586,7 +2619,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.48.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.49.0...HEAD
+[1.49.0]: https://github.com/OpenDominion/OpenDominion/compare/1.48.0...1.49.0
 [1.48.0]: https://github.com/OpenDominion/OpenDominion/compare/1.47.1...1.48.0
 [1.47.1]: https://github.com/OpenDominion/OpenDominion/compare/1.47.0...1.47.1
 [1.47.0]: https://github.com/OpenDominion/OpenDominion/compare/1.46.1...1.47.0

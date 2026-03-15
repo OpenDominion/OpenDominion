@@ -206,18 +206,12 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
     #[DataProvider('getPrestigeLossProvider')]
     public function testGetPrestigeLoss(
         int $targetPrestige,
-        int $weeklyInvadedCount,
         int $expectedPrestigeLoss
     ) {
         $this->target
             ->shouldReceive('getAttribute')
             ->with('prestige')
             ->andReturn($targetPrestige);
-
-        $this->militaryCalculator
-            ->shouldReceive('getRecentlyInvadedCount')
-            ->with($this->target, 168, true)
-            ->andReturn($weeklyInvadedCount);
 
         $this->assertEquals(
             $expectedPrestigeLoss,
@@ -228,23 +222,11 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
     public static function getPrestigeLossProvider()
     {
         return [
-            // [targetPrestige, weeklyInvadedCount, expectedPrestigeLoss]
-            // Base case: 5% loss with no recent invasions
-            [1000, 0, -50],   // base: 1000 * 0.05 = 50, additional: 0, total: -50
-            [2000, 0, -100],  // base: 2000 * 0.05 = 100, additional: 0, total: -100
-            [500, 0, -25],    // base: 500 * 0.05 = 25, additional: 0, total: -25
-
-            // With recent invasions: base 5% + 1% per invasion
-            [1000, 1, -60],   // base: 50, additional: 1000 * 0.01 = 10, total: -60
-            [1000, 2, -70],   // base: 50, additional: 1000 * 0.02 = 20, total: -70
-            [1000, 5, -100],  // base: 50, additional: 1000 * 0.05 = 50, total: -100
-            [2000, 3, -160],  // base: 100, additional: 2000 * 0.03 = 60, total: -160
-
-            // Cap at 15% (base + invasions capped)
-            [1000, 10, -150], // base: 50, additional: 100, total capped at 150
-            [1000, 15, -150], // base: 50, additional: 150, total capped at 150
-            [1000, 20, -150], // base: 50, additional: 200, total capped at 150
-            [5000, 12, -750], // base: 250, additional: 600, total capped at 750
+            // [targetPrestige, expectedPrestigeLoss]
+            // Base case: 5% loss
+            [1000, -50],   // base: 1000 * 0.05 = 50
+            [2000, -100],  // base: 2000 * 0.05 = 100
+            [500, -25],    // base: 500 * 0.05 = 25
         ];
     }
 
@@ -252,18 +234,12 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetPrestigeLoss_WithPrestigeGainCap(
         int $targetPrestige,
         int $prestigeGain,
-        int $weeklyInvadedCount,
         int $expectedPrestigeLoss
     ) {
         $this->target
             ->shouldReceive('getAttribute')
             ->with('prestige')
             ->andReturn($targetPrestige);
-
-        $this->militaryCalculator
-            ->shouldReceive('getRecentlyInvadedCount')
-            ->with($this->target, 168, true)
-            ->andReturn($weeklyInvadedCount);
 
         $this->assertEquals(
             $expectedPrestigeLoss,
@@ -274,25 +250,15 @@ class PrestigeCalculatorTest extends AbstractBrowserKitTestCase
     public static function getPrestigeLossWithCapProvider()
     {
         return [
-            // [targetPrestige, prestigeGain, weeklyInvadedCount, expectedPrestigeLoss]
+            // [targetPrestige, prestigeGain, expectedPrestigeLoss]
             // prestigeGain caps the base loss
-            [1000, 30, 0, -30],   // base: min(50, 30) = 30, additional: 0, total: -30
-            [1000, 40, 0, -40],   // base: min(50, 40) = 40, additional: 0, total: -40
-            [2000, 80, 0, -80],   // base: min(100, 80) = 80, additional: 0, total: -80
+            [1000, 30, -30],   // base: min(50, 30) = 30, total: -30
+            [1000, 40, -40],   // base: min(50, 40) = 40, total: -40
+            [2000, 80, -80],   // base: min(100, 80) = 80, total: -80
 
             // prestigeGain doesn't cap because base is lower
-            [1000, 100, 0, -50],  // base: min(50, 100) = 50, additional: 0, total: -50
-            [1000, 60, 0, -50],   // base: min(50, 60) = 50, additional: 0, total: -50
-
-            // With invasions - base is capped but additional is added
-            [1000, 30, 1, -40],   // base: min(50, 30) = 30, additional: 10, total: -40
-            [1000, 30, 2, -50],   // base: min(50, 30) = 30, additional: 20, total: -50
-            [1000, 30, 5, -80],   // base: min(50, 30) = 30, additional: 50, total: -80
-            [2000, 50, 3, -110],  // base: min(100, 50) = 50, additional: 60, total: -110
-
-            // With many invasions - still respects 15% total cap
-            [1000, 30, 15, -150], // base: min(50, 30) = 30, additional: 150, capped at 150
-            [1000, 10, 20, -150], // base: min(50, 10) = 10, additional: 200, capped at 150
+            [1000, 100, -50],  // base: min(50, 100) = 50, total: -50
+            [1000, 60, -50],   // base: min(50, 60) = 50, total: -50
         ];
     }
 }

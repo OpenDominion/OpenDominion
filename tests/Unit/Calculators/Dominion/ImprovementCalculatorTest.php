@@ -83,19 +83,19 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
                     'improvement_points' => 30000000,
                     'building_masonry' => (4000 / 10)
                 ],
-                'expected' => 0.2133, // +21.33
+                'expected' => 0.2158, // +21.58
             ],
 
             // Keep: 250 land, 120k points (invest 10k starter gems)
             [
                 'attributes' => ['land' => 250, 'improvement_type' => 'keep', 'improvement_points' => 120000],
-                'expected' => 0.0335, // +3.35%
+                'expected' => 0.0279, // +2.79%
             ],
 
             // Keep: 4000 land, 30m points
             [
                 'attributes' => ['land' => 4000, 'improvement_type' => 'keep', 'improvement_points' => 30000000],
-                'expected' => 0.2539, // +25.39
+                'expected' => 0.2116, // +21.16
             ],
 
             // Spires: 250 land, 120k points (invest 10k starter gems)

@@ -14,7 +14,7 @@ perks:
 units:
   - name: Satyr
     cost:
-      platinum: 275
+      platinum: 315
       lumber: 0
     power:
       offense: 3

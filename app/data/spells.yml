@@ -224,6 +224,7 @@ alchemist_flame:
     - firewalker
   perks:
     platinum_production_raw: 12
+    alchemy_improvement_forges_raw: 15
 erosion:
   name: Erosion
   category: self
@@ -425,6 +426,7 @@ spellwrights_calling:
   perks:
     wizard_guilds_produce_military_unit3: 0.05
     wizard_guild_mana_production_raw: 5
+    invalid_protection: 1
 gaias_blessing:
   name: Gaia's Blessing
   category: self
@@ -590,7 +592,7 @@ death_and_decay:
   perks:
     food_decay: 100
     lumber_decay: 100
-    convert_peasants_to_self_military_unit1: 0.6
+    convert_peasants_to_self_military_unit1: 0.5
     invalid_protection: 1
 feast_of_blood:
   name: Feast of Blood

@@ -197,6 +197,13 @@
                     @endif
                 </div>
             @endif
+            <div class="text-center">
+                @if ($patreonPledgeLink = config('app.patreon_pledge_link'))
+                    <p><a href="{{ $patreonPledgeLink }}" data-patreon-widget-type="become-patron-button">Become a Patron!</a></p>
+                @elseif ($kofiSupportID = config('app.kofi_support_id'))
+                    <p><script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support OpenDominion', '#005566', '{{ $kofiSupportID }}');kofiwidget2.draw();</script></p>
+                @endif
+            </div>
         </div>
 
         <div class="col-sm-3 hidden-xs">

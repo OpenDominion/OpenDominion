@@ -24,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if($selectedDominion->hero)
+                        @if ($selectedDominion->hero)
                             @foreach($tactics as $tactic)
                                 <tr>
                                     <td>{{ $tactic->name }}</td>
@@ -42,6 +42,32 @@
                                         </form>
                                     </td>
                                 </tr>
+                                @if (($tactic->attributes['encounter'] ?? null) === 'planewalker')
+                                    @php
+                                        $priorWins = \OpenDominion\Models\RaidContribution::where('raid_tactic_id', $tactic->id)
+                                            ->where('realm_id', $selectedDominion->realm_id)
+                                            ->count();
+                                    @endphp
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="alert alert-info" style="margin-bottom: 0;">
+                                                <strong><i class="fa fa-shield"></i> Realm Wounds</strong><br>
+                                                @if ($priorWins === 0)
+                                                    No heroes in your realm have wounded the Planewalker yet. It will enter your battle at full strength.
+                                                @else
+                                                    <strong>{{ $priorWins }}</strong> {{ $priorWins === 1 ? 'hero has' : 'heroes have' }} already wounded the Planewalker in your realm.
+                                                    It will enter your battle at <strong>{{ max(100 - ($priorWins * 10), 50) }}% strength</strong>.
+                                                @endif
+                                                <br/>
+                                                <small class="text-muted">
+                                                    <strong>Engineers</strong> can use explosives to damage all enemies at once.<br/>
+                                                    <strong>Sorcerers</strong> can unleash Great Flood to damage all enemies at once.<br/>
+                                                    <strong>Infiltrators</strong> can pierce through the Planewalker's evasion with Shadow Strike.
+                                                </small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                             @if ($tactics->count() > 1)
                                 <tr>

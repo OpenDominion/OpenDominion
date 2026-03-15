@@ -62,7 +62,7 @@ class ImprovementCalculator
      */
     public function getImprovementMultiplier(Dominion $dominion): float
     {
-        $efficiencyPerMasonry = 2.6;
+        $efficiencyPerMasonry = 2.75;
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         return (1 + (($dominion->building_masonry * $efficiencyPerMasonry) / $totalLand));
@@ -78,7 +78,7 @@ class ImprovementCalculator
     {
         $maximumPercentages = [
             'science' => 20,
-            'keep' => 30,
+            'keep' => 25,
             'spires' => 60,
             'forges' => 30,
             'walls' => 30,
