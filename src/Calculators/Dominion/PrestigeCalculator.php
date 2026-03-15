@@ -39,16 +39,6 @@ class PrestigeCalculator
      */
     protected const PRESTIGE_LOSS_PERCENTAGE = 5.0;
 
-    /**
-     * @var float Additional prestige % change for defender from recent invasions
-     */
-    protected const PRESTIGE_LOSS_PERCENTAGE_PER_INVASION = 1.0;
-
-    /**
-     * @var float Maximum prestige % change for defender
-     */
-    protected const PRESTIGE_LOSS_PERCENTAGE_CAP = 15.0;
-
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -156,24 +146,14 @@ class PrestigeCalculator
 
     public function getPrestigeLoss(Dominion $target, int $prestigeGain = null): int
     {
-        $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
-
         // Calculate base prestige loss
-        $baseLoss = $target->prestige * (static::PRESTIGE_LOSS_PERCENTAGE / 100);
+        $prestigeLoss = $target->prestige * (static::PRESTIGE_LOSS_PERCENTAGE / 100);
 
         // Cap at prestige gain if provided
         if ($prestigeGain !== null) {
-            $baseLoss = min($baseLoss, $prestigeGain);
+            $prestigeLoss = min($prestigeLoss, $prestigeGain);
         }
 
-        // Calculate additional loss from invasions
-        $additionalLossPercentage = (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100) * $weeklyInvadedCount;
-        $additionalLoss = $target->prestige * $additionalLossPercentage;
-
-        // Calculate total loss
-        $maxLoss = $target->prestige * (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100);
-        $totalLoss = min($baseLoss + $additionalLoss, $maxLoss);
-
-        return (int)round(-$totalLoss);
+        return (int)round(-$prestigeLoss);
     }
 }
