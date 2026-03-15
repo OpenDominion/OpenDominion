@@ -10,7 +10,7 @@ converter_difficulty: 3
 home_land_type: hill
 perks:
   max_population: 20
-  invest_bonus_gems: 15
+  invest_bonus_gems: 10
 units:
   - name: Raider
     cost:
