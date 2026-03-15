@@ -171,6 +171,7 @@ class SpellHelper
             'rezone_cost' => '%+g%% rezoning platinum cost',
 
             // Resource related
+            'alchemy_improvement_forges_raw' => '%+d forges improvement per alchemy per hour',
             'boat_production' => '%+g%% boat production',
             'food_consumption' => '%+g%% food consumption',
             'food_production' => '%+g%% food production',

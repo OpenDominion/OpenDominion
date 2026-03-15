@@ -10,6 +10,7 @@ converter_difficulty: 3
 home_land_type: hill
 perks:
   max_population: 5
+  population_growth: 10
   defense: 10
   food_consumption: -30
   spy_power_defense: 35
