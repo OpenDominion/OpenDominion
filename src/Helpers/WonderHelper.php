@@ -73,7 +73,8 @@ class WonderHelper
             'tech_production_raw' => '%+g research point production per hour',
 
             // Special
-            'sentient' => 'Every 24 hours, Urg attacks a random dominion in each of the three realms that dealt the least damage to him that day.',
+            'sentient' => 'Every 24 hours, Urg attacks a random dominion in each of the three realms that dealt the least damage to him that day',
+            'temporary_tech' => 'While you control this wonder, you may gain the benefits of one tech that you have not already unlocked (excluding Urg Smash Technique)',
         ];
 
         $perkStrings = [];

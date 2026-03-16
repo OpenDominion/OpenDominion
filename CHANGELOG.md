@@ -10,13 +10,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Keep improvement decreased to max 25% (from 30%)
 - Masonry castle bonus increased to 2.75% per 1% owned (from 2.6% per 1% owned)
 - Prestige loss no longer increases beyond 5% (was up to 15% based on recent invasions)
+- Magic Snare minimum damage reduced to 1 (from 1.5)
 - Dark Elf: Spellwright's Calling can no longer be cast in protection
 - Demon Infernal Imp: +35p (from 280p)
 - Dwarf Soldier: +40p (from 275p)
 - Dwarf Cleric: increased OP to 4 (from 3.5), +20p (from 880p)
 - Firewalker: Alchemist Flame now also adds 15 points to Forges per Alchemy every hour
 - Firewalker Fire Sprite: +25p (from 300p)
-- Goblin: gem production bonus reduced to 10% (from 15%)
+- Goblin: gem investment bonus reduced to 10% (from 15%)
 - Goblin Raider: +30p (from 350p)
 - Gnome Suicide Squad: +25p (from 200p)
 - Halfling: added +10% population growth
@@ -37,6 +38,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Scion now requires 6 successful 75% attacks to select (was 350 prestige)
 - School of War increased to +4 barracks housing (from +3)
 - Altar of Heroes is disabled until it can be reworked
+- New Wonder: Planar Gates
+  - While you control this wonder, you may gain the benefits of one tech that you have not already unlocked (except Urg Smash Technique)
+
 
 ## [1.48.0] - 2025-01-14
 ### Changed
