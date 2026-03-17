@@ -1439,10 +1439,22 @@ class RealmAssignmentService
     }
 
     /**
-     * Get candidate realms with rating data included, excluding non-Discord realms
+     * Get candidate realms with rating data included, excluding non-Discord realms.
+     *
+     * Realms containing a draft pack (a pack with more than MAX_PACKED_PLAYERS_PER_REALM
+     * members, e.g. from a player-run external draft) are excluded from candidates unless
+     * every other realm has at least 2 more total players — in which case the draft-pack
+     * realm is the least-loaded option and should be considered.
      */
     public function getCandidateRealms(Round $round, Race $race): Collection
     {
+        // Find realm IDs that contain a draft pack
+        $draftPackRealmIds = Pack::where('round_id', $round->id)
+            ->where('size', '>', self::MAX_PACKED_PLAYERS_PER_REALM)
+            ->pluck('realm_id')
+            ->filter()
+            ->values();
+
         $query = Realm::active()
             ->where('number', '!=', 0)
             ->where('round_id', $round->id)
@@ -1472,6 +1484,25 @@ class RealmAssignmentService
         $discordRealms = $realms->filter(function ($realm) {
             return $realm->getSetting('usediscord') !== false;
         });
+
+        // Exclude draft-pack realms unless every normal realm has at least 2 more players,
+        // in which case the draft-pack realm is the least-loaded option and should be included
+        if ($draftPackRealmIds->isNotEmpty()) {
+            $normalRealms = $discordRealms->whereNotIn('id', $draftPackRealmIds);
+            $draftPackRealms = $discordRealms->whereIn('id', $draftPackRealmIds);
+
+            $allNormalRealmsAreLarger = $normalRealms->isNotEmpty() && $draftPackRealms->every(
+                function ($draftRealm) use ($normalRealms) {
+                    return $normalRealms->every(function ($r) use ($draftRealm) {
+                        return $r->active_dominions_count >= $draftRealm->active_dominions_count + 2;
+                    });
+                }
+            );
+
+            if (!$allNormalRealmsAreLarger) {
+                $discordRealms = $normalRealms;
+            }
+        }
 
         // Return top 3 smallest Discord-enabled candidates
         return $discordRealms->take(3);

@@ -38,6 +38,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Scion now requires 6 successful 75% attacks to select (was 350 prestige)
 - School of War increased to +4 barracks housing (from +3)
 - Altar of Heroes is disabled until it can be reworked
+
+### Added
 - New Wonder: Planar Gates
   - While you control this wonder, you may gain the benefits of one tech that you have not already unlocked (except Urg Smash Technique)
 

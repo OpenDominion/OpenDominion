@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Unit\Services;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\PlaceholderPack;
 use OpenDominion\Services\PlaceholderRealm;
@@ -668,6 +669,225 @@ class RealmAssignmentServiceTest extends AbstractTestCase
                 'Overall realm compatibility should be reasonable after optimization'
             );
         }
+    }
+
+    /**
+     * Test behavior when a "draft pack" is submitted — a player-organized group larger than
+     * MAX_PACKED_PLAYERS_PER_REALM (8) that arrives as a single pack (e.g. from an external
+     * NFL-style draft event run outside the game).
+     *
+     * Because large packs (size > 3) are placed directly into their own realm by
+     * createPlaceholderRealms() without going through canFitPack(), a draft pack will
+     * produce a realm whose packedPlayerCount exceeds MAX_PACKED_PLAYERS_PER_REALM.
+     * This test documents that current (unguarded) behavior and verifies that:
+     *  - All pack members land in the same realm (pack integrity holds)
+     *  - All other players are still assigned
+     *  - No other packs are added to the draft-pack realm (canFitPack blocks them)
+     */
+    public function testAssignRealmsWithDraftPack()
+    {
+        $this->service->players = collect();
+        $this->service->packs = collect();
+        $this->service->realms = collect();
+
+        // Draft pack: 11 players organized outside the game
+        $draftPackMembers = collect();
+        foreach (range(1, 11) as $id) {
+            $player = new Player([
+                'id' => (string)$id,
+                'rating' => 1500.0,
+                'packId' => 'draft-pack',
+                'favorability' => [],
+                'attackerAffinity' => 50.0,
+                'converterAffinity' => 25.0,
+                'explorerAffinity' => 50.0,
+                'opsAffinity' => 25.0,
+            ]);
+            $draftPackMembers->put($id, $player);
+        }
+        $this->service->packs->put('draft-pack', new PlaceholderPack('draft-pack', $draftPackMembers));
+
+        // Normal large pack (4 players)
+        $normalPackMembers = collect();
+        foreach (range(12, 15) as $id) {
+            $player = new Player([
+                'id' => (string)$id,
+                'rating' => 1500.0,
+                'packId' => 'normal-pack',
+                'favorability' => [],
+                'attackerAffinity' => 50.0,
+                'converterAffinity' => 25.0,
+                'explorerAffinity' => 50.0,
+                'opsAffinity' => 25.0,
+            ]);
+            $normalPackMembers->put($id, $player);
+        }
+        $this->service->packs->put('normal-pack', new PlaceholderPack('normal-pack', $normalPackMembers));
+
+        // Small pack (2 players)
+        $smallPackMembers = collect();
+        foreach (range(16, 17) as $id) {
+            $player = new Player([
+                'id' => (string)$id,
+                'rating' => 1500.0,
+                'packId' => 'small-pack',
+                'favorability' => [],
+                'attackerAffinity' => 50.0,
+                'converterAffinity' => 25.0,
+                'explorerAffinity' => 50.0,
+                'opsAffinity' => 25.0,
+            ]);
+            $smallPackMembers->put($id, $player);
+        }
+        $this->service->packs->put('small-pack', new PlaceholderPack('small-pack', $smallPackMembers));
+
+        // 20 solo players
+        foreach (range(18, 37) as $id) {
+            $this->service->players->put($id, new Player([
+                'id' => (string)$id,
+                'rating' => 1500.0,
+                'packId' => null,
+                'favorability' => [],
+                'attackerAffinity' => 50.0,
+                'converterAffinity' => 25.0,
+                'explorerAffinity' => 50.0,
+                'opsAffinity' => 25.0,
+            ]));
+        }
+
+        $totalPlayers = 11 + 4 + 2 + 20; // 37
+
+        $this->service->targetRealmStrength = 1500.0;
+        $this->service->targetRealmSize = floor($totalPlayers / RealmAssignmentService::ASSIGNMENT_MIN_REALM_COUNT);
+
+        $reflection = new \ReflectionClass($this->service);
+        foreach (['createPlaceholderRealms', 'assignPacks', 'assignSolos'] as $method) {
+            $m = $reflection->getMethod($method);
+            $m->setAccessible(true);
+            $m->invoke($this->service);
+        }
+
+        $result = $this->service->realms;
+
+        // All 37 players must be assigned
+        $this->assertEquals(
+            $totalPlayers,
+            $result->sum(fn ($realm) => $realm->size),
+            'All players should be assigned'
+        );
+
+        // Locate the realm the draft pack landed in
+        $draftPackRealm = null;
+        foreach ($result as $realm) {
+            foreach ($realm->players as $player) {
+                if ($player->packId === 'draft-pack') {
+                    $draftPackRealm = $realm;
+                    break 2;
+                }
+            }
+        }
+        $this->assertNotNull($draftPackRealm, 'Draft pack should be assigned to a realm');
+
+        // All 11 draft-pack members must be together
+        $draftMembersInRealm = $draftPackRealm->players->filter(fn ($p) => $p->packId === 'draft-pack')->count();
+        $this->assertEquals(11, $draftMembersInRealm, 'All draft pack members must be in the same realm');
+
+        // Draft pack realm exceeds MAX_PACKED_PLAYERS_PER_REALM — documented current behavior
+        $this->assertGreaterThan(
+            RealmAssignmentService::MAX_PACKED_PLAYERS_PER_REALM,
+            $draftPackRealm->packedPlayerCount(),
+            'Draft pack realm should exceed MAX_PACKED_PLAYERS_PER_REALM since canFitPack is bypassed for large packs'
+        );
+
+        // No other packs should have been added to the draft-pack realm
+        $nonDraftPackedCount = $draftPackRealm->players
+            ->filter(fn ($p) => $p->packId !== null && $p->packId !== 'draft-pack')
+            ->count();
+        $this->assertEquals(
+            0,
+            $nonDraftPackedCount,
+            'No other packs should be placed in the draft-pack realm because canFitPack blocks them'
+        );
+
+        // Pack integrity for all packs
+        $packRealmMap = [];
+        foreach ($result as $realm) {
+            foreach ($realm->players as $player) {
+                if ($player->packId !== null) {
+                    $packRealmMap[$player->packId][] = $realm->id;
+                }
+            }
+        }
+        foreach ($packRealmMap as $packId => $realmIds) {
+            $this->assertCount(1, array_unique($realmIds), "All members of pack '{$packId}' must be in the same realm");
+        }
+    }
+
+    /**
+     * Test getCandidateRealms excludes draft-pack realms unless they are the smallest option.
+     *
+     * A "draft pack" is a pack with more than MAX_PACKED_PLAYERS_PER_REALM members,
+     * submitted by a player-run external draft event. The realm it occupies should be
+     * skipped as a candidate for late-joining players — unless every other realm has
+     * at least 2 more total players, meaning it is genuinely the least-loaded option.
+     */
+    public function testGetCandidateRealmsExcludesDraftPackRealms()
+    {
+        $round = $this->createRound('-5 days', '+42 days');
+        $race  = Race::where('name', 'Human')->firstOrFail();
+
+        // Realm A: contains a draft pack (9 members > MAX_PACKED_PLAYERS_PER_REALM=8), 9 total players
+        $realmA = $this->createRealm($round, 'good');
+        $realmA->update(['number' => 1]);
+
+        $draftPackCreatorUser = $this->createUser();
+        $draftPackCreatorDominion = $this->createDominion($draftPackCreatorUser, $round, $race, $realmA, ['protection_finished' => true]);
+
+        $draftPack = Pack::create([
+            'round_id'              => $round->id,
+            'realm_id'              => $realmA->id,
+            'creator_dominion_id'   => $draftPackCreatorDominion->id,
+            'name'                  => 'Draft Pack',
+            'password'              => 'secret',
+            'size'                  => 9,
+            'rating'                => 1500,
+            'closed_at'             => now(),
+        ]);
+        $draftPackCreatorDominion->update(['pack_id' => $draftPack->id]);
+
+        foreach (range(2, 9) as $i) {
+            $this->createDominion($this->createUser(), $round, $race, $realmA, ['pack_id' => $draftPack->id, 'protection_finished' => true]);
+        }
+
+        // Realm B: normal realm, 10 total players (only 1 more than realm A — not enough)
+        $realmB = $this->createRealm($round, 'good');
+        $realmB->update(['number' => 2]);
+        foreach (range(1, 10) as $i) {
+            $this->createDominion($this->createUser(), $round, $race, $realmB, ['protection_finished' => true]);
+        }
+
+        // Realm C: normal realm, 11 total players (2 more than realm A — meets threshold)
+        $realmC = $this->createRealm($round, 'good');
+        $realmC->update(['number' => 3]);
+        foreach (range(1, 11) as $i) {
+            $this->createDominion($this->createUser(), $round, $race, $realmC, ['protection_finished' => true]);
+        }
+
+        // --- Case 1: not all normal realms are 2+ larger, so draft-pack realm is excluded ---
+        $candidates = $this->service->getCandidateRealms($round, $race);
+        $candidateIds = $candidates->pluck('id');
+
+        $this->assertNotContains($realmA->id, $candidateIds, 'Draft-pack realm should be excluded when normal realms are not all 2+ players larger');
+        $this->assertContains($realmB->id, $candidateIds, 'Normal realm B should be a candidate');
+        $this->assertContains($realmC->id, $candidateIds, 'Normal realm C should be a candidate');
+
+        // --- Case 2: bump realm B to 11 players so both normal realms are 2+ larger than realm A ---
+        $this->createDominion($this->createUser(), $round, $race, $realmB, ['protection_finished' => true]);
+
+        $candidates2 = $this->service->getCandidateRealms($round, $race);
+        $candidateIds2 = $candidates2->pluck('id');
+
+        $this->assertContains($realmA->id, $candidateIds2, 'Draft-pack realm should be included when all normal realms have 2+ more players');
     }
 
     /**
