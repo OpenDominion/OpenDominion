@@ -891,6 +891,44 @@ class RealmAssignmentServiceTest extends AbstractTestCase
     }
 
     /**
+     * Test that a non-Discord user falls back to a Discord realm when no non-Discord realm exists.
+     *
+     * findRealm checks for non-Discord realms first; if none exist it falls through to
+     * getCandidateRealms() and the user is placed in a regular Discord realm.
+     */
+    public function testFindRealmPlacesNonDiscordUserInDiscordRealmWhenNoNonDiscordRealmExists()
+    {
+        $round = $this->createRound('-5 days', '+42 days');
+        $race  = Race::where('name', 'Human')->firstOrFail();
+
+        // Create Discord-only realms (no realm has usediscord=false in settings)
+        $realm1 = $this->createRealm($round, 'good');
+        $realm1->update(['number' => 1]);
+
+        $realm2 = $this->createRealm($round, 'good');
+        $realm2->update(['number' => 2]);
+
+        foreach (range(1, 5) as $i) {
+            $this->createDominion($this->createUser(), $round, $race, $realm1, ['protection_finished' => true]);
+        }
+        foreach (range(1, 6) as $i) {
+            $this->createDominion($this->createUser(), $round, $race, $realm2, ['protection_finished' => true]);
+        }
+
+        // Non-Discord user with rating <= 1800
+        $nonDiscordUser = $this->createUser(null, ['rating' => 1200]);
+
+        $result = $this->service->findRealm($round, $race, $nonDiscordUser, false);
+
+        $this->assertNotNull($result, 'Non-Discord user should still be assigned a realm');
+        $this->assertContains(
+            $result->id,
+            [$realm1->id, $realm2->id],
+            'Non-Discord user should fall back to a Discord realm when no non-Discord realm exists'
+        );
+    }
+
+    /**
      * Test findRealm method functionality after realm assignment is complete
      *
      * This integration test validates the complete findRealm workflow using real models.

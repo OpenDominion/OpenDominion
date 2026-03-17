@@ -1296,7 +1296,7 @@ class RealmAssignmentService
     public function getAssignmentStats(): array
     {
         $stats = [
-            'realm_count' => $this->getRealmCount(),
+            'realm_count' => $this->realms->count(),
             'total_players' => 0,
             'total_new_players' => 0,
             'total_experienced_players' => 0,
@@ -1370,7 +1370,7 @@ class RealmAssignmentService
         $stats['total_players'] = $totalPlayers;
         $stats['total_new_players'] = $totalNewPlayers;
         $stats['total_experienced_players'] = $totalExperiencedPlayers;
-        $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->getRealmCount(), 2) : 0;
+        $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->realms->count(), 2) : 0;
         $stats['average_realm_rating'] = count($realmRatings) > 0 ? round(array_sum($realmRatings) / count($realmRatings), 2) : 0;
 
         // Calculate overall playstyle distribution
@@ -1419,9 +1419,12 @@ class RealmAssignmentService
 
         if (!$useDiscord && !($user->rating > 1800)) {
             // Filter down to non-Discord realms (those with usediscord = false in settings)
-            return $round->realms->filter(function ($realm) {
+            $nonDiscordRealms = $round->realms->filter(function ($realm) {
                 return $realm->getSetting('usediscord') === false;
-            })->random();
+            });
+            if ($nonDiscordRealms->isNotEmpty()) {
+                return $nonDiscordRealms->random();
+            }
         }
 
         // Get candidate realms with basic filtering
