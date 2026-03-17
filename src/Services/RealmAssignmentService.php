@@ -100,7 +100,7 @@ class PlaceholderPack
      *
      * Initializes a pack with the given members and calculates derived properties.
      * Large packs (>3 members) are automatically marked as such. The pack rating
-     * is calculated as the sum of all member ratings.
+     * is calculated as the average of all member ratings.
      *
      * @param string $id Unique identifier for the pack
      * @param Collection $members Collection of Player objects in this pack
@@ -111,7 +111,7 @@ class PlaceholderPack
         $this->members = $members;
         $this->size = $members->count();
         $this->large = $this->size > 3;
-        $this->rating = $members->sum('rating');
+        $this->rating = $members->avg('rating') ?? 0;
     }
 
     /**
@@ -267,8 +267,8 @@ class PlaceholderRealm
     /**
      * Update realm's derived statistics
      *
-     * Recalculates the realm's size (player count) and total rating
-     * (sum of all player ratings). Called whenever players are added
+     * Recalculates the realm's size (player count) and average rating
+     * across all players. Called whenever players are added
      * or removed from the realm.
      */
     public function update(): void
@@ -1020,8 +1020,10 @@ class RealmAssignmentService
         $iterations = 0;
 
         while ($iterations < $maxIterations) {
-            // Sort realms by size
-            $sortedBySize = $this->realms->sortBy('size');
+            // Sort realms by size, excluding realms with no solo players (e.g. draft pack realms)
+            $sortedBySize = $this->realms->filter(function ($realm) {
+                return $realm->soloPlayers()->isNotEmpty();
+            })->sortBy('size');
             $smallest = $sortedBySize->first();
             $largest = $sortedBySize->last();
 
@@ -1031,9 +1033,13 @@ class RealmAssignmentService
             }
 
             // Find the best solo player to move (one that improves or least worsens rating balance)
+            // Prefer players rated > 1000, but fall back to any available solo player
             $availablePlayers = $largest->soloPlayers()->where('rating', '>', 1000);
             if ($availablePlayers->isEmpty()) {
-                break; // No solo players available to move
+                $availablePlayers = $largest->soloPlayers();
+            }
+            if ($availablePlayers->isEmpty()) {
+                break; // No solo players at all in largest realm, cannot balance further
             }
 
             $bestPlayer = null;
