@@ -220,6 +220,20 @@ class PlaceholderRealm
     }
 
     /**
+     * Check if this realm contains a draft pack
+     *
+     * A draft pack is a player-organized group that exceeds MAX_PACKED_PLAYERS_PER_REALM,
+     * submitted via an external draft event. Such realms should be excluded from normal
+     * solo player assignment and size balancing.
+     *
+     * @return bool True if this realm's packed player count exceeds the cap
+     */
+    public function isDraftPackRealm(): bool
+    {
+        return $this->packedPlayerCount() > RealmAssignmentService::MAX_PACKED_PLAYERS_PER_REALM;
+    }
+
+    /**
      * Check if a pack can fit in this realm
      *
      * Validates that adding the pack would not exceed the maximum number
@@ -440,6 +454,8 @@ class RealmAssignmentService
 
     public Collection $nonDiscordRealms;
 
+    public Collection $draftPackRealms;
+
     /**
      * Constructor - initialize collections
      */
@@ -449,6 +465,7 @@ class RealmAssignmentService
         $this->packs = collect();
         $this->realms = collect();
         $this->nonDiscordRealms = collect();
+        $this->draftPackRealms = collect();
         // Target values will be calculated dynamically when needed
         $this->targetRealmSize = 12;
         $this->targetRealmStrength = 1500;
@@ -713,6 +730,14 @@ class RealmAssignmentService
                 $this->realms->push($realm);
             }
         }
+
+        // Step 5: Separate draft pack realms so solo assignment and balancing ignore them
+        $this->draftPackRealms = $this->realms->filter(function ($realm) {
+            return $realm->isDraftPackRealm();
+        });
+        $this->realms = $this->realms->reject(function ($realm) {
+            return $realm->isDraftPackRealm();
+        })->values();
     }
 
     /**
@@ -1020,10 +1045,8 @@ class RealmAssignmentService
         $iterations = 0;
 
         while ($iterations < $maxIterations) {
-            // Sort realms by size, excluding realms with no solo players (e.g. draft pack realms)
-            $sortedBySize = $this->realms->filter(function ($realm) {
-                return $realm->soloPlayers()->isNotEmpty();
-            })->sortBy('size');
+            // Sort realms by size
+            $sortedBySize = $this->realms->sortBy('size');
             $smallest = $sortedBySize->first();
             $largest = $sortedBySize->last();
 
@@ -1166,7 +1189,7 @@ class RealmAssignmentService
         }
 
         // Merge non-Discord realms into main realms collection so downstream functions see all realms
-        $this->realms = $this->realms->merge($this->nonDiscordRealms);
+        $this->realms = $this->realms->merge($this->draftPackRealms)->merge($this->nonDiscordRealms);
     }
 
     /**

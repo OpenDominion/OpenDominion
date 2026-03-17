@@ -767,18 +767,18 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             $m->invoke($this->service);
         }
 
-        $result = $this->service->realms;
+        $allRealms = $this->service->realms->merge($this->service->draftPackRealms);
 
         // All 37 players must be assigned
         $this->assertEquals(
             $totalPlayers,
-            $result->sum(fn ($realm) => $realm->size),
+            $allRealms->sum(fn ($realm) => $realm->size),
             'All players should be assigned'
         );
 
         // Locate the realm the draft pack landed in
         $draftPackRealm = null;
-        foreach ($result as $realm) {
+        foreach ($this->service->draftPackRealms as $realm) {
             foreach ($realm->players as $player) {
                 if ($player->packId === 'draft-pack') {
                     $draftPackRealm = $realm;
@@ -811,7 +811,7 @@ class RealmAssignmentServiceTest extends AbstractTestCase
 
         // Pack integrity for all packs
         $packRealmMap = [];
-        foreach ($result as $realm) {
+        foreach ($allRealms as $realm) {
             foreach ($realm->players as $player) {
                 if ($player->packId !== null) {
                     $packRealmMap[$player->packId][] = $realm->id;
