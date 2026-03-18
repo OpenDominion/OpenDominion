@@ -22,6 +22,7 @@
     "@fortawesome/fontawesome-free": "^6.5.0",
     "@opendominion/rpg-awesome": "0.0.20",
     "admin-lte": "^4.0.0-rc3",
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.0",
     "chart.js": "^4.4.0",
     "datatables.net-bs5": "^1.13.0",

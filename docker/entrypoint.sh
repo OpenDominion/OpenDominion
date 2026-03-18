@@ -35,12 +35,12 @@ fi
 
 echo "==> Installing Node dependencies..."
 if [ ! -f /var/www/html/node_modules/.yarn-integrity ]; then
-    yarn install --frozen-lockfile --ignore-optional
+    yarn install --frozen-lockfile
 fi
 
 echo "==> Compiling assets..."
-if [ ! -f /var/www/html/public/mix-manifest.json ]; then
-    npm run dev
+if [ ! -d /var/www/html/public/build ]; then
+    npm run build
 fi
 
 echo "==> Starting Apache..."
