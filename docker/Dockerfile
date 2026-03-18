@@ -1,4 +1,4 @@
-FROM node:20 AS node
+FROM node:18 AS node
 
 FROM php:8.4-apache
 
@@ -11,8 +11,6 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libpng-dev \
     libzip-dev \
-    python3 \
-    python3-setuptools \
     unzip \
     zip \
   && rm -rf /var/lib/apt/lists/*
@@ -31,7 +29,7 @@ RUN docker-php-ext-configure gd \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Node.js 20 copied from official image
+# Node.js 18 copied from official image
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
