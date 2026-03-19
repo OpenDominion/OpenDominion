@@ -1,0 +1,23 @@
+name: Docker
+
+# Ensures the Docker Compose setup builds successfully with the current
+# dependency set and that the app remains accessible via the container stack.
+on: [push, pull_request]
+
+jobs:
+  docker:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and start stack
+        run: docker compose up -d --build --wait --wait-timeout 360
+
+      - name: Check site responds with expected content
+        run: |
+          curl -f http://localhost -o page.html
+          grep -q 'OpenDominion' page.html
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose logs
