@@ -100,7 +100,7 @@ class PlaceholderPack
      *
      * Initializes a pack with the given members and calculates derived properties.
      * Large packs (>3 members) are automatically marked as such. The pack rating
-     * is calculated as the sum of all member ratings.
+     * is calculated as the average of all member ratings.
      *
      * @param string $id Unique identifier for the pack
      * @param Collection $members Collection of Player objects in this pack
@@ -111,7 +111,7 @@ class PlaceholderPack
         $this->members = $members;
         $this->size = $members->count();
         $this->large = $this->size > 3;
-        $this->rating = $members->sum('rating');
+        $this->rating = $members->avg('rating') ?? 0;
     }
 
     /**
@@ -220,6 +220,20 @@ class PlaceholderRealm
     }
 
     /**
+     * Check if this realm contains a draft pack
+     *
+     * A draft pack is a player-organized group that exceeds MAX_PACKED_PLAYERS_PER_REALM,
+     * submitted via an external draft event. Such realms should be excluded from normal
+     * solo player assignment and size balancing.
+     *
+     * @return bool True if this realm's packed player count exceeds the cap
+     */
+    public function isDraftPackRealm(): bool
+    {
+        return $this->packedPlayerCount() > RealmAssignmentService::MAX_PACKED_PLAYERS_PER_REALM;
+    }
+
+    /**
      * Check if a pack can fit in this realm
      *
      * Validates that adding the pack would not exceed the maximum number
@@ -267,8 +281,8 @@ class PlaceholderRealm
     /**
      * Update realm's derived statistics
      *
-     * Recalculates the realm's size (player count) and total rating
-     * (sum of all player ratings). Called whenever players are added
+     * Recalculates the realm's size (player count) and average rating
+     * across all players. Called whenever players are added
      * or removed from the realm.
      */
     public function update(): void
@@ -440,6 +454,8 @@ class RealmAssignmentService
 
     public Collection $nonDiscordRealms;
 
+    public Collection $draftPackRealms;
+
     /**
      * Constructor - initialize collections
      */
@@ -449,6 +465,7 @@ class RealmAssignmentService
         $this->packs = collect();
         $this->realms = collect();
         $this->nonDiscordRealms = collect();
+        $this->draftPackRealms = collect();
         // Target values will be calculated dynamically when needed
         $this->targetRealmSize = 12;
         $this->targetRealmStrength = 1500;
@@ -713,6 +730,14 @@ class RealmAssignmentService
                 $this->realms->push($realm);
             }
         }
+
+        // Step 5: Separate draft pack realms so solo assignment and balancing ignore them
+        $this->draftPackRealms = $this->realms->filter(function ($realm) {
+            return $realm->isDraftPackRealm();
+        });
+        $this->realms = $this->realms->reject(function ($realm) {
+            return $realm->isDraftPackRealm();
+        })->values();
     }
 
     /**
@@ -1031,9 +1056,13 @@ class RealmAssignmentService
             }
 
             // Find the best solo player to move (one that improves or least worsens rating balance)
+            // Prefer players rated > 1000, but fall back to any available solo player
             $availablePlayers = $largest->soloPlayers()->where('rating', '>', 1000);
             if ($availablePlayers->isEmpty()) {
-                break; // No solo players available to move
+                $availablePlayers = $largest->soloPlayers();
+            }
+            if ($availablePlayers->isEmpty()) {
+                break; // No solo players at all in largest realm, cannot balance further
             }
 
             $bestPlayer = null;
@@ -1160,7 +1189,7 @@ class RealmAssignmentService
         }
 
         // Merge non-Discord realms into main realms collection so downstream functions see all realms
-        $this->realms = $this->realms->merge($this->nonDiscordRealms);
+        $this->realms = $this->realms->merge($this->draftPackRealms)->merge($this->nonDiscordRealms);
     }
 
     /**
@@ -1296,7 +1325,7 @@ class RealmAssignmentService
     public function getAssignmentStats(): array
     {
         $stats = [
-            'realm_count' => $this->getRealmCount(),
+            'realm_count' => $this->realms->count(),
             'total_players' => 0,
             'total_new_players' => 0,
             'total_experienced_players' => 0,
@@ -1370,7 +1399,7 @@ class RealmAssignmentService
         $stats['total_players'] = $totalPlayers;
         $stats['total_new_players'] = $totalNewPlayers;
         $stats['total_experienced_players'] = $totalExperiencedPlayers;
-        $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->getRealmCount(), 2) : 0;
+        $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->realms->count(), 2) : 0;
         $stats['average_realm_rating'] = count($realmRatings) > 0 ? round(array_sum($realmRatings) / count($realmRatings), 2) : 0;
 
         // Calculate overall playstyle distribution
@@ -1419,9 +1448,12 @@ class RealmAssignmentService
 
         if (!$useDiscord && !($user->rating > 1800)) {
             // Filter down to non-Discord realms (those with usediscord = false in settings)
-            return $round->realms->filter(function ($realm) {
+            $nonDiscordRealms = $round->realms->filter(function ($realm) {
                 return $realm->getSetting('usediscord') === false;
-            })->random();
+            });
+            if ($nonDiscordRealms->isNotEmpty()) {
+                return $nonDiscordRealms->random();
+            }
         }
 
         // Get candidate realms with basic filtering
@@ -1439,10 +1471,22 @@ class RealmAssignmentService
     }
 
     /**
-     * Get candidate realms with rating data included, excluding non-Discord realms
+     * Get candidate realms with rating data included, excluding non-Discord realms.
+     *
+     * Realms containing a draft pack (a pack with more than MAX_PACKED_PLAYERS_PER_REALM
+     * members, e.g. from a player-run external draft) are excluded from candidates unless
+     * every other realm has at least 2 more total players — in which case the draft-pack
+     * realm is the least-loaded option and should be considered.
      */
     public function getCandidateRealms(Round $round, Race $race): Collection
     {
+        // Find realm IDs that contain a draft pack
+        $draftPackRealmIds = Pack::where('round_id', $round->id)
+            ->where('size', '>', self::MAX_PACKED_PLAYERS_PER_REALM)
+            ->pluck('realm_id')
+            ->filter()
+            ->values();
+
         $query = Realm::active()
             ->where('number', '!=', 0)
             ->where('round_id', $round->id)
@@ -1472,6 +1516,25 @@ class RealmAssignmentService
         $discordRealms = $realms->filter(function ($realm) {
             return $realm->getSetting('usediscord') !== false;
         });
+
+        // Exclude draft-pack realms unless every normal realm has at least 2 more players,
+        // in which case the draft-pack realm is the least-loaded option and should be included
+        if ($draftPackRealmIds->isNotEmpty()) {
+            $normalRealms = $discordRealms->whereNotIn('id', $draftPackRealmIds);
+            $draftPackRealms = $discordRealms->whereIn('id', $draftPackRealmIds);
+
+            $allNormalRealmsAreLarger = $normalRealms->isNotEmpty() && $draftPackRealms->every(
+                function ($draftRealm) use ($normalRealms) {
+                    return $normalRealms->every(function ($r) use ($draftRealm) {
+                        return $r->active_dominions_count >= $draftRealm->active_dominions_count + 2;
+                    });
+                }
+            );
+
+            if (!$allNormalRealmsAreLarger) {
+                $discordRealms = $normalRealms;
+            }
+        }
 
         // Return top 3 smallest Discord-enabled candidates
         return $discordRealms->take(3);

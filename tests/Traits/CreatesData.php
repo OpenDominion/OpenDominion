@@ -99,7 +99,7 @@ trait CreatesData
      * @param Realm|null $realm
      * @return Dominion
      */
-    protected function createDominion(User $user, Round $round, ?Race $race = null, ?Realm $realm = null): Dominion
+    protected function createDominion(User $user, Round $round, ?Race $race = null, ?Realm $realm = null, array $attributes = []): Dominion
     {
         $faker = \Faker\Factory::create();
 
@@ -128,13 +128,19 @@ trait CreatesData
         /** @var DominionFactory $dominionFactory */
         $dominionFactory = $this->app->make(DominionFactory::class);
 
-        return $dominionFactory->create(
+        $dominion = $dominionFactory->create(
             $user,
             $realm,
             $race,
             $faker->name,
             $faker->unique()->company
         );
+
+        if (!empty($attributes)) {
+            $dominion->update($attributes);
+        }
+
+        return $dominion;
     }
 
     /**

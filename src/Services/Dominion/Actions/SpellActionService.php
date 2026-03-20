@@ -151,7 +151,7 @@ class SpellActionService
             throw new GameException("You can only cast {$spell->name} every {$spell->cooldown} hours");
         }
 
-        if ($spell->hasPerk('invalid_protection') && $this->protectionService->isUnderProtection($dominion)) {
+        if ($spell->hasPerk('invalid_protection') && !$dominion->protection_finished) {
             throw new GameException('You cannot cast this spell while under protection');
         }
 

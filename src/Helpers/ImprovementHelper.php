@@ -41,7 +41,7 @@ class ImprovementHelper
 
         $helpStrings = [
             'science' => "{$improvementName}: platinum bonus maxes out at +20% base",
-            'keep' => "{$improvementName}: population bonus maxes out at +30% base",
+            'keep' => "{$improvementName}: population bonus maxes out at +25% base",
             'forges' => "{$improvementName}: offense bonus maxes out at +30% base",
             'walls' => "{$improvementName}: defense bonus maxes out at +30% base",
             'spires' => "{$improvementName}: wizard power and mana bonuses max out at +60% base<br><br>Protection: spell damage reduction bonus is increased by 50%, maxes out at +50%, and cannot be modified by masonries",

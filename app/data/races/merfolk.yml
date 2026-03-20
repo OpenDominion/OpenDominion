@@ -12,12 +12,11 @@ home_land_type: water
 perks:
   lumber_production: -15
   food_production: 5
-  gem_production: -10
   offense: 7.5
 units:
   - name: Merman
     cost:
-      platinum: 285
+      platinum: 300
       ore: 0
     power:
       offense: 3

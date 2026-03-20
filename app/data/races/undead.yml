@@ -16,7 +16,7 @@ perks:
 units:
   - name: Zombie
     cost:
-      platinum: 200
+      platinum: 225
       mana: 25
     power:
       offense: 3

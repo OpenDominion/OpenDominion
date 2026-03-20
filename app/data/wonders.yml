@@ -139,7 +139,7 @@ golden_throne:
 school_of_war:
   name: School of War
   perks:
-    barracks_housing: 3
+    barracks_housing: 4
   power: 150000
 horn_of_plenty:
   name: Horn of Plenty
@@ -169,7 +169,7 @@ altar_of_heroes:
     hero_bonus: 100
     hero_experience: 20
   power: 75000
-  active: true
+  active: false
 temple_of_the_damned:
   name: Temple of the Damned
   perks:
@@ -183,3 +183,9 @@ urg:
     sentient: 1
   power: 1000000
   active: false
+planar_gates:
+  name: Planar Gates
+  perks:
+    temporary_tech: 1
+  power: 150000
+  active: true
