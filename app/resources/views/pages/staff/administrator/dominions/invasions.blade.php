@@ -35,8 +35,8 @@
                 <tbody>
                     @foreach ($invasions as $invasion)
                         <tr>
-                            <td>{{ $invasion->source_name }}</td>
-                            <td>{{ $invasion->target_name }}</td>
+                            <td>{{ $invasion->source_name }} <small class="text-muted">(#{{ $realms[$invasion->source_realm_id] }})</small></td>
+                            <td>{{ $invasion->target_name }} <small class="text-muted">(#{{ $realms[$invasion->target_realm_id] }})</small></td>
                             <td class="text-center" data-search="">{{ $invasion->ops_count }}</td>
                             <td class="text-center" data-order="{{ $invasion->created_at->getTimestamp() }}" data-search="">
                                 <span title="{{ $invasion->created_at }}">{{ $invasion->created_at->diffForHumans() }}</span>

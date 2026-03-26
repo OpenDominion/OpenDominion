@@ -12,6 +12,7 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 
 class DominionController extends AbstractController
@@ -104,13 +105,14 @@ class DominionController extends AbstractController
             $round = $rounds->first();
         }
 
-        $invasions = GameEvent::selectRaw('game_events.*, source.name AS source_name, target.name AS target_name, COUNT(info_ops.source_realm_id) AS ops_count')
+        $realms = Realm::where('round_id', $round->id)->pluck('number', 'id');
+
+        $invasions = GameEvent::selectRaw('game_events.*, source.name AS source_name, source.realm_id AS source_realm_id, target.name AS target_name, target.realm_id AS target_realm_id, COUNT(info_ops.source_realm_id) AS ops_count')
             ->join('dominions AS source', 'game_events.source_id', '=', 'source.id')
             ->join('dominions AS target', 'game_events.target_id', '=', 'target.id')
             ->leftJoin('info_ops', function (JoinClause $join) {
                 $join->on('info_ops.target_dominion_id', '=', 'target.id')
                     ->on('info_ops.source_realm_id', '=', 'source.realm_id')
-                    ->where('info_ops.source_realm_id', 'source.realm_id')
                     ->where('info_ops.created_at', '<', DB::raw('game_events.created_at'))
                     ->where('info_ops.created_at', '>', DB::raw('DATE_SUB(game_events.created_at, INTERVAL 12 HOUR)'));
             })
@@ -125,6 +127,7 @@ class DominionController extends AbstractController
             'round' => $round,
             'rounds' => $rounds,
             'invasions' => $invasions,
+            'realms' => $realms,
         ]);
     }
 
