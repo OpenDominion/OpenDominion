@@ -376,7 +376,15 @@ class InfoMapper
 
     public function mapTechs(Dominion $dominion): array
     {
-        return $dominion->techs->pluck('name', 'key')->all();
+        $techs = [];
+        foreach ($dominion->techs as $tech) {
+            $name = $tech->name;
+            if ($tech->pivot->source_id !== null) {
+                $name .= ' (Planar Gates)';
+            }
+            $techs[$tech->key] = $name;
+        }
+        return $techs;
     }
 
     public function mapHeroes(Dominion $dominion): array

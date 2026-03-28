@@ -94,12 +94,14 @@ class HeroActionService
                 if ($techRefundMultiplier) {
                     $techCalculator = app(TechCalculator::class);
                     $techCost = $techCalculator->getTechCost($dominion);
-                    $techCount = count($dominion->techs);
+                    $techCount = $dominion->techs->filter(function ($tech) {
+                        return $tech->pivot->source_id === null;
+                    })->count();
                     $fullRefundCount = min($techCount, 5);
                     $partialRefundCount = $techCount - $fullRefundCount;
                     $techRefund = (int) ($techCost * ($fullRefundCount + ($partialRefundCount * $techRefundMultiplier)));
                     $dominion->resource_tech += $techRefund;
-                    DominionTech::where('dominion_id', $dominion->id)->delete();
+                    DominionTech::where('dominion_id', $dominion->id)->whereNull('source_id')->delete();
                 }
             }
 

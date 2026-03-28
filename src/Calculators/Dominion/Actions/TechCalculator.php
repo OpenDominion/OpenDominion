@@ -37,7 +37,11 @@ class TechCalculator
         // Heroes
         $multiplier += $this->heroCalculator->getHeroPerkMultiplier($dominion, 'tech_cost');
 
-        $techCost = (2.5 * $dominion->highest_land_achieved) + (50 * $dominion->techs->count());
+        $permanentTechCount = $dominion->techs->filter(function ($tech) {
+            return $tech->pivot->source_id === null;
+        })->count();
+
+        $techCost = (2.5 * $dominion->highest_land_achieved) + (50 * $permanentTechCount);
 
         return max(3750, round($techCost * $multiplier));
     }
@@ -50,7 +54,9 @@ class TechCalculator
      */
     public function hasPrerequisites(Dominion $dominion, Tech $tech): bool
     {
-        $unlockedTechs = $dominion->techs->pluck('key')->all();
+        $unlockedTechs = $dominion->techs->filter(function ($tech) {
+            return $tech->pivot->source_id === null;
+        })->pluck('key')->all();
 
         return $tech->prerequisites == null || count(array_intersect($tech->prerequisites, $unlockedTechs)) != 0;
     }

@@ -66,10 +66,22 @@ class TechActionService
         }
 
         DB::transaction(function () use ($dominion, $techToUnlock, $techCost) {
-            DominionTech::create([
-                'dominion_id' => $dominion->id,
-                'tech_id' => $techToUnlock->id
-            ]);
+            // Check if already exists as a temporary tech
+            $existingTemp = DominionTech::where('dominion_id', $dominion->id)
+                ->where('tech_id', $techToUnlock->id)
+                ->whereNotNull('source_id')
+                ->first();
+
+            if ($existingTemp) {
+                $existingTemp->source_type = null;
+                $existingTemp->source_id = null;
+                $existingTemp->save();
+            } else {
+                DominionTech::create([
+                    'dominion_id' => $dominion->id,
+                    'tech_id' => $techToUnlock->id
+                ]);
+            }
 
             $dominion->resource_tech -= $techCost;
             $dominion->save([

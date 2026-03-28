@@ -111,7 +111,13 @@
                 <li class="{{ Route::is('dominion.techs') ? 'active' : null }}">
                     <a href="{{ route('dominion.techs') }}">
                         <i class="fa fa-flask fa-fw"></i> <span>Technology</span>
-                        @if ($unlockableTechCount > 0)
+                        @if ($needsTemporaryTech)
+                            <span class="pull-right-container">
+                                <span class="label label-success pull-right" title="Select a temporary tech from the Planar Gates">
+                                    1
+                                </span>
+                            </span>
+                        @elseif ($unlockableTechCount > 0)
                             <span class="pull-right-container">
                                 <span class="label label-primary pull-right">
                                     {{ $unlockableTechCount }}

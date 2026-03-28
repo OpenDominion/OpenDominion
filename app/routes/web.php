@@ -140,6 +140,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Techs
             $router->get('techs')->uses('Dominion\TechController@getTechs')->name('techs');
             $router->post('techs')->uses('Dominion\TechController@postTechs');
+            $router->post('techs/temporary')->uses('Dominion\TechController@postTemporaryTech')->name('techs.temporary-tech');
 
             // Heroes
             $router->get('heroes')->uses('Dominion\HeroController@getHeroes')->name('heroes');

@@ -336,6 +336,7 @@ class Dominion extends AbstractModel
             Tech::class,
             DominionTech::class
         )
+        ->withPivot('source_type', 'source_id')
         ->withTimestamps();
     }
 
@@ -866,6 +867,8 @@ class Dominion extends AbstractModel
      */
     public function getTechCountAttribute(): int
     {
-        return $this->techs->count();
+        return $this->techs->filter(function ($tech) {
+            return $tech->pivot->source_id === null;
+        })->count();
     }
 }
