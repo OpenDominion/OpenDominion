@@ -153,37 +153,37 @@
             fill: lightgreen;
             stroke: black;
         }
-        .skin-classic .edge {
-            stroke: gray;
+        [data-bs-theme="dark"] .edge {
+            stroke: var(--od-text-secondary, gray);
         }
-        .skin-classic .edge.active {
-            stroke: #dddddd;
+        [data-bs-theme="dark"] .edge.active {
+            stroke: var(--od-text-emphasis, #ddd);
         }
-        .skin-classic .vertex {
-            fill: black;
-            stroke: gray;
+        [data-bs-theme="dark"] .vertex {
+            fill: var(--od-deep, black);
+            stroke: var(--od-text-secondary, gray);
         }
-        .skin-classic .vertex.active {
-            stroke: #dddddd;
+        [data-bs-theme="dark"] .vertex.active {
+            stroke: var(--od-text-emphasis, #ddd);
         }
-        .skin-classic .vertex.selected {
-            fill: #006C81;
-            stroke: #dddddd;
+        [data-bs-theme="dark"] .vertex.selected {
+            fill: var(--od-info, #006C81);
+            stroke: var(--od-text-emphasis, #ddd);
         }
-        .skin-classic .vertex:hover {
+        [data-bs-theme="dark"] .vertex:hover {
             cursor: pointer;
-            fill: #dd4b39;
+            fill: var(--od-danger, #dd4b39);
         }
-        .skin-classic .vertex.active:hover {
-            fill: #007D1C;
-            stroke: #dddddd;
+        [data-bs-theme="dark"] .vertex.active:hover {
+            fill: var(--od-success, #007D1C);
+            stroke: var(--od-text-emphasis, #ddd);
         }
 
         .vertex.selection {
             fill: lightgreen;
         }
-        .skin-classic .vertex.selection {
-            fill: #006C81;
+        [data-bs-theme="dark"] .vertex.selection {
+            fill: var(--od-info, #006C81);
         }
     </style>
 @endpush

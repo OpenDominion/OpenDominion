@@ -106,11 +106,11 @@
 @endsection
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/admin-lte/plugins/bootstrap-slider/slider.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-slider/slider.css') }}">
 @endpush
 
 @push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/admin-lte/plugins/bootstrap-slider/bootstrap-slider.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/vendor/bootstrap-slider/bootstrap-slider.js') }}"></script>
 @endpush
 
 @push('inline-scripts')

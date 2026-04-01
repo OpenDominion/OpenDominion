@@ -41,6 +41,8 @@
 
 <div class="app-wrapper">
 
+    <div class="sidebar-overlay"></div>
+
     @include('partials.main-header')
 
     @include('partials.main-sidebar')

@@ -1,0 +1,27 @@
+// Card extensions.
+
+.card-title {
+  font-size: 1.1rem;
+}
+
+.card-primary .card-header {
+  background-color: var(--bs-primary, #0d6efd);
+  color: #fff;
+}
+
+.card-primary.card-outline {
+  border-top: 3px solid var(--bs-primary, #0d6efd);
+}
+
+.btn-tool {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+}

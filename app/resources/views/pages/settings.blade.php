@@ -43,15 +43,11 @@
                                 </div>
                             </div>
 
-                            {{-- Skins --}}
+                            {{-- Theme --}}
                             <div class="form-group">
-                                <label for="skin" class="col-sm-3 control-label">Skin</label>
+                                <label class="col-sm-3 control-label">Theme</label>
                                 <div class="col-sm-9">
-                                    <select name="skin" id="skin" class="form-control">
-                                        <option value="skin-blue">Default Blue</option>
-                                        <option value="skin-classic" {{ Auth::user()->skin == 'skin-classic' ? 'selected' : null }}>Classic Dark</option>
-                                    </select>
-                                    <p class="form-text">Select a new color scheme for the website.</p>
+                                    <p class="form-control-static">Use the color mode picker in the navigation bar to switch themes.</p>
                                 </div>
                             </div>
 

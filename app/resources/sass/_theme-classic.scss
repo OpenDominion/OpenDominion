@@ -1,0 +1,40 @@
+// Classic theme color map
+// All semantic color tokens for the teal/charcoal "classic" dark theme.
+
+$theme-classic: (
+  // Core surfaces
+  body-bg:          #29252a,
+  surface:          #332f35,
+  deep:             #1c191d,
+  muted-surface:    #4d4750,
+  border-accent:    #675f6b,
+
+  // Text
+  text-body:        #ACB9BB,
+  text-secondary:   #95a3a6,
+  text-emphasis:    #d5e3e6,
+  text-subtle:      #949fa8,
+
+  // Brand colors
+  primary:          #005566,
+  primary-dark:     #003344,
+  info:             #006C81,
+  info-dark:        #003F4B,
+  success:          #007D1C,
+  success-dark:     #005C14,
+  danger:           #A61000,
+  danger-dark:      #790C00,
+  warning:          #D19000,
+  warning-dark:     #A67200,
+
+  // Layout
+  header-bg:        #005566,
+  sidebar-bg:       #332f35,
+  sidebar-text:     #ACB9BB,
+  sidebar-active-border: #005566,
+  content-bg:       #29252a,
+
+  // Links
+  link-color:       #d5e3e6,
+  link-hover-color: #ACB9BB,
+);

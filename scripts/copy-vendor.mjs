@@ -56,6 +56,9 @@ const copies = [
     // jQuery — loaded as a classic synchronous <script> before the Vite module
     // bundle, so window.$ is available to inline page scripts immediately.
     [path.join(nm, 'jquery', 'dist', 'jquery.min.js'), path.join(vendor, 'jquery', 'jquery.min.js')],
+
+    // Select2 — also loaded synchronously so $.fn.select2 is available to inline scripts.
+    [path.join(nm, 'select2', 'dist', 'js', 'select2.min.js'), path.join(vendor, 'select2', 'select2.min.js')],
 ];
 
 let ok = true;

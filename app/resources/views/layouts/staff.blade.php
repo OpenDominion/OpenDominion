@@ -17,25 +17,31 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="apple-mobile-web-app-title" content="OpenDominion">
     <meta name="application-name" content="OpenDominion">
-    @if (Auth::user() && Auth::user()->skin == 'skin-classic')
-        <meta name="theme-color" content="#000000">
-        <style type="text/css">
-            :root {
-                background: #000000;
-                color-scheme: dark;
-            }
-        </style>
-    @else
-        <meta name="theme-color" content="#ffffff">
-    @endif
+    <meta name="theme-color" content="#ffffff" id="meta-theme-color">
+
+    {{-- Apply stored color mode before CSS renders to prevent flash of wrong theme. --}}
+    <script>
+    (function () {
+        var stored = localStorage.getItem('color-mode') || 'auto';
+        var bsTheme = (stored === 'classic' || stored === 'dark') ? 'dark'
+                    : stored === 'auto'
+                      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : 'light';
+        document.documentElement.setAttribute('data-bs-theme', bsTheme);
+        document.documentElement.setAttribute('data-color-mode', stored);
+        if (stored === 'classic') document.documentElement.setAttribute('data-color-scheme', 'classic');
+    })();
+    </script>
 
     @include('partials.styles')
 
     @include('partials.analytics')
 </head>
-<body class="layout-fixed sidebar-expand-lg{{ Auth::user() && Auth::user()->skin == 'skin-classic' ? ' skin-classic bg-body-secondary' : ' bg-body-tertiary' }}">
+<body class="sidebar-expand-lg bg-body-tertiary">
 
 <div class="app-wrapper">
+
+    <div class="sidebar-overlay"></div>
 
     @include('partials.main-header')
 

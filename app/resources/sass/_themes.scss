@@ -1,0 +1,10 @@
+// Theme selector bindings
+// Maps data-attribute selectors to theme maps.
+// To add a new skin: create _theme-newskin.scss, define the map, and add a selector here.
+
+@import 'theme-classic';
+@import 'theme-apply';
+
+[data-bs-theme="dark"][data-color-scheme="classic"] {
+  @include apply-theme($theme-classic);
+}

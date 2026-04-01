@@ -80,10 +80,6 @@ class SettingsController extends AbstractController
         /** @var User $user */
         $user = Auth::user();
 
-        if (in_array($data['skin'], ['skin-blue', 'skin-classic'])) {
-            $user->skin = $data['skin'];
-        }
-
         $settings = ($user->settings ?? []);
         if (isset($data['packadvisors'])) {
             $settings['packadvisors'] = true;

@@ -1,5 +1,5 @@
 <li class="nav-item dropdown">
-    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="Color mode">
+    <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-label="Color mode">
         <i class="fa fa-fw" id="color-mode-icon"></i>
     </a>
     <ul class="dropdown-menu dropdown-menu-end">

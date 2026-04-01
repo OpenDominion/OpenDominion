@@ -1,4 +1,4 @@
-{{-- Vite compiled styles (Bootstrap 5, AdminLTE 4, Font Awesome 6, app styles) --}}
+{{-- Vite compiled styles (Bootstrap 5, Font Awesome 6, app styles) --}}
 @vite(['app/resources/sass/app.scss'])
 
 {{-- Google Fonts --}}

@@ -3,50 +3,49 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>@yield('title', 'OpenDominion')</title>
 
+    <meta name="theme-color" content="#ffffff" id="meta-theme-color">
+
+    {{-- Apply stored color mode before CSS renders to prevent flash of wrong theme. --}}
+    <script>
+    (function () {
+        var stored = localStorage.getItem('color-mode') || 'auto';
+        var bsTheme = (stored === 'classic' || stored === 'dark') ? 'dark'
+                    : stored === 'auto'
+                      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : 'light';
+        document.documentElement.setAttribute('data-bs-theme', bsTheme);
+        document.documentElement.setAttribute('data-color-mode', stored);
+        if (stored === 'classic') document.documentElement.setAttribute('data-color-scheme', 'classic');
+    })();
+    </script>
+
     @include('partials.styles')
-
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
-<body class="hold-transition skin-blue layout-top-nav">
+<body class="layout-top-nav bg-body-tertiary">
 
-<div class="wrapper">
+<div class="app-wrapper">
 
     <!-- Header -->
-    <header class="main-header">
-        <nav class="navbar navbar-static-top">
-            <div class="container">
+    <nav class="app-header navbar navbar-expand-lg bg-body">
+        <div class="container">
+            <a href="{{ url('') }}" class="navbar-brand">Open<b>Dominion</b></a>
 
-                <!-- Navbar Header -->
-                <div class="navbar-header">
-                    <a href="{{ url('') }}" class="navbar-brand">Open<b>Dominion</b></a>
-                    <button class="navbar-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#navbar-collapse">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                </div>
-
-                <!-- Navbar Left Menu -->
-                <div class="collapse navbar-collapse float-start" id="navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="table-active"><a href="{{ route('home') }}">Error 503 <span class="sr-only">(current)</span></a></li>
-                    </ul>
-                </div>
-
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item active"><a href="{{ route('home') }}" class="nav-link">Error 503</a></li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
     <!-- Content -->
-    <div class="content-wrapper">
-        <div class="container">
-
-            <div class="content">
+    <main class="app-main">
+        <div class="app-content">
+            <div class="container">
 
                 <div class="row">
                     <div class="col-sm-8 offset-sm-2">
@@ -72,9 +71,8 @@
                 </div>
 
             </div>
-
         </div>
-    </div>
+    </main>
 
     @include('partials.main-footer')
 

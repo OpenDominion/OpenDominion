@@ -1,5 +1,5 @@
-<nav class="app-header navbar navbar-expand bg-body">
-    <div class="container-fluid">
+<nav class="app-header navbar navbar-expand py-0">
+    <div class="container-fluid px-0">
 
         <!-- Sidebar toggle -->
         <ul class="navbar-nav">

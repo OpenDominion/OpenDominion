@@ -1,0 +1,190 @@
+// Custom CSS Grid layout shell.
+
+.app-wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "app-sidebar app-header"
+    "app-sidebar app-main"
+    "app-sidebar app-footer";
+  min-height: 100vh;
+}
+
+// ── Header ──────────────────────────────────────────────────────────────────
+.app-header {
+  grid-area: app-header;
+  z-index: 1044;
+  border-bottom: 1px solid var(--bs-border-color);
+
+  .navbar-nav .nav-link {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+// ── Sidebar ─────────────────────────────────────────────────────────────────
+.app-sidebar {
+  grid-area: app-sidebar;
+  min-width: 250px;
+  max-width: 250px;
+  z-index: 1048;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  height: 3.5rem;
+  padding: 0 0.75rem;
+  flex-shrink: 0;
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: inherit;
+  }
+
+  .brand-text {
+    margin-left: 0.5rem;
+  }
+}
+
+.sidebar-wrapper {
+  overflow-y: auto;
+  flex: 1 1 auto;
+
+  // Thin scrollbar
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.4); border-radius: 3px; }
+}
+
+.sidebar-menu {
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: inherit;
+    text-decoration: none;
+
+    > p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .nav-icon {
+    display: inline-flex;
+    width: 1.5rem;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+  }
+}
+
+.nav-header {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Treeview submenu
+.nav-treeview {
+  display: none;
+  padding-left: 1rem;
+}
+.menu-open > .nav-treeview {
+  display: block;
+}
+
+// ── Main content ────────────────────────────────────────────────────────────
+.app-main {
+  grid-area: app-main;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; // prevent grid blowout
+}
+
+.app-content-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.app-content {
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+
+// ── Footer ──────────────────────────────────────────────────────────────────
+.app-footer {
+  grid-area: app-footer;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--bs-border-color);
+}
+
+// ── Sidebar collapse (desktop) ──────────────────────────────────────────────
+.sidebar-collapse .app-sidebar {
+  margin-left: -250px;
+}
+
+// ── Responsive behavior ─────────────────────────────────────────────────────
+.sidebar-expand-lg {
+  @media (max-width: 991.98px) {
+    .app-wrapper {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "app-header"
+        "app-main"
+        "app-footer";
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      bottom: 0;
+      transition: left 0.3s ease;
+    }
+
+    &.sidebar-open .app-sidebar {
+      left: 0;
+    }
+
+    &.sidebar-open .sidebar-overlay {
+      display: block;
+    }
+  }
+}
+
+// ── Sidebar overlay (mobile) ────────────────────────────────────────────────
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1047;
+}
+
+// ── Top-nav layout (no sidebar) ─────────────────────────────────────────────
+.layout-top-nav .app-wrapper {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "app-header"
+    "app-main"
+    "app-footer";
+}
+
+// ── Hold transition ─────────────────────────────────────────────────────────
+.hold-transition * {
+  transition: none !important;
+}
