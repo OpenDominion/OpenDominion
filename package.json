@@ -9,8 +9,6 @@
     "postinstall": "node scripts/copy-vendor.mjs"
   },
   "devDependencies": {
-    "@vitejs/plugin-legacy": "^5.0.0",
-    "autoprefixer": "^10.4.0",
     "laravel-vite-plugin": "^1.0.0",
     "sass": "^1.70.0",
     "vite": "^5.0.0"
