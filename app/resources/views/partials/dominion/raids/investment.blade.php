@@ -42,7 +42,14 @@
                                     @endif
                                 </td>
                                 <td>{{ ucwords(dominion_attr_display($resourceType, $amount)) }}</td>
-                                <td>{{ number_format($amount) }}</td>
+                                <td>
+                                    @if ($resourceType == 'morale')
+                                        {{ number_format($amount) }}%
+                                        <small class="text-red">(-{{ $amount / 10 }}% defense)</small>
+                                    @else
+                                        {{ number_format($amount) }}
+                                    @endif
+                                </td>
                                 <td>
                                     {{ number_format($pointsAwarded) }}
                                     @if(isset($tactic->attributes['limit']))
@@ -70,7 +77,7 @@
                             <td></td>
                             <td colspan=3>
                                 <small class="text-muted">
-                                    {{ ucwords(dominion_attr_display($resourceType, 100)) }}: {{ number_format($selectedDominion->{$resourceType}) }}
+                                    {{ ucwords(dominion_attr_display($resourceType, 100)) }}: {{ number_format($selectedDominion->{$resourceType}) }}{{ $resourceType == 'morale' ? '%' : null }}
                                 </small>
                             </td>
                         </tr>

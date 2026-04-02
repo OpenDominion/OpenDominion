@@ -41,7 +41,10 @@
                                         <br/><small class="text-muted">{{ $bonusDescriptions }}</small>
                                     @endif
                                 </td>
-                                <td>{{ $moraleCost }}%</td>
+                                <td>
+                                    {{ $moraleCost }}%
+                                    <small class="text-red">(-{{ $moraleCost / 10 }}% defense)</small>
+                                </td>
                                 <td>{{ number_format($drafteeCost) }}</td>
                                 <td>
                                     {{ number_format($pointsAwarded) }}
