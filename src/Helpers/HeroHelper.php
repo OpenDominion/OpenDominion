@@ -582,6 +582,24 @@ class HeroHelper
                 'limited' => false,
                 'special' => true,
             ],
+            'soul_rend' => [
+                'name' => 'Soul Rend',
+                'processor' => 'attack',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'bonus_damage' => 85,
+                    'defend' => 70,
+                    'threshold' => 40,
+                ],
+                'messages' => [
+                    'hit' => '%s unleashes a devastating Soul Rend for %s damage to %s!',
+                    'evaded' => '%s unleashes a devastating Soul Rend for %s damage, but %s evades, reducing damage to %s!',
+                    'countered' => '%s unleashes a devastating Soul Rend for %s damage to %s, who then counters for %s damage!',
+                    'evaded_countered' => '%s unleashes a devastating Soul Rend for %s damage, but %s evades, reducing damage to %s, then %s counters for %s damage!',
+                ]
+            ],
             'lifesteal' => [
                 'name' => 'Lifesteal',
                 'processor' => null,
@@ -723,6 +741,7 @@ class HeroHelper
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'retribution' => 'Retribution: Counter attack damage is increased by 15.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
+            'soul_rend' => 'Soul Rend: When wounded, charges a devastating attack that deals massive damage if not defended.',
             'summon_golem' => 'Summon Golem: Summons a Void Golem at regular intervals.',
             'summon_skeleton' => 'Summon: Summons a Skeleton Warrior every 4th turn.',
             'tactical_awareness' => 'Tactical Awareness: Reduces target\'s counter value by 2 for the remainder of the battle.',
@@ -786,6 +805,11 @@ class HeroHelper
                 'name' => 'Fortify',
                 'type' => 'npc',
                 'options' => ['attack' => 3, 'fortify' => 3, 'counter' => 2]
+            ],
+            'wraith' => [
+                'name' => 'Wraith',
+                'type' => 'npc',
+                'options' => ['attack' => 3, 'counter' => 3, 'recover' => 1, 'focus' => 1]
             ]
         ]);
     }

@@ -307,6 +307,11 @@ class HeroBattleService
             $result['description'] .= $this->processPostCombat($combatant);
             $result['description'] .= $this->processPostCombat($target);
 
+            // Soul Rend kill message
+            if ($combatant->current_action == 'soul_rend' && $target->current_health <= 0) {
+                $result['description'] .= " {$combatant->name} rips out the heart of {$target->name} and devours their soul!";
+            }
+
             $action = HeroBattleAction::create([
                 'hero_battle_id' => $heroBattle->id,
                 'combatant_id' => $combatant->id,
@@ -424,6 +429,16 @@ class HeroBattleService
             $interval = ($combatant->status['summon_interval'] ?? null) ?? $actionDef['attributes']['turns'];
             if ((($combatant->battle->current_turn - 1) % $interval) == 0) {
                 return ['action' => 'summon_golem', 'target' => null];
+            }
+        }
+
+        // Soul Rend - fire charged attack
+        if (in_array('soul_rend', $combatant->abilities ?? [])) {
+            $status = $combatant->status ?? [];
+            if (!empty($status['soul_rend_charging'])) {
+                unset($status['soul_rend_charging']);
+                $combatant->update(['status' => $status]);
+                return ['action' => 'soul_rend', 'target' => null];
             }
         }
 
@@ -1068,6 +1083,24 @@ class HeroBattleService
             $interval = ($combatant->status['summon_interval'] ?? null) ?? $actionDef['attributes']['turns'];
             if (($combatant->battle->current_turn % $interval) == 0) {
                 $description = "A void rift begins to tear open near {$combatant->name}.";
+            }
+        }
+
+        // Soul Rend - warn when charging
+        if (in_array('soul_rend', $combatant->abilities ?? []) && $combatant->current_health > 0) {
+            $actionDef = $this->heroHelper->getCombatActions()->get('soul_rend');
+            $threshold = $actionDef['attributes']['threshold'] ?? 40;
+            $status = $combatant->status ?? [];
+            if ($combatant->current_health <= $threshold && empty($status['soul_rend_charging']) && empty($status['soul_rend_last_hp'])) {
+                $status['soul_rend_charging'] = true;
+                $status['soul_rend_last_hp'] = $combatant->current_health;
+                $combatant->update(['status' => $status]);
+                $description .= "{$combatant->name}'s form beings to glow with gathering ethereal energy... defend yourself!";
+            } elseif ($combatant->current_health <= $threshold && empty($status['soul_rend_charging']) && $combatant->current_health < ($status['soul_rend_last_hp'] ?? 0)) {
+                $status['soul_rend_charging'] = true;
+                $status['soul_rend_last_hp'] = $combatant->current_health;
+                $combatant->update(['status' => $status]);
+                $description .= "{$combatant->name}'s form begins to glow with gathering ethereal energy... defend yourself!";
             }
         }
 

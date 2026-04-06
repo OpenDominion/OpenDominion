@@ -280,6 +280,18 @@ class HeroEncounterHelper
                 'strategy' => 'balanced',
                 'abilities' => ['elusive', 'summon_golem', 'wounded_retreat'],
             ],
+            'wraith' => [
+                'name' => 'The Wraith',
+                'health' => 100,
+                'attack' => 35,
+                'defense' => 15,
+                'evasion' => 25,
+                'focus' => 15,
+                'counter' => 15,
+                'recover' => 20,
+                'strategy' => 'wraith',
+                'abilities' => ['soul_rend', 'elusive'],
+            ],
         ]);
     }
 
@@ -372,6 +384,13 @@ class HeroEncounterHelper
                 'source' => 'Raid (Planewalker Incursion)',
                 'enemies' => [
                     ['key' => 'planewalker', 'name' => 'The Planewalker'],
+                ],
+            ],
+            'wraith' => [
+                'name' => 'The Wraith',
+                'source' => 'Raid (The Wraith)',
+                'enemies' => [
+                    ['key' => 'wraith', 'name' => 'The Wraith'],
                 ],
             ],
         ]);
