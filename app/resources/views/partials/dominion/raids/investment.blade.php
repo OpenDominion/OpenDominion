@@ -49,6 +49,10 @@
                                     @else
                                         {{ number_format($amount) }}
                                     @endif
+                                    <br/>
+                                    <small class="text-muted">
+                                        {{ ucwords(dominion_attr_display($resourceType, 100)) }}: {{ number_format($selectedDominion->{$resourceType}) }}{{ $resourceType == 'morale' ? '%' : null }}
+                                    </small>
                                 </td>
                                 <td>
                                     {{ number_format($pointsAwarded) }}
@@ -72,15 +76,6 @@
                                 </td>
                             </tr>
                         @endforeach
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td colspan=3>
-                                <small class="text-muted">
-                                    {{ ucwords(dominion_attr_display($resourceType, 100)) }}: {{ number_format($selectedDominion->{$resourceType}) }}{{ $resourceType == 'morale' ? '%' : null }}
-                                </small>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
