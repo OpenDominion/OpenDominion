@@ -9,10 +9,10 @@
                 @csrf
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-calculator"></i> Defense Calculator</h3>
+                        <span class="card-title"><i class="fa fa-calculator"></i> Defense Calculator</span>
                     </div>
                     <div class="card-body">
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Race
                             </div>
@@ -32,7 +32,7 @@
                                         value="{{ $targetDominion !== null ? $landCalculator->getTotalLand($targetDominion) : null }}" />
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3">&nbsp;</div>
                             <div class="col-3">&nbsp;</div>
                             <div class="col-3 text-end">
@@ -241,7 +241,7 @@
                                 </thead>
                             </table>
 
-                            <div class="form-group row">
+                            <div class="mb-3 row">
                                 @php
                                     $racialSpell = $spellHelper->getSpellsWithPerk('defense', $race)->first();
                                 @endphp
@@ -301,7 +301,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Ares Call
                             </div>
@@ -324,7 +324,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Attacker's Temples %
                             </div>
@@ -363,7 +363,7 @@
                         </div>
 
                         @if (isset($wonders['temple_of_the_damned']))
-                            <div class="form-group row">
+                            <div class="mb-3 row">
                                 @php $attackerPerk = $wonders['temple_of_the_damned']->perks->where('key', 'enemy_defense')->first(); @endphp
                                 <div class="col-3 text-end">
                                     Temple of the Damned (Attacker)
@@ -406,7 +406,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Results</h3>
+                    <span class="card-title">Results</span>
                     @if ($targetDominion->realm_id !== $selectedDominion->realm_id)
                         <div class="card-tools float-end">
                             <a href="{{ route('dominion.invade') }}?dominion={{ $targetDominion->id }}"
@@ -458,7 +458,7 @@
             @if ($targetDominion !== null && $selectedDominion->realm_id !== $targetDominion->realm_id)
                 <div class="card target-dominion-dp">
                     <div class="card-header">
-                        <h3 class="card-title">Info Ops</h3>
+                        <span class="card-title">Info Ops</span>
                     </div>
                     <div class="card-body table-responsive">
                         <table class="table table-sm">
@@ -562,10 +562,10 @@
                 @csrf
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-calculator"></i> Offense Calculator</h3>
+                        <span class="card-title"><i class="fa fa-calculator"></i> Offense Calculator</span>
                     </div>
                     <div class="card-body">
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Race
                             </div>
@@ -586,7 +586,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Prestige
                             </div>
@@ -733,7 +733,7 @@
                                 </thead>
                             </table>
 
-                            <div class="form-group row">
+                            <div class="mb-3 row">
                                 @php
                                     $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land', 'offense_from_spell', 'offense_unit1'], $race)->first();
                                 @endphp
@@ -834,7 +834,7 @@
                                         Target Race
                                     </div>
                                     <div class="col-3 text-start">
-                                        <select name="calc[target_race]" class="form-control">
+                                        <select name="calc[target_race]" class="form-select">
                                             <option></option>
                                             @foreach ($races as $targetRace)
                                                 <option value="{{ $targetRace->id }}">
@@ -847,12 +847,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Tech
                             </div>
                             <div class="col-3 text-start">
-                                <select name="calc[tech_offense]" class="form-control">
+                                <select name="calc[tech_offense]" class="form-select">
                                     <option value="0"></option>
                                     <option value="2.5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_13_13")) ? 'selected' : null }}>Ares' Favor +2.5%</option>
                                     <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>Avatar of Ares +5%</option>
@@ -872,12 +872,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 War
                             </div>
                             <div class="col-3 text-start">
-                                <select name="calc[war_bonus]" class="form-control">
+                                <select name="calc[war_bonus]" class="form-select">
                                     <option value="0"></option>
                                     <option value="4">Single +4%</option>
                                     <option value="8">Mutual +8%</option>
@@ -914,7 +914,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Results</h3>
+                    <span class="card-title">Results</span>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table">
@@ -957,7 +957,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The calculator can be pre-filled with data from the ops center.</p>

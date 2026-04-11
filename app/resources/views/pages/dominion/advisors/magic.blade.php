@@ -16,10 +16,10 @@
 @section('content')
     @include('partials.dominion.advisor-selector')
     <div class="row">
-        <div class="col-md-12 col-md-9">
+        <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-burning-embers"></i> {{ $boxTitle }}</h3>
+                    <span class="card-title"><i class="ra ra-burning-embers"></i> {{ $boxTitle }}</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     <table class="table table-hover">
@@ -58,10 +58,10 @@
             </div>
         </div>
 
-        <div class="col-md-12 col-md-3">
+        <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The magic advisor tells you the current spells affecting your dominion and their remaining duration.</p>
@@ -72,10 +72,10 @@
 
     @if ($selectedDominion->id === $target->id)
         <div class="row">
-            <div class="col-md-12 col-md-9">
+            <div class="col-sm-12 col-md-9">
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-lightning-trio"></i> Spells affecting other dominions</h3>
+                        <span class="card-title"><i class="ra ra-lightning-trio"></i> Spells affecting other dominions</span>
                     </div>
                     <div class="card-body table-responsive no-padding">
                         <table class="table table-hover">

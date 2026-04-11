@@ -10,7 +10,7 @@
                 @foreach ($raids as $raid)
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-castle-flag"></i> {{ $raid->name }}</h3>
+                            <span class="card-title"><i class="ra ra-castle-flag"></i> {{ $raid->name }}</span>
                             <div class="float-end">
                                 {!! $raidHelper->getStatusLabel($raid->status) !!}
                             </div>
@@ -18,12 +18,12 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="row form-group">
+                                    <div class="row mb-3">
                                         <div class="col-md-12">
                                             {!! $raid->description !!}
                                         </div>
                                     </div>
-                                    <div class="row form-group">
+                                    <div class="row mb-3">
                                         <div class="col-sm-12 col-md-4">
                                             @if (!$raid->hasStarted())
                                                 <i class="fa fa-clock-o"></i> Starts in {{ $raid->timeUntilStart() }}
@@ -101,7 +101,7 @@
             @else
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-castle-flag"></i> Raids</h3>
+                        <span class="card-title"><i class="ra ra-castle-flag"></i> Raids</span>
                     </div>
                     <div class="card-body">
                         There are currently no raids scheduled for this round.
@@ -113,7 +113,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <h4>Participation Rewards</h4>

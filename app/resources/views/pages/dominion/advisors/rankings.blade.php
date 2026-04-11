@@ -15,10 +15,10 @@
     @include('partials.dominion.advisor-selector')
     <div class="row">
 
-        <div class="col-md-12 col-md-9">
+        <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-trophy"></i> {{ $pageHeader }}</h3>
+                    <span class="card-title"><i class="fa fa-trophy"></i> {{ $pageHeader }}</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     <table class="table table-striped">
@@ -89,10 +89,10 @@
             </div>
         </div>
 
-        <div class="col-md-12 col-md-3">
+        <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The rankings advisor tells you how you are doing in the world compared to other dominions.</p>
@@ -102,7 +102,7 @@
 
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Titles Held</h3>
+                    <span class="card-title">Titles Held</span>
                 </div>
                 <div class="card-body">
                     <p style="font-size: 16px; line-height: 26px;">

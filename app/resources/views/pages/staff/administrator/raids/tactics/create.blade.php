@@ -5,7 +5,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Create New Tactic for: {{ $objective->name }}</h3>
+            <span class="card-title">Create New Tactic for: {{ $objective->name }}</span>
         </div>
         <form action="{{ route('staff.administrator.raids.objectives.tactics.create', [$raid, $objective]) }}" method="POST">
             @csrf
@@ -13,9 +13,9 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="type">Tactic Type *</label>
-                            <select name="type" id="type" class="form-control" required>
+                            <select name="type" id="type" class="form-select" required>
                                 <option value="">Select a type...</option>
                                 @foreach ($tacticTypes as $type)
                                     <option value="{{ $type }}" {{ old('type') == $type ? 'selected' : '' }}>
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="name">Tactic Name *</label>
                             <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required>
                             @if ($errors->has('name'))
@@ -41,7 +41,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="attributes">Attributes (JSON) *</label>
                             <textarea name="attributes" id="attributes" class="form-control" rows="10" required>{{ old('attributes', '{}') }}</textarea>
                             <small class="text-muted">
@@ -56,7 +56,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="bonuses">Bonuses (JSON)</label>
                             <textarea name="bonuses" id="bonuses" class="form-control" rows="6">{{ old('bonuses', '{}') }}</textarea>
                             <small class="text-muted">

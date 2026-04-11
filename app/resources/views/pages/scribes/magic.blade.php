@@ -4,7 +4,7 @@
     @include('partials.scribes.nav')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Magic</h3>
+            <span class="card-title">Magic</span>
         </div>
         <div class="card-body">
             <div class="row">
@@ -21,7 +21,7 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Spells</h3>
+            <span class="card-title">Spells</span>
         </div>
         <div class="card-body table-responsive">
             @foreach ($spellHelper->getSpells()->groupBy('category') as $category => $categorySpells)

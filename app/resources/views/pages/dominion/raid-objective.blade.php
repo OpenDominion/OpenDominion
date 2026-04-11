@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}</h3>
+                    <span class="card-title"><i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}</span>
                     <div class="float-end">
                         {!! $raidHelper->getStatusLabel($objective->status) !!}
                     </div>
@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <div class="col-md-9">
                                     {{ $objective->description }}
                                 </div>
@@ -102,7 +102,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Objective Details</h3>
+                    <span class="card-title">Objective Details</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -126,7 +126,7 @@
                             <i class="fa fa-clock-o"></i> {{ $objective->timeUntilEnd() }}
                         </p>
                     @endif
-                    <div class="form-group">
+                    <div class="mb-3">
                         Rewards are distributed at the raid level across all objectives at the end of the raid.
                     </div>
                     <div>
@@ -139,7 +139,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Recent Actions</h3>
+                    <span class="card-title">Recent Actions</span>
                 </div>
                 <div class="card-body">
                     @php

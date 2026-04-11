@@ -15,10 +15,10 @@
     @include('partials.dominion.advisor-selector')
     <div class="row">
 
-        <div class="col-md-12 col-md-9">
+        <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-bar-chart"></i> {{ $pageHeader }}</h3>
+                    <span class="card-title"><i class="fa fa-bar-chart"></i> {{ $pageHeader }}</span>
                 </div>
                 <div class="card-body no-padding">
                     <div class="row">
@@ -618,10 +618,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12 col-md-3">
+        <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The statistics advisor gives you statistics regarding your current dominion state.</p>

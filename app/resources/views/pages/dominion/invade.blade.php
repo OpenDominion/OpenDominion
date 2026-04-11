@@ -9,7 +9,7 @@
             @if ($protectionService->isUnderProtection($selectedDominion))
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                        <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                     </div>
                     <div class="card-body">
                         You are currently under protection for
@@ -24,7 +24,7 @@
             @elseif ($selectedDominion->morale < 80)
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                        <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                     </div>
                     <div class="card-body">
                         Your military needs at least 80% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
@@ -36,12 +36,12 @@
 
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                            <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="target_dominion">Select a target</label>
-                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                <select name="target_dominion" id="target_dominion" class="form-select select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     <option></option>
                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, false) as $dominion)
                                         <option value="{{ $dominion->id }}"
@@ -63,7 +63,7 @@
 
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-users"></i> Units to send</h3>
+                            <span class="card-title"><i class="fa fa-users"></i> Units to send</span>
                         </div>
                         <div class="card-body table-responsive no-padding">
                             <table class="table">
@@ -178,7 +178,7 @@
 
                             <div class="card border-danger">
                                 <div class="card-header">
-                                    <h3 class="card-title"><i class="ra ra-sword"></i> Invasion force</h3>
+                                    <span class="card-title"><i class="ra ra-sword"></i> Invasion force</span>
                                 </div>
                                 <div class="card-body table-responsive no-padding">
                                     <table class="table">
@@ -244,7 +244,7 @@
 
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title"><i class="fa fa-home"></i> New home forces</h3>
+                                    <span class="card-title"><i class="fa fa-home"></i> New home forces</span>
                                 </div>
                                 <div class="card-body table-responsive no-padding">
                                     <table class="table">
@@ -324,7 +324,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Here you can invade other players to try to capture some of their land and to gain prestige. Invasions are successful if you send more OP than they have DP.</p>

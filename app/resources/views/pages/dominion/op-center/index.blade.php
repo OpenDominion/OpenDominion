@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-scroll-unfurled"></i> Op Center</h3>
+                    <span class="card-title"><i class="ra ra-scroll-unfurled"></i> Op Center</span>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover" id="dominions-table">
@@ -83,7 +83,7 @@
             {{--
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Clairvoyance Realms</h3>
+                    <span class="card-title">Clairvoyance Realms</span>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover" id="clairvoyance-table">
@@ -135,7 +135,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Whenever you or someone else in your realm performs an information gathering espionage operation or magic spell, the information gathered is posted in the Op Center.</p>

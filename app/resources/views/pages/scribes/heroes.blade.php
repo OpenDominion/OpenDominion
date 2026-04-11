@@ -4,7 +4,7 @@
     @include('partials.scribes.nav')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Heroes</h3>
+            <span class="card-title">Heroes</span>
         </div>
         <div class="card-body">
             <div class="row">
@@ -119,7 +119,7 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Level Bonuses</h3>
+            <span class="card-title">Level Bonuses</span>
         </div>
         <div class="card-body table-responsive">
             <table class="table">

@@ -1,7 +1,7 @@
 <div class="card card-outline card-primary">
     <div class="card-body no-padding">
         <div class="row">
-            <div class="col-md-12 col-md-12">
+            <div class="col-sm-12 col-md-12">
                 <div class="navbar-collapse">
                     <ul class="nav navbar-nav scribes-menu">
                         <li class="nav-item {{ Route::is('scribes.overview') ? 'active' : null }}"><a href="{{ route('scribes.overview') }}" class="nav-link">Overview</a></li>

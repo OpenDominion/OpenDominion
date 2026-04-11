@@ -5,7 +5,7 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Register to round {{ $round->name }} (#{{ $round->number }})</h3>
+            <span class="card-title">Register to round {{ $round->name }} (#{{ $round->number }})</span>
         </div>
         <form action="{{ route('round.register', $round) }}" method="post" class="form-horizontal" role="form">
             @csrf
@@ -13,7 +13,7 @@
             <div class="card-body">
 
                 <!-- Dominion Name -->
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="dominion_name" class="col-sm-3 control-label">Dominion Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="dominion_name" id="dominion_name" class="form-control" placeholder="Dominion Name" value="{{ old('dominion_name') }}" required autofocus>
@@ -22,7 +22,7 @@
                 </div>
 
                 <!-- Ruler Name -->
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="ruler_name" class="col-sm-3 control-label">Ruler Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="{{ Auth::user()->display_name }}" value="{{ old('ruler_name') }}">
@@ -31,7 +31,7 @@
                 </div>
 
                 <!-- Race -->
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="race" class="col-sm-3 control-label">Race</label>
                     <div class="col-sm-9">
                         <div class="row">
@@ -149,10 +149,10 @@
                 </div>
 
                 <!-- Protection -->
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="protection_type" class="col-sm-3 control-label">Protection</label>
                     <div class="col-sm-9">
-                        <select name="protection_type" id="protection_type" class="form-control" required>
+                        <select name="protection_type" id="protection_type" class="form-select" required>
                             <option value="quick" {{ (old('protection_type') !== 'advanced' || $isLateStart) ? 'selected' : null }}>Quick Start (recommended)</option>
                             <option value="advanced" 
                                 {{ $isLateStart ? 'disabled' : null }}
@@ -167,10 +167,10 @@
                 </div>
 
                 <!-- Realm -->
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="realm_type" class="col-sm-3 control-label">Realm</label>
                     <div class="col-sm-9">
-                        <select name="realm_type" id="realm_type" class="form-control" required>
+                        <select name="realm_type" id="realm_type" class="form-select" required>
                             <option value="random" {{ (old('realm_type') === 'random') ? 'selected' : null }}>Put me in a random realm (recommended)</option>
                             @if ($round->packRegistrationOpen())
                                 <option value="join_pack" {{ (old('realm_type') === 'join_pack') ? 'selected' : null }}>Join an existing pack</option>
@@ -188,7 +188,7 @@
                 </div>
 
                 <!-- Pack Name -->
-                <div class="form-group create-pack-only join-pack-only" style="display: none;">
+                <div class="mb-3 create-pack-only join-pack-only" style="display: none;">
                     <label for="pack_name" class="col-sm-3 control-label">Pack Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="pack_name" id="pack_name" class="form-control" placeholder="Pack Name" value="{{ old('pack_name') }}">
@@ -198,7 +198,7 @@
                 </div>
 
                 <!-- Pack Password -->
-                <div class="form-group create-pack-only join-pack-only" style="display: none;">
+                <div class="mb-3 create-pack-only join-pack-only" style="display: none;">
                     <label for="pack_password" class="col-sm-3 control-label">Pack Password</label>
                     <div class="col-sm-9">
                         <input type="text" name="pack_password" id="pack_password" class="form-control" placeholder="Pack Password" value="{{ old('pack_password') }}">
@@ -207,10 +207,10 @@
                 </div>
 
                 <!-- Pack Size (create only) -->
-                <div class="form-group create-pack-only" style="display: none;">
+                <div class="mb-3 create-pack-only" style="display: none;">
                     <label for="pack_size" class="col-sm-3 control-label">Pack Size</label>
                     <div class="col-sm-9">
-                        <select name="pack_size" id="pack_size" class="form-control">
+                        <select name="pack_size" id="pack_size" class="form-select">
                             @for ($i = 2; $i <= $round->pack_size; $i++)
                                 <option value="{{ $i }}" {{ (old('pack_size') == $i) ? 'selected' : null }}>{{ $i }}</option>
                             @endfor
@@ -223,10 +223,10 @@
                 </div>
 
                 <!-- Discord -->
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="col-sm-3 control-label">Discord</label>
                     <div class="col-sm-9">
-                        <select name="discord" id="discord" class="form-control" required>
+                        <select name="discord" id="discord" class="form-select" required>
                             <option value="yes" {{ (old('discord') === 'yes') ? 'selected' : null }}>Place me in a Discord-enabled realm (recommended)</option>
                             <option value="no" {{ ((old('discord') === 'no') || (old('discord') === null) && !$hasDiscord) ? 'selected' : null }}>I do not plan to use Discord</option>
                         </select>
@@ -237,7 +237,7 @@
                 </div>
 
                 <!-- Rules -->
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="col-sm-3 control-label">Rules</label>
                     <div class="col-sm-9">
                         <div class="checkbox">

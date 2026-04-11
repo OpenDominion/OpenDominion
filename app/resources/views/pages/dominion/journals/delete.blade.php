@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-scroll-quill"></i> Journal</h3>
+                    <span class="card-title"><i class="ra ra-scroll-quill"></i> Journal</span>
                 </div>
                 <form action="{{ route('dominion.journal.delete', $journal->id) }}" method="post" class="form" role="form">
                     @csrf

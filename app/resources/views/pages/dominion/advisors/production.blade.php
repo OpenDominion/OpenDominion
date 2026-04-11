@@ -15,10 +15,10 @@
     @include('partials.dominion.advisor-selector')
     <div class="row">
 
-        <div class="col-md-12 col-md-9">
+        <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-industry"></i> {{ $pageHeader }}</h3>
+                    <span class="card-title"><i class="fa fa-industry"></i> {{ $pageHeader }}</span>
                 </div>
                 <div class="card-body no-padding">
                     <div class="row">
@@ -262,10 +262,10 @@
             </div>
         </div>
 
-        <div class="col-md-12 col-md-3">
+        <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The production advisor tells you about your resource production, population, and jobs.</p>
@@ -376,7 +376,7 @@
         <div class="col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-mining-diamonds"></i> Resource Expenditure</h3>
+                    <span class="card-title"><i class="ra ra-mining-diamonds"></i> Resource Expenditure</span>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive text-nowrap">
@@ -512,7 +512,7 @@
         <div class="col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-money"></i> Expenditure Bonuses</h3>
+                    <span class="card-title"><i class="fa fa-money"></i> Expenditure Bonuses</span>
                 </div>
                 <div class="card-body no-padding">
                     <div class="row">

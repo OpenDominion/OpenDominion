@@ -11,15 +11,15 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-money"></i> National Bank</h3>
+                    <span class="card-title"><i class="fa fa-money"></i> National Bank</span>
                 </div>
                 <form action="{{ route('dominion.bank') }}" method="post" {{--class="form-inline" --}}role="form">
                     @csrf
                     <div class="card-body">
                         <div class="row">
-                            <div class="form-group col-sm-6 col-lg-5">
+                            <div class="mb-3 col-sm-6 col-lg-5">
                                 <label for="source">Exchange this</label>
-                                <select name="source" id="source" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                <select name="source" id="source" class="form-select" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     @foreach ($resources as $field => $resource)
                                         @if (!$resource['sell'])
                                             @continue
@@ -28,9 +28,9 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-sm-6 col-lg-5">
+                            <div class="mb-3 col-sm-6 col-lg-5">
                                 <label for="target">Into this</label>
-                                <select name="target" id="target" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                <select name="target" id="target" class="form-select" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     @foreach ($resources as $field => $resource)
                                         @if (!$resource['buy'])
                                             @continue
@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-sm-3 col-lg-3">
+                            <div class="mb-3 col-sm-3 col-lg-3">
                                 <label for="amount" id="amountLabel">{{ reset($resources)['label'] }}</label>
                                 <input type="number"
                                         name="amount"
@@ -53,7 +53,7 @@
                                         max="{{ reset($resources)['max'] }}"
                                         {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             </div>
-                            <div class="form-group col-sm-6 col-lg-4">
+                            <div class="mb-3 col-sm-6 col-lg-4">
                                 <label for="amountSlider">Amount</label>
                                 <input type="number"
                                         id="amountSlider"
@@ -67,7 +67,7 @@
                                         data-slider-id="yellow"
                                         {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             </div>
-                            <div class="form-group col-sm-3 col-lg-3">
+                            <div class="mb-3 col-sm-3 col-lg-3">
                                 <label id="resultLabel">{{ reset($resources)['label'] }}</label>
                                 <input type="number"
                                         id="result"
@@ -89,7 +89,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The National Bank allows you to exchange resources with the empire. Exchanging resources processes <b>instantly</b>.</p>

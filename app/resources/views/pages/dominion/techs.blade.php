@@ -16,7 +16,7 @@
             <div class="col-sm-12 col-md-9">
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+                        <span class="card-title"><i class="fa fa-flask"></i> Technological Advances</span>
                     </div>
                     <div class="card-body no-padding">
                         <div class="row">
@@ -39,7 +39,7 @@
             <div class="col-sm-12 col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Information</h3>
+                        <span class="card-title">Information</span>
                     </div>
                     <div class="card-body">
                         @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
@@ -66,7 +66,7 @@
             <div class="col-sm-12 col-md-9">
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+                        <span class="card-title"><i class="fa fa-flask"></i> Technological Advances</span>
                     </div>
                     <div class="card-body table-responsive no-padding">
                         <table class="table">

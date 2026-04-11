@@ -23,7 +23,7 @@
         <div class="col-sm-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-cog"></i> Dominion Settings</h3>
+                    <span class="card-title"><i class="fa fa-cog"></i> Dominion Settings</span>
                 </div>
                 <form class="form" action="{{ route('dominion.misc.settings') }}" method="post">
                     @csrf
@@ -35,7 +35,7 @@
                                         Resources Overview:
                                     </label>
                                     <div class="float-end">
-                                        <select class="form-control" id="rowCountSelect" style="width: auto; display: inline-block; margin-bottom: 5px; margin-right: 5px;">
+                                        <select class="form-select" id="rowCountSelect" style="width: auto; display: inline-block; margin-bottom: 5px; margin-right: 5px;">
                                             <option value="1" {{ $rowCount == 1 ? 'selected' : '' }}>1 Row</option>
                                             <option value="2" {{ $rowCount == 2 ? 'selected' : '' }}>2 Rows</option>
                                             <option value="3" {{ $rowCount == 3 ? 'selected' : '' }}>3 Rows</option>
@@ -45,10 +45,10 @@
                                     </div>
                                 </div>
                                 @for ($row = 0; $row < 4; $row++)
-                                    <div class="form-group row resource-row" data-row="{{ $row }}">
+                                    <div class="mb-3 row resource-row" data-row="{{ $row }}">
                                         @for ($col = 0; $col < 4; $col++)
                                             <div class="col-3">
-                                                <select class="form-control resource-select-{{ $row }}" name="resources_overview[{{ $row }}][{{ $col }}]" data-default="{{ $defaultConfig[$row][$col] ?? '' }}">
+                                                <select class="form-select resource-select-{{ $row }}" name="resources_overview[{{ $row }}][{{ $col }}]" data-default="{{ $defaultConfig[$row][$col] ?? '' }}">
                                                     @foreach ($resourceOptions as $resourceOption)
                                                         <option value="{{ $resourceOption }}" {{ isset($config[$row][$col]) && $config[$row][$col] == $resourceOption ? 'selected' : '' }}>
                                                             {{ $resourceOption }}
@@ -61,9 +61,9 @@
                                 @endfor
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <label class="form-label">Preferred Title:</label>
-                                    <select class="form-control" name="preferred_title">
+                                    <select class="form-select" name="preferred_title">
                                         @foreach ($rankingsHelper->getRankings() as $ranking)
                                             <option value="{{ $ranking['key'] }}" {{ isset($selectedDominion->settings['preferred_title']) && $selectedDominion->settings['preferred_title'] == $ranking['key'] ? 'selected' : null }}>
                                                 {{ $ranking['name'] }} - "{{ $ranking['title'] }}"
@@ -72,7 +72,7 @@
                                     </select>
                                     <span class="small">Used in round forum if you currently hold this title, otherwise uses the first in the list.</span>
                                 </div>
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <label class="form-label">Title Icon:</label>
                                     <div class="checkbox">
                                         <label>
@@ -82,7 +82,7 @@
                                     </div>
                                     <span class="small">Uses your preferred title, if possible.</span>
                                 </div>
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <label class="form-label">Chaos League:</label>
                                     <div class="radio">
                                         <label>
@@ -99,7 +99,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <label class="form-label">Hide Sidebar Links:</label>
                                     <div class="checkbox">
                                         <label>

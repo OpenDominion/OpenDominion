@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-8 offset-md-2">
             <div class="card border-success">
                 <div class="card-header">
-                    <h3 class="card-title">
+                    <span class="card-title">
                         <i class="ra ra-sword"></i>
                         {{ $event->source->name }} (#{{ $event->source->realm->number }})
                         vs

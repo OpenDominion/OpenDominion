@@ -8,15 +8,15 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-search"></i> Search Dominions</h3>
+                    <span class="card-title"><i class="fa fa-search"></i> Search Dominions</span>
                 </div>
                 <div class="card-body" id="dominion-search">
                     <div class="row no-margin">
-                        <div class="col-sm-6 col-lg-4 form-horizontal">
-                            <div class="form-group">
-                                <label class="col-sm-6 control-label">Race:</label>
+                        <div class="col-sm-12 col-md-6 col-lg-4">
+                            <div class="row mb-3">
+                                <label class="col-sm-6 col-form-label text-md-end">Race:</label>
                                 <div class="col-sm-6">
-                                    <select class="form-control" name="race">
+                                    <select class="form-select" name="race">
                                         <option value="">All</option>
                                         @foreach ($dominions->pluck('race.name')->sort()->unique() as $race)
                                             <option value="{{ $race }}">{{ $race }}</option>
@@ -24,19 +24,19 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-6 control-label">Limit:</label>
+                            <div class="row mb-3">
+                                <label class="col-sm-6 col-form-label text-md-end">Limit:</label>
                                 <div class="col-sm-6">
-                                    <select class="form-control" name="range">
+                                    <select class="form-select" name="range">
                                         <option value="">No Limit</option>
                                         <option value="true">My Range</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-6 control-label">Bots:</label>
+                            <div class="row mb-3">
+                                <label class="col-sm-6 col-form-label text-md-end">Bots:</label>
                                 <div class="col-sm-6">
-                                    <select class="form-control" name="bots">
+                                    <select class="form-select" name="bots">
                                         <option value="">Include</option>
                                         <option value="false">Exclude</option>
                                         <option value="true">Only</option>
@@ -44,61 +44,47 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-4 form-horizontal">
-                            <div class="form-group">
-                                <label class="col-sm-6 control-label">Land Min:</label>
+                        <div class="col-sm-12 col-lg-8">
+                            <div class="row">
                                 <div class="col-sm-6">
-                                    <input type="number" name="landMin" class="form-control input-sm" min="0" placeholder="0" />
+                                    <div class="row mb-3">
+                                        <label class="col-sm-6 col-form-label text-md-end">Land Min:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" name="landMin" class="form-control form-control-sm" min="0" placeholder="0" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-6 col-form-label text-md-end">Land Max:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" name="landMax" class="form-control form-control-sm" placeholder="--" />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-6 control-label">Land Max:</label>
                                 <div class="col-sm-6">
-                                    <input type="number" name="landMax" class="form-control input-sm" placeholder="--" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-4 form-horizontal">
-                            <div class="form-group">
-                                <label class="col-sm-6 control-label">Networth Min:</label>
-                                <div class="col-sm-6">
-                                    <input type="number" name="networthMin" class="form-control input-sm" min="0" placeholder="0" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-6 control-label">Networth Max:</label>
-                                <div class="col-sm-6">
-                                    <input type="number" name="networthMax" class="form-control input-sm" placeholder="--" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 offset-lg-1 col-lg-7 form-horizontal">
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <div class="row no-margin" style="padding-top: 8px">
-                                        <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-primary search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.85) }}">85%+</button>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-6 col-form-label text-md-end">Networth Min:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" name="networthMin" class="form-control form-control-sm" min="0" placeholder="0" />
                                         </div>
-                                        <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-primary search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.95) }}">95%+</button>
-                                        </div>
-                                        <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-primary search-range" data-min="{{ $landCalculator->getTotalLand($selectedDominion) }}">100%+</button>
-                                        </div>
-                                        <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-info search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.40) }}" data-max="{{ rfloor($landCalculator->getTotalLand($selectedDominion) / 0.40) }}">40%</button>
-                                        </div>
-                                        <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-success search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.60) }}" data-max="{{ rfloor($landCalculator->getTotalLand($selectedDominion) / 0.60) }}">60%</button>
-                                        </div>
-                                        <div class="col-md-2 text-center no-padding">
-                                            <button class="btn btn-block btn-warning search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.75) }}" data-max="{{ rfloor($landCalculator->getTotalLand($selectedDominion) / 0.75) }}">75%</button>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-6 col-form-label text-md-end">Networth Max:</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" name="networthMax" class="form-control form-control-sm" placeholder="--" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group no-margin">
-                                <div class="col-sm-6 offset-sm-6 no-padding">
+                            <div class="btn-group w-100 mt-0">
+                                <button class="btn btn-primary search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.85) }}">85%+</button>
+                                <button class="btn btn-primary search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.95) }}">95%+</button>
+                                <button class="btn btn-primary search-range" data-min="{{ $landCalculator->getTotalLand($selectedDominion) }}">100%+</button>
+                                <button class="btn btn-info search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.40) }}" data-max="{{ rfloor($landCalculator->getTotalLand($selectedDominion) / 0.40) }}">40%</button>
+                                <button class="btn btn-success search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.60) }}" data-max="{{ rfloor($landCalculator->getTotalLand($selectedDominion) / 0.60) }}">60%</button>
+                                <button class="btn btn-warning search-range" data-min="{{ rceil($landCalculator->getTotalLand($selectedDominion) * 0.75) }}" data-max="{{ rfloor($landCalculator->getTotalLand($selectedDominion) / 0.75) }}">75%</button>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-sm-6 offset-sm-6">
                                     <button id="dominion-search" class="btn btn-block btn-primary">Search</button>
                                 </div>
                             </div>
@@ -123,8 +109,8 @@
                                     <th class="text-center">Race</th>
                                     <th class="text-center">Land</th>
                                     <th class="text-center">Networth</th>
-                                    <th class="text-center hidden">My Range</th>
-                                    <th class="text-center hidden">Bot</th>
+                                    <th class="text-center d-none">My Range</th>
+                                    <th class="text-center d-none">Bot</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -190,7 +176,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Advanced search for locating dominions in other realms.</p>

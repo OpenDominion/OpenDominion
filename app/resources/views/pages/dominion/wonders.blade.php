@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonders of the World</h3>
+                    <span class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonders of the World</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     <table class="table">
@@ -66,7 +66,7 @@
             @if ($protectionService->isUnderProtection($selectedDominion))
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
+                        <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                     </div>
                     <div class="card-body">
                         You are currently under protection for
@@ -84,13 +84,13 @@
                     <input type="hidden" name="calc[wonder]" value="1" />
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Attack</h3>
+                            <span class="card-title"><i class="ra ra-crossed-swords"></i> Attack</span>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-9 col-lg-10">
                                     <label for="target_wonder">Select a target</label>
-                                    <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <select name="target_wonder" id="target_wonder" class="form-select select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option></option>
                                         @foreach ($wonders as $wonder)
                                             @if ($wonder->realm == null || $governmentService->canAttackWonders($selectedDominion->realm, $wonder->realm))
@@ -130,7 +130,7 @@
 
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-users"></i> Units to send</h3>
+                            <span class="card-title"><i class="fa fa-users"></i> Units to send</span>
                         </div>
                         <div class="card-body table-responsive no-padding">
                             <table class="table">
@@ -219,7 +219,7 @@
 
                             <div class="card border-danger">
                                 <div class="card-header">
-                                    <h3 class="card-title"><i class="ra ra-sword"></i> Invasion force</h3>
+                                    <span class="card-title"><i class="ra ra-sword"></i> Invasion force</span>
                                 </div>
                                 <div class="card-body table-responsive no-padding">
                                     <table class="table">
@@ -277,7 +277,7 @@
 
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title"><i class="fa fa-home"></i> New home forces</h3>
+                                    <span class="card-title"><i class="fa fa-home"></i> New home forces</span>
                                 </div>
                                 <div class="card-body table-responsive no-padding">
                                     <table class="table">
@@ -329,7 +329,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>

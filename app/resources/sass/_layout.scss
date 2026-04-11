@@ -115,13 +115,13 @@
 }
 
 .app-content-header {
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0.5rem 0 0.5rem;
   border-bottom: 1px solid var(--bs-border-color);
 }
 
 .app-content {
   flex: 1 1 auto;
-  padding: 1rem;
+  padding: 0.75rem 0.5rem 0 0.5rem;
 }
 
 // ── Footer ──────────────────────────────────────────────────────────────────

@@ -11,12 +11,12 @@
                     @csrf
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
+                            <span class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</span>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <label class="col-sm-3 control-label">Name</label>
                                         <div class="col-sm-9">
                                             <div class="input-group">
@@ -27,10 +27,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <label class="col-sm-3 control-label">Class</label>
                                         <div class="col-sm-9">
-                                            <select name="class" class="form-control">
+                                            <select name="class" class="form-select">
                                                 @foreach ($heroHelper->getBasicClasses() as $class)
                                                     <option value="{{ $class['key'] }}">
                                                         {{ $class['name'] }} - {{ str_replace('_', ' ', $class['perk_type']) }}
@@ -49,7 +49,7 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Level Bonuses</h3>
+                            <span class="card-title">Level Bonuses</span>
                         </div>
                         <div class="card-body table-responsive">
                             <table class="table">
@@ -84,7 +84,7 @@
                     @csrf
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</h3>
+                            <span class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</span>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -370,7 +370,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Your hero gains experience and levels up, increasing its class bonuses and unlocking new upgrades.</p>

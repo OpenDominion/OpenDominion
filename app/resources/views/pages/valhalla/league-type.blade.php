@@ -3,7 +3,7 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">{{ $ranking['name'] }} in {{ $league->description }}</h3>
+            <span class="card-title">{{ $ranking['name'] }} in {{ $league->description }}</span>
         </div>
 
         @if (!$standings->isEmpty())

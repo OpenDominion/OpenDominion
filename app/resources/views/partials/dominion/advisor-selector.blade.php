@@ -8,9 +8,9 @@
 @endphp
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-question-circle"></i> {{ $title }}</h3>
+        <span class="card-title"><i class="fa fa-question-circle"></i> {{ $title }}</span>
     </div>
-    <div class="card-body text-center">
+    <div class="card-body text-center pb-0">
 
         <a href="{{ route($baseRoute.'op-center', $targetDominion) }}" class="btn btn-app">
             <i class="fa fa-globe"></i> Op Center

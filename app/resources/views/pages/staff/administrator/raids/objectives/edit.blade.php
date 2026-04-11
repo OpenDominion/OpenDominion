@@ -5,7 +5,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Edit Objective: {{ $objective->name }}</h3>
+            <span class="card-title">Edit Objective: {{ $objective->name }}</span>
         </div>
         <form action="{{ route('staff.administrator.raids.objectives.edit', [$raid, $objective]) }}" method="POST">
             @csrf
@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-8">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="name">Objective Name *</label>
                             <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $objective->name) }}" required>
                             @if ($errors->has('name'))
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="order">Display Order *</label>
                             <input type="number" name="order" id="order" class="form-control" value="{{ old('order', $objective->order) }}" min="0" required>
                             <small class="text-muted">Lower numbers appear first</small>
@@ -35,7 +35,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="description">Description *</label>
                             <textarea name="description" id="description" class="form-control" rows="4" required>{{ old('description', preg_replace('/<br\s*\/?>/i', "\n", $objective->description)) }}</textarea>
                             @if ($errors->has('description'))
@@ -47,7 +47,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="score_required">Score Required to Complete *</label>
                             <input type="number" name="score_required" id="score_required" class="form-control" value="{{ old('score_required', $objective->score_required) }}" min="1" required>
                             <small class="text-muted">Total realm score needed to complete this objective</small>
@@ -60,7 +60,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="start_day">Start Day of Round *</label>
                             <input type="number" name="start_day" id="start_day" class="form-control" value="{{ old('start_day', $raid->round->daysInRound($objective->start_date)) }}" min="1" required>
                             @if ($errors->has('start_day'))
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="end_day">End Day of Round *</label>
                             <input type="number" name="end_day" id="end_day" class="form-control" value="{{ old('end_day', $raid->round->daysInRound($objective->end_date)) }}" min="1" required>
                             @if ($errors->has('end_day'))

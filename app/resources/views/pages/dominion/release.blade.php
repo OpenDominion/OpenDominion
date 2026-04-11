@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card border-danger">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-cycle"></i> Release Troops</h3>
+                    <span class="card-title"><i class="ra ra-cycle"></i> Release Troops</span>
                 </div>
                 <form action="{{ route('dominion.military.release') }}" method="post" role="form">
                     @csrf
@@ -73,7 +73,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p><b>Warning</b>: You are about to release your troops.</p>

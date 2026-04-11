@@ -7,7 +7,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">{{ $raid->name }}</h3>
+                    <span class="card-title">{{ $raid->name }}</span>
                     <div class="float-end">
                         <a href="{{ route('staff.administrator.raids.edit', $raid) }}" class="btn btn-primary btn-sm">
                             <i class="fa fa-edit"></i> Edit
@@ -87,7 +87,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Objectives</h3>
+                    <span class="card-title">Objectives</span>
                     <div class="float-end">
                         <a href="{{ route('staff.administrator.raids.objectives.create', $raid) }}" class="btn btn-success btn-sm">
                             <i class="fa fa-plus"></i> Create New Objective

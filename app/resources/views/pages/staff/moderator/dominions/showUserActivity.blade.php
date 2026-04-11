@@ -5,10 +5,10 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">
+            <span class="card-title">
                 Shared logins for: {{ $dominion->name }}
             </h3>
-            <select id="dominion-select" class="form-control float-end">
+            <select id="dominion-select" class="form-select float-end">
                 <option value="">
                     All
                 </option>

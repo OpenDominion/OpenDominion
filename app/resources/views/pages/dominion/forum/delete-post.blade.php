@@ -5,7 +5,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Delete Post</h3>
+            <span class="card-title">Delete Post</span>
         </div>
         <form action="{{ route('dominion.forum.delete.post', $post) }}" method="post" class="form-horizontal" role="form">
             @csrf
@@ -20,7 +20,7 @@
 
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Thread: {{ $post->thread->title }}</h3>
+            <span class="card-title">Thread: {{ $post->thread->title }}</span>
         </div>
         <div class="card-body">
             {!! Markdown::convertToHtml($post->body) !!}

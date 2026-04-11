@@ -9,13 +9,13 @@
                 @csrf
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-calculator"></i> General Calculator</h3>
+                        <span class="card-title"><i class="fa fa-calculator"></i> General Calculator</span>
                         <div class="float-end text-red">
                             Experimental
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Race
                             </div>
@@ -41,7 +41,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Prestige
                             </div>
@@ -55,14 +55,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 <b>Buildings</b>
                             </div>
                         </div>
 
                         @foreach (collect($buildingHelper->getBuildingTypes())->chunk(2) as $chunk)
-                            <div class="form-group row">
+                            <div class="mb-3 row">
                                 @foreach ($chunk as $building)
                                     <div class="col-3 text-end">
                                         {{ $buildingHelper->getBuildingName($building) }}
@@ -83,7 +83,7 @@
                                 @endforeach
                             </div>
                             @if ($loop->last)
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     <div class="col-3 text-end">
                                         Barren
                                     </div>
@@ -99,14 +99,14 @@
                             @endif
                         @endforeach
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 <b>Improvements</b>
                             </div>
                         </div>
 
                         @foreach (collect($improvementHelper->getImprovementTypes())->chunk(2) as $chunk)
-                            <div class="form-group row">
+                            <div class="mb-3 row">
                                 @foreach ($chunk as $improvement)
                                     <div class="col-3 text-end">
                                         {{ $improvementHelper->getImprovementName($improvement) }}
@@ -123,13 +123,13 @@
                             </div>
                         @endforeach
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 <b>Military</b>
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 Draftees
                             </div>
@@ -144,7 +144,7 @@
                         </div>
 
                         @foreach (collect($unitHelper->getUnitTypes())->chunk(2) as $chunk)
-                            <div class="form-group row">
+                            <div class="mb-3 row">
                                 @foreach ($chunk as $unit)
                                     <div class="col-3 text-end">
                                         {{ $unitHelper->getUnitName($unit, $targetDominion->race) }}
@@ -166,7 +166,7 @@
                             </div>
                         @endforeach
 
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 <b>Spells</b>
                             </div>
@@ -189,7 +189,7 @@
                                 $activeSpells = $targetDominion->spells->keyBy('key')->keys();
                             @endphp
                             @foreach ($spellHelper->getSpells($targetDominion->race, 'self')->chunk(2) as $chunk)
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     @foreach ($chunk as $spell)
                                         <div class="col-3 text-end">
                                             {{ $spell->name }}
@@ -208,7 +208,7 @@
                         @php
                             $unlockedTechs = $targetDominion->techs->keyBy('key')->keys();
                         @endphp
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <div class="col-3 text-end">
                                 <b>Techs</b>
                             </div>
@@ -228,7 +228,7 @@
 
                         <div id="tech-wrappper" class="collapse">
                             @foreach ($techHelper->getTechs()->chunk(2) as $chunk)
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     @foreach ($chunk as $tech)
                                         <div class="col-3 text-end">
                                             {{ $tech->name }}
@@ -266,7 +266,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>I heard you like calculators.</p>
@@ -280,7 +280,7 @@
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Production</h3>
+                        <span class="card-title">Production</span>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm">
@@ -330,7 +330,7 @@
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Population</h3>
+                        <span class="card-title">Population</span>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm">
@@ -369,7 +369,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Improvements</h3>
+                        <span class="card-title">Improvements</span>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm">
@@ -410,7 +410,7 @@
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Black Ops</h3>
+                        <span class="card-title">Black Ops</span>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm">

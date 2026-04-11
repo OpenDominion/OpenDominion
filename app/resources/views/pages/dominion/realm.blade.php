@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-circle-of-circles"></i> {{ $realm->name }} (#{{ $realm->number }})</h3>
+                    <span class="card-title"><i class="ra ra-circle-of-circles"></i> {{ $realm->name }} (#{{ $realm->number }})</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
 
@@ -163,7 +163,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
@@ -212,7 +212,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-crossed-axes"></i> War</h3>
+                    <span class="card-title"><i class="ra ra-crossed-axes"></i> War</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -278,7 +278,7 @@
 
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonder</h3>
+                    <span class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonder</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -313,7 +313,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Here you view which realms currently have war relations with this one.</p>

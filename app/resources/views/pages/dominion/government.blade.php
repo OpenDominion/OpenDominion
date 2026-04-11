@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-queen-crown"></i> Monarchy</h3>
+                    <span class="card-title"><i class="ra ra-queen-crown"></i> Monarchy</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -18,7 +18,7 @@
                                     <label for="realm_motd">Realm Message</label>
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <input type="text" class="form-control" name="realm_motd" id="realm_motd" value="{{ $selectedDominion->realm->motd }}" maxlength="256" autocomplete="off" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
                                             </div>
                                         </div>
@@ -26,12 +26,12 @@
                                     <label for="realm_name">Realm Name</label>
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <input type="text" class="form-control" name="realm_name" id="realm_name" value="{{ $selectedDominion->realm->name }}" maxlength="64" autocomplete="off" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
                                             </div>
                                         </div>
                                         <div class="offset-6 col-6 offset-sm-8 col-sm-4 offset-lg-10 col-lg-2">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     Change
                                                 </button>
@@ -50,8 +50,8 @@
                                 <label for="monarch">Vote for monarch</label>
                                 <div class="row">
                                     <div class="col-sm-8 col-lg-10">
-                                        <div class="form-group">
-                                            <select name="monarch" id="monarch" class="form-control select2 dominion_list" required style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                        <div class="mb-3">
+                                            <select name="monarch" id="monarch" class="form-select select2 dominion_list" required style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 <option></option>
                                                 @foreach ($dominions as $dominion)
                                                     <option value="{{ $dominion->id }}"
@@ -66,7 +66,7 @@
                                         </div>
                                     </div>
                                     <div class="offset-6 col-6 offset-sm-0 col-sm-4 col-lg-2">
-                                        <div class="form-group">
+                                        <div class="mb-3">
                                             <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 Vote
                                             </button>
@@ -76,7 +76,7 @@
                             </form>
                             <form action="{{ route('dominion.government.advisors') }}" method="post" role="form">
                                 @csrf
-                                <div class="form-group table-responsive">
+                                <div class="mb-3 table-responsive">
                                     <table class="table table-sm">
                                         <colgroup>
                                             <col>
@@ -136,7 +136,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="offset-6 col-6 offset-sm-8 col-sm-4 offset-lg-10 col-lg-2">
-                                        <div class="form-group">
+                                        <div class="mb-3">
                                             <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 Update
                                             </button>
@@ -153,7 +153,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Here you can vote for the monarch of your realm. You can change your vote at any time.</p>
@@ -169,7 +169,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-crown"></i> The Royal Court</h3>
+                    <span class="card-title"><i class="ra ra-crown"></i> The Royal Court</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -211,8 +211,8 @@
                                     <label for="appointee">Make Appointment</label>
                                     <div class="row">
                                         <div class="col-sm-8">
-                                            <div class="form-group">
-                                                <select name="appointee" id="appointee" class="form-control select2 dominion_list" style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <div class="mb-3">
+                                                <select name="appointee" id="appointee" class="form-select select2 dominion_list" style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
                                                     @foreach ($dominions as $dominion)
                                                         @if ($dominion->id !== $selectedDominion->id)
@@ -229,8 +229,8 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <select name="role" id="role" class="form-control select2" style="width: 100%" data-placeholder="Select a role" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <div class="mb-3">
+                                                <select name="role" id="role" class="form-select select2" style="width: 100%" data-placeholder="Select a role" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
                                                     @foreach ($governmentHelper->getCourtAppointments() as $appointment)
                                                         @if ($appointment['key'] !== 'monarch')
@@ -243,7 +243,7 @@
                                             </div>
                                         </div>
                                         <div class="offset-6 col-6 offset-sm-8 col-sm-4 offset-lg-10 col-lg-2">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <button type="submit" class="btn btn-primary btn-block" {{ (!$selectedDominion->isMonarch() || $selectedDominion->isLocked()) ? 'disabled' : null }}>
                                                     Submit
                                                 </button>
@@ -261,7 +261,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The monarch of a realm may appoint fellow dominions to their royal court, who are then granted access to special perks and responsibilities.</p>
@@ -279,7 +279,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-crossed-axes"></i> War</h3>
+                    <span class="card-title"><i class="ra ra-crossed-axes"></i> War</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -382,8 +382,8 @@
                                         <label for="realm_number">Select a Realm</label>
                                         <div class="row">
                                             <div class="col-sm-8 col-lg-10">
-                                                <div class="form-group">
-                                                    <select name="realm_number" id="realm_number" class="form-control" required style="width: 100%" data-placeholder="Select a realm" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <div class="mb-3">
+                                                    <select name="realm_number" id="realm_number" class="form-select" required style="width: 100%" data-placeholder="Select a realm" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                         <option></option>
                                                         @if ($selectedDominion->round->start_date <= now())
                                                             @foreach ($realms as $realm)
@@ -398,7 +398,7 @@
                                                 </div>
                                             </div>
                                             <div class="offset-6 col-6 offset-sm-0 col-sm-4 col-lg-2">
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <button type="submit" class="btn btn-danger btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                         Declare War
                                                     </button>
@@ -440,7 +440,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 4th day of the round. Successful war operations increase your masteries, which increase your ops capabilities.</p>
@@ -455,7 +455,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-university"></i> Guard Membership</h3>
+                    <span class="card-title"><i class="fa fa-university"></i> Guard Membership</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -583,7 +583,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Joining the Royal or Elite Guard will reduce the range other dominions can perform hostile interactions against you. In turn, you also can not perform hostile interactions against wonders or dominions outside of your guard range.</p>

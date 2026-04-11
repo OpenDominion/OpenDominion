@@ -4,7 +4,7 @@
     @include('partials.scribes.nav')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Espionage</h3>
+            <span class="card-title">Espionage</span>
         </div>
         <div class="card-body">
             <div class="row">
@@ -19,11 +19,11 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Operations</h3>
+            <span class="card-title">Operations</span>
         </div>
         <div class="card-body table-responsive">
             <div class="row">
-                <div class="col-md-12 col-md-6">
+                <div class="col-sm-12 col-md-6">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Information gathering</h4>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
@@ -41,7 +41,7 @@
                     </table>
                     <p>&nbsp;</p>
                 </div>
-                <div class="col-md-12 col-md-6">
+                <div class="col-sm-12 col-md-6">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Theft</h4>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
@@ -59,7 +59,7 @@
                     </table>
                     <p>&nbsp;</p>
                 </div>
-                <div class="col-md-12 col-md-6">
+                <div class="col-sm-12 col-md-6">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Black Ops</h4>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>

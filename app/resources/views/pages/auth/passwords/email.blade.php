@@ -6,7 +6,7 @@
 
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Reset Password</h3>
+                    <span class="card-title">Reset Password</span>
                 </div>
                 <form action="{{ route('auth.password.email') }}" method="post" class="form-horizontal" role="form">
                     @csrf
@@ -14,7 +14,7 @@
                     <div class="card-body">
 
                         {{-- Email --}}
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>

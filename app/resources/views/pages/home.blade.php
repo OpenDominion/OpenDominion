@@ -16,7 +16,7 @@
         <div class="col-sm-6">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Welcome to OpenDominion!</h3>
+                    <span class="card-title">Welcome to OpenDominion!</span>
                 </div>
                 <div class="card-body">
                     <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with other dominions and you must work together to make your realm the wealthiest and most powerful in the land and crush your enemies!</p>
@@ -56,7 +56,7 @@
         <div class="col-sm-3">
             <div class="card">
                 <div class="card-header text-center">
-                    <h3 class="card-title">
+                    <span class="card-title">
                         @if ($currentRound === null)
                             Current Round
                         @else
@@ -150,7 +150,7 @@
             @if ($currentRound !== null)
                 <div class="card">
                     <div class="card-header text-center">
-                        <h3 class="card-title">
+                        <span class="card-title">
                             {{ $currentRound->hasStarted() && !$currentRound->hasEnded() ? 'Current' : 'Previous' }} Round Rankings
                         </h3>
                     </div>

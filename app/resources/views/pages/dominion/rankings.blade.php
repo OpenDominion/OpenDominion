@@ -8,10 +8,10 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">
+                    <span class="card-title">
                         <i class="fa fa-trophy"></i> Rankings
                     </h3>
-                    <select id="ranking-select" class="form-control float-end">
+                    <select id="ranking-select" class="form-select float-end">
                         @foreach ($rankings as $ranking)
                             <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>
                                 {{ $ranking['name'] }}
@@ -86,7 +86,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>This page shows you the rankings of all dominions in this round and is updated every 24 hours starting on the 2nd day of the round.</p>

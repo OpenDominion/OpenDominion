@@ -12,7 +12,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-telescope"></i> Explore Land</h3>
+                    <span class="card-title"><i class="ra ra-telescope"></i> Explore Land</span>
                 </div>
                 <form action="{{ route('dominion.explore') }}" method="post" role="form">
                     @csrf
@@ -70,7 +70,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                     <a href="{{ route('dominion.explore') }}#advisor" class="float-end">Land Advisor</a>
                 </div>
                 <div class="card-body">
@@ -85,7 +85,7 @@
         <div class="col-sm-12 col-md-6" id="advisor">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-honeycomb"></i> Land Advisor</h3>
+                    <span class="card-title"><i class="ra ra-honeycomb"></i> Land Advisor</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.land-table', ['data' => $advisorData, 'race' => $selectedDominion->race])
@@ -96,7 +96,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</h3>
+                    <span class="card-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.land-incoming-table', ['data' => $advisorData, 'race' => $selectedDominion->race])

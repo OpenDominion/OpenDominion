@@ -10,7 +10,7 @@
                 @csrf
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-knight-helmet"></i> Hero Class Change</h3>
+                        <span class="card-title"><i class="ra ra-knight-helmet"></i> Hero Class Change</span>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -39,7 +39,7 @@
 
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Heroes</h3>
+                    <span class="card-title">Heroes</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -133,7 +133,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Level Bonuses</h3>
+                    <span class="card-title">Level Bonuses</span>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table">
@@ -167,7 +167,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Your hero gains experience and levels up, increasing its class bonuses and unlocking new upgrades.</p>

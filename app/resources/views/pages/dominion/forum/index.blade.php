@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-comments"></i> Round Forum: {{ $round->name }}</h3>
+                    <span class="card-title"><i class="fa fa-comments"></i> Round Forum: {{ $round->name }}</span>
                 </div>
                 <div class="card-body">
                     <table class="table table-hover">
@@ -104,7 +104,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here. You may also <a href="{{ route('dominion.misc.settings') }}">select your title</a>.</p>

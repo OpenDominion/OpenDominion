@@ -5,7 +5,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Edit Raid: {{ $raid->name }}</h3>
+            <span class="card-title">Edit Raid: {{ $raid->name }}</span>
         </div>
         <form action="{{ route('staff.administrator.raids.edit', $raid) }}" method="POST">
             @csrf
@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="name">Raid Name *</label>
                             <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $raid->name) }}" required>
                             @if ($errors->has('name'))
@@ -26,7 +26,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="description">Description *</label>
                             <textarea name="description" id="description" class="form-control" rows="4" required>{{ old('description', preg_replace('/<br\s*\/?>/i', "\n", $raid->description)) }}</textarea>
                             @if ($errors->has('description'))
@@ -38,7 +38,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="reward_resource">Reward Resource *</label>
                             <input type="text" name="reward_resource" id="reward_resource" class="form-control" value="{{ old('reward_resource', $raid->reward_resource) }}" required>
                             <small class="text-muted">e.g., platinum, lumber, ore, gems, food, mana</small>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="reward_amount">Reward Amount *</label>
                             <input type="number" name="reward_amount" id="reward_amount" class="form-control" value="{{ old('reward_amount', $raid->reward_amount) }}" min="0" required>
                             @if ($errors->has('reward_amount'))
@@ -60,7 +60,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="completion_reward_resource">Completion Reward Resource</label>
                             <input type="text" name="completion_reward_resource" id="completion_reward_resource" class="form-control" value="{{ old('completion_reward_resource', $raid->completion_reward_resource) }}">
                             <small class="text-muted">Optional bonus for completing all objectives</small>
@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="completion_reward_amount">Completion Reward Amount</label>
                             <input type="number" name="completion_reward_amount" id="completion_reward_amount" class="form-control" value="{{ old('completion_reward_amount', $raid->completion_reward_amount) }}" min="0">
                             @if ($errors->has('completion_reward_amount'))
@@ -82,7 +82,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="start_day">Start Day of Round *</label>
                             <input type="number" name="start_day" id="start_day" class="form-control" value="{{ old('start_day', $raid->round->daysInRound($raid->start_date)) }}" min="1" required>
                             @if ($errors->has('start_day'))
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="end_day">End Day of Round *</label>
                             <input type="number" name="end_day" id="end_day" class="form-control" value="{{ old('end_day', $raid->round->daysInRound($raid->end_date)) }}" min="1" required>
                             @if ($errors->has('end_day'))

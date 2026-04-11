@@ -25,7 +25,7 @@
                             <h2 class="page-header">Basic Information</h2>
 
                             {{-- Display Name --}}
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label class="col-sm-3 control-label">Display Name</label>
                                 <div class="col-sm-9">
                                     <p class="form-control-static">{{ $user->display_name }}</p>
@@ -35,7 +35,7 @@
                             </div>
 
                             {{-- Email --}}
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="email" class="col-sm-3 control-label">Email</label>
                                 <div class="col-sm-9">
                                     <input type="email" name="account_email" id="email" class="form-control" value="{{ $user->email }}" readonly>
@@ -44,7 +44,7 @@
                             </div>
 
                             {{-- Theme --}}
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label class="col-sm-3 control-label">Theme</label>
                                 <div class="col-sm-9">
                                     <p class="form-control-static">Use the color mode picker in the navigation bar to switch themes.</p>
@@ -52,7 +52,7 @@
                             </div>
 
                             {{-- Advisors --}}
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="skin" class="col-sm-3 control-label">Shared Advisors</label>
                                 <div class="col-sm-9">
                                     <div class="checkbox">
@@ -79,7 +79,7 @@
 
                             {{-- Discord --}}
                             @if ($discordHelper->getClientId())
-                                <div class="form-group">
+                                <div class="mb-3">
                                     @if ($discordUser = $user->discordUser()->first())
                                         <label for="skin" class="col-sm-3 control-label">Discord Account</label>
                                         <div class="col-sm-9">
@@ -104,7 +104,7 @@
                             <h2 class="page-header">Avatar</h2>
 
                             {{-- Avatar --}}
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <div class="col-12">
                                     <div style="margin-bottom: 10px;">
                                         <img src="{{ $user->getAvatarUrl() }}" class="img-responsive" alt="Avatar of {{ $user->display_name }}">
@@ -194,7 +194,7 @@
                             </div>--}}
 
                             {{-- Digest Email --}}
-                            {{--<div class="form-group">
+                            {{--<div class="mb-3">
                                 <label>Digest Irregular Email Notifications</label>
                                 <br>
                                 <div class="btn-group" data-bs-toggle="buttons">

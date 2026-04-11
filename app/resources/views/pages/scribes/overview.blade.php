@@ -28,7 +28,7 @@
         <div class="col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header text-center">
-                    <h3 class="card-title">Game Overview</h3>
+                    <span class="card-title">Game Overview</span>
                 </div>
                 <div class="card-body" id="scribes" style="padding: 10px 25px;">
                     <div id="game-overview">

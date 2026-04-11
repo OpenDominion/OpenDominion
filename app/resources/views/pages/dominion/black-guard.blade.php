@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-burning-embers"></i> Chaos Operations</h3>
+                            <span class="card-title"><i class="ra ra-burning-embers"></i> Chaos Operations</span>
                         </div>
 
                         @if ($protectionService->isUnderProtection($selectedDominion))
@@ -30,9 +30,9 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <label for="target_dominion">Select a target</label>
-                                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <select name="target_dominion" id="target_dominion" class="form-select select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
                                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true, true) as $dominion)
                                                         @if ($guardMembershipService->isBlackGuardMember($dominion))
@@ -63,7 +63,7 @@
                                                 $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                             @endphp
                                             <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <button type="submit"
                                                             name="spell"
                                                             value="{{ $spell->key }}"
@@ -86,7 +86,7 @@
                                                 $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                             @endphp
                                             <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <button type="submit"
                                                             name="spell"
                                                             value="{{ $spell->key }}"
@@ -119,7 +119,7 @@
                                                 $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
                                             @endphp
                                             <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <button type="submit"
                                                             name="spell"
                                                             value="{{ $spell->key }}"
@@ -156,7 +156,7 @@
                                     <div class="row">
                                         @foreach ($espionageHelper->getWarOperations() as $operation)
                                             <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <button type="submit"
                                                             name="operation"
                                                             value="{{ $operation['key'] }}"
@@ -173,7 +173,7 @@
                                     <div class="row">
                                         @foreach ($espionageHelper->getBlackOperations() as $operation)
                                             <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <button type="submit"
                                                             name="operation"
                                                             value="{{ $operation['key'] }}"
@@ -261,7 +261,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>You can perform all war and black operations against other members of the Chaos League.</p>

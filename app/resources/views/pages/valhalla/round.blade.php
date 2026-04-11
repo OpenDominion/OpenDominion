@@ -3,7 +3,7 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title"><i class="ra ra-angel-wings"></i> Valhalla for {{ $round->name }}</h3>
+            <span class="card-title"><i class="ra ra-angel-wings"></i> Valhalla for {{ $round->name }}</span>
         </div>
         <div class="card-body">
             <div class="row">
@@ -106,7 +106,7 @@
                     <b>Overall Rankings</b>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row mb-3">
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-dominions']) }}">The Strongest Dominions</a><br>
@@ -130,7 +130,7 @@
                     <b>Extended Rankings</b>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row mb-3">
                 <div class="col-sm-6 text-center">
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-conquered']) }}">Largest Attacking Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-conquered']) }}">Largest Attacking Realms</a><br>
@@ -154,7 +154,7 @@
                     <b>Wonders of the World</b>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row mb-3">
                 <div class="col-sm-6 text-center">
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-wonder-damage']) }}">Most Wonder Damage</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-wonder-damage']) }}">Most Wonder Damage by Realm</a><br>
@@ -170,7 +170,7 @@
                     <b>Magic and Spy Rankings</b>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row mb-3">
                 <div class="col-sm-6 text-center">
                     <b>Spies</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-spy-mastery']) }}">Most Masterful Spies</a><br>
@@ -210,7 +210,7 @@
                     <b>Rankings by Race</b>
                 </div>
             </div>
-            <div class="row form-group">
+            <div class="row mb-3">
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
                     @foreach ($races as $key => $name)

@@ -5,8 +5,8 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Dominions - {{ $round->name }}</h3>
-            <select id="round-select" class="form-control float-end">
+            <span class="card-title">Dominions - {{ $round->name }}</span>
+            <select id="round-select" class="form-select float-end">
                 @foreach ($rounds as $roundOption)
                     <option value="{{ $roundOption->id }}" {{ $roundOption->id == $round->id ? 'selected' : null }}>
                         {{ $roundOption->name }}

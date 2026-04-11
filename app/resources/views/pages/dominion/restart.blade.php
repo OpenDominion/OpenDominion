@@ -8,15 +8,15 @@
         <div class="col-sm-12 col-md-6">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-undo"></i> Restart</h3>
+                    <span class="card-title"><i class="fa fa-undo"></i> Restart</span>
                 </div>
                 <form id="restart-dominion" class="form" action="{{ route('dominion.misc.restart') }}" method="post">
                     @csrf
                     <div class="card-body">
                         <p>You can restart your dominion at any time while still under protection.</p>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="form-label">Race:</label>
-                            <select name="race" class="form-control">
+                            <select name="race" class="form-select">
                                 @foreach ($races as $race)
                                     <option value="{{ $race->id }}" data-name="{{ strtolower(str_replace(' ', '', $race->name)) }}" {{ $selectedDominion->race_id == $race->id ? 'selected' : null }}>
                                         {{ $race->name }}
@@ -24,7 +24,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="form-label">Start Option:</label>
                             <div class="radio">
                                 <label>
@@ -56,16 +56,16 @@
         <div class="col-sm-12 col-md-6">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-edit"></i> Change Name</h3>
+                    <span class="card-title"><i class="fa fa-edit"></i> Change Name</span>
                 </div>
                 <form id="rename-dominion" class="form" action="{{ route('dominion.misc.rename') }}" method="post">
                     @csrf
                     <div class="card-body">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="form-label">Dominion Name:</label>
                             <input name="dominion_name" class="form-control" type="text" placeholder="{{ $selectedDominion->name }}" />
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="form-label">Ruler Name:</label>
                             <input name="ruler_name" class="form-control" type="text" placeholder="{{ $selectedDominion->ruler_name }}" />
                         </div>

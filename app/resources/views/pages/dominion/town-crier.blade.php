@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">
+                    <span class="card-title">
                         <i class="fa fa-newspaper-o"></i> Town Crier for
                         @if ($singleDominion !== null)
                             {{ $singleDominion->name }} (#{{ $singleDominion->realm->number }})
@@ -70,7 +70,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     @if ($fromOpCenter)
@@ -83,7 +83,7 @@
                         @if ($singleDominion == null)
                             <p>
                                 <label for="realm-select">Show Town Crier for:</label>
-                                <select id="realm-select" class="form-control">
+                                <select id="realm-select" class="form-select">
                                     <option value="">All Realms</option>
                                     @for ($i=0; $i<$realmCount; $i++)
                                         <option value="{{ $i }}" {{ $realm && $realm->number == $i ? 'selected' : null }}>
@@ -95,7 +95,7 @@
                         @endif
                     <p>
                         <label for="realm-select">Event Types:</label>
-                        <select id="event-select" class="form-control">
+                        <select id="event-select" class="form-select">
                             @foreach ($typeChoices as $typeChoice)
                                 <option value="{{ $typeChoice }}" {{ $type == $typeChoice ? 'selected' : null }}>
                                     {{ ucwords($typeChoice) }}

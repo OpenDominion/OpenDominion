@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">
+                    <span class="card-title">
                         <i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}
                         - Leaderboard
                     </h3>
@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <div class="col-md-9">
                                     {{ $objective->description }}
                                 </div>
@@ -34,7 +34,7 @@
                                 </div>
                             </div>
 
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="info-box">
                                         <span class="info-box-icon bg-blue"><i class="fa fa-trophy"></i></span>
@@ -134,7 +134,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Your Realm Performance</h3>
+                    <span class="card-title">Your Realm Performance</span>
                 </div>
                 <div class="card-body">
                     @php
@@ -156,7 +156,7 @@
             @if (!empty($topContributors))
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Top Contributors</h3>
+                        <span class="card-title">Top Contributors</span>
                     </div>
                     <div class="card-body">
                         <ol>

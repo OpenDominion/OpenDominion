@@ -3,7 +3,7 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title"><i class="ra ra-angel-wings"></i> Valhalla for {{ $league->description }}</h3>
+            <span class="card-title"><i class="ra ra-angel-wings"></i> Valhalla for {{ $league->description }}</span>
         </div>
         <div class="card-body">
 

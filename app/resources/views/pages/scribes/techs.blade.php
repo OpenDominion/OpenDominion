@@ -13,7 +13,7 @@
     @include('partials.scribes.nav')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Techs</h3>
+            <span class="card-title">Techs</span>
         </div>
         <div class="card-body">
             <div class="row">
@@ -40,7 +40,7 @@
     @if ($techVersion !== 1)
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Technological Advances</h3>
+                <span class="card-title">Technological Advances</span>
             </div>
             <div class="card-body table-responsive">
                 <div class="row">
@@ -60,7 +60,7 @@
     @endif
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Technological Advances</h3>
+            <span class="card-title">Technological Advances</span>
         </div>
         <div class="card-body table-responsive">
             <div class="row">

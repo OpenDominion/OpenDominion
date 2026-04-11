@@ -5,14 +5,14 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">
+            <span class="card-title">
                 {{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})
                 invaded
                 {{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})
                 at
                 <span>{{ $gameEvent->created_at }}</span>
             </h3>
-            <select id="realm-select" class="form-control float-end">
+            <select id="realm-select" class="form-select float-end">
                 <option value="">
                     All
                 </option>

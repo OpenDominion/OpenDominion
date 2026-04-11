@@ -8,7 +8,7 @@
         <div class="col-sm-12">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-globe"></i> The World</h3>
+                    <span class="card-title"><i class="fa fa-globe"></i> The World</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     <table class="table">

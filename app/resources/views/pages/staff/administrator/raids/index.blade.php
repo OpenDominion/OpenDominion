@@ -5,14 +5,14 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">
+            <span class="card-title">
                 Raids - {{ $round->name }}
             </h3>
             <div class="float-end">
                 <a href="{{ route('staff.administrator.raids.create', ['round' => $round->id]) }}" class="btn btn-success">
                     <i class="fa fa-plus"></i> Create New Raid
                 </a>
-                <select id="round-select" class="form-control" style="display: inline-block; width: auto; margin-left: 10px;">
+                <select id="round-select" class="form-select" style="display: inline-block; width: auto; margin-left: 10px;">
                     @foreach ($rounds as $roundOption)
                         <option value="{{ $roundOption->id }}" {{ $roundOption->id == $round->id ? 'selected' : null }}>
                             {{ $roundOption->name }}

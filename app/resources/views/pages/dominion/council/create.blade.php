@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-group"></i> Council: Create Thread</h3>
+                    <span class="card-title"><i class="fa fa-group"></i> Council: Create Thread</span>
                     <div class="float-end">
                         <a href="{{ route('dominion.council') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
@@ -18,7 +18,7 @@
                     <div class="card-body">
 
                         {{-- Title --}}
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="title" class="col-sm-3 control-label">Title</label>
                             <div class="col-sm-9">
                                 <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
@@ -26,7 +26,7 @@
                         </div>
 
                         {{-- Body --}}
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="body" class="col-sm-3 control-label">Body</label>
                             <div class="col-sm-9">
                                 <textarea name="body" id="body" cols="30" rows="10" class="form-control" placeholder="Body" required {{ $selectedDominion->isLocked() ? 'disabled' : null }}>{{ old('body') }}</textarea>
@@ -48,7 +48,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The council is where you can communicate with the rest of your realm. Only you and other dominions inside your realm can view and post here.</p>

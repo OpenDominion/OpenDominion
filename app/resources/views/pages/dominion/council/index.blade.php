@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-group"></i> Council: {{ $realm->name }} (#{{ number_format($realm->number) }})</h3>
+                    <span class="card-title"><i class="fa fa-group"></i> Council: {{ $realm->name }} (#{{ number_format($realm->number) }})</span>
                 </div>
                 <div class="card-body">
                     <table class="table table-hover">
@@ -112,7 +112,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The council is where you can communicate with the rest of your realm. Only you and other dominions inside your realm can view and post here.</p>

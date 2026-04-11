@@ -199,8 +199,8 @@
   // ── Layout ────────────────────────────────────────────────────────────────
   .app-wrapper                { background-color: var(--od-surface) !important; }
   .app-main                   { background-color: var(--od-content-bg); }
-  .app-content-header         { border-color: var(--od-text-body) !important; }
-  .app-content-header > .breadcrumb > li > a { color: var(--od-text-body); }
+  /*.app-content-header         { border-color: var(--od-text-body) !important; }*/
+  /*.app-content-header > .breadcrumb > li > a { color: var(--od-text-body); }*/
   .app-header                 { background-color: var(--od-header-bg) !important; }
   .app-header .navbar-brand   { color: #fff; }
   .app-header a               { color: var(--od-text-emphasis); }

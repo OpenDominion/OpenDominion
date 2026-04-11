@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">
+        <span class="card-title">
             <i class="ra ra-axe"></i>
             Military Power Mods
         </h3>

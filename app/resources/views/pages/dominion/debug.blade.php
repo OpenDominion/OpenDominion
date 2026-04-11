@@ -12,7 +12,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Networth Calculator</h3>
+                    <span class="card-title">Networth Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -24,7 +24,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Dominion</h3>
+                    <span class="card-title">Dominion</span>
                 </div>
                 <div class="card-body">
                     @php
@@ -42,7 +42,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Building Calculator</h3>
+                    <span class="card-title">Building Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -55,7 +55,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Land Calculator</h3>
+                    <span class="card-title">Land Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -71,7 +71,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Military Calculator</h3>
+                    <span class="card-title">Military Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -105,7 +105,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Casualties Calculator</h3>
+                    <span class="card-title">Casualties Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -119,7 +119,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Population Calculator</h3>
+                    <span class="card-title">Population Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -147,7 +147,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Production Calculator</h3>
+                    <span class="card-title">Production Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -193,7 +193,7 @@
 
             {{--<div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Banking Calculator</h3>
+                    <span class="card-title">Banking Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -206,7 +206,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Construction Calculator</h3>
+                    <span class="card-title">Construction Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -226,7 +226,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Exploration Calculator</h3>
+                    <span class="card-title">Exploration Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -241,7 +241,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Rezoning Calculator</h3>
+                    <span class="card-title">Rezoning Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -256,7 +256,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Training Calculator</h3>
+                    <span class="card-title">Training Calculator</span>
                 </div>
                 <div class="card-body">
                     <p>
@@ -272,7 +272,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Guard Membership Service</h3>
+                    <span class="card-title">Guard Membership Service</span>
                 </div>
                 <div class="card-body">
                     <p>

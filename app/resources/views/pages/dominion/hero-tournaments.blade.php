@@ -9,7 +9,7 @@
             @if ($tournaments->isEmpty())
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-trophy"></i> Hero Tournament</h3>
+                        <span class="card-title"><i class="fa fa-trophy"></i> Hero Tournament</span>
                     </div>
                     <div class="card-body table-responsive">
                         There is no tournament at the moment.
@@ -20,7 +20,7 @@
                 @if ($tournament->start_date && !$tournament->hasStarted())
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
+                            <span class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</span>
                         </div>
                         <div class="card-body">
                             <div class="alert alert-info">
@@ -53,14 +53,14 @@
                 @else
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</h3>
+                            <span class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</span>
                         </div>
                         <div class="card-body">
                             @if (!$tournament->finished && !$tournament->battles->where('finished', true)->isEmpty())
                                 @php $battle = $tournament->battles->where('finished', true)->sortByDesc('updated_at')->first(); @endphp
                                 <div class="panel panel-info">
                                     <div class="card-body">
-                                        <div class="form-group">
+                                        <div class="mb-3">
                                             <i class="fa fa-clock-o"></i> Most Recent Battle - {{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}
                                             <div class="float-end text-muted">{{ $battle->updated_at->diffForHumans() }}</div>
                                         </div>
@@ -144,7 +144,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     @include('partials.dominion.hero-combat')
@@ -153,7 +153,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Class-Based Abilities</h3>
+                    <span class="card-title">Class-Based Abilities</span>
                 </div>
                 <div class="card-body">
                     Each hero gains one ability based on their currently active class:

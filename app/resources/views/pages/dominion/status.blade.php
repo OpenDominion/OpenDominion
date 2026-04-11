@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</h3>
+                    <span class="card-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</span>
                 </div>
                 <div class="card-body no-padding">
                     @include('partials.dominion.info.status', ['data' => $infoMapper->mapStatus($selectedDominion, false), 'race' => $selectedDominion->race, ])
@@ -20,7 +20,7 @@
             @if ($protectionService->isUnderProtection($selectedDominion))
                 <div class="card border-warning">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-shield text-aqua"></i> Under Protection</h3>
+                        <span class="card-title"><i class="ra ra-shield text-aqua"></i> Under Protection</span>
                     </div>
                     <div class="card-body">
                         <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Restart or Rename</a></p>
@@ -41,7 +41,7 @@
             @else
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Information</h3>
+                        <span class="card-title">Information</span>
                     </div>
                     <div class="card-body">
                         <p>This section gives you a quick overview of your dominion.</p>
@@ -100,7 +100,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-newspaper-o"></i> Recent News</h3>
+                    <span class="card-title"><i class="fa fa-newspaper-o"></i> Recent News</span>
                 </div>
 
                 @if ($notifications->isEmpty())
@@ -154,7 +154,7 @@
             <div class="col-sm-12 col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Pack</h3>
+                        <span class="card-title">Pack</span>
                     </div>
                     <div class="card-body">
                         <p>You are a member of <b>{{ $selectedDominion->pack->name }}</b> ({{ $selectedDominion->pack->password }}) with:</p>
@@ -202,15 +202,15 @@
             <div class="col-sm-12 col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Join a Pack</h3>
+                        <span class="card-title">Join a Pack</span>
                     </div>
                     <form action="{{ route('dominion.misc.join-pack') }}" method="post">
                         @csrf
                         <div class="card-body">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <input type="text" name="pack_name" id="pack_name" class="form-control" placeholder="Pack Name" required>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <input type="text" name="pack_password" id="pack_password" class="form-control" placeholder="Pack Password" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Join</button>

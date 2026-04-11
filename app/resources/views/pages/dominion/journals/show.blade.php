@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-scroll-quill"></i> Journal</h3>
+                    <span class="card-title"><i class="ra ra-scroll-quill"></i> Journal</span>
                 </div>
                 @if ($selectedJournal !== null)
                     <form action="{{ route('dominion.journal.update', $selectedJournal->id) }}" method="post" class="form" role="form">
@@ -40,7 +40,7 @@
             @foreach ($journals as $journal)
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">
+                        <span class="card-title">
                             Day {{ $journal->daysInRound() }}, Hour {{ $journal->hoursInDay() }}
                         </h3>
                         <div class="card-tools float-end">
@@ -59,7 +59,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Previous Entries</h3>
+                    <span class="card-title">Previous Entries</span>
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-stacked">

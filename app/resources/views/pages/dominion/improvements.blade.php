@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-arrow-up fa-fw"></i> Improvements</h3>
+                    <span class="card-title"><i class="fa fa-arrow-up fa-fw"></i> Improvements</span>
                 </div>
                 <form action="{{ route('dominion.improvements') }}" method="post" role="form">
                     @csrf
@@ -73,7 +73,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="float-end">
-                            <select name="resource" class="form-control">
+                            <select name="resource" class="form-select">
                                 <option value="platinum" data-amount="{{ $selectedDominion->resource_platinum }}" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
                                 <option value="lumber" data-amount="{{ $selectedDominion->resource_lumber }}" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
                                 <option value="ore" data-amount="{{ $selectedDominion->resource_ore }}" {{ $selectedResource  === 'ore' ? 'selected' : ''}}>Ore</option>
@@ -94,7 +94,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Invest resources in your castle to improve certain parts of your dominion. Improving processes <b>instantly</b>.</p>
@@ -112,7 +112,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Settings</h3>
+                    <span class="card-title">Settings</span>
                 </div>
                 <form action="{{ route('dominion.improvements.resource') }}" method="post" role="form">
                     @csrf
@@ -126,7 +126,7 @@
                                 <tr>
                                     <td class="text-center">Preferred resource:</td>
                                     <td class="text-center">
-                                        <select name="preferredresource" class="form-control">
+                                        <select name="preferredresource" class="form-select">
                                             <option value="platinum" {{ $preferredResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
                                             <option value="lumber" {{ $preferredResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
                                             <option value="ore" {{ $preferredResource  === 'ore' ? 'selected' : ''}}>Ore</option>

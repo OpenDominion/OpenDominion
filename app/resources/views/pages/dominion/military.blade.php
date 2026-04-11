@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-sword"></i> Military</h3>
+                    <span class="card-title"><i class="ra ra-sword"></i> Military</span>
                 </div>
                 <form action="{{ route('dominion.military.train') }}" method="post" role="form">
                     @csrf
@@ -120,7 +120,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                     <a href="{{ route('dominion.advisors.military') }}" class="float-end">Military Advisor</a>
                 </div>
                 <div class="card-body">
@@ -132,7 +132,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Draft Rate</h3>
+                    <span class="card-title">Draft Rate</span>
                 </div>
                 <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
                     @csrf
@@ -183,7 +183,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-sword"></i> Units in training and home</h3>
+                    <span class="card-title"><i class="ra ra-sword"></i> Units in training and home</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.military-training-table', ['data' => $infoMapper->mapMilitary($selectedDominion, false), 'isOp' => false, 'race' => $selectedDominion->race ])
@@ -194,7 +194,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Units returning from battle</h3>
+                    <span class="card-title"><i class="fa fa-clock-o"></i> Units returning from battle</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.military-returning-table', ['data' => $infoMapper->mapMilitary($selectedDominion, false), 'isOp' => false, 'race' => $selectedDominion->race ])
@@ -202,7 +202,7 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Resources returning from battle</h3>
+                    <span class="card-title"><i class="fa fa-clock-o"></i> Resources returning from battle</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.resources-incoming-table', ['data' => $infoMapper->mapResources($selectedDominion)])
@@ -210,7 +210,7 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</h3>
+                    <span class="card-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</span>
                 </div>
                 <div class="card-body table-responsive no-padding">
                     @include('partials.dominion.info.land-incoming-table', ['data' => $infoMapper->mapLand($selectedDominion), 'race' => $selectedDominion->race])

@@ -10,7 +10,7 @@
                 @csrf
                 <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="ra ra-wooden-sign"></i> Message Board: Change Avatar</h3>
+                        <span class="card-title"><i class="ra ra-wooden-sign"></i> Message Board: Change Avatar</span>
                         <div class="float-end">
                             <a href="{{ route('message-board') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                         </div>

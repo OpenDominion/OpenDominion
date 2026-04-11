@@ -52,7 +52,7 @@
 
                         <div class="card card-outline card-primary">
                             <div class="card-header">
-                                <h3 class="card-title">Status 503: Service Unavailable</h3>
+                                <span class="card-title">Status 503: Service Unavailable</span>
                             </div>
                             <div class="card-body">
                                 <p>

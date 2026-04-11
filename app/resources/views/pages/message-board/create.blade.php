@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-wooden-sign"></i> Message Board: Create Thread</h3>
+                    <span class="card-title"><i class="ra ra-wooden-sign"></i> Message Board: Create Thread</span>
                     <div class="float-end">
                         <a href="{{ route('message-board') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
@@ -18,10 +18,10 @@
                     <div class="card-body">
 
                         {{-- Title --}}
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="category" class="col-sm-3 control-label">Category</label>
                             <div class="col-sm-9">
-                                <select name="category" id="category" class="form-control">
+                                <select name="category" id="category" class="form-select">
                                     @foreach ($categories as $category)
                                         @if ($category->role_required == null || $user->hasRole($category->role_required))
                                             <option value="{{ $category->id }}" {{ $category->id == $selectedCategory ? 'selected' : null }}>
@@ -34,7 +34,7 @@
                         </div>
 
                         {{-- Title --}}
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="title" class="col-sm-3 control-label">Title</label>
                             <div class="col-sm-9">
                                 <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus>
@@ -42,7 +42,7 @@
                         </div>
 
                         {{-- Body --}}
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="body" class="col-sm-3 control-label">Body</label>
                             <div class="col-sm-9">
                                 <textarea name="body" id="body" cols="30" rows="10" class="form-control" placeholder="Body" required>{{ old('body') }}</textarea>
@@ -66,7 +66,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>

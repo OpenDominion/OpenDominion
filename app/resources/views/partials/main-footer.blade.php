@@ -42,7 +42,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="type" class="form-label">Type:</label>
-                        <select name="type" class="form-control" id="type">
+                        <select name="type" class="form-select" id="type">
                             <option value="bug">Bug Report</option>
                             <option value="abuse">Cheating/Abuse</option>
                         </select>

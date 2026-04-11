@@ -1,6 +1,6 @@
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">{{ $race->name }}</h3>
+            <span class="card-title">{{ $race->name }}</span>
         </div>
         <div class="card-body">
             <div class="row">

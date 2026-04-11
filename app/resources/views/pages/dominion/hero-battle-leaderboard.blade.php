@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-trophy"></i> Leaderboard</h3>
+                    <span class="card-title"><i class="ra ra-trophy"></i> Leaderboard</span>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-striped">
@@ -38,7 +38,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     @include('partials.dominion.hero-combat')

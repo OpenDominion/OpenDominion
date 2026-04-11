@@ -4,7 +4,7 @@
     @include('partials.scribes.nav')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Races</h3>
+            <span class="card-title">Races</span>
         </div>
         <div class="card-body">
             <div class="row">
@@ -32,7 +32,7 @@
     <div class="card">
         <div class="card-body no-padding">
             <div class="row">
-                <div class="col-md-12 col-md-6">
+                <div class="col-sm-12 col-md-6">
                     <div class="card-header">
                         <h4 class="card-title">Good Alignment</h4>
                     </div>
@@ -48,7 +48,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-12 col-md-6">
+                <div class="col-sm-12 col-md-6">
                     <div class="card-header">
                         <h4 class="card-title">Evil Alignment</h4>
                     </div>

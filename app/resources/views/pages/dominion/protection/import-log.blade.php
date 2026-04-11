@@ -8,12 +8,12 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-robot-arm"></i> Automate Protection</h3>
+                    <span class="card-title"><i class="ra ra-robot-arm"></i> Automate Protection</span>
                 </div>
                 <form id="import-log" class="form" action="{{ route('dominion.protection.import-log') }}" method="post">
                     @csrf
                     <div class="card-body">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="form-label">Log (from Excel Simulator):</label>
                             <textarea name="log" class="form-control" rows="20">{{ old('log') }}</textarea>
                         </div>
@@ -28,7 +28,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>You can attempt to import a log from an Excel sim.</p>

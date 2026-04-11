@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-robot-arm"></i> Automated Actions</h3>
+                    <span class="card-title"><i class="ra ra-robot-arm"></i> Automated Actions</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -113,9 +113,9 @@
                             <h4>Add Action</h4>
                             <form action="{{ route('dominion.bonuses.actions') }}" method="post" role="form">
                                 @csrf
-                                <div class="form-group">
+                                <div class="mb-3">
                                     Tick:
-                                    <select class="form-control" name="tick" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <select class="form-select" name="tick" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @foreach (range(1, 12) as $hours)
                                             <option value="{{ $currentTick + $hours }}" {{ (($currentTick + $hours) == old('tick')) ? 'selected' : null }}>
                                                 Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours)) }},
@@ -125,9 +125,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="mb-3">
                                     Action:
-                                    <select class="form-control" name="action" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <select class="form-select" name="action" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option value="train">Train Military</option>
                                         <option value="construct">Construct Buildings</option>
                                         <option value="explore">Explore Land</option>
@@ -138,9 +138,9 @@
                                         <option value="daily_bonus">Daily Bonus</option>
                                     </select>
                                 </div>
-                                <div class="form-group action-options train">
+                                <div class="mb-3 action-options train">
                                     Unit:
-                                    <select class="form-control" name="key" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <select class="form-select" name="key" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option></option>
                                         @foreach ($unitTypes as $unitType)
                                             <option value="{{ $unitType }}">
@@ -149,9 +149,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options construct" style="display: none;">
+                                <div class="mb-3 action-options construct" style="display: none;">
                                     Building:
-                                    <select class="form-control" name="key" disabled>
+                                    <select class="form-select" name="key" disabled>
                                         <option></option>
                                         @foreach ($buildings as $building)
                                             <option value="{{ $building }}">
@@ -160,9 +160,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options explore rezone" style="display: none;">
+                                <div class="mb-3 action-options explore rezone" style="display: none;">
                                     Land Type:
-                                    <select class="form-control" name="key" disabled>
+                                    <select class="form-select" name="key" disabled>
                                         <option></option>
                                         @foreach ($landTypes as $landType)
                                             <option value="{{ $landType }}">
@@ -171,9 +171,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options rezone" style="display: none;">
+                                <div class="mb-3 action-options rezone" style="display: none;">
                                     Target Land Type:
-                                    <select class="form-control" name="key2" disabled>
+                                    <select class="form-select" name="key2" disabled>
                                         <option></option>
                                         @foreach ($landTypes as $landType)
                                             <option value="{{ $landType }}">
@@ -182,13 +182,13 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options train construct explore rezone release draft_rate">
+                                <div class="mb-3 action-options train construct explore rezone release draft_rate">
                                     Amount:
                                     <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
                                 </div>
-                                <div class="form-group action-options spell" style="display: none;">
+                                <div class="mb-3 action-options spell" style="display: none;">
                                     Spell:
-                                    <select class="form-control" name="key" disabled>
+                                    <select class="form-select" name="key" disabled>
                                         <option></option>
                                         @foreach ($spells as $spell)
                                             <option value="{{ $spell->key }}">
@@ -197,9 +197,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group action-options daily_bonus" style="display: none;">
+                                <div class="mb-3 action-options daily_bonus" style="display: none;">
                                     Bonus:
-                                    <select class="form-control" name="key" disabled>
+                                    <select class="form-select" name="key" disabled>
                                         <option></option>
                                         <option value="land">Land</option>
                                         <option value="platinum">Platinum</option>
@@ -218,7 +218,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>You can schedule {{ $allowedActions }} automations per day, which reset with your daily bonuses.</p>

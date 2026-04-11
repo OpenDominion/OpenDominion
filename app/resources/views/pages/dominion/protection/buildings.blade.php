@@ -10,7 +10,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-home"></i> Select Starting Buildings</h3>
+                    <span class="card-title"><i class="fa fa-home"></i> Select Starting Buildings</span>
                 </div>
                 <form action="{{ route('dominion.protection.buildings') }}" method="post" role="form">
                     @csrf
@@ -109,7 +109,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>You can choose to start with whichever buildings you want.</p>

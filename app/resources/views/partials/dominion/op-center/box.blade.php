@@ -1,6 +1,6 @@
 <div class="card card-outline card-primary">
     <div class="card-header">
-        <h3 class="card-title">
+        <span class="card-title">
             <i class="{{ $titleIconClass }}"></i> {{ $title }}
         </h3>
 

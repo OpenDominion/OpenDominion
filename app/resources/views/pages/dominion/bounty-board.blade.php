@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-hanging-sign"></i> Bounty Board</h3>
+                    <span class="card-title"><i class="ra ra-hanging-sign"></i> Bounty Board</span>
                 </div>
                 <div class="card-body table-responsive">
                     @include('partials.dominion.bounty.info-table', [
@@ -19,7 +19,7 @@
 
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-hanging-sign"></i> Recently Bountied</h3>
+                    <span class="card-title"><i class="ra ra-hanging-sign"></i> Recently Bountied</span>
                 </div>
                 <div class="card-body table-responsive">
                     @include('partials.dominion.bounty.info-table', [
@@ -35,7 +35,7 @@
                 <div class="col-sm-12 col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Information</h3>
+                            <span class="card-title">Information</span>
                         </div>
                         <div class="card-body">
                             <p>Info ops that you have requested to be collected by your realmies appear here.</p>

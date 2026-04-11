@@ -11,7 +11,7 @@
                 <div class="col-md-12">
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
+                            <span class="card-title"><i class="ra ra-burning-embers"></i> Offensive Spells</span>
                         </div>
 
                         @php
@@ -43,9 +43,9 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <label for="target_dominion">Select a target</label>
-                                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <select name="target_dominion" id="target_dominion" class="form-select select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
                                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true, $includeFriendly) as $dominion)
                                                         @if ($selectedDominion->realm_id !== $dominion->realm_id || $courtMember || ($isBlackGuard && $guardMembershipService->isBlackGuardMember($dominion)))
@@ -80,7 +80,7 @@
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                    <div class="form-group">
+                                                    <div class="mb-3">
                                                         <button type="submit" name="spell" value="{{ $spell->key }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
                                                             {{ $spell->name }}
                                                         </button>
@@ -111,7 +111,7 @@
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                    <div class="form-group">
+                                                    <div class="mb-3">
                                                         <button type="submit"
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
@@ -146,7 +146,7 @@
                                                     $canCast = $spellCalculator->canCast($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                    <div class="form-group war-non-chaos">
+                                                    <div class="mb-3 war-non-chaos">
                                                         <button type="submit"
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
@@ -170,7 +170,7 @@
                                                         </small>
                                                     </div>
                                                     @if ($isBlackGuard)
-                                                        <div class="form-group war-chaos" style="display: none;">
+                                                        <div class="mb-3 war-chaos" style="display: none;">
                                                             <button type="submit"
                                                                     name="spell"
                                                                     value="{{ $spell->key }}"
@@ -213,7 +213,7 @@
                                                     $cooldownHours = $spellCalculator->getSpellCooldown($selectedDominion, $spell);
                                                 @endphp
                                                 <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                    <div class="form-group">
+                                                    <div class="mb-3">
                                                         <button type="submit"
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
@@ -247,7 +247,7 @@
                 <div class="col-md-12">
                     <div class="card card-outline card-primary">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
+                            <span class="card-title"><i class="ra ra-fairy-wand"></i> Self Spells</span>
                         </div>
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
                             @csrf
@@ -263,7 +263,7 @@
                                                     $isActive = $selectedDominion->spells->contains($spell);
                                                     $buttonStyle = ($isActive ? 'btn-success' : 'btn-primary');
                                                 @endphp
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <button type="submit" name="spell" value="{{ $spell->key }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast || $cooldownHours || ($selectedDominion->protection_ticks_remaining && $spell->hasPerk('invalid_protection')) || (!$isBlackGuard && in_array('chaos-league', $spell->races)) ? 'disabled' : null }}>
                                                         {{ $spell->name }}
                                                     </button>
@@ -302,7 +302,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                     <a href="{{ route('dominion.advisors.magic') }}" class="float-end">Magic Advisor</a>
                 </div>
                 <div class="card-body">
@@ -320,10 +320,10 @@
     </div>
     <div class="row">
 
-        <div class="col-md-12 col-md-9">
+        <div class="col-sm-12 col-md-9">
         <div class="card card-outline card-primary">
             <div class="card-header">
-                <h3 class="card-title"><i class="ra ra-burning-embers"></i> Spells affecting your dominion</h3>
+                <span class="card-title"><i class="ra ra-burning-embers"></i> Spells affecting your dominion</span>
             </div>
             <div class="card-body table-responsive no-padding">
                 <table class="table table-hover">

@@ -5,7 +5,7 @@
 @section('content')
     <div class="card border-danger">
         <div class="card-header">
-            <h3 class="card-title">Confirm Deletion</h3>
+            <span class="card-title">Confirm Deletion</span>
         </div>
         <div class="card-body">
             <p class="lead">Are you sure you want to delete this objective?</p>

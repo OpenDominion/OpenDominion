@@ -9,10 +9,10 @@
 
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title"><i class="ra ra-angel-wings"></i> Valhalla</h3>
+            <span class="card-title"><i class="ra ra-angel-wings"></i> Valhalla</span>
             <div class="float-end">
                 <form method="GET" action="{{ route('valhalla.user.search') }}" class="form-inline" style="white-space: nowrap;">
-                    <div class="form-group form-group-sm">
+                    <div class="mb-3 mb-3-sm">
                         <input type="text" class="form-control form-control-sm" name="query" placeholder="Username" />
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm">Search</button>

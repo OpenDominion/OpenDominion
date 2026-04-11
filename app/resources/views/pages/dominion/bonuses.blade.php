@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-plus"></i> Daily bonuses</h3>
+                    <span class="card-title"><i class="fa fa-plus"></i> Daily bonuses</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -80,7 +80,7 @@
             @if (!$selectedDominion->protection_finished || !$selectedDominion->round->hasStarted())
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-history"></i> Protection History</h3>
+                        <span class="card-title"><i class="fa fa-history"></i> Protection History</span>
                     </div>
                     <div class="card-body table-responsive">
                         @foreach ($log as $line)
@@ -94,7 +94,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>The Platinum Bonus instantly gives you 4 platinum per peasant (currently {{ number_format($selectedDominion->peasants * 4) }}) and 350 research points.</p>

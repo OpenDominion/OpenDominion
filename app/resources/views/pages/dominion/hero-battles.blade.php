@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-axe"></i> Active Battles</h3>
+                    <span class="card-title"><i class="ra ra-axe"></i> Active Battles</span>
                 </div>
                 <div class="card-body">
                     @php $playerCombatant = null; @endphp
@@ -104,7 +104,7 @@
                                                     @endif
                                                 </div>
                                             @else
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <div class="col-sm-6">
                                                         <label class="form-label">
                                                             Actions in queue
@@ -149,19 +149,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <div class="col-sm-12">
                                                         <label class="form-label">
                                                             Strategy <small>(for turns taken while offline)</small>
                                                         </label>
-                                                        <select name="strategy" class="form-control">
+                                                        <select name="strategy" class="form-select">
                                                             @foreach ($heroHelper->getCombatStrategies()->where('type', 'basic') as $key => $strategy)
                                                                 <option value="{{ $key }}" {{ $playerCombatant->strategy == $key ? 'selected' : null }}>{{ $strategy['name'] }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <div class="col-sm-9">
                                                         <div class="checkbox">
                                                             <label>
@@ -207,7 +207,7 @@
 
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-axe"></i> Previous Battles</h3>
+                    <span class="card-title"><i class="ra ra-axe"></i> Previous Battles</span>
                     <div class="float-end">
                         <a href="{{ route('dominion.heroes.battles.leaderboard') }}">View Leaderboard</a>
                     </div>
@@ -254,7 +254,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     @include('partials.dominion.hero-combat')
@@ -277,7 +277,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Class-Based Abilities</h3>
+                    <span class="card-title">Class-Based Abilities</span>
                 </div>
                 <div class="card-body">
                     Each hero gains one ability based on their currently active class:

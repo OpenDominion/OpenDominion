@@ -3,7 +3,7 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Achievements</h3>
+            <span class="card-title">Achievements</span>
         </div>
 
         <div class="card-body">
@@ -28,7 +28,7 @@
 
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">Lifetime Ranking</h3>
+            <span class="card-title">Lifetime Ranking</span>
         </div>
         @if (!$dominions->isEmpty())
             <div class="card-body table-responsive">

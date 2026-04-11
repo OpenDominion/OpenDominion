@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card border-danger">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="ra ra-demolish"></i> Destroy Buildings</h3>
+                    <span class="card-title"><i class="ra ra-demolish"></i> Destroy Buildings</span>
                 </div>
                 <form action="{{ route('dominion.destroy') }}" method="post" role="form">
                     @csrf
@@ -49,7 +49,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p><b>Warning</b>: You are about to destroy buildings to reclaim barren land.</p>

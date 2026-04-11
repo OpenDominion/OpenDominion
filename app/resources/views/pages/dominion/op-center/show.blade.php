@@ -178,7 +178,7 @@
                 <div class="col-sm-12 col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Information</h3>
+                            <span class="card-title">Information</span>
                         </div>
                         <div class="card-body">
                             @if (!$inRealm)
@@ -922,7 +922,7 @@
         <div class="col-sm-12 col-md-12">
             <div class="card card-outline card-primary">
                 <div class="card-header" id="recent-invasions">
-                    <h3 class="card-title"><i class="ra ra-crossed-swords"></i> Recent Invasions</h3>
+                    <span class="card-title"><i class="ra ra-crossed-swords"></i> Recent Invasions</span>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table">

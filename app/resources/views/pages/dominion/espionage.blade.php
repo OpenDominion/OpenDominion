@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-outline card-primary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-user-secret"></i> Offensive Operations</h3>
+                    <span class="card-title"><i class="fa fa-user-secret"></i> Offensive Operations</span>
                 </div>
 
                 @if ($protectionService->isUnderProtection($selectedDominion))
@@ -33,9 +33,9 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <label for="target_dominion">Select a target</label>
-                                        <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                        <select name="target_dominion" id="target_dominion" class="form-select select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             <option></option>
                                             @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true) as $dominion)
                                                 <option value="{{ $dominion->id }}"
@@ -64,7 +64,7 @@
                                 <div class="row">
                                     @foreach ($operations as $operation)
                                         <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <button type="submit" name="operation" value="{{ $operation['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
@@ -85,7 +85,7 @@
                                 <div class="row">
                                     @foreach ($operations as $operation)
                                         <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <button type="submit"
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
@@ -110,7 +110,7 @@
                                 <div class="row">
                                     @foreach ($operations as $operation)
                                         <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <button type="submit"
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
@@ -135,7 +135,7 @@
                                 <div class="row">
                                     @foreach ($operations as $operation)
                                         <div class="col-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                            <div class="form-group">
+                                            <div class="mb-3">
                                                 <button type="submit"
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
@@ -159,7 +159,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Information</h3>
+                    <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
                     <p>Here you can perform espionage operations on hostile dominions to gain important information for you and your realmies.</p>
