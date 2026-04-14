@@ -94,11 +94,9 @@
                                         <td class="text-center">
                                             <div class="input-group">
                                                 <input type="number" name="train[military_{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $trainingCalculator->getMaxTrainable($selectedDominion)[$unitType] }}" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-primary train-max" data-type="military_{{ $unitType }}" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                        Max
-                                                    </button>
-                                                </span>
+                                                <button class="btn btn-primary train-max" data-type="military_{{ $unitType }}" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                    Max
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

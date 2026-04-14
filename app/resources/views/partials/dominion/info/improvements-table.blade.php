@@ -1,3 +1,4 @@
+<div class="table-responsive">
 <table class="table">
     <colgroup>
         <col width="150">
@@ -47,3 +48,4 @@
             </td>
     </tbody>
 </table>
+</div>

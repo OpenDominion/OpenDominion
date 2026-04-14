@@ -43,6 +43,11 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
   }
 }
 
+.table-responsive td,
+.table-responsive th {
+  white-space: nowrap;
+}
+
 .app-header {
   line-height: 2;
 }
@@ -108,6 +113,14 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
 }
 
 .form-control {
+  min-width: 80px;
+}
+
+.input-group {
+  flex-wrap: nowrap;
+}
+
+.input-group > .form-control {
   min-width: 80px;
 }
 

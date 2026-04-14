@@ -50,11 +50,9 @@
                                         <td class="text-center">
                                             <div class="input-group">
                                                 <input type="number" name="improve[{{ $improvementType }}]" data-type="{{ $improvementType }}" class="form-control text-center" placeholder="0" min="0" value="{{ old('improve.' . $improvementType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-primary improve-max" data-type="{{ $improvementType }}" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                        Max
-                                                    </button>
-                                                </span>
+                                                <button class="btn btn-primary improve-max" data-type="{{ $improvementType }}" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                    Max
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
