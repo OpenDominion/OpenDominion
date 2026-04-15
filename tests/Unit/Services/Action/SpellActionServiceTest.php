@@ -39,7 +39,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $user = $this->createAndImpersonateUser();
-        $this->round = $this->createRound('-3 days midnight');
+        $this->round = $this->createRound('-4 days midnight');
 
         $this->dominion = $this->createDominionWithLegacyStats($user, $this->round, Race::where('name', 'Dark Elf')->firstOrFail());
         $this->dominion->land_plain = 8000;
