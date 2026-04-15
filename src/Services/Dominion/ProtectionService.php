@@ -50,7 +50,7 @@ class ProtectionService
             return 0;
         }
 
-        $diffInHours = $dominion->round->start_date->diffInHours($now, absolute: true);
+        $diffInHours = (int) $now->diffInHours($dominion->round->start_date);
 
         $minutes = (int)$now->format('i');
         $seconds = (int)$now->format('s');

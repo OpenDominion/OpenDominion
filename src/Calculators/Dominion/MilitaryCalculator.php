@@ -1309,7 +1309,7 @@ class MilitaryCalculator
             return null;
         }
 
-        return (int) now()->endOfHour()->diffInHours($mostRecentInvasion, absolute: true);
+        return (int) now()->endOfHour()->diffInHours($mostRecentInvasion);
     }
 
     /**

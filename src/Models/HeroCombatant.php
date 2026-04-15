@@ -80,7 +80,7 @@ class HeroCombatant extends AbstractModel
         }
 
         $lastProcessedAt = $this->battle->last_processed_at ?? $this->created_at;
-        return $lastProcessedAt->diffInSeconds(now());
+        return (int) $lastProcessedAt->diffInSeconds(now());
     }
 
     public function timeLeft()

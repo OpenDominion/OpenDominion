@@ -62,7 +62,7 @@
                                             $hoursUntilReset = $selectedDominion->protection_ticks_remaining;
                                         }
                                     } elseif ($selectedDominion->round->start_date->addHours(24) > now()) {
-                                        $hoursUntilReset = $selectedDominion->round->start_date->addHours(24)->diffInHours(now()->startOfHour());
+                                        $hoursUntilReset = (int) $selectedDominion->round->start_date->addHours(24)->diffInHours(now()->startOfHour());
                                     } else {
                                         $hoursUntilReset = $selectedDominion->round->start_date->hour - now()->hour;
                                     }

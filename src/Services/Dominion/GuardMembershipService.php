@@ -28,7 +28,7 @@ class GuardMembershipService
     public function canJoinGuards(Dominion $dominion): bool
     {
         /** @noinspection IfReturnReturnSimplificationInspection */
-        if ($dominion->round->hasEnded() || !$dominion->round->hasStarted() || now()->diffInHours($dominion->round->start_date, absolute: true) < self::GUARD_HOURS_AFTER_ROUND_START) {
+        if ($dominion->round->hasEnded() || !$dominion->round->hasStarted() || now()->diffInHours($dominion->round->start_date) < self::GUARD_HOURS_AFTER_ROUND_START) {
             return false;
         }
 
@@ -171,7 +171,7 @@ class GuardMembershipService
             return 0;
         }
 
-        return (int) $dominion->royal_guard_active_at->diffInHours(now()->startOfHour(), absolute: true);
+        return (int) $dominion->royal_guard_active_at->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -186,7 +186,7 @@ class GuardMembershipService
             return 0;
         }
 
-        return (int) $dominion->elite_guard_active_at->diffInHours(now()->startOfHour(), absolute: true);
+        return (int) $dominion->elite_guard_active_at->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -201,7 +201,7 @@ class GuardMembershipService
             return 0;
         }
 
-        return (int) $dominion->black_guard_active_at->diffInHours(now()->startOfHour(), absolute: true);
+        return (int) $dominion->black_guard_active_at->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -219,7 +219,7 @@ class GuardMembershipService
         $leaveDate = $dominion->royal_guard_active_at->copy()->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
-            return (int) $leaveDate->diffInHours(now()->startOfHour(), absolute: true);
+            return (int) $leaveDate->diffInHours(now()->startOfHour());
         }
 
         return 0;
@@ -240,7 +240,7 @@ class GuardMembershipService
         $leaveDate = $dominion->elite_guard_active_at->copy()->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
-            return (int) $leaveDate->diffInHours(now()->startOfHour(), absolute: true);
+            return (int) $leaveDate->diffInHours(now()->startOfHour());
         }
 
         return 0;
@@ -261,7 +261,7 @@ class GuardMembershipService
         $leaveDate = $dominion->black_guard_active_at->copy()->addHours(self::BLACK_GUARD_LEAVE_WAIT_IN_HOURS);
 
         if ($leaveDate > now()->startOfHour()) {
-            return (int) $leaveDate->diffInHours(now()->startOfHour(), absolute: true);
+            return (int) $leaveDate->diffInHours(now()->startOfHour());
         }
 
         return 0;
@@ -282,7 +282,7 @@ class GuardMembershipService
         $leaveDate = $dominion->black_guard_inactive_at;
 
         if ($leaveDate > now()->startOfHour()) {
-            return (int) $leaveDate->diffInHours(now()->startOfHour(), absolute: true);
+            return (int) $leaveDate->diffInHours(now()->startOfHour());
         }
 
         return 0;

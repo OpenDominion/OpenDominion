@@ -290,7 +290,7 @@ class Round extends AbstractModel
             return false;
         }
 
-        return now()->diffInHours($this->end_date, absolute: true) < 15;
+        return $this->end_date->diffInHours(now()) < 15;
     }
 
     /**
@@ -320,7 +320,7 @@ class Round extends AbstractModel
      */
     public function daysUntilEnd()
     {
-        return now()->diffInDays($this->end_date);
+        return (int) now()->diffInDays($this->end_date);
     }
 
     /**
@@ -380,7 +380,7 @@ class Round extends AbstractModel
      */
     public function durationInDays()
     {
-        return $this->start_date->diffInDays($this->end_date);
+        return (int) $this->start_date->diffInDays($this->end_date);
     }
 
     /**
@@ -408,7 +408,7 @@ class Round extends AbstractModel
         );
 
         if ($this->isActive()) {
-            $hours = (int) now()->startOfHour()->diffInHours($date->startOfHour(), absolute: true);
+            $hours = (int) now()->startOfHour()->diffInHours($date->startOfHour());
             $tooltip .= sprintf(
                 '<br>(%s %s ago)',
                 $hours,

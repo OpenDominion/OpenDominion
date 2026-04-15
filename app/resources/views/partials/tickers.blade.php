@@ -6,7 +6,7 @@
     if ($selectedDominion) {
         $roundStart = $selectedDominion->round->start_date;
         if ($roundStart > Carbon::now()) {
-            $secondsUntilStart = $roundStart->diffInSeconds(Carbon::now());
+            $secondsUntilStart = (int) $roundStart->diffInSeconds(Carbon::now());
         }
     }
 @endphp
