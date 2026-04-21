@@ -82,7 +82,7 @@
                                                     No heroes in your realm have wounded Dreadsoul yet. He will enter your battle at full strength.
                                                 @else
                                                     <strong>{{ $priorWins }}</strong> {{ $priorWins === 1 ? 'hero has' : 'heroes have' }} already wounded Dreadsoul in your realm.
-                                                    He will enter your battle at <strong>{{ max(100 - ($priorWins * 6), 50) }}% hp</strong>.
+                                                    He will enter your battle at <strong>{{ max(100 - ($priorWins * 2), 50) }}% health</strong>.
                                                 @endif
                                                 <br/>
                                                 <small class="text-muted">
