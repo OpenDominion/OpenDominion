@@ -68,6 +68,30 @@
                                         </td>
                                     </tr>
                                 @endif
+                                @if (($tactic->attributes['encounter'] ?? null) === 'dreadsoul_skullkeeper')
+                                    @php
+                                        $priorWins = \OpenDominion\Models\RaidContribution::where('raid_tactic_id', $tactic->id)
+                                            ->where('realm_id', $selectedDominion->realm_id)
+                                            ->count();
+                                    @endphp
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="alert alert-info" style="margin-bottom: 0;">
+                                                <strong><i class="fa fa-shield"></i> Realm Wounds</strong><br>
+                                                @if ($priorWins === 0)
+                                                    No heroes in your realm have wounded Dreadsoul yet. He will enter your battle at full strength.
+                                                @else
+                                                    <strong>{{ $priorWins }}</strong> {{ $priorWins === 1 ? 'hero has' : 'heroes have' }} already wounded Dreadsoul in your realm.
+                                                    He will enter your battle at <strong>{{ max(100 - ($priorWins * 10), 50) }}% strength</strong>.
+                                                @endif
+                                                <br/>
+                                                <small class="text-muted">
+                                                    Dreadsoul's guards will throw themselves at you. Beware — when they fall, their strength flows into him.
+                                                </small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                             @if ($tactics->count() > 1)
                                 <tr>

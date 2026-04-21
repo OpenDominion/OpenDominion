@@ -236,6 +236,10 @@ class RaidActionService
                 ]);
             }
 
+            if ($encounterKey == 'dreadsoul_skullkeeper' && $enemy['key'] == 'dreadsoul' && $priorWins > 0) {
+                $enemyStats['current_health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
+            }
+
             $heroBattleService->createNonPlayerCombatant($heroBattle, $enemyStats);
         }
 

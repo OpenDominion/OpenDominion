@@ -938,6 +938,39 @@ class HeroBattleService
             return " {$combatant->name} clings to life with 1 health.";
         }
 
+        // Soul tribute: when this combatant dies, empowers the specified ally
+        if (in_array('soul_tribute', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
+            $this->spendAbility($combatant, 'soul_tribute');
+
+            $status = $combatant->status ?? [];
+            $soulTributeConfig = $status['soul_tribute'] ?? null;
+
+            if ($soulTributeConfig) {
+                $targetName = $soulTributeConfig['target_name'] ?? null;
+                $statIncreases = $soulTributeConfig['stat_increases'] ?? [];
+
+                if ($targetName && !empty($statIncreases)) {
+                    $target = $combatant->battle->combatants
+                        ->where('name', $targetName)
+                        ->first();
+
+                    if ($target !== null && $target->current_health > 0) {
+                        $changes = [];
+                        foreach ($statIncreases as $stat => $increase) {
+                            $target->$stat += $increase;
+                            $changes[] = "{$stat} +{$increase}";
+                        }
+                        $target->save();
+
+                        if (!empty($changes)) {
+                            $changesString = implode(', ', $changes);
+                            return " As {$combatant->name} falls, dark tendrils stream from the body into {$targetName} ({$changesString}). He grows stronger.";
+                        }
+                    }
+                }
+            }
+        }
+
         // Power source: when this combatant dies, weakens the specified target
         if (in_array('power_source', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
             $this->spendAbility($combatant, 'power_source');

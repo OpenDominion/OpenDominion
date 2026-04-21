@@ -292,6 +292,60 @@ class HeroEncounterHelper
                 'strategy' => 'wraith',
                 'abilities' => ['soul_rend', 'elusive'],
             ],
+            'dreadsoul' => [
+                'name' => 'Dreadsoul Skullkeeper',
+                'health' => 150,
+                'attack' => 25,
+                'defense' => 15,
+                'evasion' => 15,
+                'focus' => 10,
+                'counter' => 25,
+                'recover' => 10,
+                'strategy' => 'warchief',
+                'abilities' => ['soul_harvest'],
+            ],
+            'orc_boneguard' => [
+                'name' => 'Orc Boneguard',
+                'health' => 60,
+                'attack' => 30,
+                'defense' => 10,
+                'evasion' => 0,
+                'focus' => 0,
+                'counter' => 10,
+                'recover' => 0,
+                'strategy' => 'attack',
+                'abilities' => ['soul_tribute'],
+                'status' => [
+                    'soul_tribute' => [
+                        'target_name' => 'Dreadsoul Skullkeeper',
+                        'stat_increases' => [
+                            'attack' => 10,
+                            'defense' => 5,
+                        ],
+                    ],
+                ],
+            ],
+            'orc_hexcaller' => [
+                'name' => 'Orc Hexcaller',
+                'health' => 50,
+                'attack' => 25,
+                'defense' => 10,
+                'evasion' => 15,
+                'focus' => 0,
+                'counter' => 0,
+                'recover' => 10,
+                'strategy' => 'aggressive',
+                'abilities' => ['soul_tribute'],
+                'status' => [
+                    'soul_tribute' => [
+                        'target_name' => 'Dreadsoul Skullkeeper',
+                        'stat_increases' => [
+                            'attack' => 10,
+                            'defense' => 5,
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -391,6 +445,15 @@ class HeroEncounterHelper
                 'source' => 'Raid (The Wraith)',
                 'enemies' => [
                     ['key' => 'wraith', 'name' => 'The Wraith'],
+                ],
+            ],
+            'dreadsoul_skullkeeper' => [
+                'name' => 'Dreadsoul Skullkeeper',
+                'source' => 'Raid (Siege of Emberveil)',
+                'enemies' => [
+                    ['key' => 'dreadsoul', 'name' => 'Dreadsoul Skullkeeper'],
+                    ['key' => 'orc_boneguard', 'name' => 'Orc Boneguard'],
+                    ['key' => 'orc_hexcaller', 'name' => 'Orc Hexcaller'],
                 ],
             ],
         ]);

@@ -741,7 +741,9 @@ class HeroHelper
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'retribution' => 'Retribution: Counter attack damage is increased by 15.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
+            'soul_harvest' => 'Soul Harvest: Absorbs the strength of fallen allies, growing more powerful with each death.',
             'soul_rend' => 'Soul Rend: When wounded, charges a devastating attack that deals massive damage if not defended.',
+            'soul_tribute' => 'Soul Tribute: Upon death, empowers Dreadsoul Skullkeeper, increasing his attack and defense.',
             'summon_golem' => 'Summon Golem: Summons a Void Golem at regular intervals.',
             'summon_skeleton' => 'Summon: Summons a Skeleton Warrior every 4th turn.',
             'tactical_awareness' => 'Tactical Awareness: Reduces target\'s counter value by 2 for the remainder of the battle.',
@@ -810,6 +812,11 @@ class HeroHelper
                 'name' => 'Wraith',
                 'type' => 'npc',
                 'options' => ['attack' => 3, 'counter' => 3, 'recover' => 1, 'focus' => 1]
+            ],
+            'warchief' => [
+                'name' => 'Warchief',
+                'type' => 'npc',
+                'options' => ['attack' => 3, 'counter' => 4, 'focus' => 2, 'recover' => 1]
             ]
         ]);
     }
