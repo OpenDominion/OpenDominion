@@ -237,6 +237,7 @@ class RaidActionService
             }
 
             if ($encounterKey == 'dreadsoul_skullkeeper' && $enemy['key'] == 'dreadsoul' && $priorWins > 0) {
+                $hpMultiplier = max(0.5, 1 - ($priorWins * 0.06));
                 $enemyStats['current_health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
             }
 

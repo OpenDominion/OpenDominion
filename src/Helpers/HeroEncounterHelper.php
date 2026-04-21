@@ -299,7 +299,7 @@ class HeroEncounterHelper
                 'defense' => 15,
                 'evasion' => 15,
                 'focus' => 10,
-                'counter' => 25,
+                'counter' => 30,
                 'recover' => 10,
                 'strategy' => 'warchief',
                 'abilities' => ['soul_harvest'],
