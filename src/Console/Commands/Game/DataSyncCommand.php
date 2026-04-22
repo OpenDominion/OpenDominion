@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Helpers\TechHelper;
+use OpenDominion\Models\Achievement;
 use OpenDominion\Models\HeroUpgrade;
 use OpenDominion\Models\HeroUpgradePerk;
 use OpenDominion\Models\Race;
@@ -61,6 +62,7 @@ class DataSyncCommand extends Command implements CommandInterface
             $this->syncTechs();
             $this->syncWonders();
             $this->syncHeroes();
+            $this->syncAchievements();
         });
     }
 
@@ -492,6 +494,50 @@ class DataSyncCommand extends Command implements CommandInterface
 
             $heroUpgradePerkTypes = array_keys(get_object_vars($heroUpgradePerks));
             $heroUpgrade->perks()->whereNotIn('key', $heroUpgradePerkTypes)->delete();
+        }
+    }
+
+    /**
+     * Syncs achievement data from .yml file to the database.
+     */
+    protected function syncAchievements()
+    {
+        $fileContents = $this->filesystem->get(base_path('app/data/achievements.yml'));
+
+        $data = Yaml::parse($fileContents, Yaml::PARSE_OBJECT_FOR_MAP);
+
+        // Backfill keys for existing achievements that were created before keys were added.
+        // This section can be removed once all environments have been migrated.
+        foreach ($data as $achievementKey => $achievementData) {
+            Achievement::where('name', $achievementData->name)->update(['key' => $achievementKey]);
+        }
+
+        foreach ($data as $achievementKey => $achievementData) {
+            $achievement = Achievement::firstOrNew(['key' => $achievementKey])
+                ->fill([
+                    'name' => $achievementData->name,
+                    'description' => object_get($achievementData, 'description', ''),
+                    'icon' => object_get($achievementData, 'icon', ''),
+                    'category' => object_get($achievementData, 'category', 'general'),
+                ]);
+
+            if (!$achievement->exists) {
+                $this->info("Adding achievement {$achievementData->name}");
+            } else {
+                $this->info("Processing achievement {$achievementData->name}");
+
+                $newValues = $achievement->getDirty();
+
+                foreach ($newValues as $key => $newValue) {
+                    $originalValue = $achievement->getOriginal($key);
+
+                    if ($originalValue != $newValue) {
+                        $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    }
+                }
+            }
+
+            $achievement->save();
         }
     }
 }

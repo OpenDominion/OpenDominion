@@ -106,8 +106,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
-                                    <th>Dominion</th>
-                                    <th class="text-center">Hero</th>
+                                    <th>Hero</th>
                                     <th class="text-center">Wins</th>
                                     <th class="text-center">Losses</th>
                                     <th class="text-center">Draws</th>
@@ -120,15 +119,8 @@
                                     <tr class="{{ $participant->eliminated ? 'text-muted' : null }}">
                                         <td class="text-center">{{ $participant->standing ?? '-' }}</td>
                                         <td>
-                                            @if ($participant->hero && $participant->hero->dominion)
-                                                {{ $participant->hero->dominion->name }}
-                                            @else
-                                                <span class="text-muted">Unknown</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
                                             @if ($participant->hero)
-                                                Lv{{ $participant->hero->level }}
+                                                {{ $participant->hero->name }}
                                             @endif
                                         </td>
                                         <td class="text-center">{{ $participant->wins }}</td>

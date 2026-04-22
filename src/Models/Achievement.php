@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
  * OpenDominion\Models\Achievement
  *
  * @property int $id
+ * @property string $key
  * @property string $name
  * @property string $description
  * @property string $icon
+ * @property string $category
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\User[] $users
