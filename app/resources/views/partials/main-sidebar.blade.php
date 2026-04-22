@@ -153,10 +153,17 @@
                     </li>
                 @endif
                 @if ($selectedDominion->round->tournaments()->count() > 0)
+                    @php
+                        $registrationOpen = $selectedDominion->round->tournaments()
+                            ->where('finished', false)
+                            ->where('start_date', '>', now())
+                            ->where('start_date', '<=', now()->addHours(24))
+                            ->exists();
+                    @endphp
                     <li class="{{ Route::is('dominion.heroes.tournaments') ? 'active' : null }} {{ in_array('hero_tournament', $hiddenLinks) ? 'hidden' : null }}">
                         <a href="{{ route('dominion.heroes.tournaments') }}">
                             <i class="fa fa-trophy fa-fw"></i> <span>Hero Tournament</span>
-                            @if ($selectedDominion->round->tournaments()->where('start_date', '>', now())->count() > 0)
+                            @if ($registrationOpen)
                                 <span class="pull-right-container">
                                     <span class="label label-primary pull-right">
                                         R

@@ -394,6 +394,16 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@getDeleteTactic')->name('raids.objectives.tactics.delete');
         $router->post('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@postDeleteTactic');
 
+        // Hero Tournaments
+        $router->get('hero-tournaments', 'Staff\Administrator\HeroTournamentController@getIndex')->name('hero-tournaments.index');
+        $router->get('hero-tournaments/create', 'Staff\Administrator\HeroTournamentController@getCreate')->name('hero-tournaments.create');
+        $router->post('hero-tournaments/create', 'Staff\Administrator\HeroTournamentController@postCreate');
+        $router->get('hero-tournaments/{heroTournament}', 'Staff\Administrator\HeroTournamentController@getShow')->name('hero-tournaments.show');
+        $router->get('hero-tournaments/{heroTournament}/edit', 'Staff\Administrator\HeroTournamentController@getEdit')->name('hero-tournaments.edit');
+        $router->post('hero-tournaments/{heroTournament}/edit', 'Staff\Administrator\HeroTournamentController@postEdit');
+        $router->get('hero-tournaments/{heroTournament}/delete', 'Staff\Administrator\HeroTournamentController@getDelete')->name('hero-tournaments.delete');
+        $router->post('hero-tournaments/{heroTournament}/delete', 'Staff\Administrator\HeroTournamentController@postDelete');
+
     });
 
     // Moderator

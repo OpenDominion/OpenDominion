@@ -158,6 +158,7 @@ Every state change records a delta in `dominion_history`:
 - **Administrator/DominionController** - Dominion CRUD, anti-cheat logs
 - **Administrator/UserController** - User CRUD, account takeover capability
 - **Administrator/RaidController** - Full raid CRUD (create/edit raids, objectives, tactics)
+- **Administrator/HeroTournamentController** - Hero tournament CRUD (create/edit/delete tournaments, view participants)
 - **Moderator/DominionController** - Game event viewing, activity logs, dominion locking/unlocking
 
 Role-based access uses Spatie permission middleware (`role:Administrator`, `role:Moderator`). Staff layout is `layouts/staff.blade.php` with a 2-column grid (side nav + content).

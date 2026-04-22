@@ -868,6 +868,10 @@ class HeroHelper
                 'The dust has settled, but the score remains even.',
                 'It was a tie! The bards are still arguing about who was better.',
                 'No winner, no loser—just a great story for the tavern.',
+                'An impasse! Both heroes collapsed from exhaustion.',
+                'Steel met steel until neither blade could swing again. A stalemate for the ages.',
+                'The arena floor is cracked, the weapons shattered, and still no victor. Incredible.',
+                'A draw so perfectly matched, the bookmakers are convinced it was rigged.',
             ]);
 
             $winner = null;
@@ -894,6 +898,16 @@ class HeroHelper
                 'In a shocking twist, %2$s tripped over their own feet and handed victory to %1$s.',
                 '%1$s won so convincingly, the spectators asked for an autograph.',
                 'Rumor has it %2$s is still looking for their dignity somewhere on the battlefield.',
+                '%1$s carved their name into the arena stone with %2$s\'s own weapon.',
+                'The crowd fell silent as %1$s delivered the final, merciless strike.',
+                '%2$s put up a valiant fight, but %1$s was simply on another level today.',
+                '%1$s fought with the fury of a thousand storms. %2$s never stood a chance.',
+                'They say %2$s was seen weeping into their ale at the tavern afterward.',
+                '%1$s dismantled %2$s so thoroughly, the healers weren\'t sure where to start.',
+                'A flawless performance by %1$s. The scribes ran out of superlatives.',
+                '%1$s made it look effortless, but the marks on their shield tell a different story.',
+                '%2$s\'s squire has already posted a notice seeking new employment.',
+                'The court jester declared %2$s the funniest act he\'s seen all season.',
             ]);
 
             $winner = $battle->winner->name;
