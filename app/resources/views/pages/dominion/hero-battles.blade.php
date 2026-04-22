@@ -275,6 +275,7 @@
                 </div>
             </div>
 
+            <!--
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Class-Based Abilities</h3>
@@ -295,6 +296,7 @@
                     </ul>
                 </div>
             </div>
+            -->
         </div>
 
     </div>
