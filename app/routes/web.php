@@ -362,6 +362,7 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('crosslogs', 'Staff\Administrator\DominionController@getCrosslogs')->name('crosslogs');
         $router->get('invasions', 'Staff\Administrator\DominionController@getInvasions')->name('invasions');
         $router->get('theft', 'Staff\Administrator\DominionController@getTheft')->name('theft');
+        $router->get('repeat-invasions', 'Staff\Administrator\DominionController@getRepeatInvasions')->name('repeat-invasions');
 
         $router->resource('dominions', 'Staff\Administrator\DominionController');
         $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');

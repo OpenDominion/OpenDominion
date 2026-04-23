@@ -6,7 +6,7 @@
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">
-                Theft - {{ $round->name }}
+                Repeat Invasions - {{ $round->name }}
             </h3>
             <select id="round-select" class="form-control pull-right">
                 @foreach ($rounds as $roundOption)
@@ -22,20 +22,23 @@
                     <col>
                     <col>
                     <col width="100">
+                    <col width="100">
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>Source</th>
-                        <th>Target</th>
-                        <th class="text-center">Count</th>
+                        <th>Attacker</th>
+                        <th>Defender</th>
+                        <th class="text-center">Rounds</th>
+                        <th class="text-center">Invasions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($theft as $row)
+                    @foreach ($repeatInvasions as $row)
                         <tr>
-                            <td data-order="{{ $row->dominion_id }}">{{ $row->source_name }}</td>
-                            <td data-order="{{ $row->target_dominion_id }}">{{ $row->target_name }}</td>
-                            <td class="text-center" data-search="">{{ $row->count }}</td>
+                            <td>{{ $row->source_user_name }}</td>
+                            <td>{{ $row->target_user_name }}</td>
+                            <td class="text-center" data-search="">{{ $row->rounds }}</td>
+                            <td class="text-center" data-search="">{{ $row->total_invasions }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -65,7 +68,7 @@
 
             $('#round-select').select2({ width: '225px' }).change(function() {
                 var selectedRound = $(this).val();
-                window.location.href = "{!! route('staff.administrator.theft') !!}/?round=" + selectedRound;
+                window.location.href = "{!! route('staff.administrator.repeat-invasions') !!}/?round=" + selectedRound;
             });
             $('#round-select + .select2-container').addClass('pull-right');
         })(jQuery);

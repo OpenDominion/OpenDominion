@@ -22,6 +22,7 @@
                     <col>
                     <col>
                     <col width="100">
+                    <col width="100">
                     <col width="200">
                 </colgroup>
                 <thead>
@@ -29,6 +30,7 @@
                         <th>Source</th>
                         <th>Target</th>
                         <th class="text-center">Ops</th>
+                        <th class="text-center">Result</th>
                         <th class="text-center">Created</th>
                     </tr>
                 </thead>
@@ -38,6 +40,13 @@
                             <td>{{ $invasion->source_name }} <small class="text-muted">(#{{ $realms[$invasion->source_realm_id] }})</small></td>
                             <td>{{ $invasion->target_name }} <small class="text-muted">(#{{ $realms[$invasion->target_realm_id] }})</small></td>
                             <td class="text-center" data-search="">{{ $invasion->ops_count }}</td>
+                            <td class="text-center">
+                                @if ($invasion->data['result']['success'])
+                                    <span class="text-success">Success</span>
+                                @else
+                                    <span class="text-danger">Failure</span>
+                                @endif
+                            </td>
                             <td class="text-center" data-order="{{ $invasion->created_at->getTimestamp() }}" data-search="">
                                 <span title="{{ $invasion->created_at }}">{{ $invasion->created_at->diffForHumans() }}</span>
                             </td>
