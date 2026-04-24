@@ -306,6 +306,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Debug
             // todo: remove me later
             $router->get('debug')->uses('DebugController@getIndex');
+            $router->get('debug/design')->uses('DebugController@getDesign');
             $router->get('debug/dump')->uses('DebugController@getDump');
 
         });

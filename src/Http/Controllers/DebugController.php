@@ -41,6 +41,11 @@ class DebugController extends AbstractDominionController
         ]);
     }
 
+    public function getDesign()
+    {
+        return view('pages.dominion.design');
+    }
+
     public function getDump()
     {
         echo 'When making an issue that affects your dominion in its current state, please copy and paste the following block into the issue (including the trailing ```):<br><br>';

@@ -3,16 +3,20 @@
 const STORAGE_KEY = 'color-mode';
 
 const ICONS = {
-    light:   'fa-sun',
-    dark:    'fa-moon',
-    classic: 'fa-shield-halved',
-    auto:    'fa-circle-half-stroke',
+    light:     'fa-sun',
+    dark:      'fa-moon',
+    classic:   'fa-shield-halved',
+    parchment: 'fa-scroll',
+    terminal:  'fa-terminal',
+    auto:      'fa-circle-half-stroke',
 };
 
 const THEME_COLORS = {
-    dark:    '#1a1a2e',
-    classic: '#005566',
-    light:   '#ffffff',
+    dark:      '#1a1a2e',
+    classic:   '#005566',
+    parchment: '#f5f0e1',
+    terminal:  '#0a0a0a',
+    light:     '#ffffff',
 };
 
 function getStoredMode() {
@@ -27,8 +31,9 @@ function resolveMode(mode) {
 }
 
 function applyMode(mode) {
-    // 'classic' is built on top of dark; everything else maps directly.
-    const bsTheme = (mode === 'classic' || mode === 'dark') ? 'dark'
+    // Determine the base Bootstrap theme (light or dark).
+    const darkModes = ['classic', 'dark', 'terminal'];
+    const bsTheme = darkModes.includes(mode) ? 'dark'
                   : (mode === 'auto')
                     ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                   : 'light';
@@ -36,8 +41,9 @@ function applyMode(mode) {
     document.documentElement.setAttribute('data-bs-theme', bsTheme);
     document.documentElement.setAttribute('data-color-mode', mode);
 
-    if (mode === 'classic') {
-        document.documentElement.setAttribute('data-color-scheme', 'classic');
+    const customSchemes = ['classic', 'parchment', 'terminal'];
+    if (customSchemes.includes(mode)) {
+        document.documentElement.setAttribute('data-color-scheme', mode);
     } else {
         document.documentElement.removeAttribute('data-color-scheme');
     }

@@ -31,13 +31,15 @@
     <script>
     (function () {
         var stored = localStorage.getItem('color-mode') || 'auto';
-        var bsTheme = (stored === 'classic' || stored === 'dark') ? 'dark'
+        var darkModes = ['classic', 'dark', 'terminal'];
+        var bsTheme = darkModes.indexOf(stored) !== -1 ? 'dark'
                     : stored === 'auto'
                       ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                     : 'light';
+        var customSchemes = ['classic', 'parchment', 'terminal'];
         document.documentElement.setAttribute('data-bs-theme', bsTheme);
         document.documentElement.setAttribute('data-color-mode', stored);
-        if (stored === 'classic') document.documentElement.setAttribute('data-color-scheme', 'classic');
+        if (customSchemes.indexOf(stored) !== -1) document.documentElement.setAttribute('data-color-scheme', stored);
     })();
     </script>
 

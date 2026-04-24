@@ -1,4 +1,4 @@
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+<aside class="app-sidebar bg-body-secondary shadow">
     <div class="sidebar-brand">
         <a href="{{ url('') }}" class="brand-link">
             <span class="brand-text">Open<b>Dominion</b></span>
@@ -10,8 +10,7 @@
         @endphp
 
         @if (isset($selectedDominion))
-            <div class="sidebar-user d-flex align-items-center gap-2 py-3 px-3">
-                <img src="{{ Auth::user()->getAvatarUrl() }}" class="img-circle" style="width:35px;height:35px;" alt="{{ Auth::user()->display_name }}">
+            <div class="sidebar-user d-flex align-items-center gap-2 px-3 py-1">
                 <div>
                     <span class="d-block fw-bold small">{{ $selectedDominion->name }}</span>
                     <a href="{{ route('dominion.realm') }}" class="small">{{ $selectedDominion->realm->name }} (#{{ $selectedDominion->realm->number }})</a>

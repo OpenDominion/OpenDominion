@@ -16,14 +16,27 @@
             </button>
         </li>
         <li>
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="auto">
+                <i class="fa fa-circle-half-stroke fa-fw"></i> Auto
+                <i class="fa fa-check ms-auto color-mode-check"></i>
+            </button>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
             <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="classic">
                 <i class="fa fa-shield-halved fa-fw"></i> Classic
                 <i class="fa fa-check ms-auto color-mode-check"></i>
             </button>
         </li>
         <li>
-            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="auto">
-                <i class="fa fa-circle-half-stroke fa-fw"></i> Auto
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="parchment">
+                <i class="fa fa-scroll fa-fw"></i> Parchment
+                <i class="fa fa-check ms-auto color-mode-check"></i>
+            </button>
+        </li>
+        <li>
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="terminal">
+                <i class="fa fa-terminal fa-fw"></i> Terminal
                 <i class="fa fa-check ms-auto color-mode-check"></i>
             </button>
         </li>

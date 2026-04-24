@@ -15,8 +15,8 @@
         <thead>
             <tr>
                 <th colspan="4">
-                    <span class="float-end barren-land">Barren: <strong>{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</strong></span>
-                    <h4>{{ ucfirst($landType) }}</h4>
+                    {{ ucfirst($landType) }}
+                    <span class="float-end fw-medium">Barren: <strong>{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</strong></span>
                 </th>
             </tr>
             <tr>

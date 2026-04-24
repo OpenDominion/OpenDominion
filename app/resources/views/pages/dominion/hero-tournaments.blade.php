@@ -58,14 +58,12 @@
                         <div class="card-body">
                             @if (!$tournament->finished && !$tournament->battles->where('finished', true)->isEmpty())
                                 @php $battle = $tournament->battles->where('finished', true)->sortByDesc('updated_at')->first(); @endphp
-                                <div class="panel panel-info">
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <i class="fa fa-clock-o"></i> Most Recent Battle - {{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}
-                                            <div class="float-end text-muted">{{ $battle->updated_at->diffForHumans() }}</div>
-                                        </div>
-                                        {{ $heroHelper->getBattleResult($battle) }}
+                                <div class="alert alert-info">
+                                    <div class="mb-3">
+                                        <i class="fa fa-clock-o"></i> Most Recent Battle - {{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}
+                                        <div class="float-end text-muted">{{ $battle->updated_at->diffForHumans() }}</div>
                                     </div>
+                                    {{ $heroHelper->getBattleResult($battle) }}
                                 </div>
                             @endif
                             <h4>Standings {{ $tournament->finished ? '- Final' : null }}</h4>
