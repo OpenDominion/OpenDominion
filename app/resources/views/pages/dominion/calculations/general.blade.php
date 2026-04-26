@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <form action="{{ route('dominion.calculations') }}" method="post" role="form" class="calculate-form">
                 @csrf
-                <div class="card card-outline card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <span class="card-title"><i class="fa fa-calculator"></i> General Calculator</span>
                         <div class="float-end text-red">

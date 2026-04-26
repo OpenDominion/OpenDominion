@@ -9,7 +9,7 @@
             @if ($hero === null)
                 <form class="form-horizontal" action="{{ route('dominion.heroes.create') }}" method="post" role="form">
                     @csrf
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</span>
                         </div>
@@ -82,7 +82,7 @@
             @else
                 <form action="{{ route('dominion.heroes') }}" method="post" role="form">
                     @csrf
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="ra ra-knight-helmet"></i> Heroes</span>
                         </div>

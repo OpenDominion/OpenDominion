@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-undo"></i> Restart</span>
                 </div>
@@ -54,7 +54,7 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-edit"></i> Change Name</span>
                 </div>

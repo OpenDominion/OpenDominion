@@ -1,7 +1,7 @@
 @extends('layouts.topnav')
 
 @section('content')
-    <div class="card card-outline card-primary">
+    <div class="card card-primary">
         <div class="card-header">
             <span class="card-title">User Search: {{ $search }} ({{ $users->count() == 50 ? 'limited to 50' : $users->count() }} results)</span>
         </div>

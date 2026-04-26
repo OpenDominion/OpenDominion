@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-queen-crown"></i> Monarchy</span>
                 </div>
@@ -167,7 +167,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-crown"></i> The Royal Court</span>
                 </div>
@@ -277,7 +277,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-crossed-axes"></i> War</span>
                 </div>
@@ -453,7 +453,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-university"></i> Guard Membership</span>
                 </div>

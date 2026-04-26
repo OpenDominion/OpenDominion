@@ -1,4 +1,4 @@
-    <div class="card card-outline card-primary">
+    <div class="card card-primary">
         <div class="card-header">
             <span class="card-title">{{ $race->name }}</span>
         </div>

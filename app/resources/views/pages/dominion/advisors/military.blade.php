@@ -19,7 +19,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-bar-chart"></i> {{ $pageHeader }}</span>
                 </div>
@@ -209,7 +209,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-sword"></i> Units in training and home</span>
                 </div>

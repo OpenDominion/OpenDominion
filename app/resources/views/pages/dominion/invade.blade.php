@@ -7,7 +7,7 @@
 
         <div class="col-sm-12 col-md-9">
             @if ($protectionService->isUnderProtection($selectedDominion))
-                <div class="card card-outline card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                     </div>
@@ -22,7 +22,7 @@
                     </div>
                 </div>
             @elseif ($selectedDominion->morale < 80)
-                <div class="card card-outline card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                     </div>
@@ -34,7 +34,7 @@
                 <form action="{{ route('dominion.invade') }}" method="post" role="form" id="invade_form">
                     @csrf
 
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                         </div>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
 
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="fa fa-users"></i> Units to send</span>
                         </div>

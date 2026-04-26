@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-pyramids ra-lg"></i> Wonders of the World</span>
                 </div>
@@ -64,7 +64,7 @@
             </div>
 
             @if ($protectionService->isUnderProtection($selectedDominion))
-                <div class="card card-outline card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <span class="card-title"><i class="ra ra-crossed-swords"></i> Invade</span>
                     </div>
@@ -82,7 +82,7 @@
                 <form action="{{ route('dominion.wonders') }}" method="post" role="form" id="attack_form">
                     @csrf
                     <input type="hidden" name="calc[wonder]" value="1" />
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="ra ra-crossed-swords"></i> Attack</span>
                         </div>
@@ -128,7 +128,7 @@
                         </div>
                     </div>
 
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="fa fa-users"></i> Units to send</span>
                         </div>

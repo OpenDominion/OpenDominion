@@ -24,7 +24,7 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-angel-wings"></i> Cancel Abandon Dominion</span>
                 </div>

@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-sm-6 offset-sm-3">
 
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title">Login</span>
                 </div>

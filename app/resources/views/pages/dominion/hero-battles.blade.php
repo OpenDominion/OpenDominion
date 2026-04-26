@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-axe"></i> Active Battles</span>
                 </div>
@@ -205,7 +205,7 @@
                 </div>
             </div>
 
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-axe"></i> Previous Battles</span>
                     <div class="float-end">

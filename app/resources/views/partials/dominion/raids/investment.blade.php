@@ -1,4 +1,4 @@
-<div class="card card-outline card-primary">
+<div class="card card-primary">
     <div class="card-header">
         <div class="card-title"><i class="fa fa-money fa-fw"></i> Resource Investments</div>
         <div class="card-tools float-end">

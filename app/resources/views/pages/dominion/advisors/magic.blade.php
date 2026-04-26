@@ -17,7 +17,7 @@
     @include('partials.dominion.advisor-selector')
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-burning-embers"></i> {{ $boxTitle }}</span>
                 </div>
@@ -73,7 +73,7 @@
     @if ($selectedDominion->id === $target->id)
         <div class="row">
             <div class="col-sm-12 col-md-9">
-                <div class="card card-outline card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <span class="card-title"><i class="ra ra-lightning-trio"></i> Spells affecting other dominions</span>
                     </div>

@@ -10,7 +10,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-telescope"></i> Explore Land</span>
                 </div>
@@ -83,7 +83,7 @@
         </div>
 
         <div class="col-sm-12 col-md-6" id="advisor">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-honeycomb"></i> Land Advisor</span>
                 </div>

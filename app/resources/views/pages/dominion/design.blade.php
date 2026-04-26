@@ -7,7 +7,7 @@
     {{-- ── Typography ──────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-font"></i> Typography</span>
                 </div>
@@ -37,7 +37,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Text Colors ─────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-palette"></i> Text Colors</span>
                 </div>
@@ -58,7 +58,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Alerts ──────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-bell"></i> Alerts</span>
                 </div>
@@ -84,9 +84,9 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Cards ───────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12 col-md-4">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
-                    <span class="card-title"><i class="fa fa-bar-chart"></i> card-outline card-primary</span>
+                    <span class="card-title"><i class="fa fa-bar-chart"></i> card-primary</span>
                 </div>
                 <div class="card-body">
                     <p>This is the most common card style used throughout the application for primary content panels.</p>
@@ -164,7 +164,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Buttons ─────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-mouse-pointer"></i> Buttons</span>
                 </div>
@@ -215,7 +215,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Badges ──────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-tag"></i> Badges</span>
                 </div>
@@ -241,7 +241,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Tables ──────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-table"></i> Status Table (striped)</span>
                 </div>
@@ -292,7 +292,7 @@ Mana:       12,440 (+284/hr)</pre>
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-table"></i> Military Table (row variants)</span>
                 </div>
@@ -353,7 +353,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Forms ───────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-edit"></i> Forms &mdash; Inputs</span>
                 </div>
@@ -394,7 +394,7 @@ Mana:       12,440 (+284/hr)</pre>
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-edit"></i> Forms &mdash; Input Groups &amp; Training</span>
                 </div>
@@ -463,7 +463,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Navigation ──────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-compass"></i> Nav Tabs</span>
                 </div>
@@ -497,7 +497,7 @@ Mana:       12,440 (+284/hr)</pre>
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-list"></i> Nav Pills (vertical)</span>
                 </div>
@@ -517,7 +517,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Progress Bars ───────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-tasks"></i> Progress Bars</span>
                 </div>
@@ -564,7 +564,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── List Groups ─────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-list-ul"></i> List Group</span>
                 </div>
@@ -592,7 +592,7 @@ Mana:       12,440 (+284/hr)</pre>
         </div>
 
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-book"></i> Pagination</span>
                 </div>
@@ -616,7 +616,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Modals ──────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-window-maximize"></i> Modal</span>
                 </div>
@@ -649,7 +649,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Tooltips ────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-comment"></i> Tooltips</span>
                 </div>
@@ -668,7 +668,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Icons ───────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-icons"></i> Font Awesome Icons</span>
                 </div>
@@ -694,7 +694,7 @@ Mana:       12,440 (+284/hr)</pre>
             </div>
         </div>
         <div class="col-sm-12 col-md-6">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-lg ra-sword"></i> RPG Awesome Icons</span>
                 </div>
@@ -722,7 +722,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Combined Example: Status Panel ──────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-bar-chart"></i> The Dominion of Aetherius (#4)</span>
                     <span class="float-end">
@@ -793,7 +793,7 @@ Mana:       12,440 (+284/hr)</pre>
     {{-- ── Links ───────────────────────────────────────────────────────────── --}}
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-link"></i> Links</span>
                 </div>

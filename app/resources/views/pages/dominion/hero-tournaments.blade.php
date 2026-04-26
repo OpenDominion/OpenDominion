@@ -7,7 +7,7 @@
 
         <div class="col-sm-12 col-md-9">
             @if ($tournaments->isEmpty())
-                <div class="card card-outline card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <span class="card-title"><i class="fa fa-trophy"></i> Hero Tournament</span>
                     </div>
@@ -18,7 +18,7 @@
             @endif
             @foreach ($tournaments as $tournament)
                 @if ($tournament->start_date && !$tournament->hasStarted())
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</span>
                         </div>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="card card-outline card-primary">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <span class="card-title"><i class="fa fa-trophy"></i> {{ $tournament->name }}</span>
                         </div>

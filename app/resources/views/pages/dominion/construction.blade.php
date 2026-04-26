@@ -12,7 +12,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-home"></i> Construct Buildings</span>
                 </div>
@@ -76,7 +76,7 @@
         </div>
 
         <div class="col-sm-12 col-md-6" id="advisor">
-            <div class="card card-outline card-primary">
+            <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-home"></i> Construction Advisor</span>
                     <span class="float-end">Barren Land: <strong>{{ number_format($totalBarrenLand) }}</strong> <small>({{ number_format(($totalBarrenLand / $totalLand) * 100, 2) }}%)</small></span>

@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <form class="form-horizontal" action="{{ route('dominion.heroes.battles.practice') }}" method="post" role="form">
                 @csrf
-                <div class="card card-outline card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <span class="card-title"><i class="ra ra-axe"></i> Practice Battles</span>
                     </div>
