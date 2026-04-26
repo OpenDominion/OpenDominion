@@ -295,7 +295,7 @@ html.hourchange:after {
 }
 
 // ─── Light theme: dark sidebar ────────────────────────────────────────────────
-[data-bs-theme="light"]:not([data-color-scheme]) {
+[data-color-scheme="light"] {
   .app-header                 { background-color: #1a2226 !important; }
   .app-header a,
   .app-header .nav-link       { color: #d8dfe3; }

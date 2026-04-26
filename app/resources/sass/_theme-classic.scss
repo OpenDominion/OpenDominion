@@ -1,7 +1,7 @@
 // Classic theme – teal/charcoal dark theme
 // Self-contained: defines --od-* tokens, overrides --bs-*, and styles components.
 
-[data-bs-theme="dark"][data-color-scheme="classic"] {
+[data-color-scheme="classic"] {
   // ── Custom properties ─────────────────────────────────────────────────────
   // Core surfaces
   --od-body-bg:          #29252a;
@@ -79,21 +79,8 @@
     border-color: var(--od-primary) !important;
   }
 
-  .card.card-primary {
-    --bs-card-cap-bg: var(--od-primary);
-  }
   .card.card-primary .card-header {
-    color: #fff;
-    background-color: var(--od-primary);
-  }
-  .card.card-primary.card-outline {
-    --bs-card-cap-bg: var(--bs-card-bg);
     border-top: 3px solid var(--od-primary);
-  }
-  .card.card-primary.card-outline .card-header {
-    color: inherit;
-    background-color: var(--bs-card-bg);
-    border-bottom-color: var(--od-body-bg);
   }
 
   // ── User menu ──────────────────────────────────────────────────────────────

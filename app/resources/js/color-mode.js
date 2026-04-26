@@ -5,6 +5,7 @@ const STORAGE_KEY = 'color-mode';
 const ICONS = {
     light:     'fa-sun',
     dark:      'fa-moon',
+    obsidian:  'fa-gem',
     classic:   'fa-shield-halved',
     parchment: 'fa-scroll',
     terminal:  'fa-terminal',
@@ -13,6 +14,7 @@ const ICONS = {
 
 const THEME_COLORS = {
     dark:      '#1a1a2e',
+    obsidian:  '#0e1014',
     classic:   '#005566',
     parchment: '#f5f0e1',
     terminal:  '#0a0a0a',
@@ -32,21 +34,19 @@ function resolveMode(mode) {
 
 function applyMode(mode) {
     // Determine the base Bootstrap theme (light or dark).
-    const darkModes = ['classic', 'dark', 'terminal'];
+    const darkModes = ['dark', 'obsidian', 'classic', 'terminal'];
     const bsTheme = darkModes.includes(mode) ? 'dark'
                   : (mode === 'auto')
                     ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                   : 'light';
 
+    // data-bs-theme: Bootstrap's baseline light/dark
     document.documentElement.setAttribute('data-bs-theme', bsTheme);
+    // data-color-mode: the raw user choice (including 'auto')
     document.documentElement.setAttribute('data-color-mode', mode);
-
-    const customSchemes = ['classic', 'parchment', 'terminal'];
-    if (customSchemes.includes(mode)) {
-        document.documentElement.setAttribute('data-color-scheme', mode);
-    } else {
-        document.documentElement.removeAttribute('data-color-scheme');
-    }
+    // data-color-scheme: the resolved theme name (always set)
+    const scheme = (mode === 'auto') ? bsTheme : mode;
+    document.documentElement.setAttribute('data-color-scheme', scheme);
 
     localStorage.setItem(STORAGE_KEY, mode);
 

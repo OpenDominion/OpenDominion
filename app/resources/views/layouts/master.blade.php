@@ -23,15 +23,15 @@
     <script>
     (function () {
         var stored = localStorage.getItem('color-mode') || 'auto';
-        var darkModes = ['classic', 'dark', 'terminal'];
+        var darkModes = ['dark', 'obsidian', 'classic', 'terminal'];
         var bsTheme = darkModes.indexOf(stored) !== -1 ? 'dark'
                     : stored === 'auto'
                       ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                     : 'light';
-        var customSchemes = ['classic', 'parchment', 'terminal'];
+        var scheme = (stored === 'auto') ? bsTheme : stored;
         document.documentElement.setAttribute('data-bs-theme', bsTheme);
         document.documentElement.setAttribute('data-color-mode', stored);
-        if (customSchemes.indexOf(stored) !== -1) document.documentElement.setAttribute('data-color-scheme', stored);
+        document.documentElement.setAttribute('data-color-scheme', scheme);
     })();
     </script>
 

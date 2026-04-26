@@ -1,7 +1,7 @@
 // Parchment Ledger theme – warm paper, oxblood accent, serif typography
 // Self-contained: defines custom properties, overrides, and component styles.
 
-[data-bs-theme="light"][data-color-scheme="parchment"] {
+[data-color-scheme="parchment"] {
   // ── Custom properties ─────────────────────────────────────────────────────
   // Core surfaces
   --od-body-bg:          #f2ebd9;
@@ -95,21 +95,8 @@
     border-color: var(--od-primary) !important;
   }
 
-  .card.card-primary {
-    --bs-card-cap-bg: var(--od-primary);
-  }
-  .card.card-primary .card-header {
-    color: #fff;
-    background-color: var(--od-primary);
-  }
-  .card.card-primary.card-outline {
-    --bs-card-cap-bg: var(--bs-card-bg);
+  .card.card-primary .card-header  {
     border-top: 3px solid var(--od-primary);
-  }
-  .card.card-primary.card-outline .card-header {
-    color: inherit;
-    background-color: var(--bs-card-bg);
-    border-bottom-color: var(--od-rule);
   }
 
   // ── User menu ──────────────────────────────────────────────────────────────

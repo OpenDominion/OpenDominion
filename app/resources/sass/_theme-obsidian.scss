@@ -1,7 +1,6 @@
 // Obsidian Codex theme – deep slate/charcoal + amber/gold accent, modern sans typography
-// Default dark theme: applies when dark mode is active without a custom color-scheme.
 
-[data-bs-theme="dark"]:not([data-color-scheme]) {
+[data-color-scheme="obsidian"] {
   // ── Custom properties ─────────────────────────────────────────────────────
   // Core surfaces
   --od-body-bg:          #0e1014;
@@ -79,7 +78,6 @@
     --bs-card-border-color: var(--od-border-accent);
   }
   .card-title                { color: var(--od-primary); font-family: var(--od-font-display); }
-  .card.card-primary:not(.card-outline) > .card-header .card-title { color: var(--od-body-bg); }
   .card-header a,
   .card-header .btn          { color: var(--od-text-emphasis); }
   .card.border-info          { border-top-color: var(--od-info) !important; }
@@ -94,21 +92,8 @@
     border-color: var(--od-primary) !important;
   }
 
-  .card.card-primary {
-    --bs-card-cap-bg: var(--od-primary);
-  }
   .card.card-primary .card-header {
-    color: var(--od-body-bg);
-    background-color: var(--od-primary);
-  }
-  .card.card-primary.card-outline {
-    --bs-card-cap-bg: var(--bs-card-bg);
     border-top: 3px solid var(--od-primary);
-  }
-  .card.card-primary.card-outline .card-header {
-    color: inherit;
-    background-color: var(--bs-card-bg);
-    border-bottom-color: var(--od-border-accent);
   }
 
   // ── User menu ──────────────────────────────────────────────────────────────
