@@ -8,7 +8,7 @@
 @endphp
 <div class="card">
     <div class="card-header">
-        <span class="card-title"><i class="fa fa-question-circle"></i> {{ $title }}</span>
+        <span class="card-title"><i class="ra ra-classical-knowledge "></i> {{ $title }}</span>
     </div>
     <div class="card-body text-center pb-0">
 

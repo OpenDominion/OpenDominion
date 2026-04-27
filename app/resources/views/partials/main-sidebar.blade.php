@@ -1,7 +1,7 @@
 <aside class="app-sidebar bg-body-secondary shadow">
     <div class="sidebar-brand">
         <a href="{{ url('') }}" class="brand-link">
-            <span class="brand-text">Open<b>Dominion</b></span>
+            <span class="brand-text"><span class="brand-prefix">Open</span><b>Dominion</b></span>
         </a>
     </div>
     <div class="sidebar-wrapper">
@@ -30,7 +30,7 @@
                     </li>
                     <li class="nav-item {{ Route::is('dominion.advisors.*') ? 'active' : null }}">
                         <a href="{{ route('dominion.advisors') }}" class="nav-link {{ Route::is('dominion.advisors.*') ? 'active' : null }}">
-                            <i class="nav-icon fa fa-question-circle fa-fw"></i> <p>Advisors</p>
+                            <i class="nav-icon ra ra-classical-knowledge ra-fw"></i> <p>Advisors</p>
                         </a>
                     </li>
                     <li class="nav-item {{ Route::is('dominion.bonuses.actions') ? 'active' : null }}">

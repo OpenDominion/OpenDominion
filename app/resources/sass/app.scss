@@ -152,9 +152,9 @@ a {
 }
 
 .ticker-lbl {
-  font-size: 0.5625rem;
+  font-size: 0.675rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   color: var(--bs-secondary-color);
 }
 
@@ -325,11 +325,13 @@ a {
 }
 
 .user-menu .user-image {
-  width: 25px;
-  height: 25px;
-  margin-right: 0.25rem;
-  margin-top: -2px;
+  width: 28px;
+  height: 28px;
+  vertical-align: middle;
 }
+
+// Brand prefix ("Open" in OpenDominion) — dimmed relative to "Dominion"
+.brand-prefix { opacity: 0.5; font-weight: normal; }
 
 .user-header {
   text-align: center;
