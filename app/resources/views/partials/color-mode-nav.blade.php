@@ -23,14 +23,14 @@
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
-            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="obsidian">
-                <i class="fa fa-gem fa-fw"></i> Obsidian
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="classic">
+                <i class="fa fa-shield-halved fa-fw"></i> Classic
                 <i class="fa fa-check ms-auto color-mode-check"></i>
             </button>
         </li>
         <li>
-            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="classic">
-                <i class="fa fa-shield-halved fa-fw"></i> Classic
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="grimoire">
+                <i class="fa fa-book-skull fa-fw"></i> Grimoire
                 <i class="fa fa-check ms-auto color-mode-check"></i>
             </button>
         </li>

@@ -5,8 +5,8 @@ const STORAGE_KEY = 'color-mode';
 const ICONS = {
     light:     'fa-sun',
     dark:      'fa-moon',
-    obsidian:  'fa-gem',
     classic:   'fa-shield-halved',
+    grimoire:  'fa-book-skull',
     parchment: 'fa-scroll',
     terminal:  'fa-terminal',
     auto:      'fa-circle-half-stroke',
@@ -14,8 +14,8 @@ const ICONS = {
 
 const THEME_COLORS = {
     dark:      '#1a1a2e',
-    obsidian:  '#0c0b09',
     classic:   '#005566',
+    grimoire:  '#0c0b09',
     parchment: '#f5f0e1',
     terminal:  '#0a0a0a',
     light:     '#ffffff',
@@ -34,7 +34,7 @@ function resolveMode(mode) {
 
 function applyMode(mode) {
     // Determine the base Bootstrap theme (light or dark).
-    const darkModes = ['dark', 'obsidian', 'classic', 'terminal'];
+    const darkModes = ['dark', 'grimoire', 'classic', 'terminal'];
     const bsTheme = darkModes.includes(mode) ? 'dark'
                   : (mode === 'auto')
                     ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
