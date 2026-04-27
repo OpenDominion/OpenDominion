@@ -139,7 +139,7 @@
                 @endif
             </div>
 
-            <div>
+            <div class="mb-3">
                 <a href="https://anchor.fm/riol-talk" target="_blank">
                     <img class="img-fluid" src="https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/19200887/19200887-1636311189500-b3f26a6c8046e.jpg" />
                 </a>

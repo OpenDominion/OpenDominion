@@ -28,7 +28,7 @@ class SpellHelper
      * @param string|null $category
      * @return Collection
      */
-    public function getSpells(Race|null $race, string|null $category = null): Collection
+    public function getSpells(Race|null $race = null, string|null $category = null): Collection
     {
         $spells = Spell::with('perks')
             ->active()

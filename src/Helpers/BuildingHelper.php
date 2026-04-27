@@ -36,7 +36,7 @@ class BuildingHelper
         return ucwords(str_replace('_', ' ', $buildingType));
     }
 
-    public function getBuildingTypesByRace(Race|null $race): array
+    public function getBuildingTypesByRace(Race|null $race = null): array
     {
         $return = [
             'plain' => [

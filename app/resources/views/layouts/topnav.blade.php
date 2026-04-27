@@ -38,7 +38,7 @@
 <div class="app-wrapper">
 
     <!-- Header -->
-    <nav class="app-header navbar navbar-expand-lg bg-body">
+    <nav class="app-header navbar navbar-expand-lg bg-body py-0">
         <div class="container">
 
             <a href="{{ url('') }}" class="navbar-brand">Open<b>Dominion</b></a>
@@ -77,10 +77,10 @@
 
     <!-- Content -->
     <main class="app-main">
+        @include('partials.beta-indicator')
         <div class="app-content">
-            <div class="container">
 
-                @include('partials.beta-indicator')
+            <div class="container">
 
                 @hasSection('page-header')
                     <div class="app-content-header py-3">
