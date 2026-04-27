@@ -108,28 +108,36 @@
     <style type="text/css">
         .edge {
             stroke: lightgray;
+            stroke-width: 1;
         }
         .edge.active {
             stroke: black;
+            stroke-width: 1;
         }
         .vertex {
             fill: white;
             stroke: gray;
+            stroke-width: 1;
+            outline: none;
         }
         .vertex.active {
             stroke: black;
+            stroke-width: 1;
         }
         .vertex.selected {
             fill: lightskyblue;
             stroke: black;
+            stroke-width: 1;
         }
         .vertex:hover {
             cursor: pointer;
             fill: orangered;
+            stroke-width: 1;
         }
         .vertex.active:hover {
             fill: lightgreen;
             stroke: black;
+            stroke-width: 1;
         }
         [data-bs-theme="dark"] .edge {
             stroke: var(--od-text-secondary, gray);

@@ -100,6 +100,10 @@ a {
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
+.btn {
+  white-space: nowrap;
+}
+
 // ─── Custom App Styles ────────────────────────────────────────────────────────
 
 @media (min-width: 768px) {

@@ -18,10 +18,7 @@
         }
         $rowCount = isset($selectedDominion->settings['resources_overview']) ? count($selectedDominion->settings['resources_overview']) : 3;
     @endphp
-    <div class="row">
-
-        <div class="col-sm-12">
-            <div class="card card-primary">
+    <div class="card card-primary">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-cog"></i> Dominion Settings</span>
                 </div>
@@ -30,11 +27,9 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="clearfix">
-                                    <label class="form-label float-start" style="margin-top: 20px;">
-                                        Resources Overview:
-                                    </label>
-                                    <div class="float-end">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <label class="form-label mb-0">Resources Overview:</label>
+                                    <div>
                                         <select class="form-select" id="rowCountSelect" style="width: auto; display: inline-block; margin-bottom: 5px; margin-right: 5px;">
                                             <option value="1" {{ $rowCount == 1 ? 'selected' : '' }}>1 Row</option>
                                             <option value="2" {{ $rowCount == 2 ? 'selected' : '' }}>2 Rows</option>
@@ -74,103 +69,45 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Title Icon:</label>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="show_icon" {{ isset($selectedDominion->settings['show_icon']) && $selectedDominion->settings['show_icon'] == 'on' ? 'checked' : null }} />
-                                            Display icon on the realm page
-                                        </label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="show_icon" id="show_icon" {{ isset($selectedDominion->settings['show_icon']) && $selectedDominion->settings['show_icon'] == 'on' ? 'checked' : null }} />
+                                        <label class="form-check-label" for="show_icon">Display icon on the realm page</label>
                                     </div>
                                     <span class="small">Uses your preferred title, if possible.</span>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Chaos League:</label>
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" name="black_guard_icon" value="private" checked />
-                                            Visible to members only
-                                        </label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_private" value="private" checked />
+                                        <label class="form-check-label" for="black_guard_private">Visible to members only</label>
                                     </div>
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" name="black_guard_icon" value="public" {{ isset($selectedDominion->settings['black_guard_icon']) && $selectedDominion->settings['black_guard_icon'] == 'public' ? 'checked' : null }} />
-                                            Visible to everyone
-                                        </label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_public" value="public" {{ isset($selectedDominion->settings['black_guard_icon']) && $selectedDominion->settings['black_guard_icon'] == 'public' ? 'checked' : null }} />
+                                        <label class="form-check-label" for="black_guard_public">Visible to everyone</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Hide Sidebar Links:</label>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="explore_land"
-                                                {{ in_array('explore_land', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Explore Land
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="hero_battles"
-                                                {{ in_array('hero_battles', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Hero Battles
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="hero_tournament"
-                                                {{ in_array('hero_tournament', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Hero Tournament
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="journal"
-                                                {{ in_array('journal', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Journal
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="invade"
-                                                {{ in_array('invade', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Invade
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="calculators"
-                                                {{ in_array('calculators', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Calculators
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="world"
-                                                {{ in_array('world', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            The World
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="council"
-                                                {{ in_array('council', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            The Council
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="rankings"
-                                                {{ in_array('rankings', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Rankings
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="hidden_links[]" value="forum"
-                                                {{ in_array('forum', $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            Round Forum
-                                        </label>
-                                    </div>
+                                    @foreach ([
+                                        'explore_land'    => 'Explore Land',
+                                        'hero_battles'    => 'Hero Battles',
+                                        'hero_tournament' => 'Hero Tournament',
+                                        'journal'         => 'Journal',
+                                        'invade'          => 'Invade',
+                                        'calculators'     => 'Calculators',
+                                        'world'           => 'The World',
+                                        'council'         => 'The Council',
+                                        'rankings'        => 'Rankings',
+                                        'forum'           => 'Round Forum',
+                                    ] as $linkKey => $linkLabel)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="hidden_links[]" id="hidden_{{ $linkKey }}" value="{{ $linkKey }}"
+                                                {{ in_array($linkKey, $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
+                                            <label class="form-check-label" for="hidden_{{ $linkKey }}">{{ $linkLabel }}</label>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -179,9 +116,6 @@
                         <button type="submit" class="btn btn-primary">Update Settings</button>
                     </div>
                 </form>
-            </div>
-        </div>
-
     </div>
 @endsection
 

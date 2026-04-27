@@ -4,23 +4,23 @@
     @include('partials.scribes.nav')
     <div class="row">
         <div class="col-md-3">
-            <div class="card card-primary">
-                <div class="card-body table-responsive no-padding">
-                    <ul class="nav">
-                        <li><a href="#game-overview">Game Overview</a></li>
-                        <li><a href="#status">Status</a></li>
-                        <li><a href="#advisors">Advisors</a></li>
-                        <li><a href="#daily-bonus">Daily Bonus</a></li>
-                        <li><a href="#explore">Explore</a></li>
-                        <li><a href="#construct">Construct</a></li>
-                        <li><a href="#rezone">Rezone</a></li>
-                        <li><a href="#improvements">Improvements</a></li>
-                        <li><a href="#national-bank">National Bank</a></li>
-                        <li><a href="#technology">Technology</a></li>
-                        <li><a href="#military">Military</a></li>
-                        <li><a href="#government">Government</a></li>
-                        <li><a href="#black-ops">Black Ops</a></li>
-                        <li><a href="#shadow-league">Shadow League</a></li>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item"><a href="#game-overview" class="nav-link">Game Overview</a></li>
+                        <li class="nav-item"><a href="#status" class="nav-link">Status</a></li>
+                        <li class="nav-item"><a href="#advisors" class="nav-link">Advisors</a></li>
+                        <li class="nav-item"><a href="#daily-bonus" class="nav-link">Daily Bonus</a></li>
+                        <li class="nav-item"><a href="#explore" class="nav-link">Explore</a></li>
+                        <li class="nav-item"><a href="#construct" class="nav-link">Construct</a></li>
+                        <li class="nav-item"><a href="#rezone" class="nav-link">Rezone</a></li>
+                        <li class="nav-item"><a href="#improvements" class="nav-link">Improvements</a></li>
+                        <li class="nav-item"><a href="#national-bank" class="nav-link">National Bank</a></li>
+                        <li class="nav-item"><a href="#technology" class="nav-link">Technology</a></li>
+                        <li class="nav-item"><a href="#military" class="nav-link">Military</a></li>
+                        <li class="nav-item"><a href="#government" class="nav-link">Government</a></li>
+                        <li class="nav-item"><a href="#black-ops" class="nav-link">Black Ops</a></li>
+                        <li class="nav-item"><a href="#shadow-league" class="nav-link">Shadow League</a></li>
                     </ul>
                 </div>
             </div>

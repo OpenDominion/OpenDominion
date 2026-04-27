@@ -5,7 +5,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <img class="img-responsive" style="padding: 0 10px 10px 10px;" src="https://s3.us-east-2.amazonaws.com/dominion.opendominion.net/images/races/{{ $race->key }}.png" />
+                    <img class="img-fluid" style="padding: 0 10px 10px 10px;" src="https://s3.us-east-2.amazonaws.com/dominion.opendominion.net/images/races/{{ $race->key }}.png" />
                 </div>
                 <div class="col-md-8">
                     {{-- Description --}}

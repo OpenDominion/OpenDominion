@@ -44,7 +44,7 @@
                                 <h4>Join the chat</h4>
                                 <p>
                                     <a href="{{ $discordInviteLink }}" target="_blank">
-                                        <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive" style="max-width: 200px; margin: 0 auto;">
+                                        <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-fluid" style="max-width: 200px; margin: 0 auto;">
                                     </a>
                                 </p>
                                 <p>Discord is a real-time communications platform and the best place to follow OpenDominion's announcements, development, gameplay discussions, and generic banter with other players.</p>
