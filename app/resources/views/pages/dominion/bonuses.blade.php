@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-primary">
                 <div class="card-header">
-                    <span class="card-title"><i class="fa fa-plus"></i> Daily bonuses</span>
+                    <span class="card-title"><i class="fa fa-gift"></i> Daily bonuses</span>
                 </div>
                 <div class="card-body">
                     <div class="row">

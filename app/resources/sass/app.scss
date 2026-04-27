@@ -402,8 +402,9 @@ html.hourchange:after {
 // ─── Light theme: dark sidebar ────────────────────────────────────────────────
 [data-color-scheme="light"] {
   .app-header                 { background-color: #1a2226 !important; }
-  .app-header a,
+  .app-header a:not(.dropdown-item),
   .app-header .nav-link       { color: #d8dfe3; }
+  .app-header .user-body a    { color: var(--bs-link-color); }
   .app-header .nav-link:hover,
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
@@ -433,6 +434,7 @@ html.hourchange:after {
 
 // ─── Base dark mode sidebar ──────────────────────────────────────────────────
 [data-color-scheme="dark"] {
+  .app-header                 { background-color: #1a2226 !important; }
   .app-sidebar a              { color: #b8c7ce; }
   .app-sidebar a:hover        { text-decoration: none; color: #fff; }
   .nav-header                 { background: #1a2226; color: var(--bs-secondary-color); }

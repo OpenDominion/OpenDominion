@@ -40,7 +40,7 @@
                     </li>
                     <li class="nav-item {{ Route::is('dominion.bonuses') ? 'active' : null }}">
                         <a href="{{ route('dominion.bonuses') }}" class="nav-link {{ Route::is('dominion.bonuses') ? 'active' : null }}">
-                            <i class="nav-icon fa fa-plus fa-fw"></i>
+                            <i class="nav-icon fa fa-gift fa-fw"></i>
                             <p>Daily Bonus
                                 @if (!$selectedDominion->daily_platinum)
                                     <span class="badge text-bg-primary ">P</span>
@@ -118,7 +118,7 @@
                     </li>
                     <li class="nav-item {{ Route::is('dominion.improvements') ? 'active' : null }}">
                         <a href="{{ route('dominion.improvements') }}" class="nav-link {{ Route::is('dominion.improvements') ? 'active' : null }}">
-                            <i class="nav-icon fa fa-arrow-up fa-fw"></i> <p>Improvements</p>
+                            <i class="nav-icon ra ra-castle ra-fw"></i> <p>Improvements</p>
                         </a>
                     </li>
                     <li class="nav-item {{ Route::is('dominion.bank') ? 'active' : null }}">

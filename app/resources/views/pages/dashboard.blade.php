@@ -41,8 +41,8 @@
 
                 @else
 
-                    <div class="card-body table-responsive no-padding">
-                        <table class="table">
+                    <div class="card-body table-responsive p-0">
+                        <table class="table mb-0">
                             <colgroup>
                                 <col>
                                 <col width="15%">
@@ -83,7 +83,7 @@
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-link" style="padding: 0;">{{ $dominion->name }}</button>
+                                                    <button type="submit" class="btn btn-link text-decoration-none p-0">{{ $dominion->name }}</button>
 
                                                     @if (!$dominion->round->hasStarted())
                                                         <span class="badge text-bg-warning">Starting soon</span>
@@ -136,8 +136,8 @@
 
                 @else
 
-                    <div class="card-body table-responsive no-padding">
-                        <table class="table">
+                    <div class="card-body table-responsive p-0">
+                        <table class="table mb-0">
                             <colgroup>
                                 <col width="5%">
                                 <col>

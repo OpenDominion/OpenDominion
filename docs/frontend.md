@@ -47,10 +47,10 @@ app/resources/sass/
 ├── _layout.scss          # CSS Grid shell (header, sidebar, main, footer)
 ├── _cards-ext.scss       # Card title sizing, btn-tool
 ├── _themes.scss          # Imports all theme partials
-├── _theme-obsidian.scss  # Obsidian theme
 ├── _theme-classic.scss   # Classic theme
-├── _theme-parchment.scss # Parchment theme
-└── _theme-terminal.scss  # Terminal theme
+├── _theme-dusk.scss      # Dusk theme
+├── _theme-grimoire.scss  # Grimoire theme
+└── _theme-parchment.scss # Parchment theme
 ```
 
 ### Layout
@@ -79,7 +79,9 @@ Responsive: below 992px the sidebar becomes a fixed overlay toggled by a hamburg
 ### Fonts
 
 - **Default**: Source Sans 3 (Google Fonts, loaded in `partials/styles.blade.php`)
-- **Obsidian theme**: EB Garamond (body), Cinzel (display/headings), JetBrains Mono (mono)
+- **Dusk theme**: DM Sans (body), Space Grotesk (display/headings), JetBrains Mono (mono)
+- **Parchment theme**: Crimson Pro (body), Cinzel (display/headings), JetBrains Mono (mono)
+- **Grimoire theme**: Crimson Pro (body), Cinzel (display/headings), JetBrains Mono (mono)
 - Fonts loaded via a single Google Fonts `<link>` tag
 
 ## JavaScript
@@ -119,8 +121,8 @@ Three HTML attributes on `<html>` control theming:
 | Attribute | Purpose | Example values |
 |-----------|---------|----------------|
 | `data-bs-theme` | Bootstrap's built-in light/dark toggle | `light`, `dark` |
-| `data-color-mode` | Raw user selection (stored in localStorage) | `light`, `dark`, `obsidian`, `classic`, `parchment`, `terminal`, `auto` |
-| `data-color-scheme` | Resolved theme name (never `auto`) | `light`, `dark`, `obsidian`, `classic`, `parchment`, `terminal` |
+| `data-color-mode` | Raw user selection (stored in localStorage) | `light`, `dark`, `grimoire`, `classic`, `parchment`, `dusk`, `auto` |
+| `data-color-scheme` | Resolved theme name (never `auto`) | `light`, `dark`, `grimoire`, `classic`, `parchment`, `dusk` |
 
 ### Flash Prevention
 
@@ -132,10 +134,10 @@ An inline `<script>` in `layouts/master.blade.php` reads `localStorage` and sets
 |------|----------------------|-------------|
 | Light | `light` | Default light, dark sidebar/header |
 | Dark | `dark` | Bootstrap's native dark mode |
-| Obsidian | `dark` | Warm brown/amber palette, serif fonts |
 | Classic | `dark` | Teal/cyan dark theme |
+| Dusk | `dark` | Purple-on-black dark theme |
+| Grimoire | `dark` | Warm brown/amber palette, serif fonts |
 | Parchment | `light` | Warm parchment/paper tones |
-| Terminal | `dark` | Green-on-black terminal aesthetic |
 | Auto | varies | Follows OS `prefers-color-scheme` |
 
 ### Theme File Structure

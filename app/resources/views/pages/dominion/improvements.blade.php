@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-primary">
                 <div class="card-header">
-                    <span class="card-title"><i class="fa fa-arrow-up fa-fw"></i> Improvements</span>
+                    <span class="card-title"><i class="ra ra-castle ra-fw"></i> Improvements</span>
                 </div>
                 <form action="{{ route('dominion.improvements') }}" method="post" role="form">
                     @csrf
