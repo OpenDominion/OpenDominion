@@ -946,12 +946,7 @@
     <script type="text/javascript">
         function copyJson(elementId) {
             const input = document.getElementById(elementId);
-            input.className = '';
-            input.select();
-            input.setSelectionRange(0, 99999);
-
-            document.execCommand("copy");
-            input.className = 'hidden';
+            navigator.clipboard.writeText(input.value);
         }
     </script>
 @endpush

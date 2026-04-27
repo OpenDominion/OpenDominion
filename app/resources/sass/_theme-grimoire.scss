@@ -116,12 +116,12 @@
   .table {
     --bs-table-color:        var(--od-text-body);
     --bs-table-bg:           transparent;
-    --bs-table-striped-bg:   var(--od-body-bg);
+    --bs-table-striped-bg:   rgba(12, 11, 9, 0.4);
     --bs-table-hover-bg:     var(--od-deep);
     --bs-table-border-color: var(--od-border-soft);
   }
   .table > thead > tr > th                          { border-bottom: 2px solid var(--od-border-accent); }
-  .table > tbody > tr:nth-of-type(2n+1)             { background: var(--od-body-bg); }
+  .table > tbody > tr:nth-of-type(2n+1)             { background: rgba(12, 11, 9, 0.4); }
   .table tr.table-active > td,
   .table tr.table-active > th                       { background-color: var(--od-muted-surface) !important; }
   .table tr.table-danger > td,
@@ -187,8 +187,8 @@
   .tab-content                { background-color: var(--od-surface); }
   .nav-tabs .nav-link         { color: var(--od-text-secondary); }
   .nav-tabs .nav-link.active  { background-color: var(--od-surface); border-color: var(--od-border-accent); color: var(--od-primary); }
-  .nav > li > a:hover,
-  .nav > li > a:focus         { background-color: var(--od-body-bg) !important; color: var(--od-primary) !important; }
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:hover,
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:focus { background-color: var(--od-body-bg) !important; color: var(--od-primary) !important; }
 
   // ── Badges & alerts ───────────────────────────────────────────────────────
   .alert, .badge              { color: #fff !important; }
@@ -259,8 +259,8 @@
   .sidebar-user .info,
   .sidebar-user .info > a     { color: var(--od-text-emphasis); }
   .sidebar-menu .nav-link     { border-left: 2px solid transparent; }
-  .sidebar-menu .nav-item:hover .nav-link,
-  .sidebar-menu .nav-item.active .nav-link { color: var(--od-primary); background: var(--od-accent-glow); border-left-color: var(--od-primary); }
+  .sidebar-menu .nav-item:hover > .nav-link,
+  .sidebar-menu .nav-item.active > .nav-link { color: var(--od-primary); background: var(--od-accent-glow); border-left-color: var(--od-primary); }
   .sidebar-menu .nav-treeview { background: var(--od-body-bg); }
   .nav-treeview .nav-link     { color: var(--od-text-subtle); }
   .nav-treeview .nav-link.active,

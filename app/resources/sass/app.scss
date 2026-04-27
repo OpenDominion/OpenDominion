@@ -189,6 +189,11 @@ a {
   border: 1px solid var(--bs-border-color);
   border-radius: 0.375rem;
 
+  &:hover {
+    border-color: var(--bs-border-color);
+    background-color: var(--bs-tertiary-bg);
+  }
+
   > .fa,
   > .ra {
     font-size: 20px;
@@ -413,14 +418,25 @@ html.hourchange:after {
   .app-sidebar a:hover        { text-decoration: none; color: #fff; }
   .nav-header                 { background: #1a2226; color: #8aa4af; }
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
-  .sidebar-menu .nav-item:hover .nav-link,
-  .sidebar-menu .nav-item.active .nav-link { color: #fff; background: #1e282c; border-left-color: var(--bs-primary); }
+  .sidebar-menu .nav-item:hover > .nav-link,
+  .sidebar-menu .nav-item.active > .nav-link { color: #fff; background: #1e282c; border-left-color: var(--bs-primary); }
   .sidebar-menu .nav-treeview { background: #2c3b41; }
   .nav-treeview .nav-link     { color: #8aa4af; }
   .nav-treeview .nav-link.active,
   .nav-treeview .nav-link:hover { color: #fff; }
   .sidebar-user .info,
   .sidebar-user .info > a     { color: #d8dfe3; }
+  .sidebar-user                { color: #d8dfe3; }
+}
+
+// ─── Base dark mode sidebar ──────────────────────────────────────────────────
+[data-color-scheme="dark"] {
+  .app-sidebar a              { color: #b8c7ce; }
+  .app-sidebar a:hover        { text-decoration: none; color: #fff; }
+  .nav-header                 { background: #1a2226; color: var(--bs-secondary-color); }
+  .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
+  .sidebar-menu .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.06); border-left-color: transparent; }
+  .sidebar-menu .nav-item.active > .nav-link { color: #fff; background: rgba(255, 255, 255, 0.08); border-left-color: var(--bs-primary); }
 }
 
 // ─── Theme System ─────────────────────────────────────────────────────────────

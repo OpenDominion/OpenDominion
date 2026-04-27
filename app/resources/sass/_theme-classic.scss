@@ -175,8 +175,8 @@
   .tab-content                { background-color: var(--od-surface); }
   .nav-tabs .nav-link         { color: var(--od-text-body); }
   .nav-tabs .nav-link.active  { background-color: var(--od-surface); border-left-color: var(--od-body-bg); border-right-color: var(--od-body-bg); }
-  .nav > li > a:hover,
-  .nav > li > a:focus         { background-color: var(--od-body-bg) !important; color: #eee !important; }
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:hover,
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:focus { background-color: var(--od-body-bg) !important; color: #eee !important; }
 
   // ── Badges & alerts ───────────────────────────────────────────────────────
   .alert, .badge              { color: #fff !important; }
@@ -247,9 +247,9 @@
   .sidebar-user .info,
   .sidebar-user .info > a     { color: var(--od-text-emphasis); }
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
-  .sidebar-menu .nav-item:hover .nav-link,
-  .sidebar-menu .nav-item.active .nav-link { color: #fff; background: var(--od-body-bg); border-left-color: var(--od-surface); }
-  .sidebar-menu .nav-item.active .nav-link { border-left-color: var(--od-sidebar-active-border); }
+  .sidebar-menu .nav-item:hover > .nav-link,
+  .sidebar-menu .nav-item.active > .nav-link { color: #fff; background: var(--od-body-bg); border-left-color: var(--od-surface); }
+  .sidebar-menu .nav-item.active > .nav-link { border-left-color: var(--od-sidebar-active-border); }
   .sidebar-menu .nav-treeview { margin: 0 1px; background: #32393e; }
   .nav-treeview .nav-link     { color: var(--od-text-subtle); }
   .nav-treeview .nav-link.active,

@@ -29,6 +29,12 @@
             </button>
         </li>
         <li>
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="dusk">
+                <i class="fa fa-cloud-moon fa-fw"></i> Dusk
+                <i class="fa fa-check ms-auto color-mode-check"></i>
+            </button>
+        </li>
+        <li>
             <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="grimoire">
                 <i class="fa fa-book-skull fa-fw"></i> Grimoire
                 <i class="fa fa-check ms-auto color-mode-check"></i>
@@ -37,12 +43,6 @@
         <li>
             <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="parchment">
                 <i class="fa fa-scroll fa-fw"></i> Parchment
-                <i class="fa fa-check ms-auto color-mode-check"></i>
-            </button>
-        </li>
-        <li>
-            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="terminal">
-                <i class="fa fa-terminal fa-fw"></i> Terminal
                 <i class="fa fa-check ms-auto color-mode-check"></i>
             </button>
         </li>

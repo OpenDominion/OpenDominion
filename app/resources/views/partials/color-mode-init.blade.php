@@ -2,7 +2,7 @@
 <script>
 (function () {
     var stored = localStorage.getItem('color-mode') || 'auto';
-    var darkModes = ['dark', 'classic', 'grimoire', 'terminal'];
+    var darkModes = ['dark', 'classic', 'dusk', 'grimoire'];
     var bsTheme = darkModes.indexOf(stored) !== -1 ? 'dark'
                 : stored === 'auto'
                   ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')

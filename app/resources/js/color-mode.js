@@ -6,18 +6,18 @@ const ICONS = {
     light:     'fa-sun',
     dark:      'fa-moon',
     classic:   'fa-shield-halved',
+    dusk:      'fa-cloud-moon',
     grimoire:  'fa-book-skull',
     parchment: 'fa-scroll',
-    terminal:  'fa-terminal',
     auto:      'fa-circle-half-stroke',
 };
 
 const THEME_COLORS = {
     dark:      '#1a1a2e',
     classic:   '#005566',
+    dusk:      '#020617',
     grimoire:  '#0c0b09',
     parchment: '#f5f0e1',
-    terminal:  '#0a0a0a',
     light:     '#ffffff',
 };
 
@@ -34,7 +34,7 @@ function resolveMode(mode) {
 
 function applyMode(mode) {
     // Determine the base Bootstrap theme (light or dark).
-    const darkModes = ['dark', 'grimoire', 'classic', 'terminal'];
+    const darkModes = ['dark', 'classic', 'dusk', 'grimoire'];
     const bsTheme = darkModes.includes(mode) ? 'dark'
                   : (mode === 'auto')
                     ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')

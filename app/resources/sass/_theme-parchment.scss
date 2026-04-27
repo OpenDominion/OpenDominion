@@ -59,6 +59,7 @@
   --bs-body-bg:                   var(--od-body-bg);
   --bs-body-color:                var(--od-text-body);
   --bs-body-font-family:          var(--od-font-serif);
+  --bs-body-font-weight:          500;
   --bs-secondary-color:           var(--od-text-secondary);
   --bs-secondary-bg:              var(--od-surface);
   --bs-tertiary-bg:               var(--od-deep);
@@ -82,7 +83,7 @@
     --bs-card-border-color: var(--od-rule);
   }
   .card-title                { color: var(--od-text-emphasis); font-family: var(--od-font-display); }
-  .card-header               { font-family: var(--od-font-display); letter-spacing: .1em; }
+  .card-header               { font-family: var(--od-font-display); letter-spacing: .04em; }
   .card-header a,
   .card-header .btn          { color: var(--od-text-emphasis); }
   .card.border-info          { border-top-color: var(--od-info) !important; }
@@ -124,7 +125,7 @@
     --bs-table-border-color: var(--od-rule-soft);
     font-family: var(--od-font-serif);
   }
-  .table > thead > tr > th                          { border-bottom: 2px solid var(--od-primary); font-family: var(--od-font-display); letter-spacing: .08em; }
+  .table > thead > tr > th                          { border-bottom: 2px solid var(--od-primary); font-family: var(--od-font-display); letter-spacing: .03em; }
   .table > tbody > tr:nth-of-type(2n+1)             { background: var(--od-surface-alt); }
   .table tr.table-active > td,
   .table tr.table-active > th                       { background-color: var(--od-muted-surface) !important; }
@@ -191,8 +192,8 @@
   .tab-content                { background-color: var(--od-surface); }
   .nav-tabs .nav-link         { color: var(--od-text-body); }
   .nav-tabs .nav-link.active  { background-color: var(--od-surface); border-color: var(--od-rule); }
-  .nav > li > a:hover,
-  .nav > li > a:focus         { background-color: var(--od-surface-alt) !important; color: var(--od-primary) !important; }
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:hover,
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:focus { background-color: var(--od-surface-alt) !important; color: var(--od-primary) !important; }
 
   // ── Badges & alerts ───────────────────────────────────────────────────────
   .badge.text-bg-secondary    { background-color: var(--od-text-subtle) !important; color: #fff !important; }
@@ -253,12 +254,12 @@
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 2px double var(--od-rule); }
   .app-sidebar a              { color: var(--od-sidebar-text); }
   .app-sidebar a:hover        { text-decoration: none; }
-  .nav-header                 { background: var(--od-surface-alt); color: var(--od-text-subtle); font-family: var(--od-font-display); letter-spacing: .2em; }
+  .nav-header                 { background: var(--od-deep); color: var(--od-text-subtle); font-family: var(--od-font-display); letter-spacing: .08em; }
   .sidebar-user .info,
   .sidebar-user .info > a     { color: var(--od-text-emphasis); }
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
-  .sidebar-menu .nav-item:hover .nav-link,
-  .sidebar-menu .nav-item.active .nav-link { color: var(--od-primary); background: rgba(139, 42, 30, .06); border-left-color: var(--od-primary); }
+  .sidebar-menu .nav-item:hover > .nav-link,
+  .sidebar-menu .nav-item.active > .nav-link { color: var(--od-primary); background: rgba(139, 42, 30, .06); border-left-color: var(--od-primary); }
   .sidebar-menu .nav-treeview { background: var(--od-surface); }
   .nav-treeview .nav-link     { color: var(--od-text-secondary); }
   .nav-treeview .nav-link.active,
