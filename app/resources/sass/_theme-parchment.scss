@@ -243,6 +243,13 @@
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
   .app-header [data-lte-toggle="sidebar"]:hover { background: rgba(26, 18, 7, 0.06); color: var(--od-primary); }
+  .app-header .ticker {
+    background: var(--od-surface-alt);
+    border-color: var(--od-rule-soft);
+  }
+  .app-header .ticker-lbl { color: var(--od-text-subtle); }
+  .app-header .ticker-val { color: var(--od-primary); font-family: var(--od-font-serif); }
+  .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 2px double var(--od-rule); }
   .app-sidebar a              { color: var(--od-sidebar-text); }
   .app-sidebar a:hover        { text-decoration: none; }

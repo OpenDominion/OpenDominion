@@ -11,18 +11,21 @@
     }
 @endphp
 
-<div class="float-end small">
-    <span class="badge text-bg-secondary">
-        Server: <span id="ticker-server">{{ date('H:i:s') }}</span>
-    </span>
+<div class="navbar-tickers">
+    <div class="ticker">
+        <span class="ticker-lbl">Server</span>
+        <span class="ticker-val" id="ticker-server">{{ date('H:i:s') }}</span>
+    </div>
     @if ($selectedDominion && !$selectedDominion->round->hasEnded())
-        <span class="badge text-bg-secondary">
+        <span class="ticker-dot">&bull;</span>
+        <div class="ticker">
             @if ($secondsUntilStart > 0)
-                Round: <span id="ticker-next-round" data-value="{{ $roundStart->format('Y-m-d H:i:s T') }}">00:00:00</span>
+                <span class="ticker-lbl">Round</span>
+                <span class="ticker-val" id="ticker-next-round" data-value="{{ $roundStart->format('Y-m-d H:i:s T') }}">00:00:00</span>
             @else
-                Tick: <span id="ticker-next-tick">00:00:00</span>
+                <span class="ticker-lbl">Tick</span>
+                <span class="ticker-val" id="ticker-next-tick">00:00:00</span>
             @endif
-        </span>
+        </div>
     @endif
 </div>
-<div class="clearfix"></div>

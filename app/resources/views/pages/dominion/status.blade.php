@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</span>
                 </div>
-                <div class="card-body no-padding">
+                <div class="card-body p-0">
                     @include('partials.dominion.info.status', ['data' => $infoMapper->mapStatus($selectedDominion, false), 'race' => $selectedDominion->race, ])
                 </div>
             </div>
@@ -46,7 +46,7 @@
                     <div class="card-body">
                         <p>This section gives you a quick overview of your dominion.</p>
 
-                        <table class="table table-sm" style="margin-bottom: 10px;">
+                        <table class="table table-sm mb-2">
                             <thead>
                                 <tr>
                                     <th>{{ $selectedDominion->race->name }} Perks</th>
@@ -107,7 +107,7 @@
                     </div>
                 @else
                     <div class="card-body">
-                        <table class="table table-sm no-border">
+                        <table class="table table-sm mb-0">
                             <colgroup>
                                 <col width="150">
                                 <col>

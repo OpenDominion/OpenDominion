@@ -14,7 +14,7 @@ const ICONS = {
 
 const THEME_COLORS = {
     dark:      '#1a1a2e',
-    obsidian:  '#0e1014',
+    obsidian:  '#0c0b09',
     classic:   '#005566',
     parchment: '#f5f0e1',
     terminal:  '#0a0a0a',

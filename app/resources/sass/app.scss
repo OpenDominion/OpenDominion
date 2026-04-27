@@ -43,11 +43,46 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
 // Select2
 @import 'select2/dist/css/select2';
 
+// Select2 dark-mode overrides (vanilla Bootstrap dark)
+[data-bs-theme="dark"] {
+  .select2-container--default {
+    .select2-selection--single,
+    .select2-selection--multiple {
+      background-color: var(--bs-body-bg);
+      color: var(--bs-body-color);
+      border-color: var(--bs-border-color);
+    }
+    .select2-selection--single .select2-selection__rendered { color: var(--bs-body-color); }
+    .select2-selection--single .select2-selection__placeholder { color: var(--bs-secondary-color); }
+    .select2-selection--multiple .select2-selection__choice {
+      background-color: var(--bs-tertiary-bg);
+      color: var(--bs-body-color);
+      border-color: var(--bs-border-color);
+    }
+    .select2-results__option--highlighted[aria-selected] { background-color: var(--bs-primary); color: #fff; }
+  }
+  .select2-dropdown {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+  }
+  .select2-dropdown .select2-search__field {
+    background-color: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+  }
+}
+
 // ─── Global Polish ───────────────────────────────────────────────────────────
 
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  &:hover { text-decoration: none; }
 }
 
 .table td, .table th {
@@ -73,6 +108,17 @@ body {
   }
 }
 
+.sidebar-menu .nav-link > p {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0;
+
+  .badge { margin-left: auto; }
+  .badge ~ .badge { margin-left: 0; }
+}
+
 .table-responsive td,
 .table-responsive th {
   white-space: nowrap;
@@ -80,6 +126,51 @@ body {
 
 .app-header {
   line-height: 2;
+}
+
+.navbar-tickers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6875rem;
+  padding: 3px 10px;
+  background: var(--bs-tertiary-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.25rem;
+}
+
+.ticker-lbl {
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--bs-secondary-color);
+}
+
+.ticker-val {
+  font-weight: 600;
+  color: var(--bs-emphasis-color);
+  font-family: 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+}
+
+.ticker-dot {
+  color: var(--bs-secondary-color);
+  font-size: 0.75rem;
+  line-height: 1;
+  animation: ticker-pulse 2s infinite;
+}
+
+@keyframes ticker-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
 // AdminLTE-style square tile button with icon above text
@@ -119,6 +210,10 @@ body {
 .alert > p:last-child,
 .card-body > p:last-child,
 .card-footer > p:last-child {
+  margin-bottom: 0;
+}
+
+.card-footer .pagination {
   margin-bottom: 0;
 }
 
@@ -218,7 +313,6 @@ body {
 .user-menu .dropdown-menu {
   width: 280px;
   padding: 0;
-  border: 0;
 }
 
 .user-menu .user-image {
@@ -303,6 +397,13 @@ html.hourchange:after {
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
   .app-header [data-lte-toggle="sidebar"]:hover { background: rgba(0, 0, 0, 0.15); color: #fff; }
+  .app-header .ticker {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  .app-header .ticker-lbl { color: rgba(255, 255, 255, 0.5); }
+  .app-header .ticker-val { color: #fff; }
+  .app-header .ticker-dot { color: rgba(255, 255, 255, 0.4); }
   .app-sidebar                { background-color: #222d32 !important; }
   .app-sidebar a              { color: #b8c7ce; }
   .app-sidebar a:hover        { text-decoration: none; color: #fff; }

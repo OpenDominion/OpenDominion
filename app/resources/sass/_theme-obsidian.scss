@@ -3,51 +3,51 @@
 [data-color-scheme="obsidian"] {
   // ── Custom properties ─────────────────────────────────────────────────────
   // Core surfaces
-  --od-body-bg:          #0e1014;
-  --od-surface:          #161a21;
-  --od-surface-alt:      #11151c;
-  --od-deep:             #0a0c10;
-  --od-muted-surface:    #1d222b;
-  --od-border-accent:    #262c36;
-  --od-border-soft:      #1d222b;
+  --od-body-bg:          #0c0b09;
+  --od-surface:          #1a1814;
+  --od-surface-alt:      #131210;
+  --od-deep:             #080706;
+  --od-muted-surface:    #222018;
+  --od-border-accent:    #2a2620;
+  --od-border-soft:      #222018;
 
   // Text
-  --od-text-body:        #e7ddc9;
-  --od-text-secondary:   #9aa1ad;
-  --od-text-emphasis:    #e7ddc9;
-  --od-text-subtle:      #5a6068;
+  --od-text-body:        #e8dcc8;
+  --od-text-secondary:   #b0a090;
+  --od-text-emphasis:    #e8dcc8;
+  --od-text-subtle:      #706050;
 
   // Brand / accent
-  --od-primary:          #c49a42;
-  --od-primary-dark:     #8a6830;
-  --od-accent-glow:      rgba(196, 154, 66, .18);
-  --od-info:             #7aa9e0;
-  --od-info-dark:        #3a5680;
-  --od-info-bg:          rgba(122, 169, 224, .08);
-  --od-success:          #6fc36f;
-  --od-success-dark:     #3d6a3d;
-  --od-success-bg:       rgba(111, 195, 111, .08);
-  --od-danger:           #d06b6b;
-  --od-danger-dark:      #7a3a3a;
-  --od-danger-bg:        rgba(208, 107, 107, .08);
+  --od-primary:          #a8915a;
+  --od-primary-dark:     #7a6538;
+  --od-accent-glow:      rgba(168, 145, 90, .10);
+  --od-info:             #6090e0;
+  --od-info-dark:        #1c2a54;
+  --od-info-bg:          rgba(96, 144, 224, .08);
+  --od-success:          #36a864;
+  --od-success-dark:     #1a4a2e;
+  --od-success-bg:       rgba(54, 168, 100, .08);
+  --od-danger:           #cc4040;
+  --od-danger-dark:      #8b1c1c;
+  --od-danger-bg:        rgba(204, 64, 64, .08);
   --od-warning:          #e0a05a;
   --od-warning-dark:     #7a5528;
   --od-warning-bg:       rgba(224, 160, 90, .08);
 
   // Layout
-  --od-header-bg:        #11151c;
-  --od-sidebar-bg:       #11151c;
-  --od-sidebar-text:     #9aa1ad;
-  --od-sidebar-active-border: #c49a42;
-  --od-content-bg:       #0e1014;
+  --od-header-bg:        #131210;
+  --od-sidebar-bg:       #131210;
+  --od-sidebar-text:     #b0a090;
+  --od-sidebar-active-border: #a8915a;
+  --od-content-bg:       #0c0b09;
 
   // Links
-  --od-link-color:       #c49a42;
-  --od-link-hover-color: #e7ddc9;
+  --od-link-color:       #b89c68;
+  --od-link-hover-color: #d4b880;
 
   // Typography
-  --od-font-display:     'Cormorant Garamond', 'EB Garamond', serif;
-  --od-font-sans:        Inter, system-ui, sans-serif;
+  --od-font-display:     'Cinzel', serif;
+  --od-font-sans:        'EB Garamond', Georgia, serif;
   --od-font-mono:        'JetBrains Mono', ui-monospace, monospace;
 
   // ── Override Bootstrap --bs-* variables ───────────────────────────────────
@@ -57,7 +57,7 @@
   --bs-body-font-family:          var(--od-font-sans);
   --bs-secondary-color:           var(--od-text-secondary);
   --bs-secondary-bg:              var(--od-surface);
-  --bs-tertiary-bg:               var(--od-deep);
+  --bs-tertiary-bg:               var(--od-surface-alt);
   --bs-emphasis-color:            var(--od-text-emphasis);
   --bs-heading-color:             var(--od-text-emphasis);
   --bs-border-color:              var(--od-border-accent);
@@ -73,11 +73,11 @@
   // ── Cards ─────────────────────────────────────────────────────────────────
   .card {
     --bs-card-bg:           var(--od-surface);
-    --bs-card-cap-bg:       var(--od-surface-alt);
+    --bs-card-cap-bg:       var(--od-muted-surface);
     --bs-card-color:        var(--od-text-body);
     --bs-card-border-color: var(--od-border-accent);
   }
-  .card-title                { color: var(--od-primary); font-family: var(--od-font-display); }
+  .card-title                { color: var(--od-text-secondary); font-family: var(--od-font-display); }
   .card-header a,
   .card-header .btn          { color: var(--od-text-emphasis); }
   .card.border-info          { border-top-color: var(--od-info) !important; }
@@ -120,7 +120,7 @@
     --bs-table-hover-bg:     var(--od-deep);
     --bs-table-border-color: var(--od-border-soft);
   }
-  .table > thead > tr > th                          { border-bottom: 2px solid var(--od-primary); }
+  .table > thead > tr > th                          { border-bottom: 2px solid var(--od-border-accent); }
   .table > tbody > tr:nth-of-type(2n+1)             { background: var(--od-body-bg); }
   .table tr.table-active > td,
   .table tr.table-active > th                       { background-color: var(--od-muted-surface) !important; }
@@ -245,6 +245,13 @@
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
   .app-header [data-lte-toggle="sidebar"]:hover { background: var(--od-accent-glow); color: var(--od-primary); }
+  .app-header .ticker {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--od-border-accent);
+  }
+  .app-header .ticker-lbl { color: var(--od-text-secondary); }
+  .app-header .ticker-val { color: var(--od-primary); }
+  .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid var(--od-border-accent); }
   .app-sidebar a              { color: var(--od-sidebar-text); }
   .app-sidebar a:hover        { text-decoration: none; }

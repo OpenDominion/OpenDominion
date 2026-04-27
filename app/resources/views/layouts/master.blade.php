@@ -54,6 +54,8 @@
         @include('partials.beta-indicator')
         @include('partials.protection-indicator')
 
+        {{-- app-content-header hidden — page-header is redundant with card titles.
+             Kept in markup so pages can be updated individually before removing.
         @hasSection('page-header')
             <div class="app-content-header">
                 <div class="container-fluid">
@@ -65,11 +67,11 @@
                                 @yield('page-subheader')
                             </small>
                         @endif
-                        @include('partials.tickers')
                     </h3>
                 </div>
             </div>
         @endif
+        --}}
 
         <div class="app-content">
             <div class="container-fluid">

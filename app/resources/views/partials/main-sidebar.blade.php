@@ -43,10 +43,10 @@
                             <i class="nav-icon fa fa-plus fa-fw"></i>
                             <p>Daily Bonus
                                 @if (!$selectedDominion->daily_platinum)
-                                    <span class="badge text-bg-primary ms-auto">P</span>
+                                    <span class="badge text-bg-primary ">P</span>
                                 @endif
                                 @if (!$selectedDominion->daily_land)
-                                    <span class="badge text-bg-primary ms-auto">L</span>
+                                    <span class="badge text-bg-primary ">L</span>
                                 @endif
                             </p>
                         </a>
@@ -94,7 +94,7 @@
                                 <i class="nav-icon fa fa-home fa-fw"></i>
                                 <p>Construct Buildings
                                     @if ($barrenLand > 0)
-                                        <span class="badge text-bg-primary ms-auto">{{ $barrenLand }}</span>
+                                        <span class="badge text-bg-primary ">{{ $barrenLand }}</span>
                                     @endif
                                 </p>
                             </a>
@@ -105,7 +105,7 @@
                                 <i class="nav-icon fa fa-home fa-fw"></i>
                                 <p>Construct Buildings
                                     @if ($barrenLand > 0)
-                                        <span class="badge text-bg-primary ms-auto">{{ $barrenLand }}</span>
+                                        <span class="badge text-bg-primary ">{{ $barrenLand }}</span>
                                     @endif
                                 </p>
                             </a>
@@ -131,7 +131,7 @@
                             <i class="nav-icon fa fa-flask fa-fw"></i>
                             <p>Technology
                                 @if ($unlockableTechCount > 0)
-                                    <span class="badge text-bg-primary ms-auto">{{ $unlockableTechCount }}</span>
+                                    <span class="badge text-bg-primary ">{{ $unlockableTechCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -141,7 +141,7 @@
                             <i class="nav-icon ra ra-knight-helmet ra-fw"></i>
                             <p>Heroes
                                 @if (!$selectedDominion->hero || $unlockableHeroUpgradeCount > 0)
-                                    <span class="badge text-bg-primary ms-auto">{{ $unlockableHeroUpgradeCount ?: 1 }}</span>
+                                    <span class="badge text-bg-primary ">{{ $unlockableHeroUpgradeCount ?: 1 }}</span>
                                 @endif
                             </p>
                         </a>
@@ -152,7 +152,7 @@
                                 <i class="nav-icon ra ra-axe ra-fw"></i>
                                 <p>Hero Battles
                                     @if ($selectedDominion->hero->combatActionRequired() > 0)
-                                        <span class="badge text-bg-primary ms-auto">{{ $selectedDominion->hero->combatActionRequired() }}</span>
+                                        <span class="badge text-bg-primary ">{{ $selectedDominion->hero->combatActionRequired() }}</span>
                                     @endif
                                 </p>
                             </a>
@@ -164,7 +164,7 @@
                                 <i class="nav-icon fa fa-trophy fa-fw"></i>
                                 <p>Hero Tournament
                                     @if ($selectedDominion->round->tournaments()->where('start_date', '>', now())->count() > 0)
-                                        <span class="badge text-bg-primary ms-auto">R</span>
+                                        <span class="badge text-bg-primary ">R</span>
                                     @endif
                                 </p>
                             </a>
@@ -175,7 +175,7 @@
                             <i class="nav-icon ra ra-castle-flag ra-fw"></i>
                             <p>Raids
                                 @if ($activeRaids > 0)
-                                    <span class="badge text-bg-primary ms-auto">{{ $activeRaids }}</span>
+                                    <span class="badge text-bg-primary ">{{ $activeRaids }}</span>
                                 @endif
                             </p>
                         </a>
@@ -202,13 +202,13 @@
                             <i class="nav-icon ra ra-fairy-wand ra-fw"></i>
                             <p>Magic
                                 @if ($activeSelfSpells > 0)
-                                    <span class="badge bg-primary ms-auto">{{ $activeSelfSpells }}</span>
+                                    <span class="badge bg-primary ">{{ $activeSelfSpells }}</span>
                                 @endif
                                 @if ($activeHostileSpells > 0)
-                                    <span class="badge bg-danger ms-auto">{{ $activeHostileSpells }}</span>
+                                    <span class="badge bg-danger ">{{ $activeHostileSpells }}</span>
                                 @endif
                                 @if ($activeFriendlySpells > 0)
-                                    <span class="badge bg-success ms-auto">{{ $activeFriendlySpells }}</span>
+                                    <span class="badge bg-success ">{{ $activeFriendlySpells }}</span>
                                 @endif
                             </p>
                         </a>
@@ -235,10 +235,10 @@
                             <i class="nav-icon ra ra-hanging-sign ra-fw"></i>
                             <p>Bounty Board
                                 @if ($activeBounties > 0)
-                                    <span class="badge text-bg-primary ms-auto">{{ $activeBounties }}</span>
+                                    <span class="badge text-bg-primary ">{{ $activeBounties }}</span>
                                 @endif
                                 @if ($postedBounties > 0)
-                                    <span class="badge bg-primary ms-auto">{{ $postedBounties }}</span>
+                                    <span class="badge bg-primary ">{{ $postedBounties }}</span>
                                 @endif
                             </p>
                         </a>
@@ -270,7 +270,7 @@
                             <i class="nav-icon fa fa-group fa-fw"></i>
                             <p>The Council
                                 @if ($councilUnreadCount > 0 && !Route::is('dominion.council'))
-                                    <span class="badge bg-success ms-auto">{{ $councilUnreadCount }}</span>
+                                    <span class="badge bg-success ">{{ $councilUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -285,7 +285,7 @@
                             <i class="nav-icon ra ra-pyramids ra-fw ra-lg"></i>
                             <p>Wonders
                                 @if ($unseenWonders > 0 && !Route::is('dominion.wonders'))
-                                    <span class="badge bg-success ms-auto">{{ $unseenWonders }}</span>
+                                    <span class="badge bg-success ">{{ $unseenWonders }}</span>
                                 @endif
                             </p>
                         </a>
@@ -300,7 +300,7 @@
                             <i class="nav-icon fa fa-comments fa-fw"></i>
                             <p>Round Forum
                                 @if ($forumUnreadCount > 0 && !Route::is('dominion.forum'))
-                                    <span class="badge bg-success ms-auto">{{ $forumUnreadCount }}</span>
+                                    <span class="badge bg-success ">{{ $forumUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -310,7 +310,7 @@
                             <i class="nav-icon fa fa-newspaper-o fa-fw"></i>
                             <p>Town Crier
                                 @if ($unseenGameEvents > 0 && !Route::is('dominion.town-crier'))
-                                    <span class="badge bg-success ms-auto">{{ $unseenGameEvents }}</span>
+                                    <span class="badge bg-success ">{{ $unseenGameEvents }}</span>
                                 @endif
                             </p>
                         </a>
@@ -322,7 +322,7 @@
                             <i class="nav-icon ra ra-wooden-sign ra-fw"></i>
                             <p>Message Board
                                 @if ($messageBoardUnreadCount > 0 && !Route::is('dominion.message-board'))
-                                    <span class="badge bg-success ms-auto">{{ $messageBoardUnreadCount }}</span>
+                                    <span class="badge bg-success ">{{ $messageBoardUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -348,7 +348,7 @@
                             <i class="nav-icon ra ra-wooden-sign ra-fw"></i>
                             <p>Message Board
                                 @if ($messageBoardUnreadCount > 0 && !Route::is('dominion.message-board'))
-                                    <span class="badge bg-success ms-auto">{{ $messageBoardUnreadCount }}</span>
+                                    <span class="badge bg-success ">{{ $messageBoardUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>

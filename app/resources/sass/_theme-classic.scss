@@ -67,11 +67,11 @@
   .card-title                { color: var(--od-text-emphasis); }
   .card-header a,
   .card-header .btn          { color: var(--od-text-emphasis); }
-  .card.border-info          { border-top-color: var(--od-info-dark) !important; }
-  .card.border-primary       { border-top-color: var(--od-primary) !important; }
-  .card.border-success       { border-top-color: var(--od-success-dark) !important; }
-  .card.border-warning       { border-top-color: var(--od-warning-dark) !important; }
-  .card.border-danger        { border-top-color: var(--od-danger) !important; }
+  .card.border-info          { border-color: var(--od-info-dark) !important; }
+  .card.border-primary       { border-color: var(--od-primary) !important; }
+  .card.border-success       { border-color: var(--od-success-dark) !important; }
+  .card.border-warning       { border-color: var(--od-warning-dark) !important; }
+  .card.border-danger        { border-color: var(--od-danger) !important; }
   .card .border-start,
   .card .border-end          { border-color: #666 !important; }
 
@@ -233,6 +233,13 @@
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
   .app-header [data-lte-toggle="sidebar"]:hover { background: rgba(0, 0, 0, 0.1); color: #f6f6f6; }
+  .app-header .ticker {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  .app-header .ticker-lbl { color: rgba(255, 255, 255, 0.5); }
+  .app-header .ticker-val { color: #fff; }
+  .app-header .ticker-dot { color: rgba(255, 255, 255, 0.4); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; }
   .app-sidebar a              { color: var(--od-sidebar-text); }
   .app-sidebar a:hover        { text-decoration: none; }
