@@ -58,6 +58,44 @@ class HomeController extends AbstractController
         ]);
     }
 
+    public function getLanding()
+    {
+        $currentRound = Round::query()
+            ->with(['dominions', 'realms'])
+            ->orderBy('created_at', 'desc')
+            ->first();
+        // Override for testing
+        $currentRound = Round::find(7);
+
+        $rankingsRound = $currentRound;
+
+        if ($currentRound !== null) {
+            $previousRoundNumber = $currentRound->number - 1;
+
+            if (!$currentRound->hasStarted() && $previousRoundNumber > 0) {
+                $rankingsRound = Round::query()
+                    ->where('number', $previousRoundNumber)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+            }
+        }
+
+        $currentRankings = null;
+        if ($rankingsRound !== null) {
+            $currentRankings = DB::table('daily_rankings')
+                ->where('round_id', $rankingsRound->id)
+                ->where('key', 'largest-dominions')
+                ->orderBy('value', 'desc')
+                ->take(10)
+                ->get();
+        }
+
+        return view('pages.landing', [
+            'currentRound' => $currentRound,
+            'currentRankings' => $currentRankings,
+        ]);
+    }
+
     public function getAboutPage()
     {
         return view('pages.about');

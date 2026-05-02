@@ -3,7 +3,7 @@
     <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link" data-bs-toggle="dropdown">
             <img src="{{ Auth::user()->getAvatarUrl() }}" class="user-image rounded-circle" alt="{{ Auth::user()->display_name }}">
-            <span class="visually-hidden">{{ Auth::user()->display_name }}</span>
+            <span class="d-none d-md-inline-block ms-2">{{ Auth::user()->display_name }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
             <li class="user-header">
