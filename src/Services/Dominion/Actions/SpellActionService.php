@@ -29,6 +29,7 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\ValuablesService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -87,6 +88,9 @@ class SpellActionService
     /** @var SpellHelper */
     protected $spellHelper;
 
+    /** @var ValuablesService */
+    protected $valuablesService;
+
     /**
      * SpellActionService constructor.
      */
@@ -109,6 +113,7 @@ class SpellActionService
         $this->rangeCalculator = app(RangeCalculator::class);
         $this->spellCalculator = app(SpellCalculator::class);
         $this->spellHelper = app(SpellHelper::class);
+        $this->valuablesService = app(ValuablesService::class);
     }
 
     public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 3;
@@ -504,9 +509,11 @@ class SpellActionService
 
         $infoOp->save();
 
+        $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target, 'wizards');
+
         return [
             'success' => true,
-            'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
+            'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.' . $discoveryMessage,
             'bounty' => $bountyRewards
         ];
     }

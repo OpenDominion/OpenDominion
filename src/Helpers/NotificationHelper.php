@@ -202,6 +202,12 @@ class NotificationHelper
                 'route' => route('dominion.raids'),
                 'iconClass' => 'ra ra-castle-flag text-green',
             ],
+            'valuable_purchased' => [
+                'label' => 'A realmie purchased one of your listed valuables',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.espionage'),
+                'iconClass' => 'ra ra-gem text-green',
+            ],
 //            'scripted' => [
 //                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
 //                'defaults' => ['email' => false, 'ingame' => true],
@@ -756,6 +762,16 @@ class NotificationHelper
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $data['spellName']
+                );
+
+            case 'irregular_dominion.valuable_purchased':
+                $buyer = Dominion::with('realm')->find($data['buyerDominionId']);
+                $buyerName = $buyer ? sprintf('%s (#%s)', $buyer->name, $buyer->realm->number) : 'A realmie';
+                return sprintf(
+                    '%s purchased your listing of %s for %s platinum.',
+                    $buyerName,
+                    $data['valuableName'],
+                    number_format($data['transferPrice'])
                 );
 
             case 'irregular_dominion.raid_rewards':

@@ -5,10 +5,12 @@ namespace OpenDominion\Calculators\Dominion;
 use DB;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
+use OpenDominion\Models\Valuable;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\QueueService;
 
@@ -995,6 +997,13 @@ class MilitaryCalculator
         // Mastery
         $maxMasteryBonus = 2;
         $regen += min(1000, $dominion->spy_mastery) / 1000 * $maxMasteryBonus;
+
+        // Active valuables investigations each impose a flat regen penalty.
+        $activeInvestigations = Valuable::query()
+            ->where('source_dominion_id', $dominion->id)
+            ->where('status', Valuable::STATUS_INVESTIGATING)
+            ->count();
+        $regen -= $activeInvestigations * ValuablesHelper::SPY_STRENGTH_PER_INVESTIGATION;
 
         return $regen;
     }

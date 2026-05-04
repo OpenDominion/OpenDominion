@@ -1,0 +1,158 @@
+<?php
+
+namespace OpenDominion\Services\Dominion;
+
+use OpenDominion\Helpers\ValuablesHelper;
+use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Round;
+use OpenDominion\Models\Valuable;
+
+class ValuablesService
+{
+    /** @var ValuablesHelper */
+    protected $valuablesHelper;
+
+    public function __construct()
+    {
+        $this->valuablesHelper = app(ValuablesHelper::class);
+    }
+
+    /**
+     * Roll a passive discovery on top of an info op. Returns either an empty
+     * string (no discovery) or a sentence to be appended to the op message.
+     */
+    public function attemptPassiveDiscovery(Dominion $attacker, Dominion $target, string $agent = 'spies'): string
+    {
+        if (!$this->canDiscoverFrom($attacker, $target)) {
+            return '';
+        }
+
+        if (!random_chance(ValuablesHelper::PASSIVE_DISCOVERY_CHANCE)) {
+            return '';
+        }
+
+        $valuable = $this->createValuable($attacker, $target);
+        $phrase = $this->valuablesHelper->discoveryPhrase($valuable->rarity, $valuable->type);
+
+        return sprintf(
+            ' Your %s have also discovered %s in the target\'s possession!',
+            $agent,
+            $phrase
+        );
+    }
+
+    /**
+     * Roll a scout-for-valuables discovery. Returns the result envelope used
+     * by EspionageActionService::performOperation().
+     */
+    public function attemptScoutDiscovery(Dominion $attacker, Dominion $target): array
+    {
+        if (!$this->canDiscoverFrom($attacker, $target)) {
+            return [
+                'success' => false,
+                'message' => 'Your spies could not infiltrate the target.',
+                'alert-type' => 'warning',
+            ];
+        }
+
+        if (!random_chance(ValuablesHelper::SCOUT_DISCOVERY_CHANCE)) {
+            return [
+                'success' => true,
+                'message' => 'Your spies search the target carefully but find nothing of value.',
+                'alert-type' => 'warning',
+            ];
+        }
+
+        $valuable = $this->createValuable($attacker, $target);
+        $phrase = $this->valuablesHelper->discoveryPhrase($valuable->rarity, $valuable->type);
+
+        return [
+            'success' => true,
+            'message' => sprintf(
+                'Your spies have discovered %s in the target\'s possession: %s.',
+                $phrase,
+                $valuable->name
+            ),
+            'alert-type' => 'success',
+        ];
+    }
+
+    /**
+     * Persist a brand-new valuable. Rolls rarity, type, name, transfer price.
+     */
+    protected function createValuable(Dominion $attacker, Dominion $target): Valuable
+    {
+        $rarity = $this->valuablesHelper->selectRarity($attacker, $target);
+        $type = ValuablesHelper::TYPES[array_rand(ValuablesHelper::TYPES)];
+        $name = $this->valuablesHelper->generateName($type, $rarity);
+        $config = ValuablesHelper::getRarityConfig()[$rarity];
+
+        $valuable = new Valuable();
+        $valuable->round_id = $attacker->round_id;
+        $valuable->source_dominion_id = $attacker->id;
+        $valuable->target_dominion_id = $target->id;
+        $valuable->name = $name;
+        $valuable->rarity = $rarity;
+        $valuable->type = $type;
+        $valuable->status = Valuable::STATUS_DISCOVERED;
+        $valuable->transfer_price = (int) $config['transfer_price'];
+        $valuable->discovered_at = now();
+        $valuable->save();
+
+        return $valuable;
+    }
+
+    /**
+     * Per-round tick pass: auto-complete investigations that have run their
+     * timer, then expire anything past the 48-hour staleness window.
+     */
+    public function processRoundTick(Round $round): void
+    {
+        // Pass 1: auto-complete investigations whose timer has elapsed.
+        Valuable::query()
+            ->where('round_id', $round->id)
+            ->where('status', Valuable::STATUS_INVESTIGATING)
+            ->where('investigation_ends_at', '<=', now())
+            ->get()
+            ->each(function (Valuable $valuable) {
+                $valuable->status = Valuable::STATUS_STOLEN;
+                $valuable->stolen_at = now()->startOfHour();
+                $valuable->is_listed = false;
+                $valuable->save();
+            });
+
+        // Pass 2: expire anything past the staleness window that isn't resolved.
+        Valuable::query()
+            ->where('round_id', $round->id)
+            ->whereNotIn('status', [
+                Valuable::STATUS_SOLD,
+                Valuable::STATUS_EXPIRED,
+                Valuable::STATUS_FAILED,
+                Valuable::STATUS_STOLEN,
+            ])
+            ->where('discovered_at', '<=', now()->subHours(ValuablesHelper::EXPIRATION_HOURS))
+            ->get()
+            ->each(function (Valuable $valuable) {
+                $valuable->status = $valuable->status === Valuable::STATUS_INVESTIGATING
+                    ? Valuable::STATUS_FAILED
+                    : Valuable::STATUS_EXPIRED;
+                $valuable->save();
+            });
+    }
+
+    /**
+     * Block discovery in cases where the underlying op shouldn't be eligible
+     * (cross-realm requirement is enforced upstream; this just guards against
+     * obviously bogus pairs reaching this code).
+     */
+    protected function canDiscoverFrom(Dominion $attacker, Dominion $target): bool
+    {
+        if ($attacker->id === $target->id) {
+            return false;
+        }
+        if ($attacker->round_id !== $target->round_id) {
+            return false;
+        }
+        return true;
+    }
+}

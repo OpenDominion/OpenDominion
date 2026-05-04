@@ -19,6 +19,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -28,6 +29,7 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\ValuablesService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -92,6 +94,9 @@ class EspionageActionService
     /** @var SpellCalculator */
     protected $spellCalculator;
 
+    /** @var ValuablesService */
+    protected $valuablesService;
+
     /**
      * EspionageActionService constructor.
      */
@@ -116,6 +121,7 @@ class EspionageActionService
         $this->queueService = app(QueueService::class);
         $this->rangeCalculator = app(RangeCalculator::class);
         $this->spellCalculator = app(SpellCalculator::class);
+        $this->valuablesService = app(ValuablesService::class);
     }
 
     public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 3;
@@ -176,6 +182,10 @@ class EspionageActionService
             if ($target->user_id == null) {
                 throw new GameException('You cannot perform black ops on bots');
             }
+        } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
+            if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
+                throw new GameException('You cannot scout for valuables for the first three days of the round');
+            }
         }
 
         if ($dominion->round->id !== $target->round->id) {
@@ -224,6 +234,10 @@ class EspionageActionService
                     $xpValue = 0;
                 }
                 $dominion->resetAbandonment();
+            } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
+                $spyStrengthLost = (int) ValuablesHelper::SCOUT_SPY_STRENGTH_COST;
+                $xpValue = 0;
+                $result = $this->valuablesService->attemptScoutDiscovery($dominion, $target);
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
@@ -406,9 +420,11 @@ class EspionageActionService
 
         $infoOp->save();
 
+        $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target);
+
         return [
             'success' => true,
-            'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
+            'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.' . $discoveryMessage,
             'bounty' => $bountyRewards
         ];
     }

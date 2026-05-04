@@ -15,6 +15,7 @@ use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Bounty;
 use OpenDominion\Models\MessageBoard;
+use OpenDominion\Models\Valuable;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -145,6 +146,22 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->where('created_at', '>', $selectedDominion->town_crier_last_seen ?? $selectedDominion->round->created_at)
                 ->count();
             $view->with('unseenGameEvents', $unseenGameEvents);
+
+            // Valuables badges: discovered/listed/transferred (actionable) + stolen (sellable)
+            $valuablesDiscoveredCount = Valuable::query()
+                ->where('source_dominion_id', $selectedDominion->id)
+                ->whereIn('status', [
+                    Valuable::STATUS_DISCOVERED,
+                    Valuable::STATUS_LISTED_FOR_TRANSFER,
+                    Valuable::STATUS_TRANSFERRED,
+                ])
+                ->count();
+            $valuablesStolenCount = Valuable::query()
+                ->where('source_dominion_id', $selectedDominion->id)
+                ->where('status', Valuable::STATUS_STOLEN)
+                ->count();
+            $view->with('valuablesDiscoveredCount', $valuablesDiscoveredCount);
+            $view->with('valuablesStolenCount', $valuablesStolenCount);
         });
 
         view()->composer('partials.main-footer', function (View $view) {

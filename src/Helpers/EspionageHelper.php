@@ -20,6 +20,13 @@ class EspionageHelper
         })->isNotEmpty();
     }
 
+    public function isValuablesOperation(string $operationKey): bool
+    {
+        return $this->getValuablesOperations()->filter(function ($operation) use ($operationKey) {
+            return ($operation['key'] === $operationKey);
+        })->isNotEmpty();
+    }
+
     public function isResourceTheftOperation(string $operationKey): bool
     {
         return $this->getResourceTheftOperations()->filter(function ($operation) use ($operationKey) {
@@ -51,9 +58,21 @@ class EspionageHelper
     public function getOperations(): Collection
     {
         return $this->getInfoGatheringOperations()
+            ->merge($this->getValuablesOperations())
             ->merge($this->getResourceTheftOperations())
             ->merge($this->getBlackOperations())
             ->merge($this->getWarOperations());
+    }
+
+    public function getValuablesOperations(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Scout for Valuables',
+                'description' => 'Search the target for hidden treasures (10% chance)',
+                'key' => 'scout_for_valuables',
+            ],
+        ]);
     }
 
     public function getInfoGatheringOperations(): Collection

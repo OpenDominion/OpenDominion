@@ -200,6 +200,16 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
+            // Valuables
+            $router->get('valuables/history')->uses('Dominion\ValuablesController@getHistory')->name('valuables.history');
+            $router->get('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@getInvestigate')->name('valuables.investigate');
+            $router->post('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@postInvestigate');
+            $router->post('valuables/{valuable}/cancel')->uses('Dominion\ValuablesController@postCancel')->name('valuables.cancel');
+            $router->post('valuables/{valuable}/sell')->uses('Dominion\ValuablesController@postSell')->name('valuables.sell');
+            $router->post('valuables/{valuable}/list')->uses('Dominion\ValuablesController@postList')->name('valuables.list');
+            $router->post('valuables/{valuable}/unlist')->uses('Dominion\ValuablesController@postUnlist')->name('valuables.unlist');
+            $router->post('valuables/{valuable}/purchase')->uses('Dominion\ValuablesController@postPurchase')->name('valuables.purchase');
+
             // Black Guard
             $router->get('black-guard')->uses('Dominion\BlackGuardController@getBlackGuard')->name('black-guard');
             $router->post('black-guard/spell')->uses('Dominion\BlackGuardController@postCastSpell')->name('black-guard.spell');

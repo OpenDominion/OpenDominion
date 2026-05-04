@@ -213,9 +213,18 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item {{ Route::is('dominion.espionage') ? 'active' : null }}">
-                        <a href="{{ route('dominion.espionage') }}" class="nav-link {{ Route::is('dominion.espionage') ? 'active' : null }}">
-                            <i class="nav-icon fa fa-user-secret fa-fw"></i> <p>Espionage</p>
+                    <li class="nav-item {{ Route::is('dominion.espionage') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                        <a href="{{ route('dominion.espionage') }}" class="nav-link {{ Route::is('dominion.espionage') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                            <i class="nav-icon fa fa-user-secret fa-fw"></i>
+                            <p>
+                                Espionage
+                                @if (($valuablesDiscoveredCount ?? 0) > 0)
+                                    <span class="badge bg-primary">{{ $valuablesDiscoveredCount }}</span>
+                                @endif
+                                @if (($valuablesStolenCount ?? 0) > 0)
+                                    <span class="badge bg-info">{{ $valuablesStolenCount }}</span>
+                                @endif
+                            </p>
                         </a>
                     </li>
                     @if ($selectedDominion->black_guard_active_at !== null)
