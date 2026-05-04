@@ -45,6 +45,7 @@
                         <select name="type" class="form-select" id="type">
                             <option value="bug">Bug Report</option>
                             <option value="abuse">Cheating/Abuse</option>
+                            <option value="account">Name/Email Change Request</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -61,3 +62,21 @@
         </div>
     </div>
 </div>
+
+@push('inline-scripts')
+<script>
+    (function () {
+        var reportModal = document.getElementById('reportModal');
+        if (!reportModal) return;
+        reportModal.addEventListener('show.bs.modal', function (event) {
+            var trigger = event.relatedTarget;
+            var typeSelect = reportModal.querySelector('#type');
+            if (!typeSelect) return;
+            var requestedType = trigger && trigger.getAttribute('data-report-type');
+            typeSelect.value = requestedType && typeSelect.querySelector('option[value="' + requestedType + '"]')
+                ? requestedType
+                : 'bug';
+        });
+    })();
+</script>
+@endpush

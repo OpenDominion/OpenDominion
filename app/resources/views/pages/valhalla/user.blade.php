@@ -1,31 +1,142 @@
 @extends('layouts.topnav')
 
 @section('content')
+    {{-- Profile + League Stats grid --}}
+    <div class="row gy-3 mb-3">
+        {{-- Profile --}}
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-primary h-100 mb-0">
+                <div class="card-header">
+                    <span class="card-title">Profile</span>
+                    @if (Auth::check() && Auth::id() === $user->id)
+                        <div class="float-end">
+                            <a href="{{ route('settings') }}" class="btn btn-sm btn-secondary">
+                                <i class="fa fa-cog"></i> Edit
+                            </a>
+                        </div>
+                    @endif
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-4 text-center">
+                            @if (Auth::check() && Auth::id() === $user->id)
+                                <a href="{{ route('message-board.avatar') }}" title="Change icon" class="text-muted">
+                                    <i class="ra {{ isset($user->settings['boardavatar']) ? $user->settings['boardavatar'] : 'ra-player' }}" style="font-size: 96px; line-height: 1;"></i>
+                                </a>
+                            @else
+                                <i class="ra {{ isset($user->settings['boardavatar']) ? $user->settings['boardavatar'] : 'ra-player' }} text-muted" style="font-size: 96px; line-height: 1;"></i>
+                            @endif
+                        </div>
+                        <div class="col-8">
+                            @php $countryCode = $user->getSetting('country'); @endphp
+                            @php $countryName = $countryCode ? $countryHelper->getName($countryCode) : null; @endphp
+                            <h4 class="mb-1">{{ $user->display_name }}</h4>
+                            @if ($roleHtml = $user->displayRoleHtml())
+                                <div class="text-muted small mb-1">{!! $roleHtml !!}</div>
+                            @endif
+                            @if ($countryCode && $countryName)
+                                <div class="text-muted small mb-1">
+                                    <span class="fi fi-{{ $countryCode }} me-1" style="vertical-align: baseline;"></span>
+                                    {{ $countryName }}
+                                </div>
+                            @endif
+                            <div class="text-muted small">
+                                Registered {{ $user->created_at->format('Y-m-d') }}
+                            </div>
+                            @if ($user->last_online)
+                                @php
+                                    $daysSinceOnline = $user->last_online->diffInDays(now());
+                                    if ($daysSinceOnline < 30) {
+                                        $lastSeenLabel = 'in the past month';
+                                    } elseif ($daysSinceOnline < 365) {
+                                        $lastSeenLabel = 'in the past year';
+                                    } else {
+                                        $years = (int) floor($daysSinceOnline / 365);
+                                        $lastSeenLabel = $years . ' year' . ($years === 1 ? '' : 's') . ' ago';
+                                    }
+                                @endphp
+                                <div class="text-muted small">
+                                    Last seen {{ $lastSeenLabel }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- One card per league with stats --}}
+        @foreach ($leagues as $league)
+            @if (!isset($leagueStats[$league->id])) @continue @endif
+            @php $stats = $leagueStats[$league->id]; @endphp
+            <div class="col-md-6 col-lg-4">
+                <div class="card card-primary h-100 mb-0">
+                    <div class="card-header">
+                        <span class="card-title">{{ $league->description }}</span>
+                    </div>
+                    <table class="table table-sm table-striped mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="ps-3">Rounds Played</td>
+                                <td class="text-end pe-3">{{ number_format($stats['rounds_played']) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3">Highest Land</td>
+                                <td class="text-end pe-3">{{ $stats['best_land'] ? number_format($stats['best_land']) : '--' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3">Favorite Race</td>
+                                <td class="text-end pe-3">{{ $stats['top_race'] ?: '--' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3">Round Wins</td>
+                                <td class="text-end pe-3">{{ number_format($stats['round_wins']) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3">Realm Wins</td>
+                                <td class="text-end pe-3">{{ number_format($stats['realm_wins']) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    {{-- Achievements --}}
     <div class="card card-primary">
         <div class="card-header">
             <span class="card-title">Achievements</span>
         </div>
-
         <div class="card-body">
-            <div class="row">
-                <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 10px;">
-                    <i class="ra {{ isset($user->settings['boardavatar']) ? $user->settings['boardavatar'] : 'ra-player' }} text-muted float-start" style="font-size: 64px;"></i>
-                    <h4 style="margin-bottom: 5px;">{{ $user->display_name }}</h4>
-                    <div class="text-muted">registered {{ $user->created_at->format('Y-m-d') }}</div>
-                </div>
-                @foreach ($user->achievements()->ordered()->get() as $achievement)
-                    <div class="col-12 col-sm-6 col-md-4" style="margin-bottom: 10px;">
-                        <div class="btn-block" style="border: 1px solid #777; border-radius: 10px; padding: 10px; min-height: 82px;">
-                            <i class="ra {{ $achievement['icon'] }} float-start text-muted" style="font-size: 48px;"></i>
-                            <div class="text-bold">{{ $achievement['name'] }}</div>
-                            <div class="text-muted">{{ $achievement['description'] }}</div>
+            @php $achievements = $user->achievements()->ordered()->get(); @endphp
+            @if ($achievements->isEmpty())
+                <p class="mb-0 text-muted">No achievements yet.</p>
+            @else
+                <div class="row gy-3">
+                    @foreach ($achievements as $achievement)
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="card h-100 mb-0">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-4 text-center">
+                                            <i class="ra {{ $achievement['icon'] }} text-muted" style="font-size: 48px; line-height: 1;"></i>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="fw-bold">{{ $achievement['name'] }}</div>
+                                            <div class="text-muted small">{{ $achievement['description'] }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 
+    {{-- Lifetime Ranking --}}
     <div class="card card-primary">
         <div class="card-header">
             <span class="card-title">Lifetime Ranking</span>
@@ -34,6 +145,8 @@
             <div class="card-body table-responsive">
                 <div class="row">
                     @foreach ($leagues as $league)
+                        @php $leagueDominions = $dominions->where('round.round_league_id', $league->id); @endphp
+                        @if ($leagueDominions->isEmpty()) @continue @endif
                         <div class="col-md-12">
                             <h4>{{ $league->description }}</h4>
                             <table class="table table-striped">
@@ -48,7 +161,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($dominions->where('round.round_league_id', $league->id) as $dominion)
+                                    @foreach ($leagueDominions as $dominion)
                                         <tr>
                                             <td>
                                                 <a href="{{ route('valhalla.round', $dominion->round_id) }}">
@@ -87,7 +200,7 @@
                                     <tbody>
                                         <tr>
                                             <td>Most Decorated (Titles)</td>
-                                            <td>{{ number_format($dailyRankings[$league->id]->where('rank', 1)->count() / $dominions->where('round.round_league_id', $league->id)->count(), 2) }}</td>
+                                            <td>{{ number_format($dailyRankings[$league->id]->where('rank', 1)->count() / $leagueDominions->count(), 2) }}</td>
                                             <td>{{ number_format($dailyRankings[$league->id]->where('rank', 1)->count()) }}</td>
                                             <td>--</td>
                                         </tr>
