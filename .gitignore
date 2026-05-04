@@ -1,3 +1,6 @@
+/.mcp.json
+/.claude_sessions.json
+/.vite/
 /.vagrant/
 /app/routes/web.local.php
 /node_modules/
@@ -17,4 +20,5 @@ _ide_helper_models.php
 .DS_Store
 npm-debug.log
 /.phpunit.result.cache
+/.phpunit.cache
 /package-lock.json
