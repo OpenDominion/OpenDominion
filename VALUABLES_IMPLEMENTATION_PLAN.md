@@ -26,12 +26,12 @@ Create `app/database/migrations/<timestamp>_create_valuables_table.php`:
 valuables
   id                          bigint PK
   round_id                    FK → rounds
-  owner_dominion_id           FK → dominions   (discoverer / current owner)
+  source_dominion_id           FK → dominions   (discoverer / current source)
   target_dominion_id          FK → dominions   (where the item lives)
   name                        varchar
-  rarity                      enum: common, uncommon, rare, epic, legendary
-  type                        enum: relic, jewelry, artwork, equipment, text
-  status                      enum: discovered, investigating, stolen, sold,
+  rarity                      string (enum): common, uncommon, rare, epic, legendary
+  type                        string (enum): relic, jewelry, artwork, equipment, text
+  status                      string (enum): discovered, investigating, stolen, sold,
                                     listed_for_transfer, transferred, expired, failed
   required_spy_hours          int|null          (frozen at investigation start)
   spies_assigned              int|null          (committed spy count)
@@ -45,7 +45,7 @@ valuables
   transferred                 boolean default false  (ever changed hands)
 
   timestamps (created_at / updated_at)
-  index: [owner_dominion_id, status]
+  index: [source_dominion_id, status]
   index: [round_id, status]
   index: [target_dominion_id]
 ```
@@ -70,7 +70,7 @@ class Valuable extends AbstractModel
 
     // Relationships
     public function round()          { return $this->belongsTo(Round::class); }
-    public function ownerDominion()  { return $this->belongsTo(Dominion::class, 'owner_dominion_id'); }
+    public function sourceDominion()  { return $this->belongsTo(Dominion::class, 'source_dominion_id'); }
     public function targetDominion() { return $this->belongsTo(Dominion::class, 'target_dominion_id'); }
 
     // Scopes
@@ -238,12 +238,12 @@ private function createValuable(Dominion $attacker, Dominion $target): Valuable
 Add to the view data:
 
 ```php
-'valuablesDiscovered' => Valuable::where('owner_dominion_id', $dominion->id)
+'valuablesDiscovered' => Valuable::where('source_dominion_id', $dominion->id)
     ->whereIn('status', ['discovered', 'investigating', 'listed_for_transfer', 'transferred'])
     ->with('targetDominion')
     ->orderByDesc('discovered_at')
     ->get(),
-'valuablesStolen' => Valuable::where('owner_dominion_id', $dominion->id)
+'valuablesStolen' => Valuable::where('source_dominion_id', $dominion->id)
     ->where('status', 'stolen')
     ->with('targetDominion')
     ->orderByDesc('stolen_at')
@@ -302,7 +302,7 @@ public function startInvestigation(Dominion $dominion, Valuable $valuable, int $
 
 **Validations (throw `GameException` on failure):**
 
-1. `$valuable->owner_dominion_id === $dominion->id`
+1. `$valuable->source_dominion_id === $dominion->id`
 2. `$valuable->status` is `discovered` or `transferred`
 3. `$valuable->is_listed === false` (must unlist first)
 4. `$hours` is a multiple of `INVESTIGATION_HOUR_STEP` and within `[MAX_INVESTIGATION_HOURS, MIN_INVESTIGATION_HOURS]`
@@ -339,13 +339,13 @@ DB::transaction(function() use ($dominion, $valuable, $hours, $spiesNeeded) {
 public function cancelInvestigation(Dominion $dominion, Valuable $valuable): array
 ```
 
-Validates owner + status `investigating`. Resets to `discovered`, nulls all investigation fields, frees committed spies.
+Validates source + status `investigating`. Resets to `discovered`, nulls all investigation fields, frees committed spies.
 
 ### 4.3 Spy strength regen penalty — `MilitaryCalculator::getSpyStrengthRegen()`
 
 ```php
 // After existing regen calculation:
-$activeInvestigations = Valuable::where('owner_dominion_id', $dominion->id)
+$activeInvestigations = Valuable::where('source_dominion_id', $dominion->id)
     ->where('status', 'investigating')
     ->count();
 $regen -= $activeInvestigations * ValuablesHelper::SPY_STRENGTH_PER_INVESTIGATION;
@@ -438,7 +438,7 @@ The right info column shows: required spy-hours, available spies, current spy st
 public function sellValuable(Dominion $dominion, Valuable $valuable): array
 ```
 
-Validates: owner, status `stolen`.
+Validates: source, status `stolen`.
 
 ```php
 DB::transaction(function() use ($dominion, $valuable) {
@@ -473,11 +473,11 @@ $router->post('valuables/{valuable}/sell')->uses('Dominion\ValuablesController@p
 
 ```php
 public function listValuable(Dominion $dominion, Valuable $valuable): array
-// Validates: owner, status in [discovered, transferred], not already listed
+// Validates: source, status in [discovered, transferred], not already listed
 // Sets is_listed = true
 
 public function unlistValuable(Dominion $dominion, Valuable $valuable): array
-// Validates: owner or same realm (from bounty board), is_listed = true
+// Validates: source or same realm (from bounty board), is_listed = true
 // Sets is_listed = false
 ```
 
@@ -490,19 +490,19 @@ public function purchaseValuable(Dominion $buyer, Valuable $valuable): array
 **Validations:**
 
 1. `$valuable->is_listed === true`
-2. `$buyer->realm_id === $valuable->ownerDominion->realm_id`
-3. `$buyer->id !== $valuable->owner_dominion_id`
+2. `$buyer->realm_id === $valuable->sourceDominion->realm_id`
+3. `$buyer->id !== $valuable->source_dominion_id`
 4. `$buyer->resource_platinum >= $valuable->transfer_price`
 
 ```php
 DB::transaction(function() use ($buyer, $valuable) {
-    $seller = $valuable->ownerDominion;
+    $seller = $valuable->sourceDominion;
     $price  = $valuable->transfer_price;
 
     $buyer->resource_platinum  -= $price;
     $seller->resource_platinum += $price;
 
-    $valuable->owner_dominion_id        = $buyer->id;
+    $valuable->source_dominion_id        = $buyer->id;
     $valuable->is_listed                = false;
     $valuable->transferred              = true;
     $valuable->status                   = 'discovered';
@@ -532,8 +532,8 @@ Add to view data:
 ```php
 'realmValuablesListed' => Valuable::where('is_listed', true)
     ->forRound($dominion->round)
-    ->whereHas('ownerDominion', fn($q) => $q->where('realm_id', $dominion->realm_id))
-    ->with(['ownerDominion', 'targetDominion'])
+    ->whereHas('sourceDominion', fn($q) => $q->where('realm_id', $dominion->realm_id))
+    ->with(['sourceDominion', 'targetDominion'])
     ->orderByDesc('discovered_at')
     ->get(),
 'valuablesHelper' => app(ValuablesHelper::class),
@@ -545,7 +545,7 @@ Add a new section to `bounty-board.blade.php`:
 
 Columns: Listed By | Name (rarity · type) | Target | Spy-Hours Required | Price | Actions
 
-- If `$valuable->owner_dominion_id === $dominion->id` → `[Unlist]`
+- If `$valuable->source_dominion_id === $dominion->id` → `[Unlist]`
 - Otherwise → `[Purchase]` (disabled + tooltip if insufficient platinum)
 
 ### 6.4 Routes
@@ -575,7 +575,7 @@ $router->get('valuables/history')->uses('Dominion\ValuablesController@getHistory
 Query:
 
 ```php
-Valuable::where('owner_dominion_id', $dominion->id)
+Valuable::where('source_dominion_id', $dominion->id)
     ->forRound($dominion->round)
     ->whereIn('status', ['sold', 'expired', 'failed'])
     ->with('targetDominion')
@@ -595,10 +595,10 @@ Columns: Completed | Valuable (name + rarity · type) | Target | Result (Success
 Inject into the sidebar view data (via view composer or `AbstractDominionController`):
 
 ```php
-'valuablesDiscoveredCount' => Valuable::where('owner_dominion_id', $dominion->id)
+'valuablesDiscoveredCount' => Valuable::where('source_dominion_id', $dominion->id)
     ->whereIn('status', ['discovered', 'listed_for_transfer', 'transferred'])
     ->count(),
-'valuablesStolenCount' => Valuable::where('owner_dominion_id', $dominion->id)
+'valuablesStolenCount' => Valuable::where('source_dominion_id', $dominion->id)
     ->where('status', 'stolen')
     ->count(),
 ```
@@ -676,5 +676,5 @@ Per spec §10.7: `listed_for_transfer` items **do** count toward the primary (di
 | 3 | Espionage page renders tables; counts are correct; all states display without errors |
 | 4 | Duration table disables rows correctly; staleness fails at correct ages; tick auto-completes; spy regen is reduced by active investigations; cancel frees committed spies |
 | 5 | Sale awards correct decayed price at various times after theft; history event is logged; item moves to `sold` |
-| 6 | Listing blocks investigation; purchase transfers platinum and ownership; original `discovered_at` is unchanged; seller receives notification |
+| 6 | Listing blocks investigation; purchase transfers platinum and sourceship; original `discovered_at` is unchanged; seller receives notification |
 | 7 | History page summary stats are accurate; sidebar badges show correct counts; listed items count in primary badge |
