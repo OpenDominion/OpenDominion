@@ -23,7 +23,7 @@
             <span class="card-title">Thread: {{ $post->thread->title }}</span>
         </div>
         <div class="card-body">
-            {!! Markdown::convertToHtml($post->body) !!}
+            {!! Str::markdown($post->body) !!}
         </div>
         <div class="card-footer">
             <small>

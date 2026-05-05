@@ -36,7 +36,7 @@
                         @if ($thread->flagged_for_removal)
                             <p class="text-danger"><i>This post has been flagged for removal.</i></p>
                         @else
-                            {!! Markdown::convertToHtml($thread->body) !!}
+                            {!! Str::markdown($thread->body) !!}
                         @endif
                     </div>
                 @else
@@ -65,7 +65,7 @@
                                         <p class="text-danger"><i>This post has been flagged for removal.</i></p>
                                         @include('partials.forum-rules')
                                     @else
-                                        {!! Markdown::convertToHtml($post->body) !!}
+                                        {!! Str::markdown($post->body) !!}
                                     @endif
                                 </div>
                             </div>

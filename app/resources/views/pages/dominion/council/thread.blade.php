@@ -15,7 +15,7 @@
                 </div>
                 @if ($posts->currentPage() == 1)
                     <div class="card-body">
-                        {!! Markdown::convertToHtml($thread->body) !!}
+                        {!! Str::markdown($thread->body) !!}
                         <small>
                             <i>
                                 Posted {{ $thread->created_at }} by
@@ -40,7 +40,7 @@
                 @if (!$posts->isEmpty())
                     @foreach ($posts as $post)
                         <div class="card-footer">
-                            {!! Markdown::convertToHtml($post->body) !!}
+                            {!! Str::markdown($post->body) !!}
                             <small>
                                 <i>
                                     Posted {{ $post->created_at }} by

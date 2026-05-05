@@ -23,7 +23,7 @@
             <span class="card-title">Thread: {{ $thread->title }}</span>
         </div>
         <div class="card-body">
-            {!! Markdown::convertToHtml($thread->body) !!}
+            {!! Str::markdown($thread->body) !!}
         </div>
         <div class="card-footer">
             <small>
@@ -45,7 +45,7 @@
         @foreach ($thread->posts as $post)
             <div class="card">
                 <div class="card-body">
-                    {!! Markdown::convertToHtml($post->body) !!}
+                    {!! Str::markdown($post->body) !!}
                 </div>
                 <div class="card-footer">
                     <small>
