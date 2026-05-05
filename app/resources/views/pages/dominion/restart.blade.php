@@ -26,22 +26,24 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Start Option:</label>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="protection_type" value="quick" checked />
+                            <div class="form-check">
+                                <input type="radio" id="protection_type_quick" name="protection_type" value="quick" class="form-check-input" checked />
+                                <label for="protection_type_quick" class="form-check-label">
                                     Quick Start
                                 </label>
                             </div>
-                            <div class="radio">
-                                <label>
-                                    @if ($selectedDominion->round->hasStarted())
-                                        <input type="radio" name="protection_type" value="advanced" disabled />
-                                        <span class="text-muted">Advanced Simulation (unavailable after round start)</span>
-                                    @else
-                                        <input type="radio" name="protection_type" value="advanced" />
+                            <div class="form-check">
+                                @if ($selectedDominion->round->hasStarted())
+                                    <input type="radio" id="protection_type_advanced" name="protection_type" value="advanced" class="form-check-input" disabled />
+                                    <label for="protection_type_advanced" class="form-check-label text-muted">
+                                        Advanced Simulation (unavailable after round start)
+                                    </label>
+                                @else
+                                    <input type="radio" id="protection_type_advanced" name="protection_type" value="advanced" class="form-check-input" />
+                                    <label for="protection_type_advanced" class="form-check-label">
                                         Advanced Simulation
-                                    @endif
-                                </label>
+                                    </label>
+                                @endif
                             </div>
                             <p>Advanced Simulation requires clicking through the first 48 ticks.</p>
                         </div>

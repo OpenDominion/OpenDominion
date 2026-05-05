@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <form class="form-horizontal" action="{{ route('dominion.heroes.change-class', $targetClass['key']) }}" method="post" role="form">
+            <form action="{{ route('dominion.heroes.change-class', $targetClass['key']) }}" method="post" role="form">
                 @csrf
                 <div class="card card-primary">
                     <div class="card-header">

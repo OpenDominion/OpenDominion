@@ -13,7 +13,7 @@
                 <div class="card-body">
                     @php $playerCombatant = null; @endphp
                     @foreach ($activeBattles as $battle)
-                        <form class="form-horizontal" action="{{ route('dominion.heroes.battles') }}" method="post" role="form">
+                        <form action="{{ route('dominion.heroes.battles') }}" method="post" role="form">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -73,11 +73,11 @@
                                                                     <tr>
                                                                         <td colspan=2>
                                                                             @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                                <a class="btn btn-block btn-secondary" disabled>
+                                                                                <a class="btn btn-block btn-secondary mb-1" disabled>
                                                                                     {{ $actionData['name'] }}
                                                                                 </a>
                                                                             @else
-                                                                                <a class="btn btn-block btn-primary"
+                                                                                <a class="btn btn-block btn-primary mb-1"
                                                                                     href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}"
                                                                                     {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
                                                                                     {{ $actionData['name'] }}
@@ -104,7 +104,7 @@
                                                     @endif
                                                 </div>
                                             @else
-                                                <div class="mb-3">
+                                                <div class="row mb-3">
                                                     <div class="col-sm-6">
                                                         <label class="form-label">
                                                             Actions in queue
@@ -130,18 +130,18 @@
                                                         <div>
                                                             @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
                                                                 @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                    <a class="btn btn-block btn-secondary" disabled>
+                                                                    <a class="btn btn-block btn-secondary mb-1" disabled>
                                                                         {{ $actionData['name'] }}
                                                                     </a>
                                                                 @elseif ($actionData['type'] == 'hostile')
                                                                     @if ($battle->combatants->count() == 2)
                                                                         @php $target = $battle->combatants->where('id', '!=', $playerCombatant->id)->first(); @endphp
-                                                                        <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$actionKey]) }}">
+                                                                        <a class="btn btn-block btn-primary mb-1" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$actionKey]) }}">
                                                                             {{ $actionData['name'] }}
                                                                         </a>
                                                                     @endif
                                                                 @elseif ($actionData['type'] == 'self')
-                                                                    <a class="btn btn-block btn-primary" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$actionKey]) }}">
+                                                                    <a class="btn btn-block btn-primary mb-1" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$actionKey]) }}">
                                                                         {{ $actionData['name'] }}
                                                                     </a>
                                                                 @endif
@@ -149,7 +149,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="row mb-3">
                                                     <div class="col-sm-12">
                                                         <label class="form-label">
                                                             Strategy <small>(for turns taken while offline)</small>
@@ -161,11 +161,11 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="row mb-3">
                                                     <div class="col-sm-9">
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="automated" {{ $playerCombatant->automated != false ? 'checked' : null }}>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" id="automated" name="automated" class="form-check-input" {{ $playerCombatant->automated != false ? 'checked' : null }}>
+                                                            <label for="automated" class="form-check-label">
                                                                 Automate all of my turns
                                                             </label>
                                                         </div>

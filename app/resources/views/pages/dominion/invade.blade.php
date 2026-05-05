@@ -301,9 +301,9 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <div class="checkbox">
-                                                        <label style="font-weight: normal; margin-left: 5px;">
-                                                            <input type="checkbox" name="cancel_leave_range" />
+                                                    <div class="form-check">
+                                                        <input type="checkbox" id="cancel_leave_range" name="cancel_leave_range" class="form-check-input" />
+                                                        <label for="cancel_leave_range" class="form-check-label" style="font-weight: normal;">
                                                             Cancel my attack if the target leaves my 75% range
                                                         </label>
                                                     </div>
