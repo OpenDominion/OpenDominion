@@ -8,7 +8,7 @@
                 <div class="card-header">
                     <span class="card-title">Reset Password</span>
                 </div>
-                <form action="{{ route('auth.password.request') }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('auth.password.request') }}" method="post" role="form">
                     @csrf
 
                     <input type="hidden" name="token" value="{{ $token }}">
@@ -16,24 +16,24 @@
                     <div class="card-body">
 
                         {{-- Email --}}
-                        <div class="mb-3">
-                            <label for="email" class="col-sm-3 control-label">Email</label>
+                        <div class="row mb-3">
+                            <label for="email" class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ $email or old('email') }}" required autofocus>
                             </div>
                         </div>
 
                         {{-- Password --}}
-                        <div class="mb-3">
-                            <label for="password" class="col-sm-3 control-label">Password</label>
+                        <div class="row mb-3">
+                            <label for="password" class="col-sm-3 col-form-label">Password</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
                             </div>
                         </div>
 
                         {{-- Password (confirm) --}}
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="col-sm-3 control-label">Password (confirm)</label>
+                        <div class="row">
+                            <label for="password_confirmation" class="col-sm-3 col-form-label">Password (confirm)</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Password (confirm)" required>
                             </div>

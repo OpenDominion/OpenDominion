@@ -8,14 +8,14 @@
                 <div class="card-header">
                     <span class="card-title">Reset Password</span>
                 </div>
-                <form action="{{ route('auth.password.email') }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('auth.password.email') }}" method="post" role="form">
                     @csrf
 
                     <div class="card-body">
 
                         {{-- Email --}}
-                        <div class="mb-3">
-                            <label for="email" class="col-sm-3 control-label">Email</label>
+                        <div class="row mb-3">
+                            <label for="email" class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>
                             </div>

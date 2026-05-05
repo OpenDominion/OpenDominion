@@ -72,13 +72,13 @@
                 <div class="card-header">
                     <span class="card-title">Post Reply</span>
                 </div>
-                <form action="{{ route('dominion.council.reply', $thread) }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('dominion.council.reply', $thread) }}" method="post" role="form">
                     @csrf
                     <div class="card-body">
 
                         {{-- Body --}}
-                        <div class="mb-3">
-                            <label for="body" class="col-sm-3 control-label">Body</label>
+                        <div class="row mb-3">
+                            <label for="body" class="col-sm-3 col-form-label">Body</label>
                             <div class="col-sm-9">
                                 <textarea name="body" id="body" rows="3" class="form-control" placeholder="Body" required {{ $selectedDominion->isLocked() ? 'disabled' : null }}>{{ old('body') }}</textarea>
                                 <p class="form-text">Markdown is supported with <a href="http://commonmark.org/help/" target="_blank">CommonMark syntax <i class="fa fa-external-link"></i></a>.</p>
