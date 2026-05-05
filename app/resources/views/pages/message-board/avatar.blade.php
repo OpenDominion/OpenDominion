@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12">
-            <form action="{{ route('message-board.avatar') }}" method="post" class="form-horizontal" role="form">
+            <form action="{{ route('message-board.avatar') }}" method="post" role="form">
                 @csrf
                 <div class="card card-primary">
                     <div class="card-header">

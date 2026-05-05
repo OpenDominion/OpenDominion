@@ -13,13 +13,13 @@
                         <a href="{{ route('message-board') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
                 </div>
-                <form action="{{ route('message-board.create') }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('message-board.create') }}" method="post" role="form">
                     @csrf
                     <div class="card-body">
 
                         {{-- Title --}}
-                        <div class="mb-3">
-                            <label for="category" class="col-sm-3 control-label">Category</label>
+                        <div class="row mb-3">
+                            <label for="category" class="col-sm-3 col-form-label">Category</label>
                             <div class="col-sm-9">
                                 <select name="category" id="category" class="form-select">
                                     @foreach ($categories as $category)
@@ -34,16 +34,16 @@
                         </div>
 
                         {{-- Title --}}
-                        <div class="mb-3">
-                            <label for="title" class="col-sm-3 control-label">Title</label>
+                        <div class="row mb-3">
+                            <label for="title" class="col-sm-3 col-form-label">Title</label>
                             <div class="col-sm-9">
                                 <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus>
                             </div>
                         </div>
 
                         {{-- Body --}}
-                        <div class="mb-3">
-                            <label for="body" class="col-sm-3 control-label">Body</label>
+                        <div class="row mb-3">
+                            <label for="body" class="col-sm-3 col-form-label">Body</label>
                             <div class="col-sm-9">
                                 <textarea name="body" id="body" cols="30" rows="10" class="form-control" placeholder="Body" required>{{ old('body') }}</textarea>
                                 <p class="form-text">
