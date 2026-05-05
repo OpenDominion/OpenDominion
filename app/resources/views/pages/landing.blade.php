@@ -55,16 +55,23 @@
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 1.35rem;
-            color: #afa170;
+            color: #e8e0d4;
             letter-spacing: 0.03em;
-        }
-
-        .landing-nav .navbar-brand:hover {
-            color: #c6b680;
+            transition: color 0.2s;
         }
 
         .landing-nav .navbar-brand b {
             font-weight: 700;
+            color: #afa170;
+            transition: color 0.2s;
+        }
+
+        .landing-nav .navbar-brand:hover {
+            color: #fff;
+        }
+
+        .landing-nav .navbar-brand:hover b {
+            color: #c6b680;
         }
 
         .landing-nav .nav-link {
@@ -116,7 +123,8 @@
         /* ── Hero ── */
         .landing-hero {
             position: relative;
-            height: 50vh;
+            min-height: 50vh;
+            padding-top: 4.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -162,28 +170,50 @@
             padding: 2rem 1rem;
         }
 
+        .landing-eyebrow {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: clamp(0.55rem, 1.6vw, 0.85rem);
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: #e8d4a0;
+            margin-bottom: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95), 0 0 16px rgba(0, 0, 0, 0.85);
+        }
+
+        .landing-eyebrow::before,
+        .landing-eyebrow::after {
+            content: '';
+            display: inline-block;
+            width: clamp(1rem, 4vw, 2.5rem);
+            height: 1px;
+            background: rgba(199, 176, 120, 0.45);
+            vertical-align: middle;
+            margin: 0 clamp(0.4rem, 1.5vw, 1rem);
+        }
+
         .landing-title {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: clamp(2.5rem, 7vw, 5.5rem);
-            color: #fff;
+            font-size: clamp(2rem, 5vw, 4.25rem);
+            color: #f0e6cc;
             text-shadow:
                 0 2px 20px rgba(0, 0, 0, 0.7),
                 0 0 60px rgba(186, 159, 80, 0.15);
             letter-spacing: 0.06em;
-            margin-bottom: 0.4em;
+            margin-bottom: 0.9rem;
             line-height: 1.1;
         }
 
         .landing-subtitle {
             font-family: 'Crimson Pro', serif;
-            font-size: clamp(1rem, 2.2vw, 1.4rem);
+            font-size: clamp(0.85rem, 2.2vw, 1.4rem);
             color: rgba(232, 224, 212, 0.7);
             font-weight: 400;
             font-style: italic;
             letter-spacing: 0.04em;
-            margin-bottom: 2.5rem;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+            margin-bottom: 2rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 14px rgba(0, 0, 0, 0.75);
         }
 
         .landing-cta {
@@ -243,14 +273,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .landing-cards .col-lg-3,
-        .landing-cards .col-lg-6 {
-            display: flex;
-            flex-direction: column;
-        }
-
         .landing-card-small {
-            height: calc(60% - 2rem);
             display: flex;
             flex-direction: column;
         }
@@ -259,19 +282,34 @@
             flex: 1;
         }
 
-        .landing-card-small:last-child {
-            margin-bottom: 0;
-        }
-
         .landing-card-tall {
-            height: 100%;
             display: flex;
             flex-direction: column;
-            margin-bottom: 0;
         }
 
         .landing-card-tall .landing-card-body {
             flex: 1;
+        }
+
+        @media (min-width: 992px) {
+            .landing-cards .col-lg-3,
+            .landing-cards .col-lg-6 {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .landing-card-small {
+                height: calc(60% - 2rem);
+            }
+
+            .landing-card-small:last-child {
+                margin-bottom: 0;
+            }
+
+            .landing-card-tall {
+                height: 100%;
+                margin-bottom: 0;
+            }
         }
 
         .landing-card-header {
@@ -348,6 +386,11 @@
 
         a.landing-card .landing-card-header {
             transition: color 0.25s ease;
+        }
+
+        a.landing-card .landing-card-body {
+            text-align: justify;
+            hyphens: auto;
         }
 
         a.landing-card:hover .landing-card-header {
@@ -436,8 +479,9 @@
         <div class="landing-hero-bg"></div>
 
         <div class="landing-content">
-            <h1 class="landing-title">OpenDominion</h1>
-            <p class="landing-subtitle">A free online multiplayer strategy game in a medieval fantasy setting</p>
+            <p class="landing-eyebrow">Based on the Kamikaze Games Classic</p>
+            <h1 class="landing-title">Where Power Prevails</h1>
+            <p class="landing-subtitle">A text-based online multiplayer strategy game in a medieval fantasy setting</p>
 
             @auth
                 <a href="{{ route('dashboard') }}" class="landing-cta">Play Now</a>
@@ -459,9 +503,9 @@
                     <div class="landing-card landing-card-small">
                         <div class="landing-card-header">
                             @if ($currentRound === null)
-                                Current Round
+                                <i class="fa fa-shield-halved fa-fw me-2"></i>Current Round
                             @else
-                                {{ $currentRound->hasStarted() ? 'Current' : 'Next' }} Round: {{ $currentRound->number }}
+                                <i class="fa fa-shield-halved fa-fw me-2"></i> Round #{{ $currentRound->number }}
                             @endif
                         </div>
                         <div class="landing-card-body text-center">
@@ -508,7 +552,7 @@
                     {{-- Podcast --}}
                     <a href="https://anchor.fm/riol-talk" target="_blank" class="landing-card landing-card-small">
                         <div class="landing-card-header">
-                            <i class="fa fa-podcast me-2"></i>Riol Talk Podcast
+                            <i class="fa fa-podcast fa-fw me-2"></i>Podcasts
                         </div>
                         <div class="landing-card-body">
                             <p>Strategy discussion, round recaps, and community interviews from the world of OpenDominion.</p>
@@ -560,19 +604,19 @@
 
                     <a href="{{ route('valhalla.index') }}" class="landing-card landing-card-small">
                         <div class="landing-card-header">
-                            <i class="fa fa-trophy me-2"></i>Valhalla
+                            <i class="fa fa-trophy fa-fw me-2"></i>Valhalla
                         </div>
                         <div class="landing-card-body">
-                            <p>The hall of legends. Browse the all-time leaderboards, past round winners, and the greatest dominions to ever rule.</p>
+                            <p>The hall of legends. Browse the all-time leaderboards. See who conquered, who endured, and whose dominion stood above all others.</p>
                         </div>
                     </a>
 
                     <a href="{{ route('scribes.overview') }}" class="landing-card landing-card-small">
                         <div class="landing-card-header">
-                            <i class="fa fa-book me-2"></i>The Scribes
+                            <i class="fa fa-book fa-fw me-2"></i>The Scribes
                         </div>
                         <div class="landing-card-body">
-                            <p>Your guide to the realm. Learn about races, units, buildings, spells, and the mechanics that drive the game.</p>
+                            <p>Knowledge is power. Learn about the races, units, buildings, spells, and everything else at your disposal.</p>
                         </div>
                     </a>
 
