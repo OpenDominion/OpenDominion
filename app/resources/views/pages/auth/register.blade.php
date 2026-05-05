@@ -8,7 +8,7 @@
                 <div class="card-header">
                     <span class="card-title">Register</span>
                 </div>
-                <form action="{{ route('auth.register') }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('auth.register') }}" method="post" role="form">
                     @csrf
                     @honeypot
 
@@ -18,8 +18,8 @@
                         <p>Once you activate your user account, you can sign up for an active round and start playing. Your user account will be persistent across rounds and dominions.</p>
 
                         {{-- Display Name --}}
-                        <div class="mb-3">
-                            <label for="display_name" class="col-sm-3 control-label">Display Name</label>
+                        <div class="row mb-3">
+                            <label for="display_name" class="col-sm-3 col-form-label">Display Name</label>
                             <div class="col-sm-9">
                                 <input type="text" name="display_name" id="display_name" class="form-control" placeholder="Display Name" value="{{ old('display_name') }}" required autofocus>
                                 <span class="form-text">
@@ -29,8 +29,8 @@
                         </div>
 
                         {{-- Email --}}
-                        <div class="mb-3">
-                            <label for="email" class="col-sm-3 control-label">Email</label>
+                        <div class="row mb-3">
+                            <label for="email" class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
                                 <span class="form-text">
@@ -40,27 +40,27 @@
                         </div>
 
                         {{-- Password --}}
-                        <div class="mb-3">
-                            <label for="password" class="col-sm-3 control-label">Password</label>
+                        <div class="row mb-3">
+                            <label for="password" class="col-sm-3 col-form-label">Password</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
                             </div>
                         </div>
 
                         {{-- Password (confirm) --}}
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="col-sm-3 control-label">Password (confirm)</label>
+                        <div class="row mb-3">
+                            <label for="password_confirmation" class="col-sm-3 col-form-label">Password (confirm)</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Password (confirm)" required>
                             </div>
                         </div>
 
                         {{-- Terms and Conditions --}}
-                        <div class="mb-3">
+                        <div class="row mb-3">
                             <div class="offset-sm-3 col-sm-9">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" id="agreement_rules" name="agreement_rules" />
+                                <div class="form-check">
+                                    <input type="checkbox" id="agreement_rules" name="agreement_rules" class="form-check-input" />
+                                    <label for="agreement_rules" class="form-check-label">
                                         I will adhere to the rules described in the <a href="#" data-bs-toggle="modal" data-bs-target="#user-agreement">User Agreement</a>
                                     </label>
                                 </div>
@@ -69,7 +69,7 @@
 
                         {{-- Turnstile CAPTCHA --}}
                         @if (config('turnstile.enabled'))
-                            <div class="mb-3">
+                            <div class="row mb-3">
                                 <div class="offset-sm-3 col-sm-9">
                                     <div class="cf-turnstile" data-sitekey="{{ config('turnstile.site_key') }}"></div>
                                 </div>
