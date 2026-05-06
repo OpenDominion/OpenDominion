@@ -44,7 +44,7 @@
                         @if ($thread->flagged_for_removal)
                             <p class="text-danger"><i>This post has been flagged for removal.</i></p>
                         @else
-                            {!! Markdown::convertToHtml($thread->body) !!}
+                            {!! Str::markdown($thread->body) !!}
                         @endif
                     </div>
                 @else
@@ -81,7 +81,7 @@
                                         <p class="text-danger"><i>This post has been flagged for removal.</i></p>
                                         @include('partials.forum-rules')
                                     @else
-                                        {!! Markdown::convertToHtml($post->body) !!}
+                                        {!! Str::markdown($post->body) !!}
                                     @endif
                                 </div>
                             </div>
@@ -96,13 +96,15 @@
                     @endif
                 @endif
 
-                <form action="{{ route('dominion.forum.reply', $thread) }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('dominion.forum.reply', $thread) }}" method="post" role="form">
                     @csrf
                     <div class="card-footer">
-                        <label for="body" class="col-sm-2 control-label">Post Reply</label>
-                        <div class="col-sm-10">
-                            <textarea name="body" id="body" rows="3" class="form-control" placeholder="Body" required {{ $selectedDominion->isLocked() ? 'disabled' : null }}>{{ old('body') }}</textarea>
-                            <p class="form-text">Markdown is supported with <a href="http://commonmark.org/help/" target="_blank">CommonMark syntax <i class="fa fa-external-link"></i></a>.</p>
+                        <div class="row">
+                            <label for="body" class="col-sm-2 col-form-label">Post Reply</label>
+                            <div class="col-sm-10">
+                                <textarea name="body" id="body" rows="3" class="form-control" placeholder="Body" required {{ $selectedDominion->isLocked() ? 'disabled' : null }}>{{ old('body') }}</textarea>
+                                <p class="form-text">Markdown is supported with <a href="http://commonmark.org/help/" target="_blank">CommonMark syntax <i class="fa fa-external-link"></i></a>.</p>
+                            </div>
                         </div>
                     </div>
 

@@ -109,7 +109,7 @@ class AppServiceProvider extends AbstractServiceProvider
     public function register()
     {
         if ($this->app->environment() === 'local') {
-            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+            $this->app->register(\Fruitcake\LaravelDebugbar\ServiceProvider::class);
         }
 
         $this->registerCalculators();

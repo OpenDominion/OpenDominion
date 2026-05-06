@@ -7,7 +7,7 @@
         <div class="card-header">
             <span class="card-title">Delete Post</span>
         </div>
-        <form action="{{ route('dominion.forum.delete.post', $post) }}" method="post" class="form-horizontal" role="form">
+        <form action="{{ route('dominion.forum.delete.post', $post) }}" method="post" role="form">
             @csrf
             <div class="card-body">
                 Are you sure you want to delete this post?
@@ -23,7 +23,7 @@
             <span class="card-title">Thread: {{ $post->thread->title }}</span>
         </div>
         <div class="card-body">
-            {!! Markdown::convertToHtml($post->body) !!}
+            {!! Str::markdown($post->body) !!}
         </div>
         <div class="card-footer">
             <small>

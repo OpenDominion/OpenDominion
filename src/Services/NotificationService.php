@@ -96,11 +96,17 @@ class NotificationService
                     break;
 
                 case 'irregular_dominion':
-                    $dominion->notify(new IrregularDominionEmailNotification($emailNotifications));
+                    $notification = new IrregularDominionEmailNotification($emailNotifications);
+                    dispatch(function () use ($dominion, $notification) {
+                        $dominion->notify($notification);
+                    })->afterResponse();
                     break;
 
                 case 'irregular_realm':
-                    $dominion->notify(new IrregularDominionEmailNotification($emailNotifications));
+                    $notification = new IrregularDominionEmailNotification($emailNotifications);
+                    dispatch(function () use ($dominion, $notification) {
+                        $dominion->notify($notification);
+                    })->afterResponse();
                     break;
             }
 

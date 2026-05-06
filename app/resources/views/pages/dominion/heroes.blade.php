@@ -7,7 +7,7 @@
 
         <div class="col-sm-12 col-md-9">
             @if ($hero === null)
-                <form class="form-horizontal" action="{{ route('dominion.heroes.create') }}" method="post" role="form">
+                <form action="{{ route('dominion.heroes.create') }}" method="post" role="form">
                     @csrf
                     <div class="card card-primary">
                         <div class="card-header">
@@ -16,19 +16,17 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="col-sm-3 control-label">Name</label>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Name</label>
                                         <div class="col-sm-9">
                                             <div class="input-group">
                                                 <input name="name" id="name" class="form-control" />
-                                                <div class="input-group-btn">
-                                                    <button id="randomize" class="btn btn-secondary" type="button">Randomize</button>
-                                                </div>
+                                                <button id="randomize" class="btn btn-secondary" type="button">Randomize</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="col-sm-3 control-label">Class</label>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Class</label>
                                         <div class="col-sm-9">
                                             <select name="class" class="form-select">
                                                 @foreach ($heroHelper->getBasicClasses() as $class)

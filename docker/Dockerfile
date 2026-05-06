@@ -1,6 +1,6 @@
 FROM node:18 AS node
 
-FROM php:8.4-apache
+FROM php:8.5-apache
 
 # System dependencies for PHP extensions and tooling
 RUN apt-get update && apt-get install -y \

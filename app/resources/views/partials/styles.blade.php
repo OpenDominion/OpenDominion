@@ -1,6 +1,9 @@
 {{-- Vite compiled styles (Bootstrap 5, Font Awesome 6, app styles) --}}
 @vite(['app/resources/sass/app.scss'])
 
+{{-- flag-icons (loaded statically; CSS references SVGs by relative URL) --}}
+<link rel="stylesheet" href="{{ asset('assets/vendor/flag-icons/css/flag-icons.min.css') }}">
+
 {{-- Google Fonts --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

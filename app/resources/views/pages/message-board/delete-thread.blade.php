@@ -7,7 +7,7 @@
         <div class="card-header">
             <span class="card-title">Delete Thread</span>
         </div>
-        <form action="{{ route('message-board.delete.thread', $thread) }}" method="post" class="form-horizontal" role="form">
+        <form action="{{ route('message-board.delete.thread', $thread) }}" method="post" role="form">
             @csrf
             <div class="card-body">
                 @if ($thread->posts->isEmpty())
@@ -27,7 +27,7 @@
             <span class="card-title">Thread: {{ $thread->title }}</span>
         </div>
         <div class="card-body">
-            {!! Markdown::convertToHtml($thread->body) !!}
+            {!! Str::markdown($thread->body) !!}
         </div>
         <div class="card-footer">
             <small>

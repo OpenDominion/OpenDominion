@@ -8,37 +8,36 @@
                 <div class="card-header">
                     <span class="card-title">Login</span>
                 </div>
-                <form action="{{ route('auth.login') }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('auth.login') }}" method="post" role="form">
                     @csrf
 
                     <div class="card-body">
 
                         {{-- Email --}}
-                        <div class="mb-3">
-                            <label for="email" class="col-sm-3 control-label">Email</label>
+                        <div class="row mb-3">
+                            <label for="email" class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required autofocus>
                             </div>
                         </div>
 
                         {{-- Password --}}
-                        <div class="mb-3">
-                            <label for="password" class="col-sm-3 control-label">Password</label>
+                        <div class="row mb-3">
+                            <label for="password" class="col-sm-3 col-form-label">Password</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                                <span class="form-text" style="margin-bottom: 0">
+                                <span class="form-text">
                                     Forgot your password? <a href="{{ route('auth.password.request') }}">Reset Password</a>
                                 </span>
                             </div>
                         </div>
 
                         {{-- Remember Me --}}
-                        <div class="mb-3">
+                        <div class="row mb-3">
                             <div class="offset-sm-3 col-sm-9">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember" checked> Remember me
-                                    </label>
+                                <div class="form-check">
+                                    <input type="checkbox" name="remember" id="remember" class="form-check-input" checked>
+                                    <label for="remember" class="form-check-label">Remember me</label>
                                 </div>
                             </div>
                         </div>

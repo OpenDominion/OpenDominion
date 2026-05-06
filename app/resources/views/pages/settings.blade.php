@@ -25,38 +25,45 @@
                     <div class="row">
                         <div class="col-md-6">
 
-                            <h2 class="border-bottom pb-2 mb-3">Basic Information</h2>
-
-                            {{-- Display Name --}}
-                            <div class="mb-3">
-                                <label class="col-sm-3 col-form-label">Display Name</label>
-                                <div class="col-sm-9">
-                                    <p class="form-control-plaintext">{{ $user->display_name }}</p>
-                                    <p class="form-text">Visible on your <a href="{{ route('valhalla.user', $user->id) }}">public profile</a>.</p>
-                                    <p class="form-text">Your display name can only be changed by an admin.</p>
-                                </div>
-                            </div>
+                            <h2 class="border-bottom pb-2 mb-3">Private Information</h2>
 
                             {{-- Email --}}
-                            <div class="mb-3">
+                            <div class="mb-3 row">
                                 <label for="email" class="col-sm-3 col-form-label">Email</label>
                                 <div class="col-sm-9">
                                     <input type="email" name="account_email" id="email" class="form-control" value="{{ $user->email }}" readonly>
-                                    <p class="form-text">Your email address can only be changed by an admin.</p>
+                                    <p class="form-text mb-0">
+                                        This can only be changed by an admin -
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#reportModal" data-report-type="account">Request a change</a>.
+                                    </p>
                                 </div>
                             </div>
 
-                            {{-- Theme --}}
-                            <div class="mb-3">
-                                <label class="col-sm-3 col-form-label">Theme</label>
-                                <div class="col-sm-9">
-                                    <p class="form-control-plaintext">Use the color mode picker in the navigation bar to switch themes.</p>
+                            {{-- Discord --}}
+                            @if ($discordHelper->getClientId())
+                                <div class="mb-3 row">
+                                    @if ($discordUser = $user->discordUser()->first())
+                                        <label class="col-sm-3 col-form-label">Discord Account</label>
+                                        <div class="col-sm-9">
+                                            <p class="form-control-plaintext">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
+                                            <a href="{{ route('discord-unlink') }}" class="btn btn-danger">
+                                                <i class="fa fa-unlink"></i> Unlink account
+                                            </a>
+                                        </div>
+                                    @else
+                                        <label class="col-sm-3 col-form-label">Discord</label>
+                                        <div class="col-sm-9">
+                                            <a href="{{ $discordHelper->getDiscordConnectUrl('link') }}" class="btn btn-primary">
+                                                <i class="fa fa-link"></i> Link account
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
-                            </div>
+                            @endif
 
                             {{-- Advisors --}}
-                            <div class="mb-3">
-                                <label for="skin" class="col-sm-3 col-form-label">Shared Advisors</label>
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label">Shared Advisors</label>
                                 <div class="col-sm-9">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="packadvisors" id="packadvisors" {{ $user->getSetting('packadvisors') === false ? null : 'checked' }} />
@@ -73,53 +80,49 @@
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- Discord --}}
-                            @if ($discordHelper->getClientId())
-                                <div class="mb-3">
-                                    @if ($discordUser = $user->discordUser()->first())
-                                        <label for="skin" class="col-sm-3 col-form-label">Discord Account</label>
-                                        <div class="col-sm-9">
-                                            <p class="form-text">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
-                                            <a href="{{ route('discord-unlink') }}" class="btn btn-danger">
-                                                <i class="fa fa-unlink"></i> Unlink account
-                                            </a>
-                                        </div>
-                                    @else
-                                        <label for="skin" class="col-sm-3 col-form-label">Discord</label>
-                                        <div class="col-sm-9">
-                                            <a href="{{ $discordHelper->getDiscordConnectUrl('link') }}" class="btn btn-primary">
-                                                <i class="fa fa-link"></i> Link account
-                                            </a>
-                                        </div>
-                                    @endif
-                                </div>
-                            @endif
                         </div>
                         <div class="col-md-6">
 
-                            <h2 class="border-bottom pb-2 mb-3">Avatar</h2>
+                            <h2 class="border-bottom pb-2 mb-3">Public Information</h2>
 
-                            {{-- Avatar --}}
-                            <div class="mb-3">
-                                <div class="col-12">
+                            {{-- Display Name --}}
+                            <div class="mb-3 row">
+                                <label for="display_name" class="col-sm-3 col-form-label">Display Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="display_name" class="form-control" value="{{ $user->display_name }}" readonly>
+                                    <p class="form-text mb-0">
+                                        This can only be changed by an admin -
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#reportModal" data-report-type="account">Request a change</a>.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {{-- Country --}}
+                            <div class="mb-3 row">
+                                <label for="country" class="col-sm-3 col-form-label">Country</label>
+                                <div class="col-sm-9">
+                                    @php $selectedCountry = $user->getSetting('country'); @endphp
+                                    <select name="country" id="country" class="form-control select2-country" style="width: 100%;" data-placeholder="Select a country (optional)">
+                                        <option value=""></option>
+                                        @foreach ($countryHelper->getCountries() as $code => $name)
+                                            <option value="{{ $code }}" data-code="{{ $code }}" {{ $selectedCountry === $code ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <p class="form-text">Displays a flag on your <a href="{{ route('valhalla.user', $user->id) }}">public profile</a>.</p>
+                                </div>
+                            </div>
+
+                            {{-- Avatar (RPG icon shown on profile and message board) --}}
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label">Avatar</label>
+                                <div class="col-sm-9">
                                     <div style="margin-bottom: 10px;">
-                                        <img src="{{ $user->getAvatarUrl() }}" class="img-fluid" alt="Avatar of {{ $user->display_name }}">
+                                        <i class="ra {{ $user->getSetting('boardavatar') ?: 'ra-player' }} text-muted" style="font-size: 64px;"></i>
                                     </div>
-                                    @if ($user->avatar === null)
-                                        <p class="form-text">Your are currently using your <a href="https://en.gravatar.com/" target="_blank">Gravatar <i class="fa fa-external-link"></i></a>.</p>
-                                    {{--@else--}}
-                                        {{--<p class="form-text">You are using a custom uploaded avatar. <a href="#">Reset to Gravatar</a>.</p>--}}
-                                    @endif
-
-                                    <label class="btn btn-secondary btn-file">
-                                        Upload new avatar <input type="file" name="account_avatar" accept="image/*">
-                                    </label>
-
-                                    <span class="new-avatar-filename" style="padding-left: 8px;"></span>
-
-                                    <p class="form-text">Uploaded avatars will be cropped/resized to 200x200 pixels and converted to PNG. Upload a square image for best results.</p>
-                                    <p class="form-text">Supported formats are JPG, PNG, WebP and non-animated GIF.</p>
+                                    <a href="{{ route('message-board.avatar') }}" class="btn btn-secondary">
+                                        <i class="fa fa-pencil"></i> Change avatar
+                                    </a>
+                                    <p class="form-text">The RPG icon shown on your <a href="{{ route('valhalla.user', $user->id) }}">public profile</a> and message board posts.</p>
                                 </div>
                             </div>
 
@@ -239,6 +242,19 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
+
+            // Country dropdown with flag icons
+            var formatCountry = function (state) {
+                if (!state.id) return state.text;
+                var code = $(state.element).data('code');
+                return $('<span><span class="fi fi-' + code + '" style="margin-right: 8px;"></span>' + state.text + '</span>');
+            };
+            $('.select2-country').select2({
+                templateResult: formatCountry,
+                templateSelection: formatCountry,
+                allowClear: true,
+                placeholder: $('.select2-country').data('placeholder'),
+            });
 
             // Display filename and filesize on avatar upload
             $(document).on('change', ':file', function () {

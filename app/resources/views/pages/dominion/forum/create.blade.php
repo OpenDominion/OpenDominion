@@ -13,21 +13,21 @@
                         <a href="{{ route('dominion.forum') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
                 </div>
-                <form action="{{ route('dominion.forum.create') }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('dominion.forum.create') }}" method="post" role="form">
                     @csrf
                     <div class="card-body">
 
                         {{-- Title --}}
-                        <div class="mb-3">
-                            <label for="title" class="col-sm-3 control-label">Title</label>
+                        <div class="row mb-3">
+                            <label for="title" class="col-sm-3 col-form-label">Title</label>
                             <div class="col-sm-9">
                                 <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             </div>
                         </div>
 
                         {{-- Body --}}
-                        <div class="mb-3">
-                            <label for="body" class="col-sm-3 control-label">Body</label>
+                        <div class="row mb-3">
+                            <label for="body" class="col-sm-3 col-form-label">Body</label>
                             <div class="col-sm-9">
                                 <textarea name="body" id="body" cols="30" rows="10" class="form-control" placeholder="Body" required {{ $selectedDominion->isLocked() ? 'disabled' : null }}>{{ old('body') }}</textarea>
                                 <p class="form-text">Markdown is supported with <a href="http://commonmark.org/help/" target="_blank">CommonMark syntax <i class="fa fa-external-link"></i></a>.</p>

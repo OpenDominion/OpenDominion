@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Helpers\CountryHelper;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Models\DailyRanking;
 use OpenDominion\Models\Dominion;
@@ -168,14 +169,15 @@ class ValhallaController extends AbstractController
         $landCalculator = app(LandCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
         $rankingsHelper = app(RankingsHelper::class);
+        $countryHelper = app(CountryHelper::class);
 
         $dominions = $user->dominions()
             ->with(['queues', 'race.units.perks', 'realm', 'round.league'])
+            ->whereHas('round', function ($q) {
+                $q->where('end_date', '<', now());
+            })
             ->orderByDesc('round_id')
-            ->get()
-            ->filter(function (Dominion $dominion) {
-                if ($dominion->round->end_date < now()) return $dominion;
-            });
+            ->get();
 
         $leagues = RoundLeague::with('rounds')
             ->orderByDesc('created_at')
@@ -186,14 +188,58 @@ class ValhallaController extends AbstractController
             ->get()
             ->groupBy('round.round_league_id');
 
+        // Realm wins: look up rank-1 finishers in each of the user's ended rounds,
+        // then count rounds where the winner shared the user's realm number.
+        $userRealmByRound = $dominions->mapWithKeys(function (Dominion $d) {
+            return [$d->round_id => $d->realm->number];
+        });
+
+        $realmWinsByLeague = [];
+        if ($userRealmByRound->isNotEmpty()) {
+            $winners = DailyRanking::with('round')
+                ->where('key', 'largest-dominions')
+                ->where('rank', 1)
+                ->whereIn('round_id', $userRealmByRound->keys())
+                ->get();
+
+            foreach ($winners as $winner) {
+                if ($userRealmByRound[$winner->round_id] === $winner->realm_number) {
+                    $leagueId = $winner->round->round_league_id;
+                    $realmWinsByLeague[$leagueId] = ($realmWinsByLeague[$leagueId] ?? 0) + 1;
+                }
+            }
+        }
+
+        $leagueStats = [];
+        foreach ($leagues as $league) {
+            $leagueDominions = $dominions->where('round.round_league_id', $league->id);
+            if ($leagueDominions->isEmpty()) {
+                continue;
+            }
+
+            $rankings = $dailyRankings[$league->id] ?? collect();
+            $raceCounts = $leagueDominions->groupBy('race.name')->map->count()->sortDesc();
+
+            $leagueStats[$league->id] = [
+                'rounds_played' => $leagueDominions->count(),
+                'round_wins' => $rankings->where('key', 'largest-dominions')->where('rank', 1)->count(),
+                'realm_wins' => $realmWinsByLeague[$league->id] ?? 0,
+                'titles' => $rankings->where('rank', 1)->count(),
+                'best_land' => (int)$rankings->where('key', 'largest-dominions')->max('value'),
+                'top_race' => $raceCounts->keys()->first(),
+            ];
+        }
+
         return view('pages.valhalla.user', [
             'user' => $user,
             'dominions' => $dominions,
             'leagues' => $leagues,
             'dailyRankings' => $dailyRankings,
+            'leagueStats' => $leagueStats,
             'landCalculator' => $landCalculator,
             'networthCalculator' => $networthCalculator,
             'rankingsHelper' => $rankingsHelper,
+            'countryHelper' => $countryHelper,
         ]);
     }
 

@@ -59,6 +59,13 @@ const copies = [
 
     // Select2 — also loaded synchronously so $.fn.select2 is available to inline scripts.
     [path.join(nm, 'select2', 'dist', 'js', 'select2.min.js'), path.join(vendor, 'select2', 'select2.min.js')],
+
+    // flag-icons — loaded as a static <link> in layouts. The compiled CSS uses
+    // `url(../flags/...)`, so flags must live one level up from the css/ dir.
+    // country.json is read server-side by CountryHelper.
+    [path.join(nm, 'flag-icons', 'css'), path.join(vendor, 'flag-icons', 'css')],
+    [path.join(nm, 'flag-icons', 'flags'), path.join(vendor, 'flag-icons', 'flags')],
+    [path.join(nm, 'flag-icons', 'country.json'), path.join(vendor, 'flag-icons', 'country.json')],
 ];
 
 let ok = true;

@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Image;
+use OpenDominion\Helpers\CountryHelper;
 use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\User;
@@ -23,13 +24,15 @@ class SettingsController extends AbstractController
 
         $notificationHelper = app(NotificationHelper::class);
         $discordHelper = app(DiscordHelper::class);
+        $countryHelper = app(CountryHelper::class);
 
         $notificationSettings = $user->settings['notifications'] ?? $notificationHelper->getDefaultUserNotificationSettings();
 
         return view('pages.settings', [
             'notificationHelper' => $notificationHelper,
             'notificationSettings' => $notificationSettings,
-            'discordHelper' => $discordHelper
+            'discordHelper' => $discordHelper,
+            'countryHelper' => $countryHelper,
         ]);
     }
 
@@ -96,6 +99,15 @@ class SettingsController extends AbstractController
         } else {
             $settings['shareusername'] = false;
         }
+
+        $countryHelper = app(CountryHelper::class);
+        $country = isset($data['country']) ? trim((string)$data['country']) : '';
+        if ($country === '') {
+            unset($settings['country']);
+        } elseif ($countryHelper->isValid($country)) {
+            $settings['country'] = $country;
+        }
+
         $user->settings = $settings;
 
         $user->save();

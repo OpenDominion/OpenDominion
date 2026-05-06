@@ -34,7 +34,6 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
 @import '@fortawesome/fontawesome-free/scss/solid';
 @import '@fortawesome/fontawesome-free/scss/regular';
-@import '@fortawesome/fontawesome-free/scss/brands';
 @import '@fortawesome/fontawesome-free/scss/v4-shims';
 
 // RPG Awesome
@@ -291,6 +290,43 @@ a {
   padding: 10px;
 }
 
+// Message board avatar picker — radio left, icon right, vertically centered.
+// The wrapping row sets `font-size: 48px` to scale the icons, so we explicitly
+// reset font-size on the radio (it sizes itself in em).
+.avatar-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0;
+  padding: 10px;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+
+  .form-check-input {
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 0;
+  }
+
+  > i {
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+  }
+
+  &:has(input:checked) {
+    border-color: var(--bs-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.08);
+  }
+}
+
 // Notifications dropdown
 .notifications-menu .menu > li > a {
   overflow: auto !important;
@@ -441,6 +477,7 @@ html.hourchange:after {
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
   .sidebar-menu .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.06); border-left-color: transparent; }
   .sidebar-menu .nav-item.active > .nav-link { color: #fff; background: rgba(255, 255, 255, 0.08); border-left-color: var(--bs-primary); }
+  .user-header                { background-color: var(--bs-tertiary-bg); }
 }
 
 // ─── Theme System ─────────────────────────────────────────────────────────────
