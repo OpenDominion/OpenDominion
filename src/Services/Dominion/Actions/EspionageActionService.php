@@ -169,9 +169,6 @@ class EspionageActionService
             if ($dominion->round->start_date->diffInHours(now()) < self::THEFT_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot perform resource theft for the first three days of the round');
             }
-            if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
-                throw new GameException('You cannot perform resource theft on targets smaller than yourself');
-            }
             if ($target->user_id == null) {
                 throw new GameException('You cannot perform resource theft on bots');
             }
@@ -508,7 +505,7 @@ class EspionageActionService
                 $resource = 'food';
                 $constraints = [
                     'target_amount' => 2,
-                    'self_production' => 100,
+                    'self_production' => 75,
                     'spy_carries' => 50,
                 ];
                 break;
@@ -526,7 +523,7 @@ class EspionageActionService
                 $resource = 'mana';
                 $constraints = [
                     'target_amount' => 3,
-                    'self_production' => 56,
+                    'self_production' => 50,
                     'spy_carries' => 50,
                 ];
                 break;
@@ -535,7 +532,7 @@ class EspionageActionService
                 $resource = 'ore';
                 $constraints = [
                     'target_amount' => 5,
-                    'self_production' => 68,
+                    'self_production' => 50,
                     'spy_carries' => 50,
                 ];
                 break;
@@ -543,7 +540,7 @@ class EspionageActionService
             case 'steal_gems':
                 $resource = 'gems';
                 $constraints = [
-                    'target_amount' => 2,
+                    'target_amount' => 5,
                     'self_production' => 100,
                     'spy_carries' => 50,
                 ];
@@ -584,6 +581,19 @@ class EspionageActionService
         ];
     }
 
+    /**
+     * Per-acre minimum that an attacker can steal even with zero raw production
+     * of the resource. Lets non-producers grab a small amount instead of zero.
+     */
+    protected const THEFT_PER_ACRE_FLOOR = [
+        'platinum' => 5,
+        'food'     => 5,
+        'lumber'   => 3,
+        'mana'     => 2,
+        'ore'      => 3,
+        'gems'     => 1,
+    ];
+
     protected function getResourceTheftAmount(
         Dominion $dominion,
         Dominion $target,
@@ -598,28 +608,27 @@ class EspionageActionService
                 return 0;
             }
         }
-        // Limit to percentage of target's raw production
+
+        // Limit to percentage of target's *unprotected* stockpile.
+        // Protection equals the target's raw production for the resource — every
+        // building / unit / peasant that produces the resource also defends an
+        // equal amount of it.
         $maxTarget = true;
         if ($constraints['target_amount'] > 0) {
-            $maxTarget = $target->{'resource_' . $resource} * $constraints['target_amount'] / 100;
+            $protectedAmount = $this->getRawProductionForResource($target, $resource);
+            $unprotected     = max(0, $target->{'resource_' . $resource} - $protectedAmount);
+            $maxTarget       = $unprotected * $constraints['target_amount'] / 100;
         }
 
-        // Limit to percentage of dominion's raw production
+        // Limit to percentage of dominion's raw production, with a per-acre
+        // floor so attackers who don't produce the resource can still steal a
+        // small amount.
         $maxDominion = true;
         if ($constraints['self_production'] > 0) {
-            if ($resource === 'platinum') {
-                $maxDominion = rfloor($this->productionCalculator->getPlatinumProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'food') {
-                $maxDominion = rfloor($this->productionCalculator->getFoodProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'lumber') {
-                $maxDominion = rfloor($this->productionCalculator->getLumberProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'mana') {
-                $maxDominion = rfloor($this->productionCalculator->getManaProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'ore') {
-                $maxDominion = rfloor($this->productionCalculator->getOreProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'gems') {
-                $maxDominion = rfloor($this->productionCalculator->getGemProductionRaw($dominion) * $constraints['self_production'] / 100);
-            }
+            $rawProduction = $this->getRawProductionForResource($dominion, $resource);
+            $productionCap = rfloor($rawProduction * $constraints['self_production'] / 100);
+            $perAcreFloor  = $this->landCalculator->getTotalLand($dominion) * (self::THEFT_PER_ACRE_FLOOR[$resource] ?? 0);
+            $maxDominion   = max($productionCap, $perAcreFloor);
         }
 
         // Limit to amount carryable by spies
@@ -638,7 +647,34 @@ class EspionageActionService
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('theft_gains');
 
-        return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier);
+        // Steep penalty for stealing from a smaller target. Curve fit:
+        // 87.5% range -> ~55%, 75% -> ~27%, 60% -> ~10%. Floor at 1%.
+        $selfLand     = $this->landCalculator->getTotalLand($dominion);
+        $targetLand   = $this->landCalculator->getTotalLand($target);
+        $relativeSize = $selfLand > 0 ? min(1.0, $targetLand / $selfLand) : 1.0;
+        $sizePenalty  = max($relativeSize ** 4.5, 0.01);
+
+        return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier * $sizePenalty);
+    }
+
+    protected function getRawProductionForResource(Dominion $dominion, string $resource): float
+    {
+        switch ($resource) {
+            case 'platinum':
+                return $this->productionCalculator->getPlatinumProductionRaw($dominion);
+            case 'food':
+                return $this->productionCalculator->getFoodProductionRaw($dominion);
+            case 'lumber':
+                return $this->productionCalculator->getLumberProductionRaw($dominion);
+            case 'mana':
+                return $this->productionCalculator->getManaProductionRaw($dominion);
+            case 'ore':
+                return $this->productionCalculator->getOreProductionRaw($dominion);
+            case 'gems':
+                return $this->productionCalculator->getGemProductionRaw($dominion);
+        }
+
+        throw new LogicException("Unknown theft resource '{$resource}'");
     }
 
     /**
