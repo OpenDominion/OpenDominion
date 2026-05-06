@@ -148,7 +148,7 @@ class TickService
             $this->raidService->processCompletedRaids($round);
 
             // Auto-complete and expire valuables investigations
-            $this->valuablesService->processRoundTick($round);
+            $this->valuablesService->processValuables($round);
         }
 
         // Realm Assignment

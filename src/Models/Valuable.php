@@ -15,13 +15,12 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $rarity
  * @property string $type
  * @property string $status
- * @property int|null $required_spy_hours
+ * @property int $required_spy_hours
  * @property int|null $spies_assigned
  * @property \Illuminate\Support\Carbon|null $investigation_started_at
  * @property \Illuminate\Support\Carbon|null $investigation_ends_at
  * @property \Illuminate\Support\Carbon|null $stolen_at
  * @property \Illuminate\Support\Carbon $discovered_at
- * @property int $transfer_price
  * @property bool $is_listed
  * @property int|null $sold_price
  * @property bool $transferred

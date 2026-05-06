@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
@@ -9,11 +10,15 @@ use OpenDominion\Models\Valuable;
 
 class ValuablesService
 {
+    /** @var LandCalculator */
+    protected $landCalculator;
+
     /** @var ValuablesHelper */
     protected $valuablesHelper;
 
     public function __construct()
     {
+        $this->landCalculator = app(LandCalculator::class);
         $this->valuablesHelper = app(ValuablesHelper::class);
     }
 
@@ -86,6 +91,8 @@ class ValuablesService
         $type = ValuablesHelper::TYPES[array_rand(ValuablesHelper::TYPES)];
         $name = $this->valuablesHelper->generateName($type, $rarity);
         $config = ValuablesHelper::getRarityConfig()[$rarity];
+        $targetLand = $this->landCalculator->getTotalLand($target);
+        $requiredSpyHours = (int) ceil($targetLand * $config['spy_hours_multiplier']);
 
         $valuable = new Valuable();
         $valuable->round_id = $attacker->round_id;
@@ -95,7 +102,7 @@ class ValuablesService
         $valuable->rarity = $rarity;
         $valuable->type = $type;
         $valuable->status = Valuable::STATUS_DISCOVERED;
-        $valuable->transfer_price = (int) $config['transfer_price'];
+        $valuable->required_spy_hours = $requiredSpyHours;
         $valuable->discovered_at = now();
         $valuable->save();
 
@@ -106,7 +113,7 @@ class ValuablesService
      * Per-round tick pass: auto-complete investigations that have run their
      * timer, then expire anything past the 48-hour staleness window.
      */
-    public function processRoundTick(Round $round): void
+    public function processValuables(Round $round): void
     {
         // Pass 1: auto-complete investigations whose timer has elapsed.
         Valuable::query()

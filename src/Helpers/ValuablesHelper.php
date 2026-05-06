@@ -159,6 +159,14 @@ class ValuablesHelper
     }
 
     /**
+     * Returns the flat realm-transfer price for a valuable's rarity.
+     */
+    public function getTransferPrice(Valuable $valuable): int
+    {
+        return (int) self::getRarityConfig()[$valuable->rarity]['transfer_price'];
+    }
+
+    /**
      * Returns the current sale price (decays from max to min over EXPIRATION_HOURS after stolen_at).
      */
     public function getCurrentSalePrice(Valuable $valuable): int
@@ -175,6 +183,40 @@ class ValuablesHelper
         $price = $config['base_value_max'] - ($config['base_value_max'] - $config['base_value_min']) * $t;
 
         return (int) round($price);
+    }
+
+    /**
+     * Returns 0–100 progress for an in-flight investigation. Returns 0 if the
+     * valuable is not currently investigating.
+     */
+    public function getInvestigationProgress(Valuable $valuable): float
+    {
+        if ($valuable->investigation_started_at === null || $valuable->investigation_ends_at === null) {
+            return 0.0;
+        }
+
+        $elapsed = max(0, $valuable->investigation_started_at->diffInSeconds(now()));
+        $total = max(1, $valuable->investigation_started_at->diffInSeconds($valuable->investigation_ends_at));
+
+        return min(100.0, ($elapsed / $total) * 100);
+    }
+
+    /**
+     * Returns the Bootstrap text-color class corresponding to a 0–100 progress
+     * value. Shifts red → yellow → blue → green at 25/50/75%.
+     */
+    public function getInvestigationProgressColorClass(float $progressPct): string
+    {
+        if ($progressPct < 25) {
+            return 'text-danger';
+        }
+        if ($progressPct < 50) {
+            return 'text-warning';
+        }
+        if ($progressPct < 75) {
+            return 'text-primary';
+        }
+        return 'text-success';
     }
 
     /**
@@ -221,15 +263,15 @@ class ValuablesHelper
             return $this->namesCache;
         }
 
-        $path = base_path('app/data/valuables-names.json');
+        $path = base_path('app/data/valuables.json');
         $raw = file_get_contents($path);
         if ($raw === false) {
-            throw new RuntimeException("Unable to read valuables-names.json at {$path}");
+            throw new RuntimeException("Unable to read valuables.json at {$path}");
         }
 
         $decoded = json_decode($raw, true);
         if (!is_array($decoded)) {
-            throw new RuntimeException('valuables-names.json could not be parsed.');
+            throw new RuntimeException('valuables.json could not be parsed.');
         }
 
         return $this->namesCache = $decoded;

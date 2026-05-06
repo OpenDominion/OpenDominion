@@ -51,11 +51,9 @@
                             <tbody>
                                 @foreach ($realmValuablesListed as $valuable)
                                     @php
-                                        $config = \OpenDominion\Helpers\ValuablesHelper::getRarityConfig()[$valuable->rarity];
-                                        $targetLand = app(\OpenDominion\Calculators\Dominion\LandCalculator::class)->getTotalLand($valuable->targetDominion);
-                                        $estimatedSpyHours = (int) ceil($targetLand * $config['spy_hours_multiplier']);
+                                        $transferPrice = $valuablesHelper->getTransferPrice($valuable);
                                         $isOwnListing = $valuable->source_dominion_id === $selectedDominion->id;
-                                        $insufficient = $selectedDominion->resource_platinum < $valuable->transfer_price;
+                                        $insufficient = $selectedDominion->resource_platinum < $transferPrice;
                                     @endphp
                                     <tr>
                                         <td>{{ $valuable->sourceDominion->name }}</td>
@@ -64,8 +62,8 @@
                                             <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
                                         </td>
                                         <td>{{ $valuable->targetDominion->name }}</td>
-                                        <td>~{{ number_format($estimatedSpyHours) }}</td>
-                                        <td>{{ number_format($valuable->transfer_price) }}p</td>
+                                        <td>{{ number_format($valuable->required_spy_hours) }}</td>
+                                        <td>{{ number_format($transferPrice) }}p</td>
                                         <td class="text-end">
                                             @if ($isOwnListing)
                                                 <form action="{{ route('dominion.valuables.unlist', $valuable->id) }}" method="post" class="d-inline">

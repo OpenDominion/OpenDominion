@@ -115,7 +115,7 @@
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
                                                         class="btn btn-primary btn-block"
-                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>
@@ -177,7 +177,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-primary mt-3">
                 <div class="card-header">
-                    <span class="card-title"><i class="ra ra-gem"></i> Valuables Discovered</span>
+                    <span class="card-title"><i class="ra ra-locked-chest"></i> Valuables Discovered</span>
                 </div>
                 <div class="card-body p-0">
                     @if ($valuablesDiscovered->isEmpty())
@@ -211,13 +211,10 @@
                                         <td>
                                             @if ($valuable->status === \OpenDominion\Models\Valuable::STATUS_INVESTIGATING)
                                                 @php
-                                                    $elapsed = max(0, $valuable->investigation_started_at->diffInSeconds(now()));
-                                                    $total = max(1, $valuable->investigation_started_at->diffInSeconds($valuable->investigation_ends_at));
-                                                    $pct = min(100, ($elapsed / $total) * 100);
-                                                    $colorClass = $pct < 25 ? 'text-danger' : ($pct < 50 ? 'text-warning' : ($pct < 75 ? 'text-primary' : 'text-success'));
+                                                    $pct = $valuablesHelper->getInvestigationProgress($valuable);
                                                     $remaining = max(0, now()->diffInHours($valuable->investigation_ends_at, false));
                                                 @endphp
-                                                <span class="{{ $colorClass }}">{{ number_format($pct, 0) }}%</span>
+                                                <span class="{{ $valuablesHelper->getInvestigationProgressColorClass($pct) }}">{{ number_format($pct, 0) }}%</span>
                                                 <small class="text-muted">({{ ceil($remaining) }} ticks left)</small>
                                             @elseif ($valuable->status === \OpenDominion\Models\Valuable::STATUS_LISTED_FOR_TRANSFER || $valuable->is_listed)
                                                 <span class="text-info">Listed for transfer</span>
@@ -240,7 +237,7 @@
                                                 <a href="{{ route('dominion.valuables.investigate', $valuable->id) }}" class="btn btn-sm btn-primary">Investigate</a>
                                                 <form action="{{ route('dominion.valuables.list', $valuable->id) }}" method="post" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-outline-info">Offer ({{ number_format($valuable->transfer_price) }}p)</button>
+                                                    <button type="submit" class="btn btn-sm btn-outline-info">Offer ({{ number_format($valuablesHelper->getTransferPrice($valuable)) }}p)</button>
                                                 </form>
                                             @endif
                                         </td>
@@ -254,7 +251,7 @@
 
             <div class="card card-primary mt-3">
                 <div class="card-header">
-                    <span class="card-title"><i class="ra ra-gold-bar"></i> Valuables Stolen</span>
+                    <span class="card-title"><i class="ra ra-open-chest"></i> Valuables Stolen</span>
                 </div>
                 <div class="card-body p-0">
                     @if ($valuablesStolen->isEmpty())
@@ -301,7 +298,8 @@
                     <span class="card-title">Valuables</span>
                 </div>
                 <div class="card-body">
-                    <p>Information ops occasionally turn up named treasures. Investigate one to commit spies for several hours; on completion the valuable is yours to sell or transfer.</p>
+                    <p>Information ops occasionally turn up named treasures held by your target. Investigate one to commit spies for several hours; on completion the valuable is stolen and can be sold to the black market for platinum.</p>
+                    <p>If you don't want to steal a discovery yourself, you can offer it to a realm mate for a flat price &mdash; they'll take over the discovery and run their own heist.</p>
                     <p>Discoveries grow stale after 48 hours and become very risky to act on.</p>
                     <p><a href="{{ route('dominion.valuables.history') }}">View round history &raquo;</a></p>
                 </div>

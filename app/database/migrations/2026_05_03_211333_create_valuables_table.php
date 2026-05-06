@@ -22,13 +22,12 @@ class CreateValuablesTable extends Migration
             $table->string('rarity');
             $table->string('type');
             $table->string('status')->default('discovered');
-            $table->integer('required_spy_hours')->nullable();
+            $table->integer('required_spy_hours');
             $table->integer('spies_assigned')->nullable();
             $table->timestamp('investigation_started_at')->nullable();
             $table->timestamp('investigation_ends_at')->nullable();
             $table->timestamp('stolen_at')->nullable();
             $table->timestamp('discovered_at');
-            $table->integer('transfer_price');
             $table->boolean('is_listed')->default(false);
             $table->integer('sold_price')->nullable();
             $table->boolean('transferred')->default(false);

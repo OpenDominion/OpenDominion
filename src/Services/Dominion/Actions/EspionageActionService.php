@@ -183,7 +183,7 @@ class EspionageActionService
                 throw new GameException('You cannot perform black ops on bots');
             }
         } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
-            if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
+            if ($dominion->round->start_date->diffInHours(now()) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot scout for valuables for the first three days of the round');
             }
         }

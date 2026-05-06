@@ -3,7 +3,6 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
-use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\ValuablesHelper;
@@ -17,9 +16,6 @@ class ValuablesActionService
 {
     use DominionGuardsTrait;
 
-    /** @var LandCalculator */
-    protected $landCalculator;
-
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
@@ -31,7 +27,6 @@ class ValuablesActionService
 
     public function __construct()
     {
-        $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->notificationService = app(NotificationService::class);
         $this->valuablesHelper = app(ValuablesHelper::class);
@@ -79,10 +74,8 @@ class ValuablesActionService
             throw new GameException('Your spies arrive only to find the trail has gone cold. The valuable is lost.');
         }
 
-        // Compute required spy-hours from current target land + freeze it.
-        $targetLand = $this->landCalculator->getTotalLand($valuable->targetDominion);
-        $config = ValuablesHelper::getRarityConfig()[$valuable->rarity];
-        $requiredSpyHours = (int) ceil($targetLand * $config['spy_hours_multiplier']);
+        // Spy-hours were frozen at discovery time.
+        $requiredSpyHours = $valuable->required_spy_hours;
 
         $spiesNeeded = (int) ceil($requiredSpyHours / $hours);
         $minSpies = (int) ceil($requiredSpyHours / ValuablesHelper::MIN_INVESTIGATION_HOURS);
@@ -108,11 +101,11 @@ class ValuablesActionService
             throw new GameException('Starting another investigation would prevent your spy strength from regenerating.');
         }
 
-        DB::transaction(function () use ($valuable, $hours, $spiesNeeded, $requiredSpyHours) {
-            $startTime = now()->copy()->startOfHour()->addHour();
-            $endTime = $startTime->copy()->addHours($hours);
+        DB::transaction(function () use ($valuable, $hours, $spiesNeeded) {
+            // Start now; round only the completion time to a tick boundary.
+            $startTime = now();
+            $endTime = now()->copy()->startOfHour()->addHour()->addHours($hours);
 
-            $valuable->required_spy_hours = $requiredSpyHours;
             $valuable->spies_assigned = $spiesNeeded;
             $valuable->status = Valuable::STATUS_INVESTIGATING;
             $valuable->investigation_started_at = $startTime;
@@ -149,7 +142,6 @@ class ValuablesActionService
 
         DB::transaction(function () use ($valuable) {
             $valuable->status = Valuable::STATUS_DISCOVERED;
-            $valuable->required_spy_hours = null;
             $valuable->spies_assigned = null;
             $valuable->investigation_started_at = null;
             $valuable->investigation_ends_at = null;
@@ -281,7 +273,7 @@ class ValuablesActionService
             throw new GameException('You can only purchase listings from your own realm mates.');
         }
 
-        $price = (int) $valuable->transfer_price;
+        $price = $this->valuablesHelper->getTransferPrice($valuable);
         if ($buyer->resource_platinum < $price) {
             throw new GameException(sprintf(
                 'You need %s platinum to purchase this listing.',
@@ -298,7 +290,6 @@ class ValuablesActionService
             $valuable->transferred = true;
             $valuable->status = Valuable::STATUS_DISCOVERED;
             $valuable->spies_assigned = null;
-            $valuable->required_spy_hours = null;
             $valuable->investigation_started_at = null;
             $valuable->investigation_ends_at = null;
             $valuable->save();

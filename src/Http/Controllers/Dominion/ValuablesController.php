@@ -21,11 +21,8 @@ class ValuablesController extends AbstractDominionController
 
         $valuablesHelper = app(ValuablesHelper::class);
         $militaryCalculator = app(MilitaryCalculator::class);
-        $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
 
-        $targetLand = $landCalculator->getTotalLand($valuable->targetDominion);
-        $config = ValuablesHelper::getRarityConfig()[$valuable->rarity];
-        $requiredSpyHours = (int) ceil($targetLand * $config['spy_hours_multiplier']);
+        $requiredSpyHours = $valuable->required_spy_hours;
 
         $availableSpies = $valuablesHelper->getAvailableSpies($dominion);
         $currentRegen = $militaryCalculator->getSpyStrengthRegen($dominion);
