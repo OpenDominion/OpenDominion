@@ -132,7 +132,11 @@
 
         .landing-hero-bg {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100vh;
+            height: 100lvh; /* lock to largest viewport so URL bar toggle doesn't resize/zoom on mobile */
             z-index: 0;
             pointer-events: none;
             background: url('{{ asset('assets/app/images/battle-scene.png') }}') center top / cover no-repeat;
