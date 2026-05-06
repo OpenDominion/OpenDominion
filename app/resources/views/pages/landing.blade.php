@@ -35,7 +35,6 @@
 
         .landing-wrapper {
             position: relative;
-            background: url('{{ asset('assets/app/images/battle-scene.png') }}') center top / cover no-repeat fixed;
         }
 
         /* ── Navbar ── */
@@ -136,6 +135,7 @@
             inset: 0;
             z-index: 0;
             pointer-events: none;
+            background: url('{{ asset('assets/app/images/battle-scene.png') }}') center top / cover no-repeat;
         }
 
         /* Dark overlay for readability */
