@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <meta property="og:title" content="OpenDominion">
-    <meta property="og:description" content="OpenDominion is a free online text-based multiplayer strategy game in a medieval fantasy setting." />
+    <meta property="og:description" content="OpenDominion is a text-based multiplayer strategy game in a medieval fantasy world." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ config('app.url') }}" />
     <meta property="og:image" content="{{ asset('assets/app/images/opendominion.png') }}" />
@@ -123,7 +123,7 @@
         .landing-hero {
             position: relative;
             min-height: 50vh;
-            padding-top: 4.5rem;
+            padding-top: 3rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -181,6 +181,8 @@
             letter-spacing: 0.28em;
             text-transform: uppercase;
             color: #e8d4a0;
+            -webkit-text-stroke: 1px #000;
+            paint-order: stroke fill;
             margin-bottom: 0.9rem;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95), 0 0 16px rgba(0, 0, 0, 0.85);
         }
@@ -200,13 +202,37 @@
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: clamp(2rem, 5vw, 4.25rem);
+            background: linear-gradient(
+                180deg,
+                #f8eed0 0%,
+                #e8d4a0 40%,
+                #b89863 78%,
+                #8a6f3f 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            filter:
+                drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9))
+                drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55))
+                drop-shadow(0 0 40px rgba(186, 159, 80, 0.25));
+            letter-spacing: 0.06em;
+            margin-bottom: 0.3rem;
+            line-height: 1.1;
+        }
+
+        .landing-tagline {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: clamp(1rem, 2.4vw, 1.85rem);
             color: #f0e6cc;
             text-shadow:
                 0 2px 20px rgba(0, 0, 0, 0.7),
                 0 0 60px rgba(186, 159, 80, 0.15);
-            letter-spacing: 0.06em;
-            margin-bottom: 0.9rem;
-            line-height: 1.1;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.4rem;
+            line-height: 1.2;
         }
 
         .landing-subtitle {
@@ -242,8 +268,8 @@
             border-radius: 3px;
             text-decoration: none;
             transition: all 0.25s ease;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .landing-cta:hover,
@@ -447,10 +473,10 @@
             <div class="collapse navbar-collapse" id="landing-nav-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a href="{{ route('about') }}" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a></li>
-                    <li class="nav-item"><a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a></li>
-                    @include('partials.wiki-nav')
                     <li class="nav-item"><a href="{{ route('user-agreement') }}" class="nav-link">Rules</a></li>
+                    <li class="nav-item"><a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a></li>
+                    <li class="nav-item"><a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a></li>
+                    @include('partials.wiki-nav')
                     @auth
                         @if (app(\OpenDominion\Services\Dominion\SelectorService::class)->hasUserSelectedDominion())
                             <li class="nav-item"><a href="{{ route('dominion.status') }}" class="nav-link"><b>Play</b></a></li>
@@ -484,11 +510,15 @@
 
         <div class="landing-content">
             <p class="landing-eyebrow">Based on the Kamikaze Games Classic</p>
-            <h1 class="landing-title">Where Power Prevails</h1>
-            <p class="landing-subtitle">A text-based online multiplayer strategy game in a medieval fantasy setting</p>
-
+            <h1 class="landing-title">DominioN</h1>
+            <p class="landing-tagline">Where Power Prevails</p>
+            <p class="landing-subtitle">Wage war in a text-based medieval fantasy strategy game.</p>
             @auth
-                <a href="{{ route('dashboard') }}" class="landing-cta">Play Now</a>
+                @if (app(\OpenDominion\Services\Dominion\SelectorService::class)->hasUserSelectedDominion())
+                    <a href="{{ route('dominion.status') }}" class="landing-cta">Play Now</a>
+                @else
+                    <a href="{{ route('dashboard') }}" class="landing-cta">Play Now</a>
+                @endif
             @else
                 <a href="{{ route('auth.register') }}" class="landing-cta">Play Now</a>
             @endauth
