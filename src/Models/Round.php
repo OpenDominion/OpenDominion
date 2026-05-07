@@ -342,7 +342,7 @@ class Round extends AbstractModel
      *
      * @return int
      */
-    public function hoursInDay(Carbon $datetime = null)
+    public function hoursInDay(?Carbon $datetime = null)
     {
         if ($datetime == null) {
             $datetime = now();
@@ -362,7 +362,7 @@ class Round extends AbstractModel
      *
      * @return int
      */
-    public function daysInRound(Carbon $datetime = null)
+    public function daysInRound(?Carbon $datetime = null)
     {
         if ($datetime == null) {
             $datetime = now();
