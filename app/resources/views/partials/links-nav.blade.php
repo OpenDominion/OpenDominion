@@ -31,13 +31,6 @@
                         <i class="fa fa-star fa-fw"></i> Staff
                     </a>
                 </li>
-            @else
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a href="{{ route('user-agreement') }}" class="dropdown-item d-flex align-items-center gap-2">
-                        <i class="fa fa-gavel fa-fw"></i> Rules
-                    </a>
-                </li>
             @endif
         @endauth
     </ul>
