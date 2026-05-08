@@ -119,6 +119,30 @@
             background: rgba(199, 176, 120, 0.15);
         }
 
+        /* ── Alerts ── */
+        .landing-alerts {
+            position: relative;
+            z-index: 50;
+            padding: 5rem 0 0;
+        }
+
+        .landing-alerts .alert {
+            background: rgba(25, 25, 25, 0.85);
+            border: 1px solid rgba(199, 176, 120, 0.35);
+            color: #e8e0d4;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .landing-alerts .alert-success { border-left: 3px solid #6daa6d; }
+        .landing-alerts .alert-danger  { border-left: 3px solid #c46b6b; }
+        .landing-alerts .alert-warning { border-left: 3px solid #afa170; }
+        .landing-alerts .alert-info    { border-left: 3px solid #6090e0; }
+
+        .landing-alerts .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
         /* ── Hero ── */
         .landing-hero {
             position: relative;
@@ -506,6 +530,15 @@
 
         </div>
     </nav>
+
+    <!-- Flash messages / alerts -->
+    @if ($errors->any() || Session::has('alert-success') || Session::has('alert-danger') || Session::has('alert-warning') || Session::has('alert-info'))
+        <div class="landing-alerts">
+            <div class="container">
+                @include('partials.alerts')
+            </div>
+        </div>
+    @endif
 
     <!-- Hero -->
     <div class="landing-hero">
