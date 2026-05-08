@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OpenDominion - The War Council</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&amp;family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary": "#373020",
+                        "outline": "#99907b",
+                        "on-secondary-fixed-variant": "#584400",
+                        "secondary-fixed-dim": "#ecc246",
+                        "surface-dim": "#1c110f",
+                        "on-secondary-fixed": "#241a00",
+                        "secondary-container": "#b18c09",
+                        "background": "#1c110f",
+                        "primary-fixed-dim": "#ecc246",
+                        "on-secondary": "#3d2e00",
+                        "on-surface-variant": "#d1c5af",
+                        "on-primary-fixed-variant": "#584400",
+                        "surface": "#1c110f",
+                        "on-error": "#690005",
+                        "inverse-surface": "#f4ddd9",
+                        "surface-container": "#291d1a",
+                        "inverse-primary": "#755b00",
+                        "tertiary-fixed-dim": "#d1c5af",
+                        "primary": "#ecc246",
+                        "tertiary-container": "#b0a590",
+                        "primary-fixed": "#ffe08e",
+                        "inverse-on-surface": "#3b2d2b",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#251916",
+                        "on-surface": "#f4ddd9",
+                        "secondary-fixed": "#ffe08e",
+                        "surface-container-high": "#342724",
+                        "on-tertiary-fixed-variant": "#4e4635",
+                        "on-error-container": "#ffdad6",
+                        "surface-variant": "#40312f",
+                        "surface-container-highest": "#40312f",
+                        "surface-container-lowest": "#160b0a",
+                        "on-primary": "#3d2e00",
+                        "on-secondary-container": "#352800",
+                        "surface-bright": "#443633",
+                        "tertiary-fixed": "#eee1ca",
+                        "secondary": "#ecc246",
+                        "on-primary-fixed": "#241a00",
+                        "on-background": "#f4ddd9",
+                        "surface-tint": "#ecc246",
+                        "on-primary-container": "#4b3a00",
+                        "primary-container": "#c9a227",
+                        "on-tertiary-fixed": "#211b0d",
+                        "tertiary": "#d1c5af",
+                        "on-tertiary-container": "#433b2b",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#4d4635"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Noto Serif"],
+                        "label": ["Noto Serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .gilded-text {
+            background: linear-gradient(to right, #c9a227 0%, #ecc246 50%, #c9a227 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .etched-border {
+            border: 2px double rgba(201, 162, 39, 0.3);
+        }
+        .leather-radial {
+            background: radial-gradient(circle at 50% 50%, #291d1a 0%, #1c110f 100%);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #160b0a; }
+        ::-webkit-scrollbar-thumb { background: #40312f; }
+        ::-webkit-scrollbar-thumb:hover { background: #c9a227; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30">
+<div class="flex min-h-screen">
+<!-- SideNavBar Shared Component -->
+<aside class="w-64 h-screen sticky top-0 left-0 border-r-2 border-double border-[#c9a227]/30 bg-[#160b0a] flex flex-col py-6 overflow-y-auto z-50">
+<div class="px-6 mb-8">
+<h1 class="font-['Cinzel'] text-2xl font-bold text-[#c9a227] drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">OpenDominion</h1>
+<p class="text-tertiary text-xs uppercase tracking-widest mt-1 opacity-70">The War Council</p>
+</div>
+<nav class="flex-1 space-y-0.5">
+<!-- Active Item: Status -->
+<a class="text-[#ecc246] font-bold border-l-4 border-[#c9a227] bg-[#40312f]/40 px-4 py-3 transition-all flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">dashboard</span> Status
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">groups</span> Advisors
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">travel_explore</span> Explore
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">landscape</span> Land
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">construction</span> Construction
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">swap_horiz</span> Re-Zoning
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">swords</span> Military
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">auto_awesome</span> Magic
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">visibility</span> Espionage
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">science</span> Technology
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">person_4</span> Heroes
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_balance</span> National Bank
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">forum</span> Council
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">leaderboard</span> Rankings
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">campaign</span> Town Crier
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">temple_buddhist</span> Wonder
+                </a>
+<a class="text-[#99907b] px-4 py-3 flex items-center gap-3 hover:bg-[#40312f] hover:text-[#ecc246] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">public</span> Realm
+                </a>
+</nav>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="flex-1 flex flex-col bg-background leather-radial overflow-x-hidden">
+<!-- TopAppBar Shared Component -->
+<header class="w-full py-6 px-8 border-b-2 border-double border-[#c9a227]/40 bg-[#1c110f] flex flex-col justify-center items-start relative">
+<div class="flex items-center justify-between w-full">
+<div class="flex flex-col">
+<h2 class="font-['Cinzel'] uppercase tracking-widest text-lg text-[#c9a227] font-black italic drop-shadow-sm flex items-center gap-3">
+<span class="material-symbols-outlined text-[#ecc246]">shield</span>
+                            The Dominion of Stormhold (#7)
+                        </h2>
+<div class="flex gap-4 mt-1">
+<span class="text-[#d1c5af] font-['Noto_Serif'] normal-case tracking-normal text-sm opacity-80">Human</span>
+<span class="text-[#d1c5af] font-['Noto_Serif'] normal-case tracking-normal text-sm opacity-80 border-l border-outline/30 pl-4">Lord Ashford</span>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+<div class="bg-gradient-to-r from-[#c9a227] via-[#ecc246] to-[#c9a227] h-[1px] w-full block mt-4 opacity-50"></div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-8 grid grid-cols-10 gap-8 max-w-[1600px] mx-auto w-full">
+<!-- Left Section (70%) -->
+<div class="col-span-10 lg:col-span-7 space-y-8">
+<!-- Top Panels Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Overview Panel -->
+<section class="bg-[#1a0f0d] etched-border p-6 shadow-[inset_0_0_20px_rgba(201,162,39,0.05)]">
+<div class="flex items-center gap-2 mb-4 border-b border-[#c9a227]/20 pb-2">
+<span class="material-symbols-outlined text-[#ecc246]">visibility</span>
+<h3 class="font-['Cinzel'] text-[#c9a227] font-bold">Overview</h3>
+</div>
+<div class="grid grid-cols-1 gap-y-2 text-sm">
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Ruler</span>
+<span class="text-primary font-bold">Lord Ashford</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Race</span>
+<span class="text-primary">Human</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Land</span>
+<span class="text-primary">1,250 acres</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Networth</span>
+<span class="text-primary">45,832</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Peasants</span>
+<span class="text-primary">3,412</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Employment</span>
+<span class="text-primary">94.50%</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Prestige</span>
+<span class="text-primary">120</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Resilience</span>
+<span class="text-primary">45 (0.45%)</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Spy Mastery</span>
+<span class="text-primary">30</span>
+</div>
+<div class="flex justify-between">
+<span class="text-tertiary">Wizard Mastery</span>
+<span class="text-primary">25</span>
+</div>
+</div>
+</section>
+<!-- Resources Panel -->
+<section class="bg-[#1a0f0d] etched-border p-6 shadow-[inset_0_0_20px_rgba(201,162,39,0.05)]">
+<div class="flex items-center gap-2 mb-4 border-b border-[#c9a227]/20 pb-2">
+<span class="material-symbols-outlined text-[#ecc246]">inventory_2</span>
+<h3 class="font-['Cinzel'] text-[#c9a227] font-bold">Resources</h3>
+</div>
+<div class="grid grid-cols-1 gap-y-2 text-sm">
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Platinum</span>
+<span class="text-primary">28,450</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Food</span>
+<span class="text-primary">15,200</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Lumber</span>
+<span class="text-primary">8,340</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Mana</span>
+<span class="text-primary">2,100</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Ore</span>
+<span class="text-primary">5,670</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Gems</span>
+<span class="text-primary">890</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Research Points</span>
+<span class="text-primary">1,450</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Boats</span>
+<span class="text-primary">32</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary">Spy Ratio</span>
+<span class="text-primary">1.250</span>
+</div>
+<div class="flex justify-between">
+<span class="text-tertiary">Wizard Ratio</span>
+<span class="text-primary">0.875</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Military Panel (Full Width of Column) -->
+<section class="bg-[#1a0f0d] etched-border p-6 shadow-[inset_0_0_20px_rgba(201,162,39,0.05)]">
+<div class="flex items-center gap-2 mb-4 border-b border-[#c9a227]/20 pb-2">
+<span class="material-symbols-outlined text-[#ecc246]">swords</span>
+<h3 class="font-['Cinzel'] text-[#c9a227] font-bold">Military Command</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
+<div class="flex flex-col p-3 bg-surface-container-low border-l-2 border-primary/40">
+<span class="text-tertiary text-xs uppercase tracking-tighter">Combat Readiness</span>
+<span class="text-primary text-xl font-bold">100% Morale</span>
+</div>
+<div class="flex flex-col p-3 bg-surface-container-low border-l-2 border-primary/40">
+<span class="text-tertiary text-xs uppercase tracking-tighter">Reserve Strength</span>
+<span class="text-primary text-xl font-bold">500 Draftees</span>
+</div>
+<div class="flex flex-col p-3 bg-surface-container-low border-l-2 border-primary/40">
+<span class="text-tertiary text-xs uppercase tracking-tighter">Heavy Infantry</span>
+<span class="text-primary text-xl font-bold">2,400 Swordsmen</span>
+</div>
+<div class="flex flex-col p-3 bg-surface-container-low border-l-2 border-primary/40">
+<span class="text-tertiary text-xs uppercase tracking-tighter">Ranged Support</span>
+<span class="text-primary text-xl font-bold">800 Archers</span>
+</div>
+<div class="flex flex-col p-3 bg-surface-container-low border-l-2 border-primary/40">
+<span class="text-tertiary text-xs uppercase tracking-tighter">Elite Cavalry</span>
+<span class="text-primary text-xl font-bold">350 Knights</span>
+</div>
+<div class="flex flex-col p-3 bg-surface-container-low border-l-2 border-primary/40">
+<span class="text-tertiary text-xs uppercase tracking-tighter">Stable Master</span>
+<span class="text-primary text-xl font-bold">150 War Horses</span>
+</div>
+</div>
+</section>
+<!-- Recent News Section -->
+<section class="bg-[#1a0f0d] etched-border p-6 relative">
+<div class="flex items-center gap-2 mb-6 border-b border-[#c9a227]/20 pb-2">
+<span class="material-symbols-outlined text-[#ecc246]">campaign</span>
+<h3 class="font-['Cinzel'] text-[#c9a227] font-bold">Recent News</h3>
+</div>
+<div class="space-y-4">
+<!-- News Item 1 -->
+<div class="flex items-center gap-4 py-3 border-b border-outline/10 hover:bg-white/5 transition-colors group">
+<div class="w-12 text-tertiary text-xs font-serif italic opacity-60">2h ago</div>
+<span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+<p class="text-on-surface flex-1">Your wizards have successfully cast <span class="text-primary font-bold">Ares' Call</span></p>
+</div>
+<!-- News Item 2 -->
+<div class="flex items-center gap-4 py-3 border-b border-outline/10 hover:bg-white/5 transition-colors group">
+<div class="w-12 text-tertiary text-xs font-serif italic opacity-60">5h ago</div>
+<span class="material-symbols-outlined text-error text-sm">swords</span>
+<p class="text-on-surface flex-1">The dominion of <span class="text-error font-bold">Shadowfell (#12)</span> invaded you and captured <span class="text-error">48 acres</span></p>
+</div>
+<!-- News Item 3 -->
+<div class="flex items-center gap-4 py-3 border-b border-outline/10 hover:bg-white/5 transition-colors group">
+<div class="w-12 text-tertiary text-xs font-serif italic opacity-60">8h ago</div>
+<span class="material-symbols-outlined text-primary text-sm">visibility</span>
+<p class="text-on-surface flex-1">Your spies have completed an <span class="text-primary">espionage operation</span></p>
+</div>
+<!-- News Item 4 -->
+<div class="flex items-center gap-4 py-3 border-b border-outline/10 hover:bg-white/5 transition-colors group">
+<div class="w-12 text-tertiary text-xs font-serif italic opacity-60">12h ago</div>
+<span class="material-symbols-outlined text-primary text-sm">construction</span>
+<p class="text-on-surface flex-1">Construction of <span class="text-primary">5 Guard Towers</span> has been completed</p>
+</div>
+<!-- News Item 5 -->
+<div class="flex items-center gap-4 py-3 border-b border-outline/10 hover:bg-white/5 transition-colors group">
+<div class="w-12 text-tertiary text-xs font-serif italic opacity-60">1d ago</div>
+<span class="material-symbols-outlined text-primary text-sm">swords</span>
+<p class="text-on-surface flex-1">You successfully invaded the dominion of <span class="text-primary font-bold">Irongate (#3)</span> and captured <span class="text-primary">62 acres</span></p>
+</div>
+</div>
+<div class="mt-4 text-right">
+<a class="text-tertiary hover:text-primary underline text-sm decoration-[#c9a227]/30 transition-all font-serif italic" href="#">Older Reports →</a>
+</div>
+</section>
+</div>
+<!-- Right Sidebar (30%) -->
+<div class="col-span-10 lg:col-span-3 space-y-8">
+<!-- Information Card -->
+<section class="bg-surface-container etched-border p-6 shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-6xl">info</span>
+</div>
+<h4 class="font-['Cinzel'] text-[#c9a227] mb-3 text-lg border-b border-[#c9a227]/20 pb-1">Intel Briefing</h4>
+<p class="text-tertiary text-sm italic mb-6">This section gives you a quick overview of your dominion's passive traits and standing.</p>
+<div class="space-y-4">
+<h5 class="text-xs font-bold uppercase tracking-widest text-[#ecc246]">Human Perks</h5>
+<div class="space-y-2 text-sm bg-surface-container-lowest p-4">
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary/70">Home land</span>
+<span class="text-primary">Plain</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary/70">Platinum Prod.</span>
+<span class="text-primary">+10%</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary/70">Food Prod.</span>
+<span class="text-primary">+5%</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary/70">Population Growth</span>
+<span class="text-primary">+3%</span>
+</div>
+<div class="flex justify-between border-b border-white/5 pb-1">
+<span class="text-tertiary/70">Infantry Power</span>
+<span class="text-primary">+1</span>
+</div>
+<div class="flex justify-between">
+<span class="text-tertiary/70">Spy Strength</span>
+<span class="text-primary">+5%</span>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-center">
+<button class="bg-primary-container text-on-primary px-8 py-3 font-['Cinzel'] font-bold text-sm tracking-widest hover:bg-primary transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,0,0,0.5)] border-t border-white/20">
+                                My Rankings
+                            </button>
+</div>
+</section>
+<!-- Pack Card -->
+<section class="bg-surface-container etched-border p-6 shadow-2xl">
+<h4 class="font-['Cinzel'] text-[#c9a227] mb-3 text-lg border-b border-[#c9a227]/20 pb-1 flex items-center gap-2">
+<span class="material-symbols-outlined">shield_moon</span> The Fellowship
+                        </h4>
+<p class="text-tertiary text-sm mb-4">You are a member of <strong class="text-primary font-bold">The Fellowship</strong> <span class="text-[10px] opacity-40">(secret123)</span> with:</p>
+<ul class="space-y-3 mb-6">
+<li class="flex flex-col border-l-2 border-primary/20 pl-3">
+<span class="text-on-surface font-bold text-sm">Lord Ashford <span class="text-tertiary font-normal">(Stormhold)</span></span>
+<span class="text-xs text-primary/70">Human</span>
+</li>
+<li class="flex flex-col border-l-2 border-primary/20 pl-3">
+<span class="text-on-surface font-bold text-sm">Lady Ravenna <span class="text-tertiary font-normal">(Nighthaven)</span></span>
+<div class="flex items-center gap-1">
+<span class="text-xs text-primary/70">Dark Elf</span>
+<span class="text-[10px] bg-error-container text-on-error-container px-1 leading-tight">DarkQueen</span>
+</div>
+</li>
+<li class="flex flex-col border-l-2 border-primary/20 pl-3">
+<span class="text-on-surface font-bold text-sm">Grimjaw <span class="text-tertiary font-normal">(Ironkeep)</span></span>
+<span class="text-xs text-primary/70">Dwarf</span>
+</li>
+</ul>
+<div class="pt-4 border-t border-outline/10 space-y-2 text-xs">
+<div class="flex justify-between">
+<span class="text-tertiary">Slots used:</span>
+<span class="text-primary font-bold">3 / 5</span>
+</div>
+<div class="bg-surface-container-low h-1.5 w-full">
+<div class="bg-primary h-full w-[60%]"></div>
+</div>
+<p class="text-tertiary italic opacity-60 pt-2 leading-relaxed">
+                                Your pack will automatically close on <span class="text-on-surface not-italic">March 30, 2026</span>
+</p>
+</div>
+</section>
+<!-- Tactical Note -->
+<div class="p-6 border-2 border-dashed border-[#c9a227]/10 text-center opacity-50">
+<span class="material-symbols-outlined text-primary block mb-2">history_edu</span>
+<p class="text-xs font-serif italic text-tertiary">"Victory belongs to the most persevering."</p>
+<p class="text-[10px] mt-1 uppercase tracking-widest">— Napoleon Bonaparte</p>
+</div>
+</div>
+</div>
+<!-- Footer Decorative Element -->
+<footer class="mt-auto py-8 text-center opacity-20">
+<div class="flex justify-center items-center gap-4 mb-2">
+<div class="h-[1px] w-24 bg-gradient-to-r from-transparent to-primary"></div>
+<span class="material-symbols-outlined text-primary">playing_cards</span>
+<div class="h-[1px] w-24 bg-gradient-to-l from-transparent to-primary"></div>
+</div>
+<p class="text-[10px] tracking-widest font-['Cinzel']">Authenticated War Council Interface v7.4.2</p>
+</footer>
+</main>
+</div>
+</body></html>

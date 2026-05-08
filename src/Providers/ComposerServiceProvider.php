@@ -109,6 +109,16 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $unlockableTechCount = rfloor($selectedDominion->resource_tech / $techCost);
             $view->with('unlockableTechCount', $unlockableTechCount);
 
+            // Show indicator for temporary tech selection (Planar Gates)
+            $needsTemporaryTech = false;
+            if ($selectedDominion->getWonderPerkValue('temporary_tech') > 0) {
+                $hasTemporaryTech = $selectedDominion->techs->contains(function ($tech) {
+                    return $tech->pivot->source_id !== null;
+                });
+                $needsTemporaryTech = !$hasTemporaryTech;
+            }
+            $view->with('needsTemporaryTech', $needsTemporaryTech);
+
             // Show icon for heroes
             $heroCalculator = app(HeroCalculator::class);
             $unlockableHeroUpgradeCount = $heroCalculator->getUnlockableUpgradeCount($selectedDominion->hero);

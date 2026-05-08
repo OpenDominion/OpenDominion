@@ -121,28 +121,32 @@ class DominionController extends AbstractController
             $activityService->recordActivity($user, $event);
         }
 
-        $userIps = UserActivity::select('ip')
-            ->where('user_id', '=', $dominion->user_id)
-            ->where('created_at', '>', $dominion->round->created_at)
-            ->where('created_at', '<', $dominion->round->end_date)
-            ->whereIn('key', ['user.login', 'user.logout'])
-            ->whereNotIn('ip', ['', '127.0.0.1'])
-            ->distinct('ip')
-            ->pluck('ip');
+        // Find IPs used by this dominion via user_origins
+        $dominionIps = UserOrigin::where('dominion_id', $dominion->id)
+            ->where('ip_address', '!=', '127.0.0.1')
+            ->pluck('ip_address');
 
+        // Find other dominions in this round that share those IPs
+        $sharedDominions = Dominion::query()
+            ->where('round_id', $dominion->round_id)
+            ->whereIn('user_id', function ($query) use ($dominionIps) {
+                $query->select('user_id')
+                    ->from('user_origins')
+                    ->whereIn('ip_address', $dominionIps)
+                    ->distinct();
+            })
+            ->get()
+            ->keyBy('user_id');
+
+        // Fetch detailed activity log for shared users
         $sharedUserActivity = UserActivity::query()
             ->where('created_at', '>', $dominion->round->created_at)
             ->where('created_at', '<', $dominion->round->end_date)
-            ->whereIn('ip', $userIps)
+            ->whereIn('ip', $dominionIps)
+            ->whereIn('user_id', $sharedDominions->keys())
             ->whereIn('key', ['user.login', 'user.logout'])
             ->orderByDesc('created_at')
             ->get();
-
-        $sharedDominions = Dominion::query()
-            ->where('round_id', $dominion->round_id)
-            ->whereIn('user_id', $sharedUserActivity->pluck('user_id'))
-            ->get()
-            ->keyBy('user_id');
 
         return view('pages.staff.moderator.dominions.showUserActivity', [
             'selectedDominionId' => $selectedDominionId,

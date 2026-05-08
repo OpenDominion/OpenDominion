@@ -9,6 +9,7 @@ use OpenDominion\Models\HeroTournament;
 use OpenDominion\Models\HeroTournamentBattle;
 use OpenDominion\Models\HeroTournamentParticipant;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\AchievementService;
 use OpenDominion\Services\Dominion\HeroBattleService;
 
 class HeroTournamentService
@@ -16,12 +17,16 @@ class HeroTournamentService
     /** @var HeroBattleService */
     protected $heroBattleService;
 
+    /** @var AchievementService */
+    protected $achievementService;
+
     /**
      * HeroTournamentService constructor.
      */
     public function __construct()
     {
         $this->heroBattleService = app(HeroBattleService::class);
+        $this->achievementService = app(AchievementService::class);
     }
 
     protected const DEFAULT_NAME = 'The Grand Tournament';
@@ -119,9 +124,28 @@ class HeroTournamentService
             $tournament->finished = true;
             $tournament->winner_dominion_id = $winner->hero->dominion_id;
             $tournament->save();
+
+            $this->awardTournamentAchievements($tournament);
         }
 
         return $tournament->finished;
+    }
+
+    public function awardTournamentAchievements(HeroTournament $tournament): void
+    {
+        // Award winner achievement
+        $winnerDominion = $tournament->winner;
+        if ($winnerDominion) {
+            $this->achievementService->unlock($winnerDominion->user, 'the_vanquisher');
+        }
+
+        // Award gladiator to all participants with at least one win
+        foreach ($tournament->participants as $participant) {
+            if ($participant->wins >= 1) {
+                $user = $participant->hero->dominion->user;
+                $this->achievementService->unlock($user, 'gladiator');
+            }
+        }
     }
 
     public function joinTournament(HeroTournament $tournament, Dominion $dominion): void

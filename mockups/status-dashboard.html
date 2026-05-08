@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dominion of Stormhold - War Room</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&amp;family=Cinzel:wght@400;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed": "#241a00",
+                        "inverse-surface": "#ffdad4",
+                        "primary-fixed": "#ffe08e",
+                        "tertiary-fixed": "#acf4a4",
+                        "primary-container": "#c9a227",
+                        "on-tertiary-fixed-variant": "#0c5216",
+                        "secondary-fixed-dim": "#ffb3ad",
+                        "secondary-container": "#7a322f",
+                        "surface-container-low": "#2b1613",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#755b00",
+                        "on-surface-variant": "#d1c5af",
+                        "surface-container-lowest": "#1b0906",
+                        "background": "#210e0b",
+                        "primary": "#ecc246",
+                        "inverse-on-surface": "#422a26",
+                        "on-secondary": "#5a1a19",
+                        "surface-container": "#2f1a16",
+                        "tertiary-fixed-dim": "#91d78a",
+                        "on-primary-container": "#4b3a00",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "on-background": "#ffdad4",
+                        "secondary-fixed": "#ffdad7",
+                        "tertiary-container": "#73b76e",
+                        "secondary": "#ffb3ad",
+                        "on-surface": "#ffdad4",
+                        "on-error": "#690005",
+                        "surface-container-highest": "#472f2b",
+                        "on-tertiary": "#003909",
+                        "on-secondary-fixed-variant": "#77302d",
+                        "on-secondary-fixed": "#3d0506",
+                        "on-primary": "#3d2e00",
+                        "surface-bright": "#4c332f",
+                        "surface-container-high": "#3b2420",
+                        "surface-tint": "#ecc246",
+                        "primary-fixed-dim": "#ecc246",
+                        "on-tertiary-fixed": "#002203",
+                        "outline": "#99907b",
+                        "tertiary": "#91d78a",
+                        "surface": "#210e0b",
+                        "on-tertiary-container": "#00470e",
+                        "surface-dim": "#210e0b",
+                        "on-primary-fixed-variant": "#584400",
+                        "on-secondary-container": "#ff9e97",
+                        "outline-variant": "#4d4635",
+                        "surface-variant": "#472f2b"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Newsreader", "serif"],
+                        "label": ["Newsreader", "serif"],
+                        "cinzel": ["Cinzel", "serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .parchment-texture {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3B%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+        .inner-bevel {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(255,255,255,0.1);
+        }
+        .wax-seal {
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary selection:text-on-primary min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-stone-900 dark:bg-[#210e0b] bg-gradient-to-b from-[#4d4635]/20 to-transparent shadow-[0_24px_24px_rgba(47,26,22,0.08)] sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-[#ecc246] tracking-widest uppercase font-cinzel">Dominion of Stormhold</span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-[#ecc246] border-b-2 border-[#ecc246] pb-1 font-bold transition-all duration-150" href="#">Overview</a>
+<a class="text-[#d1c5af] hover:text-[#ecc246] transition-colors transition-all duration-150" href="#">Military</a>
+<a class="text-[#d1c5af] hover:text-[#ecc246] transition-colors transition-all duration-150" href="#">Magic</a>
+<a class="text-[#d1c5af] hover:text-[#ecc246] transition-colors transition-all duration-150" href="#">Espionage</a>
+<a class="text-[#d1c5af] hover:text-[#ecc246] transition-colors transition-all duration-150" href="#">News</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#ecc246] hover:bg-[#472f2b] p-2 transition-all">shield</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1600px] mx-auto p-6 lg:p-10 space-y-12">
+<!-- Illuminated Header Section -->
+<div class="flex flex-col md:flex-row md:items-end gap-6 border-b border-outline-variant/20 pb-8">
+<div class="relative">
+<div class="w-24 h-24 border-4 border-primary flex items-center justify-center bg-surface-container relative">
+<span class="text-7xl font-cinzel font-black text-primary leading-none">T</span>
+<div class="absolute -top-2 -left-2 w-4 h-4 bg-primary"></div>
+<div class="absolute -top-2 -right-2 w-4 h-4 bg-primary"></div>
+<div class="absolute -bottom-2 -left-2 w-4 h-4 bg-primary"></div>
+<div class="absolute -bottom-2 -right-2 w-4 h-4 bg-primary"></div>
+</div>
+</div>
+<div class="space-y-1">
+<h1 class="text-4xl md:text-5xl font-headline font-bold tracking-tight text-on-surface">he Dominion of Stormhold (#7)</h1>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-surface-container-high px-3 py-1 text-sm font-cinzel tracking-widest text-primary border border-outline-variant/30">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">person</span>
+                        HUMAN RACE
+                    </div>
+<span class="text-on-surface-variant font-serif italic">Lord Ashford presiding</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-10 gap-8 items-start">
+<!-- Left Side: Core Dominion Panels (70%) -->
+<div class="lg:col-span-7 space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Overview Card -->
+<section class="bg-surface-container parchment-texture p-6 relative group overflow-hidden border border-outline-variant/10 shadow-lg">
+<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent pointer-events-none"></div>
+<h2 class="font-cinzel text-xl text-primary border-b border-outline-variant/20 pb-2 mb-6 flex items-center justify-between">
+                            Overview
+                            <span class="material-symbols-outlined text-lg">visibility</span>
+</h2>
+<ul class="space-y-4 font-serif">
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Ruler</span>
+<span class="text-on-surface">Lord Ashford</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Land</span>
+<span class="text-primary font-bold">1,250 <small class="font-normal text-xs uppercase tracking-tighter">acres</small></span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Networth</span>
+<span class="text-primary font-bold">45,832</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Peasants</span>
+<span class="text-primary font-bold">3,412</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="text-on-surface-variant">Happiness</span>
+<span class="text-tertiary font-bold">98%</span>
+</li>
+</ul>
+</section>
+<!-- Resources Card -->
+<section class="bg-surface-container parchment-texture p-6 relative group border border-outline-variant/10 shadow-lg">
+<h2 class="font-cinzel text-xl text-primary border-b border-outline-variant/20 pb-2 mb-6 flex items-center justify-between">
+                            Resources
+                            <span class="material-symbols-outlined text-lg">database</span>
+</h2>
+<ul class="space-y-4 font-serif">
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">payments</span> Platinum
+                                </span>
+<span class="text-primary font-bold">28,450</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">bakery_dining</span> Food
+                                </span>
+<span class="text-primary font-bold">15,200</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">forest</span> Lumber
+                                </span>
+<span class="text-primary font-bold">8,340</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">diamond</span> Mana
+                                </span>
+<span class="text-primary font-bold">1,120</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">construction</span> Building
+                                </span>
+<span class="text-primary font-bold">12 Active</span>
+</li>
+</ul>
+</section>
+<!-- Military Card -->
+<section class="bg-surface-container parchment-texture p-6 relative group border border-outline-variant/10 shadow-lg">
+<h2 class="font-cinzel text-xl text-primary border-b border-outline-variant/20 pb-2 mb-6 flex items-center justify-between">
+                            Military
+                            <span class="material-symbols-outlined text-lg">swords</span>
+</h2>
+<ul class="space-y-4 font-serif">
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Morale</span>
+<span class="text-tertiary font-bold">100%</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Soldiers</span>
+<span class="text-primary font-bold">2,400</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Archers</span>
+<span class="text-primary font-bold">800</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/5 pb-2">
+<span class="text-on-surface-variant">Knights</span>
+<span class="text-primary font-bold">350</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="text-on-surface-variant">Status</span>
+<span class="bg-tertiary-container text-on-tertiary-container px-2 py-0.5 text-[10px] font-cinzel font-bold">DEFENSIVE</span>
+</li>
+</ul>
+</section>
+</div>
+<!-- Strategic Map Area (Visual Component) -->
+<div class="relative bg-surface-container-low h-96 overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-1000 cursor-crosshair" data-alt="top-down high fantasy parchment map of a kingdom with detailed terrain, rivers, and mountain ranges in sepia tones" data-location="Stormhold" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBD7ObjrLvDxm_eNKuAahEfE9Le8ldmP5TkEBNJ-C8SNgH0SCMNr6DRd0yaenuVq0tKPSwDKigC3Fz8SgFXE1g_bx-zWihKeK1f06rpIvPF1iyaP2Ca-LWF2uk9CsnAkR4Hl05gpTdQFU7eJjT18T9abpFJrBf7Q1I6khO6t_Pkb2lug7PA4rgjVCAJMN-pVhiLizMdxlySGJQSaBh-njbWT8gfibK-0R_3_-I1R5-zuYKo7X5BeYDKycDA55utWeptE3goMWHTkr4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
+<div class="absolute bottom-6 left-6">
+<p class="font-cinzel text-primary tracking-[0.2em] text-sm mb-1 uppercase">Strategic Overview</p>
+<p class="text-on-surface-variant text-xs italic">Territory: The Eastern Marches</p>
+</div>
+<div class="absolute top-6 right-6 flex flex-col gap-2">
+<button class="bg-primary text-on-primary font-cinzel text-xs py-2 px-6 shadow-xl hover:translate-y-px transition-all inner-bevel uppercase tracking-widest">Deploy Forces</button>
+<button class="bg-secondary-container text-on-secondary-container border border-primary/20 font-cinzel text-xs py-2 px-6 shadow-xl hover:translate-y-px transition-all uppercase tracking-widest">Expand Borders</button>
+</div>
+</div>
+</div>
+<!-- Right Side: Sidebar (30%) -->
+<aside class="lg:col-span-3 space-y-8">
+<!-- Perks Card -->
+<div class="bg-surface-container-high border-l-4 border-primary p-6 shadow-xl">
+<h3 class="font-cinzel text-lg text-primary mb-4 flex items-center gap-3">
+<span class="material-symbols-outlined wax-seal text-primary">verified</span>
+                        Human Perks
+                    </h3>
+<div class="space-y-4">
+<div class="p-3 bg-surface-container-highest/50 border border-outline-variant/10">
+<h4 class="text-xs font-cinzel text-primary-fixed-dim uppercase tracking-wider mb-1">Versatility</h4>
+<p class="text-sm text-on-surface-variant italic">Increases building production speed by 15%.</p>
+</div>
+<div class="p-3 bg-surface-container-highest/50 border border-outline-variant/10">
+<h4 class="text-xs font-cinzel text-primary-fixed-dim uppercase tracking-wider mb-1">Diplomacy</h4>
+<p class="text-sm text-on-surface-variant italic">Reduced cost for peace treaties and trade alliances.</p>
+</div>
+</div>
+</div>
+<!-- Recent News (Scroll/Parchment Style) -->
+<div class="bg-[#d1c5af] text-[#210e0b] p-8 relative shadow-[0_10px_30px_rgba(0,0,0,0.5)] parchment-texture">
+<!-- Decorative scroll edges -->
+<div class="absolute -top-2 left-0 right-0 h-4 bg-gradient-to-b from-[#bba78a] to-transparent"></div>
+<div class="absolute -bottom-2 left-0 right-0 h-4 bg-gradient-to-t from-[#bba78a] to-transparent"></div>
+<h3 class="font-cinzel text-xl font-bold border-b-2 border-[#210e0b]/20 pb-2 mb-6 text-center uppercase tracking-widest">
+                        Chronicle of News
+                    </h3>
+<div class="space-y-6">
+<article>
+<span class="text-[10px] font-bold uppercase tracking-tighter opacity-70">Year 342, Day 14</span>
+<p class="font-serif text-sm leading-relaxed mt-1">A merchant caravan from the Southern Sands has arrived, bearing rare spices and news of rising unrest in the Orcish camps.</p>
+</article>
+<article class="border-t border-[#210e0b]/10 pt-4">
+<span class="text-[10px] font-bold uppercase tracking-tighter opacity-70">Year 342, Day 12</span>
+<p class="font-serif text-sm leading-relaxed mt-1">Great harvest reported in the Green Valleys. Granaries are overflowing with wheat and barley.</p>
+</article>
+<article class="border-t border-[#210e0b]/10 pt-4">
+<span class="text-[10px] font-bold uppercase tracking-tighter opacity-70">Year 342, Day 10</span>
+<p class="font-serif text-sm leading-relaxed mt-1 text-secondary-container">Scouts report a mysterious shadow looming over the Whispering Woods. Magic levels are fluctuating.</p>
+</article>
+</div>
+<div class="mt-8 flex justify-center">
+<div class="w-12 h-12 bg-[#7a322f] flex items-center justify-center wax-seal rotate-12">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">policy</span>
+</div>
+</div>
+</div>
+<!-- Action Chips -->
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container text-xs font-cinzel flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">auto_awesome</span> PROSPERING
+                    </span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-cinzel flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">shield</span> FORTIFIED
+                    </span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs font-cinzel">
+                        ERA: AWAKENING
+                    </span>
+</div>
+</aside>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-16 bg-[#2f1a16] border-t border-[#4d4635]/30 shadow-[0_-8px_16px_rgba(0,0,0,0.4)]">
+<a class="flex flex-col items-center justify-center bg-[#c9a227] text-[#3d2e00] p-3 shadow-inner h-full w-full" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-serif text-[10px] uppercase tracking-widest mt-1">Overview</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#d1c5af] p-3 hover:bg-[#472f2b] h-full w-full" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-serif text-[10px] uppercase tracking-widest mt-1">Settings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#d1c5af] p-3 hover:bg-[#472f2b] h-full w-full" href="#">
+<span class="material-symbols-outlined">help_center</span>
+<span class="font-serif text-[10px] uppercase tracking-widest mt-1">Support</span>
+</a>
+</nav>
+<!-- Footer Spacer for Mobile Nav -->
+<div class="h-20 md:hidden"></div>
+</body></html>

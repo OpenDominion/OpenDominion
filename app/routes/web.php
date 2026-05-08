@@ -140,6 +140,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Techs
             $router->get('techs')->uses('Dominion\TechController@getTechs')->name('techs');
             $router->post('techs')->uses('Dominion\TechController@postTechs');
+            $router->post('techs/temporary')->uses('Dominion\TechController@postTemporaryTech')->name('techs.temporary-tech');
 
             // Heroes
             $router->get('heroes')->uses('Dominion\HeroController@getHeroes')->name('heroes');
@@ -362,6 +363,7 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('crosslogs', 'Staff\Administrator\DominionController@getCrosslogs')->name('crosslogs');
         $router->get('invasions', 'Staff\Administrator\DominionController@getInvasions')->name('invasions');
         $router->get('theft', 'Staff\Administrator\DominionController@getTheft')->name('theft');
+        $router->get('repeat-invasions', 'Staff\Administrator\DominionController@getRepeatInvasions')->name('repeat-invasions');
 
         $router->resource('dominions', 'Staff\Administrator\DominionController');
         $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');
@@ -393,6 +395,16 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->post('raids/{raid}/objectives/{objective}/tactics/{tactic}/edit', 'Staff\Administrator\RaidController@postEditTactic');
         $router->get('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@getDeleteTactic')->name('raids.objectives.tactics.delete');
         $router->post('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@postDeleteTactic');
+
+        // Hero Tournaments
+        $router->get('hero-tournaments', 'Staff\Administrator\HeroTournamentController@getIndex')->name('hero-tournaments.index');
+        $router->get('hero-tournaments/create', 'Staff\Administrator\HeroTournamentController@getCreate')->name('hero-tournaments.create');
+        $router->post('hero-tournaments/create', 'Staff\Administrator\HeroTournamentController@postCreate');
+        $router->get('hero-tournaments/{heroTournament}', 'Staff\Administrator\HeroTournamentController@getShow')->name('hero-tournaments.show');
+        $router->get('hero-tournaments/{heroTournament}/edit', 'Staff\Administrator\HeroTournamentController@getEdit')->name('hero-tournaments.edit');
+        $router->post('hero-tournaments/{heroTournament}/edit', 'Staff\Administrator\HeroTournamentController@postEdit');
+        $router->get('hero-tournaments/{heroTournament}/delete', 'Staff\Administrator\HeroTournamentController@getDelete')->name('hero-tournaments.delete');
+        $router->post('hero-tournaments/{heroTournament}/delete', 'Staff\Administrator\HeroTournamentController@postDelete');
 
     });
 

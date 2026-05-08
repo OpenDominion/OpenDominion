@@ -1,0 +1,54 @@
+## Achievements
+## key: unique identifier used in code to unlock
+## name: display name
+## description: player-facing description
+## category: grouping for display
+## icon: Font Awesome or RPG Awesome icon class
+
+# Events
+the_opportunist:
+  name: The Opportunist
+  description: Most Wonders Destroyed in Round 20
+  category: events
+  icon: ra-sword
+all_hallows_eve:
+  name: All Hallows Eve
+  description: Participated in Halloween test round
+  category: events
+  icon: ra-skull
+george:
+  name: George
+  description: Participated in Heroes test round
+  category: events
+  icon: ra-knight-helmet
+keeper_of_the_staff:
+  name: Keeper of the Staff
+  description: Acquired Staff of the Stormcaller
+  category: events
+  icon: ra-crystal-wand
+wielder_of_the_blade:
+  name: Wielder of the Blade
+  description: Acquired Blade of Sundering
+  category: events
+  icon: ra-sword
+defender_of_the_realm:
+  name: Defender of the Realm
+  description: Participated in battle against Urg
+  category: events
+  icon: ra-shield
+the_giantslayer:
+  name: The Giantslayer
+  description: Dealt killing blow against Urg
+  category: events
+  icon: ra-axe
+# Hero Battles
+the_vanquisher:
+  name: The Vanquisher
+  description: Won the Grand Tournament
+  category: heroes
+  icon: ra-trophy
+gladiator:
+  name: Gladiator
+  description: Won a match in the Grand Tournament
+  category: heroes
+  icon: ra-crossed-swords

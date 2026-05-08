@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="row">
-
         <div class="col-sm-12 col-md-9">
             @if (!$raids->isEmpty())
                 @foreach ($raids as $raid)
@@ -18,6 +17,17 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
+                                    @foreach ($raid->objectives->sortBy('order') as $objective)
+                                        @if ($objective->isActive())
+                                            <div class="row mb-3">
+                                                <div class="col-sm-12">
+                                                    <a href="{{ route('dominion.raids.objective', [$objective->id]) }}" class="btn btn-success btn-lg btn-block">
+                                                        Current Objective: {{ $objective->name }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
                                     <div class="row mb-3">
                                         <div class="col-md-12">
                                             {!! $raid->description !!}

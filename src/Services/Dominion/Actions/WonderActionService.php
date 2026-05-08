@@ -12,6 +12,7 @@ use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\DominionTech;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
@@ -549,6 +550,14 @@ class WonderActionService
         }
 
         if ($currentRealm !== null) {
+            // Remove temporary techs from Planar Gates
+            if ($wonder->wonder->getPerkValue('temporary_tech') > 0) {
+                DominionTech::whereIn('dominion_id', $currentRealm->dominions->pluck('id'))
+                    ->where('source_type', RoundWonder::class)
+                    ->where('source_id', $wonder->id)
+                    ->delete();
+            }
+
             // Queue hostile notifications
             foreach ($currentRealm->dominions as $hostileDominion) {
                 $this->notificationService
