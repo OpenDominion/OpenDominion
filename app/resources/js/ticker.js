@@ -20,14 +20,14 @@ class Ticker {
         this.tickerNextHourElement = document.getElementById('ticker-next-tick');
         this.tickerNextRoundElement = document.getElementById('ticker-next-round');
 
-        // Only tick if the ticker element is visible; i.e. not on the homepage
-        if (this.tickerServerElement !== null) {
-            const self = this;
-            setInterval(() => self.tick(), 1000);
-        }
-
         if (this.tickerNextRoundElement !== null) {
             this.nextRoundStartDate = new Date(this.tickerNextRoundElement.dataset.value);
+        }
+
+        // Only tick if the ticker element is visible; i.e. not on the homepage
+        if (this.tickerServerElement !== null || this.tickerNextRoundElement) {
+            const self = this;
+            setInterval(() => self.tick(), 1000);
         }
     }
 
