@@ -457,6 +457,8 @@ html.hourchange:after {
   .app-sidebar a              { color: #b8c7ce; }
   .app-sidebar a:hover        { text-decoration: none; color: #fff; }
   .nav-header                 { background: #1a2226; color: #8aa4af; }
+  .navbar-toggler             { border-color: rgba(var(--bs-emphasis-color-rgb), 0.15); }
+  .navbar-toggler:focus       { box-shadow: none; }
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
   .sidebar-menu .nav-item:hover > .nav-link,
   .sidebar-menu .nav-item.active > .nav-link { color: #fff; background: #1e282c; border-left-color: var(--bs-primary); }

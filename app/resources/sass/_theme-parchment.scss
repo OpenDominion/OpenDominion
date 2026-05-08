@@ -271,6 +271,8 @@
   .nav-treeview .nav-link.active,
   .nav-treeview .nav-link:hover { color: #d4a030; }
   .navbar-nav                 { color: var(--od-text-body) !important; }
+  .navbar-toggler             { background: var(--od-rule); }
+  .navbar-toggler:focus       { box-shadow: none; }
 
   // ── DataTables ────────────────────────────────────────────────────────────
   .dataTables_wrapper input[type='search'] { border-radius: 4px; background-color: var(--od-surface); border: 1px solid var(--od-rule-soft); color: var(--od-text-body); }

@@ -20,7 +20,7 @@ george:
   name: George
   description: Participated in Heroes test round
   category: events
-  icon: ra-knight-helmet
+  icon: ra-prank-glasses
 keeper_of_the_staff:
   name: Keeper of the Staff
   description: Acquired Staff of the Stormcaller
