@@ -483,6 +483,13 @@
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
+                    @if ($discordInviteLink = config('app.discord_invite_link'))
+                        <li class="nav-item">
+                            <a href="{{ $discordInviteLink }}" target="_blank" class="nav-link" title="Join us on Discord" aria-label="Join us on Discord">
+                                <i class="fab fa-discord"></i>
+                            </a>
+                        </li>
+                    @endif
                     @auth
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}" class="nav-link">
@@ -525,7 +532,7 @@
                     <div class="landing-card landing-card-small">
                         <div class="landing-card-header">
                             @if ($currentRound === null)
-                                <i class="fa fa-shield-halved fa-fw me-2"></i>Current Round
+                                <i class="fa fa-shield-halved fa-fw me-2"></i> Current Round
                             @else
                                 <i class="fa fa-shield-halved fa-fw me-2"></i> Round #{{ $currentRound->number }}
                             @endif
@@ -535,7 +542,7 @@
                                 <p class="landing-status text-inactive">Inactive</p>
                                 <p>There is no ongoing round.</p>
                                 @if ($discordInviteLink = config('app.discord_invite_link'))
-                                    <p>Check the <a href="{{ $discordInviteLink }}" target="_blank" style="color: #afa170;">Discord</a> for more information.</p>
+                                    <p>Check the <a href="{{ $discordInviteLink }}" target="_blank" style="color: #afa170;">Discord server</a> for more information.</p>
                                 @endif
                             @else
                                 @if ($currentRound->realmAssignmentDate() > now())
@@ -574,7 +581,7 @@
                     {{-- Podcast --}}
                     <a href="https://anchor.fm/riol-talk" target="_blank" class="landing-card landing-card-small">
                         <div class="landing-card-header">
-                            <i class="fa fa-podcast fa-fw me-2"></i>Podcasts
+                            <i class="fa fa-podcast fa-fw me-2"></i> Podcasts
                         </div>
                         <div class="landing-card-body">
                             <p>Strategy discussion, round recaps, and community interviews from the world of OpenDominion.</p>
@@ -626,7 +633,7 @@
 
                     <a href="{{ route('valhalla.index') }}" class="landing-card landing-card-small">
                         <div class="landing-card-header">
-                            <i class="fa fa-trophy fa-fw me-2"></i>Valhalla
+                            <i class="fa fa-trophy fa-fw me-2"></i> Valhalla
                         </div>
                         <div class="landing-card-body">
                             <p>The hall of legends. Browse the all-time leaderboards. See who conquered, who endured, and whose dominion stood above all others.</p>
@@ -635,7 +642,7 @@
 
                     <a href="{{ route('scribes.overview') }}" class="landing-card landing-card-small">
                         <div class="landing-card-header">
-                            <i class="fa fa-book fa-fw me-2"></i>The Scribes
+                            <i class="fa fa-book fa-fw me-2"></i> The Scribes
                         </div>
                         <div class="landing-card-body">
                             <p>Knowledge is power. Learn about the races, units, buildings, spells, and everything else at your disposal.</p>
