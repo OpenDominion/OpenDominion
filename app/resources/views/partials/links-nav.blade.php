@@ -4,6 +4,11 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
         <li>
+            <a href="{{ route('user-agreement') }}" class="dropdown-item d-flex align-items-center gap-2">
+                <i class="fa fa-gavel fa-fw"></i> Rules
+            </a>
+        </li>
+        <li>
             <a href="{{ route('scribes.overview') }}" class="dropdown-item d-flex align-items-center gap-2">
                 <i class="fa fa-book fa-fw"></i> Scribes
             </a>
