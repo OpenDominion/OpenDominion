@@ -147,7 +147,7 @@
         .landing-hero {
             position: relative;
             min-height: 50vh;
-            padding-top: 3rem;
+            padding-top: 4.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
