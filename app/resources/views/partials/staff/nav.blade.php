@@ -16,7 +16,7 @@
         <li class="nav-header">Administrator</li>
         <li class="nav-item"><a href="{{ route('staff.administrator.dominions.index') }}" class="nav-link {{ Route::is('staff.administrator.dominions.*') ? 'active' : null }}">Dominions</a></li>
         <li class="nav-item"><a href="{{ route('staff.administrator.raids.index') }}" class="nav-link {{ Route::is('staff.administrator.raids.*') ? 'active' : null }}">Raids</a></li>
-        <li class="nav-item"><a href="{{ route('staff.administrator.hero-tournaments.index') }}" class="nav-link {{ Route::is('staff.hero-tournaments.raids.*') ? 'active' : null }}">Hero Tournaments</a></li>
+        <li class="nav-item"><a href="{{ route('staff.administrator.hero-tournaments.index') }}" class="nav-link {{ Route::is('staff.administrator.hero-tournaments.*') ? 'active' : null }}">Hero Tournaments</a></li>
         <li class="nav-item"><a href="{{ route('staff.administrator.users.index') }}" class="nav-link {{ Route::is('staff.administrator.users.*') ? 'active' : null }}">Users</a></li>
     @endif
 

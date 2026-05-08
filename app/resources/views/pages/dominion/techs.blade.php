@@ -36,11 +36,11 @@
             @if ($selectedDominion->getWonderPerkValue('temporary_tech') > 0)
                 <form action="{{ route('dominion.techs.temporary-tech') }}" method="post" role="form">
                     @csrf
-                    <div class="box box-success">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-pyramids"></i> Planar Gates - Temporary Tech</h3>
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <span class="card-title"><i class="ra ra-pyramids"></i> Planar Gates - Temporary Tech</span>
                         </div>
-                        <div class="box-body">
+                        <div class="card-body">
                             <p>Your realm controls the Planar Gates. Select one unresearched tech to gain its benefits temporarily. Benefits are lost if the wonder changes hands.</p>
                             @if ($currentTempTech)
                                 <p>
@@ -52,7 +52,7 @@
                                 @endif
                             @endif
                             <div class="row">
-                                <div class="col-xs-9 col-lg-10">
+                                <div class="col-9 col-lg-10">
                                     <select name="tech" id="temporary-tech" class="form-control select2" style="width: 100%" data-placeholder="Select a tech" {{ ($selectedDominion->isLocked() || $tempTechCooldownHours > 0) ? 'disabled' : null }}>
                                         <option></option>
                                         @foreach ($availableTechs->sortBy('name') as $tech)
@@ -62,7 +62,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-xs-3 col-lg-2">
+                                <div class="col-3 col-lg-2">
                                     <button type="submit" class="btn btn-success" {{ ($selectedDominion->isLocked() || $tempTechCooldownHours > 0) ? 'disabled' : null }}>
                                         Select
                                     </button>
@@ -156,11 +156,11 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Information</span>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
                     <p>You can obtain technical advancements by reaching appropriate levels of research points. The base cost of each advancement is 2.5x highest land achieved and increases by 50 after each unlock (min 3750). Most advancements require unlocking another before you can select them.</p>
                     <p><a href="{{ route('scribes.techs') }}?{{ implode('&', array_map(function($key) { return str_replace('tech_', '', $key); }, $unlockedTechs)) }}">View as Interactive Tree</a> in the Scribes.</p>

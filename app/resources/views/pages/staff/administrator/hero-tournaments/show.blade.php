@@ -5,25 +5,25 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ $tournament->name }}</h3>
-                    <div class="pull-right">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">{{ $tournament->name }}</span>
+                    <div class="float-end">
                         <a href="{{ route('staff.administrator.hero-tournaments.edit', $tournament) }}" class="btn btn-primary btn-sm">
                             <i class="fa fa-edit"></i> Edit
                         </a>
                         <a href="{{ route('staff.administrator.hero-tournaments.delete', $tournament) }}" class="btn btn-danger btn-sm">
                             <i class="fa fa-trash"></i> Delete
                         </a>
-                        <a href="{{ route('staff.administrator.hero-tournaments.index', ['round' => $tournament->round_id]) }}" class="btn btn-default btn-sm">
+                        <a href="{{ route('staff.administrator.hero-tournaments.index', ['round' => $tournament->round_id]) }}" class="btn btn-secondary btn-sm">
                             <i class="fa fa-arrow-left"></i> Back to List
                         </a>
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th width="200">Round</th>
                                     <td>{{ $tournament->round->name }}</td>
@@ -32,13 +32,13 @@
                                     <th>Status</th>
                                     <td>
                                         @if ($tournament->finished)
-                                            <span class="label label-default">Finished</span>
+                                            <span class="badge text-bg-secondary">Finished</span>
                                         @elseif ($tournament->hasStarted())
-                                            <span class="label label-success">In Progress</span>
+                                            <span class="badge text-bg-success">In Progress</span>
                                         @elseif ($tournament->start_date)
-                                            <span class="label label-info">Registration Open</span>
+                                            <span class="badge text-bg-info">Registration Open</span>
                                         @else
-                                            <span class="label label-warning">Draft</span>
+                                            <span class="badge text-bg-warning">Draft</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -55,7 +55,7 @@
                             </table>
                         </div>
                         <div class="col-md-6">
-                            <table class="table table-condensed">
+                            <table class="table table-sm">
                                 <tr>
                                     <th width="200">Current Round</th>
                                     <td>{{ $tournament->current_round_number }}</td>
@@ -84,11 +84,11 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Participants</h3>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Participants</span>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body table-responsive">
                     @if ($tournament->participants->isEmpty())
                         <p class="text-center text-muted">No participants registered yet.</p>
                     @else
@@ -129,9 +129,9 @@
                                         <td class="text-center">{{ $participant->standing ?? '-' }}</td>
                                         <td class="text-center">
                                             @if ($participant->eliminated)
-                                                <span class="label label-danger">Eliminated</span>
+                                                <span class="badge text-bg-danger">Eliminated</span>
                                             @else
-                                                <span class="label label-success">Active</span>
+                                                <span class="badge text-bg-success">Active</span>
                                             @endif
                                         </td>
                                     </tr>

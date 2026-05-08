@@ -3,16 +3,16 @@
 @section('page-header', 'Hero Tournaments')
 
 @section('content')
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">
                 Hero Tournaments - {{ $round->name }}
-            </h3>
-            <div class="pull-right">
+            </span>
+            <div class="float-end">
                 <a href="{{ route('staff.administrator.hero-tournaments.create', ['round' => $round->id]) }}" class="btn btn-success">
                     <i class="fa fa-plus"></i> Create New Tournament
                 </a>
-                <select id="round-select" class="form-control" style="display: inline-block; width: auto; margin-left: 10px;">
+                <select id="round-select" class="form-select" style="display: inline-block; width: auto; margin-left: 10px;">
                     @foreach ($rounds as $roundOption)
                         <option value="{{ $roundOption->id }}" {{ $roundOption->id == $round->id ? 'selected' : null }}>
                             {{ $roundOption->name }}
@@ -21,7 +21,7 @@
                 </select>
             </div>
         </div>
-        <div class="box-body table-responsive">
+        <div class="card-body table-responsive">
             @if ($tournaments->isEmpty())
                 <p class="text-center text-muted">No hero tournaments found for this round.</p>
             @else
@@ -70,23 +70,23 @@
                                 <td class="text-center">{{ $tournament->current_round_number }}</td>
                                 <td class="text-center">
                                     @if ($tournament->finished)
-                                        <span class="label label-default">Finished</span>
+                                        <span class="badge text-bg-secondary">Finished</span>
                                     @elseif ($tournament->hasStarted())
-                                        <span class="label label-success">In Progress</span>
+                                        <span class="badge text-bg-success">In Progress</span>
                                     @elseif ($tournament->start_date)
-                                        <span class="label label-info">Registration Open</span>
+                                        <span class="badge text-bg-info">Registration Open</span>
                                     @else
-                                        <span class="label label-warning">Draft</span>
+                                        <span class="badge text-bg-warning">Draft</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('staff.administrator.hero-tournaments.show', $tournament) }}" class="btn btn-xs btn-primary" title="View">
+                                    <a href="{{ route('staff.administrator.hero-tournaments.show', $tournament) }}" class="btn btn-sm btn-primary" title="View">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('staff.administrator.hero-tournaments.edit', $tournament) }}" class="btn btn-xs btn-info" title="Edit">
+                                    <a href="{{ route('staff.administrator.hero-tournaments.edit', $tournament) }}" class="btn btn-sm btn-info" title="Edit">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <a href="{{ route('staff.administrator.hero-tournaments.delete', $tournament) }}" class="btn btn-xs btn-danger" title="Delete">
+                                    <a href="{{ route('staff.administrator.hero-tournaments.delete', $tournament) }}" class="btn btn-sm btn-danger" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -98,14 +98,6 @@
         </div>
     </div>
 @endsection
-
-@push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
-@endpush
-
-@push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
-@endpush
 
 @push('inline-scripts')
     <script type="text/javascript">

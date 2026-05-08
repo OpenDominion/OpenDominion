@@ -53,10 +53,10 @@
                                         min="0"
                                         value="{{ $targetDominion->prestige }}" />
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-3 text-end">
                                 Guard
                             </div>
-                            <div class="col-xs-3 text-left">
+                            <div class="col-3 text-start">
                                 <input type="checkbox"
                                     name="calc[guard]"
                                     {{ $targetDominion->royal_guard_active_at && ($targetDominion->royal_guard_active_at < now()) ? 'checked' : null }} />
@@ -211,12 +211,12 @@
                                 </div>
                             @endforeach
                             @foreach ($spellHelper->getSpells($targetDominion->race, 'hostile')->chunk(2) as $chunk)
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     @foreach ($chunk as $spell)
-                                        <div class="col-xs-3 text-right">
+                                        <div class="col-3 text-end">
                                             {{ $spell->name }}
                                         </div>
-                                        <div class="col-xs-3 text-left">
+                                        <div class="col-3 text-start">
                                             <input type="checkbox"
                                                     name="spells[{{ $spell->key }}]"
                                                     {{ $activeSpells->contains($spell->key) ? 'checked' : null }} />
