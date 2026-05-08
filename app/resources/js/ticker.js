@@ -37,12 +37,20 @@ class Ticker {
      * @private
      */
     tick() {
-        const currentServerTime = this.tickerServerElement.innerHTML;
-        const currentTime = new Date('1970-01-01T' + currentServerTime + 'Z');
-        currentTime.setUTCSeconds(currentTime.getUTCSeconds() + 1);
+        if (this.tickerServerElement !== null) {
+            const currentServerTime = this.tickerServerElement.innerHTML;
+            const currentTime = new Date('1970-01-01T' + currentServerTime + 'Z');
+            currentTime.setUTCSeconds(currentTime.getUTCSeconds() + 1);
+            this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
+        }
 
-        this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
-        if (this.tickerNextHourElement !== null) {
+        if (this.tickerNextRoundElement !== null){
+            const diffDate = (this.nextRoundStartDate - new Date());
+
+            if (diffDate > 0) {
+                this.tickerNextRoundElement.innerHTML = Ticker.hms(diffDate);
+            }
+        } else if (this.tickerNextHourElement !== null) {
             const nextHour = new Date(currentTime.toString());
             nextHour.setUTCHours(currentTime.getUTCHours() + 1);
             nextHour.setMinutes(0);
@@ -58,12 +66,6 @@ class Ticker {
             if (currentTime >= this.nextHour) {
                 var htmlElement = document.getElementsByTagName("html")[0];
                 htmlElement.classList.add("hourchange");
-            }
-        } else if (this.tickerNextRoundElement !== null){
-            const diffDate = (this.nextRoundStartDate - new Date());
-
-            if (diffDate > 0) {
-                this.tickerNextRoundElement.innerHTML = Ticker.hms(diffDate);
             }
         }
     }
