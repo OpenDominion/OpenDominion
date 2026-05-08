@@ -478,7 +478,7 @@
                     <li class="nav-item"><a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a></li>
                     @include('partials.wiki-nav')
                     @auth
-                        <li class="nav-item"><a href="{{ $playUrl }}" class="nav-link"><b>Play</b></a></li>
+                        <li class="nav-item"><a href="{{ $playUrl }}" class="nav-link"><b>{{ $playLabel }}</b></a></li>
                     @endauth
                 </ul>
 

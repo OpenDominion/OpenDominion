@@ -51,17 +51,23 @@ class HomeController extends AbstractController
         }
 
         if (Auth::check()) {
-            $playUrl = $selectorService->hasUserSelectedDominion()
-                ? route('dominion.status')
-                : route('dashboard');
+            if ($selectorService->hasUserSelectedDominion()) {
+                $playUrl = route('dominion.status');
+                $playLabel = 'Play';
+            } else {
+                $playUrl = route('dashboard');
+                $playLabel = 'Dashboard';
+            }
         } else {
             $playUrl = route('auth.register');
+            $playLabel = 'Play';
         }
 
         return view('pages.home', [
             'currentRound' => $currentRound,
             'currentRankings' => $currentRankings,
             'playUrl' => $playUrl,
+            'playLabel' => $playLabel,
         ]);
     }
 
