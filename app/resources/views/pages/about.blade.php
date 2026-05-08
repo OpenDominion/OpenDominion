@@ -14,7 +14,7 @@
 
                     <p>OpenDominion runs in real time. Every hour, the game ticks forward: resources accrue, construction completes, and military orders carry out around the clock — so a round unfolds gradually over several weeks, with or without you at the keyboard.<p>
 
-                    <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="http://dominion.opendominion.net/GameOver.htm" target="_blank">shut down <i class="fa fa-external-link"></i></a>.</p>
+                    <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="http://dominion.opendominion.net/GameOver.htm" target="_blank">shutting down <i class="fa fa-external-link"></i></a>.</p>
 
                     <figure class="figure d-block text-center mt-3 mb-0">
                         <img src="{{ asset('assets/app/images/classic.png') }}" class="figure-img img-fluid rounded border" alt="Screenshot of the original Dominion game">

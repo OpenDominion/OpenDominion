@@ -39,7 +39,9 @@
 
         /* ── Navbar ── */
         .landing-nav {
-            position: absolute;
+            &.navbar {
+                position: absolute;
+            }
             top: 0;
             left: 0;
             right: 0;
@@ -282,8 +284,8 @@
             background: linear-gradient(
                 180deg,
                 rgba(186, 159, 80, 0.25) 0%,
-                rgba(25, 25, 25, 0.4) 45%,
-                rgba(25, 25, 25, 0.5) 55%,
+                rgba(25, 25, 25, 0.4) 35%,
+                rgba(25, 25, 25, 0.5) 65%,
                 rgba(146, 119, 50, 0.2) 100%
             );
             border: 1.5px solid rgba(199, 176, 120, 0.5);
@@ -292,8 +294,8 @@
             border-radius: 3px;
             text-decoration: none;
             transition: all 0.25s ease;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .landing-cta:hover,
@@ -302,8 +304,8 @@
             background: linear-gradient(
                 180deg,
                 rgba(206, 179, 90, 0.35) 0%,
-                rgba(25, 25, 25, 0.55) 45%,
-                rgba(25, 25, 25, 0.6) 55%,
+                rgba(25, 25, 25, 0.55) 35%,
+                rgba(25, 25, 25, 0.6) 65%,
                 rgba(166, 139, 60, 0.3) 100%
             );
             border-color: rgba(207, 177, 76, 0.65);
