@@ -65,7 +65,7 @@
                                             @endif
 
                                             @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard" data-bs-toggle="tooltip"></i>
+                                                <i class="ra ra-heavy-shield ra-lg text-orange" title="Elite Guard" data-bs-toggle="tooltip"></i>
                                             @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
                                                 <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard" data-bs-toggle="tooltip"></i>
                                             @endif

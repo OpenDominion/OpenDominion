@@ -118,7 +118,7 @@
                             </thead>
                             @foreach ($techs as $tech)
                                 <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }} {{ empty($tech->prerequisites) && !in_array($tech->key, $unlockedTechs) ? 'active' : null }}">
-                                    <td class="text-center{{ in_array($tech->key, $permanentTechKeys) ? ' text-green' : (in_array($tech->key, $temporaryTechKeys) ? ' text-yellow' : null) }}">
+                                    <td class="text-center{{ in_array($tech->key, $permanentTechKeys) ? ' text-green' : (in_array($tech->key, $temporaryTechKeys) ? ' text-orange' : null) }}">
                                         @if (in_array($tech->key, $permanentTechKeys))
                                             <i class="fa fa-check"></i>
                                         @else
@@ -167,7 +167,7 @@
                     <p>If you pick a tech that has the same bonus as another tech, you will receive the total bonus from both.</p>
                     <p>You have unlocked <b>{{ count($permanentTechKeys) }} techs</b>.
                         @if (count($temporaryTechKeys) > 0)
-                            <span class="text-yellow">(+{{ count($temporaryTechKeys) }} temporary)</span>
+                            <span class="text-orange">(+{{ count($temporaryTechKeys) }} temporary)</span>
                         @endif
                     </p>
                     <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> out of the {{ number_format($techCalculator->getTechCost($selectedDominion)) }} required to unlock a new tech.</p>

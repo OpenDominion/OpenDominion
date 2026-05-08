@@ -64,7 +64,7 @@
                     </td>
                     <td class="text-center" style="padding: 9px 0 7px 0;">
                         @if ($guardMembershipService->isEliteGuardMember($targetDominion))
-                            <i class="ra ra-heavy-shield text-yellow" title="Elite Guard" data-bs-toggle="tooltip"></i>
+                            <i class="ra ra-heavy-shield text-orange" title="Elite Guard" data-bs-toggle="tooltip"></i>
                         @elseif ($guardMembershipService->isRoyalGuardMember($targetDominion))
                             <i class="ra ra-heavy-shield text-green" title="Royal Guard" data-bs-toggle="tooltip"></i>
                         @endif

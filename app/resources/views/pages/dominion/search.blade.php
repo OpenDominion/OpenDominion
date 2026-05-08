@@ -120,7 +120,7 @@
                                             <tr>
                                                 <td data-search="{{ $dominion->name }}" data-order="{{ $dominion->name }}">
                                                     @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                                        <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
+                                                        <i class="ra ra-heavy-shield ra-lg text-orange" title="Elite Guard"></i>
                                                     @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
                                                         <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                                     @endif

@@ -494,7 +494,7 @@
                             @endif
                         </div>
                         <div class="col-sm-6 text-center">
-                            <h4 class="text-yellow">
+                            <h4 class="text-orange">
                                 <i class="ra ra-heavy-shield" title="Elite Guard"></i>
                                 The Emperor's Elite Guard
                             </h4>
@@ -592,7 +592,7 @@
                     <p>Joining the Chaos League takes 12 hours and you cannot leave for the first 12 hours after joining. Leaving the Chaos League also requires an additional 12 hours to go into effect.</p>
 
                     @if ($isEliteGuardMember)
-                        <p>You are a member of the Emperor's <span class="text-yellow"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
+                        <p>You are a member of the Emperor's <span class="text-orange"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
                         @if ($hoursBeforeLeaveEliteGuard)
                             <p>You cannot leave for {{ $hoursBeforeLeaveEliteGuard }} hours.</p>
                         @endif
