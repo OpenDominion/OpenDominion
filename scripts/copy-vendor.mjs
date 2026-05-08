@@ -45,7 +45,11 @@ const copies = [
     // App images — static assets not processed by Vite (replaces Laravel Mix's mix.copy)
     [path.join(root, 'app', 'resources', 'images'), path.join(app, 'images')],
 
-    // DataTables Bootstrap 5 — loaded as a static asset per-page, not bundled
+    // DataTables — loaded as a static asset per-page, not bundled. The core
+    // (datatables.net) ships jquery.dataTables.js; datatables.net-bs5 layers
+    // the Bootstrap 5 integration on top. Both must be copied: the bs5
+    // integration package does not contain the core file.
+    [path.join(nm, 'datatables.net', 'js'),      path.join(vendor, 'datatables', 'js')],
     [path.join(nm, 'datatables.net-bs5', 'js'),  path.join(vendor, 'datatables', 'js')],
     [path.join(nm, 'datatables.net-bs5', 'css'), path.join(vendor, 'datatables', 'css')],
 
