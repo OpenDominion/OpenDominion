@@ -582,6 +582,24 @@ class HeroHelper
                 'limited' => false,
                 'special' => true,
             ],
+            'soul_rend' => [
+                'name' => 'Soul Rend',
+                'processor' => 'attack',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'bonus_damage' => 85,
+                    'defend' => 70,
+                    'threshold' => 40,
+                ],
+                'messages' => [
+                    'hit' => '%s unleashes a devastating Soul Rend for %s damage to %s!',
+                    'evaded' => '%s unleashes a devastating Soul Rend for %s damage, but %s evades, reducing damage to %s!',
+                    'countered' => '%s unleashes a devastating Soul Rend for %s damage to %s, who then counters for %s damage!',
+                    'evaded_countered' => '%s unleashes a devastating Soul Rend for %s damage, but %s evades, reducing damage to %s, then %s counters for %s damage!',
+                ]
+            ],
             'lifesteal' => [
                 'name' => 'Lifesteal',
                 'processor' => null,
@@ -723,6 +741,9 @@ class HeroHelper
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'retribution' => 'Retribution: Counter attack damage is increased by 15.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
+            'soul_harvest' => 'Soul Harvest: Absorbs the strength of fallen allies, growing more powerful with each death.',
+            'soul_rend' => 'Soul Rend: When wounded, charges a devastating attack that deals massive damage if not defended.',
+            'soul_tribute' => 'Soul Tribute: Upon death, empowers Dreadsoul Skullkeeper, increasing his attack and defense.',
             'summon_golem' => 'Summon Golem: Summons a Void Golem at regular intervals.',
             'summon_skeleton' => 'Summon: Summons a Skeleton Warrior every 4th turn.',
             'tactical_awareness' => 'Tactical Awareness: Reduces target\'s counter value by 2 for the remainder of the battle.',
@@ -786,6 +807,16 @@ class HeroHelper
                 'name' => 'Fortify',
                 'type' => 'npc',
                 'options' => ['attack' => 3, 'fortify' => 3, 'counter' => 2]
+            ],
+            'wraith' => [
+                'name' => 'Wraith',
+                'type' => 'npc',
+                'options' => ['attack' => 3, 'counter' => 3, 'recover' => 1, 'focus' => 1]
+            ],
+            'warchief' => [
+                'name' => 'Warchief',
+                'type' => 'npc',
+                'options' => ['attack' => 3, 'counter' => 4, 'focus' => 2, 'recover' => 1]
             ]
         ]);
     }
@@ -837,6 +868,10 @@ class HeroHelper
                 'The dust has settled, but the score remains even.',
                 'It was a tie! The bards are still arguing about who was better.',
                 'No winner, no loser—just a great story for the tavern.',
+                'An impasse! Both heroes collapsed from exhaustion.',
+                'Steel met steel until neither blade could swing again. A stalemate for the ages.',
+                'The arena floor is cracked, the weapons shattered, and still no victor. Incredible.',
+                'A draw so perfectly matched, the bookmakers are convinced it was rigged.',
             ]);
 
             $winner = null;
@@ -863,6 +898,16 @@ class HeroHelper
                 'In a shocking twist, %2$s tripped over their own feet and handed victory to %1$s.',
                 '%1$s won so convincingly, the spectators asked for an autograph.',
                 'Rumor has it %2$s is still looking for their dignity somewhere on the battlefield.',
+                '%1$s carved their name into the arena stone with %2$s\'s own weapon.',
+                'The crowd fell silent as %1$s delivered the final, merciless strike.',
+                '%2$s put up a valiant fight, but %1$s was simply on another level today.',
+                '%1$s fought with the fury of a thousand storms. %2$s never stood a chance.',
+                'They say %2$s was seen weeping into their ale at the tavern afterward.',
+                '%1$s dismantled %2$s so thoroughly, the healers weren\'t sure where to start.',
+                'A flawless performance by %1$s. The scribes ran out of superlatives.',
+                '%1$s made it look effortless, but the marks on their shield tell a different story.',
+                '%2$s\'s squire has already posted a notice seeking new employment.',
+                'The court jester declared %2$s the funniest act he\'s seen all season.',
             ]);
 
             $winner = $battle->winner->name;

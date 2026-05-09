@@ -229,11 +229,16 @@ class RaidActionService
             $enemyStats['name'] = $enemy['name'];
 
             if ($encounterKey == 'planewalker' && $enemy['key'] == 'planewalker' && $priorWins > 0) {
-                $enemyStats['current_health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
+                $enemyStats['health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
                 $enemyStats['evasion'] = max(1, (int) round($enemyStats['evasion'] * $evadeMultiplier));
                 $enemyStats['status'] = array_merge($enemyStats['status'] ?? [], [
                     'summon_interval' => $summonInterval,
                 ]);
+            }
+
+            if ($encounterKey == 'dreadsoul_skullkeeper' && $enemy['key'] == 'dreadsoul' && $priorWins > 0) {
+                $hpMultiplier = max(0.5, 1 - ($priorWins * 0.02));
+                $enemyStats['health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
             }
 
             $heroBattleService->createNonPlayerCombatant($heroBattle, $enemyStats);

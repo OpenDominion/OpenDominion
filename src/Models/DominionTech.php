@@ -25,4 +25,9 @@ class DominionTech extends AbstractPivot
     {
         return $this->belongsTo(Tech::class, 'tech_id');
     }
+
+    public function source()
+    {
+        return $this->morphTo();
+    }
 }

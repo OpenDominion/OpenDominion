@@ -57,10 +57,10 @@ class RoundController extends AbstractController
         $endorsements = $user->endorsements()->get();
         $positive = $user->endorsements()->where('endorsed', true)->count();
         $negative = $user->endorsements()->where('endorsed', false)->count();
-        if ($negative > (2 * $positive)) {
+        if ($negative > (2 * $positive + 1)) {
             $hasDiscord = false;
         }
-        if ($user->discordUser === null && $user->dominions()->count() > 0) {
+        if ($user->discordUser === null && $user->dominions()->count() > 1) {
             $hasDiscord = false;
         }
 

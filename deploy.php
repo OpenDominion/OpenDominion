@@ -32,8 +32,8 @@ task('npm install', function () {
 });
 
 desc('Build frontend');
-task('npm run prod', function () {
-    run('cd {{release_path}} && npm run prod');
+task('npm run build', function () {
+    run('cd {{release_path}} && npm run build');
 });
 
 desc('Syncing game data');
@@ -58,7 +58,7 @@ task('deploy', [
     'deploy:prepare',
     'deploy:vendors',
     'npm install', // custom made
-    'npm run prod', // custom made
+    'npm run build', // custom made
     'artisan:storage:link',
     'artisan:config:cache',
     'artisan:route:cache',

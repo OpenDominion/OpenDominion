@@ -43,7 +43,7 @@
 
             <a href="{{ url('') }}" class="navbar-brand">Open<b>Dominion</b></a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-theme="dark" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -51,11 +51,11 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item {{ Route::is('about') ? 'active' : null }}"><a href="{{ route('about') }}" class="nav-link">About</a></li>
-                    <li class="nav-item {{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a></li>
-                    <li class="nav-item {{ Route::is('scribes.*') ? 'active' : null }}"><a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a></li>
-                    @include('partials.wiki-nav')
-                    @include('partials.staff-nav')
                     <li class="nav-item {{ Route::is('user-agreement') ? 'active' : null }}"><a href="{{ route('user-agreement') }}" class="nav-link">Rules</a></li>
+                    <li class="nav-item {{ Route::is('scribes.*') ? 'active' : null }}"><a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a></li>
+                    @include('partials.staff-nav')
+                    <li class="nav-item {{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a></li>
+                    @include('partials.wiki-nav')
                     @auth
                         @if ($selectorService->hasUserSelectedDominion())
                             <li class="nav-item"><a href="{{ route('dominion.status') }}" class="nav-link"><b>Play</b></a></li>

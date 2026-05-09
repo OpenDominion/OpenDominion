@@ -53,6 +53,14 @@
                                         min="0"
                                         value="{{ $targetDominion->prestige }}" />
                             </div>
+                            <div class="col-3 text-end">
+                                Guard
+                            </div>
+                            <div class="col-3 text-start">
+                                <input type="checkbox"
+                                    name="calc[guard]"
+                                    {{ $targetDominion->royal_guard_active_at && ($targetDominion->royal_guard_active_at < now()) ? 'checked' : null }} />
+                            </div>
                         </div>
 
                         <div class="mb-3 row">
@@ -196,7 +204,20 @@
                                         </div>
                                         <div class="col-3 text-start">
                                             <input type="checkbox"
-                                                    step="any"
+                                                    name="spells[{{ $spell->key }}]"
+                                                    {{ $activeSpells->contains($spell->key) ? 'checked' : null }} />
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                            @foreach ($spellHelper->getSpells($targetDominion->race, 'hostile')->chunk(2) as $chunk)
+                                <div class="mb-3 row">
+                                    @foreach ($chunk as $spell)
+                                        <div class="col-3 text-end">
+                                            {{ $spell->name }}
+                                        </div>
+                                        <div class="col-3 text-start">
+                                            <input type="checkbox"
                                                     name="spells[{{ $spell->key }}]"
                                                     {{ $activeSpells->contains($spell->key) ? 'checked' : null }} />
                                         </div>
@@ -235,7 +256,6 @@
                                         </div>
                                         <div class="col-3 text-start">
                                             <input type="checkbox"
-                                                    step="any"
                                                     name="techs[{{ $tech->key }}]"
                                                     {{ $unlockedTechs->contains($tech->key) ? 'checked' : null }} />
                                         </div>

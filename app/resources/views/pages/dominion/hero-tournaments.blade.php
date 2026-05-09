@@ -149,6 +149,7 @@
                 </div>
             </div>
 
+            <!--
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">Class-Based Abilities</span>
@@ -169,6 +170,7 @@
                     </ul>
                 </div>
             </div>
+            -->
         </div>
 
     </div>

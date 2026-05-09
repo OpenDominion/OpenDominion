@@ -34,6 +34,7 @@ $fa-font-path: '/assets/vendor/font-awesome/webfonts';
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
 @import '@fortawesome/fontawesome-free/scss/solid';
 @import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/scss/brands';
 @import '@fortawesome/fontawesome-free/scss/v4-shims';
 
 // RPG Awesome
@@ -328,6 +329,12 @@ a {
 }
 
 // Notifications dropdown
+.notifications-menu .menu {
+  max-height: min(60vh, 400px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .notifications-menu .menu > li > a {
   overflow: auto !important;
   text-overflow: unset !important;
@@ -352,6 +359,13 @@ a {
 
 .navbar-nav > .notifications-menu > .dropdown-menu {
   width: 350px;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.notifications-menu .dropdown-footer .dropdown-item {
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
 }
 
 // User account dropdown
@@ -456,6 +470,8 @@ html.hourchange:after {
   .app-sidebar a              { color: #b8c7ce; }
   .app-sidebar a:hover        { text-decoration: none; color: #fff; }
   .nav-header                 { background: #1a2226; color: #8aa4af; }
+  .navbar-toggler             { border-color: rgba(var(--bs-emphasis-color-rgb), 0.15); }
+  .navbar-toggler:focus       { box-shadow: none; }
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
   .sidebar-menu .nav-item:hover > .nav-link,
   .sidebar-menu .nav-item.active > .nav-link { color: #fff; background: #1e282c; border-left-color: var(--bs-primary); }

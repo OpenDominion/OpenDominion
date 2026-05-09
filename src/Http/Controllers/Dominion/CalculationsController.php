@@ -79,6 +79,9 @@ class CalculationsController extends AbstractDominionController
         $dominion->setRelation('round', $selectedDominion->round);
         $dominion->setRelation('realm', new Realm());
         $dominion->race->load(['units.perks']);
+        if (isset($calc['guard'])) {
+            $dominion->royal_guard_active_at = now()->subHours(24);
+        }
         if ($spells) {
             $spells = Spell::with('perks')->whereIn('key', array_keys($spells))->get();
             $dominion->setRelation('spells', $spells);

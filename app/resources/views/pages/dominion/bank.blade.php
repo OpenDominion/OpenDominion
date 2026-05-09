@@ -54,17 +54,17 @@
                                         {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             </div>
                             <div class="mb-3 col-sm-6 col-lg-4">
-                                <label for="amountSlider">Amount</label>
-                                <input type="number"
+                                <label for="amountSlider" class="d-flex justify-content-between">
+                                    <span>Amount</span>
+                                    <span id="amountSliderValue" class="text-muted">0</span>
+                                </label>
+                                <input type="range"
                                         id="amountSlider"
-                                        class="form-control slider"
-                                        data-slider-value="0"
-                                        data-slider-min="0"
-                                        data-slider-max="{{ reset($resources)['max'] }}"
-                                        data-slider-step="1"
-                                        data-slider-tooltip="show"
-                                        data-slider-handle="triangle"
-                                        data-slider-id="yellow"
+                                        class="form-range"
+                                        value="0"
+                                        min="0"
+                                        max="{{ reset($resources)['max'] }}"
+                                        step="1"
                                         {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                             </div>
                             <div class="mb-3 col-sm-3 col-lg-3">
@@ -105,69 +105,57 @@
     </div>
 @endsection
 
-@push('page-styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-slider/slider.css') }}">
-@endpush
-
-@push('page-scripts')
-    <script type="text/javascript" src="{{ asset('assets/vendor/bootstrap-slider/bootstrap-slider.js') }}"></script>
-@endpush
-
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
             const resources = JSON.parse('{!! json_encode($resources) !!}');
 
-            // todo: let/const aka ES6 this
-            var sourceElement = $('#source'),
+            const sourceElement = $('#source'),
                 targetElement = $('#target'),
                 amountElement = $('#amount'),
                 amountLabelElement = $('#amountLabel'),
                 amountSliderElement = $('#amountSlider'),
+                amountSliderValueElement = $('#amountSliderValue'),
                 resultLabelElement = $('#resultLabel'),
                 resultElement = $('#result');
 
             function updateResources(e, reverse = false) {
-                var sourceOption = sourceElement.find(':selected');
+                const sourceOption = sourceElement.find(':selected'),
                     sourceResourceType = _.get(resources, sourceOption.val()),
                     targetOption = targetElement.find(':selected'),
                     targetResourceType = _.get(resources, targetOption.val()),
                     resourceMax = _.get(sourceResourceType, 'max');
+                let sourceAmount, targetAmount;
                 if (reverse) {
-                    var targetAmount = Math.min(parseInt(resultElement.val() || 0));
-                    var sourceAmount = (Math.ceil(targetAmount / (sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }})) || 0);
+                    targetAmount = Math.min(parseInt(resultElement.val() || 0));
+                    sourceAmount = (Math.ceil(targetAmount / (sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }})) || 0);
                     if (sourceAmount > resourceMax) {
                         amountElement.val(resourceMax);
                         updateResources(null, false);
                         return;
                     }
                 } else {
-                    var sourceAmount = Math.min(parseInt(amountElement.val() || 0), resourceMax);
-                    var targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }}) || 0);
-                }
-                if (sourceAmount == 0) {
-                    sourceAmount = '';
-                }
-                if (targetAmount == 0) {
-                    targetAmount = '';
+                    sourceAmount = Math.min(parseInt(amountElement.val() || 0), resourceMax);
+                    targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy'] * {{ $exchangeBonus }}) || 0);
                 }
 
                 // Change labels
                 amountLabelElement.text(sourceOption.text());
                 resultLabelElement.text(targetOption.text());
 
-                // Update amount
+                // Update amount input
                 amountElement
                     .attr('max', sourceResourceType['max'])
-                    .val(sourceAmount);
+                    .val(sourceAmount === 0 ? '' : sourceAmount);
 
-                // Update slider
+                // Update slider (native range input)
                 amountSliderElement
-                    .slider('setAttribute', 'max', sourceResourceType['max'])
-                    .slider('setValue', sourceAmount);
+                    .attr('max', sourceResourceType['max'])
+                    .val(sourceAmount);
+                amountSliderValueElement.text(Number(sourceAmount).toLocaleString());
 
                 // Update target amount
-                resultElement.val(targetAmount);
+                resultElement.val(targetAmount === 0 ? '' : targetAmount);
             }
 
             sourceElement.on('change', updateResources);
@@ -175,12 +163,8 @@
             amountElement.on('change', updateResources);
             resultElement.on('change', updateResources.bind(true, true, true));
 
-            amountSliderElement.slider({
-                formatter: function (value) {
-                    return value.toLocaleString();
-                }
-            }).on('change', function (slideEvent) {
-                amountElement.val(slideEvent.value.newValue).change();
+            amountSliderElement.on('input', function () {
+                amountElement.val(this.value).change();
             });
         })(jQuery);
     </script>

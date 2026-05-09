@@ -16,7 +16,7 @@
         if ($latestInfoOp->isInvalid()) {
             $iconClass = 'text-red';
         } elseif ($latestInfoOp->isStale()) {
-            $iconClass = 'text-yellow';
+            $iconClass = 'text-orange';
         }
         $updatedString = sprintf("last updated %s", $latestInfoOp->created_at->diffForHumans());
     } else {

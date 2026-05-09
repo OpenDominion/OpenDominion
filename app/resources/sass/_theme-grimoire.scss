@@ -12,9 +12,9 @@
   --od-border-soft:      #302a20;
 
   // Text
-  --od-text-body:        #ddd0b8;
-  --od-text-secondary:   #a89880;
-  --od-text-emphasis:    #f0e6cc;
+  --od-text-body:        #e8e0d4;
+  --od-text-secondary:   #b5a890;
+  --od-text-emphasis:    #f8eed0;
   --od-text-subtle:      #887060;
 
   // Brand / accent
@@ -42,8 +42,8 @@
   --od-content-bg:       #0c0b09;
 
   // Links
-  --od-link-color:       #b89c68;
-  --od-link-hover-color: #d4b880;
+  --od-link-color:       #afa170;
+  --od-link-hover-color: #c6b680;
 
   // Typography
   --od-font-display:     'Cinzel', serif;
@@ -75,7 +75,7 @@
     --bs-card-bg:           var(--od-surface);
     --bs-card-cap-bg:       var(--od-muted-surface);
     --bs-card-color:        var(--od-text-body);
-    --bs-card-border-color: var(--od-border-accent);
+    --bs-card-border-color: rgba(199, 176, 120, 0.35);
   }
   .card-title                { color: var(--od-text-secondary); font-family: var(--od-font-display); }
   .card-header a,
@@ -182,11 +182,11 @@
   .nav-pills .nav-link:hover,
   .nav-pills .nav-link:focus  { color: var(--od-primary); background-color: var(--od-surface-alt); }
   .nav-pills .nav-link.active { border-left-color: var(--od-primary); }
-  .nav-tabs,
+  .nav-tabs                   { background-color: var(--od-surface); border-color: rgba(199, 176, 120, 0.35); color: var(--od-text-body); --bs-nav-tabs-border-color: rgba(199, 176, 120, 0.35); }
   .app-footer                 { background-color: var(--od-surface); border-top-color: var(--od-border-accent); color: var(--od-text-body); }
   .tab-content                { background-color: var(--od-surface); }
   .nav-tabs .nav-link         { color: var(--od-text-secondary); }
-  .nav-tabs .nav-link.active  { background-color: var(--od-surface); border-color: var(--od-border-accent); color: var(--od-primary); }
+  .nav-tabs .nav-link.active  { background-color: var(--od-surface); border-color: rgba(199, 176, 120, 0.35); color: var(--od-primary); }
   .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:hover,
   .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:focus { background-color: var(--od-body-bg) !important; color: var(--od-primary) !important; }
 
@@ -238,13 +238,17 @@
   // ── Layout ────────────────────────────────────────────────────────────────
   .app-wrapper                { background-color: var(--od-surface-alt) !important; }
   .app-main                   { background-color: var(--od-content-bg); }
-  .app-header                 { background-color: var(--od-header-bg) !important; border-bottom: 1px solid var(--od-border-accent); }
-  .app-header .navbar-brand   { color: var(--od-primary); }
-  .app-header a               { color: var(--od-text-secondary); }
+  .app-header                 { background-color: var(--od-header-bg) !important; border-bottom: 1px solid rgba(199, 176, 120, 0.35); }
+  .app-header .navbar-brand     { color: var(--od-text-body); font-family: var(--od-font-display); font-weight: 700; letter-spacing: 0.03em; }
+  .app-header .navbar-brand b   { color: #afa170; font-weight: 700; transition: color 0.2s; }
+  .app-header .navbar-brand:hover   { color: #fff; }
+  .app-header .navbar-brand:hover b { color: #c6b680; }
+  .app-header a,
+  .app-header .nav-link         { color: rgba(232, 224, 212, 0.85); font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.02em; }
   .app-header .nav-link:hover,
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
-  .app-header [data-lte-toggle="sidebar"]:hover { background: var(--od-accent-glow); color: var(--od-primary); }
+  .app-header [data-lte-toggle="sidebar"]:hover { background: var(--od-accent-glow); color: #afa170; }
   .app-header .ticker {
     background: rgba(0, 0, 0, 0.3);
     border-color: var(--od-border-accent);
@@ -252,7 +256,7 @@
   .app-header .ticker-lbl { color: var(--od-text-secondary); }
   .app-header .ticker-val { color: var(--od-primary); }
   .app-header .ticker-dot { color: var(--od-primary); }
-  .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid var(--od-border-accent); }
+  .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid rgba(199, 176, 120, 0.35); }
   .app-sidebar a              { color: var(--od-sidebar-text); }
   .app-sidebar a:hover        { text-decoration: none; }
   .nav-header                 { background: var(--od-body-bg); color: var(--od-text-subtle); }

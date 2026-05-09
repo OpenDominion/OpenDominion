@@ -41,7 +41,7 @@
                             <td>{{ $crosslog->users }}</td>
                             <td>{{ $crosslog->realms }}</td>
                             <td class="text-center" data-search="">{{ $crosslog->count }}</td>
-                            <td class="text-center">{{ $crosslog->ip }}</td>
+                            <td class="text-center">{{ $crosslog->ip_address }}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -9,14 +9,12 @@ use OpenDominion\Services\Dominion\SelectorService;
 
 class HomeController extends AbstractController
 {
-    public function getIndex()
+    public function getIndex(SelectorService $selectorService)
     {
         // Only redirect to status/dashboard if we have no referer
         // todo: this shit is still wonky. either fix or remove
         if (Auth::check() && (request()->server('HTTP_REFERER') !== '') && (url()->previous() === url()->current())) {
-            $dominionSelectorService = app(SelectorService::class);
-
-            if ($dominionSelectorService->tryAutoSelectDominionForAuthUser()) {
+            if ($selectorService->tryAutoSelectDominionForAuthUser()) {
                 return redirect()->route('dominion.status');
             }
 
@@ -52,47 +50,24 @@ class HomeController extends AbstractController
                 ->get();
         }
 
+        if (Auth::check()) {
+            if ($selectorService->hasUserSelectedDominion()) {
+                $playUrl = route('dominion.status');
+                $playLabel = 'Play';
+            } else {
+                $playUrl = route('dashboard');
+                $playLabel = 'Dashboard';
+            }
+        } else {
+            $playUrl = route('auth.register');
+            $playLabel = 'Play';
+        }
+
         return view('pages.home', [
             'currentRound' => $currentRound,
-            'currentRankings' => $currentRankings
-        ]);
-    }
-
-    public function getLanding()
-    {
-        $currentRound = Round::query()
-            ->with(['dominions', 'realms'])
-            ->orderBy('created_at', 'desc')
-            ->first();
-        // Override for testing
-        $currentRound = Round::find(7);
-
-        $rankingsRound = $currentRound;
-
-        if ($currentRound !== null) {
-            $previousRoundNumber = $currentRound->number - 1;
-
-            if (!$currentRound->hasStarted() && $previousRoundNumber > 0) {
-                $rankingsRound = Round::query()
-                    ->where('number', $previousRoundNumber)
-                    ->orderBy('created_at', 'desc')
-                    ->first();
-            }
-        }
-
-        $currentRankings = null;
-        if ($rankingsRound !== null) {
-            $currentRankings = DB::table('daily_rankings')
-                ->where('round_id', $rankingsRound->id)
-                ->where('key', 'largest-dominions')
-                ->orderBy('value', 'desc')
-                ->take(10)
-                ->get();
-        }
-
-        return view('pages.landing', [
-            'currentRound' => $currentRound,
             'currentRankings' => $currentRankings,
+            'playUrl' => $playUrl,
+            'playLabel' => $playLabel,
         ]);
     }
 

@@ -239,7 +239,12 @@
   .app-wrapper                { background-color: var(--od-surface-alt) !important; }
   .app-main                   { background-color: var(--od-content-bg); }
   .app-header                 { background-color: var(--od-header-bg) !important; border-bottom: 1px solid var(--od-rule); }
-  .app-header a               { color: var(--od-text-body); }
+  .app-header .navbar-brand     { color: var(--od-text-body); font-family: var(--od-font-display); font-weight: 700; letter-spacing: 0.03em; }
+  .app-header .navbar-brand b   { color: var(--od-primary); font-weight: 700; transition: color 0.2s; }
+  .app-header .navbar-brand:hover   { color: #000; }
+  .app-header .navbar-brand:hover b { color: var(--od-primary-dark); }
+  .app-header a,
+  .app-header .nav-link         { color: var(--od-text-body); font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.02em; }
   .app-header .nav-link:hover,
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
@@ -266,6 +271,8 @@
   .nav-treeview .nav-link.active,
   .nav-treeview .nav-link:hover { color: #d4a030; }
   .navbar-nav                 { color: var(--od-text-body) !important; }
+  .navbar-toggler             { background: var(--od-rule); }
+  .navbar-toggler:focus       { box-shadow: none; }
 
   // ── DataTables ────────────────────────────────────────────────────────────
   .dataTables_wrapper input[type='search'] { border-radius: 4px; background-color: var(--od-surface); border: 1px solid var(--od-rule-soft); color: var(--od-text-body); }

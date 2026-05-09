@@ -31,6 +31,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Calculators\WonderCalculator;
+use OpenDominion\Services\AchievementService;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\CouncilService;
 use OpenDominion\Services\DiscordService;
@@ -150,6 +151,7 @@ class AppServiceProvider extends AbstractServiceProvider
     protected function registerServices()
     {
         // Services
+        $this->app->singleton(AchievementService::class);
         $this->app->singleton(ActivityService::class);
         $this->app->singleton(CouncilService::class);
         $this->app->singleton(DiscordService::class);

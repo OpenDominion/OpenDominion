@@ -369,3 +369,15 @@ protected function isAccessible(User $user, ?string $path = null): bool
 - To run all tests in a file: `php artisan test --compact tests/Feature/ExampleTest.php`.
 - To filter on a particular test name: `php artisan test --compact --filter=testName` (recommended after making a change to a related file).
 </laravel-boost-guidelines>
+
+## Deep Technical Reference
+
+For detailed technical documentation derived from source code analysis, see `docs/claude/`:
+
+**Important**: When making changes to models, services, calculators, game systems, or architectural patterns during a session, update the relevant documentation file(s) below to keep them in sync with the codebase.
+
+- **[ARCHITECTURE.md](docs/claude/ARCHITECTURE.md)** - Directory structure, request flow, key design patterns (action service pattern, raw+multiplier, perk system, queue system, history tracking), view architecture, data loading pipeline, scheduled tasks
+- **[MODELS.md](docs/claude/MODELS.md)** - All 67 Eloquent models with relationships, scopes, key methods, casts. Entity relationship overview, perk system models, hero/combat models, raid models, communication models
+- **[SERVICES.md](docs/claude/SERVICES.md)** - All 40+ service classes: 18 action services (with validation rules), domain services (TickService, QueueService, GovernmentService, etc.), top-level services (RealmAssignment, Notifications, etc.)
+- **[CALCULATORS.md](docs/claude/CALCULATORS.md)** - All 23 calculator classes with dependency graph, public methods, key constants/formulas, production values, combat mechanics
+- **[GAME_SYSTEMS.md](docs/claude/GAME_SYSTEMS.md)** - Tick system flow, queue processing, event/notification system, guard tiers, war lifecycle, protection, wonder tiers, raid structure, hero combat, realm assignment algorithm, AI/NPC system

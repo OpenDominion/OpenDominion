@@ -61,7 +61,7 @@
                                             $hoursUntilReset = $selectedDominion->protection_ticks_remaining;
                                         }
                                     } elseif ($selectedDominion->round->start_date->addHours(24) > now()) {
-                                        $hoursUntilReset = (int) $selectedDominion->round->start_date->addHours(24)->diffInHours(now()->startOfHour());
+                                        $hoursUntilReset = (int) now()->startOfHour()->diffInHours($selectedDominion->round->start_date->addHours(24));
                                     } else {
                                         $hoursUntilReset = $selectedDominion->round->start_date->hour - now()->hour;
                                     }
@@ -130,8 +130,10 @@
                         <a href="{{ route('dominion.techs') }}" class="nav-link {{ Route::is('dominion.techs') ? 'active' : null }}">
                             <i class="nav-icon fa fa-flask fa-fw"></i>
                             <p>Technology
-                                @if ($unlockableTechCount > 0)
-                                    <span class="badge text-bg-primary ">{{ $unlockableTechCount }}</span>
+                                @if ($needsTemporaryTech)
+                                    <span class="badge bg-success">1</span>
+                                @elseif ($unlockableTechCount > 0)
+                                    <span class="badge bg-primary">{{ $unlockableTechCount }}</span>
                                 @endif
                             </p>
                         </a>

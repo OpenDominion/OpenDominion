@@ -31,14 +31,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($theft as $dominionId => $actions)
-                        @foreach ($actions as $targetId => $count)
-                            <tr>
-                                <td data-order="{{ $dominionId }}">{{ $dominionNames[$dominionId] }}</td>
-                                <td data-order="{{ $targetId }}">{{ $dominionNames[$targetId] }}</td>
-                                <td class="text-center" data-search="">{{ $count }}</td>
-                            </tr>
-                        @endforeach
+                    @foreach ($theft as $row)
+                        <tr>
+                            <td data-order="{{ $row->dominion_id }}">{{ $row->source_name }}</td>
+                            <td data-order="{{ $row->target_dominion_id }}">{{ $row->target_name }}</td>
+                            <td class="text-center" data-search="">{{ $row->count }}</td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
