@@ -59,6 +59,7 @@
   --bs-body-bg:                   var(--od-body-bg);
   --bs-body-color:                var(--od-text-body);
   --bs-body-font-family:          var(--od-font-serif);
+  --bs-body-font-size:            1rem;
   --bs-body-font-weight:          500;
   --bs-secondary-color:           var(--od-text-secondary);
   --bs-secondary-bg:              var(--od-surface);
@@ -114,6 +115,8 @@
     --bs-dropdown-link-hover-bg:    var(--od-surface-alt);
     --bs-dropdown-link-hover-color: var(--od-text-emphasis);
     --bs-dropdown-link-active-bg:   var(--od-primary);
+    --bs-dropdown-font-size:        1rem;
+    font-family: var(--od-font-serif);
   }
 
   // ── Tables ────────────────────────────────────────────────────────────────
@@ -243,8 +246,12 @@
   .app-header .navbar-brand b   { color: var(--od-primary); font-weight: 700; transition: color 0.2s; }
   .app-header .navbar-brand:hover   { color: #000; }
   .app-header .navbar-brand:hover b { color: var(--od-primary-dark); }
+  .sidebar-brand                { color: #f0e8d8; font-family: var(--od-font-display); font-weight: 700; letter-spacing: 0.03em; }
+  .sidebar-brand b              { color: #d4a030; font-weight: 700; transition: color 0.2s; }
+  .sidebar-brand:hover          { color: #fff; }
+  .sidebar-brand:hover b        { color: var(--od-accent-soft); }
   .app-header a,
-  .app-header .nav-link         { color: var(--od-text-body); font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.02em; }
+  .app-header .nav-link         { color: var(--od-text-body); }
   .app-header .nav-link:hover,
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
@@ -253,7 +260,7 @@
     background: var(--od-surface-alt);
     border-color: var(--od-rule-soft);
   }
-  .app-header .ticker-lbl { color: var(--od-text-subtle); }
+  .app-header .ticker-lbl { color: var(--od-text-subtle); font-size: 0.75rem; }
   .app-header .ticker-val { color: var(--od-primary); font-family: var(--od-font-serif); }
   .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid #3a2e1c; }
@@ -261,6 +268,7 @@
   .app-sidebar a:hover        { text-decoration: none; color: #f0e8d8; }
   .sidebar-user                { color: #f0e8d8; }
   .nav-header                 { background: #241b0e; color: #a08860; font-family: var(--od-font-display); letter-spacing: .08em; }
+  .sidebar-brand .brand-prefix { color: #f0e8d8; font-weight: 600; opacity: 0.7; }
   .sidebar-user .info,
   .sidebar-user .info > a     { color: #f0e8d8; }
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
