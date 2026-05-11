@@ -42,6 +42,18 @@ class Ticker {
             const currentTime = new Date('1970-01-01T' + currentServerTime + 'Z');
             currentTime.setUTCSeconds(currentTime.getUTCSeconds() + 1);
             this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
+
+            if (this.nextHour == null) {
+                this.nextHour = new Date(currentTime.toString());
+                this.nextHour.setUTCHours(currentTime.getUTCHours() + 1);
+                this.nextHour.setMinutes(0);
+                this.nextHour.setSeconds(0);
+            }
+
+            if (currentTime >= this.nextHour) {
+                var htmlElement = document.getElementsByTagName("html")[0];
+                htmlElement.classList.add("hourchange");
+            }
         }
 
         if (this.tickerNextRoundElement !== null){

@@ -130,6 +130,12 @@ a {
 
 .app-header {
   line-height: 2;
+  flex-wrap: nowrap;
+
+  > .container-fluid {
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
 }
 
 .navbar-tickers {
@@ -138,6 +144,8 @@ a {
   gap: 8px;
   margin-right: 0.5rem;
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .ticker {
@@ -149,6 +157,7 @@ a {
   background: var(--bs-tertiary-bg);
   border: 1px solid var(--bs-border-color);
   border-radius: 0.25rem;
+  white-space: nowrap;
 }
 
 .ticker-lbl {
@@ -350,11 +359,17 @@ a {
   display: none;
 }
 
+.notifications-menu .nav-link {
+  position: relative;
+}
+
 .notifications-menu .nav-link > .badge {
-  font-size: 0.65rem;
-  padding: 2px 5px;
+  position: absolute;
+  top: 10px;
+  right: 2px;
+  font-size: 0.6rem;
+  padding: 1px 4px;
   line-height: 1;
-  vertical-align: super;
 }
 
 .navbar-nav > .notifications-menu > .dropdown-menu {
@@ -366,6 +381,20 @@ a {
 .notifications-menu .dropdown-footer .dropdown-item {
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
+}
+
+// Mobile: pin the notifications dropdown to the viewport with symmetric
+// gutters so it can't extend off-page or sit asymmetrically near the right edge.
+@media (max-width: 575.98px) {
+  .navbar-nav > .notifications-menu > .dropdown-menu {
+    position: fixed !important;
+    top: 56px !important;
+    left: 0.5rem !important;
+    right: 0.5rem !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
 }
 
 // User account dropdown
@@ -447,6 +476,13 @@ html.hourchange:after {
 @keyframes fadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+// Tooltip background is light, so muted/gray text is illegible inside it
+// (e.g. range-class labels for sub-60% land sizes). Force strong contrast.
+.tooltip-inner .text-muted,
+.tooltip-inner .text-gray {
+  color: #495057 !important;
 }
 
 // ─── Light theme: dark sidebar ────────────────────────────────────────────────
