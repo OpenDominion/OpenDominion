@@ -32,7 +32,7 @@
                                 @include('partials.dominion.construction.table')
                             </div>
 
-                            <div class="col-md-12 col-lg-6">
+                            <div class="col-md-12 col-lg-6 table-responsive">
                                 @php
                                     /** @var \Illuminate\Support\Collection $buildingTypesLeft */
                                     $landTypesBuildingTypes = collect($buildingHelper->getBuildingTypesByRace($selectedDominion->race))->filter(function ($buildingTypes, $landType) {
