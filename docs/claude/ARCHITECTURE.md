@@ -50,7 +50,7 @@ app/                          # Laravel resources
         staff/                # Admin/moderator pages
         scribes/              # Public game documentation
       partials/               # Reusable components
-    sass/                     # SCSS (Bootstrap 5 via AdminLTE 4)
+    sass/                     # SCSS (Bootstrap 5)
     js/                       # JavaScript (jQuery, Bootstrap 5, Select2)
   routes/
     web.php                   # Main routes (~411 lines)

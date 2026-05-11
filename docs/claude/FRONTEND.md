@@ -37,7 +37,7 @@ Some libraries can't be bundled through Vite and are copied as static files by `
 
 ## CSS Framework
 
-**Bootstrap 5** via **AdminLTE 4** class structure. Bootstrap variables are overridden before import in `app.scss`.
+Bootstrap variables are overridden before import in `app.scss`.
 
 ### SCSS Structure
 
