@@ -467,6 +467,7 @@ class MiscController extends AbstractDominionController
             $settings['black_guard_icon'] = $request->get('black_guard_icon');
             $settings['resources_overview'] = $request->get('resources_overview');
             $settings['hidden_links'] = $request->get('hidden_links');
+            $settings['bottom_nav'] = $request->get('bottom_nav');
 
             $dominion->settings = $settings;
             $dominion->save();

@@ -77,6 +77,8 @@
 
 </div>
 
+@include('partials.mobile-bottom-nav')
+
 @include('partials.scripts')
 
 </body>

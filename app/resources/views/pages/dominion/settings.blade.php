@@ -110,6 +110,40 @@
                                     @endforeach
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Mobile Bottom Nav:</label>
+                                    @php
+                                        $bottomNavOptions = [
+                                            ''             => '—',
+                                            'advisors'     => 'Advisors',
+                                            'bank'         => 'Bank',
+                                            'bounty_board' => 'Bounty Board',
+                                            'construct'    => 'Construct',
+                                            'espionage'    => 'Espionage',
+                                            'explore'      => 'Explore',
+                                            'improvements' => 'Improvements',
+                                            'magic'        => 'Magic',
+                                            'military'     => 'Military',
+                                            'town_crier'   => 'Town Crier',
+                                            'sidebar'      => 'Sidebar Toggle',
+                                        ];
+                                        $bottomNavDefaults = ['advisors', 'explore', 'construct', 'improvements', 'military', 'town_crier', 'sidebar'];
+                                        $bottomNavSaved = $selectedDominion->settings['bottom_nav'] ?? $bottomNavDefaults;
+                                    @endphp
+                                    @for ($slot = 0; $slot < 7; $slot++)
+                                        <div class="d-flex align-items-center mb-1 gap-2">
+                                            <label class="form-label mb-0" style="min-width:3rem;">Slot {{ $slot + 1 }}</label>
+                                            <select class="form-select form-select-sm bottom-nav-slot" name="bottom_nav[]" data-default="{{ $bottomNavDefaults[$slot] }}">
+                                                @foreach ($bottomNavOptions as $optKey => $optLabel)
+                                                    <option value="{{ $optKey }}" {{ ($bottomNavSaved[$slot] ?? '') === $optKey ? 'selected' : '' }}>{{ $optLabel }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endfor
+                                    <button type="button" class="btn btn-sm btn-secondary mt-1" id="resetBottomNav">Reset to Defaults</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -156,5 +190,11 @@
 
         // Trigger on page load
         document.getElementById('rowCountSelect').dispatchEvent(new Event('change'));
+
+        document.getElementById('resetBottomNav').addEventListener('click', function() {
+            document.querySelectorAll('.bottom-nav-slot').forEach(function(select) {
+                select.value = select.getAttribute('data-default');
+            });
+        });
     </script>
 @endpush
