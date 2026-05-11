@@ -58,11 +58,17 @@
 .sidebar-wrapper {
   overflow-y: auto;
   flex: 1 1 auto;
-  overscroll-behavior: contain;
 
   // Thin scrollbar
   &::-webkit-scrollbar { width: 6px; }
   &::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.4); border-radius: 3px; }
+
+  // Only contain scroll on mobile (sidebar is fixed-position there, so it
+  // shouldn't chain to the body). On desktop the sidebar grows with the
+  // page, so wheel events over it must bubble to the body to scroll.
+  @media (max-width: 991.98px) {
+    overscroll-behavior: contain;
+  }
 }
 
 .sidebar-menu {

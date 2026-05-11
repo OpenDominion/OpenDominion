@@ -68,6 +68,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('hold-transition');
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => document.body.classList.remove('hold-transition'), 200);
+
+        // If user resized from mobile (sidebar-open) to desktop, the inline
+        // body.overflow='hidden' would otherwise leak and freeze page scroll.
+        if (!isMobile()) {
+            document.body.classList.remove('sidebar-open');
+            document.body.style.overflow = '';
+        }
     });
 
     // App loaded
