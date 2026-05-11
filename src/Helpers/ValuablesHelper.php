@@ -11,8 +11,8 @@ use RuntimeException;
 class ValuablesHelper
 {
     public const PASSIVE_DISCOVERY_CHANCE       = 0.01;
-    public const SCOUT_DISCOVERY_CHANCE         = 0.10;
-    public const SCOUT_SPY_STRENGTH_COST        = 5.0;
+    public const SPY_OP_DISCOVERY_CHANCE        = 0.10;
+    public const SPY_OP_STRENGTH_COST           = 5.0;
     public const EXPIRATION_HOURS               = 48;
     public const MIN_INVESTIGATION_HOURS        = 36;
     public const MAX_INVESTIGATION_HOURS        = 6;
@@ -87,13 +87,14 @@ class ValuablesHelper
     }
 
     /**
-     * Selects rarity for a discovery based on attacker spy ratio + target land.
+     * Selects rarity for a discovery based on target's defensive spy ratio
+     * plus target land. Better-defended targets yield rarer valuables.
      */
     public function selectRarity(Dominion $attacker, Dominion $target): string
     {
         $targetLand = $this->landCalculator->getTotalLand($target);
         $landScore = max(0.0, min(1.0, ($targetLand - 500) / 7500));
-        $spyScore  = max(0.0, min(1.0, $this->militaryCalculator->getSpyRatioRaw($attacker)));
+        $spyScore  = max(0.0, min(1.0, $this->militaryCalculator->getSpyRatio($target, 'defense')));
         $score = ($landScore + $spyScore) / 2;
         $rarityIndex = (int) round($score * 4);
 

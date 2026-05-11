@@ -47,10 +47,10 @@ class ValuablesService
     }
 
     /**
-     * Roll a scout-for-valuables discovery. Returns the result envelope used
-     * by EspionageActionService::performOperation().
+     * Roll a valuables discovery. Returns the result envelope used by
+     * EspionageActionService::performOperation().
      */
-    public function attemptScoutDiscovery(Dominion $attacker, Dominion $target): array
+    public function attemptDiscovery(Dominion $attacker, Dominion $target): array
     {
         if (!$this->canDiscoverFrom($attacker, $target)) {
             return [
@@ -60,7 +60,7 @@ class ValuablesService
             ];
         }
 
-        if (!random_chance(ValuablesHelper::SCOUT_DISCOVERY_CHANCE)) {
+        if (!random_chance(ValuablesHelper::SPY_OP_DISCOVERY_CHANCE)) {
             return [
                 'success' => true,
                 'message' => 'Your spies search the target carefully but find nothing of value.',

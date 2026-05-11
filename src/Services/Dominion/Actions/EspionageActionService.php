@@ -232,9 +232,9 @@ class EspionageActionService
                 }
                 $dominion->resetAbandonment();
             } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
-                $spyStrengthLost = (int) ValuablesHelper::SCOUT_SPY_STRENGTH_COST;
+                $spyStrengthLost = (int) ValuablesHelper::SPY_OP_STRENGTH_COST;
                 $xpValue = 0;
-                $result = $this->valuablesService->attemptScoutDiscovery($dominion, $target);
+                $result = $this->valuablesService->attemptDiscovery($dominion, $target);
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }

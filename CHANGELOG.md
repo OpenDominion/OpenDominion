@@ -5,6 +5,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.50.0] - 2026-05-11
+### Changed
+- MASSIVE updates across the entire application
+  - Tech stack upgraded to PHP 8 / Laravel 13 / Bootstrap 5
+  - Additional UI themes
+  - Customizable quick nav on mobile
+  - New homepage
+  - Performance improvements
+- Theft
+  - One hour of raw resource production is now protected from theft
+  - Removed the range restriction (>100% size), but with a steep penalty when stealing from smaller targets
+  - Removed the restriction that you must produce the resource that you are attemping to steal (added a flat amount per acre floor to what would be your production in the formula)
+- New Mechanic: Valuables
+  - You can now discover and steal loot from other players, which can then be sold for platinum
+  - Info ops have a 1% chance to passively discover a valuable in the target's possession
+  - New Spy Operation: Locate Valuables, has a 10% chance of finding a valuable in the target's possesion
+  - Rarity is determined by target land size and spy ratio, which then determines difficulty and sale price
+  - Stealing a discovered valuable requires a multi-hour spy operation that drains spy strength each hour
+  - Alternatively, sell intel on a discovered valuable to a realm mate at a fixed price
+
 ## [1.49.0] - 2026-03-15
 ### Changed
 - Keep improvement decreased to max 25% (from 30%)
