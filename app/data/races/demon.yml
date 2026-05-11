@@ -6,7 +6,8 @@ description: >-
   <p>Mischievous Imps sow discord with trickery and flame, while Succubi whisper irresistible temptations, bending even the strongest souls to their will. At the pinnacle of their hierarchy stand the Archdemons, nightmares made flesh, ruthlessly driving their legions to endless war.</p>
 attacker_difficulty: 2
 explorer_difficulty: 1
-converter_difficulty: 2
+converter_difficulty: 3
+overall_difficulty: 1
 home_land_type: cavern
 perks:
   offense: 5

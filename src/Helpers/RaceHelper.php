@@ -386,11 +386,11 @@ class RaceHelper
             case 0:
                 return '';
             case 1:
-                return '<span class="label label-success">Beginner Friendly</span>';
+                return '<span class="badge text-bg-success">Beginner Friendly</span>';
             case 2:
                 return '';
             case 3:
-                return '<span class="label label-danger">Expert</span>';
+                return '<span class="badge text-bg-danger">Expert</span>';
         }
     }
 
@@ -406,5 +406,31 @@ class RaceHelper
             case 3:
                 return 'Advanced';
         }
+    }
+
+    public function getStrategyBadgesHtml(Race $race): string
+    {
+        $strategies = [
+            ['value' => $race->attacker_difficulty, 'standard' => 'Attacking', 'fast' => 'Fast Attacking'],
+            ['value' => $race->explorer_difficulty, 'standard' => 'Exploring', 'fast' => 'Fast Exploring'],
+            ['value' => $race->converter_difficulty, 'standard' => 'Converting', 'fast' => 'Quick Conversion'],
+        ];
+
+        $badges = [];
+        foreach ($strategies as $strategy) {
+            if ($strategy['value'] === 1) {
+                $badges[] = sprintf(
+                    '<span class="badge text-bg-info">%s</span>',
+                    $strategy['standard']
+                );
+            } elseif ($strategy['value'] === 2) {
+                $badges[] = sprintf(
+                    '<span class="badge text-bg-warning">%s</span>',
+                    $strategy['fast']
+                );
+            }
+        }
+
+        return implode(' ', $badges);
     }
 }

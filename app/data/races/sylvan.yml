@@ -4,7 +4,7 @@ alignment: good
 description: >-
   <p>The Sylvan are descendants of elves that bonded their spirits with the forces of nature itself, transforming them into an eclectic patchwork of magical beings, from tiny sprites to massive centaurs. They share a common goal: to protect the forest and honor the Goddess.</p>
   <p>Blessed by Gaia, nature blooms into life wherever the Sylvan set foot, transforming the land around them with their very presence into lush garden-like biomes and rich forests.</p>
-attacker_difficulty: 2
+attacker_difficulty: 1
 explorer_difficulty: 1
 converter_difficulty: 3
 home_land_type: forest

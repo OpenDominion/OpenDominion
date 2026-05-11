@@ -4,9 +4,10 @@ alignment: evil
 description: >-
   <p>Bathed in darkness, the Vampires are immortal predators fueled by an unquenchable thirst for the life essence of mortals. They are masters of the night, commanding legions of minions and wielding power that stretches beyond mortal comprehension.</p>
   <p>While some perceive them as cursed, others are drawn to the allure of immortality and power that the Vampires offer. But those who dare to indulge their desires do so at their own peril, for once bitten, there is no escape from their embrace.</p>
-attacker_difficulty: 2
-explorer_difficulty: 1
-converter_difficulty: 2
+attacker_difficulty: 1
+explorer_difficulty: 2
+converter_difficulty: 3
+overall_difficulty: 3
 home_land_type: swamp
 perks:
   max_population: 7.5

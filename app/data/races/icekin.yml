@@ -6,7 +6,7 @@ description: >-
   <p>The creeping cold of the Icekin expands ever outwards, insistent, transforming the lands around them with white permafrost and hijacking the weather with never-ending blizzards. Icekin can become an immense military threat once they become well fortified.</p>
 attacker_difficulty: 3
 explorer_difficulty: 1
-converter_difficulty: 2
+converter_difficulty: 1
 home_land_type: mountain
 perks:
   defense: 5

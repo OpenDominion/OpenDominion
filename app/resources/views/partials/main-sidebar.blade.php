@@ -42,11 +42,11 @@
                         <a href="{{ route('dominion.bonuses') }}" class="nav-link {{ Route::is('dominion.bonuses') ? 'active' : null }}">
                             <i class="nav-icon fa fa-gift fa-fw"></i>
                             <p>Daily Bonus
-                                @if (!$selectedDominion->daily_platinum)
-                                    <span class="badge text-bg-primary ">P</span>
-                                @endif
                                 @if (!$selectedDominion->daily_land)
                                     <span class="badge text-bg-primary ">L</span>
+                                @endif
+                                @if ($selectedDominion->daily_platinum)
+                                    <span class="badge text-bg-primary ">P</span>
                                 @endif
                             </p>
                         </a>
