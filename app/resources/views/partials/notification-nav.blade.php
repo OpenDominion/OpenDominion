@@ -39,7 +39,7 @@
                     </ul>
                 </li>
                 <li class="dropdown-footer">
-                    <a href="#" id="clear-notifications" class="dropdown-item text-center">Clear Notifications</a>
+                    <a href="#" id="clear-notifications" class="dropdown-item text-center bg-secondary text-white">Clear Notifications</a>
                     <form action="{{ route('dominion.misc.clear-notifications') }}" method="post" id="clear-notifications-form">
                         @csrf
                     </form>

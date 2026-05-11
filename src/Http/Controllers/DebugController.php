@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
@@ -41,8 +42,9 @@ class DebugController extends AbstractDominionController
         ]);
     }
 
-    public function getDesign()
+    public function getDesign(Request $request)
     {
+        $request->session()->flash('alert-success', 'This is a successful flash message.');
         return view('pages.dominion.design');
     }
 

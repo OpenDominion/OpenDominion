@@ -55,6 +55,7 @@
   --bs-body-bg:                   var(--od-body-bg);
   --bs-body-color:                var(--od-text-body);
   --bs-body-font-family:          var(--od-font-sans);
+  --bs-body-font-size:            1rem;
   --bs-secondary-color:           var(--od-text-secondary);
   --bs-secondary-bg:              var(--od-surface);
   --bs-tertiary-bg:               var(--od-surface-alt);
@@ -110,6 +111,8 @@
     --bs-dropdown-link-hover-bg:    var(--od-body-bg);
     --bs-dropdown-link-hover-color: var(--od-primary);
     --bs-dropdown-link-active-bg:   var(--od-primary);
+    --bs-dropdown-font-size:        1rem;
+    font-family: var(--od-font-sans);
   }
 
   // ── Tables ────────────────────────────────────────────────────────────────
@@ -230,7 +233,7 @@
   .text-orange                { color: #e0a05a !important; }
   .text-red                   { color: #d06b6b !important; }
   .text-aqua,
-  .text-light-blue            { color: #7aa9e0 !important; }
+  .text-light-blue            { color: hsl(212, 62%, 68%) !important; }
   .text-muted, .form-text     { color: var(--od-text-secondary) !important; }
   blockquote                  { border-color: var(--od-border-soft) !important; }
   a, .alert-link              { color: var(--od-link-color); }
@@ -239,9 +242,13 @@
   .app-wrapper                { background-color: var(--od-surface-alt) !important; }
   .app-main                   { background-color: var(--od-content-bg); }
   .app-header                 { background-color: var(--od-header-bg) !important; border-bottom: 1px solid rgba(199, 176, 120, 0.35); }
+  .sidebar-brand,
   .app-header .navbar-brand     { color: var(--od-text-body); font-family: var(--od-font-display); font-weight: 700; letter-spacing: 0.03em; }
+  .sidebar-brand b,
   .app-header .navbar-brand b   { color: #afa170; font-weight: 700; transition: color 0.2s; }
+  .sidebar-brand:hover,
   .app-header .navbar-brand:hover   { color: #fff; }
+  .sidebar-brand:hover b,
   .app-header .navbar-brand:hover b { color: #c6b680; }
   .app-header a,
   .app-header .nav-link         { color: rgba(232, 224, 212, 0.85); font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.02em; }
@@ -253,13 +260,14 @@
     background: rgba(0, 0, 0, 0.3);
     border-color: var(--od-border-accent);
   }
-  .app-header .ticker-lbl { color: var(--od-text-secondary); }
+  .app-header .ticker-lbl { color: var(--od-text-secondary); font-size: 0.75rem; }
   .app-header .ticker-val { color: var(--od-primary); }
   .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid rgba(199, 176, 120, 0.35); }
   .app-sidebar a              { color: var(--od-sidebar-text); }
   .app-sidebar a:hover        { text-decoration: none; }
   .nav-header                 { background: var(--od-body-bg); color: var(--od-text-subtle); }
+  .sidebar-brand .brand-prefix { color: var(--od-text-body); font-weight: 600; opacity: 1; }
   .sidebar-user .info,
   .sidebar-user .info > a     { color: var(--od-text-emphasis); }
   .sidebar-menu .nav-link     { border-left: 2px solid transparent; }
