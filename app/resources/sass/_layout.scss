@@ -71,6 +71,19 @@
   }
 }
 
+.sidebar-user {
+  overflow-x: auto;
+
+  // Hide scrollbar; the row still scrolls via drag/wheel when content overflows.
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+
+  > div {
+    min-width: 0;
+    white-space: nowrap;
+  }
+}
+
 .sidebar-menu {
   .nav-link {
     display: flex;
