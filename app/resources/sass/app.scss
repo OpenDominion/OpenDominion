@@ -146,6 +146,10 @@ a {
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
   white-space: nowrap;
+
+  @media (max-width: 575.98px) {
+    margin-right: 0;
+  }
 }
 
 .ticker {
