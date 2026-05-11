@@ -4,7 +4,7 @@ alignment: good
 description: >-
   <p>Graceful, slender and beautiful, the Wood Elves are among the eldest of the races and keenly attuned with the natural world. Some Wood Elf lives span centuries, blessing their kin with wisdom through the ages.</p>
   <p>Though peaceful by nature, Wood Elves are a versatile race, proficient in combat with their deadly rangers and magically gifted druids that draw power from the very forest itself, and backed up by powerful wizards and skilled spies that excel at covert ops.</p>
-attacker_difficulty: 2
+attacker_difficulty: 3
 explorer_difficulty: 1
 converter_difficulty: 1
 overall_difficulty: 1

@@ -7,6 +7,7 @@ description: >-
 attacker_difficulty: 1
 explorer_difficulty: 1
 converter_difficulty: 3
+overall_difficulty: 1
 home_land_type: cavern
 perks:
   max_population: -5

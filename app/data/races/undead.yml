@@ -5,8 +5,8 @@ description: >-
   <p>The Undead are a collection of those who have defied death - relentless hordes of zombies, the reanimated corpses of ancient lords, enigmatic necromancers and their fearsome creations. This eclectic union has one thing in common: a loathing of life. They will seize every opportunity to snuff it out or drag it kicking and screaming into the shadow of undeath.</p>
   <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with fresh corpses. They tend to inhabit putrid swamps where the dense, humid atmosphere obscures the stench of decay and provides cover for their unscrupulous activities.</p>
 attacker_difficulty: 2
-explorer_difficulty: 2
-converter_difficulty: 2
+explorer_difficulty: 1
+converter_difficulty: 3
 home_land_type: swamp
 perks:
   max_population: 2.5

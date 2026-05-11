@@ -495,6 +495,12 @@ html.hourchange:after {
   color: #495057 !important;
 }
 
+// Bootstrap's default tooltip opacity (0.9) reduces readability against busy
+// backgrounds. Override the CSS variable so all tooltips are fully opaque.
+.tooltip {
+  --bs-tooltip-opacity: 1;
+}
+
 // ─── Light theme: dark sidebar ────────────────────────────────────────────────
 [data-color-scheme="light"] {
   .app-header                 { background-color: #1a2226 !important; }

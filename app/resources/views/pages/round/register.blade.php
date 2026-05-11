@@ -45,9 +45,7 @@
                                             <tr>
                                                 <th>Race</th>
                                                 <th>Difficulty</th>
-                                                <th>Attacker</th>
-                                                <th>Explorer</th>
-                                                <th>Converter</th>
+                                                <th>Suggested Strategy</th>
                                             </tr>
                                         </thead>
                                         <tbody class="inline-radio">
@@ -55,7 +53,7 @@
                                                 <tr>
                                                     <td>
                                                         <label for="{{ $race->key }}" class="radio-row-label"
-                                                            data-bs-toggle="tooltip" data-html="true"
+                                                            data-bs-toggle="tooltip" data-bs-placement="right" data-html="true"
                                                             title='@foreach ($race->perks as $perk){!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br/>@endforeach'
                                                         >
                                                             <input type="radio" name="race" id="{{ $race->key }}" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required />
@@ -70,17 +68,7 @@
                                                     </td>
                                                     <td>
                                                         <label for="{{ $race->key }}" class="radio-row-label">
-                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
-                                                        </label>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{ $race->key }}" class="radio-row-label">
-                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
-                                                        </label>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{ $race->key }}" class="radio-row-label">
-                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                            {!! $raceHelper->getStrategyBadgesHtml($race) !!}
                                                         </label>
                                                     </td>
                                                 </tr>
@@ -100,9 +88,7 @@
                                             <tr>
                                                 <th>Race</th>
                                                 <th>Difficulty</th>
-                                                <th>Attacker</th>
-                                                <th>Explorer</th>
-                                                <th>Converter</th>
+                                                <th>Suggested Strategy</th>
                                             </tr>
                                         </thead>
                                         <tbody class="inline-radio">
@@ -110,7 +96,7 @@
                                                 <tr>
                                                     <td>
                                                         <label for="{{ $race->key }}" class="radio-row-label"
-                                                            data-bs-toggle="tooltip" data-html="true"
+                                                            data-bs-toggle="tooltip" data-bs-placement="right" data-html="true"
                                                             title='@foreach ($race->perks as $perk){!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br/>@endforeach'
                                                         >
                                                             <input type="radio" name="race" id="{{ $race->key }}" value="{{ $race->key }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required />
@@ -125,17 +111,7 @@
                                                     </td>
                                                     <td>
                                                         <label for="{{ $race->key }}" class="radio-row-label">
-                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
-                                                        </label>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{ $race->key }}" class="radio-row-label">
-                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
-                                                        </label>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{ $race->key }}" class="radio-row-label">
-                                                            {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                            {!! $raceHelper->getStrategyBadgesHtml($race) !!}
                                                         </label>
                                                     </td>
                                                 </tr>
