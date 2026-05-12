@@ -147,6 +147,15 @@ class DominionFactory
             $queueService->queueResources('exploration', $dominion, ['land_plain' => 60], 12);
         }
 
+        if (!$realm->round->hasStarted()) {
+            $realm->rating = (int) round(
+                Dominion::where('dominions.realm_id', $realm->id)
+                    ->join('users', 'users.id', '=', 'dominions.user_id')
+                    ->avg('users.rating') ?? 0
+            );
+            $realm->save();
+        }
+
         return $dominion;
     }
 
