@@ -27,6 +27,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'boat capacity';
                 break;
+            case 'home_housing':
+                $negativeBenefit = false;
+                $description = 'home housing';
+                break;
             case 'construction_cost':
                 $negativeBenefit = true;
                 $description = 'construction cost';
@@ -205,6 +209,11 @@ class RaceHelper
             case 'boat_capacity':
                 $negativeBenefit = false;
                 $description = 'Boat capacity';
+                $valueType = '';
+                break;
+            case 'home_housing':
+                $negativeBenefit = false;
+                $description = 'Home housing';
                 $valueType = '';
                 break;
             case 'construction_cost':

@@ -160,6 +160,7 @@ class PopulationCalculator
 
         // Racial Bonus
         $housingPerBarrenLand += $dominion->race->getPerkValue('extra_barren_max_population');
+        $housingPerHome += $dominion->race->getPerkValue('home_housing');
 
         // Techs
         $housingPerBarrenLand += $dominion->getTechPerkValue('extra_barren_max_population');

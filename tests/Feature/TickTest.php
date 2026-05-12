@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\TickService;
@@ -272,5 +273,82 @@ class TickTest extends AbstractBrowserKitTestCase
 
         // 27487 food - 308 net change = 27179 food
         $this->assertEquals(27179, $dominion->resource_food);
+    }
+
+    /**
+     * Planewalker Summoners produce 1 Elemental per 20 Summoners per hour,
+     * queued onto training for 12 hours.
+     */
+    public function testPlanewalkerSummonsElementalsFromSummoners()
+    {
+        $dominion = $this->preparePlanewalkerDominion([
+            'military_unit1' => 0,
+            'military_unit2' => 0,
+            'military_unit3' => 0,
+            'military_unit4' => 60,
+        ]);
+
+        app(TickService::class)->performTick($dominion->round);
+
+        // 60 Summoners / 20 per source = 3 Elementals queued.
+        $this->seeInDatabase('dominion_queue', [
+            'dominion_id' => $dominion->id,
+            'source' => 'training',
+            'resource' => 'military_unit1',
+            'hours' => 12,
+            'amount' => 3,
+        ]);
+    }
+
+    /**
+     * Cap is 3 target units per source unit (home + queued + returning combined).
+     * 100 Summoners but 297 Elementals already accounted for → only 3 more should be summoned.
+     */
+    public function testPlanewalkerSummoningRespectsCap()
+    {
+        $dominion = $this->preparePlanewalkerDominion([
+            'military_unit1' => 297,
+            'military_unit4' => 100,
+        ]);
+
+        app(TickService::class)->performTick($dominion->round);
+
+        // 100/20 = 5 ideal, cap = 3*100 - 297 = 3 remaining → produce 3.
+        $this->seeInDatabase('dominion_queue', [
+            'dominion_id' => $dominion->id,
+            'source' => 'training',
+            'resource' => 'military_unit1',
+            'hours' => 12,
+            'amount' => 3,
+        ]);
+    }
+
+    /**
+     * No production when source units below the per-source threshold.
+     */
+    public function testPlanewalkerSummoningSkipsWhenBelowThreshold()
+    {
+        $dominion = $this->preparePlanewalkerDominion([
+            'military_unit1' => 0,
+            'military_unit4' => 19,
+        ]);
+
+        app(TickService::class)->performTick($dominion->round);
+
+        $this->dontSeeInDatabase('dominion_queue', [
+            'dominion_id' => $dominion->id,
+            'source' => 'training',
+            'resource' => 'military_unit1',
+        ]);
+    }
+
+    private function preparePlanewalkerDominion(array $overrides)
+    {
+        $user = $this->createUser();
+        $round = $this->createRound('-7 days');
+        $race = Race::where('key', 'planewalker')->firstOrFail();
+        $dominion = $this->createDominionWithLegacyStats($user, $round, $race);
+        $dominion->update($overrides);
+        return $dominion->fresh();
     }
 }

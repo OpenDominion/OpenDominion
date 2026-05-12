@@ -390,6 +390,7 @@ class TickService
         }
 
         $this->performSpellEffects($dominions->pluck('id')->all());
+        $this->performRaceUnitProduction($dominions);
 
         foreach ($dominions as $dominion) {
             DB::transaction(function () use ($dominion) {
@@ -813,6 +814,57 @@ class TickService
                     $this->queueService->queueResources('training', $dominionSpell->dominion, $units);
                     // Update dominion
                     $dominionSpell->dominion->update(['racial_value' => fmod($unitsProduced, 1)]);
+                }
+            }
+        }, 5);
+    }
+
+    /**
+     * Race-driven hourly unit production. Each unit perk `summons_unit` value
+     * `target_slot,units_per_source,cap_per_source` means each source unit at
+     * home produces 1 target unit per `units_per_source` per hour, capped at
+     * `cap_per_source` x total source units. Queued onto the training queue
+     * so players see incoming units.
+     */
+    protected function performRaceUnitProduction(Collection $dominions): void
+    {
+        DB::transaction(function () use ($dominions) {
+            foreach ($dominions as $dominion) {
+                foreach ($dominion->race->units as $sourceUnit) {
+                    $perkValue = $sourceUnit->getPerkValue('summons_unit');
+                    if (!$perkValue) {
+                        continue;
+                    }
+
+                    [$targetSlot, $perSource, $capPerSource] = array_map('intval', explode(',', $perkValue));
+                    if ($targetSlot < 1 || $perSource < 1) {
+                        continue;
+                    }
+
+                    $sourceHome = (int)$dominion->{"military_unit{$sourceUnit->slot}"};
+                    $idealProduced = intdiv($sourceHome, $perSource);
+                    if ($idealProduced <= 0) {
+                        continue;
+                    }
+
+                    $sourceTotal = $this->militaryCalculator->getTotalUnitsForSlot($dominion, $sourceUnit->slot)
+                        + $this->queueService->getTrainingQueueTotalByResource($dominion, "military_unit{$sourceUnit->slot}");
+
+                    $targetExisting = $this->militaryCalculator->getTotalUnitsForSlot($dominion, $targetSlot)
+                        + $this->queueService->getTrainingQueueTotalByResource($dominion, "military_unit{$targetSlot}");
+
+                    $capRemaining = max(0, ($capPerSource * $sourceTotal) - $targetExisting);
+
+                    $produced = min($idealProduced, $capRemaining);
+                    if ($produced <= 0) {
+                        continue;
+                    }
+
+                    $this->queueService->queueResources(
+                        'training',
+                        $dominion,
+                        ["military_unit{$targetSlot}" => $produced]
+                    );
                 }
             }
         }, 5);
