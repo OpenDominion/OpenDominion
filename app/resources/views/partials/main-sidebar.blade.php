@@ -45,7 +45,7 @@
                                 @if (!$selectedDominion->daily_land)
                                     <span class="badge text-bg-primary ">L</span>
                                 @endif
-                                @if ($selectedDominion->daily_platinum)
+                                @if (!$selectedDominion->daily_platinum)
                                     <span class="badge text-bg-primary ">P</span>
                                 @endif
                             </p>
