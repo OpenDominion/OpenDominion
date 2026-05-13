@@ -19,6 +19,19 @@ class ValuablesHelper
     public const INVESTIGATION_HOUR_STEP        = 6;
     public const SPY_STRENGTH_PER_INVESTIGATION = 2.0;
 
+    /** Progress points added to tracking on each failed Locate Valuables op. */
+    public const SPY_OP_PROGRESS_INCREMENT  = 10;
+    /** Progress points added to tracking on each failed passive info-op discovery. */
+    public const PASSIVE_PROGRESS_INCREMENT = 1;
+    /** Chance increase per progress point for Locate Valuables ops. */
+    public const PROGRESS_CHANCE_STEP         = 0.005;
+    /** Chance increase per progress point for passive info-op discovery (lower to keep passive rare). */
+    public const PASSIVE_PROGRESS_CHANCE_STEP = 0.0002;
+    /** Maximum discovery chance regardless of progress. */
+    public const MAX_DISCOVERY_CHANCE       = 0.95;
+    /** Hours after a discovery during which the same attacker cannot discover again from the same target. */
+    public const DISCOVERY_COOLDOWN_HOURS   = 48;
+
     public const TYPES = ['relic', 'jewelry', 'artwork', 'equipment', 'text'];
 
     public const RARITY_COMMON    = 'common';

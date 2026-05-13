@@ -69,7 +69,7 @@ class EspionageHelper
         return collect([
             [
                 'name' => 'Locate Valuables',
-                'description' => 'Search the target for hidden treasures (10% chance)',
+                'description' => 'Search the target for hidden treasures (20% chance)',
                 'key' => 'locate_valuables',
             ],
         ]);

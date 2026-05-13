@@ -7,6 +7,7 @@ use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Valuable;
+use OpenDominion\Models\ValuablesTracking;
 
 class ValuablesService
 {
@@ -32,12 +33,20 @@ class ValuablesService
             return '';
         }
 
-        if (!random_chance(ValuablesHelper::PASSIVE_DISCOVERY_CHANCE)) {
+        $tracking = $this->getOrCreateTracking($attacker, $target);
+        $chance = $this->progressiveChance(ValuablesHelper::PASSIVE_DISCOVERY_CHANCE, $tracking->progress, ValuablesHelper::PASSIVE_PROGRESS_CHANCE_STEP);
+
+        if (!random_chance($chance)) {
+            $tracking->increment('progress', ValuablesHelper::PASSIVE_PROGRESS_INCREMENT);
             return '';
         }
 
         $valuable = $this->createValuable($attacker, $target);
         $phrase = $this->valuablesHelper->discoveryPhrase($valuable->rarity, $valuable->type);
+
+        $tracking->progress = 0;
+        $tracking->last_discovered_at = now();
+        $tracking->save();
 
         return sprintf(
             ' Your %s have also discovered %s in the target\'s possession!',
@@ -60,7 +69,11 @@ class ValuablesService
             ];
         }
 
-        if (!random_chance(ValuablesHelper::SPY_OP_DISCOVERY_CHANCE)) {
+        $tracking = $this->getOrCreateTracking($attacker, $target);
+        $chance = $this->progressiveChance(ValuablesHelper::SPY_OP_DISCOVERY_CHANCE, $tracking->progress);
+
+        if (!random_chance($chance)) {
+            $tracking->increment('progress', ValuablesHelper::SPY_OP_PROGRESS_INCREMENT);
             return [
                 'success' => true,
                 'message' => 'Your spies search the target carefully but find nothing of value.',
@@ -71,6 +84,10 @@ class ValuablesService
         $valuable = $this->createValuable($attacker, $target);
         $phrase = $this->valuablesHelper->discoveryPhrase($valuable->rarity, $valuable->type);
 
+        $tracking->progress = 0;
+        $tracking->last_discovered_at = now();
+        $tracking->save();
+
         return [
             'success' => true,
             'message' => sprintf(
@@ -80,6 +97,25 @@ class ValuablesService
             ),
             'alert-type' => 'success',
         ];
+    }
+
+    /**
+     * Returns whether the attacker is currently on cooldown for discovering
+     * valuables from this specific target.
+     */
+    public function isOnCooldown(Dominion $attacker, Dominion $target): bool
+    {
+        $tracking = ValuablesTracking::query()
+            ->where('round_id', $attacker->round_id)
+            ->where('source_dominion_id', $attacker->id)
+            ->where('target_dominion_id', $target->id)
+            ->first();
+
+        if ($tracking === null || $tracking->last_discovered_at === null) {
+            return false;
+        }
+
+        return $tracking->last_discovered_at->diffInHours(now()) < ValuablesHelper::DISCOVERY_COOLDOWN_HOURS;
     }
 
     /**
@@ -148,9 +184,9 @@ class ValuablesService
     }
 
     /**
-     * Block discovery in cases where the underlying op shouldn't be eligible
-     * (cross-realm requirement is enforced upstream; this just guards against
-     * obviously bogus pairs reaching this code).
+     * Block discovery in cases where the underlying op shouldn't be eligible.
+     * Cross-realm requirement is enforced upstream; this also enforces the
+     * per-target cooldown so passive info ops respect it too.
      */
     protected function canDiscoverFrom(Dominion $attacker, Dominion $target): bool
     {
@@ -160,6 +196,36 @@ class ValuablesService
         if ($attacker->round_id !== $target->round_id) {
             return false;
         }
+        if ($this->isOnCooldown($attacker, $target)) {
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Returns the effective discovery chance after applying progress points.
+     */
+    protected function progressiveChance(float $baseChance, int $progress, float $step = ValuablesHelper::PROGRESS_CHANCE_STEP): float
+    {
+        return min(
+            ValuablesHelper::MAX_DISCOVERY_CHANCE,
+            $baseChance + $progress * $step
+        );
+    }
+
+    /**
+     * Retrieves the tracking row for this attacker/target pair, creating it
+     * if it does not yet exist.
+     */
+    protected function getOrCreateTracking(Dominion $attacker, Dominion $target): ValuablesTracking
+    {
+        return ValuablesTracking::firstOrCreate(
+            [
+                'round_id'           => $attacker->round_id,
+                'source_dominion_id' => $attacker->id,
+                'target_dominion_id' => $target->id,
+            ],
+            ['progress' => 0]
+        );
     }
 }
