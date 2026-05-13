@@ -163,28 +163,28 @@ class RangeCalculatorTest extends AbstractBrowserKitTestCase
     {
         $this->sut->shouldReceive('getDominionRange')->with($this->selfDominion, $this->targetDominion)->andReturn(150.0);
         $result = $this->sut->getDominionRangeSpanClass($this->selfDominion, $this->targetDominion);
-        $this->assertEquals('text-red', $result); // >= 133.33 (100 / 0.75)
+        $this->assertEquals('text-danger', $result); // >= 133.33 (100 / 0.75)
     }
 
     public function testGetDominionRangeSpanClassGreen()
     {
         $this->sut->shouldReceive('getDominionRange')->with($this->selfDominion, $this->targetDominion)->andReturn(80.0);
         $result = $this->sut->getDominionRangeSpanClass($this->selfDominion, $this->targetDominion);
-        $this->assertEquals('text-green', $result); // >= 75
+        $this->assertEquals('text-success', $result); // >= 75
     }
 
     public function testGetDominionRangeSpanClassMuted()
     {
         $this->sut->shouldReceive('getDominionRange')->with($this->selfDominion, $this->targetDominion)->andReturn(65.0);
         $result = $this->sut->getDominionRangeSpanClass($this->selfDominion, $this->targetDominion);
-        $this->assertEquals('text-muted', $result); // >= 60
+        $this->assertEquals('', $result); // >= 60
     }
 
     public function testGetDominionRangeSpanClassGray()
     {
         $this->sut->shouldReceive('getDominionRange')->with($this->selfDominion, $this->targetDominion)->andReturn(50.0);
         $result = $this->sut->getDominionRangeSpanClass($this->selfDominion, $this->targetDominion);
-        $this->assertEquals('text-gray', $result); // < 60
+        $this->assertEquals('text-muted', $result); // < 60
     }
 
     public function testCheckGuardApplicationsRoyalGuardOutOfRange()
