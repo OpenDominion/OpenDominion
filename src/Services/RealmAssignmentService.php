@@ -1467,7 +1467,7 @@ class RealmAssignmentService
         $player = $this->createPlayerForUser($user, $candidateRealms);
 
         // Return the best match
-        return $this->selectBestRealm($candidateRealms, $player);
+        return $this->selectBestRealm($candidateRealms, $player, $round);
     }
 
     /**
@@ -1578,10 +1578,10 @@ class RealmAssignmentService
     /**
      * Select the best realm using compatibility and rating balance scoring
      */
-    public function selectBestRealm(Collection $candidateRealms, Player $player): ?Realm
+    public function selectBestRealm(Collection $candidateRealms, Player $player, Round $round): ?Realm
     {
-        // Calculate dynamic targets from candidate realms
-        $this->calculateDynamicTargets($candidateRealms);
+        // Calculate dynamic targets from all realms in the round
+        $this->calculateDynamicTargets($round);
 
         $bestRealm = null;
         $bestScore = -INF;
@@ -1630,26 +1630,30 @@ class RealmAssignmentService
     }
 
     /**
-     * Calculate dynamic targets based on current realm states
+     * Calculate dynamic targets across every assigned realm in the round.
+     *
+     * Reads the persisted average rating from the realms table — the value is
+     * kept fresh during the registration window by DominionFactory::create and
+     * frozen once the round starts, so this gives the global rating midpoint
+     * each new registration should balance toward. Excludes the graveyard
+     * realm so its zero rating and count don't drag the targets down.
      */
-    public function calculateDynamicTargets(Collection $candidateRealms): void
+    public function calculateDynamicTargets(Round $round): void
     {
-        $realmCount = $candidateRealms->count();
-        $totalRating = 0;
-        $totalPlayers = 0;
+        $realms = Realm::where('round_id', $round->id)
+            ->where('number', '!=', 0)
+            ->withCount('dominions')
+            ->get(['id', 'rating']);
 
-        foreach ($candidateRealms as $realm) {
-            $realmSize = $realm->dominions->count();
-            $realmRating = $realm->dominions->sum(function ($dominion) {
-                return $dominion->user->rating ?? 1000;
-            });
+        $realmCount = $realms->count();
 
-            $totalRating += $realmRating;
-            $totalPlayers += $realmSize;
+        if ($realmCount === 0) {
+            $this->targetRealmStrength = 1500;
+            $this->targetRealmSize = 12;
+            return;
         }
 
-        // Set dynamic targets based on current state
-        $this->targetRealmSize = ($realmCount > 0) ? floor($totalPlayers / $realmCount) : 12;
-        $this->targetRealmStrength = ($totalPlayers > 0) ? ($totalRating / $totalPlayers) : 1500;
+        $this->targetRealmStrength = $realms->avg('rating');
+        $this->targetRealmSize = floor($realms->sum('dominions_count') / $realmCount);
     }
 }

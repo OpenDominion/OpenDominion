@@ -488,13 +488,6 @@ html.hourchange:after {
   100% { opacity: 1; }
 }
 
-// Tooltip background is light, so muted/gray text is illegible inside it
-// (e.g. range-class labels for sub-60% land sizes). Force strong contrast.
-.tooltip-inner .text-muted,
-.tooltip-inner .text-gray {
-  color: #495057 !important;
-}
-
 // Bootstrap's default tooltip opacity (0.9) reduces readability against busy
 // backgrounds. Override the CSS variable so all tooltips are fully opaque.
 .tooltip {
@@ -503,6 +496,13 @@ html.hourchange:after {
 
 // ─── Light theme: dark sidebar ────────────────────────────────────────────────
 [data-color-scheme="light"] {
+  // Tooltip-tuned text colors (tooltip bg is dark in light mode — use lighter variants)
+  --od-success-on-tooltip: #75d36c;
+  --od-danger-on-tooltip:  #f08a85;
+  --od-warning-on-tooltip: #e6c065;
+  --od-info-on-tooltip:    #7cb8e8;
+  --od-muted-on-tooltip:   #adb5bd;
+
   .app-header                 { background-color: #1a2226 !important; }
   .app-header a:not(.dropdown-item),
   .app-header .nav-link       { color: #d8dfe3; }
@@ -538,6 +538,13 @@ html.hourchange:after {
 
 // ─── Base dark mode sidebar ──────────────────────────────────────────────────
 [data-color-scheme="dark"] {
+  // Tooltip-tuned text colors (tooltip bg is light in dark mode — saturated mid-tones)
+  --od-success-on-tooltip: #0e7c3a;
+  --od-danger-on-tooltip:  #b71c1c;
+  --od-warning-on-tooltip: #a07000;
+  --od-info-on-tooltip:    #0d6c8f;
+  --od-muted-on-tooltip:   #6c757d;
+
   .app-header                 { background-color: #1a2226 !important; }
   .app-sidebar a              { color: #b8c7ce; }
   .app-sidebar a:hover        { text-decoration: none; color: #fff; }
@@ -550,3 +557,15 @@ html.hourchange:after {
 
 // ─── Theme System ─────────────────────────────────────────────────────────────
 @import 'themes';
+
+// Tooltip background contrasts the body (light in dark themes, dark in parchment),
+// so the regular themed text-* colors wash out inside tooltips. Each theme provides
+// --od-*-on-tooltip variants tuned for the tooltip surface.
+// Must come after theme imports so it wins on source order against [data-color-scheme] rules.
+.tooltip-inner {
+  .text-success { color: var(--od-success-on-tooltip) !important; }
+  .text-danger  { color: var(--od-danger-on-tooltip)  !important; }
+  .text-warning { color: var(--od-warning-on-tooltip) !important; }
+  .text-info    { color: var(--od-info-on-tooltip)    !important; }
+  .text-muted   { color: var(--od-muted-on-tooltip)   !important; }
+}

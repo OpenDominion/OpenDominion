@@ -34,6 +34,13 @@
   --od-warning-dark:     #706a1c;
   --od-warning-bg:       rgba(200, 184, 56, .08);
 
+  // Tooltip-tuned text colors (tooltip bg is light cream in this dark theme — saturated mid-tones)
+  --od-success-on-tooltip: #2d7a4a;
+  --od-danger-on-tooltip:  #b53030;
+  --od-warning-on-tooltip: #968a2c;
+  --od-info-on-tooltip:    #3a5fa0;
+  --od-muted-on-tooltip:   #5a4f3e;
+
   // Layout
   --od-header-bg:        #131210;
   --od-sidebar-bg:       #131210;
@@ -78,7 +85,7 @@
     --bs-card-color:        var(--od-text-body);
     --bs-card-border-color: rgba(199, 176, 120, 0.35);
   }
-  .card-title                { color: var(--od-text-secondary); font-family: var(--od-font-display); }
+  .card-title                { color: var(--od-text-secondary); font-family: var(--od-font-display); font-size: 1rem; font-weight: 600; }
   .card-header a,
   .card-header .btn          { color: var(--od-text-emphasis); }
   .card.border-info          { border-top-color: var(--od-info) !important; }
