@@ -43,6 +43,13 @@
   --od-warning-dark:     #92400e;   // amber-800
   --od-warning-bg:       rgba(251, 191, 36, .08);
 
+  // Tooltip-tuned text colors (tooltip bg is near-white slate in this dark theme — saturated mid-tones)
+  --od-success-on-tooltip: #059669;  // emerald-600
+  --od-danger-on-tooltip:  #dc2626;  // red-600
+  --od-warning-on-tooltip: #d97706;  // amber-600
+  --od-info-on-tooltip:    #4f46e5;  // indigo-600
+  --od-muted-on-tooltip:   #64748b;  // slate-500
+
   // Layout
   --od-header-bg:        rgba(15, 23, 42, 0.95); // slate-900/95
   --od-sidebar-bg:       #020617;   // slate-950

@@ -28,6 +28,13 @@
   --od-warning:          #D19000;
   --od-warning-dark:     #A67200;
 
+  // Tooltip-tuned text colors (tooltip bg is light in this dark theme — saturated mid-tones)
+  --od-success-on-tooltip: #0e7c3a;
+  --od-danger-on-tooltip:  #b71c1c;
+  --od-warning-on-tooltip: #a07000;
+  --od-info-on-tooltip:    #0d6c8f;
+  --od-muted-on-tooltip:   #6c757d;
+
   // Layout
   --od-header-bg:        #005566;
   --od-sidebar-bg:       #332f35;

@@ -408,7 +408,7 @@ class Round extends AbstractModel
         );
 
         if ($this->isActive()) {
-            $hours = (int) now()->startOfHour()->diffInHours($date->startOfHour());
+            $hours = (int) $date->startOfHour()->diffInHours(now()->startOfHour());
             $tooltip .= sprintf(
                 '<br>(%s %s ago)',
                 $hours,
