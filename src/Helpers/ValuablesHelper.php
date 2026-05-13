@@ -14,7 +14,7 @@ class ValuablesHelper
     public const SPY_OP_DISCOVERY_CHANCE        = 0.10;
     public const SPY_OP_STRENGTH_COST           = 5.0;
     public const EXPIRATION_HOURS               = 48;
-    public const MIN_INVESTIGATION_HOURS        = 36;
+    public const MIN_INVESTIGATION_HOURS        = 18;
     public const MAX_INVESTIGATION_HOURS        = 6;
     public const INVESTIGATION_HOUR_STEP        = 6;
     public const SPY_STRENGTH_PER_INVESTIGATION = 2.0;

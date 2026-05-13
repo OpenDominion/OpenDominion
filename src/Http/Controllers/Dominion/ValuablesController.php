@@ -55,14 +55,13 @@ class ValuablesController extends AbstractDominionController
                 $disabledReason = sprintf('You only have %s available spies.', number_format($availableSpies));
             } elseif ($projectedRegen <= 0) {
                 $disabled = true;
-                $disabledReason = 'Would prevent your spy strength from regenerating.';
+                $disabledReason = 'Not enough spy strength regeneration.';
             }
 
             $durationOptions[] = [
                 'hours' => $hours,
                 'spiesNeeded' => $spiesNeeded,
                 'totalStrengthCost' => $totalStrengthCost,
-                'completesAt' => now()->copy()->startOfHour()->addHour()->addHours($hours),
                 'disabled' => $disabled,
                 'disabledReason' => $disabledReason,
             ];

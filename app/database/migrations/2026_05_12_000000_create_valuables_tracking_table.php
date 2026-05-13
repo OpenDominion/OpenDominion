@@ -17,7 +17,7 @@ class CreateValuablesTrackingTable extends Migration
             $table->timestamp('last_discovered_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['round_id', 'source_dominion_id', 'target_dominion_id']);
+            $table->unique(['round_id', 'source_dominion_id', 'target_dominion_id'], 'valuables_tracking_round_source_target_unique');
 
             $table->foreign('round_id')->references('id')->on('rounds');
             $table->foreign('source_dominion_id')->references('id')->on('dominions');

@@ -181,10 +181,10 @@ class EspionageActionService
             }
         } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
             if ($dominion->round->start_date->diffInHours(now()) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
-                throw new GameException('You cannot scout for valuables for the first three days of the round');
+                throw new GameException('You cannot discover valuables for the first three days of the round');
             }
             if ($this->valuablesService->isOnCooldown($dominion, $target)) {
-                throw new GameException('Your spies have recently scoured this dominion and need time before searching again.');
+                throw new GameException('Your spies have already concluded a search of this dominion recently.');
             }
         }
 

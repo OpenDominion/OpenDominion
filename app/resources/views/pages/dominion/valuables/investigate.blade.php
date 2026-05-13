@@ -19,42 +19,40 @@
                         <strong>{{ ucfirst($valuable->type) }}</strong> &middot;
                         held by <a href="{{ route('dominion.op-center.show', $valuable->target_dominion_id) }}">{{ $valuable->targetDominion->name }}</a>
                     </p>
-                    <p>Pick a duration. Faster heists need more spies; slower heists let you spread thin. Each row's "Spies" is committed for the entire duration of the investigation.</p>
-                </div>
+                    <p>Pick a duration. Faster heists need more spies; slower heists cost more strength over time.<br/>Each investigation's spies are committed for the entire duration of the investigation.</p>
 
-                <table class="table table-sm mb-0">
-                    <thead>
-                        <tr>
-                            <th>Duration</th>
-                            <th>Spies Required</th>
-                            <th>Total Spy Strength</th>
-                            <th>Completes At</th>
-                            <th class="text-end">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($durationOptions as $option)
-                            <tr class="{{ $option['disabled'] ? 'text-muted' : '' }}">
-                                <td>{{ $option['hours'] }} hours</td>
-                                <td>{{ number_format($option['spiesNeeded']) }}</td>
-                                <td>{{ number_format($option['totalStrengthCost'], 0) }}%</td>
-                                <td>{{ $option['completesAt']->format('M j, H:i') }}</td>
-                                <td class="text-end">
-                                    <form action="{{ route('dominion.valuables.investigate', $valuable->id) }}" method="post" class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="hours" value="{{ $option['hours'] }}">
-                                        <button type="submit" class="btn btn-sm btn-primary" {{ $option['disabled'] ? 'disabled' : '' }}>
-                                            Select
-                                        </button>
-                                    </form>
-                                    @if ($option['disabled'])
-                                        <small class="d-block text-muted">{{ $option['disabledReason'] }}</small>
-                                    @endif
-                                </td>
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Duration</th>
+                                <th>Spies Required</th>
+                                <th>Total Spy Strength</th>
+                                <th class="text-end">Action</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($durationOptions as $option)
+                                <tr class="{{ $option['disabled'] ? 'text-muted' : '' }}">
+                                    <td>{{ $option['hours'] }} hours</td>
+                                    <td>{{ number_format($option['spiesNeeded']) }}</td>
+                                    <td>{{ number_format($option['totalStrengthCost'], 0) }}%</td>
+                                    <td class="text-end">
+                                        <form action="{{ route('dominion.valuables.investigate', $valuable->id) }}" method="post" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="hours" value="{{ $option['hours'] }}">
+                                            <button type="submit" class="btn btn-sm btn-primary" {{ $option['disabled'] ? 'disabled' : '' }}>
+                                                Select
+                                            </button>
+                                        </form>
+                                        @if ($option['disabled'])
+                                            <small class="d-block text-muted">{{ $option['disabledReason'] }}</small>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
