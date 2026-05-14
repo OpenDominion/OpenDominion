@@ -27,7 +27,7 @@
                                         <thead>
                                             <tr>
                                                 <th colspan=2>
-                                                    <h4>{{ ucwords($landType) }}</h4>
+                                                    <h6>{{ ucwords($landType) }}</h6>
                                                 </th>
                                             </tr>
                                             <tr>
@@ -63,7 +63,7 @@
                                         <thead>
                                             <tr>
                                                 <th colspan=2>
-                                                    <h4>{{ ucwords($landType) }}</h4>
+                                                    <h6>{{ ucwords($landType) }}</h6>
                                                 </th>
                                             </tr>
                                             <tr>
