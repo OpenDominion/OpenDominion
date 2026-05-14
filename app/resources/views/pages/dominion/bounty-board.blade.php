@@ -33,7 +33,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-gem"></i> Realm Valuables Available for Transfer</span>
                 </div>
-                <div class="card-body p-0 table-responsive">
+                <div class="card-body table-responsive">
                     @if ($realmValuablesListed->isEmpty())
                         <p class="text-center text-muted my-3">No valuables are currently listed by your realmies.</p>
                     @else
@@ -68,7 +68,7 @@
                                             @if ($isOwnListing)
                                                 <form action="{{ route('dominion.valuables.unlist', $valuable->id) }}" method="post" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Unlist</button>
+                                                    <button type="submit" class="btn btn-sm btn-secondary">Unlist</button>
                                                 </form>
                                             @else
                                                 <form action="{{ route('dominion.valuables.purchase', $valuable->id) }}" method="post" class="d-inline">
