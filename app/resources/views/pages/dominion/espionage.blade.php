@@ -179,7 +179,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-locked-chest"></i> Valuables Discovered</span>
                 </div>
-                <div class="card-body p-0 table-responsive">
+                <div class="card-body table-responsive">
                     @if ($valuablesDiscovered->isEmpty())
                         <p class="text-center text-muted my-3">No valuables discovered.</p>
                     @else
@@ -253,7 +253,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-open-chest"></i> Valuables Stolen</span>
                 </div>
-                <div class="card-body p-0 table-responsive">
+                <div class="card-body table-responsive">
                     @if ($valuablesStolen->isEmpty())
                         <p class="text-center text-muted my-3">No stolen valuables awaiting sale.</p>
                     @else

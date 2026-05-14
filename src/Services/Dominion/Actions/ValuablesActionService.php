@@ -104,7 +104,7 @@ class ValuablesActionService
         DB::transaction(function () use ($valuable, $hours, $spiesNeeded) {
             // Start now; round only the completion time to a tick boundary.
             $startTime = now();
-            $endTime = now()->copy()->startOfHour()->addHour()->addHours($hours);
+            $endTime = now()->copy()->startOfHour()->addHours($hours);
 
             $valuable->spies_assigned = $spiesNeeded;
             $valuable->status = Valuable::STATUS_INVESTIGATING;
