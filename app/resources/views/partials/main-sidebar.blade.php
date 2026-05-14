@@ -220,11 +220,11 @@
                             <i class="nav-icon fa fa-user-secret fa-fw"></i>
                             <p>
                                 Espionage
+                                @if (($valuablesStolenCount ?? 0) > 0)
+                                    <span class="badge bg-success">{{ $valuablesStolenCount }}</span>
+                                @endif
                                 @if (($valuablesDiscoveredCount ?? 0) > 0)
                                     <span class="badge bg-primary">{{ $valuablesDiscoveredCount }}</span>
-                                @endif
-                                @if (($valuablesStolenCount ?? 0) > 0)
-                                    <span class="badge bg-info">{{ $valuablesStolenCount }}</span>
                                 @endif
                             </p>
                         </a>

@@ -11,49 +11,49 @@
                     <span class="card-title"><i class="ra ra-gem"></i> Round History</span>
                 </div>
 
-                @if ($history->isEmpty())
-                    <div class="card-body">
+                <div class="card-body table-responsive">
+                    @if ($history->isEmpty())
                         <p class="text-center text-muted my-3">No completed valuables in this round yet.</p>
-                    </div>
-                @else
-                    <table class="table table-sm mb-0">
-                        <thead>
-                            <tr>
-                                <th>Completed</th>
-                                <th>Valuable</th>
-                                <th>Target</th>
-                                <th>Result</th>
-                                <th>Sale Price</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($history as $valuable)
-                                @php
-                                    $statusLabel = match ($valuable->status) {
-                                        \OpenDominion\Models\Valuable::STATUS_SOLD => 'Sold',
-                                        \OpenDominion\Models\Valuable::STATUS_EXPIRED => 'Expired',
-                                        \OpenDominion\Models\Valuable::STATUS_FAILED => 'Theft Failed',
-                                        default => ucfirst($valuable->status),
-                                    };
-                                    $resultLabel = $valuable->status === \OpenDominion\Models\Valuable::STATUS_SOLD ? 'Success' : 'Failed';
-                                    $resultClass = $valuable->status === \OpenDominion\Models\Valuable::STATUS_SOLD ? 'text-success' : 'text-danger';
-                                @endphp
+                    @else
+                        <table class="table table-sm mb-0">
+                            <thead>
                                 <tr>
-                                    <td>{{ $valuable->updated_at->diffForHumans() }}</td>
-                                    <td>
-                                        <strong>{{ $valuable->name }}</strong><br>
-                                        <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
-                                    </td>
-                                    <td>{{ optional($valuable->targetDominion)->name ?? '—' }}</td>
-                                    <td class="{{ $resultClass }}">{{ $resultLabel }}</td>
-                                    <td>{{ $valuable->sold_price !== null ? number_format($valuable->sold_price) . 'p' : '—' }}</td>
-                                    <td>{{ $statusLabel }}</td>
+                                    <th>Completed</th>
+                                    <th>Valuable</th>
+                                    <th>Target</th>
+                                    <th>Result</th>
+                                    <th>Sale Price</th>
+                                    <th>Status</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
+                            </thead>
+                            <tbody>
+                                @foreach ($history as $valuable)
+                                    @php
+                                        $statusLabel = match ($valuable->status) {
+                                            \OpenDominion\Models\Valuable::STATUS_SOLD => 'Sold',
+                                            \OpenDominion\Models\Valuable::STATUS_EXPIRED => 'Expired',
+                                            \OpenDominion\Models\Valuable::STATUS_FAILED => 'Theft Failed',
+                                            default => ucfirst($valuable->status),
+                                        };
+                                        $resultLabel = $valuable->status === \OpenDominion\Models\Valuable::STATUS_SOLD ? 'Success' : 'Failed';
+                                        $resultClass = $valuable->status === \OpenDominion\Models\Valuable::STATUS_SOLD ? 'text-success' : 'text-danger';
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $valuable->updated_at }}</td>
+                                        <td>
+                                            <strong>{{ $valuable->name }}</strong><br>
+                                            <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
+                                        </td>
+                                        <td>{{ optional($valuable->targetDominion)->name ?? '—' }}</td>
+                                        <td class="{{ $resultClass }}">{{ $resultLabel }}</td>
+                                        <td>{{ $valuable->sold_price !== null ? number_format($valuable->sold_price) . 'p' : '—' }}</td>
+                                        <td>{{ $statusLabel }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
             </div>
         </div>
 

@@ -226,18 +226,18 @@
                                             @if ($valuable->status === \OpenDominion\Models\Valuable::STATUS_INVESTIGATING)
                                                 <form action="{{ route('dominion.valuables.cancel', $valuable->id) }}" method="post" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
                                                 </form>
                                             @elseif ($valuable->is_listed)
                                                 <form action="{{ route('dominion.valuables.unlist', $valuable->id) }}" method="post" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Unlist</button>
+                                                    <button type="submit" class="btn btn-sm btn-secondary">Unlist</button>
                                                 </form>
                                             @else
                                                 <a href="{{ route('dominion.valuables.investigate', $valuable->id) }}" class="btn btn-sm btn-primary">Investigate</a>
                                                 <form action="{{ route('dominion.valuables.list', $valuable->id) }}" method="post" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-outline-info">Offer ({{ number_format($valuablesHelper->getTransferPrice($valuable)) }}p)</button>
+                                                    <button type="submit" class="btn btn-sm btn-success">Offer ({{ number_format($valuablesHelper->getTransferPrice($valuable)) }}p)</button>
                                                 </form>
                                             @endif
                                         </td>
