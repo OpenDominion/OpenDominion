@@ -203,6 +203,7 @@ class ValuablesController extends AbstractDominionController
                 'totalPlatinumEarned' => $totalPlatinumEarned,
                 'successRate' => $successRate,
             ],
+            'valuablesHelper' => app(ValuablesHelper::class),
         ]);
     }
 }

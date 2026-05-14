@@ -58,7 +58,7 @@
                                     <tr>
                                         <td>{{ $valuable->sourceDominion->name }}</td>
                                         <td>
-                                            <strong>{{ $valuable->name }}</strong><br>
+                                            <strong class="{{ $valuablesHelper->getRarityClass($valuable->rarity) }}">{{ $valuable->name }}</strong><br>
                                             <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
                                         </td>
                                         <td>{{ $valuable->targetDominion->name }}</td>

@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title">
                         <i class="ra ra-gem"></i>
-                        Investigate: {{ $valuable->name }}
+                        Investigate: <span class="{{ $valuablesHelper->getRarityClass($valuable->rarity) }}">{{ $valuable->name }}</span>
                     </span>
                 </div>
                 <div class="card-body">

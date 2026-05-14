@@ -63,6 +63,7 @@ class ValuablesHelper
         return [
             self::RARITY_COMMON => [
                 'label'                => 'Common',
+                'class'                => 'text-muted',
                 'spy_hours_multiplier' => 0.5,
                 'base_value_min'       => 5000,
                 'base_value_max'       => 10000,
@@ -70,6 +71,7 @@ class ValuablesHelper
             ],
             self::RARITY_UNCOMMON => [
                 'label'                => 'Uncommon',
+                'class'                => 'text-body-emphasis',
                 'spy_hours_multiplier' => 1.0,
                 'base_value_min'       => 10000,
                 'base_value_max'       => 25000,
@@ -77,6 +79,7 @@ class ValuablesHelper
             ],
             self::RARITY_RARE => [
                 'label'                => 'Rare',
+                'class'                => 'text-light-blue',
                 'spy_hours_multiplier' => 2.0,
                 'base_value_min'       => 25000,
                 'base_value_max'       => 50000,
@@ -84,6 +87,7 @@ class ValuablesHelper
             ],
             self::RARITY_EPIC => [
                 'label'                => 'Epic',
+                'class'                => 'text-purple',
                 'spy_hours_multiplier' => 3.0,
                 'base_value_min'       => 50000,
                 'base_value_max'       => 100000,
@@ -91,6 +95,7 @@ class ValuablesHelper
             ],
             self::RARITY_LEGENDARY => [
                 'label'                => 'Legendary',
+                'class'                => 'text-orange',
                 'spy_hours_multiplier' => 5.0,
                 'base_value_min'       => 100000,
                 'base_value_max'       => 250000,
@@ -213,6 +218,14 @@ class ValuablesHelper
         $total = max(1, $valuable->investigation_started_at->diffInSeconds($valuable->investigation_ends_at));
 
         return min(100.0, ($elapsed / $total) * 100);
+    }
+
+    /**
+     * Returns the CSS text-color class used to color-code a valuable by rarity.
+     */
+    public function getRarityClass(string $rarity): string
+    {
+        return self::getRarityConfig()[$rarity]['class'] ?? '';
     }
 
     /**
