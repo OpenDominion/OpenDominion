@@ -16,7 +16,7 @@ class SendQueueBusyAlert
     public function handle(QueueBusy $event): void
     {
         Mail::raw(
-            "Queue '{$event->queue}' on connection '{$event->connection}' has {$event->size} pending jobs.",
+            "Queue '{$event->queue}' on connection '{$event->connectionName}' has {$event->size} pending jobs.",
             function ($message) {
                 $message->to('info@opendominion.net')
                     ->subject('OpenDominion queue backlog alert');
