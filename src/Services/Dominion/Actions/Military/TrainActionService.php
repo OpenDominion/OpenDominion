@@ -88,6 +88,14 @@ class TrainActionService
 
             $unitType = str_replace('military_', '', $unitType);
 
+            if (Str::startsWith($unitType, 'unit')) {
+                $slot = (int)Str::after($unitType, 'unit');
+                $unit = $dominion->race->units->firstWhere('slot', $slot);
+                if ($unit !== null && $unit->getPerkValue('not_trainable')) {
+                    throw new GameException("{$unit->name}s cannot be trained directly.");
+                }
+            }
+
             $costs = $trainingCostsPerUnit[$unitType];
 
             foreach ($costs as $costType => $costAmount) {

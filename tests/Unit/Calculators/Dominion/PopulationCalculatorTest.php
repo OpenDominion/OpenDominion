@@ -115,6 +115,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         // Mock dominion race methods
         $mockRace = m::mock();
         $mockRace->shouldReceive('getPerkValue')->with('extra_barren_max_population')->andReturn(2);
+        $mockRace->shouldReceive('getPerkValue')->with('home_housing')->andReturn(0);
         $this->dominion->shouldReceive('getAttribute')->with('race')->andReturn($mockRace);
 
         // Mock dominion tech/wonder methods
