@@ -1,13 +1,13 @@
 @if (isset($selectedDominion) && $protectionService->isUnderProtection($selectedDominion))
     <div class="alert alert-info small text-center border-0 rounded-0 mb-0">
-        <div class="row">
-            <div class="col-2 text-start">
+        <div class="row g-2 align-items-center">
+            <div class="col-2 text-center text-sm-start">
                 @if ($selectedDominion->protection_ticks_remaining <= $selectedDominion->protection_ticks)
-                    <a href="{{ route('dominion.misc.undo-tick') }}" class="btn btn-sm btn-danger disable-after-click" style="margin-right: 20px;">
+                    <a href="{{ route('dominion.misc.undo-tick') }}" class="btn btn-sm btn-danger py-0 disable-after-click">
                         &laquo; Undo
                     </a>
                 @else
-                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-sm btn-primary" style="margin-right: 20px;">
+                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-sm btn-primary py-0">
                         Import
                     </a>
                 @endif
@@ -19,26 +19,32 @@
                 @else
                     Protection Hour {{ $selectedDominion->protection_ticks - $selectedDominion->protection_ticks_remaining + 1 }}
                 @endif
-                @if (!$selectedDominion->isBuildingPhase())
-                    <span class="text-nowrap">
-                        @if ($selectedDominion->protection_ticks_remaining > 0)
-                            @if ($selectedDominion->protection_type !== 'quick' || $selectedDominion->protection_ticks_remaining <= 12)
-                                ({{ $selectedDominion->protection_ticks_remaining }} ticks remaining)
-                            @endif
-                        @else
-                            - <b>{{ $protectionService->getUnderProtectionHoursLeft($selectedDominion) }}</b> hours remaining
-                        @endif
-                    </span>
-                @endif
             </div>
-            <div class="col-2 text-end">
+            <div class="col-2 text-center text-sm-end">
                 @if (!$selectedDominion->protection_finished)
-                    <a href="{{ route('dominion.misc.tick') }}" class="btn btn-sm btn-primary disable-after-click">
+                    <a href="{{ route('dominion.misc.tick') }}" class="btn btn-sm btn-primary py-0 disable-after-click">
                         Next &raquo;
                     </a>
                 @endif
             </div>
         </div>
+        @if (!$selectedDominion->isBuildingPhase())
+            @if ($selectedDominion->protection_ticks_remaining > 0)
+                @if ($selectedDominion->protection_type !== 'quick' || $selectedDominion->protection_ticks_remaining <= 12)
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <span class="text-nowrap">({{ $selectedDominion->protection_ticks_remaining }} ticks remaining)</span>
+                        </div>
+                    </div>
+                @endif
+            @else
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <span class="text-nowrap"><b>{{ $protectionService->getUnderProtectionHoursLeft($selectedDominion) }}</b> hours remaining</span>
+                    </div>
+                </div>
+            @endif
+        @endif
         @if ($selectedDominion->protection_ticks_remaining > $selectedDominion->protection_ticks)
             <div class="row">
                 <div class="col-md-12 text-center">
@@ -94,7 +100,7 @@
             @if ($selectedDominion->protection_ticks_remaining == 0 && !$selectedDominion->protection_finished)
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        This is your last change to go back and change anything before leaving protection.
+                        This is your last chance to go back and change anything before leaving protection.
                         <br/>Don't forget to select a hero.
                     </div>
                 </div>
