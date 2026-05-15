@@ -29,7 +29,7 @@
                                     <th>Unit</th>
                                     <th class="text-center">OP / DP</th>
                                     <th class="text-center">Trained</th>
-                                    <th class="text-center">Training</th>
+                                    <th class="text-center">Incoming</th>
                                     <th class="text-center">Cost Per Unit</th>
                                     <th class="text-center">Max Trainable</th>
                                     <th class="text-center">Train</th>

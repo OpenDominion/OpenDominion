@@ -30,8 +30,8 @@
                                     <th>Terrain</th>
                                     <th class="text-center">Owned</th>
                                     <th class="text-center">Barren</th>
-                                    <th class="text-center">Exploring</th>
-                                    <th class="text-center">Explore For</th>
+                                    <th class="text-center">Incoming</th>
+                                    <th class="text-center">Explore</th>
                                 </tr>
                             </thead>
                             <tbody>

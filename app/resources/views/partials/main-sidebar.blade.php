@@ -45,7 +45,7 @@
                                 @if (!$selectedDominion->daily_land)
                                     <span class="badge text-bg-primary ">L</span>
                                 @endif
-                                @if ($selectedDominion->daily_platinum)
+                                @if (!$selectedDominion->daily_platinum)
                                     <span class="badge text-bg-primary ">P</span>
                                 @endif
                             </p>
@@ -203,14 +203,14 @@
                         <a href="{{ route('dominion.magic') }}" class="nav-link {{ Route::is('dominion.magic') ? 'active' : null }}">
                             <i class="nav-icon ra ra-fairy-wand ra-fw"></i>
                             <p>Magic
-                                @if ($activeSelfSpells > 0)
-                                    <span class="badge bg-primary ">{{ $activeSelfSpells }}</span>
+                                @if ($activeFriendlySpells > 0)
+                                    <span class="badge bg-success ">{{ $activeFriendlySpells }}</span>
                                 @endif
                                 @if ($activeHostileSpells > 0)
                                     <span class="badge bg-danger ">{{ $activeHostileSpells }}</span>
                                 @endif
-                                @if ($activeFriendlySpells > 0)
-                                    <span class="badge bg-success ">{{ $activeFriendlySpells }}</span>
+                                @if ($activeSelfSpells > 0)
+                                    <span class="badge bg-primary ">{{ $activeSelfSpells }}</span>
                                 @endif
                             </p>
                         </a>
@@ -236,11 +236,11 @@
                         <a href="{{ route('dominion.bounty-board') }}" class="nav-link {{ Route::is('dominion.bounty-board') ? 'active' : null }}">
                             <i class="nav-icon ra ra-hanging-sign ra-fw"></i>
                             <p>Bounty Board
-                                @if ($activeBounties > 0)
-                                    <span class="badge text-bg-primary ">{{ $activeBounties }}</span>
-                                @endif
                                 @if ($postedBounties > 0)
                                     <span class="badge bg-primary ">{{ $postedBounties }}</span>
+                                @endif
+                                @if ($activeBounties > 0)
+                                    <span class="badge text-bg-primary ">{{ $activeBounties }}</span>
                                 @endif
                             </p>
                         </a>
