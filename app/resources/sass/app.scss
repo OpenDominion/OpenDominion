@@ -130,12 +130,15 @@ a {
 
 .app-header {
   line-height: 2;
-  flex-wrap: nowrap;
 
   > .container-fluid {
     flex-wrap: nowrap;
     min-width: 0;
   }
+}
+
+body:not(.layout-top-nav) .app-header {
+  flex-wrap: nowrap;
 }
 
 .navbar-tickers {
