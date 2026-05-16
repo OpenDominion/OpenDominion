@@ -183,6 +183,9 @@ class EspionageActionService
             if ($dominion->round->start_date->diffInHours(now()) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot discover valuables for the first three days of the round');
             }
+            if ($target->user_id == null) {
+                throw new GameException('You cannot steal valuables from bots');
+            }
             if ($this->valuablesService->isOnCooldown($dominion, $target)) {
                 throw new GameException('Your spies have already concluded a search of this dominion recently.');
             }

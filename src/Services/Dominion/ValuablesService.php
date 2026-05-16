@@ -190,6 +190,9 @@ class ValuablesService
      */
     protected function canDiscoverFrom(Dominion $attacker, Dominion $target): bool
     {
+        if ($target->user_id === null) {
+            return false;
+        }
         if ($attacker->id === $target->id) {
             return false;
         }
