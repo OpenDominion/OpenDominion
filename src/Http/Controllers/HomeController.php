@@ -21,24 +21,15 @@ class HomeController extends AbstractController
             return redirect()->route('dashboard');
         }
 
-        // Always assume last round is the most active one
         $currentRound = Round::query()
             ->with(['dominions', 'realms'])
             ->orderBy('created_at', 'desc')
             ->first();
 
-        $rankingsRound = $currentRound;
-
-        if ($currentRound !== null) {
-            $previousRoundNumber = $currentRound->number - 1;
-
-            if (!$currentRound->hasStarted() && $previousRoundNumber > 0) {
-                $rankingsRound = Round::query()
-                ->where('number', $previousRoundNumber)
-                ->orderBy('created_at', 'desc')
-                ->first();
-            }
-        }
+        $rankingsRound = Round::query()
+            ->where('start_date', '<=', now())
+            ->orderBy('start_date', 'desc')
+            ->first();
 
         $currentRankings = null;
         if ($rankingsRound !== null) {
