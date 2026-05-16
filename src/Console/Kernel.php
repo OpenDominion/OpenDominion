@@ -18,10 +18,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('game:tick')->hourlyAt(0);
         $schedule->command('game:ai')->hourlyAt(30);
 
-        $schedule->command('queue:monitor default --max=10')->hourlyAt(15);
-
-        $schedule->command('backup:clean')->dailyAt('01:20');
-        $schedule->command('backup:run')->dailyAt('01:40');
+        if (app()->environment('production')) {
+            $schedule->command('queue:monitor default --max=10')->hourlyAt(5);
+            $schedule->command('backup:clean')->dailyAt('01:20');
+            $schedule->command('backup:run')->dailyAt('01:40');
+        }
     }
 
     /**

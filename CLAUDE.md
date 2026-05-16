@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-OpenDominion is a PHP Laravel 8.x application - a free and open-source clone of the original Dominion browser-based fantasy war game. It's a persistent browser-based game (PBBG) where players manage dominions in realms and compete through military, magic, and espionage.
+OpenDominion is a PHP 8.5 / Laravel 13 application - a free and open-source clone of the original Dominion browser-based fantasy war game. It's a persistent browser-based game (PBBG) where players manage dominions in realms and compete through military, magic, and espionage.
+
+**Note on Laravel structure**: Despite running on Laravel 13, this app retains the legacy bootstrap layout — `bootstrap/app.php` binds custom kernels at `src/Http/Kernel.php` and `src/Console/Kernel.php` rather than using the streamlined `Application::configure()` pattern introduced in Laravel 11. Middleware is still registered in `src/Http/Kernel.php`; scheduled tasks are still in `src/Console/Kernel.php::schedule()`. The Laravel 12 advice in the boost guidelines below about `bootstrap/app.php` / `withMiddleware()` does **not** apply to this project.
 
 ## Architecture
 
