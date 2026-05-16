@@ -111,7 +111,7 @@ class ValuablesHelper
     public function selectRarity(Dominion $attacker, Dominion $target): string
     {
         $targetLand = $this->landCalculator->getTotalLand($target);
-        $landScore = max(0.0, min(1.0, ($targetLand - 500) / 7500));
+        $landScore = max(0.0, min(1.0, ($targetLand - 350) / 5650));
         $spyScore  = max(0.0, min(1.0, $this->militaryCalculator->getSpyRatio($target, 'defense')));
         $score = ($landScore + $spyScore) / 2;
         $rarityIndex = (int) round($score * 4);
