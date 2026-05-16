@@ -830,6 +830,10 @@ class TickService
     {
         DB::transaction(function () use ($dominions) {
             foreach ($dominions as $dominion) {
+                if ($this->spellCalculator->resolveSpellPerk($dominion, 'disable_unit_summoning') > 0) {
+                    continue;
+                }
+
                 foreach ($dominion->race->units as $sourceUnit) {
                     $perkValue = $sourceUnit->getPerkValue('summons_unit');
                     if (!$perkValue) {

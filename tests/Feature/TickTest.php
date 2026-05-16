@@ -342,6 +342,53 @@ class TickTest extends AbstractBrowserKitTestCase
         ]);
     }
 
+    /**
+     * Planar Focus halts Elemental/Golem summoning while active.
+     */
+    public function testPlanarFocusHaltsSummoning()
+    {
+        $dominion = $this->preparePlanewalkerDominion([
+            'military_unit1' => 0,
+            'military_unit4' => 60,
+            'resource_mana' => 99999,
+        ]);
+
+        $this->app->make(SpellActionService::class)->castSpell($dominion, 'planar_focus');
+        $dominion->refresh();
+
+        app(TickService::class)->performTick($dominion->round);
+
+        $this->dontSeeInDatabase('dominion_queue', [
+            'dominion_id' => $dominion->id,
+            'source' => 'training',
+            'resource' => 'military_unit1',
+        ]);
+    }
+
+    /**
+     * Planar Focus adds raw research point production scaled to total land while active.
+     */
+    public function testPlanarFocusAddsResearchPointsPerAcre()
+    {
+        $dominion = $this->preparePlanewalkerDominion([
+            'resource_mana' => 99999,
+            'building_school' => 0,
+        ]);
+
+        $productionCalculator = $this->app->make(ProductionCalculator::class);
+        $landCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\LandCalculator::class);
+
+        // Baseline: no schools, no active spells → 0 raw research.
+        $this->assertEquals(0, $productionCalculator->getTechProductionRaw($dominion));
+
+        $this->app->make(SpellActionService::class)->castSpell($dominion, 'planar_focus');
+        $dominion->refresh();
+
+        // 0.1 RP per acre of total land.
+        $expected = $landCalculator->getTotalLand($dominion) * 0.1;
+        $this->assertEquals($expected, $productionCalculator->getTechProductionRaw($dominion));
+    }
+
     private function preparePlanewalkerDominion(array $overrides)
     {
         $user = $this->createUser();

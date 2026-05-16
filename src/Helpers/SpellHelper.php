@@ -143,6 +143,7 @@ class SpellHelper
             'conversions_range' => 'Conversions increased by %d%% against dominions in The Graveyard under 75%% of your size',
             'convert_vampires' => 'Bloodreavers convert additional Kindred equal to %g%% of units sent (8.5%% below 75%% of your size)',
             'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
+            'disable_unit_summoning' => 'Halts all racial unit summoning',
             'kills_immortal' => 'Can kill immortal units',
             'ignore_draftees' => 'Enemy draftees do not participate in battle',
             'sacrifice_peasants' => 'Sacrifice %g%% of your peasants',
@@ -182,6 +183,7 @@ class SpellHelper
             'ore_production' => '%+g%% ore production',
             'platinum_production' => '%+g%% platinum production',
             'platinum_production_raw' => '%+d alchemy platinum production',
+            'tech_production_raw_per_acre' => 'Generates %+g research points per acre of land',
             'wizard_guilds_produce_military_unit3' => 'Each wizard guild produces %g Adepts per hour',
             'wizard_guild_mana_production_raw' => '%+g mana production from wizard guilds',
 

@@ -2,17 +2,16 @@ key: planewalker
 name: Planewalker
 alignment: evil
 description: >-
-  <p>Born of the cracks between worlds, Planewalkers are conduits of raw elemental and arcane force. Their dominion is less a settlement than a permeable membrane: shimmering rifts where Elementals and Golems are pulled bodily from other planes to serve the will of Summoners and Conjurers.</p>
-  <p>Because their populace is half-foreign by definition, traditional dwellings serve them poorly &mdash; Planewalker territory simply cannot hold as many souls as a mortal kingdom. What it lacks in mass it makes up for in summoned might: every Summoner kept at home keeps the rifts open, drawing Elementals into the world hour after hour.</p>
-attacker_difficulty: 3
-explorer_difficulty: 3
+  <p>Cunning and ancient, the Planewalkers are wanderers who travel between worlds, treating each plane as a medium to be shaped. Where others quarry stone or till the soil, they summon form from the elements themselves, raising silent guardians from root and earth and breathing purpose into wind and water.</p>
+  <p>Since much of their population is conjured rather than born to this world, traditional dwellings serve them poorly. Their numbers are sustained through ceaseless acts of will and those who tire often turn away from creation and instead listen to the whispers beyond, returning with unsettling truths and fragments of knowledge mortals were never meant to possess.</p>
+attacker_difficulty: 1
+explorer_difficulty: 1
 converter_difficulty: 3
 overall_difficulty: 3
 home_land_type: cavern
 perks:
-  max_population: -10
   home_housing: -5
-  barracks_housing: -6
+  barracks_housing: -10
 units:
   - name: Elemental
     cost:

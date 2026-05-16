@@ -779,6 +779,9 @@ class ProductionCalculator
         // Wonders
         $tech += $dominion->getWonderPerkValue('tech_production_raw');
 
+        // Spells
+        $tech += $totalLand * $this->spellCalculator->resolveSpellPerk($dominion, 'tech_production_raw_per_acre');
+
         return $tech;
     }
 

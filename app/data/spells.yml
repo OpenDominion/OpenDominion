@@ -449,6 +449,17 @@ nightfall:
     - nox
   perks:
     offense: 5
+planar_focus:
+  name: Planar Focus
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - planewalker
+  perks:
+    disable_unit_summoning: 1
+    tech_production_raw_per_acre: 0.1
 miasma:
   name: Miasma
   category: war
