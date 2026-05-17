@@ -183,7 +183,7 @@ class SpellHelper
             'ore_production' => '%+g%% ore production',
             'platinum_production' => '%+g%% platinum production',
             'platinum_production_raw' => '%+d alchemy platinum production',
-            'tech_production_raw_per_acre' => 'Generates %+g research points per acre of land',
+            'tech_production_raw_per_acre' => 'Generates %g research points per acre of land',
             'wizard_guilds_produce_military_unit3' => 'Each wizard guild produces %g Adepts per hour',
             'wizard_guild_mana_production_raw' => '%+g mana production from wizard guilds',
 
