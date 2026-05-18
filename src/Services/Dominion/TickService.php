@@ -923,14 +923,39 @@ class TickService
             }
         }
 
-        // Hacky refresh for dominion
-        $dominion->refresh()->load([
+        // Refresh attributes - guards against tick concurrency writing
+        // delta-style updates between the caller's request and this
+        // prediction running.
+        $freshRow = $dominion->newQueryWithoutScopes()->whereKey($dominion->id)->first();
+        if ($freshRow !== null) {
+            $dominion->setRawAttributes($freshRow->getAttributes());
+            $dominion->syncOriginal();
+        }
+
+        // Drop any cached volatile relations so we re-fetch fresh state. These
+        // can be mutated mid-request (spells cast, techs researched, hero XP,
+        // queues, wonder build/destroy) and the listener path operates on a
+        // clone that shares relation objects with the caller - unsetting first
+        // ensures the subsequent load doesn't mutate a shared instance.
+        foreach (['queues', 'spells', 'techs', 'hero', 'realm'] as $rel) {
+            $dominion->unsetRelation($rel);
+        }
+
+        $dominion->load([
+            'queues',
+            'spells', 'spells.perks',
+            'techs', 'techs.perks',
+            'hero', 'hero.upgrades',
+            'realm.wonders', 'realm.wonders.perks',
+        ]);
+
+        // Reference relations don't change mid-round; only fetch them if the
+        // caller didn't already eager-load them.
+        $dominion->loadMissing([
             'race',
             'race.perks',
             'race.units',
             'race.units.perks',
-            'techs',
-            'techs.perks',
         ]);
 
         // Active spells

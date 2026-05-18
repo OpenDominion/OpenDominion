@@ -45,7 +45,7 @@ class EspionageController extends AbstractDominionController
             $result = $espionageActionService->performOperation(
                 $dominion,
                 $request->get('operation'),
-                Dominion::findOrFail($request->get('target_dominion'))
+                Dominion::withGameRelations()->findOrFail($request->get('target_dominion'))
             );
         } catch (GameException $e) {
             return redirect()->back()

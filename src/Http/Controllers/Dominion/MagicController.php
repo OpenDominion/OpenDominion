@@ -45,7 +45,7 @@ class MagicController extends AbstractDominionController
             $result = $spellActionService->castSpell(
                 $dominion,
                 $request->get('spell'),
-                ($request->has('target_dominion') ? Dominion::findOrFail($request->get('target_dominion')) : null)
+                ($request->has('target_dominion') ? Dominion::withGameRelations()->findOrFail($request->get('target_dominion')) : null)
             );
         } catch (GameException $e) {
             return redirect()->back()
