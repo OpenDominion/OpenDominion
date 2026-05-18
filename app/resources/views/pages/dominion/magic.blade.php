@@ -116,7 +116,7 @@
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
                                                                 class="btn btn-primary btn-block hostile-spell"
-                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                             {{ $spell->name }}
                                                         </button>
                                                         <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
@@ -151,7 +151,7 @@
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
                                                                 class="btn btn-primary btn-block war-spell disabled"
-                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                             {{ $spell->name }}
                                                         </button>
                                                         <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
@@ -175,7 +175,7 @@
                                                                     name="spell"
                                                                     value="{{ $spell->key }}"
                                                                     class="btn btn-primary btn-block war-spell disabled"
-                                                                    {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                                    {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                                 {{ $spellHelper->getChaosSpellName($spell) }}
                                                             </button>
                                                             <p style="margin: 5px 0;">{{ $spellHelper->getChaosSpellDescription($spell) }}</p>
@@ -218,7 +218,7 @@
                                                                 name="spell"
                                                                 value="{{ $spell->key }}"
                                                                 class="btn btn-primary btn-block friendly-spell disabled"
-                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || $cooldownHours || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || $cooldownHours || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                             {{ $spell->name }}
                                                         </button>
                                                         <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
