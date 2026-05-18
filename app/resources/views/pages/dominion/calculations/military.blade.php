@@ -418,11 +418,11 @@
                         </div>
                     @endif
                 </div>
-                <div class="card-body table-responsive">
+                <div class="card-body">
                     <table class="table">
                         @if ($targetDominion !== null)
                             <thead>
-                                <tr class="target-dominion-dp" style="overflow-wrap: anywhere;">
+                                <tr class="target-dominion-dp">
                                     <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
                                 </tr>
                             </thead>
@@ -460,7 +460,7 @@
                     <div class="card-header">
                         <span class="card-title">Info Ops</span>
                     </div>
-                    <div class="card-body table-responsive">
+                    <div class="card-body">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
@@ -916,11 +916,11 @@
                 <div class="card-header">
                     <span class="card-title">Results</span>
                 </div>
-                <div class="card-body table-responsive">
+                <div class="card-body">
                     <table class="table">
                         @if ($targetDominion !== null)
                             <thead>
-                                <tr class="target-dominion-op" style="overflow-wrap: anywhere;">
+                                <tr class="target-dominion-op">
                                     <td colspan="2"><b>{{ $targetDominion->name }} (#{{ $targetDominion->realm->number }})</b></td>
                                 </tr>
                             </thead>
