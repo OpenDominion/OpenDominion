@@ -267,7 +267,7 @@
     background: rgba(0, 0, 0, 0.3);
     border-color: var(--od-border-accent);
   }
-  .app-header .ticker-lbl { color: var(--od-text-secondary); font-size: 0.75rem; }
+  .app-header .ticker-lbl { color: var(--od-text-secondary); }
   .app-header .ticker-val { color: var(--od-primary); }
   .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid rgba(199, 176, 120, 0.35); }
