@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title">
                         <i class="ra ra-castle-flag"></i> {{ $raid->name }} - Overall Leaderboard
-                    </h3>
+                    </span>
                     <div class="float-end">
                         {!! $raidHelper->getStatusLabel($raid->status) !!}
                     </div>

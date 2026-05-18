@@ -290,7 +290,7 @@ class Round extends AbstractModel
             return false;
         }
 
-        return $this->end_date->diffInHours(now()) < 15;
+        return now()->diffInHours($this->end_date) < 15;
     }
 
     /**

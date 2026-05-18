@@ -7,7 +7,7 @@
         <div class="card-header">
             <span class="card-title">
                 Dominions - {{ $round->name }}
-            </h3>
+            </span>
             <select id="round-select" class="form-select float-end">
                 @foreach ($rounds as $roundOption)
                     <option value="{{ $roundOption->id }}" {{ $roundOption->id == $round->id ? 'selected' : null }}>

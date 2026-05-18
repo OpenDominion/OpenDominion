@@ -376,6 +376,32 @@ class Dominion extends AbstractModel
         return $query->where('user_id', '!=', null);
     }
 
+    /**
+     * Eager-loads the relations used to resolve perks, units, spells, techs,
+     * and wonder effects on a Dominion. Use this whenever a Dominion is loaded
+     * outside of SelectorService (e.g. an action target) so downstream
+     * calculators and perk lookups don't lazy-load row by row.
+     */
+    public function scopeWithGameRelations(Builder $query): Builder
+    {
+        return $query->with([
+            'hero',
+            'hero.upgrades',
+            'queues',
+            'race',
+            'race.perks',
+            'race.units',
+            'race.units.perks',
+            'realm',
+            'realm.wonders',
+            'realm.wonders.perks',
+            'spells',
+            'spells.perks',
+            'techs',
+            'techs.perks',
+        ]);
+    }
+
     // Methods
 
     // todo: move to eloquent events, see $dispatchesEvents

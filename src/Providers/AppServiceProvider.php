@@ -7,7 +7,6 @@ use Cache;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Livewire\LivewireManager;
-use OpenDominion\Pulse\Livewire\QueryCountPerRoute as QueryCountPerRouteCard;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
@@ -33,6 +32,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Calculators\WonderCalculator;
+use OpenDominion\Pulse\Livewire\QueryCountPerRoute as QueryCountPerRouteCard;
 use OpenDominion\Services\AchievementService;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\CouncilService;
@@ -92,7 +92,7 @@ class AppServiceProvider extends AbstractServiceProvider
      */
     public function boot()
     {
-        Paginator::useBootstrap();
+        Paginator::useBootstrapFive();
         Schema::defaultStringLength(191);
 
         // Set Bugsnag app version

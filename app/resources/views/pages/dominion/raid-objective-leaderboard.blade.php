@@ -11,7 +11,7 @@
                     <span class="card-title">
                         <i class="ra ra-castle-flag"></i> {{ $objective->raid->name }}: {{ $objective->name }}
                         - Leaderboard
-                    </h3>
+                    </span>
                     <div class="float-end">
                         {!! $raidHelper->getStatusLabel($objective->status) !!}
                     </div>
