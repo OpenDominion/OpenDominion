@@ -6,6 +6,8 @@ use Bugsnag;
 use Cache;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Livewire\LivewireManager;
+use OpenDominion\Pulse\Livewire\QueryCountPerRoute as QueryCountPerRouteCard;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
@@ -101,6 +103,10 @@ class AppServiceProvider extends AbstractServiceProvider
         // Register @vite Blade directive for Laravel 8 (native support added in Laravel 9.1)
         Blade::directive('vite', function ($expression) {
             return "<?php echo \\OpenDominion\\Helpers\\ViteHelper::tags($expression); ?>";
+        });
+
+        $this->callAfterResolving('livewire', function (LivewireManager $livewire) {
+            $livewire->component('pulse.query-count-per-route', QueryCountPerRouteCard::class);
         });
     }
 
