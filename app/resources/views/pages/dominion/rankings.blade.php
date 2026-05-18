@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title">
                         <i class="fa fa-trophy"></i> Rankings
-                    </h3>
+                    </span>
                     <select id="ranking-select" class="form-select float-end">
                         @foreach ($rankings as $ranking)
                             <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>

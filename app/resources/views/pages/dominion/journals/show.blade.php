@@ -42,7 +42,7 @@
                     <div class="card-header">
                         <span class="card-title">
                             Day {{ $journal->daysInRound() }}, Hour {{ $journal->hoursInDay() }}
-                        </h3>
+                        </span>
                         <div class="card-tools float-end">
                             <a href="{{ route('dominion.journal.delete', $journal->id) }}">
                                 <i class="fa fa-trash text-red"></i>

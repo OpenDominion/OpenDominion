@@ -202,7 +202,7 @@
                 <div class="col-md-12">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</h3>
+                            <span class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</span>
                         </div>
 
                         <div class="card-body">
