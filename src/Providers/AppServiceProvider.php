@@ -92,7 +92,7 @@ class AppServiceProvider extends AbstractServiceProvider
      */
     public function boot()
     {
-        Paginator::useBootstrap();
+        Paginator::useBootstrapFive();
         Schema::defaultStringLength(191);
 
         // Set Bugsnag app version
