@@ -157,7 +157,7 @@ class SpellCalculator
                 ->take(1)
                 ->first();
             if ($spellLastCast) {
-                $hoursSinceCast = (int) now()->startOfHour()->diffInHours(Carbon::parse($spellLastCast->created_at)->startOfHour());
+                $hoursSinceCast = (int) Carbon::parse($spellLastCast->created_at)->startOfHour()->diffInHours(now()->startOfHour());
                 if ($hoursSinceCast < $spell->cooldown) {
                     return $spell->cooldown - $hoursSinceCast;
                 }
