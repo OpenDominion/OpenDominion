@@ -206,7 +206,7 @@ class NotificationHelper
                 'label' => 'A realmie purchased one of your listed valuables',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'route' => route('dominion.espionage'),
-                'iconClass' => 'ra ra-gem text-green',
+                'iconClass' => 'ra ra-gold-bar text-green',
             ],
 //            'scripted' => [
 //                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
