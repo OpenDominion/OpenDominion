@@ -153,6 +153,19 @@ body:not(.layout-top-nav) .app-header {
   @media (max-width: 575.98px) {
     margin-right: 0;
   }
+
+  .ticker-lbl-short {
+    display: none;
+  }
+
+  @media (max-width: 399.98px) {
+    .ticker-lbl-full {
+      display: none;
+    }
+    .ticker-lbl-short {
+      display: inline;
+    }
+  }
 }
 
 .ticker {
