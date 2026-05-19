@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-primary">
                 <div class="card-header">
-                    <span class="card-title"><i class="ra ra-book"></i> {{ $raid->name }}</span>
+                    <span class="card-title"><i class="ra ra-book-cover"></i> {{ $raid->name }}</span>
                     <div class="float-end">
                         <a href="{{ route('dominion.raids') }}" class="btn btn-sm btn-secondary">
                             <i class="fa fa-arrow-left"></i> Back to Raids
