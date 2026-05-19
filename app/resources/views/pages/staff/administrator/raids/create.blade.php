@@ -29,8 +29,22 @@
                         <div class="mb-3">
                             <label for="description">Description *</label>
                             <textarea name="description" id="description" class="form-control" rows="4" required>{{ old('description') }}</textarea>
+                            <small class="text-muted">Short framing shown on the raids page. Plain text — newlines convert to &lt;br/&gt;.</small>
                             @if ($errors->has('description'))
                                 <span class="form-text text-red">{{ $errors->first('description') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="extended_description">Extended Description</label>
+                            <textarea name="extended_description" id="extended_description" class="form-control" rows="15">{{ old('extended_description') }}</textarea>
+                            <small class="text-muted">Optional long-form story rendered on its own page. Accepts raw HTML — use &lt;p&gt;, &lt;h2&gt;, &lt;h3&gt;, &lt;hr/&gt;, &lt;em&gt;, etc.</small>
+                            @if ($errors->has('extended_description'))
+                                <span class="form-text text-red">{{ $errors->first('extended_description') }}</span>
                             @endif
                         </div>
                     </div>

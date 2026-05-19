@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $round_id
  * @property string $name
  * @property string $description
+ * @property string|null $extended_description
  * @property string $reward_resource
  * @property int $reward_amount
  * @property string $completion_reward_resource
@@ -31,6 +32,7 @@ class Raid extends AbstractModel
         'round_id',
         'name',
         'description',
+        'extended_description',
         'reward_resource',
         'reward_amount',
         'completion_reward_resource',
