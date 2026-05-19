@@ -31,6 +31,13 @@
                                     <div class="row mb-3">
                                         <div class="col-md-12">
                                             {!! $raid->description !!}
+                                            @if ($raid->extended_description)
+                                                <div class="mt-3">
+                                                    <a href="{{ route('dominion.raids.story', [$raid->id]) }}">
+                                                        <i class="ra ra-book-cover"></i> Read the full story...
+                                                    </a>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="row mb-3">
