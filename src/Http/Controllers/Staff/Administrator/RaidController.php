@@ -72,8 +72,8 @@ class RaidController extends AbstractController
             'extended_description' => 'nullable|string',
             'reward_resource' => 'required|string',
             'reward_amount' => 'required|integer|min:0',
-            'completion_reward_resource' => 'nullable|string',
-            'completion_reward_amount' => 'nullable|integer|min:0',
+            'completion_reward_resource' => 'required|string',
+            'completion_reward_amount' => 'required|integer|min:0',
             'start_day' => 'required|integer|min:1',
             'end_day' => 'required|integer|min:1|gt:start_day',
         ]);
@@ -134,8 +134,8 @@ class RaidController extends AbstractController
             'extended_description' => 'nullable|string',
             'reward_resource' => 'required|string',
             'reward_amount' => 'required|integer|min:0',
-            'completion_reward_resource' => 'nullable|string',
-            'completion_reward_amount' => 'nullable|integer|min:0',
+            'completion_reward_resource' => 'required|string',
+            'completion_reward_amount' => 'required|integer|min:0',
             'start_day' => 'required|integer|min:1',
             'end_day' => 'required|integer|min:1|gt:start_day',
         ]);

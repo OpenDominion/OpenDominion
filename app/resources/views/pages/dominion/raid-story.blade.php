@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-body raid-story">
                     @if ($raid->extended_description)
-                        {!! $raid->extended_description !!}
+                        {!! Str::markdown($raid->extended_description) !!}
                     @else
                         {!! $raid->description !!}
                     @endif
@@ -26,7 +26,7 @@
         <div class="col-sm-12 col-md-3">
             <div class="card card-secondary">
                 <div class="card-header">
-                    <span class="card-title">Chapters</span>
+                    <span class="card-title">Objectives</span>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0">
