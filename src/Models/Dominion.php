@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
@@ -382,16 +383,21 @@ class Dominion extends AbstractModel
      * outside of SelectorService (e.g. an action target) so downstream
      * calculators and perk lookups don't lazy-load row by row.
      */
+    public function scopeWithCachedRace(Builder $query): Builder
+    {
+        return $query->afterQuery(function ($dominions) {
+            foreach ($dominions as $dominion) {
+                $dominion->setRelation('race', Race::findWithRelationsCached($dominion->race_id));
+            }
+        });
+    }
+
     public function scopeWithGameRelations(Builder $query): Builder
     {
         return $query->with([
             'hero',
             'hero.upgrades',
             'queues',
-            'race',
-            'race.perks',
-            'race.units',
-            'race.units.perks',
             'realm',
             'realm.wonders',
             'realm.wonders.perks',
@@ -399,7 +405,7 @@ class Dominion extends AbstractModel
             'spells.perks',
             'techs',
             'techs.perks',
-        ]);
+        ])->withCachedRace();
     }
 
     // Methods
