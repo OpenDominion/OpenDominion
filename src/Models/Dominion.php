@@ -401,6 +401,7 @@ class Dominion extends AbstractModel
             'realm',
             'realm.wonders',
             'realm.wonders.perks',
+            'round',
             'spells',
             'spells.perks',
             'techs',

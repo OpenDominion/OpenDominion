@@ -4,11 +4,9 @@ namespace OpenDominion\Services\Dominion;
 
 use BadMethodCallException;
 use DB;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
-use Throwable;
 
 /**
  * Class QueueService
@@ -188,48 +186,30 @@ class QueueService
         $data = array_map('\intval', $data);
         $now = now();
 
+        $rows = [];
         foreach ($data as $resource => $amount) {
             if ($amount === 0) {
                 continue;
             }
-            $q = $this->getQueue($source, $dominion);
-            $existingQueueRow =
-                $q->filter(static function ($row) use ($resource, $hours) {
-                    return (
-                        ($row->resource === $resource) &&
-                        ((int)$row->hours === $hours)
-                    );
-                })->first();
-
-            if ($existingQueueRow === null) {
-                try {
-                    $dominion->queues()->insert([
-                        'dominion_id' => $dominion->id,
-                        'source' => $source,
-                        'resource' => $resource,
-                        'hours' => $hours,
-                        'amount' => $amount,
-                        'created_at' => $now,
-                    ]);
-                } catch(QueryException $e) {
-                    if ($e->getCode() == '23000') {
-                        $existingQueueRow = true;
-                    } else {
-                        throw $e;
-                    }
-                }
-            }
-
-            if ($existingQueueRow !== null) {
-                $dominion->queues()->where([
-                    'source' => $source,
-                    'resource' => $resource,
-                    'hours' => $hours,
-                ])->update([
-                    'amount' => DB::raw("amount + $amount"),
-                ]);
-            }
+            $rows[] = [
+                'dominion_id' => $dominion->id,
+                'source' => $source,
+                'resource' => $resource,
+                'hours' => $hours,
+                'amount' => $amount,
+                'created_at' => $now,
+            ];
         }
+
+        if (empty($rows)) {
+            return;
+        }
+
+        DB::table('dominion_queue')->upsert(
+            $rows,
+            ['dominion_id', 'source', 'resource', 'hours'],
+            ['amount' => DB::raw('dominion_queue.amount + values(amount)')]
+        );
     }
 
     /**
