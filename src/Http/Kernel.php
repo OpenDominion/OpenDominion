@@ -36,7 +36,6 @@ class Kernel extends HttpKernel
             Middleware\PreventRequestForgery::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
-            Middleware\UpdateUserLastOnline::class,
             Middleware\ShareSelectedDominion::class,
         ],
 
@@ -65,6 +64,7 @@ class Kernel extends HttpKernel
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'dominionselected' => \OpenDominion\Http\Middleware\DominionSelected::class,
+        'updatelastonline' => \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
         'guest' => \OpenDominion\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,

@@ -83,7 +83,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
         // Dominion
-        $router->group(['middleware' => 'dominionselected'], static function (Router $router) {
+        $router->group(['middleware' => ['dominionselected', 'updatelastonline']], static function (Router $router) {
 
             $router->get('/')->uses('Dominion\IndexController@getIndex');
 
