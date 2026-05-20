@@ -271,6 +271,13 @@ class Dominion extends AbstractModel
         return $this->hasMany(GameEvent::class, 'target_id', 'id')->where('target_type', Dominion::class);
     }
 
+    public function recentInvasions()
+    {
+        return $this->targetEvents()
+            ->where('type', 'invasion')
+            ->where('created_at', '>', now()->subHours(24));
+    }
+
     public function infoOps()
     {
         return $this->hasMany(InfoOp::class, 'target_dominion_id', 'id');
@@ -279,6 +286,14 @@ class Dominion extends AbstractModel
     public function history()
     {
         return $this->hasMany(Dominion\History::class);
+    }
+
+    public function recentSpellCasts()
+    {
+        return $this->history()
+            ->where('event', 'cast spell')
+            ->where('created_at', '>', now()->subHours(24))
+            ->orderByDesc('created_at');
     }
 
     public function hero()

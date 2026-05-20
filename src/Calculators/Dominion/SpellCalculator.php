@@ -2,8 +2,6 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-use DB;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Helpers\SpellHelper;
@@ -147,20 +145,18 @@ class SpellCalculator
      */
     public function getSpellCooldown(Dominion $dominion, Spell $spell): int
     {
+        if ($spell->cooldown !== null && $spell->cooldown <= 0) {
+            return 0;
+        }
 
-        if ($spell->cooldown > 0) {
-            $spellLastCast = DB::table('dominion_history')
-                ->where('dominion_id', $dominion->id)
-                ->where('event', 'cast spell')
-                ->where('delta', 'like', "%{$spell->key}%")
-                ->orderby('created_at', 'desc')
-                ->take(1)
-                ->first();
-            if ($spellLastCast) {
-                $hoursSinceCast = (int) Carbon::parse($spellLastCast->created_at)->startOfHour()->diffInHours(now()->startOfHour());
-                if ($hoursSinceCast < $spell->cooldown) {
-                    return $spell->cooldown - $hoursSinceCast;
-                }
+        $spellLastCast = $dominion->recentSpellCasts->first(function ($cast) use ($spell) {
+            return ($cast->delta['action'] ?? null) === $spell->key;
+        });
+
+        if ($spellLastCast) {
+            $hoursSinceCast = (int) $spellLastCast->created_at->startOfHour()->diffInHours(now()->startOfHour());
+            if ($hoursSinceCast < $spell->cooldown) {
+                return $spell->cooldown - $hoursSinceCast;
             }
         }
 
