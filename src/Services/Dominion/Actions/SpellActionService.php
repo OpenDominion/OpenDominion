@@ -306,7 +306,7 @@ class SpellActionService
                     'target_dominion_id' => $target->id
                 ]);
 
-                if ($dominion->fresh()->wizard_strength < 25) {
+                if (Dominion::query()->whereKey($dominion->id)->value('wizard_strength') < 25) {
                     throw new GameException('Your wizards have run out of strength');
                 }
 

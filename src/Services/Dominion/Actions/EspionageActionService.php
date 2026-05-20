@@ -277,7 +277,7 @@ class EspionageActionService
                 'target_dominion_id' => $target->id
             ]);
 
-            if ($dominion->fresh()->spy_strength < 25) {
+            if (Dominion::query()->whereKey($dominion->id)->value('spy_strength') < 25) {
                 throw new GameException('Your spies have run out of strength');
             }
 
