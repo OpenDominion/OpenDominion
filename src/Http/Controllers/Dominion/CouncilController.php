@@ -21,7 +21,12 @@ class CouncilController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $lastRead = $dominion->council_last_read;
-        $this->updateDominionCouncilLastRead($dominion);
+        $hasUnread = $dominion->realm->councilThreads()
+            ->where('last_activity', '>', $lastRead ?? $dominion->round->created_at)
+            ->exists();
+        if ($hasUnread) {
+            $this->updateDominionCouncilLastRead($dominion);
+        }
 
         if ($dominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);

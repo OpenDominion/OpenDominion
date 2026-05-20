@@ -23,7 +23,10 @@ class MessageBoardController extends AbstractController
     {
         $user = Auth::getUser();
         $lastRead = $user->message_board_last_read;
-        $this->updateMessageBoardLastRead($user);
+        $hasUnread = MessageBoard\Thread::where('last_activity', '>', $lastRead ?? $user->created_at)->exists();
+        if ($hasUnread) {
+            $this->updateMessageBoardLastRead($user);
+        }
 
         $messageBoardService = app(MessageBoardService::class);
         $categories = $messageBoardService->getCategories();
@@ -45,7 +48,10 @@ class MessageBoardController extends AbstractController
 
         $user = Auth::getUser();
         $lastRead = $user->message_board_last_read;
-        $this->updateMessageBoardLastRead($user);
+        $hasUnread = MessageBoard\Thread::where('last_activity', '>', $lastRead ?? $user->created_at)->exists();
+        if ($hasUnread) {
+            $this->updateMessageBoardLastRead($user);
+        }
 
         $messageBoardService = app(MessageBoardService::class);
         $threads = $messageBoardService->getThreads($category);
@@ -173,7 +179,11 @@ class MessageBoardController extends AbstractController
     public function getThread(MessageBoard\Thread $thread)
     {
         $user = Auth::getUser();
-        $this->updateMessageBoardLastRead($user);
+        $lastRead = $user->message_board_last_read;
+        $hasUnread = MessageBoard\Thread::where('last_activity', '>', $lastRead ?? $user->created_at)->exists();
+        if ($hasUnread) {
+            $this->updateMessageBoardLastRead($user);
+        }
 
         $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
 
@@ -354,7 +364,10 @@ class MessageBoardController extends AbstractController
 
     protected function updateMessageBoardLastRead(User $user): void
     {
-        $user->message_board_last_read = now();
-        $user->save();
+        DB::table('users')
+            ->where('id', $user->id)
+            ->update([
+                'message_board_last_read' => now()
+            ]);
     }
 }
