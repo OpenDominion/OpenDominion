@@ -70,6 +70,8 @@ class DataSyncCommand extends Command implements CommandInterface
             Cache::forget("game:race:{$id}");
         });
 
+        Cache::forget('game:spells');
+
         $this->info('Game data cache flushed.');
     }
 
