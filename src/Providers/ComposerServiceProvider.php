@@ -38,19 +38,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $user = Auth::getUser();
 
             $messageBoardLastRead = $user->message_board_last_read ?? $user->created_at;
-            $messageBoardUnreadCount = MessageBoard\Thread::query()
-                ->where('last_activity', '>', $messageBoardLastRead)
-                ->withCount(['posts' => function ($query) use ($messageBoardLastRead) {
-                    $query->where('created_at', '>', $messageBoardLastRead);
-                }])
-                ->get()
-                ->map(function ($thread) use ($messageBoardLastRead) {
-                    if ($thread->created_at > $messageBoardLastRead) {
-                        $thread['posts_count'] += 1;
-                    }
-                    return $thread;
-                })
-                ->sum('posts_count');
+            $messageBoardUnreadCount = MessageBoard\Thread::where('last_activity', '>', $messageBoardLastRead)->count();
             $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
 
             if (!$selectorService->hasUserSelectedDominion()) {
@@ -63,33 +51,13 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $councilLastRead = $selectedDominion->council_last_read ?? $selectedDominion->round->created_at;
             $councilUnreadCount = $selectedDominion->realm->councilThreads()
                 ->where('last_activity', '>', $councilLastRead)
-                ->withCount(['posts' => function ($query) use ($councilLastRead) {
-                    $query->where('created_at', '>', $councilLastRead);
-                }])
-                ->get()
-                ->map(function ($thread) use ($councilLastRead) {
-                    if ($thread->created_at > $councilLastRead) {
-                        $thread['posts_count'] += 1;
-                    }
-                    return $thread;
-                })
-                ->sum('posts_count');
+                ->count();
             $view->with('councilUnreadCount', $councilUnreadCount);
 
             $forumLastRead = $selectedDominion->forum_last_read ?? $selectedDominion->round->created_at;
             $forumUnreadCount = $selectedDominion->round->forumThreads()
                 ->where('last_activity', '>', $forumLastRead)
-                ->withCount(['posts' => function ($query) use ($forumLastRead) {
-                    $query->where('created_at', '>', $forumLastRead);
-                }])
-                ->get()
-                ->map(function ($thread) use ($forumLastRead) {
-                    if ($thread->created_at > $forumLastRead) {
-                        $thread['posts_count'] += 1;
-                    }
-                    return $thread;
-                })
-                ->sum('posts_count');
+                ->count();
             $view->with('forumUnreadCount', $forumUnreadCount);
 
             $activeSelfSpells = $selectedDominion->spells->where('category', 'self')->count();
