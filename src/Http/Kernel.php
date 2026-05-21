@@ -35,8 +35,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             Middleware\PreventRequestForgery::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-
-            Middleware\ShareSelectedDominion::class,
         ],
 
         'api' => [
@@ -45,8 +43,6 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-
-            Middleware\ShareSelectedDominion::class,
         ],
     ];
 
