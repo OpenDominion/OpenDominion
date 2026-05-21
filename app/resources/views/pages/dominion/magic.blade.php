@@ -35,10 +35,6 @@
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
 
-                                @php
-                                    $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
-                                @endphp
-
                                 <div class="card-body">
 
                                     <div class="row">

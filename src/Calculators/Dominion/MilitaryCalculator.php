@@ -1227,23 +1227,17 @@ class MilitaryCalculator
      */
     public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, bool $success_only = false, Dominion|null $attacker = null): int
     {
-        // todo: this touches the db. should probably be in invasion or military service instead
-        $invasionEvents = GameEvent::query()
-            ->where('created_at', '>', now()->subHours($hours)->endOfHour())
-            ->where([
-                'target_type' => Dominion::class,
-                'target_id' => $dominion->id,
-                'type' => 'invasion',
-            ])
-            ->get();
+        $cutoff = now()->subHours($hours)->endOfHour();
+
+        $invasionEvents = $dominion->recentInvasions
+            ->where('created_at', '>', $cutoff)
+            ->filter(function (GameEvent $event) {
+                return !$event->data['result']['overwhelmed'];
+            });
 
         if ($invasionEvents->isEmpty()) {
             return 0;
         }
-
-        $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
-            return !$event->data['result']['overwhelmed'];
-        });
 
         if ($success_only) {
             $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
@@ -1276,18 +1270,12 @@ class MilitaryCalculator
      */
     public function getRecentlyInvadedBy(Dominion $dominion, int $hours = 24): array
     {
-        // todo: this touches the db. should probably be in invasion or military service instead
-        $invasionEvents = GameEvent::query()
-            ->where('created_at', '>', now()->subHours($hours)->endOfHour())
-            ->where([
-                'target_type' => Dominion::class,
-                'target_id' => $dominion->id,
-                'type' => 'invasion',
-            ])
+        $cutoff = now()->subHours($hours)->endOfHour();
+
+        return $dominion->recentInvasions
+            ->where('created_at', '>', $cutoff)
             ->pluck('source_id')
             ->all();
-
-        return $invasionEvents;
     }
 
     /**
