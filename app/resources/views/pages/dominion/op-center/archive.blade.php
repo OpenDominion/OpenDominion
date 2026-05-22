@@ -74,15 +74,15 @@
 
                         @slot('boxFooter')
                             @if ($infoOp !== null)
-                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                 @if ($infoOp->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -155,15 +155,15 @@
 
                         @slot('boxFooter')
                             @if ($infoOp !== null)
-                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                 @if ($infoOp->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -182,15 +182,15 @@
 
                         @slot('boxFooter')
                             @if ($infoOp !== null)
-                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                 @if ($infoOp->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -211,15 +211,15 @@
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
-                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                        <br>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                         @if ($infoOp->isInvalid())
                                             <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
                                             <span class="badge text-bg-warning">Stale</span>
                                         @endif
-                                        <br>
-                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -256,15 +256,15 @@
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
-                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                        <br>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                         @if ($infoOp->isInvalid())
                                             <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
                                             <span class="badge text-bg-warning">Stale</span>
                                         @endif
-                                        <br>
-                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -298,15 +298,15 @@
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
-                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                        <br>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                         @if ($infoOp->isInvalid())
                                             <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
                                             <span class="badge text-bg-warning">Stale</span>
                                         @endif
-                                        <br>
-                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -393,15 +393,15 @@
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
-                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                        <br>
+                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                         @if ($infoOp->isInvalid())
                                             <span class="badge text-bg-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
                                             <span class="badge text-bg-warning">Stale</span>
                                         @endif
-                                        <br>
-                                        <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                        <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -482,15 +482,15 @@
 
                         @slot('boxFooter')
                             @if ($infoOp !== null)
-                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($infoOp->created_at) }}" data-bs-toggle="tooltip">{{ $infoOp->created_at }}</span> by {{ $infoOp->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                 @if ($infoOp->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent

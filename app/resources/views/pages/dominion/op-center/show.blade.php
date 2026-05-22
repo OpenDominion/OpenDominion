@@ -132,15 +132,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestClearSight !== null)
-                                <em>Revealed {{ $latestClearSight->created_at }} by {{ $latestClearSight->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestClearSight->created_at) }}" data-bs-toggle="tooltip">{{ $latestClearSight->created_at }}</span> by {{ $latestClearSight->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestClearSight->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestClearSight->created_at) }}</span>
                                 @if ($latestClearSight->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestClearSight->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestClearSight->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestClearSight->created_at) }}</span>
                             @endif
                         </div>
 
@@ -351,15 +351,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestRevelation !== null)
-                                <em>Revealed {{ $latestRevelation->created_at }} by {{ $latestRevelation->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestRevelation->created_at) }}" data-bs-toggle="tooltip">{{ $latestRevelation->created_at }}</span> by {{ $latestRevelation->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestRevelation->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestRevelation->created_at) }}</span>
                                 @if ($latestRevelation->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestRevelation->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestRevelation->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestRevelation->created_at) }}</span>
                             @endif
                         </div>
 
@@ -412,15 +412,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestCastle !== null)
-                                <em>Revealed {{ $latestCastle->created_at }} by {{ $latestCastle->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestCastle->created_at) }}" data-bs-toggle="tooltip">{{ $latestCastle->created_at }}</span> by {{ $latestCastle->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestCastle->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestCastle->created_at) }}</span>
                                 @if ($latestCastle->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestCastle->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestCastle->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestCastle->created_at) }}</span>
                             @endif
                         </div>
 
@@ -476,15 +476,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestBarracks !== null)
-                                <em>Revealed {{ $latestBarracks->created_at }} by {{ $latestBarracks->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestBarracks->created_at) }}" data-bs-toggle="tooltip">{{ $latestBarracks->created_at }}</span> by {{ $latestBarracks->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestBarracks->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestBarracks->created_at) }}</span>
                                 @if ($latestBarracks->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestBarracks->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestBarracks->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestBarracks->created_at) }}</span>
                             @endif
                         </div>
 
@@ -558,15 +558,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestSurvey !== null)
-                                <em>Revealed {{ $latestSurvey->created_at }} by {{ $latestSurvey->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestSurvey->created_at) }}" data-bs-toggle="tooltip">{{ $latestSurvey->created_at }}</span> by {{ $latestSurvey->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestSurvey->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestSurvey->created_at) }}</span>
                                 @if ($latestSurvey->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestSurvey->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestSurvey->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestSurvey->created_at) }}</span>
                             @endif
                         </div>
 
@@ -638,15 +638,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestLand !== null)
-                                <em>Revealed {{ $latestLand->created_at }} by {{ $latestLand->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestLand->created_at) }}" data-bs-toggle="tooltip">{{ $latestLand->created_at }}</span> by {{ $latestLand->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestLand->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestLand->created_at) }}</span>
                                 @if ($latestLand->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestLand->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestLand->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestLand->created_at) }}</span>
                             @endif
                         </div>
 
@@ -719,15 +719,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestVision !== null)
-                                <em>Revealed {{ $latestVision->created_at }} by {{ $latestVision->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestVision->created_at) }}" data-bs-toggle="tooltip">{{ $latestVision->created_at }}</span> by {{ $latestVision->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestVision->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestVision->created_at) }}</span>
                                 @if ($latestVision->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestVision->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestVision->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestVision->created_at) }}</span>
                             @endif
                         </div>
 
@@ -838,15 +838,15 @@
                     @slot('boxFooter')
                         <div class="float-start">
                             @if ($latestDisclosure !== null)
-                                <em>Revealed {{ $latestDisclosure->created_at }} by {{ $latestDisclosure->sourceDominion->name }}</em>
+                                <em>Revealed <span title="{{ $selectedDominion->round->getHoursSince($latestDisclosure->created_at) }}" data-bs-toggle="tooltip">{{ $latestDisclosure->created_at }}</span> by {{ $latestDisclosure->sourceDominion->name }}</em>
+                                <br>
+                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestDisclosure->created_at) }}</span>
+                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestDisclosure->created_at) }}</span>
                                 @if ($latestDisclosure->isInvalid())
                                     <span class="badge text-bg-danger">Invalid</span>
                                 @elseif ($latestDisclosure->isStale())
                                     <span class="badge text-bg-warning">Stale</span>
                                 @endif
-                                <br>
-                                <span class="badge text-bg-secondary">Day {{ $selectedDominion->round->daysInRound($latestDisclosure->created_at) }}</span>
-                                <span class="badge text-bg-secondary">Hour {{ $selectedDominion->round->hoursInDay($latestDisclosure->created_at) }}</span>
                             @endif
                         </div>
 

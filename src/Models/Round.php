@@ -370,7 +370,7 @@ class Round extends AbstractModel
         if ($datetime < $this->start_date) {
             return 1;
         }
-        return (int) $this->start_date->copy()->subDays(1)->diffInDays($datetime);
+        return (int) $this->start_date->diffInDays($datetime) + 1;
     }
 
     /**
@@ -397,6 +397,20 @@ class Round extends AbstractModel
     }
 
     /**
+     * Returns a human-readable "X hours ago" string for the specified date.
+     */
+    public function getHoursSince(Carbon $date): string
+    {
+        $hours = (int) $date->startOfHour()->diffInHours(now()->startOfHour());
+
+        return sprintf(
+            '%s %s ago',
+            $hours,
+            Str::of('hour')->plural($hours),
+        );
+    }
+
+    /**
      * Returns a tooltip for the specified date.
      */
     public function getDateTooltip(Carbon $date): string
@@ -408,12 +422,7 @@ class Round extends AbstractModel
         );
 
         if ($this->isActive()) {
-            $hours = (int) $date->startOfHour()->diffInHours(now()->startOfHour());
-            $tooltip .= sprintf(
-                '<br>(%s %s ago)',
-                $hours,
-                Str::of('hour')->plural($hours),
-            );
+            $tooltip .= sprintf('<br>(%s)', $this->getHoursSince($date));
         }
 
         return $tooltip;
