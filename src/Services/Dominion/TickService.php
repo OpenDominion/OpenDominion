@@ -372,8 +372,6 @@ class TickService
                 ]);
         }, 5);
 
-        $this->now = now();
-
         if ($tickAll) {
             Log::info(sprintf(
                 'Ticked %s dominions in %s ms in %s',
@@ -382,6 +380,8 @@ class TickService
                 $round->name
             ));
         }
+
+        $this->now = now();
 
         if ($tickAll) {
             $dominions = $round->activeDominions()
@@ -423,8 +423,6 @@ class TickService
             $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
         }
 
-        $this->now = now();
-
         if ($tickAll) {
             Log::info(sprintf(
                 'Cleaned up queues, sent notifications, and precalculated %s dominions in %s ms in %s',
@@ -433,6 +431,8 @@ class TickService
                 $round->name
             ));
         }
+
+        $this->now = now();
     }
 
     /**
