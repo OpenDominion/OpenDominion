@@ -256,7 +256,12 @@ class TickService
      */
     public function performTick(Round $round, Dominion|null $dominion = null)
     {
+        $tickAll = false;
         if ($dominion == null) {
+            $tickAll = true;
+        }
+
+        if ($tickAll) {
             $where = [
                 ['round_id', '=', $round->id],
                 ['protection_finished', '=', true],
@@ -369,7 +374,7 @@ class TickService
 
         $this->now = now();
 
-        if ($dominion == null) {
+        if ($tickAll) {
             Log::info(sprintf(
                 'Ticked %s dominions in %s ms in %s',
                 number_format($round->activeDominions->count()),
@@ -378,7 +383,7 @@ class TickService
             ));
         }
 
-        if ($dominion == null) {
+        if ($tickAll) {
             $dominions = $round->activeDominions()
                 ->with([
                     'queues',
@@ -420,7 +425,7 @@ class TickService
 
         $this->now = now();
 
-        if ($dominion == null) {
+        if ($tickAll) {
             Log::info(sprintf(
                 'Cleaned up queues, sent notifications, and precalculated %s dominions in %s ms in %s',
                 number_format($round->activeDominions->count()),
