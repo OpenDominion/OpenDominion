@@ -392,6 +392,7 @@ class TickService
                     'tick',
                     'user',
                 ])
+                ->withCachedRound()
                 ->get();
         } else {
             $dominions = collect([$dominion]);

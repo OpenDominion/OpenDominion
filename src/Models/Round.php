@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Cache;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +21,6 @@ use Illuminate\Support\Str;
  * @property bool $mixed_alignment
  * @property bool $assignment_complete
  * @property int $tech_version
- * @property int $valor
  * @property int|null $discord_guild_id
  * @property \Illuminate\Support\Carbon $start_date
  * @property \Illuminate\Support\Carbon $end_date
@@ -49,6 +49,24 @@ class Round extends AbstractModel
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(static function (Round $round): void {
+            Cache::forget("game:round:{$round->id}");
+        });
+
+        static::deleted(static function (Round $round): void {
+            Cache::forget("game:round:{$round->id}");
+        });
+    }
+
+    public static function findCached(int $id): Round
+    {
+        return Cache::rememberForever("game:round:{$id}", static function () use ($id) {
+            return Round::findOrFail($id);
+        });
+    }
 
     // Eloquent Relations
 

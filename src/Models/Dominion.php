@@ -407,6 +407,15 @@ class Dominion extends AbstractModel
         });
     }
 
+    public function scopeWithCachedRound(Builder $query): Builder
+    {
+        return $query->afterQuery(function ($dominions) {
+            foreach ($dominions as $dominion) {
+                $dominion->setRelation('round', Round::findCached($dominion->round_id));
+            }
+        });
+    }
+
     public function scopeWithGameRelations(Builder $query): Builder
     {
         return $query->with([
@@ -416,12 +425,11 @@ class Dominion extends AbstractModel
             'realm',
             'realm.wonders',
             'realm.wonders.perks',
-            'round',
             'spells',
             'spells.perks',
             'techs',
             'techs.perks',
-        ])->withCachedRace();
+        ])->withCachedRace()->withCachedRound();
     }
 
     // Methods

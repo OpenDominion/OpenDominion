@@ -186,7 +186,8 @@ class RangeCalculator
 
         // todo: this doesn't belong here since it touches the db. Move to RangeService?
         return $self->round->activeDominions()
-            ->with(['race', 'realm', 'realm.warsOutgoing', 'round'])
+            ->with(['race', 'realm', 'realm.warsOutgoing'])
+            ->withCachedRound()
             ->where(function ($query) {
                 $query->where('abandoned_at', null)->orWhere('abandoned_at', '>', now());
             })

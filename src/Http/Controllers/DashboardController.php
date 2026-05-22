@@ -15,7 +15,8 @@ class DashboardController extends AbstractController
         $selectorService = app(SelectorService::class);
         $selectorService->tryAutoSelectDominionForAuthUser();
 
-        $dominions = Dominion::with(['round', 'realm', 'race'])
+        $dominions = Dominion::with(['realm', 'race'])
+            ->withCachedRound()
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
