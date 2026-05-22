@@ -127,11 +127,7 @@
                                 @endphp
                                 <tr>
                                     <td>
-                                        @if ($selectedDominion->round->isActive())
-                                            <span class="text-muted" title="{{ $selectedDominion->round->getDateTooltip($notification->created_at) }}" data-bs-toggle="tooltip">{{ $notification->created_at }}</span>
-                                        @else
-                                            <span class="text-muted">{{ $notification->created_at }}</span>
-                                        @endif
+                                        <span class="text-muted">{{ $notification->created_at }}</span>
                                     </td>
                                     <td>
                                         @if ($route !== '#')<a href="{{ $route }}">@endif
