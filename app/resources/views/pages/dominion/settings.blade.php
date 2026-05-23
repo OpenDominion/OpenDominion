@@ -109,6 +109,13 @@
                                         </div>
                                     @endforeach
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Notifications:</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="hide_intel_for_sale_badge" id="hide_intel_for_sale_badge" {{ isset($selectedDominion->settings['hide_intel_for_sale_badge']) && $selectedDominion->settings['hide_intel_for_sale_badge'] == 'on' ? 'checked' : null }} />
+                                        <label class="form-check-label" for="hide_intel_for_sale_badge">Hide intel for sale badge on Valuables</label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">

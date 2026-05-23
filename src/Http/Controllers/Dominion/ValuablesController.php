@@ -11,6 +11,59 @@ use OpenDominion\Services\Dominion\Actions\ValuablesActionService;
 
 class ValuablesController extends AbstractDominionController
 {
+    public function getIndex()
+    {
+        $dominion = $this->getSelectedDominion();
+        $valuablesHelper = app(ValuablesHelper::class);
+        $militaryCalculator = app(MilitaryCalculator::class);
+
+        $valuablesDiscovered = Valuable::query()
+            ->where('source_dominion_id', $dominion->id)
+            ->whereIn('status', [
+                Valuable::STATUS_DISCOVERED,
+                Valuable::STATUS_INVESTIGATING,
+                Valuable::STATUS_LISTED_FOR_TRANSFER,
+                Valuable::STATUS_TRANSFERRED,
+            ])
+            ->with('targetDominion')
+            ->orderByDesc('discovered_at')
+            ->get();
+
+        $valuablesStolen = Valuable::query()
+            ->where('source_dominion_id', $dominion->id)
+            ->where('status', Valuable::STATUS_STOLEN)
+            ->with('targetDominion')
+            ->orderByDesc('stolen_at')
+            ->get();
+
+        $intelForSale = Valuable::query()
+            ->where('round_id', $dominion->round_id)
+            ->where('is_listed', true)
+            ->where('source_dominion_id', '!=', $dominion->id)
+            ->whereHas('sourceDominion', function ($q) use ($dominion) {
+                $q->where('realm_id', $dominion->realm_id);
+            })
+            ->with(['sourceDominion', 'targetDominion'])
+            ->orderByDesc('discovered_at')
+            ->get();
+
+        $availableSpies = $valuablesHelper->getAvailableSpies($dominion);
+        $activeInvestigations = Valuable::query()
+            ->where('source_dominion_id', $dominion->id)
+            ->where('status', Valuable::STATUS_INVESTIGATING)
+            ->count();
+
+        return view('pages.dominion.valuables', [
+            'valuablesDiscovered' => $valuablesDiscovered,
+            'valuablesStolen' => $valuablesStolen,
+            'intelForSale' => $intelForSale,
+            'valuablesHelper' => $valuablesHelper,
+            'availableSpies' => $availableSpies,
+            'spyStrength' => $dominion->spy_strength,
+            'activeInvestigations' => $activeInvestigations,
+        ]);
+    }
+
     public function getInvestigate(Valuable $valuable)
     {
         $dominion = $this->getSelectedDominion();
@@ -91,7 +144,7 @@ class ValuablesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-' . ($result['alert-type'] ?? 'success'), $result['message']);
-        return redirect()->route('dominion.espionage');
+        return redirect()->route('dominion.valuables');
     }
 
     public function postCancel(Request $request, Valuable $valuable)
@@ -106,7 +159,7 @@ class ValuablesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-' . ($result['alert-type'] ?? 'success'), $result['message']);
-        return redirect()->route('dominion.espionage');
+        return redirect()->route('dominion.valuables');
     }
 
     public function postSell(Request $request, Valuable $valuable)
@@ -121,7 +174,7 @@ class ValuablesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-' . ($result['alert-type'] ?? 'success'), $result['message']);
-        return redirect()->route('dominion.espionage');
+        return redirect()->route('dominion.valuables');
     }
 
     public function postList(Request $request, Valuable $valuable)
@@ -136,7 +189,7 @@ class ValuablesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-' . ($result['alert-type'] ?? 'success'), $result['message']);
-        return redirect()->back();
+        return redirect()->route('dominion.valuables');
     }
 
     public function postUnlist(Request $request, Valuable $valuable)
@@ -151,7 +204,7 @@ class ValuablesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-' . ($result['alert-type'] ?? 'success'), $result['message']);
-        return redirect()->back();
+        return redirect()->route('dominion.valuables');
     }
 
     public function postPurchase(Request $request, Valuable $valuable)
@@ -166,7 +219,7 @@ class ValuablesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-' . ($result['alert-type'] ?? 'success'), $result['message']);
-        return redirect()->route('dominion.bounty-board');
+        return redirect()->route('dominion.valuables');
     }
 
     public function getHistory()

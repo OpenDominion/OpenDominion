@@ -7,11 +7,9 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\InfoHelper;
-use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\BountyActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\ObserveActionRequest;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Valuable;
 use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -28,16 +26,6 @@ class BountyController extends AbstractDominionController
         $bounties = $bountyService->getBounties($dominion->realm);
         $bountiesCollected = $bountyService->getBountiesCollected($dominion);
 
-        $realmValuablesListed = Valuable::query()
-            ->where('round_id', $dominion->round_id)
-            ->where('is_listed', true)
-            ->whereHas('sourceDominion', function ($q) use ($dominion) {
-                $q->where('realm_id', $dominion->realm_id);
-            })
-            ->with(['sourceDominion', 'targetDominion'])
-            ->orderByDesc('discovered_at')
-            ->get();
-
         return view('pages.dominion.bounty-board', [
             'bountiesActive' => $bounties->where('active', true),
             'bountiesInactive' => $bounties->where('active', false),
@@ -46,8 +34,6 @@ class BountyController extends AbstractDominionController
             'guardMembershipService' => app(GuardMembershipService::class),
             'landCalculator' => app(LandCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class),
-            'realmValuablesListed' => $realmValuablesListed,
-            'valuablesHelper' => app(ValuablesHelper::class),
         ]);
     }
 

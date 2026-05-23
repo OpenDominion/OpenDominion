@@ -138,8 +138,17 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->where('source_dominion_id', $selectedDominion->id)
                 ->where('status', Valuable::STATUS_STOLEN)
                 ->count();
+            $intelForSaleCount = Valuable::query()
+                ->where('round_id', $selectedDominion->round_id)
+                ->where('is_listed', true)
+                ->where('source_dominion_id', '!=', $selectedDominion->id)
+                ->whereHas('sourceDominion', function ($q) use ($selectedDominion) {
+                    $q->where('realm_id', $selectedDominion->realm_id);
+                })
+                ->count();
             $view->with('valuablesDiscoveredCount', $valuablesDiscoveredCount);
             $view->with('valuablesStolenCount', $valuablesStolenCount);
+            $view->with('intelForSaleCount', $intelForSaleCount);
         });
 
         view()->composer('partials.main-footer', function (View $view) {

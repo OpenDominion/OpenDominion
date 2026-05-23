@@ -207,6 +207,10 @@ class ValuablesActionService
             throw new GameException('Only undiscovered or freshly-transferred valuables can be listed.');
         }
 
+        if ($valuable->transferred) {
+            throw new GameException('You cannot resell intel that was purchased from a realmmate.');
+        }
+
         if ($valuable->is_listed) {
             throw new GameException('That valuable is already listed.');
         }

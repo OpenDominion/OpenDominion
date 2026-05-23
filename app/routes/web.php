@@ -202,6 +202,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
             // Valuables
+            $router->get('valuables')->uses('Dominion\ValuablesController@getIndex')->name('valuables');
             $router->get('valuables/history')->uses('Dominion\ValuablesController@getHistory')->name('valuables.history');
             $router->get('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@getInvestigate')->name('valuables.investigate');
             $router->post('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@postInvestigate');

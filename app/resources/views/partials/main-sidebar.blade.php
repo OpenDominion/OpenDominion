@@ -215,16 +215,25 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item {{ Route::is('dominion.espionage') || Route::is('dominion.valuables.*') ? 'active' : null }}">
-                        <a href="{{ route('dominion.espionage') }}" class="nav-link {{ Route::is('dominion.espionage') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                    <li class="nav-item {{ Route::is('dominion.espionage') ? 'active' : null }}">
+                        <a href="{{ route('dominion.espionage') }}" class="nav-link {{ Route::is('dominion.espionage') ? 'active' : null }}">
                             <i class="nav-icon fa fa-user-secret fa-fw"></i>
+                            <p>Espionage</p>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Route::is('dominion.valuables') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                        <a href="{{ route('dominion.valuables') }}" class="nav-link {{ Route::is('dominion.valuables') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                            <i class="nav-icon ra ra-locked-chest ra-fw"></i>
                             <p>
-                                Espionage
+                                Valuables
+                                @if (($valuablesDiscoveredCount ?? 0) > 0)
+                                    <span class="badge bg-primary">{{ $valuablesDiscoveredCount }}</span>
+                                @endif
                                 @if (($valuablesStolenCount ?? 0) > 0)
                                     <span class="badge bg-success">{{ $valuablesStolenCount }}</span>
                                 @endif
-                                @if (($valuablesDiscoveredCount ?? 0) > 0)
-                                    <span class="badge bg-primary">{{ $valuablesDiscoveredCount }}</span>
+                                @if (($intelForSaleCount ?? 0) > 0 && ($selectedDominion->settings['hide_intel_for_sale_badge'] ?? null) != 'on')
+                                    <span class="badge bg-info">{{ $intelForSaleCount }}</span>
                                 @endif
                             </p>
                         </a>

@@ -10,10 +10,8 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\EspionageHelper;
-use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\PerformEspionageRequest;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Valuable;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
@@ -24,26 +22,6 @@ class EspionageController extends AbstractDominionController
     public function getEspionage(Request $request)
     {
         $targetDominion = $request->input('dominion');
-        $dominion = $this->getSelectedDominion();
-
-        $valuablesDiscovered = Valuable::query()
-            ->where('source_dominion_id', $dominion->id)
-            ->whereIn('status', [
-                Valuable::STATUS_DISCOVERED,
-                Valuable::STATUS_INVESTIGATING,
-                Valuable::STATUS_LISTED_FOR_TRANSFER,
-                Valuable::STATUS_TRANSFERRED,
-            ])
-            ->with('targetDominion')
-            ->orderByDesc('discovered_at')
-            ->get();
-
-        $valuablesStolen = Valuable::query()
-            ->where('source_dominion_id', $dominion->id)
-            ->where('status', Valuable::STATUS_STOLEN)
-            ->with('targetDominion')
-            ->orderByDesc('stolen_at')
-            ->get();
 
         return view('pages.dominion.espionage', [
             'espionageCalculator' => app(EspionageCalculator::class),
@@ -55,9 +33,6 @@ class EspionageController extends AbstractDominionController
             'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'targetDominion' => $targetDominion,
-            'valuablesDiscovered' => $valuablesDiscovered,
-            'valuablesStolen' => $valuablesStolen,
-            'valuablesHelper' => app(ValuablesHelper::class),
         ]);
     }
 

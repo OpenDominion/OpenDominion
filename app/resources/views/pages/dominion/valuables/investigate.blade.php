@@ -71,7 +71,7 @@
                             Adding another investigation would zero out your spy regen. Wait for an existing investigation to complete or cancel one first.
                         </p>
                     @endif
-                    <p><a href="{{ route('dominion.espionage') }}">&laquo; Back to Espionage</a></p>
+                    <p><a href="{{ route('dominion.valuables') }}">&laquo; Back to Valuables</a></p>
                 </div>
             </div>
         </div>

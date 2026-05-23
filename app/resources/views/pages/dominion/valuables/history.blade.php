@@ -22,7 +22,7 @@
                                     <th>Valuable</th>
                                     <th>Target</th>
                                     <th>Result</th>
-                                    <th>Sale Price</th>
+                                    <th>Sell Price</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -70,7 +70,7 @@
                     <p>Expired: <strong>{{ number_format($stats['expired']) }}</strong></p>
                     <p>Platinum earned: <strong>{{ number_format($stats['totalPlatinumEarned']) }}p</strong></p>
                     <p>Success rate: <strong>{{ number_format($stats['successRate'], 1) }}%</strong></p>
-                    <p><a href="{{ route('dominion.espionage') }}">&laquo; Back to Espionage</a></p>
+                    <p><a href="{{ route('dominion.valuables') }}">&laquo; Back to Valuables</a></p>
                 </div>
             </div>
         </div>
