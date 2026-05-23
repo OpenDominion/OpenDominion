@@ -86,6 +86,14 @@
                                         <label class="form-check-label" for="black_guard_public">Visible to everyone</label>
                                     </div>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Guard:</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="guard_lock" id="guard_lock" {{ isset($selectedDominion->settings['guard_lock']) && $selectedDominion->settings['guard_lock'] == 'on' ? 'checked' : null }} />
+                                        <label class="form-check-label" for="guard_lock">Guard Lock</label>
+                                    </div>
+                                    <span class="small">Prevent actions that would reset your guard application.</span>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
