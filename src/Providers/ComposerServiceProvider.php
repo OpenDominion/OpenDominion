@@ -125,9 +125,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->count();
             $view->with('unseenGameEvents', $unseenGameEvents);
 
-            // Valuables badges: discovered/listed/transferred (actionable) + stolen (sellable)
+            // Valuables badges: discovered/transferred (actionable) + stolen (sellable).
+            // Excludes valuables the player has already listed for transfer themselves —
+            // they're awaiting a realmmate purchase, not waiting on the owner to act.
             $valuablesDiscoveredCount = Valuable::query()
                 ->where('source_dominion_id', $selectedDominion->id)
+                ->where('is_listed', false)
                 ->whereIn('status', [
                     Valuable::STATUS_DISCOVERED,
                     Valuable::STATUS_LISTED_FOR_TRANSFER,
