@@ -46,5 +46,11 @@
                 <i class="fa fa-check ms-auto color-mode-check"></i>
             </button>
         </li>
+        <li>
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="frost">
+                <i class="fa fa-snowflake fa-fw"></i> Frost
+                <i class="fa fa-check ms-auto color-mode-check"></i>
+            </button>
+        </li>
     </ul>
 </li>

@@ -9,6 +9,7 @@ const ICONS = {
     dusk:      'fa-cloud-moon',
     grimoire:  'fa-book-skull',
     parchment: 'fa-scroll',
+    frost:     'fa-snowflake',
     auto:      'fa-circle-half-stroke',
 };
 
@@ -18,6 +19,7 @@ const THEME_COLORS = {
     dusk:      '#020617',
     grimoire:  '#0c0b09',
     parchment: '#f5f0e1',
+    frost:     '#e4eaf0',
     light:     '#ffffff',
 };
 
