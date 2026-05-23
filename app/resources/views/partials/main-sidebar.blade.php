@@ -289,7 +289,7 @@
                         <a href="{{ route('dominion.council') }}" class="nav-link {{ Route::is('dominion.council*') ? 'active' : null }}">
                             <i class="nav-icon fa fa-group fa-fw"></i>
                             <p>The Council
-                                @if ($councilUnreadCount > 0 && !Route::is('dominion.council'))
+                                @if ($councilUnreadCount > 0 && !Route::is('dominion.council') && ($selectedDominion->settings['hide_council_badge'] ?? null) != 'on')
                                     <span class="badge bg-success ">{{ $councilUnreadCount }}</span>
                                 @endif
                             </p>
@@ -319,7 +319,7 @@
                         <a href="{{ route('dominion.forum') }}" class="nav-link {{ Route::is('dominion.forum*') ? 'active' : null }}">
                             <i class="nav-icon fa fa-comments fa-fw"></i>
                             <p>Round Forum
-                                @if ($forumUnreadCount > 0 && !Route::is('dominion.forum'))
+                                @if ($forumUnreadCount > 0 && !Route::is('dominion.forum') && ($selectedDominion->settings['hide_forum_badge'] ?? null) != 'on')
                                     <span class="badge bg-success ">{{ $forumUnreadCount }}</span>
                                 @endif
                             </p>
