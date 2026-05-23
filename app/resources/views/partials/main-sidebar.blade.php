@@ -12,7 +12,7 @@
         @if (isset($selectedDominion))
             <div class="sidebar-user d-flex align-items-center gap-2 px-3 py-1">
                 <div>
-                    <span class="d-block fw-bold small">{{ $selectedDominion->name }}</span>
+                    <a href="{{ route('dominion.misc.settings') }}" class="d-block fw-bold small">{{ $selectedDominion->name }}</a>
                     <a href="{{ route('dominion.realm') }}" class="small">{{ $selectedDominion->realm->name }} (#{{ $selectedDominion->realm->number }})</a>
                 </div>
             </div>

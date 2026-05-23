@@ -237,6 +237,10 @@
         </div>
     </form>
 
+    @if (isset($selectedDominion))
+        <p class="mt-3 ms-1">Looking for <a href="{{ route('dominion.misc.settings') }}">dominion settings</a>?</p>
+    @endif
+
 @endsection
 
 @push('inline-scripts')
