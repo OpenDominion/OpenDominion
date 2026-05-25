@@ -164,8 +164,9 @@ class TickService
             $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
             $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
             $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-            $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')));
-            $names = collect($names_json->dominion_names);
+            $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')), true);
+            $generalNames = collect($names_json['dominion_names']);
+            $raceNames = $names_json['race_names'] ?? [];
             $races = Race::where('playable', true)->get();
             $realm = $round->realms()->where('number', 0)->first();
 
@@ -217,11 +218,16 @@ class TickService
                 } else {
                     $race = $races->random();
                 }
+                // Build name pool with elevated chance for race-specific names
+                $racePool = isset($raceNames[$race->name]) ? collect($raceNames[$race->name]) : null;
+
                 $dominion = null;
                 $failCount = 0;
                 while ($dominion == null && $failCount < 3) {
-                    $rulerName = $names->random();
-                    $dominionName = $names->random();
+                    $rulerName = $generalNames->random();
+                    $dominionName = ($racePool && mt_rand(1, 100) <= 10)
+                        ? $racePool->random()
+                        : $generalNames->random();
                     if (strlen($rulerName) > strlen($dominionName)) {
                         $swap = $rulerName;
                         $rulerName = $dominionName;
