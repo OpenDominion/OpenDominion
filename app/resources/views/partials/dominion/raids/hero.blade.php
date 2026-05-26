@@ -34,7 +34,7 @@
                                         <small class="text-muted">(limit: 1)</small>
                                     </td>
                                     <td>
-                                        <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post">
+                                        <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post" class="disable-after-click">
                                             @csrf
                                             <button type="submit" class="btn btn-block btn-sm btn-primary" {{ $selectedDominion->isLocked() || !$objective->isActive() ? 'disabled' : null }}>
                                                 Start Battle

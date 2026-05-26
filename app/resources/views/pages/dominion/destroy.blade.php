@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-demolish"></i> Destroy Buildings</span>
                 </div>
-                <form action="{{ route('dominion.destroy') }}" method="post" role="form">
+                <form action="{{ route('dominion.destroy') }}" method="post" role="form" class="disable-after-click">
                     @csrf
                     <div class="card-body no-padding">
                         <div class="row">

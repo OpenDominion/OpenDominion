@@ -25,11 +25,23 @@ $(() => {
         e.preventDefault();
     });
 
-    // Disable link after click
-    $('.disable-after-click').on('click', function(e) {
+    // Disable link/button after click (anchors and standalone buttons, not forms)
+    $('.disable-after-click:not(form)').on('click', function(e) {
         if ($(this).attr('disabled') === 'disabled') {
             e.preventDefault();
         }
         $(this).attr('disabled', 'disabled');
+    });
+
+    // Prevent double-submit on opt-in forms
+    $(document).on('submit', 'form.disable-after-click', function(e) {
+        const $form = $(this);
+        if ($form.data('submitted')) {
+            e.preventDefault();
+            return;
+        }
+        $form.data('submitted', true);
+        // Disable submit buttons after the event so their name/value still posts
+        setTimeout(() => $form.find(':submit').prop('disabled', true), 0);
     });
 });
