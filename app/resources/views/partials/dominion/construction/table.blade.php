@@ -37,9 +37,9 @@
                     </td>
                     <td class="text-center">
                         {{ $selectedDominion->{'building_' . $buildingType} }}
-                        <small>
+                        <div class="small">
                             ({{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
-                        </small>
+                        </div>
                     </td>
                     <td class="text-center">{{ number_format($queueService->getConstructionQueueTotalByResource($selectedDominion, "building_{$buildingType}")) }}</td>
                     <td class="text-center">
