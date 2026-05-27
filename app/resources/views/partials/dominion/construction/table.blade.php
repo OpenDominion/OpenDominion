@@ -30,16 +30,16 @@
         <tbody>
             @foreach ($buildingTypes as $buildingType)
                 <tr>
-                    <td>
+                    <td class="text-wrap">
                         <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
                             {{ $buildingHelper->getBuildingName($buildingType) }}
                         </span>
                     </td>
                     <td class="text-center">
                         {{ $selectedDominion->{'building_' . $buildingType} }}
-                        <div class="small">
+                        <span class="small d-block d-sm-inline">
                             ({{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
-                        </div>
+                        </span>
                     </td>
                     <td class="text-center">{{ number_format($queueService->getConstructionQueueTotalByResource($selectedDominion, "building_{$buildingType}")) }}</td>
                     <td class="text-center">
