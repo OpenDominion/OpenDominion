@@ -28,7 +28,7 @@ class ValuablesHelper
     /** Chance increase per progress point for passive info-op discovery (lower to keep passive rare). */
     public const PASSIVE_PROGRESS_CHANCE_STEP = 0.0002;
     /** Maximum discovery chance regardless of progress. */
-    public const MAX_DISCOVERY_CHANCE       = 0.95;
+    public const MAX_DISCOVERY_CHANCE       = 0.80;
     /** Hours after a discovery during which the same attacker cannot discover again from the same target. */
     public const DISCOVERY_COOLDOWN_HOURS   = 48;
 
@@ -74,7 +74,7 @@ class ValuablesHelper
                 'class'                => 'text-body-emphasis',
                 'spy_hours_multiplier' => 1.0,
                 'base_value_min'       => 10000,
-                'base_value_max'       => 25000,
+                'base_value_max'       => 20000,
                 'transfer_price'       => 5000,
             ],
             self::RARITY_RARE => [
@@ -83,23 +83,23 @@ class ValuablesHelper
                 'spy_hours_multiplier' => 2.0,
                 'base_value_min'       => 25000,
                 'base_value_max'       => 50000,
-                'transfer_price'       => 10000,
+                'transfer_price'       => 12500,
             ],
             self::RARITY_EPIC => [
                 'label'                => 'Epic',
                 'class'                => 'text-purple',
                 'spy_hours_multiplier' => 3.0,
-                'base_value_min'       => 50000,
-                'base_value_max'       => 100000,
-                'transfer_price'       => 20000,
+                'base_value_min'       => 37500,
+                'base_value_max'       => 75000,
+                'transfer_price'       => 18750,
             ],
             self::RARITY_LEGENDARY => [
                 'label'                => 'Legendary',
                 'class'                => 'text-orange',
                 'spy_hours_multiplier' => 5.0,
-                'base_value_min'       => 100000,
-                'base_value_max'       => 250000,
-                'transfer_price'       => 40000,
+                'base_value_min'       => 50000,
+                'base_value_max'       => 100000,
+                'transfer_price'       => 25000,
             ],
         ];
     }
