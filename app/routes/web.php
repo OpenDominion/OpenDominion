@@ -291,6 +291,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // World
             $router->get('world')->uses('Dominion\WorldController@getIndex')->name('world');
+            $router->get('world/valor/{realm}')->uses('Dominion\WorldController@getValor')->where('realm', '[0-9]+')->name('world.valor');
 
             // Misc
             $router->get('misc/abandon')->uses('Dominion\MiscController@getAbandonDominion')->name('misc.abandon');

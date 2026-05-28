@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Calculators\ValorCalculator;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Services\Dominion\GovernmentService;
@@ -65,6 +66,28 @@ class WorldController extends AbstractDominionController
             'realms' => $realms,
             'wonderHelper' => app(WonderHelper::class),
             'wonders' => $wonders,
+        ]);
+    }
+
+    public function getValor(Request $request, int $realm)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        if (!$dominion->round->hasStarted()) {
+            $request->session()->flash('alert-warning', 'You cannot view other realms before the round begins.');
+            return redirect()->back();
+        }
+
+        $realmModel = $dominion->round->realms()
+            ->where('number', $realm)
+            ->firstOrFail();
+
+        $valorCalculator = app(ValorCalculator::class);
+        $breakdown = $valorCalculator->calculateBreakdown($dominion->round, $realmModel->id);
+
+        return view('pages.dominion.world-valor', [
+            'realm' => $realmModel,
+            'breakdown' => $breakdown,
         ]);
     }
 }
