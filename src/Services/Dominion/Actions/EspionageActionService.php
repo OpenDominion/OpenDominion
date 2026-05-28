@@ -223,7 +223,7 @@ class EspionageActionService
                     }
                 }
                 $xpValue = $spyStrengthLost;
-                $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
+                $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target, $latestOp);
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;
                 $spyStrengthLost += $dominion->getSpellPerkValue('theft_strength_cost');
@@ -326,7 +326,7 @@ class EspionageActionService
      * @return array
      * @throws Exception
      */
-    protected function performInfoGatheringOperation(Dominion $dominion, string $operationKey, Dominion $target): array
+    protected function performInfoGatheringOperation(Dominion $dominion, string $operationKey, Dominion $target, ?InfoOp $latestOp = null): array
     {
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
@@ -423,7 +423,10 @@ class EspionageActionService
 
         $infoOp->save();
 
-        $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target);
+        $discoveryMessage = '';
+        if ($latestOp === null || $latestOp->isStale()) {
+            $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target);
+        }
 
         return [
             'success' => true,
