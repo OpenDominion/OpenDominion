@@ -164,8 +164,9 @@ class TickService
             $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
             $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
             $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-            $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')));
-            $names = collect($names_json->dominion_names);
+            $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')), true);
+            $generalNames = collect($names_json['dominion_names']);
+            $raceNames = $names_json['race_names'] ?? [];
             $races = Race::where('playable', true)->get();
             $realm = $round->realms()->where('number', 0)->first();
 
@@ -217,11 +218,16 @@ class TickService
                 } else {
                     $race = $races->random();
                 }
+                // Build name pool with elevated chance for race-specific names
+                $racePool = isset($raceNames[$race->name]) ? collect($raceNames[$race->name]) : null;
+
                 $dominion = null;
                 $failCount = 0;
                 while ($dominion == null && $failCount < 3) {
-                    $rulerName = $names->random();
-                    $dominionName = $names->random();
+                    $rulerName = $generalNames->random();
+                    $dominionName = ($racePool && mt_rand(1, 100) <= 10)
+                        ? $racePool->random()
+                        : $generalNames->random();
                     if (strlen($rulerName) > strlen($dominionName)) {
                         $swap = $rulerName;
                         $rulerName = $dominionName;
@@ -256,7 +262,12 @@ class TickService
      */
     public function performTick(Round $round, Dominion|null $dominion = null)
     {
+        $tickAll = false;
         if ($dominion == null) {
+            $tickAll = true;
+        }
+
+        if ($tickAll) {
             $where = [
                 ['round_id', '=', $round->id],
                 ['protection_finished', '=', true],
@@ -367,9 +378,7 @@ class TickService
                 ]);
         }, 5);
 
-        $this->now = now();
-
-        if ($dominion == null) {
+        if ($tickAll) {
             Log::info(sprintf(
                 'Ticked %s dominions in %s ms in %s',
                 number_format($round->activeDominions->count()),
@@ -378,7 +387,9 @@ class TickService
             ));
         }
 
-        if ($dominion == null) {
+        $this->now = now();
+
+        if ($tickAll) {
             $dominions = $round->activeDominions()
                 ->with([
                     'queues',
@@ -392,6 +403,7 @@ class TickService
                     'tick',
                     'user',
                 ])
+                ->withCachedRound()
                 ->get();
         } else {
             $dominions = collect([$dominion]);
@@ -418,9 +430,7 @@ class TickService
             $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
         }
 
-        $this->now = now();
-
-        if ($dominion == null) {
+        if ($tickAll) {
             Log::info(sprintf(
                 'Cleaned up queues, sent notifications, and precalculated %s dominions in %s ms in %s',
                 number_format($round->activeDominions->count()),
@@ -428,6 +438,8 @@ class TickService
                 $round->name
             ));
         }
+
+        $this->now = now();
     }
 
     /**
@@ -983,14 +995,39 @@ class TickService
             }
         }
 
-        // Hacky refresh for dominion
-        $dominion->refresh()->load([
+        // Refresh attributes - guards against tick concurrency writing
+        // delta-style updates between the caller's request and this
+        // prediction running.
+        $freshRow = $dominion->newQueryWithoutScopes()->whereKey($dominion->id)->first();
+        if ($freshRow !== null) {
+            $dominion->setRawAttributes($freshRow->getAttributes());
+            $dominion->syncOriginal();
+        }
+
+        // Drop any cached volatile relations so we re-fetch fresh state. These
+        // can be mutated mid-request (spells cast, techs researched, hero XP,
+        // queues, wonder build/destroy) and the listener path operates on a
+        // clone that shares relation objects with the caller - unsetting first
+        // ensures the subsequent load doesn't mutate a shared instance.
+        foreach (['queues', 'spells', 'techs', 'hero', 'realm'] as $rel) {
+            $dominion->unsetRelation($rel);
+        }
+
+        $dominion->load([
+            'queues',
+            'spells', 'spells.perks',
+            'techs', 'techs.perks',
+            'hero', 'hero.upgrades',
+            'realm.wonders', 'realm.wonders.perks',
+        ]);
+
+        // Reference relations don't change mid-round; only fetch them if the
+        // caller didn't already eager-load them.
+        $dominion->loadMissing([
             'race',
             'race.perks',
             'race.units',
             'race.units.perks',
-            'techs',
-            'techs.perks',
         ]);
 
         // Active spells

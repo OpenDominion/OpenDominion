@@ -12,6 +12,7 @@ use OpenDominion\Helpers\CountryHelper;
 use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\User;
+use OpenDominion\Services\Dominion\SelectorService;
 use RuntimeException;
 use Storage;
 use Throwable;
@@ -28,11 +29,17 @@ class SettingsController extends AbstractController
 
         $notificationSettings = $user->settings['notifications'] ?? $notificationHelper->getDefaultUserNotificationSettings();
 
+        $selectorService = app(SelectorService::class);
+        $selectedDominion = $selectorService->hasUserSelectedDominion()
+            ? $selectorService->getUserSelectedDominion()
+            : null;
+
         return view('pages.settings', [
             'notificationHelper' => $notificationHelper,
             'notificationSettings' => $notificationSettings,
             'discordHelper' => $discordHelper,
             'countryHelper' => $countryHelper,
+            'selectedDominion' => $selectedDominion,
         ]);
     }
 

@@ -23,7 +23,12 @@ class ForumController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $lastRead = $dominion->forum_last_read;
-        $this->updateDominionForumLastRead($dominion);
+        $hasUnread = $dominion->round->forumThreads()
+            ->where('last_activity', '>', $lastRead ?? $dominion->round->created_at)
+            ->exists();
+        if ($hasUnread) {
+            $this->updateDominionForumLastRead($dominion);
+        }
 
         $protectionService = app(ProtectionService::class);
         $forumService = app(ForumService::class);

@@ -18,6 +18,7 @@
     "intervention/image": "~2.4",
     "jenssegers/agent": "^2.6",
     "laravel/framework": "^13.0",
+    "laravel/pulse": "^1.7",
     "laravel/tinker": "^3.0",
     "laravel/ui": "^4.5",
     "league/flysystem-aws-s3-v3": "^3.0",

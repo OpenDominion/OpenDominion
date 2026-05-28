@@ -7,7 +7,7 @@
                 <div class="card-header">
                     <span class="card-title">
                         User Agreement
-                    </h3>
+                    </span>
                 </div>
                 <div class="card-body">
                     @include('partials.user-agreement')

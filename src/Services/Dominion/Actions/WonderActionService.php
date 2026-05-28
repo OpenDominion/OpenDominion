@@ -578,6 +578,9 @@ class WonderActionService
     public function checkGuardApplications(Dominion $dominion): void
     {
         if ($this->guardMembershipService->isRoyalGuardApplicant($dominion)) {
+            if ($dominion->settings['guard_lock'] ?? false) {
+                throw new GameException('This action would reset your Royal Guard application. Disable Guard Lock in settings to proceed.');
+            }
             $this->guardMembershipService->joinRoyalGuard($dominion);
         }
     }

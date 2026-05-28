@@ -11,7 +11,7 @@
                 {{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})
                 at
                 <span>{{ $gameEvent->created_at }}</span>
-            </h3>
+            </span>
             <select id="realm-select" class="form-select float-end">
                 <option value="">
                     All

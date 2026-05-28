@@ -13,7 +13,8 @@
         <div class="ticker">
             <span class="ticker-lbl">
                 @if ($selectedDominion && !$selectedDominion->round->hasEnded())
-                    Day <b>{{ $selectedDominion->round->daysInRound() }}</b> Hour <b>{{ $selectedDominion->round->hoursInDay() }}</b>
+                    <span class="ticker-lbl-full">Day <b>{{ $selectedDominion->round->daysInRound() }}</b> Hour <b>{{ $selectedDominion->round->hoursInDay() }}</b></span>
+                    <span class="ticker-lbl-short">D<b>{{ $selectedDominion->round->daysInRound() }}</b> H<b>{{ $selectedDominion->round->hoursInDay() }}</b></span>
                 @else
                     Server
                 @endif

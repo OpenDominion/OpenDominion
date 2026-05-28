@@ -72,6 +72,13 @@ class RaidController extends AbstractDominionController
         return redirect()->route('dominion.raids.objective', $tactic->objective);
     }
 
+    public function getRaidStory(Raid $raid)
+    {
+        return view('pages.dominion.raid-story', [
+            'raid' => $raid,
+        ]);
+    }
+
     public function getRaidLeaderboard(Raid $raid)
     {
         $selectedDominion = $this->getSelectedDominion();

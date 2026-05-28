@@ -83,7 +83,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
         // Dominion
-        $router->group(['middleware' => 'dominionselected'], static function (Router $router) {
+        $router->group(['middleware' => ['dominionselected', 'updatelastonline']], static function (Router $router) {
 
             $router->get('/')->uses('Dominion\IndexController@getIndex');
 
@@ -164,6 +164,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Raids
             $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');
+            $router->get('raids/{raid}/story')->uses('Dominion\RaidController@getRaidStory')->name('raids.story');
             $router->get('raids/{raid}/leaderboard')->uses('Dominion\RaidController@getRaidLeaderboard')->name('raids.leaderboard');
             $router->get('raids/objective/{objective}')->uses('Dominion\RaidController@getRaidObjective')->name('raids.objective');
             $router->get('raids/objective/{objective}/leaderboard')->uses('Dominion\RaidController@getRaidObjectiveLeaderboard')->name('raids.objective.leaderboard');
@@ -201,6 +202,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
             // Valuables
+            $router->get('valuables')->uses('Dominion\ValuablesController@getIndex')->name('valuables');
             $router->get('valuables/history')->uses('Dominion\ValuablesController@getHistory')->name('valuables.history');
             $router->get('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@getInvestigate')->name('valuables.investigate');
             $router->post('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@postInvestigate');

@@ -29,63 +29,6 @@
                 </div>
             </div>
 
-            <div class="card card-primary">
-                <div class="card-header">
-                    <span class="card-title"><i class="ra ra-gem"></i> Realm Valuables Available for Transfer</span>
-                </div>
-                <div class="card-body table-responsive">
-                    @if ($realmValuablesListed->isEmpty())
-                        <p class="text-center text-muted my-3">No valuables are currently listed by your realmies.</p>
-                    @else
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Listed By</th>
-                                    <th>Valuable</th>
-                                    <th>Target</th>
-                                    <th>Spy-Hours</th>
-                                    <th>Price</th>
-                                    <th class="text-end">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($realmValuablesListed as $valuable)
-                                    @php
-                                        $transferPrice = $valuablesHelper->getTransferPrice($valuable);
-                                        $isOwnListing = $valuable->source_dominion_id === $selectedDominion->id;
-                                        $insufficient = $selectedDominion->resource_platinum < $transferPrice;
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $valuable->sourceDominion->name }}</td>
-                                        <td>
-                                            <strong class="{{ $valuablesHelper->getRarityClass($valuable->rarity) }}">{{ $valuable->name }}</strong><br>
-                                            <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
-                                        </td>
-                                        <td>{{ $valuable->targetDominion->name }}</td>
-                                        <td>{{ number_format($valuable->required_spy_hours) }}</td>
-                                        <td>{{ number_format($transferPrice) }}p</td>
-                                        <td class="text-end">
-                                            @if ($isOwnListing)
-                                                <form action="{{ route('dominion.valuables.unlist', $valuable->id) }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-secondary">Unlist</button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('dominion.valuables.purchase', $valuable->id) }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success" {{ $insufficient ? 'disabled' : '' }} title="{{ $insufficient ? 'Not enough platinum' : '' }}">
-                                                        Purchase
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
-                </div>
-            </div>
         </div>
 
         <div class="col-sm-12 col-md-3">

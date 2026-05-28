@@ -3,7 +3,6 @@
 namespace OpenDominion\Http\Middleware;
 
 use Auth;
-use Carbon\Carbon;
 use Closure;
 
 class UpdateUserLastOnline
@@ -12,9 +11,11 @@ class UpdateUserLastOnline
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $user->timestamps = false;
-            $user->last_online = new Carbon();
-            $user->save();
+            if ($user->last_online === null || $user->last_online < now()->subMinute()) {
+                $user->timestamps = false;
+                $user->last_online = now();
+                $user->save();
+            }
         }
 
         return $next($request);

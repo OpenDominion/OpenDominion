@@ -192,11 +192,11 @@ class InvadeActionService
                 throw new GameException('You cannot invade dominions outside of your range');
             }
 
-            if ($dominion->round->id !== $target->round->id) {
+            if ($dominion->round_id !== $target->round_id) {
                 throw new GameException('Nice try, but you cannot invade cross-round');
             }
 
-            if ($dominion->realm->id === $target->realm->id) {
+            if ($dominion->realm_id === $target->realm_id) {
                 throw new GameException('Nice try, but you cannot invade your realmies');
             }
 
@@ -1300,7 +1300,7 @@ class InvadeActionService
             );
         }
         if ($attackerBoatsLost > 0) {
-            $this->invasionResult['attacker']['boatsLost'] = $attackerBoatsSunk;
+            $this->invasionResult['attacker']['boatsLost'] = $attackerBoatsLost;
         }
     }
 

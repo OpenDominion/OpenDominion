@@ -10,9 +10,9 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
             @if ($selectedDominion->unreadNotifications->count() === 0)
-                <li class="dropdown-header">You have no new notifications.</li>
+                <li class="dropdown-header pt-0">You have no new notifications.</li>
             @else
-                <li class="dropdown-header">You have {{ $selectedDominion->unreadNotifications->count() }} new notifications</li>
+                <li class="dropdown-header pt-0">You have {{ $selectedDominion->unreadNotifications->count() }} new notifications</li>
                 <li>
                     <ul class="menu list-unstyled">
                         @foreach ($selectedDominion->unreadNotifications as $notification)
@@ -39,7 +39,7 @@
                     </ul>
                 </li>
                 <li class="dropdown-footer">
-                    <a href="#" id="clear-notifications" class="dropdown-item text-center bg-secondary text-white">Clear Notifications</a>
+                    <a href="#" id="clear-notifications" class="dropdown-item text-center bg-primary text-white">Clear Notifications</a>
                     <form action="{{ route('dominion.misc.clear-notifications') }}" method="post" id="clear-notifications-form">
                         @csrf
                     </form>

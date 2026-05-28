@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
@@ -44,6 +45,13 @@ class Race extends AbstractModel
     {
         return $this->hasMany(Unit::class)
             ->orderBy('slot');
+    }
+
+    public static function findWithRelationsCached(int $id): Race
+    {
+        return Cache::rememberForever("game:race:{$id}", static function () use ($id) {
+            return Race::with(['perks', 'units', 'units.perks'])->findOrFail($id);
+        });
     }
 
     // Eloquent Query Scopes

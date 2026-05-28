@@ -68,5 +68,6 @@ task('deploy', [
     'artisan:game:data:sync', // custom made
     'artisan:version:update', // custom made
     'deploy:publish',
+    'artisan:queue:restart',
     'php-fpm:reload', // custom made
 ]);

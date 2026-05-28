@@ -267,8 +267,8 @@
     background: var(--od-surface-alt);
     border-color: var(--od-rule-soft);
   }
-  .app-header .ticker-lbl { color: var(--od-text-subtle); font-size: 0.75rem; }
-  .app-header .ticker-val { color: var(--od-primary); font-family: var(--od-font-serif); }
+  .app-header .ticker-lbl { color: var(--od-text-subtle); font-size: 0.6875rem; }
+  .app-header .ticker-val { color: var(--od-primary); font-size: 0.675rem; font-weight: 700; }
   .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid #3a2e1c; }
   .app-sidebar a              { color: var(--od-sidebar-text); }

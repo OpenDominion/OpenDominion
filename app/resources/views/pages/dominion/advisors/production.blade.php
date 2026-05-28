@@ -220,7 +220,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="d-none d-sm-block">
+                                    <tr class="d-none d-sm-table-row">
                                         <td colspan="2">&nbsp;</td>
                                     </tr>
                                     <tr>

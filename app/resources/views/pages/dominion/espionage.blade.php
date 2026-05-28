@@ -90,7 +90,7 @@
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
                                                         class="btn btn-primary btn-block"
-                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>
@@ -140,7 +140,7 @@
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
                                                         class="btn btn-primary btn-block war-op disabled"
-                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>
@@ -171,140 +171,6 @@
             </div>
         </div>
 
-    </div>
-
-    <div class="row">
-        <div class="col-sm-12 col-md-9">
-            <div class="card card-primary mt-3">
-                <div class="card-header">
-                    <span class="card-title"><i class="ra ra-locked-chest"></i> Valuables Discovered</span>
-                </div>
-                <div class="card-body table-responsive">
-                    @if ($valuablesDiscovered->isEmpty())
-                        <p class="text-center text-muted my-3">No valuables discovered.</p>
-                    @else
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Discovered</th>
-                                    <th>Name</th>
-                                    <th>Target</th>
-                                    <th>Spies</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($valuablesDiscovered as $valuable)
-                                    <tr>
-                                        <td>{{ $valuable->discovered_at->diffForHumans() }}</td>
-                                        <td>
-                                            <strong class="{{ $valuablesHelper->getRarityClass($valuable->rarity) }}">{{ $valuable->name }}</strong><br>
-                                            <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('dominion.op-center.show', $valuable->target_dominion_id) }}">
-                                                {{ $valuable->targetDominion->name }}
-                                            </a>
-                                        </td>
-                                        <td>{{ $valuable->spies_assigned ? number_format($valuable->spies_assigned) : '—' }}</td>
-                                        <td>
-                                            @if ($valuable->status === \OpenDominion\Models\Valuable::STATUS_INVESTIGATING)
-                                                @php
-                                                    $pct = $valuablesHelper->getInvestigationProgress($valuable);
-                                                    $remaining = max(0, now()->diffInHours($valuable->investigation_ends_at, false));
-                                                @endphp
-                                                <span class="{{ $valuablesHelper->getInvestigationProgressColorClass($pct) }}">{{ number_format($pct, 0) }}%</span>
-                                                <small class="text-muted">({{ ceil($remaining) }} ticks left)</small>
-                                            @elseif ($valuable->status === \OpenDominion\Models\Valuable::STATUS_LISTED_FOR_TRANSFER || $valuable->is_listed)
-                                                <span class="text-info">Listed for transfer</span>
-                                            @else
-                                                <span class="text-muted">Ready to investigate</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-end">
-                                            @if ($valuable->status === \OpenDominion\Models\Valuable::STATUS_INVESTIGATING)
-                                                <form action="{{ route('dominion.valuables.cancel', $valuable->id) }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
-                                                </form>
-                                            @elseif ($valuable->is_listed)
-                                                <form action="{{ route('dominion.valuables.unlist', $valuable->id) }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-secondary">Unlist</button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('dominion.valuables.investigate', $valuable->id) }}" class="btn btn-sm btn-primary">Investigate</a>
-                                                <form action="{{ route('dominion.valuables.list', $valuable->id) }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success">Offer ({{ number_format($valuablesHelper->getTransferPrice($valuable)) }}p)</button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
-                </div>
-            </div>
-
-            <div class="card card-primary mt-3">
-                <div class="card-header">
-                    <span class="card-title"><i class="ra ra-open-chest"></i> Valuables Stolen</span>
-                </div>
-                <div class="card-body table-responsive">
-                    @if ($valuablesStolen->isEmpty())
-                        <p class="text-center text-muted my-3">No stolen valuables awaiting sale.</p>
-                    @else
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Stolen</th>
-                                    <th>Name</th>
-                                    <th>Target</th>
-                                    <th>Price</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($valuablesStolen as $valuable)
-                                    <tr>
-                                        <td>{{ $valuable->stolen_at->diffForHumans() }}</td>
-                                        <td>
-                                            <strong class="{{ $valuablesHelper->getRarityClass($valuable->rarity) }}">{{ $valuable->name }}</strong><br>
-                                            <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
-                                        </td>
-                                        <td>{{ $valuable->targetDominion->name }}</td>
-                                        <td>{{ number_format($valuablesHelper->getCurrentSalePrice($valuable)) }}p</td>
-                                        <td class="text-end">
-                                            <form action="{{ route('dominion.valuables.sell', $valuable->id) }}" method="post" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-success">Sell</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-3">
-            <div class="card mt-3">
-                <div class="card-header">
-                    <span class="card-title">Valuables</span>
-                </div>
-                <div class="card-body">
-                    <p>Information ops occasionally turn up named treasures held by your target. Investigate one to commit spies for several hours; on completion the valuable is stolen and can be sold to the black market for platinum.</p>
-                    <p>If you don't want to steal a discovery yourself, you can offer it to a realm mate for a flat price &mdash; they'll take over the discovery and run their own heist.</p>
-                    <p>Discoveries grow stale after 48 hours and become very risky to act on.</p>
-                    <p><a href="{{ route('dominion.valuables.history') }}">View round history &raquo;</a></p>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 

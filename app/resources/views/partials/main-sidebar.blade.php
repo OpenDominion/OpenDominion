@@ -12,7 +12,7 @@
         @if (isset($selectedDominion))
             <div class="sidebar-user d-flex align-items-center gap-2 px-3 py-1">
                 <div>
-                    <span class="d-block fw-bold small">{{ $selectedDominion->name }}</span>
+                    <a href="{{ route('dominion.misc.settings') }}" class="d-block fw-bold small">{{ $selectedDominion->name }}</a>
                     <a href="{{ route('dominion.realm') }}" class="small">{{ $selectedDominion->realm->name }} (#{{ $selectedDominion->realm->number }})</a>
                 </div>
             </div>
@@ -215,16 +215,25 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item {{ Route::is('dominion.espionage') || Route::is('dominion.valuables.*') ? 'active' : null }}">
-                        <a href="{{ route('dominion.espionage') }}" class="nav-link {{ Route::is('dominion.espionage') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                    <li class="nav-item {{ Route::is('dominion.espionage') ? 'active' : null }}">
+                        <a href="{{ route('dominion.espionage') }}" class="nav-link {{ Route::is('dominion.espionage') ? 'active' : null }}">
                             <i class="nav-icon fa fa-user-secret fa-fw"></i>
+                            <p>Espionage</p>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Route::is('dominion.valuables') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                        <a href="{{ route('dominion.valuables') }}" class="nav-link {{ Route::is('dominion.valuables') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                            <i class="nav-icon ra ra-locked-chest ra-fw"></i>
                             <p>
-                                Espionage
+                                Valuables
+                                @if (($valuablesDiscoveredCount ?? 0) > 0)
+                                    <span class="badge bg-primary">{{ $valuablesDiscoveredCount }}</span>
+                                @endif
                                 @if (($valuablesStolenCount ?? 0) > 0)
                                     <span class="badge bg-success">{{ $valuablesStolenCount }}</span>
                                 @endif
-                                @if (($valuablesDiscoveredCount ?? 0) > 0)
-                                    <span class="badge bg-primary">{{ $valuablesDiscoveredCount }}</span>
+                                @if (($intelForSaleCount ?? 0) > 0 && ($selectedDominion->settings['hide_intel_for_sale_badge'] ?? null) != 'on')
+                                    <span class="badge bg-info">{{ $intelForSaleCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -280,7 +289,7 @@
                         <a href="{{ route('dominion.council') }}" class="nav-link {{ Route::is('dominion.council*') ? 'active' : null }}">
                             <i class="nav-icon fa fa-group fa-fw"></i>
                             <p>The Council
-                                @if ($councilUnreadCount > 0 && !Route::is('dominion.council'))
+                                @if ($councilUnreadCount > 0 && !Route::is('dominion.council') && ($selectedDominion->settings['hide_council_badge'] ?? null) != 'on')
                                     <span class="badge bg-success ">{{ $councilUnreadCount }}</span>
                                 @endif
                             </p>
@@ -310,7 +319,7 @@
                         <a href="{{ route('dominion.forum') }}" class="nav-link {{ Route::is('dominion.forum*') ? 'active' : null }}">
                             <i class="nav-icon fa fa-comments fa-fw"></i>
                             <p>Round Forum
-                                @if ($forumUnreadCount > 0 && !Route::is('dominion.forum'))
+                                @if ($forumUnreadCount > 0 && !Route::is('dominion.forum') && ($selectedDominion->settings['hide_forum_badge'] ?? null) != 'on')
                                     <span class="badge bg-success ">{{ $forumUnreadCount }}</span>
                                 @endif
                             </p>

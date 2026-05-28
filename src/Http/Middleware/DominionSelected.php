@@ -2,7 +2,10 @@
 
 namespace OpenDominion\Http\Middleware;
 
+use Bugsnag;
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class DominionSelected
@@ -17,18 +20,33 @@ class DominionSelected
 
     public function handle($request, Closure $next)
     {
-        // Nothing to do
-        if ($this->dominionSelectorService->hasUserSelectedDominion()) {
-            return $next($request);
+        if (!$this->dominionSelectorService->hasUserSelectedDominion()) {
+            $dominion = $this->dominionSelectorService->tryAutoSelectDominionForAuthUser();
+
+            if (!$dominion) {
+                return redirect()->guest('dashboard');
+            }
         }
 
-        $dominion = $this->dominionSelectorService->tryAutoSelectDominionForAuthUser();
+        try {
+            $dominion = $this->dominionSelectorService->getUserSelectedDominion();
+        } catch (ModelNotFoundException $e) {
+            $this->dominionSelectorService->unsetUserSelectedDominion();
 
-        if (!$dominion) {
-            return redirect()->guest('dashboard');
+            $request->session()->flash('alert-danger', 'The database has been reset for development purposes since your last visit. Please re-register a new account. You can use the same credentials you\'ve used before.');
+
+            return redirect()->route('home');
         }
 
-        // Manually call ShareSelectedDominion middleware again
-        return app(ShareSelectedDominion::class)->handle($request, $next);
+        Bugsnag::registerCallback(function (Bugsnag\Report $report) use ($dominion) {
+            /** @noinspection NullPointerExceptionInspection */
+            $report->setMetaData([
+                'dominion' => Arr::except($dominion->toArray(), ['race', 'realm']),
+            ]);
+        });
+
+        view()->share('selectedDominion', $dominion);
+
+        return $next($request);
     }
 }

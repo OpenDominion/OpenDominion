@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use DB;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\WonderCalculator;
@@ -22,7 +23,13 @@ class WonderController extends AbstractDominionController
     public function getWonders()
     {
         $dominion = $this->getSelectedDominion();
-        $this->updateDominionWondersLastSeen($dominion);
+        $hasNew = DB::table('round_wonders')
+            ->where('round_id', $dominion->round_id)
+            ->where('created_at', '>', $dominion->wonders_last_seen ?? $dominion->round->created_at)
+            ->exists();
+        if ($hasNew) {
+            $this->updateDominionWondersLastSeen($dominion);
+        }
 
         $wonders = $dominion->round->wonders()
             ->with(['damage', 'realm', 'wonder', 'wonder.perks'])
@@ -78,7 +85,11 @@ class WonderController extends AbstractDominionController
 
     protected function updateDominionWondersLastSeen(Dominion $dominion): void
     {
-        $dominion->wonders_last_seen = now();
-        $dominion->save();
+        // Avoid using save method, which recalculates tick
+        DB::table('dominions')
+            ->where('id', $dominion->id)
+            ->update([
+                'wonders_last_seen' => now()
+            ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Console\Commands\Game;
 
+use Cache;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -64,6 +65,14 @@ class DataSyncCommand extends Command implements CommandInterface
             $this->syncHeroes();
             $this->syncAchievements();
         });
+
+        Race::pluck('id')->each(function (int $id) {
+            Cache::forget("game:race:{$id}");
+        });
+
+        Cache::forget('game:spells');
+
+        $this->info('Game data cache flushed.');
     }
 
     /**

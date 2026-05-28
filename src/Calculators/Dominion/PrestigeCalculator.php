@@ -45,6 +45,9 @@ class PrestigeCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
     /**
      * PrestigeCalculator constructor.
      */

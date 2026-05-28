@@ -216,7 +216,7 @@ class SpellActionService
                     $wizardStrengthLost = 1;
                 }
                 $xpValue = $wizardStrengthLost;
-                $result = $this->castInfoOpSpell($dominion, $spell, $target);
+                $result = $this->castInfoOpSpell($dominion, $spell, $target, $latestOp);
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
                 $xpValue = $wizardStrengthLost;
                 $result = $this->castHostileSpell($dominion, $spell, $target);
@@ -311,7 +311,7 @@ class SpellActionService
                     'target_dominion_id' => $target->id
                 ]);
 
-                if ($dominion->fresh()->wizard_strength < 25) {
+                if (Dominion::query()->whereKey($dominion->id)->value('wizard_strength') < 25) {
                     throw new GameException('Your wizards have run out of strength');
                 }
 
@@ -414,7 +414,7 @@ class SpellActionService
      * @throws GameException
      * @throws Exception
      */
-    protected function castInfoOpSpell(Dominion $dominion, Spell $spell, Dominion $target): array
+    protected function castInfoOpSpell(Dominion $dominion, Spell $spell, Dominion $target, ?InfoOp $latestOp = null): array
     {
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
@@ -509,7 +509,10 @@ class SpellActionService
 
         $infoOp->save();
 
-        $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target, 'wizards');
+        $discoveryMessage = '';
+        if ($latestOp === null || $latestOp->isStale()) {
+            $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target, 'wizards');
+        }
 
         return [
             'success' => true,

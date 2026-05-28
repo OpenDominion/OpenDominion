@@ -46,8 +46,8 @@ class Ticker {
             if (this.nextHour == null) {
                 this.nextHour = new Date(currentTime.toString());
                 this.nextHour.setUTCHours(currentTime.getUTCHours() + 1);
-                this.nextHour.setMinutes(0);
-                this.nextHour.setSeconds(0);
+                this.nextHour.setUTCMinutes(0);
+                this.nextHour.setUTCSeconds(0);
             }
 
             if (currentTime >= this.nextHour) {
@@ -65,8 +65,8 @@ class Ticker {
         } else if (this.tickerNextHourElement !== null) {
             const nextHour = new Date(currentTime.toString());
             nextHour.setUTCHours(currentTime.getUTCHours() + 1);
-            nextHour.setMinutes(0);
-            nextHour.setSeconds(0);
+            nextHour.setUTCMinutes(0);
+            nextHour.setUTCSeconds(0);
 
             const diffDate = (nextHour - currentTime);
             this.tickerNextHourElement.innerHTML = Ticker.hms(diffDate);

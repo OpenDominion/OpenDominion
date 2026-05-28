@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
@@ -87,10 +88,15 @@ class RangeCalculator
             $selfLand = $this->landCalculator->getTotalLand($self);
             $targetLand = $this->landCalculator->getTotalLand($target);
 
+            $guardLocked = $self->settings['guard_lock'] ?? false;
+
             // Reset Royal Guard application if out of range
             if ($isRoyalGuardApplicant) {
                 $guardModifier = $this->guardMembershipService::ROYAL_GUARD_RANGE;
                 if (($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
+                    if ($guardLocked) {
+                        throw new GameException('This action would reset your Royal Guard application. Disable Guard Lock in settings to proceed.');
+                    }
                     $this->guardMembershipService->joinRoyalGuard($self);
                 }
             }
@@ -99,6 +105,9 @@ class RangeCalculator
             if ($isEliteGuardApplicant) {
                 $guardModifier = $this->guardMembershipService::ELITE_GUARD_RANGE;
                 if (($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
+                    if ($guardLocked) {
+                        throw new GameException('This action would reset your Elite Guard application. Disable Guard Lock in settings to proceed.');
+                    }
                     $this->guardMembershipService->joinEliteGuard($self);
                 }
             }
@@ -186,7 +195,8 @@ class RangeCalculator
 
         // todo: this doesn't belong here since it touches the db. Move to RangeService?
         return $self->round->activeDominions()
-            ->with(['race', 'realm', 'realm.warsOutgoing', 'round'])
+            ->with(['race', 'realm', 'realm.warsOutgoing'])
+            ->withCachedRound()
             ->where(function ($query) {
                 $query->where('abandoned_at', null)->orWhere('abandoned_at', '>', now());
             })
