@@ -108,7 +108,7 @@
 
                                             @if (!$round->hasEnded() && $dominion->user_id == $selectedDominion->user_id)
                                                 <a href="{{ route('dominion.misc.settings') }}" title="Icon Settings" data-bs-toggle="tooltip">
-                                                    <i class="fa fa-cog fa-lg"></i>
+                                                    <i class="fa fa-cog fa-sm"></i>
                                                 </a>
                                             @endif
                                         </td>
