@@ -126,9 +126,9 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
         // Act - Change class
         $this->heroActionService->changeClass($this->dominion, 'blacksmith');
 
-        // Assert - XP should be capped at level 12 minimum (10000)
+        // Assert - XP loss is capped at 500 (15000 - 500 = 14500)
         $hero->refresh();
-        $this->assertEquals(10000, $hero->class_data['alchemist']['experience']);
+        $this->assertEquals(14500, $hero->class_data['alchemist']['experience']);
     }
 
     public function testChangeClass_PreservesExistingClassData()
