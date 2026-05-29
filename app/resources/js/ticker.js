@@ -50,7 +50,7 @@ class Ticker {
                 this.nextHour.setUTCSeconds(0);
             }
 
-            if (currentTime >= this.nextHour) {
+            if (currentTime >= this.nextHour && this.tickerServerElement.dataset.roundActive === '1') {
                 var htmlElement = document.getElementsByTagName("html")[0];
                 htmlElement.classList.add("hourchange");
             }
