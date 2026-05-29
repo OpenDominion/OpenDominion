@@ -58,7 +58,7 @@
             'initial' => 'W',
             'title' => 'The Champion',
             'bio' => "Wurstmeyer is one of the most successful, albeit notorious, players in OpenDominion history. Known for his brilliant strategic builds and ability to carry a realm to victory with calculating precision, Wurstmeyer has amassed a record-setting four individual victories throughout his career. He often finds himself embroiled in the politics surrounding the game, perhaps most notably his fifteen page fireball thesis, equal parts meticulous analysis and prolonged grievance, which ultimately resulted in changes to the spell. Driven and competitive, Wurstmeyer has also developed a reputation for holding his realmmates to exceptionally high standards, occasionally leading to tense or awkward moments within his realm Discord.",
-            'achievements' => ['Round win: Round 27', 'Round win: Round 35', 'Round win: Round 44', 'Round win: Round 47', '16th All-time Acres', '13th All-time Networth'],
+            'achievements' => ['Round win: Round 27', 'Round win: Round 35', 'Round win: Round 44', 'Round win: Round 47', '16th All-time Acres', '12th All-time Networth'],
             'roles' => ['Gameplay Committee'],
             'testimonials' => [
                 ['quote' => "Having Wurstmeyer in-realm is like an energy shot for the ensuing 47 days. His presence guarantees a competitive, fun round, in which you'll probably learn something new.", 'author' => 'Mcgeeal'],
@@ -83,7 +83,7 @@
             'initial' => 'R',
             'title' => 'The Storyteller',
             'bio' => 'Rush is a mainstay of the OpenDominion community who has carved a legacy uniquely his own. As a regular correspondent on the podcast "Riol Talk", co-host of the blops-focused spinoff podcast "Rush Hour", namesake of the blops ranking system "Rush Ranks", author of a series of "Round Fails" which provide a chronology of his realm\'s experience every round told in comedic fashion, and more recently one of the head writers for storylines that take place within in-game Raids — to say Rush has left an enormous impact on OpenDominion would be an understatement. A mentor for many, and a massive presence within OD, Rush holds a special place as one of the most prominent community-forward players in the game.',
-            'achievements' => ['Pack win: Round 31'],
+            'achievements' => ['Pack win: Round 31', '20th All-time Acres'],
             'roles' => ['Content Creator'],
             'testimonials' => [
                 ['quote' => "Rush once put me in a videogame as a \"genital monstrosity,\" yet I still think he's a first ballot Hall of Famer for all he's done in the community. 'Nuff said.", 'author' => 'Volv'],
@@ -96,7 +96,7 @@
             'initial' => 'G',
             'title' => 'The Sovereign',
             'bio' => 'Gothia is a legend in the OpenDominion community. Long considered as one of the most dominant players in the game, having resided in the #1 position in "Rio Ranks" for multiple rounds, and accruing multiple realm-wins, pack-wins, and individual-wins. Gothia pioneered strategies and builds that are the staples used today, and has had a consistent presence in the largest and strongest rankings for years.',
-            'achievements' => ['Round win: Round 22', 'Round win: Round 24', 'Pack win: Round 26', 'Pack win: Round 33', '19th All-time Acres'],
+            'achievements' => ['Round win: Round 22', 'Round win: Round 24', 'Pack win: Round 26', 'Pack win: Round 33', '23rd All-time Acres'],
             'roles' => [],
             'testimonials' => [
                 ['quote' => "When I returned to the game, Gothia was the first person to reach out to me, get me on Discord, and start catching me up to speed. He's not just a great player, he's a great realmmate.", 'author' => 'Volv'],
@@ -811,6 +811,17 @@
     border-top: 1px dashed rgba(212,168,67,0.35);
   }
 
+  .panel-stats-note {
+    margin: 1.5rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(212,168,67,0.35);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--gold-700);
+    text-align: center;
+  }
+
   .panel-stats-list {
     list-style: none;
     margin: 0;
@@ -1046,8 +1057,8 @@
     The OpenDominion Hall of Fame exists to celebrate the individuals whose extraordinary contributions
     shaped not just a game, but a community. From the very first line of code to the fiercest battles
     waged across countless rounds, these inductees represent the heart and soul of OpenDominion.
-    Their dedication &mdash; whether through building, teaching, or competing &mdash; has left an indelible mark
-    on every player who has ever raised a realm.
+    Their dedication &mdash; whether through building, teaching, or competing &mdash; has left an indelible
+    mark on every ruler to have led a dominion through the ages.
   </p>
 </section>
 
@@ -1095,7 +1106,7 @@
                       <p class="panel-bio">{{ $inductee['bio'] }}</p>
 
                       @if (count($inductee['testimonials']))
-                        <p class="panel-eyebrow">In Their Own Words</p>
+                        <p class="panel-eyebrow">Words from the Community</p>
                         <div class="panel-testimonials">
                           @foreach ($inductee['testimonials'] as $testimonial)
                             <div class="panel-testimonial">
@@ -1108,6 +1119,17 @@
                     </div>
 
                     <aside class="panel-stats">
+                      @if (count($inductee['roles']))
+                        <div class="panel-stats-block">
+                          <p class="panel-eyebrow">Contributions</p>
+                          <div class="panel-roles">
+                            @foreach ($inductee['roles'] as $role)
+                              <span class="panel-role-tag">{{ $role }}</span>
+                            @endforeach
+                          </div>
+                        </div>
+                      @endif
+
                       @if (count($inductee['achievements']))
                         <div class="panel-stats-block">
                           <p class="panel-eyebrow">Achievements</p>
@@ -1119,15 +1141,8 @@
                         </div>
                       @endif
 
-                      @if (count($inductee['roles']))
-                        <div class="panel-stats-block">
-                          <p class="panel-eyebrow">Contributions</p>
-                          <div class="panel-roles">
-                            @foreach ($inductee['roles'] as $role)
-                              <span class="panel-role-tag">{{ $role }}</span>
-                            @endforeach
-                          </div>
-                        </div>
+                      @if (count($inductee['achievements']) || count($inductee['roles']))
+                        <p class="panel-stats-note">At the time of induction</p>
                       @endif
                     </aside>
                   </div>
