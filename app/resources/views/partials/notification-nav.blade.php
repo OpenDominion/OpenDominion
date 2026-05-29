@@ -3,9 +3,7 @@
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
             <i class="fa fa-bell-o"></i>
             @if ($selectedDominion->unreadNotifications->count() > 0)
-                <span class="badge text-bg-warning">
-                    {{ $selectedDominion->unreadNotifications->count() }}
-                </span>
+                <span class="badge text-bg-warning">{{ $selectedDominion->unreadNotifications->count() }}</span>
             @endif
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">

@@ -12,7 +12,7 @@ $grid-gutter-width: 1.25rem;
 $nav-link-padding-x: 0.75rem;
 $nav-link-padding-y: 0.75rem;
 $small-font-size: 0.95em;
-$primary: #3c8dbc;
+$primary: #0a82a3;
 $min-contrast-ratio: 2.5;
 $border-radius: 0.25rem;
 $border-radius-sm: 0.1875rem;
@@ -102,6 +102,17 @@ a {
 
 .btn {
   white-space: nowrap;
+}
+
+// BS5's default .badge uses display: inline-block + vertical-align: baseline, which
+// pins the badge to its sibling text's baseline and centers digits via line-height.
+// Numerals lack descenders, so they render high in the line box and look top-heavy.
+// Switching to inline-flex + middle alignment centers content geometrically instead.
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
 
 // ─── Custom App Styles ────────────────────────────────────────────────────────
@@ -385,10 +396,12 @@ body:not(.layout-top-nav) .app-header {
 
 .notifications-menu .nav-link > .badge {
   position: absolute;
-  top: 10px;
-  right: 2px;
-  font-size: 0.6rem;
-  padding: 1px 4px;
+  top: 4px;
+  right: 4px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 4px;
+  font-size: 0.625rem;
   line-height: 1;
 }
 
@@ -599,4 +612,57 @@ html.hourchange:after {
   .text-warning { color: var(--od-warning-on-tooltip) !important; }
   .text-info    { color: var(--od-info-on-tooltip)    !important; }
   .text-muted   { color: var(--od-muted-on-tooltip)   !important; }
+}
+
+// Sidebar and header badges sit on dark surfaces across every theme, so the
+// per-theme "outline" style (~8% alpha bg + colored border + colored text) loses
+// too much contrast in these contexts. Force solid backgrounds with white text
+// here only — cards/tables keep each theme's intended badge aesthetic. Color must
+// be set per-variant (not on the parent .badge) to match the specificity of
+// per-theme .badge.text-bg-* overrides.
+.app-sidebar .badge,
+.app-header .badge {
+  border-color: transparent !important;
+  &.text-bg-primary { background-color: var(--bs-primary) !important; color: #fff !important; }
+  &.text-bg-info    { background-color: var(--bs-info)    !important; color: #fff !important; }
+  &.text-bg-success { background-color: var(--bs-success) !important; color: #fff !important; }
+  &.text-bg-danger  { background-color: var(--bs-danger)  !important; color: #fff !important; }
+  &.text-bg-warning { background-color: var(--bs-warning) !important; color: #fff !important; }
+}
+
+// Light/Dark inherit BS5's default --bs-info (light cyan) and --bs-warning (yellow),
+// both too light for white text. Shift info to a softer blue distinct from the teal
+// primary, and keep warning as light bg + dark text.
+[data-color-scheme="light"],
+[data-color-scheme="dark"] {
+  .app-sidebar .badge,
+  .app-header .badge {
+    &.text-bg-info    { background-color: #1e90d6 !important; }
+    &.text-bg-warning { color: #000 !important; }
+  }
+}
+
+// Dusk & Grimoire's accent colors are tuned for outline-style badges (light tones
+// read AS text, not backed by it). Filled with white text they wash out, so swap
+// to the *-dark / primary-bg variants in the sidebar/header context.
+[data-color-scheme="dusk"] {
+  .app-sidebar .badge,
+  .app-header .badge {
+    &.text-bg-primary { background-color: var(--od-primary-bg)   !important; }
+    &.text-bg-info    { background-color: var(--od-info-dark)    !important; }
+    &.text-bg-success { background-color: var(--od-success-dark) !important; }
+    &.text-bg-danger  { background-color: var(--od-danger-dark)  !important; }
+    &.text-bg-warning { background-color: var(--od-warning-dark) !important; }
+  }
+}
+
+[data-color-scheme="grimoire"] {
+  .app-sidebar .badge,
+  .app-header .badge {
+    &.text-bg-primary { background-color: var(--od-primary-dark) !important; }
+    &.text-bg-info    { background-color: var(--od-info-dark)    !important; }
+    &.text-bg-success { background-color: var(--od-success-dark) !important; }
+    &.text-bg-danger  { background-color: var(--od-danger-dark)  !important; }
+    &.text-bg-warning { background-color: var(--od-warning-dark) !important; }
+  }
 }
