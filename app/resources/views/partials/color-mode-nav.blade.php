@@ -35,6 +35,12 @@
             </button>
         </li>
         <li>
+            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="frost">
+                <i class="fa fa-snowflake fa-fw"></i> Frost
+                <i class="fa fa-check ms-auto color-mode-check"></i>
+            </button>
+        </li>
+        <li>
             <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="grimoire">
                 <i class="fa fa-book-skull fa-fw"></i> Grimoire
                 <i class="fa fa-check ms-auto color-mode-check"></i>
@@ -43,12 +49,6 @@
         <li>
             <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="parchment">
                 <i class="fa fa-scroll fa-fw"></i> Parchment
-                <i class="fa fa-check ms-auto color-mode-check"></i>
-            </button>
-        </li>
-        <li>
-            <button class="dropdown-item d-flex align-items-center gap-2" data-color-mode-value="frost">
-                <i class="fa fa-snowflake fa-fw"></i> Frost
                 <i class="fa fa-check ms-auto color-mode-check"></i>
             </button>
         </li>

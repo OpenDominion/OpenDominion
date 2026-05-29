@@ -7,9 +7,9 @@ const ICONS = {
     dark:      'fa-moon',
     classic:   'fa-shield-halved',
     dusk:      'fa-cloud-moon',
+    frost:     'fa-snowflake',
     grimoire:  'fa-book-skull',
     parchment: 'fa-scroll',
-    frost:     'fa-snowflake',
     auto:      'fa-circle-half-stroke',
 };
 
@@ -17,9 +17,9 @@ const THEME_COLORS = {
     dark:      '#1a1a2e',
     classic:   '#005566',
     dusk:      '#020617',
+    frost:     '#e4eaf0',
     grimoire:  '#0c0b09',
     parchment: '#f5f0e1',
-    frost:     '#e4eaf0',
     light:     '#ffffff',
 };
 
