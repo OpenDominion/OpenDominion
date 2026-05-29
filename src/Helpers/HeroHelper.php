@@ -97,7 +97,7 @@ class HeroHelper
                 'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
                 'icon' => 'ra-ankh',
                 'requirement_stat' => 'stat_attacking_success',
-                'requirement_value' => 6
+                'requirement_value' => 8
             ]
         ])->keyBy('key');
     }
@@ -175,8 +175,8 @@ class HeroHelper
     {
         return [
             // Doctrine
-            'xp_from_land_gain_bonus' => 'Experience gains from invasion and exploration are multiplied by 2.5x',
-            'xp_from_ops_bonus' => 'Experience gains from magic and espionage are multiplied by 2x',
+            'xp_from_land_gain_bonus' => 'Experience gains from invasion and exploration are multiplied by 2x',
+            'xp_from_ops_bonus' => 'Experience gains from magic and espionage are multiplied by 1.6x',
             'xp_from_ops_penalty' => 'Experience cannot be gained from magic and espionage',
 
             // Magic

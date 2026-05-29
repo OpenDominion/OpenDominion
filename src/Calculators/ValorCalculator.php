@@ -62,6 +62,78 @@ class ValorCalculator
         return $valor;
     }
 
+    public function calculateBreakdown(Round $round, int $realmId): array
+    {
+        $dominions = $round->activeDominions()
+            ->human()
+            ->where('protection_finished', true)
+            ->where('realm_id', $realmId)
+            ->get();
+
+        $dominionIds = $dominions->pluck('id');
+
+        // Get round-wide totals via aggregate queries
+        $totals = DailyRanking::query()
+            ->where('round_id', $round->id)
+            ->where('realm_number', '!=', 0)
+            ->whereIn('key', ['largest-dominions', 'total-land-conquered', 'bounties-collected'])
+            ->selectRaw('`key`, SUM(`value`) as total')
+            ->groupBy('key')
+            ->pluck('total', 'key');
+        $totalLand = $totals->get('largest-dominions', 0);
+        $totalLandConquered = $totals->get('total-land-conquered', 0);
+        $totalBounties = $totals->get('bounties-collected', 0);
+
+        // Only fetch rankings for this realm's dominions
+        $rankings = DailyRanking::query()
+            ->where('round_id', $round->id)
+            ->whereIn('dominion_id', $dominionIds)
+            ->whereIn('key', ['largest-dominions', 'total-land-conquered', 'bounties-collected'])
+            ->get();
+
+        $valor = Valor::where('round_id', $round->id)
+            ->whereIn('dominion_id', $dominionIds)
+            ->get();
+
+        $breakdown = [];
+        foreach ($dominions as $dominion) {
+            $domRankings = $rankings->where('dominion_id', $dominion->id);
+            $landRank = $domRankings->where('key', 'largest-dominions')->pluck('rank')->first() ?? 0;
+            $landConquered = $domRankings->where('key', 'total-land-conquered')->pluck('value')->first() ?? 0;
+            $bounties = $domRankings->where('key', 'bounties-collected')->pluck('value')->first() ?? 0;
+
+            $landRankValor = $this->getFixedValorLandRank($landRank);
+            $totalLandValor = $this->getFixedValorTotalLand($dominion, $totalLand);
+            $conqueredValor = $this->getFixedValorTotalConquered($landConquered, $totalLandConquered);
+            $bountiesValor = $this->getFixedValorBounties($bounties, $totalBounties);
+
+            $domValor = $valor->where('dominion_id', $dominion->id);
+            $warHitValor = $domValor->where('source', 'war_hit')->sum('amount');
+            $largestHitValor = $domValor->where('source', 'largest_hit')->sum('amount');
+            $wonderValor = $domValor->whereIn('source', ['wonder', 'wonder_neutral'])->sum('amount');
+
+            $total = $landRankValor + $totalLandValor + $conqueredValor + $bountiesValor + $warHitValor + $largestHitValor + $wonderValor;
+
+            $breakdown[] = [
+                'dominion' => $dominion,
+                'land_rank' => $landRankValor,
+                'total_land' => $totalLandValor,
+                'land_conquered' => $conqueredValor,
+                'bounties' => $bountiesValor,
+                'war_hits' => $warHitValor,
+                'largest_hits' => $largestHitValor,
+                'wonders' => $wonderValor,
+                'total' => $total,
+            ];
+        }
+
+        usort($breakdown, function ($a, $b) {
+            return $b['total'] <=> $a['total'];
+        });
+
+        return $breakdown;
+    }
+
     public function calculateFixedValor(Round $round, Collection $dominions)
     {
         $rankings = DailyRanking::query()

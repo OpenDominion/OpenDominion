@@ -157,6 +157,10 @@ class UnitHelper
             'counts_as_spy' => 'Each unit counts as %.2f of a spy.',
             'counts_as_wizard' => 'Each unit counts as %.2f of a wizard.',
 
+            // Summoning related
+            'not_trainable' => 'Cannot be trained directly.',
+            'summons_unit' => 'Every %2$d at home summons 1 %1$s per hour (capped at %3$d per summoning unit).',
+
             // Casualties related
             'casualties' => '%+d%% casualties.',
             'casualties_defense' => '%+d%% defensive casualties.',
@@ -273,6 +277,16 @@ class UnitHelper
                     if ($perkValue[1] > 1) {
                         $perkValue[0] = Str::plural($perkValue[0]);
                     }
+                }
+
+                // Special case for summoning
+                if ($perk->key === 'summons_unit') {
+                    $slot = (int)$perkValue[0];
+                    $summonedUnit = $race->units->filter(static function ($unit) use ($slot) {
+                        return ($unit->slot === $slot);
+                    })->first();
+
+                    $perkValue[0] = $summonedUnit->name;
                 }
 
                 // Special case for spells

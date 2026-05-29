@@ -78,7 +78,7 @@
                     </div>
                 </form>
             @else
-                <form action="{{ route('dominion.heroes') }}" method="post" role="form">
+                <form action="{{ route('dominion.heroes') }}" method="post" role="form" class="disable-after-click">
                     @csrf
                     <div class="card card-primary">
                         <div class="card-header">

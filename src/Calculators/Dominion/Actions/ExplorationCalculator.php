@@ -68,7 +68,7 @@ class ExplorationCalculator
 
         // Techs
         $techBonus = $dominion->getTechPerkMultiplier('explore_platinum_cost');
-        $excludedRaces = ['firewalker', 'goblin', 'lycanthrope', 'vampire'];
+        $excludedRaces = ['firewalker', 'goblin', 'kobold', 'lycanthrope', 'vampire'];
         if ($techBonus != 0 && in_array($dominion->race->key, $excludedRaces)) {
             // Bonus is halved for these races
             $techBonus *= 0.5;

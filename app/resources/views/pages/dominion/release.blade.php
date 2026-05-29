@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-cycle"></i> Release Troops</span>
                 </div>
-                <form action="{{ route('dominion.military.release') }}" method="post" role="form">
+                <form action="{{ route('dominion.military.release') }}" method="post" role="form" class="disable-after-click">
                     @csrf
                     <div class="card-body table-responsive no-padding">
                         <table class="table">

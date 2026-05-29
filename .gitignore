@@ -5,7 +5,7 @@
 /app/routes/web.local.php
 /node_modules/
 /public/assets/
-/public/hot/
+/public/hot
 /public/storage
 /public/mix-manifest.json
 /storage/*.key

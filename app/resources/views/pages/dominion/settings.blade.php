@@ -18,149 +18,195 @@
         }
         $rowCount = isset($selectedDominion->settings['resources_overview']) ? count($selectedDominion->settings['resources_overview']) : 3;
     @endphp
-    <div class="card card-primary">
-                <div class="card-header">
-                    <span class="card-title"><i class="fa fa-cog"></i> Dominion Settings</span>
+    <form class="form" action="{{ route('dominion.misc.settings') }}" method="post">
+        @csrf
+
+        <div class="card card-primary">
+            <div class="card-header">
+                <span class="card-title"><i class="fa fa-shield"></i> Gameplay</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Guard:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="guard_lock" id="guard_lock" {{ isset($selectedDominion->settings['guard_lock']) && $selectedDominion->settings['guard_lock'] == 'on' ? 'checked' : null }} />
+                                <label class="form-check-label" for="guard_lock">Guard Lock</label>
+                            </div>
+                            <span class="small">Prevent actions that would reset your guard application, such as invading, casting, or spying on targets outside of guard range, or attacking wonders.</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Chaos League:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_private" value="private" checked />
+                                <label class="form-check-label" for="black_guard_private">Visible to members only</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_public" value="public" {{ isset($selectedDominion->settings['black_guard_icon']) && $selectedDominion->settings['black_guard_icon'] == 'public' ? 'checked' : null }} />
+                                <label class="form-check-label" for="black_guard_public">Visible to everyone</label>
+                            </div>
+                            <span class="small">Controls whether your Chaos League membership icon is visible to all players or only other members.</span>
+                        </div>
+                    </div>
                 </div>
-                <form class="form" action="{{ route('dominion.misc.settings') }}" method="post">
-                    @csrf
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <label class="form-label mb-0">Resources Overview:</label>
-                                    <div>
-                                        <select class="form-select" id="rowCountSelect" style="width: auto; display: inline-block; margin-bottom: 5px; margin-right: 5px;">
-                                            <option value="1" {{ $rowCount == 1 ? 'selected' : '' }}>1 Row</option>
-                                            <option value="2" {{ $rowCount == 2 ? 'selected' : '' }}>2 Rows</option>
-                                            <option value="3" {{ $rowCount == 3 ? 'selected' : '' }}>3 Rows</option>
-                                            <option value="4" {{ $rowCount == 4 ? 'selected' : '' }}>4 Rows</option>
+            </div>
+        </div>
+
+        <div class="card card-primary">
+            <div class="card-header">
+                <span class="card-title"><i class="fa fa-eye"></i> Display</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <label class="form-label mb-0">Resources Overview:</label>
+                            <div>
+                                <select class="form-select" id="rowCountSelect" style="width: auto; display: inline-block; margin-bottom: 5px; margin-right: 5px;">
+                                    <option value="1" {{ $rowCount == 1 ? 'selected' : '' }}>1 Row</option>
+                                    <option value="2" {{ $rowCount == 2 ? 'selected' : '' }}>2 Rows</option>
+                                    <option value="3" {{ $rowCount == 3 ? 'selected' : '' }}>3 Rows</option>
+                                    <option value="4" {{ $rowCount == 4 ? 'selected' : '' }}>4 Rows</option>
+                                </select>
+                                <button type="button" class="btn btn-secondary" id="resetButton">Reset to Default</button>
+                            </div>
+                        </div>
+                        <span class="small d-block mb-2">Customize the stats shown in the overview bar on your status page.</span>
+                        @for ($row = 0; $row < 4; $row++)
+                            <div class="mb-3 row resource-row" data-row="{{ $row }}">
+                                @for ($col = 0; $col < 4; $col++)
+                                    <div class="col-3">
+                                        <select class="form-select resource-select-{{ $row }}" name="resources_overview[{{ $row }}][{{ $col }}]" data-default="{{ $defaultConfig[$row][$col] ?? '' }}">
+                                            @foreach ($resourceOptions as $resourceOption)
+                                                <option value="{{ $resourceOption }}" {{ isset($config[$row][$col]) && $config[$row][$col] == $resourceOption ? 'selected' : '' }}>
+                                                    {{ $resourceOption }}
+                                                </option>
+                                            @endforeach
                                         </select>
-                                        <button type="button" class="btn btn-secondary" id="resetButton">Reset to Default</button>
-                                    </div>
-                                </div>
-                                @for ($row = 0; $row < 4; $row++)
-                                    <div class="mb-3 row resource-row" data-row="{{ $row }}">
-                                        @for ($col = 0; $col < 4; $col++)
-                                            <div class="col-3">
-                                                <select class="form-select resource-select-{{ $row }}" name="resources_overview[{{ $row }}][{{ $col }}]" data-default="{{ $defaultConfig[$row][$col] ?? '' }}">
-                                                    @foreach ($resourceOptions as $resourceOption)
-                                                        <option value="{{ $resourceOption }}" {{ isset($config[$row][$col]) && $config[$row][$col] == $resourceOption ? 'selected' : '' }}>
-                                                            {{ $resourceOption }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        @endfor
                                     </div>
                                 @endfor
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Preferred Title:</label>
-                                    <select class="form-select" name="preferred_title">
-                                        @foreach ($rankingsHelper->getRankings() as $ranking)
-                                            <option value="{{ $ranking['key'] }}" {{ isset($selectedDominion->settings['preferred_title']) && $selectedDominion->settings['preferred_title'] == $ranking['key'] ? 'selected' : null }}>
-                                                {{ $ranking['name'] }} - "{{ $ranking['title'] }}"
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <span class="small">Used in round forum if you currently hold this title, otherwise uses the first in the list.</span>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Title Icon:</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="show_icon" id="show_icon" {{ isset($selectedDominion->settings['show_icon']) && $selectedDominion->settings['show_icon'] == 'on' ? 'checked' : null }} />
-                                        <label class="form-check-label" for="show_icon">Display icon on the realm page</label>
-                                    </div>
-                                    <span class="small">Uses your preferred title, if possible.</span>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Chaos League:</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_private" value="private" checked />
-                                        <label class="form-check-label" for="black_guard_private">Visible to members only</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_public" value="public" {{ isset($selectedDominion->settings['black_guard_icon']) && $selectedDominion->settings['black_guard_icon'] == 'public' ? 'checked' : null }} />
-                                        <label class="form-check-label" for="black_guard_public">Visible to everyone</label>
-                                    </div>
-                                </div>
+                        @endfor
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Preferred Title:</label>
+                            <select class="form-select" name="preferred_title">
+                                @foreach ($rankingsHelper->getRankings() as $ranking)
+                                    <option value="{{ $ranking['key'] }}" {{ isset($selectedDominion->settings['preferred_title']) && $selectedDominion->settings['preferred_title'] == $ranking['key'] ? 'selected' : null }}>
+                                        {{ $ranking['name'] }} - "{{ $ranking['title'] }}"
+                                    </option>
+                                @endforeach
+                            </select>
+                            <span class="small">Displayed next to your name in the round forum if you currently hold this title.</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Title Icon:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="show_icon" id="show_icon" {{ isset($selectedDominion->settings['show_icon']) && $selectedDominion->settings['show_icon'] == 'on' ? 'checked' : null }} />
+                                <label class="form-check-label" for="show_icon">Display icon on the realm page</label>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Hide Sidebar Links:</label>
-                                    @foreach ([
-                                        'explore_land'    => 'Explore Land',
-                                        'hero_battles'    => 'Hero Battles',
-                                        'hero_tournament' => 'Hero Tournament',
-                                        'journal'         => 'Journal',
-                                        'invade'          => 'Invade',
-                                        'calculators'     => 'Calculators',
-                                        'world'           => 'The World',
-                                        'council'         => 'The Council',
-                                        'rankings'        => 'Rankings',
-                                        'forum'           => 'Round Forum',
-                                    ] as $linkKey => $linkLabel)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="hidden_links[]" id="hidden_{{ $linkKey }}" value="{{ $linkKey }}"
-                                                {{ in_array($linkKey, $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
-                                            <label class="form-check-label" for="hidden_{{ $linkKey }}">{{ $linkLabel }}</label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Notifications:</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="hide_intel_for_sale_badge" id="hide_intel_for_sale_badge" {{ isset($selectedDominion->settings['hide_intel_for_sale_badge']) && $selectedDominion->settings['hide_intel_for_sale_badge'] == 'on' ? 'checked' : null }} />
-                                        <label class="form-check-label" for="hide_intel_for_sale_badge">Hide intel for sale badge on Valuables</label>
-                                    </div>
-                                </div>
+                            <span class="small">Uses your preferred title, if possible.</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Hide Badges:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="hide_intel_for_sale_badge" id="hide_intel_for_sale_badge" {{ isset($selectedDominion->settings['hide_intel_for_sale_badge']) && $selectedDominion->settings['hide_intel_for_sale_badge'] == 'on' ? 'checked' : null }} />
+                                <label class="form-check-label" for="hide_intel_for_sale_badge">Intel for sale on Valuables</label>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Mobile Bottom Nav:</label>
-                                    @php
-                                        $bottomNavOptions = [
-                                            ''             => '—',
-                                            'advisors'     => 'Advisors',
-                                            'bank'         => 'Bank',
-                                            'bounty_board' => 'Bounty Board',
-                                            'calculate'    => 'Calculate',
-                                            'construct'    => 'Construct',
-                                            'espionage'    => 'Espionage',
-                                            'explore'      => 'Explore',
-                                            'improvements' => 'Improvements',
-                                            'magic'        => 'Magic',
-                                            'military'     => 'Military',
-                                            'realm'        => 'Realm',
-                                            'search'       => 'Search',
-                                            'town_crier'   => 'Town Crier',
-                                            'sidebar'      => 'Sidebar Toggle',
-                                        ];
-                                        $bottomNavDefaults = ['advisors', 'explore', 'construct', 'improvements', 'military', 'town_crier', 'sidebar'];
-                                        $bottomNavSaved = $selectedDominion->settings['bottom_nav'] ?? $bottomNavDefaults;
-                                    @endphp
-                                    @for ($slot = 0; $slot < 7; $slot++)
-                                        <div class="d-flex align-items-center mb-1 gap-2">
-                                            <label class="form-label mb-0" style="min-width:3rem;">Slot {{ $slot + 1 }}</label>
-                                            <select class="form-select form-select-sm bottom-nav-slot" name="bottom_nav[]" data-default="{{ $bottomNavDefaults[$slot] }}">
-                                                @foreach ($bottomNavOptions as $optKey => $optLabel)
-                                                    <option value="{{ $optKey }}" {{ ($bottomNavSaved[$slot] ?? '') === $optKey ? 'selected' : '' }}>{{ $optLabel }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    @endfor
-                                    <button type="button" class="btn btn-sm btn-secondary mt-1" id="resetBottomNav">Reset to Defaults</button>
-                                </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="hide_council_badge" id="hide_council_badge" {{ isset($selectedDominion->settings['hide_council_badge']) && $selectedDominion->settings['hide_council_badge'] == 'on' ? 'checked' : null }} />
+                                <label class="form-check-label" for="hide_council_badge">Unread council posts</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="hide_forum_badge" id="hide_forum_badge" {{ isset($selectedDominion->settings['hide_forum_badge']) && $selectedDominion->settings['hide_forum_badge'] == 'on' ? 'checked' : null }} />
+                                <label class="form-check-label" for="hide_forum_badge">Unread forum posts</label>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Update Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-primary">
+            <div class="card-header">
+                <span class="card-title"><i class="fa fa-compass"></i> Navigation</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Hide Sidebar Links:</label>
+                            @foreach ([
+                                'explore_land'    => 'Explore Land',
+                                'hero_battles'    => 'Hero Battles',
+                                'hero_tournament' => 'Hero Tournament',
+                                'journal'         => 'Journal',
+                                'invade'          => 'Invade',
+                                'calculators'     => 'Calculators',
+                                'world'           => 'The World',
+                                'council'         => 'The Council',
+                                'rankings'        => 'Rankings',
+                                'forum'           => 'Round Forum',
+                            ] as $linkKey => $linkLabel)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="hidden_links[]" id="hidden_{{ $linkKey }}" value="{{ $linkKey }}"
+                                        {{ in_array($linkKey, $selectedDominion->settings['hidden_links'] ?? []) ? 'checked' : null }} />
+                                    <label class="form-check-label" for="hidden_{{ $linkKey }}">{{ $linkLabel }}</label>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                </form>
-    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Bottom Nav:</label>
+                            @php
+                                $bottomNavOptions = [
+                                    ''             => '—',
+                                    'advisors'     => 'Advisors',
+                                    'bank'         => 'Bank',
+                                    'bounty_board' => 'Bounty Board',
+                                    'calculate'    => 'Calculate',
+                                    'construct'    => 'Construct',
+                                    'espionage'    => 'Espionage',
+                                    'explore'      => 'Explore',
+                                    'improvements' => 'Improvements',
+                                    'magic'        => 'Magic',
+                                    'military'     => 'Military',
+                                    'realm'        => 'Realm',
+                                    'search'       => 'Search',
+                                    'town_crier'   => 'Town Crier',
+                                    'sidebar'      => 'Sidebar Toggle',
+                                ];
+                                $bottomNavDefaults = ['advisors', 'explore', 'construct', 'improvements', 'military', 'town_crier', 'sidebar'];
+                                $bottomNavSaved = $selectedDominion->settings['bottom_nav'] ?? $bottomNavDefaults;
+                            @endphp
+                            @for ($slot = 0; $slot < 7; $slot++)
+                                <div class="d-flex align-items-center mb-1 gap-2">
+                                    <label class="form-label mb-0" style="min-width:3rem;">Slot {{ $slot + 1 }}</label>
+                                    <select class="form-select form-select-sm bottom-nav-slot" name="bottom_nav[]" data-default="{{ $bottomNavDefaults[$slot] }}">
+                                        @foreach ($bottomNavOptions as $optKey => $optLabel)
+                                            <option value="{{ $optKey }}" {{ ($bottomNavSaved[$slot] ?? '') === $optKey ? 'selected' : '' }}>{{ $optLabel }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endfor
+                            <button type="button" class="btn btn-sm btn-secondary mt-1" id="resetBottomNav">Reset to Defaults</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Update Settings</button>
+            </div>
+        </div>
+
+    </form>
 @endsection
 
 @push('inline-scripts')

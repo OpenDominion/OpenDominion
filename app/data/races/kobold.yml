@@ -18,7 +18,7 @@ perks:
 units:
   - name: Underling
     cost:
-      platinum: 315
+      platinum: 325
       ore: 25
     power:
       offense: 2.5
@@ -43,7 +43,7 @@ units:
       defense_from_pairing: 2,1,2 # slot, num required, amount
   - name: Overlord
     cost:
-      platinum: 990
+      platinum: 970
       ore: 50
     power:
       offense: 3

@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-sword"></i> Military</span>
                 </div>
-                <form action="{{ route('dominion.military.train') }}" method="post" role="form">
+                <form action="{{ route('dominion.military.train') }}" method="post" role="form" class="disable-after-click">
                     @csrf
                     @include('partials.user.client-id-field')
                     <div class="card-body table-responsive no-padding">
@@ -44,11 +44,16 @@
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
                                             </span>
                                         </td>
+                                        @php
+                                            $isNotTrainable = false;
+                                        @endphp
                                         @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
                                             @php
                                                 $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
                                                     return ($unit->slot == (int)str_replace('unit', '', $unitType));
                                                 })->first();
+
+                                                $isNotTrainable = (bool)$unit->getPerkValue('not_trainable');
 
                                                 $offensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'offense');
                                                 $defensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'defense');
@@ -86,18 +91,30 @@
                                             {{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}
                                         </td>
                                         <td class="text-center">
-                                            {{ $unitHelper->getUnitCostStringFromArray($trainingCalculator->getTrainingCostsPerUnit($selectedDominion)[$unitType]) }}
+                                            @if ($isNotTrainable)
+                                                <span class="text-muted">Summoned</span>
+                                            @else
+                                                {{ $unitHelper->getUnitCostStringFromArray($trainingCalculator->getTrainingCostsPerUnit($selectedDominion)[$unitType]) }}
+                                            @endif
                                         </td>
                                         <td class="text-center">
-                                            {{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}
+                                            @if ($isNotTrainable)
+                                                <span class="text-muted">&mdash;</span>
+                                            @else
+                                                {{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}
+                                            @endif
                                         </td>
                                         <td class="text-center">
-                                            <div class="input-group">
-                                                <input type="number" name="train[military_{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $trainingCalculator->getMaxTrainable($selectedDominion)[$unitType] }}" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                <button class="btn btn-primary train-max" data-type="military_{{ $unitType }}" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                    Max
-                                                </button>
-                                            </div>
+                                            @if ($isNotTrainable)
+                                                <span class="text-muted">&mdash;</span>
+                                            @else
+                                                <div class="input-group">
+                                                    <input type="number" name="train[military_{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $trainingCalculator->getMaxTrainable($selectedDominion)[$unitType] }}" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                    <button class="btn btn-primary train-max" data-type="military_{{ $unitType }}" type="button" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                        Max
+                                                    </button>
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

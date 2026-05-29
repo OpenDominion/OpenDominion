@@ -5,6 +5,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.50.1] - 2026-05-28
+### Changed
+- Scion now requires 8 successful 75% attacks to select (was 6)
+- Advanced Hero Classes (Scion and Scholar) can no longer be selected until Day 8
+- XP loss from switching Hero Classes capped at 500
+- Lead from the Front: experience boost reduced to 2x (from 2.5x)
+- Lead from the Shadows: experience boost reduced to 1.6x (from 2x)
+- Masonry: lightning bolt damage cap modifier removed (was 5% per 1% owned up to a maximum of 50%)
+- Halfling: added +5 boat capacity [helps OOP], removed population growth bonus (was 10%)
+- Firewalker: Alchemist Flame now also adds 25 points to Forges per Alchemy every hour (was 15)
+- Firewalker Phoenix: -25p (was 925p)
+- Gnome Juggernaut: -25p (was 750p)
+- Icekin: Archmage cost reduction increased to -150p (from -100p)
+- Kobold: now included in races that get half benefit from exploration cost reduction techs
+- Kobold Underling: +10p (from 315p)
+- Kobold Overlord: -20p (from 990p)
+- Lizardfolk: removed food consumption bonus (was -15%)
+- Sylvan Centaur: +20p (from 950p)
+- Sylvan Dryad: +20p (from 1050p)
+- Undead Zombie: -10p (from 225p)
+
 ## [1.50.0] - 2026-05-11
 ### Changed
 - MASSIVE updates across the entire application

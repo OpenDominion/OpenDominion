@@ -194,6 +194,9 @@ class HeroActionService
         }
 
         if ($selectedClass['class_type'] === 'advanced') {
+            if ($dominion->round->daysInRound() < 8) {
+                throw new GameException('Advanced hero classes cannot be selected until day 8 of the round.');
+            }
             if ($dominion->{$selectedClass['requirement_stat']} < $selectedClass['requirement_value']) {
                 throw new GameException('You do not meet the requirements to select this hero class.');
             }
@@ -229,8 +232,9 @@ class HeroActionService
                 $xp = $classData[$selectedClass['key']]['experience'];
             }
 
-            // Cap current class XP at minimum for current level (lose excess XP)
+            // Cap current class XP at minimum for current level (lose excess XP), with a max loss of 500
             $cappedExperience = min($dominion->hero->experience, $this->heroCalculator->getCurrentLevelXP($dominion->hero));
+            $cappedExperience = max($cappedExperience, $dominion->hero->experience - 500);
             $currentLevel = $this->heroCalculator->getHeroLevel($dominion->hero);
             $currentPerkType = $this->heroHelper->getPassivePerkType($dominion->hero->class);
             $currentBonus = $this->heroCalculator->calculatePassiveBonus($currentPerkType, $currentLevel) * (1 - HeroCalculator::INACTIVE_CLASS_PENALTY);

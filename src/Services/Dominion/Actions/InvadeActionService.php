@@ -1300,7 +1300,7 @@ class InvadeActionService
             );
         }
         if ($attackerBoatsLost > 0) {
-            $this->invasionResult['attacker']['boatsLost'] = $attackerBoatsSunk;
+            $this->invasionResult['attacker']['boatsLost'] = $attackerBoatsLost;
         }
     }
 

@@ -2,7 +2,7 @@
     @php
         $bonusDescriptions = $raidHelper->getTacticBonusDescription($tactic->bonuses ?? []);
     @endphp
-    <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post" role="form" id="invasion_form_{{ $tactic->id }}">
+    <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post" role="form" id="invasion_form_{{ $tactic->id }}" class="disable-after-click">
         @csrf
         <input type="hidden" name="calc[wonder]" value="1" />
         <div class="card card-primary">

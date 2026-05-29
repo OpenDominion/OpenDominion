@@ -73,7 +73,7 @@ class AIHelper
             ];
         }
 
-        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead', 'Vampire'];
+        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Planewalker', 'Spirit', 'Sylvan', 'Undead', 'Vampire'];
         if (!in_array($race->name, $racesWithoutOre)) {
             $oreMinePercentage = 0.06;
             if ($race->name == 'Troll') {
@@ -86,7 +86,7 @@ class AIHelper
             ];
         }
 
-        $eliteOnlyRaces = ['Troll'];
+        $eliteOnlyRaces = ['Planewalker', 'Troll'];
         if (in_array($race->name, $eliteOnlyRaces)) {
             $config['military'][0]['unit'] = 'unit4';
         }

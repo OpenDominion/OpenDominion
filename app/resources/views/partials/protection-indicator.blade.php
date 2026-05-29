@@ -7,7 +7,7 @@
                         &laquo; Undo
                     </a>
                 @else
-                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-sm btn-primary py-0">
+                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-sm btn-success py-0">
                         Import
                     </a>
                 @endif
