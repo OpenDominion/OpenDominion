@@ -241,6 +241,11 @@
   pre                         { color: var(--od-text-body); background-color: var(--od-surface-alt); border-color: var(--od-rule-soft); font-family: var(--od-font-mono); }
   .text-success               { color: var(--od-success) !important; }
   .text-danger                { color: var(--od-danger) !important; }
+  .text-green                 { color: var(--od-success) !important; }
+  .text-orange                { color: #b8541a !important; }
+  .text-red                   { color: var(--od-danger) !important; }
+  .text-aqua,
+  .text-light-blue            { color: #3a7a9e !important; }
   .text-muted, .form-text     { color: var(--od-text-secondary) !important; }
   blockquote                  { border-color: var(--od-rule) !important; }
   a, .alert-link              { color: var(--od-link-color); }

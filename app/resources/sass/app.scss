@@ -104,17 +104,6 @@ a {
   white-space: nowrap;
 }
 
-// BS5's default .badge uses display: inline-block + vertical-align: baseline, which
-// pins the badge to its sibling text's baseline and centers digits via line-height.
-// Numerals lack descenders, so they render high in the line box and look top-heavy.
-// Switching to inline-flex + middle alignment centers content geometrically instead.
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
-
 // ─── Custom App Styles ────────────────────────────────────────────────────────
 
 @media (min-width: 768px) {
@@ -664,5 +653,29 @@ html.hourchange:after {
     &.text-bg-success { background-color: var(--od-success-dark) !important; }
     &.text-bg-danger  { background-color: var(--od-danger-dark)  !important; }
     &.text-bg-warning { background-color: var(--od-warning-dark) !important; }
+  }
+}
+
+// DM Sans (Frost / Dusk body font) seats cap-height glyphs near the top of
+// the em-box, so with the inline-flex centering above they feel crowded
+// against the upper edge. A small top-padding bias pushes the line down
+// visually so the text reads as seated rather than top-anchored.
+[data-color-scheme="frost"],
+[data-color-scheme="dusk"] {
+  .badge {
+    padding-top: 0.40em;
+    padding-bottom: 0.35em;
+  }
+}
+
+// Crimson Pro (Parchment / Grimoire body font) reads tighter than DM Sans,
+// so Bootstrap's symmetric 0.35em padding feels loose around the thinner
+// serif letterforms. Trim total padding for a more proportional badge, with
+// a small bottom bias so the baseline sits comfortably above the lower edge.
+[data-color-scheme="parchment"],
+[data-color-scheme="grimoire"] {
+  .badge {
+    padding-top: 0.25em;
+    padding-bottom: 0.3em;
   }
 }

@@ -232,6 +232,11 @@
   pre                         { color: var(--od-text-body); background-color: var(--od-surface-alt); border-color: var(--od-border-soft); font-family: var(--od-font-mono); }
   .text-success               { color: var(--od-success) !important; }
   .text-danger                { color: var(--od-danger) !important; }
+  .text-green                 { color: var(--od-success) !important; }
+  .text-orange                { color: #b85e1a !important; }
+  .text-red                   { color: var(--od-danger) !important; }
+  .text-aqua,
+  .text-light-blue            { color: var(--od-info) !important; }
   .text-muted, .form-text     { color: var(--od-text-secondary) !important; }
   blockquote                  { border-color: var(--od-border-soft) !important; }
   a, .alert-link              { color: var(--od-link-color); }
@@ -254,7 +259,7 @@
     background: var(--od-surface);
     border-color: var(--od-border-soft);
   }
-  .app-header .ticker-lbl { color: var(--od-text-subtle); font-size: 0.75rem; }
+  .app-header .ticker-lbl { color: var(--od-text-subtle); }
   .app-header .ticker-val { color: var(--od-primary); font-family: var(--od-font-mono); }
   .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid var(--od-border-soft); }
