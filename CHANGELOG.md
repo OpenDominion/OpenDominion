@@ -41,7 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Mechanic: Valuables
   - You can now discover and steal loot from other players, which can then be sold for platinum
   - Info ops have a 1% chance to passively discover a valuable in the target's possession
-  - New Spy Operation: Locate Valuables, has a 10% chance of finding a valuable in the target's possession
+  - New Spy Operation: Locate Valuables, has a 20% chance of finding a valuable in the target's possession
   - Rarity is determined by target land size and spy ratio, which then determines difficulty and sale price
   - Stealing a discovered valuable requires a multi-hour spy operation that drains spy strength each hour
   - Alternatively, sell intel on a discovered valuable to a realm mate at a fixed price

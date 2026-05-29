@@ -109,7 +109,7 @@
                     <div class="card-body">
                         <table class="table table-sm mb-0">
                             <colgroup>
-                                <col width="150">
+                                <col width="175">
                                 <col>
                             </colgroup>
                             @foreach ($notifications as $notification)
