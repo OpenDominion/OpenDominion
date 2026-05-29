@@ -1054,11 +1054,11 @@
 <section class="intro">
   <h2>A Legacy Carved in Stone</h2>
   <p>
-    The OpenDominion Hall of Fame exists to celebrate the individuals whose extraordinary contributions
-    shaped not just a game, but a community. From the very first line of code to the fiercest battles
-    waged across countless rounds, these inductees represent the heart and soul of OpenDominion.
-    Their dedication &mdash; whether through building, teaching, or competing &mdash; has left an indelible
-    mark on every ruler to have led a dominion through the ages.
+    The OpenDominion Hall of Fame exists to celebrate the individuals whose extraordinary
+    contributions shaped not just a game, but a community. From the very first line of code to
+    the fiercest battles waged across countless rounds, these inductees represent the heart and
+    soul of OpenDominion. Their dedication &mdash; whether through building, teaching, or
+    competing &mdash; has left a mark on every ruler to have led a dominion through the ages.
   </p>
 </section>
 
