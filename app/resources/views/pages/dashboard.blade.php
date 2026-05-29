@@ -81,22 +81,22 @@
 
                                                 <span class="badge text-bg-success">Selected</span>
                                             @else
-                                                <form action="{{ route('dominion.select', $dominion) }}" method="post">
+                                                <form action="{{ route('dominion.select', $dominion) }}" method="post" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-link text-decoration-none p-0">{{ $dominion->name }}</button>
-
-                                                    @if (!$dominion->round->hasStarted())
-                                                        <span class="badge text-bg-warning">Starting soon</span>
-                                                    @elseif (!$dominion->round->hasEnded())
-                                                        <span class="badge text-bg-info">In Progress</span>
-                                                    @endif
-
-                                                    @if ($dominion->locked_at !== null)
-                                                        <span class="badge text-bg-danger">Locked</span>
-                                                    @elseif ($dominion->isAbandoned())
-                                                        <span class="badge text-bg-warning">Abandoned</span>
-                                                    @endif
+                                                    <button type="submit" class="btn btn-link p-0 border-0 align-baseline lh-1 text-decoration-none">{{ $dominion->name }}</button>
                                                 </form>
+
+                                                @if (!$dominion->round->hasStarted())
+                                                    <span class="badge text-bg-warning">Starting soon</span>
+                                                @elseif (!$dominion->round->hasEnded())
+                                                    <span class="badge text-bg-info">In Progress</span>
+                                                @endif
+
+                                                @if ($dominion->locked_at !== null)
+                                                    <span class="badge text-bg-danger">Locked</span>
+                                                @elseif ($dominion->isAbandoned())
+                                                    <span class="badge text-bg-warning">Abandoned</span>
+                                                @endif
                                             @endif
                                         </td>
                                         <td class="text-center">
