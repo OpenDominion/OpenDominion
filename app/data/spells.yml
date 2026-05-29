@@ -224,7 +224,7 @@ alchemist_flame:
     - firewalker
   perks:
     platinum_production_raw: 12
-    alchemy_improvement_forges_raw: 15
+    alchemy_improvement_forges_raw: 25
 erosion:
   name: Erosion
   category: self
