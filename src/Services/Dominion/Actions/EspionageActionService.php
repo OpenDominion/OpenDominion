@@ -570,6 +570,7 @@ class EspionageActionService
 
         $dominion->{"resource_{$resource}"} += $amountStolen;
         $dominion->{"stat_total_{$resource}_stolen"} += $amountStolen;
+        $target->{"stat_total_{$resource}_stolen_from"} += $amountStolen;
         $target->{"resource_{$resource}"} -= $amountStolen;
 
         // Surreal Perception

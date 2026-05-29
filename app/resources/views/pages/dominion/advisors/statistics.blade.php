@@ -169,11 +169,14 @@
                             <table class="table">
                                 <colgroup>
                                     <col width="50%">
-                                    <col width="50%">
+                                    <col width="25%">
+                                    <col width="25%">
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Theft</th>
+                                        <th>Theft</th>
+                                        <th>Offense</th>
+                                        <th>Defense</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -182,11 +185,17 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_total_platinum_stolen) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_total_platinum_stolen_from) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Lumber Stolen:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_total_lumber_stolen) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_total_lumber_stolen_from) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -194,11 +203,17 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_total_food_stolen) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_total_food_stolen_from) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Mana Stolen:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_total_mana_stolen) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_total_mana_stolen_from) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -206,11 +221,17 @@
                                         <td>
                                             <strong>{{ number_format($target->stat_total_ore_stolen) }}</strong>
                                         </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_total_ore_stolen_from) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Gems Stolen:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_total_gems_stolen) }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_total_gems_stolen_from) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
