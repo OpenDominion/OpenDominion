@@ -32,6 +32,7 @@ class Post extends AbstractModel
 
     protected $casts = [
         'flagged_by' => 'array',
+        'flagged_for_removal' => 'boolean',
     ];
 
     public function dominion()

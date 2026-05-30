@@ -282,9 +282,9 @@ class ForumController extends AbstractDominionController
      */
     protected function guardAgainstRepeatOffenders(): void
     {
-        $flaggedThreadCount = Forum\Post::where('flagged_for_removal', true)->where('dominion_id', $this->getSelectedDominion()->id)->count();
+        $flaggedThreadCount = Forum\Thread::where('flagged_for_removal', true)->where('dominion_id', $this->getSelectedDominion()->id)->count();
         $flaggedPostCount = Forum\Post::where('flagged_for_removal', true)->where('dominion_id', $this->getSelectedDominion()->id)->count();
-        if (($flaggedThreadCount + $flaggedPostCount) >= 5) {
+        if (($flaggedThreadCount + $flaggedPostCount) >= 3) {
             throw new GameException('You have been banned from posting for the remainder of the round.');
         }
     }

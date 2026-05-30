@@ -14,6 +14,10 @@ class ForumService
 {
     use DominionGuardsTrait;
 
+    public function __construct(protected ContentModerationService $contentModeration)
+    {
+    }
+
     /**
      * Returns the round's forum threads.
      *
@@ -57,6 +61,7 @@ class ForumService
             'title' => $title,
             'body' => $body,
             'last_activity' => now(),
+            'flagged_for_removal' => $this->contentModeration->shouldFlag($title . "\n" . $body),
         ]);
     }
 
@@ -77,6 +82,7 @@ class ForumService
             'forum_thread_id' => $thread->id,
             'dominion_id' => $dominion->id,
             'body' => $body,
+            'flagged_for_removal' => $this->contentModeration->shouldFlag($body),
         ]);
     }
 

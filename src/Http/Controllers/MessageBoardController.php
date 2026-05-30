@@ -419,9 +419,9 @@ class MessageBoardController extends AbstractController
      */
     protected function guardAgainstRepeatOffenders(User $user): void
     {
-        $flaggedThreadCount = MessageBoard\Post::where('flagged_for_removal', true)->where('user_id', $user->id)->count();
+        $flaggedThreadCount = MessageBoard\Thread::where('flagged_for_removal', true)->where('user_id', $user->id)->count();
         $flaggedPostCount = MessageBoard\Post::where('flagged_for_removal', true)->where('user_id', $user->id)->count();
-        if (($flaggedThreadCount + $flaggedPostCount) >= 5) {
+        if (($flaggedThreadCount + $flaggedPostCount) >= 3) {
             throw new GameException('You have been banned from posting.');
         }
     }

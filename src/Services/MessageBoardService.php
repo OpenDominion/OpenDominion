@@ -10,6 +10,10 @@ use RuntimeException;
 
 class MessageBoardService
 {
+    public function __construct(protected ContentModerationService $contentModeration)
+    {
+    }
+
     /**
      * Returns message board threads.
      *
@@ -62,6 +66,7 @@ class MessageBoardService
             'title' => $title,
             'body' => $body,
             'last_activity' => now(),
+            'flagged_for_removal' => $this->contentModeration->shouldFlag($title . "\n" . $body),
         ];
 
         $attributes = array_merge($attributes, $this->resolveHomepageAttributes($category, $homepageFields));
@@ -144,6 +149,7 @@ class MessageBoardService
             'message_board_thread_id' => $thread->id,
             'user_id' => $user->id,
             'body' => $body,
+            'flagged_for_removal' => $this->contentModeration->shouldFlag($body),
         ]);
     }
 
