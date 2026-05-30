@@ -174,6 +174,10 @@
             @if ($gameEvent->source->realm_id == $selectedDominion->realm->id || $gameEvent->target->realm_id == $selectedDominion->realm->id)
                 <a href="{{ route('dominion.event', [$gameEvent->id]) }}"><i class="ra ra-sword ra-fw"></i></a>
             @endif
+        @elseif ($gameEvent->type === 'wonder_destroyed')
+            @if (isset($gameEvent->data['destroyedByRealmId']) && $gameEvent->data['destroyedByRealmId'] == $selectedDominion->realm->id)
+                <a href="{{ route('dominion.event', [$gameEvent->id]) }}"><i class="ra ra-sword ra-fw"></i></a>
+            @endif
         @endif
     </td>
 </tr>

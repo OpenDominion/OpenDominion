@@ -522,6 +522,44 @@ class WonderActionService
             }
         }
 
+        // Snapshot damage breakdown before deletion
+        $damageRecords = $wonder->damage()
+            ->select('realm_id', 'dominion_id', 'source', DB::raw('SUM(damage) as total_damage'))
+            ->groupBy('realm_id', 'dominion_id', 'source')
+            ->get();
+
+        $breakdown = [];
+        foreach ($damageRecords as $record) {
+            $key = $record->dominion_id;
+            if (!isset($breakdown[$key])) {
+                $dom = $friendlyDominions->firstWhere('id', $record->dominion_id)
+                    ?? Dominion::find($record->dominion_id);
+                $breakdown[$key] = [
+                    'dominion_id' => $record->dominion_id,
+                    'dominion_name' => $dom->name,
+                    'realm_id' => $record->realm_id,
+                    'realm_number' => $dom->realm->number,
+                    'damage_attack' => 0,
+                    'damage_cyclone' => 0,
+                    'prestige' => $prestigeRewards[$record->dominion_id] ?? 0,
+                    'mastery' => $masteryRewards[$record->dominion_id] ?? 0,
+                ];
+            }
+            if ($record->source === 'attack') {
+                $breakdown[$key]['damage_attack'] = (int) $record->total_damage;
+            } else {
+                $breakdown[$key]['damage_cyclone'] = (int) $record->total_damage;
+            }
+        }
+
+        $breakdown = collect($breakdown)->map(function ($entry) {
+            $entry['damage_total'] = $entry['damage_attack'] + $entry['damage_cyclone'];
+            return $entry;
+        })->sortByDesc('damage_total')->values()->toArray();
+
+        $this->attackResult['wonder']['damageBreakdown'] = $breakdown;
+        $this->attackResult['wonder']['totalDamage'] = array_sum(array_column($breakdown, 'damage_total'));
+
         $wonder->damage()->delete();
 
         $this->attackResult['wonder']['power'] = $wonder->power;

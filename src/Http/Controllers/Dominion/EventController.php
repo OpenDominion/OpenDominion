@@ -8,6 +8,7 @@ use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\RoundWonder;
 
 class EventController extends AbstractDominionController
 {
@@ -38,7 +39,7 @@ class EventController extends AbstractDominionController
 
     private function canView(GameEvent $event, Dominion $dominion): bool
     {
-        if($dominion->user && $dominion->user->isStaff()) {
+        if($event->source_type !== RoundWonder::class && $dominion->user && $dominion->user->isStaff()) {
             return true;
         }
 
@@ -54,8 +55,16 @@ class EventController extends AbstractDominionController
             return true;
         }
 
-        if($event->target_type === Realm::class && $event->target->id == $dominion->realm->id) {
+        if($event->target_type === Realm::class && $event->target !== null && $event->target->id == $dominion->realm->id) {
             return true;
+        }
+
+        if($event->source_type === RoundWonder::class) {
+            return $dominion->realm_id == ($event->data['destroyedByRealmId'] ?? null);
+        }
+
+        if($event->target_type === RoundWonder::class && $event->source !== null) {
+            return $event->source->realm_id == $dominion->realm_id;
         }
 
         return false;
