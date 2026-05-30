@@ -4,8 +4,8 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use OpenDominion\Exceptions\GameException;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Hero;
