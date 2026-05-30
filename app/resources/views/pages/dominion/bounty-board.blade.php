@@ -52,7 +52,7 @@
                             @endif
                             @if (!$selectedDominion->hero->getPerkMultiplier('xp_from_ops_penalty'))
                                 @if ($selectedDominion->daily_xp >= \OpenDominion\Calculators\Dominion\HeroCalculator::DAILY_OPS_XP_CAP)
-                                    <p>You have reached the cap of <b class="text-success">{{ \OpenDominion\Calculators\Dominion\HeroCalculator::DAILY_OPS_XP_CAP }}</b> XP collected from ops today.</p>
+                                    <p>You have reached the cap of <b class="text-green">{{ \OpenDominion\Calculators\Dominion\HeroCalculator::DAILY_OPS_XP_CAP }}</b> XP collected from ops today.</p>
                                 @else
                                     <p>You have collected <b>{{ sprintf("%.1f", $selectedDominion->daily_xp) }}</b> / {{ \OpenDominion\Calculators\Dominion\HeroCalculator::DAILY_OPS_XP_CAP }} raw XP allowed from ops per day.</p>
                                 @endif
