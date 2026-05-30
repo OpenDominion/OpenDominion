@@ -1,0 +1,273 @@
+{
+  "types": {
+    "relic": {
+      "adjectives": [
+        "Shattered", "Sacred", "Forsaken", "Ancient", "Withered",
+        "Hallowed", "Cursed", "Pale", "Sunken", "Ashen",
+        "Twin", "Bleeding", "Whispering", "Forgotten", "Blackened",
+        "Gilded", "Wrathful", "Sorrowful", "Bound", "Splintered"
+      ],
+      "materials": [
+        "Obsidian", "Ivory", "Bronze", "Bone", "Onyx",
+        "Driftwood", "Iron", "Granite", "Brass", "Salt-Crusted",
+        "Petrified", "Jade", "Soapstone", "Coral", "Lacquered"
+      ],
+      "bases": [
+        "Idol", "Reliquary", "Censer", "Effigy", "Totem",
+        "Altarpiece", "Skull", "Urn", "Sigil-Stone", "Phylactery",
+        "Hand", "Mask", "Fetish", "Cairn-Marker", "Heart-Stone",
+        "Tablet", "Charm", "Talisman"
+      ],
+      "places": [
+        "the Iron Court", "the Vale of Rust", "Karn-Drim", "the Ember Hold",
+        "the Pale Reaches", "Valdenmere", "the Ashen Marches", "Ostvik",
+        "the Shrouded Isle", "the Quiet Tombs", "Mor-Vethal", "Thornwatch",
+        "the Sundered Steps", "the Drowned Cathedral"
+      ],
+      "events": [
+        "Sundering", "Last Crusade", "Long Silence", "Ember Wars",
+        "Black Solstice", "Fall of Karn", "Witch-Burnings", "Hollowing",
+        "Rite of Coals", "First Compact", "Reaping Years", "Pale Vigil"
+      ],
+      "possessives": [
+        "Vaelmorn's", "The Prophet's", "Saint Korven's", "The Hollow King's",
+        "Thelara's", "The Last Witch's", "Ardmoor's", "The Pale Father's",
+        "Sister Velka's", "The Drowned Bishop's", "Lord Threnn's", "The Mournful Saint's"
+      ],
+      "epic": [
+        "The Bone Diadem of Karn",
+        "Reliquary of the Hollow King",
+        "Skull of the First Apostate",
+        "The Withered Hand of Vaelmorn",
+        "Censer of the Long Silence",
+        "Idol of the Drowned Cathedral",
+        "The Pale Father's Phylactery",
+        "Saint Korven's Splintered Mask",
+        "Thelara's Ashen Heart-Stone",
+        "The Twin Sigils of Ostvik"
+      ],
+      "legendary": [
+        "The Shattered Crown of Arendmoor",
+        "Reliquary of a Forgotten God",
+        "The Bleeding Idol of Mor-Vethal",
+        "Throne-Heart of the Sundering",
+        "The Last Apostle's Bound Skull",
+        "The Mourning Veil of Saint Velka",
+        "The Hollow King's Final Word",
+        "Censer of the Black Solstice"
+      ]
+    },
+    "jewelry": {
+      "adjectives": [
+        "Tarnished", "Glimmering", "Radiant", "Shadow-Wrought", "Frostbound",
+        "Pale", "Flickering", "Coiled", "Singing", "Inlaid",
+        "Gilded", "Tear-Marked", "Sunlit", "Moon-Touched", "Splintered",
+        "Ember-Lit", "Dusk-Wrought", "Hollow", "Ribboned", "Veiled"
+      ],
+      "materials": [
+        "Silver", "Electrum", "Mithril", "Jet", "Pearl",
+        "Amber", "Emerald", "Sapphire", "Bronze", "Platinum",
+        "Moonglass", "Bloodstone", "Sea-Glass", "Cold-Iron", "Whitegold"
+      ],
+      "bases": [
+        "Ring", "Pendant", "Circlet", "Brooch", "Chain",
+        "Amulet", "Earring", "Torc", "Locket", "Bracer",
+        "Diadem", "Signet", "Bangle", "Tiara", "Chaplet",
+        "Choker", "Fillet", "Anklet"
+      ],
+      "places": [
+        "the Sun Court", "Valdenmere", "the Moon Halls", "Andelar",
+        "the Whispering Sea", "Lyresse", "the Glass Cities", "Halendrin",
+        "the Pearl Coast", "Sera-Vinnis", "the Singing Vaults", "Ithric"
+      ],
+      "events": [
+        "Solstice Pact", "Bridal Truce", "Pearl Wars", "Long Vigil",
+        "Coronation of Halen", "Quiet Years", "Last Embassy", "Twilight Accord",
+        "Glass Schism", "Singing Court", "Mourning Year", "Flower Wars"
+      ],
+      "possessives": [
+        "Lady Halendra's", "The Sun-Queen's", "Ithric's", "The Mourning Bride's",
+        "Princess Vaela's", "The Glass Empress's", "Sera's", "The Pale Concubine's",
+        "Lady Threnna's", "The Flower King's", "Mistress Ond's", "The Ember Court's"
+      ],
+      "epic": [
+        "Ithric's Singing Locket",
+        "The Sun-Queen's Inlaid Diadem",
+        "Pearl Choker of Halendrin",
+        "Lady Vaela's Frostbound Torc",
+        "The Glass Empress's Coiled Bangle",
+        "Bloodstone Signet of Sera-Vinnis",
+        "The Mourning Bride's Veiled Pendant",
+        "Moonglass Circlet of the Long Vigil"
+      ],
+      "legendary": [
+        "The Crown Jewel of Andelar",
+        "Halendra's Three-Tear Pendant",
+        "The Sun-Queen's Last Promise",
+        "Mithril Diadem of the Twilight Accord",
+        "The Empress's Hollow Heart",
+        "Singing Chaplet of the Glass Schism",
+        "The Bridal Torc of Lyresse"
+      ]
+    },
+    "artwork": {
+      "adjectives": [
+        "Faded", "Vivid", "Cracked", "Lacquered", "Half-Burnt",
+        "Painted", "Carved", "Etched", "Sun-Bleached", "Smoke-Stained",
+        "Gilt-Framed", "Unfinished", "Scarred", "Restored", "Forbidden",
+        "Whispered", "Veiled", "Forgotten", "Storied", "Mournful"
+      ],
+      "materials": [
+        "Marble", "Ebony", "Alabaster", "Bronze", "Ivory",
+        "Lacquer", "Vellum", "Walnut", "Soapstone", "Limestone",
+        "Cedar", "Mosaic", "Painted-Plaster", "Cast-Iron", "Carven-Bone"
+      ],
+      "bases": [
+        "Portrait", "Bust", "Statuette", "Tapestry", "Mosaic",
+        "Triptych", "Frieze", "Screen", "Mural-Fragment", "Death-Mask",
+        "Frescoed Panel", "Reliquary Box", "Carved Plaque", "Ink Scroll",
+        "Sketch", "Diorama", "Music-Box", "Embroidery"
+      ],
+      "places": [
+        "the Old Court", "Sera-Vinnis", "the Marble Halls", "Andelar",
+        "the Painters' Quarter", "Halendrin", "the Lacquer Coast", "Ithric",
+        "the Twilight Studio", "Mor-Vethal", "the Quiet Atelier", "Valdenmere"
+      ],
+      "events": [
+        "Patron's Year", "Last Salon", "Burning of the Studios", "Long Commission",
+        "Marble Rebellion", "First Exhibition", "Twilight Schism", "Court Mourning",
+        "Brush-Maker's Strike", "Quiet Decade", "Restoration Wars", "Iconoclasm"
+      ],
+      "possessives": [
+        "Master Velorin's", "The Court Painter's", "Old Andra's", "The Mad Sculptor's",
+        "Sister Avela's", "The Drowning Apprentice's", "Lord Cendrin's", "The Last Iconist's",
+        "Threnna of Halendrin's", "The Veiled Master's", "Sera's", "The Forgotten Apprentice's"
+      ],
+      "epic": [
+        "Master Velorin's Veiled Triptych",
+        "The Drowning Apprentice's Final Panel",
+        "Threnna's Sun-Bleached Mosaic",
+        "Bust of the Hollow King in Alabaster",
+        "The Court Painter's Forbidden Portrait",
+        "Carved Plaque of the Marble Rebellion",
+        "Mournful Death-Mask of Cendrin",
+        "Sister Avela's Embroidered Sky"
+      ],
+      "legendary": [
+        "The Lost Portrait of Andelar",
+        "Velorin's Final Triptych",
+        "The Iconoclast's Last Confession",
+        "Marble Bust of a Forgotten Empress",
+        "The Painted Sky of Halendrin",
+        "Tapestry of the Long Commission",
+        "The Mad Sculptor's Self-Portrait"
+      ]
+    },
+    "equipment": {
+      "adjectives": [
+        "Notched", "Pitted", "Battered", "Polished", "Blooded",
+        "Etched", "Engraved", "Patinaed", "Storied", "Field-Worn",
+        "Honored", "Tarnished", "Singing", "Rune-Cut", "Twin-Forged",
+        "Frostbitten", "Sun-Burnished", "Veteran's", "Cursed", "Salt-Worn"
+      ],
+      "materials": [
+        "Damasc", "Mithril", "Bronze", "Cold-Iron", "Black-Iron",
+        "Star-Steel", "Brass", "Silvered", "Hardwood", "Bone-Inlaid",
+        "Lacquered", "Etched-Steel", "Pearled-Steel", "Ironbark", "Gilded"
+      ],
+      "bases": [
+        "Gauntlet", "Helm", "Cuirass", "Pauldron", "Greaves",
+        "Shield", "Vambrace", "Chestplate", "Sabaton", "Coif",
+        "Bracers", "Cloak-Pin", "War-Belt", "Buckler", "Visor",
+        "Half-Plate", "Targe"
+      ],
+      "places": [
+        "the Iron Legion", "Karn-Drim", "the Black Wall", "Ostvik",
+        "the Bronze Marches", "Valdenmere", "the Salt Garrison", "Threnwatch",
+        "the Glass Citadel", "Mor-Vethal", "the Hammer Coast", "the Free Companies"
+      ],
+      "events": [
+        "Iron Compact", "Salt Wars", "Last Charge", "Long March",
+        "Bronze Mutiny", "Watchtower Years", "Hammer Wars", "First Standoff",
+        "Twin Sieges", "Banner Years", "Black Wall Defense", "Scarlet Truce"
+      ],
+      "possessives": [
+        "Captain Voren's", "The Ironbrand's", "Old Hessian's", "The Twin Marshal's",
+        "Sergeant Kael's", "The Black Wall Veteran's", "Lord Threnn's", "The Standard-Bearer's",
+        "Marshal Avend's", "The Salt Garrison's", "Cendric's", "The Free Companion's"
+      ],
+      "epic": [
+        "Captain Voren's Notched Gauntlet",
+        "The Ironbrand's Twin-Forged Helm",
+        "Mithril Cuirass of the Black Wall",
+        "Old Hessian's Engraved Pauldrons",
+        "The Twin Marshal's Pearled Vambraces",
+        "Cold-Iron Shield of the Long March",
+        "Marshal Avend's Storied Greaves",
+        "Rune-Cut Sabatons of Karn-Drim"
+      ],
+      "legendary": [
+        "The Last Plate of the Iron Legion",
+        "Voren's Unbroken Shield",
+        "The Twin Marshal's Final Helm",
+        "Star-Steel Cuirass of the Hammer Wars",
+        "The Black Wall's Standard Cloak-Pin",
+        "Threnn's Salt-Worn Half-Plate",
+        "Mithril Targe of the First Standoff"
+      ]
+    },
+    "text": {
+      "adjectives": [
+        "Forbidden", "Annotated", "Unfinished", "Heretical", "Translated",
+        "Burned", "Half-Lost", "Whispered", "Coded", "Marginal",
+        "Pale", "Recopied", "Smudged", "Annotated", "Censored",
+        "Quiet", "Splintered", "Pressed", "Inked", "Final"
+      ],
+      "materials": [
+        "Vellum", "Parchment", "Onionskin", "Birchbark", "Linen-Paper",
+        "Silk-Bound", "Iron-Inked", "Wax-Sealed", "Salt-Stained", "Lead-Lined",
+        "Calfskin", "Goatskin", "Palm-Leaf", "Pressed-Reed"
+      ],
+      "bases": [
+        "Codex", "Tome", "Folio", "Manuscript", "Ledger",
+        "Diary", "Treatise", "Almanac", "Compendium", "Scroll",
+        "Letter", "Confession", "Memoir", "Bestiary", "Cartograph",
+        "Roster", "Cipher-Book", "Field-Book"
+      ],
+      "places": [
+        "the Pale Library", "Valdenmere", "the Quiet Scriptorium", "Andelar",
+        "the Burned Archive", "Halendrin", "the Margins of Karn", "Ithric",
+        "the Forbidden Stacks", "Sera-Vinnis", "the Last Reading-Room", "Ostvik"
+      ],
+      "events": [
+        "Burning of the Stacks", "First Translation", "Quiet Edict", "Long Censorship",
+        "Margin Wars", "Last Compendium", "Iconoclast Year", "Forbidden Decade",
+        "Heresy Trials", "Restoration of the Texts", "Drowning of Andelar", "Vellum Famine"
+      ],
+      "possessives": [
+        "Brother Anselm's", "The Pale Scribe's", "Sister Velka's", "The Heretic's",
+        "Mistress Ond's", "The Last Translator's", "Lord Cendrin's", "The Burned Bishop's",
+        "Old Avela's", "The Marginal Annotator's", "Threnna's", "The Quiet Confessor's"
+      ],
+      "epic": [
+        "Brother Anselm's Annotated Bestiary",
+        "The Pale Scribe's Forbidden Folio",
+        "Codex of the Burned Archive",
+        "Sister Velka's Censored Diary",
+        "The Last Translator's Final Letter",
+        "Cipher-Book of the Margin Wars",
+        "Mistress Ond's Heretical Treatise",
+        "The Marginal Annotator's Memoir"
+      ],
+      "legendary": [
+        "The Lost Compendium of Andelar",
+        "Anselm's Final Confession",
+        "The Heretic's Unburned Codex",
+        "The Pale Scribe's Twelfth Folio",
+        "Translator's Cipher of the Last Embassy",
+        "The Quiet Edict of Halendrin",
+        "Bishop Cendrin's Forbidden Memoir"
+      ]
+    }
+  }
+}

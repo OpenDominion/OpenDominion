@@ -12,7 +12,7 @@
                         {{ $event->source->name }} (#{{ $event->source->realm->number }})
                         vs
                         {{ $event->target->name }}
-                    </h3>
+                    </span>
                 </div>
                 <div class="card-body no-padding">
                     <div class="row">

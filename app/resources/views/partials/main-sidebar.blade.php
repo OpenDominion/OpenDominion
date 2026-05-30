@@ -12,7 +12,7 @@
         @if (isset($selectedDominion))
             <div class="sidebar-user d-flex align-items-center gap-2 px-3 py-1">
                 <div>
-                    <span class="d-block fw-bold small">{{ $selectedDominion->name }}</span>
+                    <a href="{{ route('dominion.misc.settings') }}" class="d-block fw-bold small">{{ $selectedDominion->name }}</a>
                     <a href="{{ route('dominion.realm') }}" class="small">{{ $selectedDominion->realm->name }} (#{{ $selectedDominion->realm->number }})</a>
                 </div>
             </div>
@@ -43,10 +43,10 @@
                             <i class="nav-icon fa fa-gift fa-fw"></i>
                             <p>Daily Bonus
                                 @if (!$selectedDominion->daily_land)
-                                    <span class="badge text-bg-primary ">L</span>
+                                    <span class="badge text-bg-primary">L</span>
                                 @endif
                                 @if (!$selectedDominion->daily_platinum)
-                                    <span class="badge text-bg-primary ">P</span>
+                                    <span class="badge text-bg-primary">P</span>
                                 @endif
                             </p>
                         </a>
@@ -94,7 +94,7 @@
                                 <i class="nav-icon fa fa-home fa-fw"></i>
                                 <p>Construct Buildings
                                     @if ($barrenLand > 0)
-                                        <span class="badge text-bg-primary ">{{ $barrenLand }}</span>
+                                        <span class="badge text-bg-primary">{{ $barrenLand }}</span>
                                     @endif
                                 </p>
                             </a>
@@ -105,7 +105,7 @@
                                 <i class="nav-icon fa fa-home fa-fw"></i>
                                 <p>Construct Buildings
                                     @if ($barrenLand > 0)
-                                        <span class="badge text-bg-primary ">{{ $barrenLand }}</span>
+                                        <span class="badge text-bg-primary">{{ $barrenLand }}</span>
                                     @endif
                                 </p>
                             </a>
@@ -131,9 +131,9 @@
                             <i class="nav-icon fa fa-flask fa-fw"></i>
                             <p>Technology
                                 @if ($needsTemporaryTech)
-                                    <span class="badge bg-success">1</span>
+                                    <span class="badge text-bg-primary">1</span>
                                 @elseif ($unlockableTechCount > 0)
-                                    <span class="badge bg-primary">{{ $unlockableTechCount }}</span>
+                                    <span class="badge text-bg-primary">{{ $unlockableTechCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -143,7 +143,7 @@
                             <i class="nav-icon ra ra-knight-helmet ra-fw"></i>
                             <p>Heroes
                                 @if (!$selectedDominion->hero || $unlockableHeroUpgradeCount > 0)
-                                    <span class="badge text-bg-primary ">{{ $unlockableHeroUpgradeCount ?: 1 }}</span>
+                                    <span class="badge text-bg-primary">{{ $unlockableHeroUpgradeCount ?: 1 }}</span>
                                 @endif
                             </p>
                         </a>
@@ -154,7 +154,7 @@
                                 <i class="nav-icon ra ra-axe ra-fw"></i>
                                 <p>Hero Battles
                                     @if ($selectedDominion->hero->combatActionRequired() > 0)
-                                        <span class="badge text-bg-primary ">{{ $selectedDominion->hero->combatActionRequired() }}</span>
+                                        <span class="badge text-bg-primary">{{ $selectedDominion->hero->combatActionRequired() }}</span>
                                     @endif
                                 </p>
                             </a>
@@ -166,7 +166,7 @@
                                 <i class="nav-icon fa fa-trophy fa-fw"></i>
                                 <p>Hero Tournament
                                     @if ($selectedDominion->round->tournaments()->where('start_date', '>', now())->count() > 0)
-                                        <span class="badge text-bg-primary ">R</span>
+                                        <span class="badge text-bg-primary">R</span>
                                     @endif
                                 </p>
                             </a>
@@ -177,7 +177,7 @@
                             <i class="nav-icon ra ra-castle-flag ra-fw"></i>
                             <p>Raids
                                 @if ($activeRaids > 0)
-                                    <span class="badge text-bg-primary ">{{ $activeRaids }}</span>
+                                    <span class="badge text-bg-primary">{{ $activeRaids }}</span>
                                 @endif
                             </p>
                         </a>
@@ -203,21 +203,39 @@
                         <a href="{{ route('dominion.magic') }}" class="nav-link {{ Route::is('dominion.magic') ? 'active' : null }}">
                             <i class="nav-icon ra ra-fairy-wand ra-fw"></i>
                             <p>Magic
+                                @if ($activeSelfSpells > 0)
+                                    <span class="badge text-bg-info">{{ $activeSelfSpells }}</span>
+                                @endif
                                 @if ($activeFriendlySpells > 0)
-                                    <span class="badge bg-success ">{{ $activeFriendlySpells }}</span>
+                                    <span class="badge text-bg-success">{{ $activeFriendlySpells }}</span>
                                 @endif
                                 @if ($activeHostileSpells > 0)
-                                    <span class="badge bg-danger ">{{ $activeHostileSpells }}</span>
-                                @endif
-                                @if ($activeSelfSpells > 0)
-                                    <span class="badge bg-primary ">{{ $activeSelfSpells }}</span>
+                                    <span class="badge text-bg-danger">{{ $activeHostileSpells }}</span>
                                 @endif
                             </p>
                         </a>
                     </li>
                     <li class="nav-item {{ Route::is('dominion.espionage') ? 'active' : null }}">
                         <a href="{{ route('dominion.espionage') }}" class="nav-link {{ Route::is('dominion.espionage') ? 'active' : null }}">
-                            <i class="nav-icon fa fa-user-secret fa-fw"></i> <p>Espionage</p>
+                            <i class="nav-icon fa fa-user-secret fa-fw"></i>
+                            <p>Espionage</p>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Route::is('dominion.valuables') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                        <a href="{{ route('dominion.valuables') }}" class="nav-link {{ Route::is('dominion.valuables') || Route::is('dominion.valuables.*') ? 'active' : null }}">
+                            <i class="nav-icon ra ra-locked-chest ra-fw"></i>
+                            <p>
+                                Valuables
+                                @if (($intelForSaleCount ?? 0) > 0 && ($selectedDominion->settings['hide_intel_for_sale_badge'] ?? null) != 'on')
+                                    <span class="badge text-bg-info">{{ $intelForSaleCount }}</span>
+                                @endif
+                                @if (($valuablesDiscoveredCount ?? 0) > 0)
+                                    <span class="badge text-bg-success">{{ $valuablesDiscoveredCount }}</span>
+                                @endif
+                                @if (($valuablesStolenCount ?? 0) > 0)
+                                    <span class="badge text-bg-primary">{{ $valuablesStolenCount }}</span>
+                                @endif
+                            </p>
                         </a>
                     </li>
                     @if ($selectedDominion->black_guard_active_at !== null)
@@ -237,10 +255,10 @@
                             <i class="nav-icon ra ra-hanging-sign ra-fw"></i>
                             <p>Bounty Board
                                 @if ($postedBounties > 0)
-                                    <span class="badge bg-primary ">{{ $postedBounties }}</span>
+                                    <span class="badge text-bg-info">{{ $postedBounties }}</span>
                                 @endif
                                 @if ($activeBounties > 0)
-                                    <span class="badge text-bg-primary ">{{ $activeBounties }}</span>
+                                    <span class="badge text-bg-primary">{{ $activeBounties }}</span>
                                 @endif
                             </p>
                         </a>
@@ -271,8 +289,8 @@
                         <a href="{{ route('dominion.council') }}" class="nav-link {{ Route::is('dominion.council*') ? 'active' : null }}">
                             <i class="nav-icon fa fa-group fa-fw"></i>
                             <p>The Council
-                                @if ($councilUnreadCount > 0 && !Route::is('dominion.council'))
-                                    <span class="badge bg-success ">{{ $councilUnreadCount }}</span>
+                                @if ($councilUnreadCount > 0 && !Route::is('dominion.council') && ($selectedDominion->settings['hide_council_badge'] ?? null) != 'on')
+                                    <span class="badge text-bg-info">{{ $councilUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -287,7 +305,7 @@
                             <i class="nav-icon ra ra-pyramids ra-fw ra-lg"></i>
                             <p>Wonders
                                 @if ($unseenWonders > 0 && !Route::is('dominion.wonders'))
-                                    <span class="badge bg-success ">{{ $unseenWonders }}</span>
+                                    <span class="badge text-bg-info">{{ $unseenWonders }}</span>
                                 @endif
                             </p>
                         </a>
@@ -301,8 +319,8 @@
                         <a href="{{ route('dominion.forum') }}" class="nav-link {{ Route::is('dominion.forum*') ? 'active' : null }}">
                             <i class="nav-icon fa fa-comments fa-fw"></i>
                             <p>Round Forum
-                                @if ($forumUnreadCount > 0 && !Route::is('dominion.forum'))
-                                    <span class="badge bg-success ">{{ $forumUnreadCount }}</span>
+                                @if ($forumUnreadCount > 0 && !Route::is('dominion.forum') && ($selectedDominion->settings['hide_forum_badge'] ?? null) != 'on')
+                                    <span class="badge text-bg-info">{{ $forumUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -312,7 +330,7 @@
                             <i class="nav-icon fa fa-newspaper-o fa-fw"></i>
                             <p>Town Crier
                                 @if ($unseenGameEvents > 0 && !Route::is('dominion.town-crier'))
-                                    <span class="badge bg-success ">{{ $unseenGameEvents }}</span>
+                                    <span class="badge text-bg-info">{{ $unseenGameEvents }}</span>
                                 @endif
                             </p>
                         </a>
@@ -324,7 +342,7 @@
                             <i class="nav-icon ra ra-wooden-sign ra-fw"></i>
                             <p>Message Board
                                 @if ($messageBoardUnreadCount > 0 && !Route::is('dominion.message-board'))
-                                    <span class="badge bg-success ">{{ $messageBoardUnreadCount }}</span>
+                                    <span class="badge text-bg-info">{{ $messageBoardUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>
@@ -350,7 +368,7 @@
                             <i class="nav-icon ra ra-wooden-sign ra-fw"></i>
                             <p>Message Board
                                 @if ($messageBoardUnreadCount > 0 && !Route::is('dominion.message-board'))
-                                    <span class="badge bg-success ">{{ $messageBoardUnreadCount }}</span>
+                                    <span class="badge text-bg-info">{{ $messageBoardUnreadCount }}</span>
                                 @endif
                             </p>
                         </a>

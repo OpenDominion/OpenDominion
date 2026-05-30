@@ -11,6 +11,9 @@
         'magic'        => ['icon' => 'ra ra-fairy-wand',          'route' => 'dominion.magic',       'active' => 'dominion.magic'],
         'espionage'    => ['icon' => 'fa fa-user-secret',         'route' => 'dominion.espionage',   'active' => 'dominion.espionage'],
         'bank'         => ['icon' => 'fa fa-money',               'route' => 'dominion.bank',        'active' => 'dominion.bank'],
+        'realm'        => ['icon' => 'ra ra-circle-of-circles',   'route' => 'dominion.realm',       'active' => 'dominion.realm'],
+        'search'       => ['icon' => 'fa fa-search',              'route' => 'dominion.search',      'active' => 'dominion.search'],
+        'calculate'    => ['icon' => 'fa fa-calculator',           'route' => null,                   'active' => 'dominion.calculations.military'],
         'sidebar'      => ['icon' => 'fa fa-bars',                'route' => null,                   'active' => null],
     ];
 
@@ -28,6 +31,11 @@
         @elseif ($key === 'construct')
             <a class="mobile-bottom-nav-item {{ Route::is('dominion.construct') || Route::is('dominion.protection.buildings') ? 'active' : '' }}"
                href="{{ $selectedDominion->isBuildingPhase() ? route('dominion.protection.buildings') : route('dominion.construct') }}">
+                <i class="{{ $navLinks[$key]['icon'] }}"></i>
+            </a>
+        @elseif ($key === 'calculate')
+            <a class="mobile-bottom-nav-item {{ Route::is($navLinks[$key]['active']) ? 'active' : '' }}"
+               href="{{ route('dominion.calculations.military', ['dominion' => $selectedDominion->id]) }}">
                 <i class="{{ $navLinks[$key]['icon'] }}"></i>
             </a>
         @else

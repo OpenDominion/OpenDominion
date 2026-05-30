@@ -29,8 +29,22 @@
                         <div class="mb-3">
                             <label for="description">Description *</label>
                             <textarea name="description" id="description" class="form-control" rows="4" required>{{ old('description', preg_replace('/<br\s*\/?>/i', "\n", $raid->description)) }}</textarea>
+                            <small class="text-muted">Short framing shown on the raids page. Plain text — newlines convert to &lt;br/&gt;.</small>
                             @if ($errors->has('description'))
                                 <span class="form-text text-red">{{ $errors->first('description') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="extended_description">Extended Description</label>
+                            <textarea name="extended_description" id="extended_description" class="form-control" rows="15">{{ old('extended_description', $raid->extended_description) }}</textarea>
+                            <small class="text-muted">Optional long-form story rendered on its own page. Accepts Markdown — use ## headings, **bold**, *italic*, paragraphs, --- for horizontal rules, etc.</small>
+                            @if ($errors->has('extended_description'))
+                                <span class="form-text text-red">{{ $errors->first('extended_description') }}</span>
                             @endif
                         </div>
                     </div>
@@ -61,9 +75,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="completion_reward_resource">Completion Reward Resource</label>
-                            <input type="text" name="completion_reward_resource" id="completion_reward_resource" class="form-control" value="{{ old('completion_reward_resource', $raid->completion_reward_resource) }}">
-                            <small class="text-muted">Optional bonus for completing all objectives</small>
+                            <label for="completion_reward_resource">Completion Reward Resource *</label>
+                            <input type="text" name="completion_reward_resource" id="completion_reward_resource" class="form-control" value="{{ old('completion_reward_resource', $raid->completion_reward_resource) }}" required>
                             @if ($errors->has('completion_reward_resource'))
                                 <span class="form-text text-red">{{ $errors->first('completion_reward_resource') }}</span>
                             @endif
@@ -71,8 +84,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="completion_reward_amount">Completion Reward Amount</label>
-                            <input type="number" name="completion_reward_amount" id="completion_reward_amount" class="form-control" value="{{ old('completion_reward_amount', $raid->completion_reward_amount) }}" min="0">
+                            <label for="completion_reward_amount">Completion Reward Amount *</label>
+                            <input type="number" name="completion_reward_amount" id="completion_reward_amount" class="form-control" value="{{ old('completion_reward_amount', $raid->completion_reward_amount) }}" min="0" required>
                             @if ($errors->has('completion_reward_amount'))
                                 <span class="form-text text-red">{{ $errors->first('completion_reward_amount') }}</span>
                             @endif

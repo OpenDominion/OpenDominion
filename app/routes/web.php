@@ -9,6 +9,7 @@ $router->get('user-agreement')->uses('HomeController@getUserAgreement')->name('u
 $router->get('about')->uses('HomeController@getAboutPage')->name('about');
 $router->get('terms')->uses('HomeController@getTermsPage')->name('terms');
 $router->get('privacy')->uses('HomeController@getPrivacyPage')->name('privacy');
+$router->get('hall-of-fame')->uses('HomeController@getHallOfFame')->name('hall-of-fame');
 
 // Authentication
 
@@ -83,7 +84,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
         // Dominion
-        $router->group(['middleware' => 'dominionselected'], static function (Router $router) {
+        $router->group(['middleware' => ['dominionselected', 'updatelastonline']], static function (Router $router) {
 
             $router->get('/')->uses('Dominion\IndexController@getIndex');
 
@@ -164,6 +165,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Raids
             $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');
+            $router->get('raids/{raid}/story')->uses('Dominion\RaidController@getRaidStory')->name('raids.story');
             $router->get('raids/{raid}/leaderboard')->uses('Dominion\RaidController@getRaidLeaderboard')->name('raids.leaderboard');
             $router->get('raids/objective/{objective}')->uses('Dominion\RaidController@getRaidObjective')->name('raids.objective');
             $router->get('raids/objective/{objective}/leaderboard')->uses('Dominion\RaidController@getRaidObjectiveLeaderboard')->name('raids.objective.leaderboard');
@@ -199,6 +201,17 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Espionage
             $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
+
+            // Valuables
+            $router->get('valuables')->uses('Dominion\ValuablesController@getIndex')->name('valuables');
+            $router->get('valuables/history')->uses('Dominion\ValuablesController@getHistory')->name('valuables.history');
+            $router->get('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@getInvestigate')->name('valuables.investigate');
+            $router->post('valuables/{valuable}/investigate')->uses('Dominion\ValuablesController@postInvestigate');
+            $router->post('valuables/{valuable}/cancel')->uses('Dominion\ValuablesController@postCancel')->name('valuables.cancel');
+            $router->post('valuables/{valuable}/sell')->uses('Dominion\ValuablesController@postSell')->name('valuables.sell');
+            $router->post('valuables/{valuable}/list')->uses('Dominion\ValuablesController@postList')->name('valuables.list');
+            $router->post('valuables/{valuable}/unlist')->uses('Dominion\ValuablesController@postUnlist')->name('valuables.unlist');
+            $router->post('valuables/{valuable}/purchase')->uses('Dominion\ValuablesController@postPurchase')->name('valuables.purchase');
 
             // Black Guard
             $router->get('black-guard')->uses('Dominion\BlackGuardController@getBlackGuard')->name('black-guard');
@@ -279,6 +292,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // World
             $router->get('world')->uses('Dominion\WorldController@getIndex')->name('world');
+            $router->get('world/valor/{realm}')->uses('Dominion\WorldController@getValor')->where('realm', '[0-9]+')->name('world.valor');
 
             // Misc
             $router->get('misc/abandon')->uses('Dominion\MiscController@getAbandonDominion')->name('misc.abandon');

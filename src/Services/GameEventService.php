@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
+use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\RoundWonder;
@@ -35,7 +36,7 @@ class GameEventService
 
     private function getGameEventsForRealm(Realm $realm, Carbon $createdBefore, string $type = 'all'): array
     {
-        $dominionIds = $realm->dominions
+        $dominionIds = Dominion::where('realm_id', $realm->id)
             ->pluck('id')
             ->toArray();
 
@@ -46,15 +47,18 @@ class GameEventService
         $gameEvents = GameEvent::query()
             ->with(['source' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
-                    Dominion::class => ['race', 'realm'],
+                    Dominion::class => ['race'],
+                    Realm::class => [],
                     RoundWonder::class => ['wonder'],
                 ]);
             }])
             ->with(['target' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
-                    Dominion::class => ['race', 'realm'],
-                    RealmWar::class => ['sourceRealm', 'targetRealm'],
-                    RoundWonder::class => ['realm', 'wonder'],
+                    Dominion::class => ['race'],
+                    RaidObjectiveTactic::class => [],
+                    Realm::class => [],
+                    RealmWar::class => [],
+                    RoundWonder::class => ['wonder'],
                 ]);
             }])
             ->where(function (Builder $query) use ($realm, $dominionIds, $realmWarIds) {
@@ -80,7 +84,7 @@ class GameEventService
                             ->whereIn('target_id', $realmWarIds);
                     });
             })
-            ->where('round_id', $realm->round->id)
+            ->where('round_id', $realm->round_id)
             ->where('created_at', '<', $createdBefore)
             ->where(function ($query) use ($type) {
                 if ($type == 'invasions') {
@@ -97,6 +101,8 @@ class GameEventService
             ->paginate(100)
             ->withQueryString();
 
+        $this->attachRealmsToGameEvents($gameEvents, $realm->round_id);
+
         return [
             'dominionIds' => $dominionIds,
             'gameEvents' =>  $gameEvents
@@ -105,22 +111,25 @@ class GameEventService
 
     private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore, string $type = 'all'): array
     {
-        $dominionIds = $dominion->realm->dominions
+        $dominionIds = Dominion::where('realm_id', $dominion->realm_id)
             ->pluck('id')
             ->toArray();
 
         $gameEvents = GameEvent::query()
             ->with(['source' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
-                    Dominion::class => ['race', 'realm'],
+                    Dominion::class => ['race'],
+                    Realm::class => [],
                     RoundWonder::class => ['wonder'],
                 ]);
             }])
             ->with(['target' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
-                    Dominion::class => ['race', 'realm'],
-                    RealmWar::class => ['sourceRealm', 'targetRealm'],
-                    RoundWonder::class => ['realm', 'wonder'],
+                    Dominion::class => ['race'],
+                    RaidObjectiveTactic::class => [],
+                    Realm::class => [],
+                    RealmWar::class => [],
+                    RoundWonder::class => ['wonder'],
                 ]);
             }])
             ->where('round_id', $dominion->round_id)
@@ -140,6 +149,8 @@ class GameEventService
             ->paginate(100)
             ->withQueryString();
 
+        $this->attachRealmsToGameEvents($gameEvents, $dominion->round_id);
+
         return [
             'dominionIds' => $dominionIds,
             'gameEvents' =>  $gameEvents
@@ -151,15 +162,18 @@ class GameEventService
         $gameEvents = GameEvent::query()
             ->with(['source' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
-                    Dominion::class => ['race', 'realm'],
+                    Dominion::class => ['race'],
+                    Realm::class => [],
                     RoundWonder::class => ['wonder'],
                 ]);
             }])
             ->with(['target' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
-                    Dominion::class => ['race', 'realm'],
-                    RealmWar::class => ['sourceRealm', 'targetRealm'],
-                    RoundWonder::class => ['realm', 'wonder'],
+                    Dominion::class => ['race'],
+                    RaidObjectiveTactic::class => [],
+                    Realm::class => [],
+                    RealmWar::class => [],
+                    RoundWonder::class => ['wonder'],
                 ]);
             }])
             ->where(function (Builder $query) use ($dominion) {
@@ -188,9 +202,41 @@ class GameEventService
             ->paginate(100)
             ->withQueryString();
 
+        $this->attachRealmsToGameEvents($gameEvents, $dominion->round_id);
+
         return [
             'dominionIds' => [(int) $dominion->id],
             'gameEvents' =>  $gameEvents
         ];
+    }
+
+    private function attachRealmsToGameEvents($gameEvents, int $roundId): void
+    {
+        if ($gameEvents->isEmpty()) {
+            return;
+        }
+
+        $realms = Realm::where('round_id', $roundId)->get()->keyBy('id');
+
+        foreach ($gameEvents as $event) {
+            $this->attachRealmRelations($event->source, $realms);
+            $this->attachRealmRelations($event->target, $realms);
+        }
+    }
+
+    private function attachRealmRelations($model, $realms): void
+    {
+        if ($model === null) {
+            return;
+        }
+
+        if ($model instanceof Dominion || $model instanceof RoundWonder) {
+            if ($model->realm_id !== null) {
+                $model->setRelation('realm', $realms->get($model->realm_id));
+            }
+        } elseif ($model instanceof RealmWar) {
+            $model->setRelation('sourceRealm', $realms->get($model->source_realm_id));
+            $model->setRelation('targetRealm', $realms->get($model->target_realm_id));
+        }
     }
 }

@@ -33,7 +33,7 @@ class BountyController extends AbstractDominionController
             'bountyService' => $bountyService,
             'guardMembershipService' => app(GuardMembershipService::class),
             'landCalculator' => app(LandCalculator::class),
-            'rangeCalculator' => app(RangeCalculator::class)
+            'rangeCalculator' => app(RangeCalculator::class),
         ]);
     }
 

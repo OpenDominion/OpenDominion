@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
@@ -151,6 +152,7 @@ class Dominion extends AbstractModel
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
         'daily_actions' => 'integer',
+        'daily_xp' => 'float',
         'resource_platinum' => 'integer',
         'resource_food' => 'integer',
         'resource_lumber' => 'integer',
@@ -270,6 +272,13 @@ class Dominion extends AbstractModel
         return $this->hasMany(GameEvent::class, 'target_id', 'id')->where('target_type', Dominion::class);
     }
 
+    public function recentInvasions()
+    {
+        return $this->targetEvents()
+            ->where('type', 'invasion')
+            ->where('created_at', '>', now()->subHours(24));
+    }
+
     public function infoOps()
     {
         return $this->hasMany(InfoOp::class, 'target_dominion_id', 'id');
@@ -278,6 +287,14 @@ class Dominion extends AbstractModel
     public function history()
     {
         return $this->hasMany(Dominion\History::class);
+    }
+
+    public function recentSpellCasts()
+    {
+        return $this->history()
+            ->where('event', 'cast spell')
+            ->where('created_at', '>', now()->subHours(24))
+            ->orderByDesc('created_at');
     }
 
     public function hero()
@@ -376,6 +393,46 @@ class Dominion extends AbstractModel
         return $query->where('user_id', '!=', null);
     }
 
+    /**
+     * Eager-loads the relations used to resolve perks, units, spells, techs,
+     * and wonder effects on a Dominion. Use this whenever a Dominion is loaded
+     * outside of SelectorService (e.g. an action target) so downstream
+     * calculators and perk lookups don't lazy-load row by row.
+     */
+    public function scopeWithCachedRace(Builder $query): Builder
+    {
+        return $query->afterQuery(function ($dominions) {
+            foreach ($dominions as $dominion) {
+                $dominion->setRelation('race', Race::findWithRelationsCached($dominion->race_id));
+            }
+        });
+    }
+
+    public function scopeWithCachedRound(Builder $query): Builder
+    {
+        return $query->afterQuery(function ($dominions) {
+            foreach ($dominions as $dominion) {
+                $dominion->setRelation('round', Round::findCached($dominion->round_id));
+            }
+        });
+    }
+
+    public function scopeWithGameRelations(Builder $query): Builder
+    {
+        return $query->with([
+            'hero',
+            'hero.upgrades',
+            'queues',
+            'realm',
+            'realm.wonders',
+            'realm.wonders.perks',
+            'spells',
+            'spells.perks',
+            'techs',
+            'techs.perks',
+        ])->withCachedRace()->withCachedRound();
+    }
+
     // Methods
 
     // todo: move to eloquent events, see $dispatchesEvents
@@ -392,8 +449,11 @@ class Dominion extends AbstractModel
         }
 
         // Verify tick hasn't happened during this request
-        if ($this->exists && !isset($options['protection']) && $this->last_tick_at != $this->fresh()->last_tick_at) {
-            throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+        if ($this->exists && !isset($options['protection'])) {
+            $currentLastTickAt = $this::query()->whereKey($this->id)->value('last_tick_at');
+            if ($this->last_tick_at != $currentLastTickAt) {
+                throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+            }
         }
 
         $saved = parent::save($options);

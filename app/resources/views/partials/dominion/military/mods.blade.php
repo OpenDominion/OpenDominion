@@ -3,7 +3,7 @@
         <span class="card-title">
             <i class="ra ra-axe"></i>
             Military Power Mods
-        </h3>
+        </span>
     </div>
     <div class="card-body">
         <table class="table table-sm">

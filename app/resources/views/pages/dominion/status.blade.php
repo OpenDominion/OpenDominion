@@ -109,7 +109,7 @@
                     <div class="card-body">
                         <table class="table table-sm mb-0">
                             <colgroup>
-                                <col width="150">
+                                <col width="175">
                                 <col>
                             </colgroup>
                             @foreach ($notifications as $notification)
@@ -127,7 +127,7 @@
                                 @endphp
                                 <tr>
                                     <td>
-                                        <span class="text-muted">{{ $notification->created_at }}</span>
+                                        <span class="text-muted" title="{{ $selectedDominion->round->getDateTooltip($notification->created_at) }}" data-bs-toggle="tooltip">{{ $notification->created_at }}</span>
                                     </td>
                                     <td>
                                         @if ($route !== '#')<a href="{{ $route }}">@endif

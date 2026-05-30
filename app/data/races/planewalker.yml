@@ -51,3 +51,4 @@ units:
       offense_from_pairing: 1,3,6 # slot 1 (Elemental), 3 required, +6 off each
       summons_unit: 1,20,3 # summons slot 1 (Elemental), 1 per 20 Summoners home, cap 3 per Summoner total
     need_boat: false
+playable: false

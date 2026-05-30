@@ -28,6 +28,7 @@
                     ])
                 </div>
             </div>
+
         </div>
 
         <div class="col-sm-12 col-md-3">
@@ -44,7 +45,18 @@
                             <p>Any info op on a dominion that has been marked for observation will count as a bounty. There are currently <b>{{ count($selectedDominion->realm->getSetting('observeDominionIds') ?? []) }}</b> dominions under observation.</p>
                             <p>Bounties collected from bots or ops that have already been taken for the current tick will earn no rewards. You cannot collect your own bounties.</p>
                             <p>You have {{ number_format($selectedDominion->resource_mana) }} mana, {{ sprintf("%.4g", $selectedDominion->wizard_strength) }}% wizard strength, and {{ sprintf("%.4g", $selectedDominion->spy_strength) }}% spy strength.</p>
-                            <p>You have collected <b>{{ $bountiesCollected }}</b> bounties today.</p>
+                            @if ($bountiesCollected >= $bountyService::DAILY_XP_LIMIT)
+                                <p>You have collected <b class="text-green">{{ $bountiesCollected }}</b> bounties today.</p>
+                            @else
+                                <p>You have collected <b>{{ $bountiesCollected }}</b> bounties today.</p>
+                            @endif
+                            @if (!$selectedDominion->hero->getPerkMultiplier('xp_from_ops_penalty'))
+                                @if ($selectedDominion->daily_xp >= \OpenDominion\Calculators\Dominion\HeroCalculator::DAILY_OPS_XP_CAP)
+                                    <p>You have reached the cap of <b class="text-success">{{ \OpenDominion\Calculators\Dominion\HeroCalculator::DAILY_OPS_XP_CAP }}</b> XP collected from ops today.</p>
+                                @else
+                                    <p>You have collected <b>{{ sprintf("%.1f", $selectedDominion->daily_xp) }}</b> / {{ \OpenDominion\Calculators\Dominion\HeroCalculator::DAILY_OPS_XP_CAP }} raw XP allowed from ops per day.</p>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>

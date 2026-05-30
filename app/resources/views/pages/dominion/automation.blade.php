@@ -36,12 +36,14 @@
                                             <col width="15%">
                                             <col width="15%">
                                             <col>
+                                            <col width="40px">
                                         </colgroup>
                                         <tr>
                                             <th>Ticks</th>
                                             <th>Day</th>
                                             <th>Hour</th>
                                             <th>Action</th>
+                                            <th></th>
                                         </tr>
                                         @foreach ($selectedDominion->ai_config as $tick => $config)
                                             @php
@@ -93,11 +95,13 @@
                                                             Daily Bonus
                                                             {{ ucwords($item['key']) }}
                                                         @endif
-                                                        <form action="{{ route('dominion.bonuses.actions.delete') }}" method="post" class="inline">
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <form action="{{ route('dominion.bonuses.actions.delete') }}" method="post">
                                                             @csrf
                                                             <input type="hidden" name="tick" value="{{ $tick }}" />
                                                             <input type="hidden" name="key" value="{{ $index }}" />
-                                                            <button class="btn btn-link no-padding float-end" type="submit" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                            <button class="btn btn-link p-0" type="submit" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                                 <i class="fa fa-trash text-danger"></i>
                                                             </button>
                                                         </form>

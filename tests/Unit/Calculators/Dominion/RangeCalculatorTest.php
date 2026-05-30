@@ -46,8 +46,8 @@ class RangeCalculatorTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->selfDominion = m::mock(Dominion::class);
-        $this->targetDominion = m::mock(Dominion::class);
+        $this->selfDominion = m::mock(Dominion::class)->shouldIgnoreMissing();
+        $this->targetDominion = m::mock(Dominion::class)->shouldIgnoreMissing();
 
         $this->sut = m::mock(RangeCalculator::class, [
             $this->guardMembershipService = m::mock(GuardMembershipService::class),

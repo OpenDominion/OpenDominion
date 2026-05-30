@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title">
                         <i class="fa fa-trophy"></i> Rankings
-                    </h3>
+                    </span>
                     <select id="ranking-select" class="form-select float-end">
                         @foreach ($rankings as $ranking)
                             <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>
@@ -92,7 +92,7 @@
                     <p>This page shows you the rankings of all dominions in this round and is updated every 24 hours starting on the 2nd day of the round.</p>
                     @if (!empty($daily_rankings) && $selectedDominion->round->start_date <= now()->subDays(4))
                         @php
-                            $rankingsUpdatedHoursAgo = (int) now()->diffInHours($selectedDominion->round->start_date) % 24;
+                            $rankingsUpdatedHoursAgo = (int) $selectedDominion->round->start_date->diffInHours(now()) % 24;
                         @endphp
                         @if ($rankingsUpdatedHoursAgo === 0)
                             <p>Current displayed rankings were updated this hour.</p>

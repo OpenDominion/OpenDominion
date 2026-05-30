@@ -5,6 +5,47 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.50.1] - 2026-05-28
+### Changed
+- Scion now requires 8 successful 75% attacks to select (was 6) and can no longer be selected until Day 8 (was Day 4)
+- XP loss from switching Hero Classes capped at 500
+- XP gain from ops is now capped at 120 XP per day (before shrines XP bonus)
+- XP gain from exploration increased to 0.8 per acre (from 0.6)
+- Lead from the Front: experience boost reduced to 2x (from 2.5x)
+- Masonry: lightning bolt damage cap modifier removed (was 5% per 1% owned up to a maximum of 50%)
+- Halfling: added +5 boat capacity [helps OOP], removed population growth bonus (was 10%)
+- Firewalker: Alchemist Flame now also adds 25 points to Forges per Alchemy every hour (was 15)
+- Firewalker Phoenix: -25p (was 925p)
+- Gnome Juggernaut: -25p (was 750p)
+- Icekin: Archmage cost reduction increased to -150p (from -100p)
+- Kobold: now included in races that get half benefit from exploration cost reduction techs
+- Kobold Underling: +10p (from 315p)
+- Kobold Overlord: -20p (from 990p)
+- Lizardfolk: removed food consumption bonus (was -15%)
+- Sylvan Centaur: +20p (from 950p)
+- Sylvan Dryad: +20p (from 1050p)
+- Undead Zombie: -10p (from 225p)
+
+## [1.50.0] - 2026-05-11
+### Changed
+- MASSIVE updates across the entire application
+  - Tech stack upgraded to PHP 8 / Laravel 13 / Bootstrap 5
+  - Additional UI themes
+  - Customizable quick nav on mobile
+  - New homepage
+  - Performance improvements
+- Theft
+  - One hour of raw resource production is now protected from theft
+  - Removed the range restriction (>100% size), but with a steep penalty when stealing from smaller targets
+  - Removed the restriction that you must produce the resource that you are attempting to steal (added a flat amount per acre floor to what would be your production in the formula)
+- New Mechanic: Valuables
+  - You can now discover and steal loot from other players, which can then be sold for platinum
+  - Info ops have a 1% chance to passively discover a valuable in the target's possession
+  - New Spy Operation: Locate Valuables, has a 20% chance of finding a valuable in the target's possession
+  - Rarity is determined by target land size and spy ratio, which then determines difficulty and sale price
+  - Stealing a discovered valuable requires a multi-hour spy operation that drains spy strength each hour
+  - Alternatively, sell intel on a discovered valuable to a realm mate at a fixed price
+
 ## [1.49.0] - 2026-03-15
 ### Changed
 - Keep improvement decreased to max 25% (from 30%)

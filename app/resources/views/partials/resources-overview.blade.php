@@ -42,7 +42,7 @@
                             @if (isset($resources[$column]))
                                 <div class="col-3">
                                     <div class="row">
-                                        <div class="col-lg-6"><b>{{ $column }}:</b></div>
+                                        <div class="col-lg-6 text-nowrap"><b>{{ $column }}:</b></div>
                                         <div class="col-lg-6">{{ $resources[$column] }}</div>
                                     </div>
                                 </div>

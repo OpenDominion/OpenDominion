@@ -7,7 +7,7 @@
         <div class="card-header">
             <span class="card-title">
                 Raids - {{ $round->name }}
-            </h3>
+            </span>
             <div class="float-end">
                 <a href="{{ route('staff.administrator.raids.create', ['round' => $round->id]) }}" class="btn btn-success">
                     <i class="fa fa-plus"></i> Create New Raid

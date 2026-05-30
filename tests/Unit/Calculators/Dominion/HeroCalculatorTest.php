@@ -230,6 +230,80 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
+    public function testGetRawExperienceGain_SpyCoefficient()
+    {
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        // spy coefficient is 0.5 — raw = 0.5 * value
+        $this->assertEquals(2.5, $this->heroCalculator->getRawExperienceGain($this->dominion, 5, 'spy'));
+        $this->assertEquals(1.0, $this->heroCalculator->getRawExperienceGain($this->dominion, 2, 'spy'));
+    }
+
+    public function testGetRawExperienceGain_MagicCoefficient()
+    {
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        // magic coefficient is 1.0 — raw = 1.0 * value
+        $this->assertEquals(5.0, $this->heroCalculator->getRawExperienceGain($this->dominion, 5, 'magic'));
+        $this->assertEquals(2.0, $this->heroCalculator->getRawExperienceGain($this->dominion, 2, 'magic'));
+    }
+
+    public function testGetRawExperienceGain_IgnoresShrineMultiplier()
+    {
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        $rawWithoutShrines = $this->heroCalculator->getRawExperienceGain($this->dominion, 5, 'spy');
+
+        // Stack heavy shrine investment (drives getExperienceMultiplier toward its +200% cap)
+        $this->dominion->building_shrine = 10000;
+        $rawWithShrines = $this->heroCalculator->getRawExperienceGain($this->dominion, 5, 'spy');
+
+        $this->assertEquals($rawWithoutShrines, $rawWithShrines);
+
+        // Confirm getExperienceMultiplier *does* change so we know the test is meaningful
+        $this->dominion->building_shrine = 0;
+        $multiplierWithoutShrines = $this->heroCalculator->getExperienceMultiplier($this->dominion);
+        $this->dominion->building_shrine = 10000;
+        $multiplierWithShrines = $this->heroCalculator->getExperienceMultiplier($this->dominion);
+        $this->assertGreaterThan($multiplierWithoutShrines, $multiplierWithShrines);
+    }
+
+    public function testGetExperienceGain_EqualsRawTimesMultiplier()
+    {
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        foreach (['spy', 'magic', 'invasion', 'exploration'] as $source) {
+            $raw = $this->heroCalculator->getRawExperienceGain($this->dominion, 5, $source);
+            $multiplier = $this->heroCalculator->getExperienceMultiplier($this->dominion);
+            $gain = $this->heroCalculator->getExperienceGain($this->dominion, 5, $source);
+            $this->assertEqualsWithDelta($raw * $multiplier, $gain, 0.0001, "source={$source}");
+        }
+    }
+
     public function testGetNextLevelXP_ReturnsCorrectNextLevel()
     {
         $testCases = [

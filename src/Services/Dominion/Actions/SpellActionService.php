@@ -29,6 +29,7 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\ValuablesService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -87,6 +88,9 @@ class SpellActionService
     /** @var SpellHelper */
     protected $spellHelper;
 
+    /** @var ValuablesService */
+    protected $valuablesService;
+
     /**
      * SpellActionService constructor.
      */
@@ -109,6 +113,7 @@ class SpellActionService
         $this->rangeCalculator = app(RangeCalculator::class);
         $this->spellCalculator = app(SpellCalculator::class);
         $this->spellHelper = app(SpellHelper::class);
+        $this->valuablesService = app(ValuablesService::class);
     }
 
     public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 3;
@@ -211,7 +216,7 @@ class SpellActionService
                     $wizardStrengthLost = 1;
                 }
                 $xpValue = $wizardStrengthLost;
-                $result = $this->castInfoOpSpell($dominion, $spell, $target);
+                $result = $this->castInfoOpSpell($dominion, $spell, $target, $latestOp);
             } elseif ($this->spellHelper->isHostileSpell($spell)) {
                 $xpValue = $wizardStrengthLost;
                 $result = $this->castHostileSpell($dominion, $spell, $target);
@@ -265,11 +270,15 @@ class SpellActionService
             if (!$this->spellHelper->isSelfSpell($spell)) {
                 if ($result['success']) {
                     $xpGain = 0;
-                    if ($dominion->hero) {
-                        $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpValue, 'magic');
+                    $cappedRawXp = 0;
+                    if ($dominion->hero && $xpValue > 0) {
+                        $rawXp = $this->heroCalculator->getRawExperienceGain($dominion, $xpValue, 'magic');
+                        $remainingCap = max(0, HeroCalculator::DAILY_OPS_XP_CAP - $dominion->daily_xp);
+                        $cappedRawXp = min($rawXp, $remainingCap);
+                        $xpGain = $cappedRawXp * $this->heroCalculator->getExperienceMultiplier($dominion);
                     }
                     $dominion->stat_spell_success += 1;
-                    // Bounty result
+                    // Bounty result (XP here is exempt from the daily cap)
                     if (isset($result['bounty']) && $result['bounty']) {
                         $bountyRewardString = '';
                         $rewards = $result['bounty'];
@@ -287,6 +296,9 @@ class SpellActionService
                         $dominion->hero->experience += $xpGain;
                         $dominion->hero->save();
                         $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);
+                    }
+                    if ($cappedRawXp > 0) {
+                        $dominion->daily_xp += $cappedRawXp;
                     }
                 } else {
                     $dominion->stat_spell_failure += 1;
@@ -306,7 +318,7 @@ class SpellActionService
                     'target_dominion_id' => $target->id
                 ]);
 
-                if ($dominion->fresh()->wizard_strength < 25) {
+                if (Dominion::query()->whereKey($dominion->id)->value('wizard_strength') < 25) {
                     throw new GameException('Your wizards have run out of strength');
                 }
 
@@ -409,7 +421,7 @@ class SpellActionService
      * @throws GameException
      * @throws Exception
      */
-    protected function castInfoOpSpell(Dominion $dominion, Spell $spell, Dominion $target): array
+    protected function castInfoOpSpell(Dominion $dominion, Spell $spell, Dominion $target, ?InfoOp $latestOp = null): array
     {
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
@@ -504,9 +516,14 @@ class SpellActionService
 
         $infoOp->save();
 
+        $discoveryMessage = '';
+        if ($latestOp === null || $latestOp->isStale()) {
+            $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target, 'wizards');
+        }
+
         return [
             'success' => true,
-            'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
+            'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.' . $discoveryMessage,
             'bounty' => $bountyRewards
         ];
     }

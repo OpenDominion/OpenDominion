@@ -1,0 +1,297 @@
+// Frost theme – cool blue-gray light palette, steel-blue accent, modern sans typography
+// Self-contained: defines custom properties, overrides, and component styles.
+
+[data-color-scheme="frost"] {
+  // ── Custom properties ─────────────────────────────────────────────────────
+  // Core surfaces
+  --od-body-bg:          #e8edf2;
+  --od-surface:          #f0f4f8;
+  --od-surface-alt:      #dde4ec;
+  --od-deep:             #cdd6e0;
+  --od-muted-surface:    #c4ced9;
+  --od-border-accent:    #9daab8;
+  --od-border-soft:      #b8c4d0;
+
+  // Text
+  --od-text-body:        #1a2230;
+  --od-text-secondary:   #4a5568;
+  --od-text-emphasis:    #0f1720;
+  --od-text-subtle:      #7a8694;
+
+  // Brand / accent (steel-blue)
+  --od-primary:          #3b6fa0;
+  --od-primary-dark:     #2a5478;
+  --od-primary-light:    #5a8fbf;
+  --od-info:             #5b8bc1;
+  --od-info-dark:        #2c4a6e;
+  --od-info-bg:          rgba(74, 122, 176, .08);
+  --od-success:          #3a7a5a;
+  --od-success-dark:     #2a5e44;
+  --od-success-bg:       rgba(58, 122, 90, .08);
+  --od-danger:           #a03a3a;
+  --od-danger-dark:      #7a2828;
+  --od-danger-bg:        rgba(160, 58, 58, .08);
+  --od-warning:          #8a6a20;
+  --od-warning-dark:     #6a5018;
+  --od-warning-bg:       rgba(138, 106, 32, .10);
+
+  // Tooltip-tuned text colors (tooltip bg is dark slate in this light theme — use lighter variants)
+  --od-success-on-tooltip: #6cd4a0;
+  --od-danger-on-tooltip:  #f08a85;
+  --od-warning-on-tooltip: #e0c060;
+  --od-info-on-tooltip:    #7ab8e8;
+  --od-muted-on-tooltip:   #adb5bd;
+
+  // Layout
+  --od-header-bg:        #e4eaf0;
+  --od-sidebar-bg:       #dde5ee;
+  --od-sidebar-text:     #4a5568;
+  --od-sidebar-hover:    #cdd8e4;
+  --od-sidebar-active-bg: rgba(59, 111, 160, 0.10);
+  --od-sidebar-active-border: #3b6fa0;
+  --od-content-bg:       #e8edf2;
+
+  // Links
+  --od-link-color:       #3b6fa0;
+  --od-link-hover-color: #2a5478;
+
+  // Typography
+  --od-font-display:     'Space Grotesk', system-ui, sans-serif;
+  --od-font-sans:        'DM Sans', system-ui, sans-serif;
+  --od-font-mono:        'JetBrains Mono', ui-monospace, monospace;
+
+  // ── Override Bootstrap --bs-* variables ───────────────────────────────────
+  color-scheme: light;
+  --bs-body-bg:                   var(--od-body-bg);
+  --bs-body-color:                var(--od-text-body);
+  --bs-body-font-family:          var(--od-font-sans);
+  --bs-secondary-color:           var(--od-text-secondary);
+  --bs-secondary-bg:              var(--od-surface);
+  --bs-tertiary-bg:               var(--od-deep);
+  --bs-emphasis-color:            var(--od-text-emphasis);
+  --bs-heading-color:             var(--od-text-emphasis);
+  --bs-border-color:              var(--od-border-soft);
+  --bs-border-color-translucent:  rgba(26, 34, 48, 0.10);
+  --bs-primary:                    var(--od-primary);
+  --bs-success:                    var(--od-success);
+  --bs-info:                       var(--od-info);
+  --bs-warning:                    var(--od-warning);
+  --bs-danger:                     var(--od-danger);
+  --bs-link-color:                var(--od-link-color);
+  --bs-link-hover-color:          var(--od-link-hover-color);
+
+  // ── Cards ─────────────────────────────────────────────────────────────────
+  .card {
+    --bs-card-bg:           var(--od-surface);
+    --bs-card-cap-bg:       var(--od-surface-alt);
+    --bs-card-color:        var(--od-text-body);
+    --bs-card-border-color: var(--od-border-soft);
+  }
+  .card-title                { color: var(--od-text-emphasis); font-family: var(--od-font-display); font-size: 0.875rem; font-weight: 600; }
+  .card-header               { font-family: var(--od-font-display); letter-spacing: .03em; }
+  .card-header a,
+  .card-header .btn          { color: var(--od-text-emphasis); }
+  .card.border-info          { border-top-color: var(--od-info) !important; }
+  .card.border-primary       { border-top-color: var(--od-primary) !important; }
+  .card.border-success       { border-top-color: var(--od-success) !important; }
+  .card.border-warning       { border-top-color: var(--od-warning) !important; }
+  .card.border-danger        { border-top-color: var(--od-danger) !important; }
+
+  .border-primary {
+    border-color: var(--od-primary) !important;
+  }
+
+  .card.card-primary {
+    border-top: 3px solid var(--od-primary);
+  }
+
+  // ── User menu ──────────────────────────────────────────────────────────────
+  .user-header {
+    background-color: var(--od-primary);
+  }
+
+  // ── Dropdowns ─────────────────────────────────────────────────────────────
+  .dropdown-menu {
+    --bs-dropdown-bg:               var(--od-surface);
+    --bs-dropdown-border-color:     var(--od-border-soft);
+    --bs-dropdown-color:            var(--od-text-body);
+    --bs-dropdown-link-color:       var(--od-text-body);
+    --bs-dropdown-link-hover-bg:    var(--od-surface-alt);
+    --bs-dropdown-link-hover-color: var(--od-text-emphasis);
+    --bs-dropdown-link-active-bg:   var(--od-primary);
+  }
+
+  // ── Tables ────────────────────────────────────────────────────────────────
+  .table {
+    --bs-table-color:        var(--od-text-body);
+    --bs-table-bg:           transparent;
+    --bs-table-striped-bg:   var(--od-surface-alt);
+    --bs-table-hover-bg:     var(--od-deep);
+    --bs-table-border-color: var(--od-border-soft);
+  }
+  .table > thead > tr > th                          { border-bottom: 2px solid var(--od-primary); font-family: var(--od-font-display); letter-spacing: .03em; }
+  .table > tbody > tr:nth-of-type(2n+1)             { background: var(--od-surface-alt); }
+  .table tr.table-active > td,
+  .table tr.table-active > th                       { background-color: var(--od-muted-surface) !important; }
+  .table tr.table-danger > td,
+  .table tr.table-danger > th                       { background-color: var(--od-danger-bg) !important; }
+  .table tr.table-warning > td,
+  .table tr.table-warning > th                      { background-color: var(--od-warning-bg) !important; }
+  .table tr.table-info > td,
+  .table tr.table-info > th                         { background-color: var(--od-info-bg) !important; }
+  .table tr.table-success > td,
+  .table tr.table-success > th                      { background-color: var(--od-success-bg) !important; }
+  .table-responsive                                 { border-color: var(--od-border-soft); }
+
+  // ── Forms ─────────────────────────────────────────────────────────────────
+  .form-control,
+  input, textarea, select {
+    background-color: var(--od-surface);
+    border-color:     var(--od-border-soft);
+    color:            var(--od-text-body);
+  }
+  .form-control[disabled],
+  .form-control[readonly]  { background-color: var(--od-muted-surface); border-color: var(--od-border-soft); }
+  .input-group-text {
+    background-color: var(--od-surface-alt);
+    border-color:     var(--od-border-soft);
+    color:            var(--od-text-secondary);
+  }
+
+  // ── List groups ───────────────────────────────────────────────────────────
+  .list-group {
+    --bs-list-group-bg:           var(--od-surface);
+    --bs-list-group-border-color: var(--od-border-soft);
+    --bs-list-group-color:        var(--od-text-body);
+  }
+
+  // ── Modals ────────────────────────────────────────────────────────────────
+  .modal-content        { background-color: var(--od-surface); color: var(--od-text-body); }
+  .modal-header,
+  .modal-footer         { border-color: var(--od-border-soft) !important; }
+
+  // ── Pagination ────────────────────────────────────────────────────────────
+  .page-link {
+    background:   var(--od-surface);
+    border-color: var(--od-border-soft);
+    color:        var(--od-text-body);
+    &:hover       { background: var(--od-surface-alt); border-color: var(--od-border-accent); color: var(--od-text-emphasis); }
+  }
+  .page-item.disabled .page-link { color: var(--od-text-subtle); }
+  .page-item.active   .page-link { background-color: var(--od-primary); border-color: var(--od-primary-dark); color: #fff; }
+
+  // ── Navs (pills & tabs) ───────────────────────────────────────────────────
+  .nav-pills {
+    --bs-nav-pills-link-active-bg: var(--od-primary);
+    --bs-nav-pills-link-active-color: #fff;
+  }
+  .nav-pills .nav-link        { color: var(--od-text-body); }
+  .nav-pills .nav-link:hover,
+  .nav-pills .nav-link:focus  { color: var(--od-primary); background-color: var(--od-surface-alt); }
+  .nav-pills .nav-link.active { border-left-color: var(--od-primary); }
+  .nav-tabs,
+  .app-footer                 { background-color: var(--od-surface); border-top-color: var(--od-border-soft); color: var(--od-text-body); }
+  .tab-content                { background-color: var(--od-surface); }
+  .nav-tabs .nav-link         { color: var(--od-text-body); }
+  .nav-tabs .nav-link.active  { background-color: var(--od-surface); border-color: var(--od-border-soft); }
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:hover,
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:focus { background-color: var(--od-surface-alt) !important; color: var(--od-primary) !important; }
+
+  // ── Badges & alerts ───────────────────────────────────────────────────────
+  .badge.text-bg-secondary    { background-color: var(--od-text-subtle) !important; color: #fff !important; }
+
+  // ── Buttons ───────────────────────────────────────────────────────────────
+  .btn-link               { color: var(--od-link-color); }
+  .btn-link:hover         { color: var(--od-link-hover-color); }
+  .btn-app,
+  .btn-secondary          { background-color: var(--od-surface-alt) !important; border-color: var(--od-border-soft) !important; color: var(--od-text-body) !important; }
+  .btn-app:hover,
+  .btn-secondary:hover    { background-color: var(--od-muted-surface) !important; }
+  .btn-primary,
+  .badge.text-bg-primary  { background: var(--od-primary) !important; border-color: var(--od-primary-dark) !important; color: #fff !important; }
+  .btn-primary:hover      { background: var(--od-primary-dark) !important; }
+  .btn-danger,
+  .alert-danger,
+  .badge.text-bg-danger   { background-color: var(--od-danger-bg) !important; border-color: var(--od-danger) !important; color: var(--od-danger) !important; }
+  .btn-danger:hover       { background-color: var(--od-danger-dark) !important; color: #fff !important; }
+  .btn-warning,
+  .alert-warning,
+  .badge.text-bg-warning  { background-color: var(--od-warning-bg) !important; border-color: var(--od-warning) !important; color: var(--od-warning) !important; }
+  .btn-warning:hover      { background-color: var(--od-warning-dark) !important; color: #fff !important; }
+  .btn-info,
+  .alert-info,
+  .badge.text-bg-info     { background-color: var(--od-info-bg) !important; border-color: var(--od-info) !important; color: var(--od-info) !important; }
+  .btn-info:hover         { background-color: var(--od-info-dark) !important; color: #fff !important; }
+  .btn-success,
+  .alert-success,
+  .badge.text-bg-success  { background-color: var(--od-success-bg) !important; border-color: var(--od-success) !important; color: var(--od-success) !important; }
+  .btn-success:hover      { background-color: var(--od-success-dark) !important; color: #fff !important; }
+
+  // ── Misc ──────────────────────────────────────────────────────────────────
+  .progress                   { --bs-progress-bar-bg: var(--od-primary); }
+  pre                         { color: var(--od-text-body); background-color: var(--od-surface-alt); border-color: var(--od-border-soft); font-family: var(--od-font-mono); }
+  .text-success               { color: var(--od-success) !important; }
+  .text-danger                { color: var(--od-danger) !important; }
+  .text-green                 { color: var(--od-success) !important; }
+  .text-orange                { color: #b85e1a !important; }
+  .text-red                   { color: var(--od-danger) !important; }
+  .text-aqua,
+  .text-light-blue            { color: var(--od-info) !important; }
+  .text-muted, .form-text     { color: var(--od-text-secondary) !important; }
+  blockquote                  { border-color: var(--od-border-soft) !important; }
+  a, .alert-link              { color: var(--od-link-color); }
+
+  // ── Layout ────────────────────────────────────────────────────────────────
+  .app-wrapper                { background-color: var(--od-surface-alt) !important; }
+  .app-main                   { background-color: var(--od-content-bg); }
+  .app-header                 { background-color: var(--od-header-bg) !important; border-bottom: 1px solid var(--od-border-soft); }
+  .app-header .navbar-brand     { color: var(--od-text-body); font-family: var(--od-font-display); font-weight: 700; letter-spacing: 0.03em; }
+  .app-header .navbar-brand b   { color: var(--od-primary); font-weight: 700; }
+  .app-header .navbar-brand:hover   { color: #000; }
+  .app-header .navbar-brand:hover b { color: var(--od-primary-dark); }
+  .app-header a,
+  .app-header .nav-link         { color: var(--od-text-body); }
+  .app-header .nav-link:hover,
+  .app-header .nav-link:focus,
+  .app-header .dropdown.show .nav-link,
+  .app-header [data-lte-toggle="sidebar"]:hover { background: rgba(59, 111, 160, 0.08); color: var(--od-primary); }
+  .app-header .ticker {
+    background: var(--od-surface);
+    border-color: var(--od-border-soft);
+  }
+  .app-header .ticker-lbl { color: var(--od-text-subtle); }
+  .app-header .ticker-val { color: var(--od-primary); font-family: var(--od-font-mono); }
+  .app-header .ticker-dot { color: var(--od-primary); }
+  .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid var(--od-border-soft); }
+  .app-sidebar a              { color: var(--od-sidebar-text); }
+  .app-sidebar a:hover        { text-decoration: none; color: var(--od-text-emphasis); }
+  .sidebar-user                { color: var(--od-text-body); }
+  .nav-header                 { background: var(--od-deep); color: var(--od-text-subtle); font-family: var(--od-font-display); letter-spacing: .08em; }
+  .sidebar-brand                { color: var(--od-text-body); font-family: var(--od-font-display); font-weight: 700; letter-spacing: 0.03em; }
+  .sidebar-brand b              { color: var(--od-primary); font-weight: 700; }
+  .sidebar-brand:hover          { color: var(--od-text-emphasis); }
+  .sidebar-brand:hover b        { color: var(--od-primary-dark); }
+  .sidebar-brand .brand-prefix { color: var(--od-text-secondary); font-weight: 600; opacity: 0.7; }
+  .sidebar-user .info,
+  .sidebar-user .info > a     { color: var(--od-text-body); }
+  .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
+  .sidebar-menu .nav-item:hover > .nav-link { color: var(--od-primary); background: var(--od-sidebar-hover); border-left-color: transparent; }
+  .sidebar-menu .nav-item.active > .nav-link { color: var(--od-primary); background: var(--od-sidebar-active-bg); border-left-color: var(--od-sidebar-active-border); font-weight: 500; }
+  .sidebar-menu .nav-treeview { background: var(--od-deep); }
+  .nav-treeview .nav-link     { color: var(--od-text-subtle); }
+  .nav-treeview .nav-link.active,
+  .nav-treeview .nav-link:hover { color: var(--od-primary); }
+  .navbar-nav                 { color: var(--od-text-body) !important; }
+  .navbar-toggler             { border-color: var(--od-border-soft); }
+  .navbar-toggler:focus       { box-shadow: none; }
+
+  // ── DataTables ────────────────────────────────────────────────────────────
+  .dataTables_wrapper input[type='search'] { border-radius: 4px; background-color: var(--od-surface); border: 1px solid var(--od-border-soft); color: var(--od-text-body); }
+
+  // ── Select2 ───────────────────────────────────────────────────────────────
+  .select2 .select2-selection              { background-color: var(--od-surface); color: var(--od-text-body); border: 1px solid var(--od-border-soft); }
+  .select2-dropdown                        { background-color: var(--od-surface); color: var(--od-text-body); border: 1px solid var(--od-border-soft); }
+  .select2-dropdown .select2-search__field { background-color: var(--od-surface-alt); color: var(--od-text-body); border: 1px solid var(--od-border-soft); }
+  .select2-container--default.select2-container--open { background-color: var(--od-surface); }
+  .select2-container--default .select2-results__option--highlighted[aria-selected] { background-color: var(--od-primary); color: white; }
+}

@@ -78,6 +78,20 @@
                             <p>{!! $raid->description !!}</p>
                         </div>
                     </div>
+
+                    @if ($raid->extended_description)
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>
+                                    Extended Description
+                                    <small class="text-muted">— rendered at <code>/raids/{{ $raid->id }}/story</code></small>
+                                </h4>
+                                <div class="raid-story border rounded p-3 bg-body-tertiary" style="max-height: 400px; overflow-y: auto;">
+                                    {!! $raid->extended_description !!}
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@
         <div class="card-header">
             <span class="card-title">
                 Shared logins for: {{ $dominion->name }}
-            </h3>
+            </span>
             <select id="dominion-select" class="form-select float-end">
                 <option value="">
                     All

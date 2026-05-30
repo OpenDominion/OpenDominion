@@ -582,12 +582,12 @@
                             @else
                                 @if ($currentRound->realmAssignmentDate() > now())
                                     <p class="landing-status text-registration">Open for Registration</p>
-                                    <p>Pack deadline in {{ $currentRound->timeUntilRealmAssignment() }}.</p>
-                                    <p>Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
+                                    <p>Pack deadline in {{ $currentRound->timeUntilRealmAssignment() }}.<br/>
+                                    Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
                                 @elseif ($currentRound->start_date > now())
                                     <p class="landing-status text-registration">Starting Soon</p>
-                                    <p>Individual registration still open!</p>
-                                    <p>Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
+                                    <p>Individual registration still open!<br/>
+                                    Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
                                 @else
                                     <p class="landing-status text-active p-0">Active</p>
                                 @endif
@@ -596,10 +596,12 @@
                         @if ($currentRound !== null && !$currentRound->hasEnded())
                             <div class="landing-card-body pt-0 mb-3">
                                 <table>
-                                    <tr>
-                                        <td class="stat-label"><i class="fa fa-clock fa-fw me-2"></i>Day</td>
-                                        <td class="text-end stat-value">{{ number_format($currentRound->daysInRound()) }} / {{ number_format($currentRound->durationInDays()) }}</td>
-                                    </tr>
+                                    @if ($currentRound->hasStarted())
+                                        <tr>
+                                            <td class="stat-label"><i class="fa fa-clock fa-fw me-2"></i>Day</td>
+                                            <td class="text-end stat-value">{{ number_format($currentRound->daysInRound()) }} / {{ number_format($currentRound->durationInDays()) }}</td>
+                                        </tr>
+                                    @endif
                                     <tr>
                                         <td class="stat-label"><i class="fa fa-users fa-fw me-2"></i>Players</td>
                                         <td class="text-end stat-value">{{ number_format($currentRound->dominions->where('user_id', '!=', null)->count()) }}</td>

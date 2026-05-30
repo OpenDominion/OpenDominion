@@ -19,6 +19,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -28,6 +29,7 @@ use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\ValuablesService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -92,6 +94,9 @@ class EspionageActionService
     /** @var SpellCalculator */
     protected $spellCalculator;
 
+    /** @var ValuablesService */
+    protected $valuablesService;
+
     /**
      * EspionageActionService constructor.
      */
@@ -116,6 +121,7 @@ class EspionageActionService
         $this->queueService = app(QueueService::class);
         $this->rangeCalculator = app(RangeCalculator::class);
         $this->spellCalculator = app(SpellCalculator::class);
+        $this->valuablesService = app(ValuablesService::class);
     }
 
     public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 3;
@@ -163,9 +169,6 @@ class EspionageActionService
             if ($dominion->round->start_date->diffInHours(now()) < self::THEFT_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot perform resource theft for the first three days of the round');
             }
-            if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
-                throw new GameException('You cannot perform resource theft on targets smaller than yourself');
-            }
             if ($target->user_id == null) {
                 throw new GameException('You cannot perform resource theft on bots');
             }
@@ -175,6 +178,16 @@ class EspionageActionService
             }
             if ($target->user_id == null) {
                 throw new GameException('You cannot perform black ops on bots');
+            }
+        } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
+            if ($dominion->round->start_date->diffInHours(now()) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
+                throw new GameException('You cannot discover valuables for the first three days of the round');
+            }
+            if ($target->user_id == null) {
+                throw new GameException('You cannot steal valuables from bots');
+            }
+            if ($this->valuablesService->isOnCooldown($dominion, $target)) {
+                throw new GameException('Your spies have already concluded a search of this dominion recently.');
             }
         }
 
@@ -210,7 +223,7 @@ class EspionageActionService
                     }
                 }
                 $xpValue = $spyStrengthLost;
-                $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
+                $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target, $latestOp);
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;
                 $spyStrengthLost += $dominion->getSpellPerkValue('theft_strength_cost');
@@ -224,6 +237,10 @@ class EspionageActionService
                     $xpValue = 0;
                 }
                 $dominion->resetAbandonment();
+            } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
+                $spyStrengthLost = (int) ValuablesHelper::SPY_OP_STRENGTH_COST;
+                $xpValue = 0;
+                $result = $this->valuablesService->attemptDiscovery($dominion, $target);
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
@@ -244,11 +261,15 @@ class EspionageActionService
 
             if ($result['success']) {
                 $xpGain = 0;
-                if ($dominion->hero) {
-                    $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpValue, 'spy');
+                $cappedRawXp = 0;
+                if ($dominion->hero && $xpValue > 0) {
+                    $rawXp = $this->heroCalculator->getRawExperienceGain($dominion, $xpValue, 'spy');
+                    $remainingCap = max(0, HeroCalculator::DAILY_OPS_XP_CAP - $dominion->daily_xp);
+                    $cappedRawXp = min($rawXp, $remainingCap);
+                    $xpGain = $cappedRawXp * $this->heroCalculator->getExperienceMultiplier($dominion);
                 }
                 $dominion->stat_espionage_success += 1;
-                // Bounty result
+                // Bounty result (XP here is exempt from the daily cap)
                 if (isset($result['bounty']) && $result['bounty']) {
                     $bountyRewardString = '';
                     $rewards = $result['bounty'];
@@ -267,6 +288,9 @@ class EspionageActionService
                     $dominion->hero->save();
                     $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);
                 }
+                if ($cappedRawXp > 0) {
+                    $dominion->daily_xp += $cappedRawXp;
+                }
             } else {
                 $dominion->stat_espionage_failure += 1;
             }
@@ -277,7 +301,7 @@ class EspionageActionService
                 'target_dominion_id' => $target->id
             ]);
 
-            if ($dominion->fresh()->spy_strength < 25) {
+            if (Dominion::query()->whereKey($dominion->id)->value('spy_strength') < 25) {
                 throw new GameException('Your spies have run out of strength');
             }
 
@@ -309,7 +333,7 @@ class EspionageActionService
      * @return array
      * @throws Exception
      */
-    protected function performInfoGatheringOperation(Dominion $dominion, string $operationKey, Dominion $target): array
+    protected function performInfoGatheringOperation(Dominion $dominion, string $operationKey, Dominion $target, ?InfoOp $latestOp = null): array
     {
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
@@ -406,9 +430,14 @@ class EspionageActionService
 
         $infoOp->save();
 
+        $discoveryMessage = '';
+        if ($latestOp === null || $latestOp->isStale()) {
+            $discoveryMessage = $this->valuablesService->attemptPassiveDiscovery($dominion, $target);
+        }
+
         return [
             'success' => true,
-            'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
+            'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.' . $discoveryMessage,
             'bounty' => $bountyRewards
         ];
     }
@@ -492,7 +521,7 @@ class EspionageActionService
                 $resource = 'food';
                 $constraints = [
                     'target_amount' => 2,
-                    'self_production' => 100,
+                    'self_production' => 75,
                     'spy_carries' => 50,
                 ];
                 break;
@@ -510,7 +539,7 @@ class EspionageActionService
                 $resource = 'mana';
                 $constraints = [
                     'target_amount' => 3,
-                    'self_production' => 56,
+                    'self_production' => 50,
                     'spy_carries' => 50,
                 ];
                 break;
@@ -519,7 +548,7 @@ class EspionageActionService
                 $resource = 'ore';
                 $constraints = [
                     'target_amount' => 5,
-                    'self_production' => 68,
+                    'self_production' => 50,
                     'spy_carries' => 50,
                 ];
                 break;
@@ -527,7 +556,7 @@ class EspionageActionService
             case 'steal_gems':
                 $resource = 'gems';
                 $constraints = [
-                    'target_amount' => 2,
+                    'target_amount' => 5,
                     'self_production' => 100,
                     'spy_carries' => 50,
                 ];
@@ -568,6 +597,19 @@ class EspionageActionService
         ];
     }
 
+    /**
+     * Per-acre minimum that an attacker can steal even with zero raw production
+     * of the resource. Lets non-producers grab a small amount instead of zero.
+     */
+    protected const THEFT_PER_ACRE_FLOOR = [
+        'platinum' => 5,
+        'food'     => 5,
+        'lumber'   => 3,
+        'mana'     => 2,
+        'ore'      => 3,
+        'gems'     => 1,
+    ];
+
     protected function getResourceTheftAmount(
         Dominion $dominion,
         Dominion $target,
@@ -582,28 +624,27 @@ class EspionageActionService
                 return 0;
             }
         }
-        // Limit to percentage of target's raw production
+
+        // Limit to percentage of target's *unprotected* stockpile.
+        // Protection equals the target's raw production for the resource — every
+        // building / unit / peasant that produces the resource also defends an
+        // equal amount of it.
         $maxTarget = true;
         if ($constraints['target_amount'] > 0) {
-            $maxTarget = $target->{'resource_' . $resource} * $constraints['target_amount'] / 100;
+            $protectedAmount = $this->getRawProductionForResource($target, $resource);
+            $unprotected     = max(0, $target->{'resource_' . $resource} - $protectedAmount);
+            $maxTarget       = $unprotected * $constraints['target_amount'] / 100;
         }
 
-        // Limit to percentage of dominion's raw production
+        // Limit to percentage of dominion's raw production, with a per-acre
+        // floor so attackers who don't produce the resource can still steal a
+        // small amount.
         $maxDominion = true;
         if ($constraints['self_production'] > 0) {
-            if ($resource === 'platinum') {
-                $maxDominion = rfloor($this->productionCalculator->getPlatinumProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'food') {
-                $maxDominion = rfloor($this->productionCalculator->getFoodProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'lumber') {
-                $maxDominion = rfloor($this->productionCalculator->getLumberProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'mana') {
-                $maxDominion = rfloor($this->productionCalculator->getManaProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'ore') {
-                $maxDominion = rfloor($this->productionCalculator->getOreProductionRaw($dominion) * $constraints['self_production'] / 100);
-            } elseif ($resource === 'gems') {
-                $maxDominion = rfloor($this->productionCalculator->getGemProductionRaw($dominion) * $constraints['self_production'] / 100);
-            }
+            $rawProduction = $this->getRawProductionForResource($dominion, $resource);
+            $productionCap = rfloor($rawProduction * $constraints['self_production'] / 100);
+            $perAcreFloor  = $this->landCalculator->getTotalLand($dominion) * (self::THEFT_PER_ACRE_FLOOR[$resource] ?? 0);
+            $maxDominion   = max($productionCap, $perAcreFloor);
         }
 
         // Limit to amount carryable by spies
@@ -622,7 +663,34 @@ class EspionageActionService
         // Spells
         $multiplier += $dominion->getSpellPerkMultiplier('theft_gains');
 
-        return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier);
+        // Steep penalty for stealing from a smaller target. Curve fit:
+        // 87.5% range -> ~55%, 75% -> ~27%, 60% -> ~10%. Floor at 1%.
+        $selfLand     = $this->landCalculator->getTotalLand($dominion);
+        $targetLand   = $this->landCalculator->getTotalLand($target);
+        $relativeSize = $selfLand > 0 ? min(1.0, $targetLand / $selfLand) : 1.0;
+        $sizePenalty  = max($relativeSize ** 4.5, 0.01);
+
+        return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier * $sizePenalty);
+    }
+
+    protected function getRawProductionForResource(Dominion $dominion, string $resource): float
+    {
+        switch ($resource) {
+            case 'platinum':
+                return $this->productionCalculator->getPlatinumProductionRaw($dominion);
+            case 'food':
+                return $this->productionCalculator->getFoodProductionRaw($dominion);
+            case 'lumber':
+                return $this->productionCalculator->getLumberProductionRaw($dominion);
+            case 'mana':
+                return $this->productionCalculator->getManaProductionRaw($dominion);
+            case 'ore':
+                return $this->productionCalculator->getOreProductionRaw($dominion);
+            case 'gems':
+                return $this->productionCalculator->getGemProductionRaw($dominion);
+        }
+
+        throw new LogicException("Unknown theft resource '{$resource}'");
     }
 
     /**

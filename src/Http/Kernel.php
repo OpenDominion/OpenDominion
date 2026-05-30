@@ -35,9 +35,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             Middleware\PreventRequestForgery::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-
-            Middleware\UpdateUserLastOnline::class,
-            Middleware\ShareSelectedDominion::class,
         ],
 
         'api' => [
@@ -46,8 +43,6 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-
-            Middleware\ShareSelectedDominion::class,
         ],
     ];
 
@@ -65,6 +60,7 @@ class Kernel extends HttpKernel
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'dominionselected' => \OpenDominion\Http\Middleware\DominionSelected::class,
+        'updatelastonline' => \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
         'guest' => \OpenDominion\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,

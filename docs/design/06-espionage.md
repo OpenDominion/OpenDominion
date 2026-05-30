@@ -88,20 +88,25 @@ Operations that transfer a portion of the target's stockpile to the attacker. Si
 
 **Restrictions:**
 - Cannot perform within the first 3 days of the round.
-- The target must be at least as large as the attacker (cannot steal from smaller dominions).
 - Cannot steal from NPC (bot) dominions.
+- Smaller targets are still attackable but suffer a steep size penalty (see *Size penalty* below).
 
 **Theft Amount**
 
 Each theft operation calculates a maximum stolen amount as the **minimum** of three independent ceilings:
 
-1. **Target ceiling** — a percentage of the target's current stockpile of that resource.
-2. **Attacker ceiling** — a percentage of the attacker's own hourly production of that resource. This cap prevents a rich target from being drained beyond what the attacker could practically carry.
+1. **Target ceiling** — a percentage of the target's *unprotected* stockpile of that resource. Protection is the target's raw hourly production: every alchemy, ore mine, diamond mine, tower, and lumber yard defends its own production from theft, as do peasants (2.7 platinum each) and racial production units (Wood Elf Wisp, Dwarf Miner) and adjacent producers (Forest Haven, Wizard Guild). If raw production exceeds the current stockpile, nothing can be taken from this ceiling.
+2. **Attacker ceiling** — a percentage of the attacker's own hourly production of that resource, with a per-acre floor so attackers who don't produce the resource at all can still take a small amount. Producing the resource yields a much higher cap than the floor.
 3. **Carry capacity** — scales with the attacker's spy ratio and total land. Higher spy ratio means more can be carried per operation.
 
-The final amount is then multiplied by any applicable tech or spell theft gains.
+The final amount is then multiplied by any applicable tech or spell theft gains, and finally by the size penalty.
+
+**Size penalty**
+
+Stealing from a smaller target multiplies the final amount by `max((target_land / attacker_land) ^ 4.5, 0.01)`. Same-size or larger targets are unaffected. Approximate yields: 87.5% range ≈ 55%, 75% ≈ 27%, 60% ≈ 10%, 50% ≈ 4%, 40% ≈ 2%, with a 1% hard floor for anything below that. This converts the old "must be ≥100% range" wall into a discouragement: opportunistic raids on smaller dominions remain technically possible but are rarely worth the spy strength.
 
 **Protection against theft:**
+- **Production buildings and producing units** defend an amount equal to their raw production (see ceiling #1 above).
 - **Fool's Gold** spell protects against platinum theft entirely. With the upgraded tech variant, it also protects ore, lumber, and mana.
 - Tech perks on the target can increase the proportion of their resources that is "lost" on theft (paradoxically making theft more damaging to them, not a defense).
 
@@ -238,7 +243,7 @@ A corresponding mastery loss applies to the attacker if they are already at sign
 
 **Spy ratio vs. army size vs. wizard ratio** — All three compete for the same population pool (all require draftees to train). A dominion cannot fully maximize military, magic, and espionage simultaneously. Spy-focused races invest heavily here; others maintain a baseline and rely on realmmates for espionage support.
 
-**Theft targeting** — The size restriction (cannot steal from smaller targets) shapes the theft economy: only dominant players can be robbed, and only by someone close to or smaller than their size. Theft is a tool for the second-tier players in a competitive bracket, not for farming weak targets.
+**Theft targeting** — The cubed-ish size penalty makes punching down deeply unprofitable: the ~10% yield at 60% range and ~27% at 75% means small dominions are typically not worth the spy strength, but they're no longer immune. Production-building defense further shifts the calculus — robbing a tall, building-heavy target nets little because their raw production protects most of the stockpile. Theft is most rewarding against same-size or larger dominions sitting on stockpiled resources rather than spending them.
 
 **Operation timing around war** — War operations require a war or recent invasion. Players who want war op access must either coordinate realm-level war declarations or pair espionage with their own military attacks.
 

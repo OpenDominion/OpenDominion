@@ -13,7 +13,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-money"></i> National Bank</span>
                 </div>
-                <form action="{{ route('dominion.bank') }}" method="post" {{--class="form-inline" --}}role="form">
+                <form action="{{ route('dominion.bank') }}" method="post" {{--class="form-inline" --}}role="form" class="disable-after-click">
                     @csrf
                     <div class="card-body">
                         <div class="row">

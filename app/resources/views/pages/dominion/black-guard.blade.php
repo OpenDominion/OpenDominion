@@ -68,7 +68,7 @@
                                                             name="spell"
                                                             value="{{ $spell->key }}"
                                                             class="btn btn-primary btn-block black-op"
-                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                         {{ $spellHelper->getChaosSpellName($spell) }}
                                                     </button>
                                                     <p style="margin: 5px 0;">{{ $spellHelper->getChaosSpellDescription($spell) }}</p>
@@ -91,7 +91,7 @@
                                                             name="spell"
                                                             value="{{ $spell->key }}"
                                                             class="btn btn-primary btn-block black-op"
-                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                         {{ $spell->name }}
                                                     </button>
                                                     <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
@@ -124,7 +124,7 @@
                                                             name="spell"
                                                             value="{{ $spell->key }}"
                                                             class="btn btn-primary btn-block friendly-spell disabled"
-                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || $cooldownHours || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || $cooldownHours || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                         {{ $spell->name }}
                                                     </button>
                                                     <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
@@ -161,7 +161,7 @@
                                                             name="operation"
                                                             value="{{ $operation['key'] }}"
                                                             class="btn btn-primary btn-block black-op"
-                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                         {{ $operation['name'] }}
                                                     </button>
                                                     <p>{{ $operation['description'] }}</p>
@@ -178,7 +178,7 @@
                                                             name="operation"
                                                             value="{{ $operation['key'] }}"
                                                             class="btn btn-primary btn-block black-op"
-                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 3) ? 'disabled' : null }}>
+                                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
                                                         {{ $operation['name'] }}
                                                     </button>
                                                     <p>{{ $operation['description'] }}</p>
@@ -202,7 +202,7 @@
                 <div class="col-md-12">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</h3>
+                            <span class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</span>
                         </div>
 
                         <div class="card-body">

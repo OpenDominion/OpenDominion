@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-sword"></i> Military</span>
                 </div>
-                <form action="{{ route('dominion.military.train') }}" method="post" role="form">
+                <form action="{{ route('dominion.military.train') }}" method="post" role="form" class="disable-after-click">
                     @csrf
                     @include('partials.user.client-id-field')
                     <div class="card-body table-responsive no-padding">

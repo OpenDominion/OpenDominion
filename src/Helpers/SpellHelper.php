@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Helpers;
 
+use Cache;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use OpenDominion\Models\Race;
@@ -18,7 +19,7 @@ class SpellHelper
      */
     public function getSpellByKey(string $key): ?Spell
     {
-        return Spell::firstWhere('key', $key);
+        return $this->getSpells()->get($key);
     }
 
     /**
@@ -30,9 +31,7 @@ class SpellHelper
      */
     public function getSpells(Race|null $race = null, string|null $category = null): Collection
     {
-        $spells = Spell::with('perks')
-            ->active()
-            ->get()
+        $spells = Cache::rememberForever('game:spells', static fn () => Spell::with('perks')->active()->get())
             ->map(function ($spell) {
                 $spell->racial = ($spell->races !== [] && $spell->races !== ['chaos-league']);
                 return $spell;

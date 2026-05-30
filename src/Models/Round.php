@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Cache;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +21,6 @@ use Illuminate\Support\Str;
  * @property bool $mixed_alignment
  * @property bool $assignment_complete
  * @property int $tech_version
- * @property int $valor
  * @property int|null $discord_guild_id
  * @property \Illuminate\Support\Carbon $start_date
  * @property \Illuminate\Support\Carbon $end_date
@@ -49,6 +49,24 @@ class Round extends AbstractModel
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(static function (Round $round): void {
+            Cache::forget("game:round:{$round->id}");
+        });
+
+        static::deleted(static function (Round $round): void {
+            Cache::forget("game:round:{$round->id}");
+        });
+    }
+
+    public static function findCached(int $id): Round
+    {
+        return Cache::rememberForever("game:round:{$id}", static function () use ($id) {
+            return Round::findOrFail($id);
+        });
+    }
 
     // Eloquent Relations
 
@@ -290,7 +308,7 @@ class Round extends AbstractModel
             return false;
         }
 
-        return $this->end_date->diffInHours(now()) < 15;
+        return now()->diffInHours($this->end_date) < 15;
     }
 
     /**
@@ -370,7 +388,7 @@ class Round extends AbstractModel
         if ($datetime < $this->start_date) {
             return 1;
         }
-        return (int) $this->start_date->copy()->subDays(1)->diffInDays($datetime);
+        return (int) $this->start_date->diffInDays($datetime) + 1;
     }
 
     /**
@@ -397,6 +415,20 @@ class Round extends AbstractModel
     }
 
     /**
+     * Returns a human-readable "X hours ago" string for the specified date.
+     */
+    public function getHoursSince(Carbon $date): string
+    {
+        $hours = (int) $date->startOfHour()->diffInHours(now()->startOfHour());
+
+        return sprintf(
+            '%s %s ago',
+            $hours,
+            Str::of('hour')->plural($hours),
+        );
+    }
+
+    /**
      * Returns a tooltip for the specified date.
      */
     public function getDateTooltip(Carbon $date): string
@@ -408,12 +440,7 @@ class Round extends AbstractModel
         );
 
         if ($this->isActive()) {
-            $hours = (int) $date->startOfHour()->diffInHours(now()->startOfHour());
-            $tooltip .= sprintf(
-                '<br>(%s %s ago)',
-                $hours,
-                Str::of('hour')->plural($hours),
-            );
+            $tooltip .= sprintf('<br>(%s)', $this->getHoursSince($date));
         }
 
         return $tooltip;

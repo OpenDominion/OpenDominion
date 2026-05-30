@@ -14,7 +14,7 @@
                 <div class="card-header">
                     <span class="card-title"><i class="ra ra-telescope"></i> Explore Land</span>
                 </div>
-                <form action="{{ route('dominion.explore') }}" method="post" role="form">
+                <form action="{{ route('dominion.explore') }}" method="post" role="form" class="disable-after-click">
                     @csrf
                     <div class="card-body table-responsive no-padding">
                         <table class="table">

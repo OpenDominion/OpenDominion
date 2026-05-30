@@ -12,7 +12,7 @@ perks:
   defense: 5
   food_consumption: -50
   lumber_production: -10
-  archmage_cost: -100
+  archmage_cost: -150
 units:
   - name: Icebeast
     cost:

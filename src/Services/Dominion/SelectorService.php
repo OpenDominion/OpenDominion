@@ -64,20 +64,7 @@ class SelectorService
         }
 
         if ($this->selectedDominion === null || ($dominionId !== $this->selectedDominion->id)) {
-            $this->selectedDominion = Dominion::with([
-                'queues',
-                'race',
-                'race.perks',
-                'race.units',
-                'race.units.perks',
-                'realm',
-                'realm.wonders',
-                'realm.wonders.perks',
-                'spells',
-                'spells.perks',
-                'techs',
-                'techs.perks',
-            ])->findOrFail($dominionId);
+            $this->selectedDominion = Dominion::withGameRelations()->findOrFail($dominionId);
         }
 
         // Track hourly access activity

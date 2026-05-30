@@ -72,7 +72,11 @@
                                         {{ isset($blackGuard[$realm->id]) ? $blackGuard[$realm->id] : '--' }}
                                     </td>
                                     <td>
-                                        {{ $realm->valor ? number_format($realm->valor) : '--' }}
+                                        @if ($realm->valor)
+                                            <a href="{{ route('dominion.world.valor', $realm->number) }}">{{ number_format($realm->valor) }}</a>
+                                        @else
+                                            --
+                                        @endif
                                     </td>
                                     <td>
                                         {{ number_format($landCalculator->getRealmLand($realm)) }}

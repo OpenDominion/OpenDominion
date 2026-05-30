@@ -73,7 +73,7 @@
                 </form>
             @endif
 
-            <form action="{{ route('dominion.techs') }}" method="post" role="form">
+            <form action="{{ route('dominion.techs') }}" method="post" role="form" class="disable-after-click">
                 @csrf
                 <div class="card card-primary">
                     <div class="card-header">

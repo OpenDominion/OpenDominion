@@ -6,8 +6,10 @@
             @elseif ($selectedDominion->abandoned_at !== null && $selectedDominion->abandoned_at < now())
                 <p><i class="fa fa-warning me-1"></i> This dominion is <strong>locked</strong> due to abandonment. No actions can be performed and no ticks will be processed.</p>
             @else
-                <p><i class="fa fa-warning me-1"></i> This dominion is <strong>locked</strong> due to the round having ended. No actions can be performed and no ticks will be processed.</p>
-                <p>Go to your <a href="{{ route('dashboard') }}">dashboard</a> to check if new rounds are open to play.</p>
+                <p>
+                    <i class="fa fa-warning me-1"></i> This dominion is <strong>locked</strong> due to the round having ended. No actions can be performed and no ticks will be processed.<br/>
+                    Go to your <a href="{{ route('dashboard') }}">dashboard</a> to check if new rounds are open to play.
+                </p>
             @endif
         </div>
     @elseif (now()->diffInHours($selectedDominion->round->end_date) < 24)

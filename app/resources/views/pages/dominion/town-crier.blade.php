@@ -16,7 +16,7 @@
                         @else
                             All Realms
                         @endif
-                    </h3>
+                    </span>
                 </div>
 
                 @if ($gameEvents->isEmpty())

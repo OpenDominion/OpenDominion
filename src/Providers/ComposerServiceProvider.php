@@ -15,6 +15,7 @@ use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Bounty;
 use OpenDominion\Models\MessageBoard;
+use OpenDominion\Models\Valuable;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -38,19 +39,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $user = Auth::getUser();
 
             $messageBoardLastRead = $user->message_board_last_read ?? $user->created_at;
-            $messageBoardUnreadCount = MessageBoard\Thread::query()
-                ->where('last_activity', '>', $messageBoardLastRead)
-                ->withCount(['posts' => function ($query) use ($messageBoardLastRead) {
-                    $query->where('created_at', '>', $messageBoardLastRead);
-                }])
-                ->get()
-                ->map(function ($thread) use ($messageBoardLastRead) {
-                    if ($thread->created_at > $messageBoardLastRead) {
-                        $thread['posts_count'] += 1;
-                    }
-                    return $thread;
-                })
-                ->sum('posts_count');
+            $messageBoardUnreadCount = MessageBoard\Thread::where('last_activity', '>', $messageBoardLastRead)->count();
             $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
 
             if (!$selectorService->hasUserSelectedDominion()) {
@@ -63,33 +52,13 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $councilLastRead = $selectedDominion->council_last_read ?? $selectedDominion->round->created_at;
             $councilUnreadCount = $selectedDominion->realm->councilThreads()
                 ->where('last_activity', '>', $councilLastRead)
-                ->withCount(['posts' => function ($query) use ($councilLastRead) {
-                    $query->where('created_at', '>', $councilLastRead);
-                }])
-                ->get()
-                ->map(function ($thread) use ($councilLastRead) {
-                    if ($thread->created_at > $councilLastRead) {
-                        $thread['posts_count'] += 1;
-                    }
-                    return $thread;
-                })
-                ->sum('posts_count');
+                ->count();
             $view->with('councilUnreadCount', $councilUnreadCount);
 
             $forumLastRead = $selectedDominion->forum_last_read ?? $selectedDominion->round->created_at;
             $forumUnreadCount = $selectedDominion->round->forumThreads()
                 ->where('last_activity', '>', $forumLastRead)
-                ->withCount(['posts' => function ($query) use ($forumLastRead) {
-                    $query->where('created_at', '>', $forumLastRead);
-                }])
-                ->get()
-                ->map(function ($thread) use ($forumLastRead) {
-                    if ($thread->created_at > $forumLastRead) {
-                        $thread['posts_count'] += 1;
-                    }
-                    return $thread;
-                })
-                ->sum('posts_count');
+                ->count();
             $view->with('forumUnreadCount', $forumUnreadCount);
 
             $activeSelfSpells = $selectedDominion->spells->where('category', 'self')->count();
@@ -155,6 +124,34 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->where('created_at', '>', $selectedDominion->town_crier_last_seen ?? $selectedDominion->round->created_at)
                 ->count();
             $view->with('unseenGameEvents', $unseenGameEvents);
+
+            // Valuables badges: discovered/transferred (actionable) + stolen (sellable).
+            // Excludes valuables the player has already listed for transfer themselves —
+            // they're awaiting a realmmate purchase, not waiting on the owner to act.
+            $valuablesDiscoveredCount = Valuable::query()
+                ->where('source_dominion_id', $selectedDominion->id)
+                ->where('is_listed', false)
+                ->whereIn('status', [
+                    Valuable::STATUS_DISCOVERED,
+                    Valuable::STATUS_LISTED_FOR_TRANSFER,
+                    Valuable::STATUS_TRANSFERRED,
+                ])
+                ->count();
+            $valuablesStolenCount = Valuable::query()
+                ->where('source_dominion_id', $selectedDominion->id)
+                ->where('status', Valuable::STATUS_STOLEN)
+                ->count();
+            $intelForSaleCount = Valuable::query()
+                ->where('round_id', $selectedDominion->round_id)
+                ->where('is_listed', true)
+                ->where('source_dominion_id', '!=', $selectedDominion->id)
+                ->whereHas('sourceDominion', function ($q) use ($selectedDominion) {
+                    $q->where('realm_id', $selectedDominion->realm_id);
+                })
+                ->count();
+            $view->with('valuablesDiscoveredCount', $valuablesDiscoveredCount);
+            $view->with('valuablesStolenCount', $valuablesStolenCount);
+            $view->with('intelForSaleCount', $intelForSaleCount);
         });
 
         view()->composer('partials.main-footer', function (View $view) {

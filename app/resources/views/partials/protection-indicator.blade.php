@@ -7,7 +7,7 @@
                         &laquo; Undo
                     </a>
                 @else
-                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-sm btn-primary py-0">
+                    <a href="{{ route('dominion.protection.import-log') }}" class="btn btn-sm btn-success py-0">
                         Import
                     </a>
                 @endif
@@ -23,7 +23,11 @@
             <div class="col-2 text-center text-sm-end">
                 @if (!$selectedDominion->protection_finished)
                     <a href="{{ route('dominion.misc.tick') }}" class="btn btn-sm btn-primary py-0 disable-after-click">
-                        Next &raquo;
+                        @if ($selectedDominion->protection_ticks_remaining == 0)
+                            Confirm
+                        @else
+                            Next &raquo;
+                        @endif
                     </a>
                 @endif
             </div>
