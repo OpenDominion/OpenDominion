@@ -21,6 +21,13 @@ class HeroCalculator
      */
     public const CLASS_CHANGE_COOLDOWN_HOURS = 96;
 
+    /**
+     * @var int Daily cap on raw XP gained from spy + magic operations combined.
+     *          Measured pre-getExperienceMultiplier so shrine/racial/wonder bonuses
+     *          do not accelerate hitting the cap.
+     */
+    public const DAILY_OPS_XP_CAP = 120;
+
     /** @var HeroHelper */
     protected $heroHelper;
 
@@ -37,13 +44,10 @@ class HeroCalculator
     }
 
     /**
-     * Returns the Dominion's experience gain.
-     *
-     * @param Dominion $dominion
-     * @param int $value
-     * @return float
+     * Returns the Dominion's raw experience gain (source coefficient + hero perks only,
+     * without the shrine/racial/wonder multiplier from getExperienceMultiplier).
      */
-    public function getExperienceGain(Dominion $dominion, int $value, string $source): float
+    public function getRawExperienceGain(Dominion $dominion, int $value, string $source): float
     {
         $landGainBonus = $dominion->hero->getPerkMultiplier('xp_from_land_gain_bonus');
         $opsBonus = $dominion->hero->getPerkMultiplier('xp_from_ops_bonus');
@@ -55,7 +59,7 @@ class HeroCalculator
                 $coefficient *= (1 + $landGainBonus);
             }
         } elseif ($source == 'exploration') {
-            $coefficient = 0.6;
+            $coefficient = 0.8;
             if ($landGainBonus != 0) {
                 $coefficient *= (1 + $landGainBonus);
             }
@@ -79,7 +83,16 @@ class HeroCalculator
             $coefficient = 1;
         }
 
-        return $coefficient * $value * $this->getExperienceMultiplier($dominion);
+        return $coefficient * $value;
+    }
+
+    /**
+     * Returns the Dominion's experience gain (raw value amplified by the
+     * shrine/racial/wonder experience multiplier).
+     */
+    public function getExperienceGain(Dominion $dominion, int $value, string $source): float
+    {
+        return $this->getRawExperienceGain($dominion, $value, $source) * $this->getExperienceMultiplier($dominion);
     }
 
     /**

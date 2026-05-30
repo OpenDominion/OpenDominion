@@ -152,6 +152,7 @@ class Dominion extends AbstractModel
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
         'daily_actions' => 'integer',
+        'daily_xp' => 'float',
         'resource_platinum' => 'integer',
         'resource_food' => 'integer',
         'resource_lumber' => 'integer',

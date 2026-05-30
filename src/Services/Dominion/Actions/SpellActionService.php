@@ -270,11 +270,15 @@ class SpellActionService
             if (!$this->spellHelper->isSelfSpell($spell)) {
                 if ($result['success']) {
                     $xpGain = 0;
-                    if ($dominion->hero) {
-                        $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpValue, 'magic');
+                    $cappedRawXp = 0;
+                    if ($dominion->hero && $xpValue > 0) {
+                        $rawXp = $this->heroCalculator->getRawExperienceGain($dominion, $xpValue, 'magic');
+                        $remainingCap = max(0, HeroCalculator::DAILY_OPS_XP_CAP - $dominion->daily_xp);
+                        $cappedRawXp = min($rawXp, $remainingCap);
+                        $xpGain = $cappedRawXp * $this->heroCalculator->getExperienceMultiplier($dominion);
                     }
                     $dominion->stat_spell_success += 1;
-                    // Bounty result
+                    // Bounty result (XP here is exempt from the daily cap)
                     if (isset($result['bounty']) && $result['bounty']) {
                         $bountyRewardString = '';
                         $rewards = $result['bounty'];
@@ -292,6 +296,9 @@ class SpellActionService
                         $dominion->hero->experience += $xpGain;
                         $dominion->hero->save();
                         $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);
+                    }
+                    if ($cappedRawXp > 0) {
+                        $dominion->daily_xp += $cappedRawXp;
                     }
                 } else {
                     $dominion->stat_spell_failure += 1;

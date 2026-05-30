@@ -4,17 +4,20 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
+use OpenDominion\Models\Hero;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\Wonder;
+use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -377,5 +380,157 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->target->refresh();
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
         $this->assertEquals(38267, $this->target->peasants);
+    }
+
+    public function testCastSpell_DailyXp_UnderCap_AwardsRawXp()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+        $this->target->military_wizards = 5000;
+
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => [],
+        ]);
+
+        $this->dominion->daily_xp = 0;
+        $dailyXpBefore = (float) $this->dominion->daily_xp;
+        $heroXpBefore = (float) $hero->experience;
+
+        $this->spellActionService->castSpell($this->dominion, 'clear_sight', $this->target);
+
+        $hero->refresh();
+        $dailyXpAfter = (float) $this->dominion->daily_xp;
+        $this->assertGreaterThan($dailyXpBefore, $dailyXpAfter);
+        $this->assertLessThanOrEqual(HeroCalculator::DAILY_OPS_XP_CAP, $dailyXpAfter);
+        $this->assertGreaterThan($heroXpBefore, (float) $hero->experience);
+    }
+
+    public function testCastSpell_DailyXp_AtCap_AwardsZeroXpButSpellSucceeds()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+        $this->target->military_wizards = 5000;
+
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 100,
+            'class_data' => [],
+        ]);
+
+        $this->dominion->daily_xp = HeroCalculator::DAILY_OPS_XP_CAP;
+        $statBefore = (int) $this->dominion->stat_spell_success;
+        $wizardStrengthBefore = (float) $this->dominion->wizard_strength;
+
+        $this->spellActionService->castSpell($this->dominion, 'clear_sight', $this->target);
+
+        $hero->refresh();
+        $this->assertEquals(HeroCalculator::DAILY_OPS_XP_CAP, (float) $this->dominion->daily_xp);
+        $this->assertEquals(100, (float) $hero->experience);
+        $this->assertEquals($statBefore + 1, (int) $this->dominion->stat_spell_success);
+        $this->assertLessThan($wizardStrengthBefore, (float) $this->dominion->wizard_strength);
+    }
+
+    public function testCastSpell_DailyXp_ShrineBonus_DoesNotAccelerateCap()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+        $this->target->military_wizards = 5000;
+
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => [],
+        ]);
+
+        // Heavy shrines push getExperienceMultiplier higher; raw cap counter
+        // should not change as a result.
+        $this->dominion->daily_xp = 0;
+        $rawWithoutShrines = null;
+        $rawWithShrines = null;
+
+        $this->spellActionService->castSpell($this->dominion, 'clear_sight', $this->target);
+        $rawWithoutShrines = (float) $this->dominion->daily_xp;
+
+        // Reset and cast again with shrines stacked
+        $this->dominion->daily_xp = 0;
+        $this->dominion->building_shrine = 10000;
+        $this->dominion->wizard_strength = 100;
+
+        // Different info op to avoid repeat-op XP suppression
+        $this->spellActionService->castSpell($this->dominion, 'vision', $this->target);
+        $rawWithShrines = (float) $this->dominion->daily_xp;
+
+        $this->assertEqualsWithDelta($rawWithoutShrines, $rawWithShrines, 0.0001);
+    }
+
+    public function testCastSpell_SelfSpell_DoesNotTouchDailyXp()
+    {
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => [],
+        ]);
+
+        $this->dominion->daily_xp = 0;
+
+        $this->spellActionService->castSpell($this->dominion, 'midas_touch');
+
+        $this->assertEquals(0, (float) $this->dominion->daily_xp);
+    }
+
+    public function testCastSpell_DailyXp_SharedWithSpyOps()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->military_wizards = 5000;
+        $this->dominion->military_spies = 5000;
+        $this->target->military_wizards = 5000;
+        $this->target->military_spies = 5000;
+
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => [],
+        ]);
+
+        // Set daily_xp just under cap, then cast a magic op that would otherwise
+        // contribute well above the remaining headroom — confirm clamp to cap.
+        $this->dominion->daily_xp = HeroCalculator::DAILY_OPS_XP_CAP - 0.5;
+
+        $this->spellActionService->castSpell($this->dominion, 'clear_sight', $this->target);
+
+        $this->assertEqualsWithDelta(HeroCalculator::DAILY_OPS_XP_CAP, (float) $this->dominion->daily_xp, 0.0001);
+
+        // Subsequent spy op should award 0 raw (cap already hit)
+        $espionageActionService = $this->app->make(EspionageActionService::class);
+        $espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
+
+        $this->assertEqualsWithDelta(HeroCalculator::DAILY_OPS_XP_CAP, (float) $this->dominion->daily_xp, 0.0001);
     }
 }

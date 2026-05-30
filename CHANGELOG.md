@@ -7,11 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [1.50.1] - 2026-05-28
 ### Changed
-- Scion now requires 8 successful 75% attacks to select (was 6)
-- Advanced Hero Classes (Scion and Scholar) can no longer be selected until Day 8
+- Scion now requires 8 successful 75% attacks to select (was 6) and can no longer be selected until Day 8 (was Day 4)
 - XP loss from switching Hero Classes capped at 500
+- XP gain from ops is now capped at 120 XP per day (before shrines XP bonus)
+- XP gain from exploration increased to 0.8 per acre (from 0.6)
 - Lead from the Front: experience boost reduced to 2x (from 2.5x)
-- Lead from the Shadows: experience boost reduced to 1.6x (from 2x)
 - Masonry: lightning bolt damage cap modifier removed (was 5% per 1% owned up to a maximum of 50%)
 - Halfling: added +5 boat capacity [helps OOP], removed population growth bonus (was 10%)
 - Firewalker: Alchemist Flame now also adds 25 points to Forges per Alchemy every hour (was 15)

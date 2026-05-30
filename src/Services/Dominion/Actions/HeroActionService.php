@@ -194,11 +194,14 @@ class HeroActionService
         }
 
         if ($selectedClass['class_type'] === 'advanced') {
-            if ($dominion->round->daysInRound() < 8) {
-                throw new GameException('Advanced hero classes cannot be selected until day 8 of the round.');
-            }
             if ($dominion->{$selectedClass['requirement_stat']} < $selectedClass['requirement_value']) {
                 throw new GameException('You do not meet the requirements to select this hero class.');
+            }
+        }
+
+        if ($selectedClass['key'] === 'scion') {
+            if ($dominion->round->daysInRound() < 8) {
+                throw new GameException('Advanced hero classes cannot be selected until day 8 of the round.');
             }
         }
 

@@ -5,8 +5,10 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
+use OpenDominion\Models\Hero;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
@@ -369,6 +371,116 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $stolenWithProd = $this->dominion->resource_ore - $beforeProd;
 
         $this->assertGreaterThan($stolenWithFloor, $stolenWithProd);
+    }
+
+    public function testPerformOperation_DailyXp_UnderCap_AwardsFullRawXp()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 5000;
+
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => [],
+        ]);
+
+        $this->dominion->daily_xp = 0;
+        $heroXpBefore = (float) $hero->experience;
+
+        $result = $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
+
+        $this->assertTrue($result['success']);
+        $hero->refresh();
+
+        // Halfling default info op: xpValue=2, spy coefficient=0.5, raw=1.0
+        $this->assertEqualsWithDelta(1.0, (float) $this->dominion->daily_xp, 0.0001);
+        $this->assertGreaterThan($heroXpBefore, (float) $hero->experience);
+    }
+
+    public function testPerformOperation_DailyXp_CrossesCap_ClampsToCap()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 5000;
+
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => [],
+        ]);
+
+        // raw per op is 1.0; sit 0.5 below the cap so this op crosses it.
+        $this->dominion->daily_xp = HeroCalculator::DAILY_OPS_XP_CAP - 0.5;
+
+        $result = $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
+
+        $this->assertTrue($result['success']);
+        $this->assertEqualsWithDelta(HeroCalculator::DAILY_OPS_XP_CAP, (float) $this->dominion->daily_xp, 0.0001);
+    }
+
+    public function testPerformOperation_DailyXp_AtCap_AwardsZeroXpButOpSucceeds()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 5000;
+
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 100,
+            'class_data' => [],
+        ]);
+
+        $this->dominion->daily_xp = HeroCalculator::DAILY_OPS_XP_CAP;
+        $statBefore = (int) $this->dominion->stat_espionage_success;
+        $spyStrengthBefore = (float) $this->dominion->spy_strength;
+
+        $result = $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
+
+        $this->assertTrue($result['success']);
+        $hero->refresh();
+        $this->assertEquals(HeroCalculator::DAILY_OPS_XP_CAP, (float) $this->dominion->daily_xp);
+        $this->assertEquals(100, (float) $hero->experience);
+        $this->assertEquals($statBefore + 1, (int) $this->dominion->stat_espionage_success);
+        $this->assertLessThan($spyStrengthBefore, (float) $this->dominion->spy_strength);
+    }
+
+    public function testPerformOperation_DailyXp_ShrineBonus_DoesNotAccelerateCap()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 5000;
+
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => [],
+        ]);
+
+        // Stack shrines so getExperienceMultiplier hits its +200% cap. Hero XP
+        // should jump, but daily_xp should still advance by raw 1.0.
+        $this->dominion->building_shrine = 10000;
+        $this->dominion->daily_xp = 0;
+
+        $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
+
+        $this->assertEqualsWithDelta(1.0, (float) $this->dominion->daily_xp, 0.0001);
     }
 
     /**

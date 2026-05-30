@@ -133,6 +133,7 @@ class TickService
                     'daily_platinum' => false,
                     'daily_land' => false,
                     'daily_actions' => AutomationService::DAILY_ACTIONS,
+                    'daily_xp' => 0,
                 ], [
                     'event' => 'tick',
                 ]);

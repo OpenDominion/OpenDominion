@@ -261,11 +261,15 @@ class EspionageActionService
 
             if ($result['success']) {
                 $xpGain = 0;
-                if ($dominion->hero) {
-                    $xpGain = $this->heroCalculator->getExperienceGain($dominion, $xpValue, 'spy');
+                $cappedRawXp = 0;
+                if ($dominion->hero && $xpValue > 0) {
+                    $rawXp = $this->heroCalculator->getRawExperienceGain($dominion, $xpValue, 'spy');
+                    $remainingCap = max(0, HeroCalculator::DAILY_OPS_XP_CAP - $dominion->daily_xp);
+                    $cappedRawXp = min($rawXp, $remainingCap);
+                    $xpGain = $cappedRawXp * $this->heroCalculator->getExperienceMultiplier($dominion);
                 }
                 $dominion->stat_espionage_success += 1;
-                // Bounty result
+                // Bounty result (XP here is exempt from the daily cap)
                 if (isset($result['bounty']) && $result['bounty']) {
                     $bountyRewardString = '';
                     $rewards = $result['bounty'];
@@ -283,6 +287,9 @@ class EspionageActionService
                     $dominion->hero->experience += $xpGain;
                     $dominion->hero->save();
                     $xpMessage = sprintf(' You gain %.3g XP.', $xpGain);
+                }
+                if ($cappedRawXp > 0) {
+                    $dominion->daily_xp += $cappedRawXp;
                 }
             } else {
                 $dominion->stat_espionage_failure += 1;
