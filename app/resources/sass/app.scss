@@ -596,9 +596,12 @@ html.hourchange:after {
 // --od-*-on-tooltip variants tuned for the tooltip surface.
 // Must come after theme imports so it wins on source order against [data-color-scheme] rules.
 .tooltip-inner {
-  .text-success { color: var(--od-success-on-tooltip) !important; }
-  .text-danger  { color: var(--od-danger-on-tooltip)  !important; }
-  .text-warning { color: var(--od-warning-on-tooltip) !important; }
+  .text-success,
+  .text-green   { color: var(--od-success-on-tooltip) !important; }
+  .text-danger,
+  .text-red     { color: var(--od-danger-on-tooltip)  !important; }
+  .text-warning,
+  .text-orange  { color: var(--od-warning-on-tooltip) !important; }
   .text-info    { color: var(--od-info-on-tooltip)    !important; }
   .text-muted   { color: var(--od-muted-on-tooltip)   !important; }
 }
