@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-## [1.50.1] - 2026-05-28
+## [1.50.1] - 2026-05-30
 ### Changed
 - Scion now requires 8 successful 75% attacks to select (was 6) and can no longer be selected until Day 8 (was Day 4)
 - XP loss from switching Hero Classes capped at 500

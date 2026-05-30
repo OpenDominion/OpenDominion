@@ -168,7 +168,7 @@ class EspionageHelper
             ],
             [
                 'name' => 'Magic Snare',
-                'description' => 'Reduces wizard strength by 3.5% (min 1)',
+                'description' => 'Reduces wizard strength by 3.5% (min 1.5)',
                 'key' => 'magic_snare',
                 'attrs' => ['wizard_strength'],
                 'percentage' => 3.5,
