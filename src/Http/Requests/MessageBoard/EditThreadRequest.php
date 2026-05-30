@@ -2,17 +2,19 @@
 
 namespace OpenDominion\Http\Requests\MessageBoard;
 
+use Auth;
 use OpenDominion\Http\Requests\AbstractRequest;
 
-class CreateThreadRequest extends AbstractRequest
+class EditThreadRequest extends AbstractRequest
 {
-    /**
-     * {@inheritdoc}
-     */
+    public function authorize()
+    {
+        return Auth::check() && Auth::user()->hasRole('Administrator');
+    }
+
     public function rules()
     {
         return [
-            'category' => 'required|integer|exists:message_board_categories,id',
             'title' => 'required|string|max:80',
             'body' => 'required|string|max:20000',
             'homepage_display' => 'sometimes|boolean',

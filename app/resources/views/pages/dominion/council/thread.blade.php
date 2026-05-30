@@ -14,23 +14,29 @@
                     </div>
                 </div>
                 @if ($posts->currentPage() == 1)
+                    <div class="card-header d-flex justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3 min-w-0">
+                            <i class="ra {{ $thread->dominion->isMonarch() ? 'ra-queen-crown text-red' : 'ra-knight-helmet text-muted' }} flex-shrink-0" style="font-size: 36px; line-height: 1;"></i>
+                            <div class="min-w-0">
+                                <div class="fw-semibold">
+                                    {{ $thread->dominion->name }}
+                                    @if ($thread->dominion->name !== $thread->dominion->ruler_name)
+                                        <span class="text-body-secondary fw-normal">({{ $thread->dominion->ruler_name }})</span>
+                                    @endif
+                                </div>
+                                <div class="small text-body-secondary">
+                                    posted at {{ $thread->created_at }}
+                                </div>
+                            </div>
+                        </div>
+                        @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
+                            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+                            </div>
+                        @endif
+                    </div>
                     <div class="card-body">
                         {!! Str::markdown($thread->body) !!}
-                        <small>
-                            <i>
-                                Posted {{ $thread->created_at }} by
-                                @if ($thread->dominion->isMonarch())
-                                    <i class="ra ra-queen-crown text-red"></i>
-                                @endif
-                                <b>{{ $thread->dominion->name }}</b>
-                                @if ($thread->dominion->name !== $thread->dominion->ruler_name)
-                                    ({{ $thread->dominion->ruler_name }})
-                                @endif
-                            </i>
-                        </small>
-                        @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
-                            <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
-                        @endif
                     </div>
                 @else
                     <div class="card-body">
@@ -38,26 +44,32 @@
                     </div>
                 @endif
                 @if (!$posts->isEmpty())
-                    @foreach ($posts as $post)
-                        <div class="card-footer">
-                            {!! Str::markdown($post->body) !!}
-                            <small>
-                                <i>
-                                    Posted {{ $post->created_at }} by
-                                    @if ($post->dominion->isMonarch())
-                                        <i class="ra ra-queen-crown text-red"></i>
-                                    @endif
-                                    <b>{{ $post->dominion->name }}</b>
-                                    @if ($post->dominion->name !== $post->dominion->ruler_name)
-                                        ({{ $post->dominion->ruler_name }})
-                                    @endif
-                                </i>
-                            </small>
-                            @if ($selectedDominion->isMonarch() || $selectedDominion->id == $post->dominion->id)
-                                <a href="{{ route('dominion.council.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
-                            @endif
-                        </div>
-                    @endforeach
+                    <div class="card-footer p-0">
+                        @foreach ($posts as $post)
+                            <div class="p-3 @if (!$loop->last) border-bottom @endif">
+                                <div class="d-flex gap-3">
+                                    <i class="ra {{ $post->dominion->isMonarch() ? 'ra-queen-crown text-red' : 'ra-knight-helmet text-muted' }} flex-shrink-0" style="font-size: 26px; line-height: 1;"></i>
+                                    <div class="flex-grow-1 min-w-0">
+                                        <div class="d-flex justify-content-between align-items-baseline gap-2 mb-2">
+                                            <div class="fw-semibold">
+                                                {{ $post->dominion->name }}
+                                                @if ($post->dominion->name !== $post->dominion->ruler_name)
+                                                    <span class="text-body-secondary fw-normal">({{ $post->dominion->ruler_name }})</span>
+                                                @endif
+                                            </div>
+                                            <div class="small text-body-secondary d-flex align-items-center gap-2 flex-shrink-0">
+                                                <span>{{ $post->created_at }}</span>
+                                                @if ($selectedDominion->isMonarch() || $selectedDominion->id == $post->dominion->id)
+                                                    <a href="{{ route('dominion.council.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        {!! Str::markdown($post->body) !!}
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                     @if ($posts->lastPage() !== 1)
                         <div class="card-footer" style="margin-bottom: -5px;">
                             <div class="text-end">

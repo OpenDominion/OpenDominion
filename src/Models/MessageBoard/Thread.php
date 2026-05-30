@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models\MessageBoard;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenDominion\Models\AbstractModel;
 use OpenDominion\Models\User;
@@ -32,6 +33,7 @@ class Thread extends AbstractModel
 
     protected $casts = [
         'flagged_by' => 'array',
+        'homepage_display' => 'boolean',
     ];
 
     public function user()
@@ -57,5 +59,14 @@ class Thread extends AbstractModel
     public function unflaggedPosts()
     {
         return $this->posts()->where('flagged_for_removal', false);
+    }
+
+    public function scopeForHomepage(Builder $query): Builder
+    {
+        return $query
+            ->whereHas('category', fn (Builder $q) => $q->where('slug', 'announcements'))
+            ->where('homepage_display', true)
+            ->where('flagged_for_removal', false)
+            ->orderByDesc('created_at');
     }
 }

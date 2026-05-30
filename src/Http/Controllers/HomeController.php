@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers;
 
 use Auth;
 use DB;
+use OpenDominion\Models\MessageBoard;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -54,11 +55,14 @@ class HomeController extends AbstractController
             $playLabel = 'Play';
         }
 
+        $announcements = MessageBoard\Thread::forHomepage()->limit(5)->get();
+
         return view('pages.home', [
             'currentRound' => $currentRound,
             'currentRankings' => $currentRankings,
             'playUrl' => $playUrl,
             'playLabel' => $playLabel,
+            'announcements' => $announcements,
         ]);
     }
 

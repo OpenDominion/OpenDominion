@@ -313,6 +313,124 @@
             text-decoration: none;
         }
 
+        /* ── Chronicle / Herald ── */
+        .landing-chronicle {
+            position: relative;
+            z-index: 10;
+            padding: 0 0 4rem;
+        }
+
+        .landing-chronicle-card {
+            margin-bottom: 0;
+        }
+
+        .landing-chronicle-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chronicle-entry {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            border-top: 1px solid rgba(199, 176, 120, 0.2);
+            border-left: 3px solid transparent;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .chronicle-entry:first-child {
+            border-top: none;
+        }
+
+        .chronicle-entry:hover {
+            background: rgba(199, 176, 120, 0.06);
+            text-decoration: none;
+        }
+
+        .chronicle-entry-announcement { border-left-color: #afa170; }
+        .chronicle-entry-patch        { border-left-color: #6090e0; }
+        .chronicle-entry-round        { border-left-color: #6daa6d; }
+        .chronicle-entry-event        { border-left-color: #c46b6b; }
+
+        .chronicle-icon {
+            flex-shrink: 0;
+            width: 1.75rem;
+            text-align: center;
+            color: rgba(207, 177, 76, 0.65);
+            font-size: 1.15rem;
+        }
+
+        .chronicle-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chronicle-title {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #e8e0d4;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+            margin-bottom: 0.15rem;
+            transition: color 0.2s ease;
+        }
+
+        .chronicle-entry:hover .chronicle-title {
+            color: #c6b680;
+        }
+
+        .chronicle-teaser {
+            font-family: 'Crimson Pro', serif;
+            font-style: italic;
+            font-size: 0.92rem;
+            color: rgba(232, 224, 212, 0.7);
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chronicle-date {
+            flex-shrink: 0;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #afa170;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 575.98px) {
+            .chronicle-entry {
+                flex-wrap: wrap;
+                gap: 0.4rem 0.85rem;
+                padding: 0.85rem 1rem;
+            }
+
+            .chronicle-icon {
+                width: auto;
+            }
+
+            .chronicle-date {
+                order: 2;
+                font-size: 0.65rem;
+            }
+
+            .chronicle-body {
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .chronicle-teaser {
+                white-space: normal;
+            }
+        }
+
         /* ── Cards section ── */
         .landing-cards {
             position: relative;
@@ -572,7 +690,7 @@
                                 <i class="fa fa-shield-halved fa-fw me-2"></i> Round #{{ $currentRound->number }}
                             @endif
                         </div>
-                        <div class="landing-card-body text-center">
+                        <div class="landing-card-body pb-1 text-center">
                             @if ($currentRound === null || $currentRound->hasEnded())
                                 <p class="landing-status text-inactive">Inactive</p>
                                 <p>There is no ongoing round.</p>
@@ -691,6 +809,34 @@
             </div>
         </div>
     </div>
+
+    @if ($announcements->isNotEmpty())
+    <!-- Chronicle / From the Herald -->
+    <div class="landing-chronicle">
+        <div class="container">
+            <div class="landing-card landing-chronicle-card">
+                <div class="landing-card-header">
+                    <i class="fa fa-scroll fa-fw me-2"></i> From the Herald
+                </div>
+                <div class="landing-chronicle-list">
+                    @foreach ($announcements as $thread)
+                        @php $preset = \OpenDominion\Helpers\AnnouncementPresetHelper::get($thread->homepage_preset); @endphp
+                        <a href="{{ $thread->homepage_url ?: route('message-board.thread', $thread) }}" class="chronicle-entry {{ $preset['cssClass'] }}">
+                            <div class="chronicle-icon"><i class="fa {{ $preset['icon'] }}"></i></div>
+                            <div class="chronicle-body">
+                                <div class="chronicle-title">{{ $thread->title }}</div>
+                                <div class="chronicle-teaser">
+                                    {{ $thread->homepage_subtitle ?: \Illuminate\Support\Str::limit(strip_tags(\Illuminate\Support\Str::markdown($thread->body)), 140) }}
+                                </div>
+                            </div>
+                            <div class="chronicle-date">{{ $thread->created_at->format('M j, Y') }}</div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
 </div>
 

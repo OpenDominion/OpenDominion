@@ -14,25 +14,27 @@
                     </div>
                 </div>
                 @if ($posts->currentPage() == 1)
-                    <div class="card-header">
-                        <div class="user-block float-start">
-                            @php
-                                $rankings = $rankingsService->getTopRankedDominions($thread->dominion->round);
-                                $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
-                                $ranking = $rankingsHelper->getFirstRanking($titles, isset($thread->dominion->settings['preferred_title']) ? $thread->dominion->settings['preferred_title'] : '');
-                            @endphp
-                            <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted float-start" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
-                            <span class="username">
-                                {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
-                                @if ($ranking && $ranking['title'])
-                                    <em data-bs-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
-                                @endif
-                            </span>
-                            <span class="description">
-                                posted at {{ $thread->created_at }}
-                            </span>
+                    @php
+                        $rankings = $rankingsService->getTopRankedDominions($thread->dominion->round);
+                        $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
+                        $ranking = $rankingsHelper->getFirstRanking($titles, isset($thread->dominion->settings['preferred_title']) ? $thread->dominion->settings['preferred_title'] : '');
+                    @endphp
+                    <div class="card-header d-flex justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3 min-w-0">
+                            <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted flex-shrink-0" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px; line-height: 1;"></i>
+                            <div class="min-w-0">
+                                <div class="fw-semibold">
+                                    {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
+                                    @if ($ranking && $ranking['title'])
+                                        <em data-bs-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                                    @endif
+                                </div>
+                                <div class="small text-body-secondary">
+                                    posted at {{ $thread->created_at }}
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-tools">
+                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
                             @if ($selectedDominion->id == $thread->dominion->id)
                                 <a href="{{ route('dominion.forum.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
                             @else
@@ -53,36 +55,40 @@
                     </div>
                 @endif
                 @if (!$posts->isEmpty())
-                    <div class="card-footer box-comments">
+                    <div class="card-footer p-0">
                         @foreach ($posts as $post)
-                            <div class="card-comment">
-                                @php
-                                    $rankings = $rankingsService->getTopRankedDominions($post->dominion->round);
-                                    $titles = isset($rankings[$post->dominion->id]) ? $rankings[$post->dominion->id] : [];
-                                    $ranking = $rankingsHelper->getFirstRanking($titles, isset($post->dominion->settings['preferred_title']) ? $post->dominion->settings['preferred_title'] : '');
-                                @endphp
-                                <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted float-start" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
-                                <div class="comment-text">
-                                    <span class="username">
-                                        {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }})
-                                        @if ($ranking && $ranking['title'])
-                                            <em data-bs-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                            @php
+                                $rankings = $rankingsService->getTopRankedDominions($post->dominion->round);
+                                $titles = isset($rankings[$post->dominion->id]) ? $rankings[$post->dominion->id] : [];
+                                $ranking = $rankingsHelper->getFirstRanking($titles, isset($post->dominion->settings['preferred_title']) ? $post->dominion->settings['preferred_title'] : '');
+                            @endphp
+                            <div class="p-3 @if (!$loop->last) border-bottom @endif">
+                                <div class="d-flex gap-3">
+                                    <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted flex-shrink-0" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px; line-height: 1;"></i>
+                                    <div class="flex-grow-1 min-w-0">
+                                        <div class="d-flex justify-content-between align-items-baseline gap-2 mb-2">
+                                            <div class="fw-semibold">
+                                                {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }})
+                                                @if ($ranking && $ranking['title'])
+                                                    <em data-bs-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                                                @endif
+                                            </div>
+                                            <div class="small text-body-secondary d-flex align-items-center gap-2 flex-shrink-0">
+                                                <span>{{ $post->created_at }}</span>
+                                                @if ($selectedDominion->id == $post->dominion->id)
+                                                    <a href="{{ route('dominion.forum.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
+                                                @else
+                                                    <a href="{{ route('dominion.forum.flag.post', $post) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if ($post->flagged_for_removal)
+                                            <p class="text-danger"><i>This post has been flagged for removal.</i></p>
+                                            @include('partials.forum-rules')
+                                        @else
+                                            {!! Str::markdown($post->body) !!}
                                         @endif
-                                        <span class="text-muted float-end">
-                                            {{ $post->created_at }}&nbsp;
-                                            @if ($selectedDominion->id == $post->dominion->id)
-                                                <a href="{{ route('dominion.forum.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
-                                            @else
-                                                <a href="{{ route('dominion.forum.flag.post', $post) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
-                                            @endif
-                                        </span>
-                                    </span>
-                                    @if ($post->flagged_for_removal)
-                                        <p class="text-danger"><i>This post has been flagged for removal.</i></p>
-                                        @include('partials.forum-rules')
-                                    @else
-                                        {!! Str::markdown($post->body) !!}
-                                    @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach

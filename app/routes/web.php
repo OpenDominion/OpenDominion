@@ -69,6 +69,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
     $router->get('message-board/create')->uses('MessageBoardController@getCreate')->name('message-board.create');
     $router->post('message-board/create')->uses('MessageBoardController@postCreate');
     $router->get('message-board/thread/{thread}')->uses('MessageBoardController@getThread')->name('message-board.thread');
+    $router->get('message-board/thread/{thread}/edit')->uses('MessageBoardController@getEditThread')->name('message-board.thread.edit');
+    $router->post('message-board/thread/{thread}/edit')->uses('MessageBoardController@postEditThread');
     $router->post('message-board/thread/{thread}/reply')->uses('MessageBoardController@postReply')->name('message-board.reply');
     $router->get('message-board/thread/{thread}/delete')->uses('MessageBoardController@getDeleteThread')->name('message-board.delete.thread');
     $router->post('message-board/thread/{thread}/delete')->uses('MessageBoardController@postDeleteThread');

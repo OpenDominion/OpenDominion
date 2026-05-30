@@ -8,21 +8,19 @@
         <div class="col-sm-12 col-md-9">
             <div class="card card-primary">
                 <div class="card-header">
-                    <span class="card-title"><i class="ra ra-wooden-sign"></i> Message Board: Create Thread</span>
+                    <span class="card-title"><i class="ra ra-wooden-sign"></i> Message Board: Edit Thread</span>
                     <div class="float-end">
-                        <a href="{{ route('message-board') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
+                        <a href="{{ route('message-board.thread', $thread) }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
                 </div>
-                <form action="{{ route('message-board.create') }}" method="post" role="form">
+                <form action="{{ route('message-board.thread.edit', $thread) }}" method="post" role="form">
                     @csrf
                     <div class="card-body">
-                        @include('pages.message-board._form', ['categories' => $categories, 'selectedCategory' => $selectedCategory, 'user' => $user])
+                        @include('pages.message-board._form', ['thread' => $thread, 'user' => $user])
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Create Thread</button>
-                        <p class="form-text float-end">
-                            You are posting as <b>{{ $user->display_name }}</b>.
-                        </p>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{{ route('message-board.thread', $thread) }}" class="btn btn-default">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -34,7 +32,7 @@
                     <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
-                    <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>
+                    <p>Edit this thread's title, body, and (for Announcements) its homepage settings.</p>
                     @include('partials.forum-rules')
                 </div>
             </div>

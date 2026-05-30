@@ -9,6 +9,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\MessageBoard\CreatePostRequest;
 use OpenDominion\Http\Requests\MessageBoard\CreateThreadRequest;
+use OpenDominion\Http\Requests\MessageBoard\EditThreadRequest;
 use OpenDominion\Models\Achievement;
 use OpenDominion\Models\MessageBoard;
 use OpenDominion\Models\Round;
@@ -164,7 +165,13 @@ class MessageBoardController extends AbstractController
                 $user,
                 $category,
                 $request->get('title'),
-                $request->get('body')
+                $request->get('body'),
+                [
+                    'homepage_display' => $request->boolean('homepage_display'),
+                    'homepage_preset' => $request->input('homepage_preset'),
+                    'homepage_subtitle' => $request->input('homepage_subtitle'),
+                    'homepage_url' => $request->input('homepage_url'),
+                ]
             );
         } catch (GameException $e) {
             return redirect()->back()
@@ -173,6 +180,35 @@ class MessageBoardController extends AbstractController
         }
 
         $request->session()->flash('alert-success', 'Your thread has been created');
+        return redirect()->route('message-board.thread', $thread);
+    }
+
+    public function getEditThread(MessageBoard\Thread $thread)
+    {
+        $user = Auth::getUser();
+
+        if (!$user->hasRole('Administrator')) {
+            return redirect()
+                ->route('message-board.thread', $thread)
+                ->withErrors(['No permission to edit thread.']);
+        }
+
+        return view('pages.message-board.edit', compact('thread', 'user'));
+    }
+
+    public function postEditThread(EditThreadRequest $request, MessageBoard\Thread $thread)
+    {
+        $messageBoardService = app(MessageBoardService::class);
+
+        try {
+            $messageBoardService->editThread($thread, $request->validated());
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Thread updated.');
         return redirect()->route('message-board.thread', $thread);
     }
 

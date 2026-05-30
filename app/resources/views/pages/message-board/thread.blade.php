@@ -14,17 +14,22 @@
                     </div>
                 </div>
                 @if ($posts->currentPage() == 1)
-                    <div class="card-header">
-                        <div class="user-block float-start">
-                            <i class="ra {{ isset($thread->user->settings['boardavatar']) ? $thread->user->settings['boardavatar'] : 'ra-player' }} text-muted float-start" style="font-size: 36px;"></i>
-                            <span class="username">
-                                {{ $thread->user->display_name }} {!! $thread->user->displayRoleHtml() !!}
-                            </span>
-                            <span class="description">
-                                posted at {{ $thread->created_at }}
-                            </span>
+                    <div class="card-header d-flex justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3 min-w-0">
+                            <i class="ra {{ isset($thread->user->settings['boardavatar']) ? $thread->user->settings['boardavatar'] : 'ra-player' }} text-muted flex-shrink-0" style="font-size: 36px; line-height: 1;"></i>
+                            <div class="min-w-0">
+                                <div class="fw-semibold">
+                                    {{ $thread->user->display_name }} {!! $thread->user->displayRoleHtml() !!}
+                                </div>
+                                <div class="small text-body-secondary">
+                                    posted at {{ $thread->created_at }}
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-tools">
+                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                            @if ($user->hasRole('Administrator'))
+                                <a href="{{ route('message-board.thread.edit', $thread) }}" title="Edit Thread"><i class="fa fa-pencil"></i></a>
+                            @endif
                             @if ($user->id == $thread->user->id)
                                 <a href="{{ route('message-board.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
                             @else
@@ -45,28 +50,32 @@
                     </div>
                 @endif
                 @if (!$posts->isEmpty())
-                    <div class="card-footer box-comments">
+                    <div class="card-footer p-0">
                         @foreach ($posts as $post)
-                            <div class="card-comment">
-                                <i class="ra {{ isset($post->user->settings['boardavatar']) ? $post->user->settings['boardavatar'] : 'ra-player' }} text-muted float-start" style="font-size: 26px;"></i>
-                                <div class="comment-text">
-                                    <span class="username">
-                                        {{ $post->user->display_name }} {!! $post->user->displayRoleHtml() !!}
-                                        <span class="text-muted float-end">
-                                            {{ $post->created_at }}&nbsp;
-                                            @if ($user->id == $post->user->id)
-                                                <a href="{{ route('message-board.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
-                                            @else
-                                                <a href="{{ route('message-board.flag.post', $post) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
-                                            @endif
-                                        </span>
-                                    </span>
-                                    @if ($post->flagged_for_removal)
-                                        <p class="text-danger"><i>This post has been flagged for removal.</i></p>
-                                        @include('partials.forum-rules')
-                                    @else
-                                        {!! Str::markdown($post->body) !!}
-                                    @endif
+                            <div class="p-3 @if (!$loop->last) border-bottom @endif">
+                                <div class="d-flex gap-3">
+                                    <i class="ra {{ isset($post->user->settings['boardavatar']) ? $post->user->settings['boardavatar'] : 'ra-player' }} text-muted flex-shrink-0" style="font-size: 26px; line-height: 1;"></i>
+                                    <div class="flex-grow-1 min-w-0">
+                                        <div class="d-flex justify-content-between align-items-baseline gap-2 mb-2">
+                                            <div class="fw-semibold">
+                                                {{ $post->user->display_name }} {!! $post->user->displayRoleHtml() !!}
+                                            </div>
+                                            <div class="small text-body-secondary d-flex align-items-center gap-2 flex-shrink-0">
+                                                <span>{{ $post->created_at }}</span>
+                                                @if ($user->id == $post->user->id)
+                                                    <a href="{{ route('message-board.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
+                                                @else
+                                                    <a href="{{ route('message-board.flag.post', $post) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if ($post->flagged_for_removal)
+                                            <p class="text-danger"><i>This post has been flagged for removal.</i></p>
+                                            @include('partials.forum-rules')
+                                        @else
+                                            {!! Str::markdown($post->body) !!}
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
