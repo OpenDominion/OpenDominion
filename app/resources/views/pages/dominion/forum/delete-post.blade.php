@@ -23,7 +23,7 @@
             <span class="card-title">Thread: {{ $post->thread->title }}</span>
         </div>
         <div class="card-body">
-            {!! Str::markdown($post->body) !!}
+            {!! Str::markdown($post->body, ['html_input' => 'escape', 'allow_unsafe_links' => false]) !!}
         </div>
         <div class="card-footer">
             <small>

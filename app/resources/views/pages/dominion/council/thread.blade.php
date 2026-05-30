@@ -36,7 +36,7 @@
                         @endif
                     </div>
                     <div class="card-body">
-                        {!! Str::markdown($thread->body) !!}
+                        {!! Str::markdown($thread->body, ['html_input' => 'escape', 'allow_unsafe_links' => false]) !!}
                     </div>
                 @else
                     <div class="card-body">
@@ -64,7 +64,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        {!! Str::markdown($post->body) !!}
+                                        {!! Str::markdown($post->body, ['html_input' => 'escape', 'allow_unsafe_links' => false]) !!}
                                     </div>
                                 </div>
                             </div>
