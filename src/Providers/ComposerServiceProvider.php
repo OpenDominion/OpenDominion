@@ -39,7 +39,15 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $user = Auth::getUser();
 
             $messageBoardLastRead = $user->message_board_last_read ?? $user->created_at;
-            $messageBoardUnreadCount = MessageBoard\Thread::where('last_activity', '>', $messageBoardLastRead)->count();
+            if ($user->getSetting('message_board_announcements_only')) {
+                $messageBoardUnreadCount = MessageBoard\Thread::where('created_at', '>', $messageBoardLastRead)
+                    ->whereHas('category', function ($q) {
+                        $q->where('slug', 'announcements');
+                    })
+                    ->count();
+            } else {
+                $messageBoardUnreadCount = MessageBoard\Thread::where('last_activity', '>', $messageBoardLastRead)->count();
+            }
             $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
 
             if (!$selectorService->hasUserSelectedDominion()) {

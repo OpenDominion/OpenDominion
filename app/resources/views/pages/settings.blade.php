@@ -80,6 +80,17 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- Message Board --}}
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label">Message Board</label>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="message_board_announcements_only" id="message_board_announcements_only" {{ $user->getSetting('message_board_announcements_only') ? 'checked' : null }} />
+                                        <label class="form-check-label" for="message_board_announcements_only">Only show badge for new announcement threads.</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
 

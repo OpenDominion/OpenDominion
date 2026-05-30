@@ -106,6 +106,11 @@ class SettingsController extends AbstractController
         } else {
             $settings['shareusername'] = false;
         }
+        if (isset($data['message_board_announcements_only'])) {
+            $settings['message_board_announcements_only'] = true;
+        } else {
+            $settings['message_board_announcements_only'] = false;
+        }
 
         $countryHelper = app(CountryHelper::class);
         $country = isset($data['country']) ? trim((string)$data['country']) : '';

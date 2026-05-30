@@ -14,11 +14,20 @@ use OpenDominion\Models\Achievement;
 use OpenDominion\Models\MessageBoard;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\MessageBoardService;
 
 class MessageBoardController extends AbstractController
 {
     public const RESULTS_PER_PAGE = 50;
+
+    private function getSelectedDominion()
+    {
+        $selectorService = app(SelectorService::class);
+        return $selectorService->hasUserSelectedDominion()
+            ? $selectorService->getUserSelectedDominion()
+            : null;
+    }
 
     public function getIndex()
     {
@@ -37,6 +46,7 @@ class MessageBoardController extends AbstractController
             'user' => $user,
             'lastRead' => $lastRead,
             'resultsPerPage' => static::RESULTS_PER_PAGE,
+            'selectedDominion' => $this->getSelectedDominion(),
         ]);
     }
 
@@ -63,6 +73,7 @@ class MessageBoardController extends AbstractController
             'user' => $user,
             'lastRead' => $lastRead,
             'resultsPerPage' => static::RESULTS_PER_PAGE,
+            'selectedDominion' => $this->getSelectedDominion(),
         ]);
     }
 
@@ -85,13 +96,16 @@ class MessageBoardController extends AbstractController
 
         $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-spades-card', 'ra-console-controller', 'ra-quill-ink', 'ra-basketball-ball', 'ra-football-ball', 'ra-soccer-ball', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
+        $selectedDominion = $this->getSelectedDominion();
+
         return view('pages.message-board.avatar', compact(
             'user',
             'rankings',
             'previousRankings',
             'achievements',
             'userAchievements',
-            'defaultAvatars'
+            'defaultAvatars',
+            'selectedDominion'
         ));
     }
 
@@ -142,10 +156,13 @@ class MessageBoardController extends AbstractController
         $categories = MessageBoard\Category::orderBy('role_required')->orderBy('id')->get();
         $selectedCategory = $request->get('category');
 
+        $selectedDominion = $this->getSelectedDominion();
+
         return view('pages.message-board.create', compact(
             'categories',
             'selectedCategory',
-            'user'
+            'user',
+            'selectedDominion'
         ));
     }
 
@@ -193,7 +210,9 @@ class MessageBoardController extends AbstractController
                 ->withErrors(['No permission to edit thread.']);
         }
 
-        return view('pages.message-board.edit', compact('thread', 'user'));
+        $selectedDominion = $this->getSelectedDominion();
+
+        return view('pages.message-board.edit', compact('thread', 'user', 'selectedDominion'));
     }
 
     public function postEditThread(EditThreadRequest $request, MessageBoard\Thread $thread)
@@ -223,10 +242,13 @@ class MessageBoardController extends AbstractController
 
         $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
 
+        $selectedDominion = $this->getSelectedDominion();
+
         return view('pages.message-board.thread', compact(
             'user',
             'thread',
-            'posts'
+            'posts',
+            'selectedDominion'
         ));
     }
 
@@ -263,8 +285,11 @@ class MessageBoardController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
+        $selectedDominion = $this->getSelectedDominion();
+
         return view('pages.message-board.delete-post', compact(
-            'post'
+            'post',
+            'selectedDominion'
         ));
     }
 
@@ -298,8 +323,11 @@ class MessageBoardController extends AbstractController
 
         $thread->load('user');
 
+        $selectedDominion = $this->getSelectedDominion();
+
         return view('pages.message-board.delete-thread', compact(
-            'thread'
+            'thread',
+            'selectedDominion'
         ));
     }
 
