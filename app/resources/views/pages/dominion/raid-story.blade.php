@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-body raid-story">
                     @if ($raid->extended_description)
-                        {!! Str::markdown($raid->extended_description) !!}
+                        {!! Str::markdown($raid->extended_description, ['html_input' => 'escape', 'allow_unsafe_links' => false]) !!}
                     @else
                         {!! $raid->description !!}
                     @endif
