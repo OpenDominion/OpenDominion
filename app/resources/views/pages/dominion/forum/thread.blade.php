@@ -63,7 +63,7 @@
                                 $ranking = $rankingsHelper->getFirstRanking($titles, isset($post->dominion->settings['preferred_title']) ? $post->dominion->settings['preferred_title'] : '');
                             @endphp
                             <div class="p-3 @if (!$loop->last) border-bottom @endif">
-                                <div class="d-flex gap-3">
+                                <div class="d-flex gap-3 text-break">
                                     <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted flex-shrink-0" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px; line-height: 1;"></i>
                                     <div class="flex-grow-1 min-w-0">
                                         <div class="d-flex justify-content-between align-items-baseline gap-2 mb-2">

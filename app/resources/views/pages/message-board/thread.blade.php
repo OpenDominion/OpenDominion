@@ -53,7 +53,7 @@
                     <div class="card-footer p-0">
                         @foreach ($posts as $post)
                             <div class="p-3 @if (!$loop->last) border-bottom @endif">
-                                <div class="d-flex gap-3">
+                                <div class="d-flex gap-3 text-break">
                                     <i class="ra {{ isset($post->user->settings['boardavatar']) ? $post->user->settings['boardavatar'] : 'ra-player' }} text-muted flex-shrink-0" style="font-size: 26px; line-height: 1;"></i>
                                     <div class="flex-grow-1 min-w-0">
                                         <div class="d-flex justify-content-between align-items-baseline gap-2 mb-2">
