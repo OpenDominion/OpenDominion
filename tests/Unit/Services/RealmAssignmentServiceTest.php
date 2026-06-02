@@ -824,6 +824,74 @@ class RealmAssignmentServiceTest extends AbstractTestCase
     }
 
     /**
+     * Test calculateRealmCount grows the realm count when total packed players
+     * would exceed the packed-player headroom of the minimum realm count.
+     *
+     * Scenario: 4 large packs of 4 (16 packed) + 20 small packs of 3 (60 packed)
+     * = 76 packed players. With MIN=8 realms × 8 packed cap = 64 slots, that overflows.
+     * calculateRealmCount should return ceil(76/8) = 10 realms and upgrade enough
+     * small packs to seed them, so createPlaceholderRealms produces 10 realms.
+     */
+    public function testCalculateRealmCountGrowsForPackedHeadroom()
+    {
+        $this->service->players = collect();
+        $this->service->packs = collect();
+        $this->service->realms = collect();
+
+        $playerId = 1;
+
+        // 4 large packs of 4 players each
+        foreach (range(1, 4) as $packIdx) {
+            $members = collect();
+            foreach (range(1, 4) as $_) {
+                $player = new Player([
+                    'id' => (string)$playerId,
+                    'rating' => 1500.0,
+                    'packId' => "large-{$packIdx}",
+                    'favorability' => [],
+                ]);
+                $members->put($playerId, $player);
+                $playerId++;
+            }
+            $this->service->packs->put("large-{$packIdx}", new PlaceholderPack("large-{$packIdx}", $members));
+        }
+
+        // 20 small packs of 3 players each
+        foreach (range(1, 20) as $packIdx) {
+            $members = collect();
+            foreach (range(1, 3) as $_) {
+                $player = new Player([
+                    'id' => (string)$playerId,
+                    'rating' => 1500.0,
+                    'packId' => "small-{$packIdx}",
+                    'favorability' => [],
+                ]);
+                $members->put($playerId, $player);
+                $playerId++;
+            }
+            $this->service->packs->put("small-{$packIdx}", new PlaceholderPack("small-{$packIdx}", $members));
+        }
+
+        $expectedRealms = (int) ceil(76 / RealmAssignmentService::MAX_PACKED_PLAYERS_PER_REALM);
+        $this->assertEquals(10, $expectedRealms, 'sanity-check scenario math');
+
+        $realmCount = $this->service->calculateRealmCount();
+
+        $this->assertEquals(
+            $expectedRealms,
+            $realmCount,
+            'calculateRealmCount should grow past large-pack count to make headroom for all packed players'
+        );
+
+        $largePacks = $this->service->packs->where('large', true)->count();
+        $this->assertEquals(
+            $expectedRealms,
+            $largePacks,
+            'Small packs should be upgraded so the realm seeds match the target realm count'
+        );
+    }
+
+    /**
      * Test getCandidateRealms excludes draft-pack realms unless they are the smallest option.
      *
      * A "draft pack" is a pack with more than MAX_PACKED_PLAYERS_PER_REALM members,

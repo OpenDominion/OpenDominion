@@ -644,23 +644,26 @@ class RealmAssignmentService
     public function calculateRealmCount(): int
     {
         $largePacks = $this->packs->where('large', true)->count();
+        $totalPackedPlayers = $this->packs->sum('size');
+        $packedHeadroomRealms = (int) ceil($totalPackedPlayers / self::MAX_PACKED_PLAYERS_PER_REALM);
+
         $nonDiscordRealmCount = $this->nonDiscordRealms->count();
-
-        // Calculate max Discord realms we can create without exceeding total limit
         $maxDiscordRealms = self::ASSIGNMENT_MAX_REALM_COUNT - $nonDiscordRealmCount;
-
-        // Ensure we have at least minimum total realms
         $minDiscordRealms = max(0, self::ASSIGNMENT_MIN_REALM_COUNT - $nonDiscordRealmCount);
 
-        if ($largePacks > $maxDiscordRealms) {
-            $this->downgradePacks($maxDiscordRealms - $largePacks);
-            return $maxDiscordRealms;
-        } elseif ($largePacks < $minDiscordRealms) {
-            $this->upgradePacks($minDiscordRealms - $largePacks);
-            return $minDiscordRealms;
-        } else {
-            return $largePacks;
+        // Need enough realms to seed every large pack AND enough packed-player
+        // headroom (each realm caps at MAX_PACKED_PLAYERS_PER_REALM) to absorb
+        // every packed player without overflowing.
+        $desiredRealms = max($largePacks, $packedHeadroomRealms);
+        $targetRealms = max($minDiscordRealms, min($maxDiscordRealms, $desiredRealms));
+
+        if ($largePacks > $targetRealms) {
+            $this->downgradePacks($largePacks - $targetRealms);
+        } elseif ($largePacks < $targetRealms) {
+            $this->upgradePacks($targetRealms - $largePacks);
         }
+
+        return $targetRealms;
     }
 
     /**
@@ -812,7 +815,11 @@ class RealmAssignmentService
         if ($potentialRealms->isEmpty()) {
             // Ignore size restrictions if no other options
             $potentialRealms = $this->realms->where('rating', '<', $this->targetRealmStrength);
-            // TODO: if still empty???
+        }
+        if ($potentialRealms->isEmpty()) {
+            // Last resort: every realm is over the packed-player cap AND over target rating.
+            // Let the scoring (size penalty + balance score) pick the least bad option.
+            $potentialRealms = $this->realms;
         }
 
         foreach ($potentialRealms as $realm) {
