@@ -500,13 +500,16 @@ class RealmAssignmentService
         $this->loadPlayers($round);
         $nonDiscordPlayerCount = $this->players->where('hasDiscord', false)->where('packId', null)->count();
         $discordPlayerCount = $this->players->count() - $nonDiscordPlayerCount;
+
+        // Calculate targets based on Discord players only
+        $this->targetRealmStrength = $this->players->reject(function ($player) {
+            return !$player->hasDiscord && $player->packId === null;
+        })->avg('rating') ?: 1500;
+
         $this->loadPacks();
 
         // Separate non-Discord players early, before any calculations
         $this->createNonDiscordRealms();
-
-        // Calculate targets based on Discord players only
-        $this->targetRealmStrength = $this->players->avg('rating') ?: 1500;
 
         $discordRealmCount = $this->calculateRealmCount();
         $this->targetRealmSize = floor($discordPlayerCount / $discordRealmCount);
