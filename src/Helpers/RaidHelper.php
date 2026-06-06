@@ -50,7 +50,7 @@ class RaidHelper
         }
 
         return sprintf(
-            '<span class="label label-%s">%s</span>',
+            '<span class="badge text-bg-%s">%s</span>',
             $labelClass,
             $labelText
         );

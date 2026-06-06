@@ -71,6 +71,12 @@
                             <label class="form-label">Ruler Name:</label>
                             <input name="ruler_name" class="form-control" type="text" placeholder="{{ $selectedDominion->ruler_name }}" />
                         </div>
+                        @if ($selectedDominion->hero)
+                            <div class="mb-3">
+                                <label class="form-label">Hero Name:</label>
+                                <input name="hero_name" class="form-control" type="text" placeholder="{{ $selectedDominion->hero->name }}" />
+                            </div>
+                        @endif
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Update</button>

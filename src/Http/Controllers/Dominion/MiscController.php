@@ -218,6 +218,12 @@ class MiscController extends AbstractDominionController
                 Rule::unique('dominions', 'ruler_name')->where(function ($query) use ($dominion) {
                     return $query->where('round_id', $dominion->round_id);
                 })->ignore($dominion->id)
+            ],
+            'hero_name' => [
+                'nullable',
+                'string',
+                'min:3',
+                'max:50',
             ]
         ]);
 
@@ -241,6 +247,10 @@ class MiscController extends AbstractDominionController
                 $dominion->ruler_name = $request->get('ruler_name');
             }
             $dominion->save();
+            if ($request->get('hero_name') && $dominion->hero) {
+                $dominion->hero->name = $request->get('hero_name');
+                $dominion->hero->save();
+            }
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->withErrors(['There was a problem renaming your dominion.']);
         }
