@@ -24,10 +24,26 @@ class Ticker {
             this.nextRoundStartDate = new Date(this.tickerNextRoundElement.dataset.value);
         }
 
+        if (this.tickerServerElement !== null) {
+            const currentServerTime = this.tickerServerElement.innerHTML;
+            // Add 500ms to compensate for network/rendering delay between server timestamp and JS init
+            this.serverTimeAtLoad = new Date('1970-01-01T' + currentServerTime + 'Z').getTime() + 500;
+            this.localTimeAtLoad = Date.now();
+        }
+
         // Only tick if the ticker element is visible; i.e. not on the homepage
         if (this.tickerServerElement !== null || this.tickerNextRoundElement) {
-            const self = this;
-            setInterval(() => self.tick(), 1000);
+            // Align first tick to the next second boundary
+            const msUntilNextSecond = 1000 - (Date.now() % 1000);
+            setTimeout(() => {
+                this.tick();
+                setInterval(() => this.tick(), 1000);
+            }, msUntilNextSecond);
+
+            // Resync immediately when tab becomes visible
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) this.tick();
+            });
         }
     }
 
@@ -37,10 +53,11 @@ class Ticker {
      * @private
      */
     tick() {
+        let currentTime = null;
+
         if (this.tickerServerElement !== null) {
-            const currentServerTime = this.tickerServerElement.innerHTML;
-            const currentTime = new Date('1970-01-01T' + currentServerTime + 'Z');
-            currentTime.setUTCSeconds(currentTime.getUTCSeconds() + 1);
+            const elapsed = Date.now() - this.localTimeAtLoad;
+            currentTime = new Date(this.serverTimeAtLoad + elapsed);
             this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
 
             if (this.nextHour == null) {
@@ -62,7 +79,7 @@ class Ticker {
             if (diffDate > 0) {
                 this.tickerNextRoundElement.innerHTML = Ticker.hms(diffDate);
             }
-        } else if (this.tickerNextHourElement !== null) {
+        } else if (this.tickerNextHourElement !== null && currentTime !== null) {
             const nextHour = new Date(currentTime.toString());
             nextHour.setUTCHours(currentTime.getUTCHours() + 1);
             nextHour.setUTCMinutes(0);
