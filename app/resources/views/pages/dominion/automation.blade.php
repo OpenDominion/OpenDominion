@@ -11,115 +11,186 @@
                     <span class="card-title"><i class="ra ra-robot-arm"></i> Automated Actions</span>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
+                    @php
+                        $currentTick = $selectedDominion->round->getTick();
+                        if ($selectedDominion->round->hasStarted()) {
+                            $actionStartDate = now()->startOfHour();
+                        } else {
+                            $actionStartDate = $selectedDominion->round->start_date;
+                        }
+                        $isLocked = $selectedDominion->isLocked();
+                    @endphp
+
+                    <div style="margin-bottom: 15px;">
+                        <strong>Current Tick:</strong>
+                        Day {{ $selectedDominion->round->daysInRound() }}, Hour {{ $selectedDominion->round->hoursInDay() }}
+                    </div>
+
+                    @if (!$selectedDominion->ai_enabled || empty($selectedDominion->ai_config))
+                        <p><i>No automated actions scheduled.</i></p>
+                    @else
+                        @foreach ($selectedDominion->ai_config as $tick => $actions)
                             @php
-                                $currentTick = $selectedDominion->round->getTick();
-                                if ($selectedDominion->round->hasStarted()) {
-                                    $actionStartDate = now()->startOfHour();
-                                } else {
-                                    $actionStartDate = $selectedDominion->round->start_date;
-                                }
+                                $hours = $tick - $currentTick;
+                                $day = $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours));
+                                $hour = $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours));
+                                $actions = array_values($actions);
                             @endphp
-                            <h4>Current Tick</h4>
-                            <div style="margin-bottom: 20px;">
-                                Day {{ $selectedDominion->round->daysInRound() }}, Hour {{ $selectedDominion->round->hoursInDay() }}
-                            </div>
-                            <h4>Configured Actions</h4>
-                            <div>
-                                @if (!$selectedDominion->ai_enabled || empty($selectedDominion->ai_config))
-                                    <p><i>No automated actions scheduled.</i></p>
-                                @else
-                                    <table class="table table-sm">
+                            <div class="card mb-3">
+                                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                    <strong>Day {{ $day }}, Hour {{ $hour }} (+{{ $hours }})</strong>
+                                    <button class="btn btn-sm btn-danger" type="button" title="Clear all actions"
+                                        data-bs-toggle="modal" data-bs-target="#clearTickModal"
+                                        data-tick="{{ $tick }}" data-label="Day {{ $day }}, Hour {{ $hour }} (+{{ $hours }})"
+                                        {{ $isLocked ? 'disabled' : null }}>
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-sm mb-0">
                                         <colgroup>
-                                            <col width="15%">
-                                            <col width="15%">
-                                            <col width="15%">
+                                            <col width="30px">
                                             <col>
-                                            <col width="40px">
+                                            <col width="200px">
                                         </colgroup>
-                                        <tr>
-                                            <th>Ticks</th>
-                                            <th>Day</th>
-                                            <th>Hour</th>
-                                            <th>Action</th>
-                                            <th></th>
-                                        </tr>
-                                        @foreach ($selectedDominion->ai_config as $tick => $config)
-                                            @php
-                                                $hours = $tick - $currentTick;
-                                                $day = $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours));
-                                                $hour = $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours));
-                                            @endphp
-                                            @foreach ($config as $index => $item)
-                                                <tr>
-                                                    <td>
-                                                        +{{ $hours }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $day }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $hour }}
-                                                    </td>
-                                                    <td>
-                                                        @if ($item['action'] == 'train')
-                                                            Train
-                                                            {{ $item['amount'] }}
-                                                            {{ $unitHelper->getUnitName($item['key'], $selectedDominion->race) }}
-                                                        @elseif ($item['action'] == 'construct')
-                                                            Construct
-                                                            {{ $item['amount'] }}
-                                                            {{ $buildingHelper->getBuildingName($item['key']) }}
-                                                        @elseif ($item['action'] == 'explore')
-                                                            Explore
-                                                            {{ $item['amount'] }}
-                                                            {{ ucwords($item['key']) }}
-                                                        @elseif ($item['action'] == 'rezone')
-                                                            Rezone
-                                                            {{ $item['amount'] }}
-                                                            {{ ucwords($item['key']) }} to
-                                                            {{ ucwords($item['key2']) }}
-                                                        @elseif ($item['action'] == 'spell')
-                                                            @php($spell = $spellHelper->getSpellByKey($item['key']))
-                                                            Cast
-                                                            {{ $spell ? $spell->name : 'Unknown Spell' }}
-                                                        @elseif ($item['action'] == 'release')
-                                                            Release
-                                                            {{ $item['amount'] }}
-                                                            Draftees
-                                                        @elseif ($item['action'] == 'draft_rate')
-                                                            Set Draft Rate
-                                                            {{ $item['amount'] }}%
-                                                        @elseif ($item['action'] == 'daily_bonus')
-                                                            Daily Bonus
-                                                            {{ ucwords($item['key']) }}
-                                                        @endif
-                                                    </td>
-                                                    <td class="text-end">
-                                                        <form action="{{ route('dominion.bonuses.actions.delete') }}" method="post">
+                                        @foreach ($actions as $index => $item)
+                                            <tr class="action-display-row" id="display-{{ $tick }}-{{ $index }}">
+                                                <td class="text-center text-muted align-middle">{{ $index + 1 }}.</td>
+                                                <td class="align-middle">
+                                                    @include('pages.dominion.automation._action-label', ['item' => $item])
+                                                </td>
+                                                <td class="text-end align-middle">
+                                                    {{-- Reorder Up --}}
+                                                    @if ($index > 0)
+                                                        <form action="{{ route('dominion.bonuses.actions.reorder') }}" method="post" class="d-inline">
                                                             @csrf
                                                             <input type="hidden" name="tick" value="{{ $tick }}" />
                                                             <input type="hidden" name="key" value="{{ $index }}" />
-                                                            <button class="btn btn-link p-0" type="submit" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                                                <i class="fa fa-trash text-danger"></i>
+                                                            <input type="hidden" name="direction" value="up" />
+                                                            <button class="btn btn-outline-secondary btn-sm" type="submit" title="Move up" {{ $isLocked ? 'disabled' : null }}>
+                                                                <i class="fa fa-arrow-up"></i>
                                                             </button>
                                                         </form>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                    @else
+                                                        <span class="btn btn-sm invisible"><i class="fa fa-arrow-up"></i></span>
+                                                    @endif
+                                                    {{-- Reorder Down --}}
+                                                    @if ($index < count($actions) - 1)
+                                                        <form action="{{ route('dominion.bonuses.actions.reorder') }}" method="post" class="d-inline">
+                                                            @csrf
+                                                            <input type="hidden" name="tick" value="{{ $tick }}" />
+                                                            <input type="hidden" name="key" value="{{ $index }}" />
+                                                            <input type="hidden" name="direction" value="down" />
+                                                            <button class="btn btn-outline-secondary btn-sm" type="submit" title="Move down" {{ $isLocked ? 'disabled' : null }}>
+                                                                <i class="fa fa-arrow-down"></i>
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <span class="btn btn-sm invisible"><i class="fa fa-arrow-down"></i></span>
+                                                    @endif
+                                                    {{-- Edit --}}
+                                                    <button class="btn btn-outline-secondary btn-sm" type="button" title="Edit" onclick="toggleEditRow({{ $tick }}, {{ $index }})" {{ $isLocked ? 'disabled' : null }}>
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                    {{-- Duplicate --}}
+                                                    <button class="btn btn-outline-secondary btn-sm" type="button" title="Duplicate" onclick="toggleDuplicateRow({{ $tick }}, {{ $index }})" {{ $isLocked ? 'disabled' : null }}>
+                                                        <i class="fa fa-copy"></i>
+                                                    </button>
+                                                    {{-- Delete --}}
+                                                    <form action="{{ route('dominion.bonuses.actions.delete') }}" method="post" class="d-inline">
+                                                        @csrf
+                                                        <input type="hidden" name="tick" value="{{ $tick }}" />
+                                                        <input type="hidden" name="key" value="{{ $index }}" />
+                                                        <button class="btn btn-outline-danger btn-sm" type="submit" title="Delete" {{ $isLocked ? 'disabled' : null }}>
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {{-- Edit row (hidden by default) --}}
+                                            <tr class="action-edit-row" id="edit-{{ $tick }}-{{ $index }}" style="display: none;">
+                                                <td colspan="3">
+                                                    <form action="{{ route('dominion.bonuses.actions.edit') }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="tick" value="{{ $tick }}" />
+                                                        <input type="hidden" name="edit_key" value="{{ $index }}" />
+                                                        @include('pages.dominion.automation._action-form', [
+                                                            'formId' => "edit-form-{$tick}-{$index}",
+                                                            'item' => $item,
+                                                            'showTick' => false,
+                                                        ])
+                                                        <div class="mt-2 text-end">
+                                                            <button type="button" class="btn btn-sm btn-dark" onclick="toggleEditRow({{ $tick }}, {{ $index }})">Cancel</button>
+                                                            <button type="submit" class="btn btn-sm btn-primary" {{ $isLocked ? 'disabled' : null }}>Save</button>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {{-- Duplicate row (hidden by default) --}}
+                                            <tr class="action-duplicate-row" id="duplicate-{{ $tick }}-{{ $index }}" style="display: none;">
+                                                <td colspan="3">
+                                                    <form action="{{ route('dominion.bonuses.actions.duplicate') }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="source_tick" value="{{ $tick }}" />
+                                                        <input type="hidden" name="source_key" value="{{ $index }}" />
+                                                        <div class="mb-2">
+                                                            Duplicate to tick:
+                                                            <select class="form-select form-select-sm" name="target_tick">
+                                                                @foreach (range(1, 12) as $h)
+                                                                    <option value="{{ $currentTick + $h }}">
+                                                                        Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($h)) }},
+                                                                        Hour {{ $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($h)) }}
+                                                                        (+{{ $h }})
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <button type="button" class="btn btn-sm btn-dark" onclick="toggleDuplicateRow({{ $tick }}, {{ $index }})">Cancel</button>
+                                                            <button type="submit" class="btn btn-sm btn-primary" {{ $isLocked ? 'disabled' : null }}>Duplicate</button>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </table>
-                                @endif
+                                    {{-- Add action to this tick --}}
+                                    <div class="p-2">
+                                        <button class="btn btn-sm btn-primary" type="button" onclick="toggleAddToTick({{ $tick }})" {{ $isLocked ? 'disabled' : null }}>
+                                            <i class="fa fa-plus"></i> Add Action
+                                        </button>
+                                        <div class="add-to-tick-form mt-2" id="add-to-tick-{{ $tick }}" style="display: none;">
+                                            <form action="{{ route('dominion.bonuses.actions') }}" method="post">
+                                                @csrf
+                                                <input type="hidden" name="tick" value="{{ $tick }}" />
+                                                @include('pages.dominion.automation._action-form', [
+                                                    'formId' => "add-form-{$tick}",
+                                                    'item' => null,
+                                                    'showTick' => false,
+                                                ])
+                                                <div class="mt-2 text-end">
+                                                    <button type="button" class="btn btn-sm btn-dark" onclick="toggleAddToTick({{ $tick }})">Cancel</button>
+                                                    <button type="submit" class="btn btn-sm btn-primary" {{ $isLocked ? 'disabled' : null }}>Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <h4>Add Action</h4>
-                            <form action="{{ route('dominion.bonuses.actions') }}" method="post" role="form">
+                        @endforeach
+                    @endif
+
+                    {{-- Schedule New Tick --}}
+                    <div class="mt-3">
+                        <button class="btn btn-primary" type="button" onclick="toggleNewTick()" {{ $isLocked ? 'disabled' : null }}>
+                            <i class="fa fa-plus"></i> Schedule New Tick
+                        </button>
+                        <div id="new-tick-form" class="mt-2" style="display: none;">
+                            <form action="{{ route('dominion.bonuses.actions') }}" method="post">
                                 @csrf
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     Tick:
-                                    <select class="form-select" name="tick" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <select class="form-select form-select-sm" name="tick" {{ $isLocked ? 'disabled' : null }}>
                                         @foreach (range(1, 12) as $hours)
                                             <option value="{{ $currentTick + $hours }}" {{ (($currentTick + $hours) == old('tick')) ? 'selected' : null }}>
                                                 Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours)) }},
@@ -129,89 +200,15 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="mb-3">
-                                    Action:
-                                    <select class="form-select" name="action" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                        <option value="train">Train Military</option>
-                                        <option value="construct">Construct Buildings</option>
-                                        <option value="explore">Explore Land</option>
-                                        <option value="rezone">Rezone Land</option>
-                                        <option value="spell">Cast Spell</option>
-                                        <option value="release">Release Draftees</option>
-                                        <option value="draft_rate">Set Draft Rate</option>
-                                        <option value="daily_bonus">Daily Bonus</option>
-                                    </select>
+                                @include('pages.dominion.automation._action-form', [
+                                    'formId' => 'new-tick-action-form',
+                                    'item' => null,
+                                    'showTick' => false,
+                                ])
+                                <div class="mt-2 text-end">
+                                    <button type="button" class="btn btn-dark" onclick="toggleNewTick()">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" {{ $isLocked ? 'disabled' : null }}>Save</button>
                                 </div>
-                                <div class="mb-3 action-options train">
-                                    Unit:
-                                    <select class="form-select" name="key" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                        <option></option>
-                                        @foreach ($unitTypes as $unitType)
-                                            <option value="{{ $unitType }}">
-                                                {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mb-3 action-options construct" style="display: none;">
-                                    Building:
-                                    <select class="form-select" name="key" disabled>
-                                        <option></option>
-                                        @foreach ($buildings as $building)
-                                            <option value="{{ $building }}">
-                                                {{ $buildingHelper->getBuildingName($building) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mb-3 action-options explore rezone" style="display: none;">
-                                    Land Type:
-                                    <select class="form-select" name="key" disabled>
-                                        <option></option>
-                                        @foreach ($landTypes as $landType)
-                                            <option value="{{ $landType }}">
-                                                {{ ucwords($landType) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mb-3 action-options rezone" style="display: none;">
-                                    Target Land Type:
-                                    <select class="form-select" name="key2" disabled>
-                                        <option></option>
-                                        @foreach ($landTypes as $landType)
-                                            <option value="{{ $landType }}">
-                                                {{ ucwords($landType) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mb-3 action-options train construct explore rezone release draft_rate">
-                                    Amount:
-                                    <input type="number" name="amount" class="form-control" placeholder="Amount" min="0" {{ $selectedDominion->isLocked() ? 'disabled' : null }} />
-                                </div>
-                                <div class="mb-3 action-options spell" style="display: none;">
-                                    Spell:
-                                    <select class="form-select" name="key" disabled>
-                                        <option></option>
-                                        @foreach ($spells as $spell)
-                                            <option value="{{ $spell->key }}">
-                                                {{ $spell->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mb-3 action-options daily_bonus" style="display: none;">
-                                    Bonus:
-                                    <select class="form-select" name="key" disabled>
-                                        <option></option>
-                                        <option value="land">Land</option>
-                                        <option value="platinum">Platinum</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary float-end" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                    Save
-                                </button>
                             </form>
                         </div>
                     </div>
@@ -236,25 +233,100 @@
         </div>
 
     </div>
+
+    {{-- Clear Tick Confirmation Modal --}}
+    <div class="modal fade" id="clearTickModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Clear Tick</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to clear all actions for <strong id="clearTickLabel"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+                    <form id="clearTickForm" action="{{ route('dominion.bonuses.actions.clear') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="tick" id="clearTickValue" />
+                        <button type="submit" class="btn btn-danger">Clear All</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            var actionSelectElement = $('select[name=action]');
-            var actionContainerElements = $('.action-options');
+            // Action form toggle logic - scoped per form container
+            function initActionForm(container) {
+                var actionSelect = container.find('select[name=action]');
+                var optionContainers = container.find('.action-options');
 
-            function toggleDropdowns(value) {
-                actionContainerElements.hide();
-                actionContainerElements.children('select,input').prop('disabled', true);
+                function toggleDropdowns(value) {
+                    optionContainers.hide();
+                    optionContainers.children('select,input').prop('disabled', true);
 
-                var selectedParentElement = $("." + value);
-                selectedParentElement.children('select,input').prop('disabled', false);
-                selectedParentElement.show();
+                    var selected = container.find('.' + value);
+                    selected.children('select,input').prop('disabled', false);
+                    selected.show();
+                }
+
+                actionSelect.change(function (e) {
+                    toggleDropdowns(e.currentTarget.value);
+                });
+
+                // Initialize with current value
+                if (actionSelect.val()) {
+                    toggleDropdowns(actionSelect.val());
+                }
             }
 
-            actionSelectElement.change(function (e) {
-                toggleDropdowns(e.currentTarget.value);
+            // Initialize all existing forms on page load
+            $('.action-form-container').each(function () {
+                initActionForm($(this));
+            });
+
+            // Expose for dynamic init
+            window.initActionForm = initActionForm;
+
+            window.toggleEditRow = function (tick, index) {
+                var display = $('#display-' + tick + '-' + index);
+                var edit = $('#edit-' + tick + '-' + index);
+                edit.toggle();
+                display.toggle();
+                if (edit.is(':visible')) {
+                    initActionForm(edit.find('.action-form-container'));
+                }
+            };
+
+            window.toggleDuplicateRow = function (tick, index) {
+                $('#duplicate-' + tick + '-' + index).toggle();
+            };
+
+            window.toggleAddToTick = function (tick) {
+                var form = $('#add-to-tick-' + tick);
+                form.toggle();
+                if (form.is(':visible')) {
+                    initActionForm(form.find('.action-form-container'));
+                }
+            };
+
+            window.toggleNewTick = function () {
+                var form = $('#new-tick-form');
+                form.toggle();
+                if (form.is(':visible')) {
+                    initActionForm(form.find('.action-form-container'));
+                }
+            };
+            // Clear tick modal
+            $('#clearTickModal').on('show.bs.modal', function (e) {
+                var button = $(e.relatedTarget);
+                $('#clearTickValue').val(button.data('tick'));
+                $('#clearTickLabel').text(button.data('label'));
             });
         })(jQuery);
     </script>

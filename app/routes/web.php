@@ -116,6 +116,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('bonuses/automation')->uses('Dominion\DailyBonusesController@getAutomatedActions')->name('bonuses.actions');
             $router->post('bonuses/automation')->uses('Dominion\DailyBonusesController@postAutomatedActions');
             $router->post('bonuses/automation/delete')->uses('Dominion\DailyBonusesController@postDeleteAutomatedAction')->name('bonuses.actions.delete');
+            $router->post('bonuses/automation/reorder')->uses('Dominion\DailyBonusesController@postReorderAutomatedAction')->name('bonuses.actions.reorder');
+            $router->post('bonuses/automation/edit')->uses('Dominion\DailyBonusesController@postEditAutomatedAction')->name('bonuses.actions.edit');
+            $router->post('bonuses/automation/duplicate')->uses('Dominion\DailyBonusesController@postDuplicateAutomatedAction')->name('bonuses.actions.duplicate');
+            $router->post('bonuses/automation/clear')->uses('Dominion\DailyBonusesController@postClearAutomatedActions')->name('bonuses.actions.clear');
 
             // Exploration
             $router->get('explore')->uses('Dominion\ExplorationController@getExplore')->name('explore');

@@ -138,4 +138,81 @@ class DailyBonusesController extends AbstractDominionController
         $request->session()->flash('alert-success', 'Action was successfully deleted.');
         return redirect()->route('dominion.bonuses.actions');
     }
+
+    public function postReorderAutomatedAction(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+
+        try {
+            $automationService->reorderAction($dominion, (int) $request->get('tick'), (int) $request->get('key'), $request->get('direction'));
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Action order was updated.');
+        return redirect()->route('dominion.bonuses.actions');
+    }
+
+    public function postEditAutomatedAction(AutomationActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+
+        $value = [
+            'action' => $request->get('action'),
+            'key' => $request->get('key'),
+            'key2' => $request->get('key2'),
+            'amount' => $request->get('amount'),
+        ];
+
+        try {
+            $automationService->editAction($dominion, (int) $request->get('tick'), (int) $request->get('edit_key'), $value);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Action was successfully updated.');
+        return redirect()->route('dominion.bonuses.actions');
+    }
+
+    public function postDuplicateAutomatedAction(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+
+        try {
+            $automationService->duplicateAction(
+                $dominion,
+                (int) $request->get('source_tick'),
+                (int) $request->get('source_key'),
+                (int) $request->get('target_tick')
+            );
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Action was successfully duplicated.');
+        return redirect()->route('dominion.bonuses.actions');
+    }
+
+    public function postClearAutomatedActions(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+
+        try {
+            $automationService->clearTick($dominion, (int) $request->get('tick'));
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'All actions for this tick were cleared.');
+        return redirect()->route('dominion.bonuses.actions');
+    }
 }

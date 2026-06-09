@@ -387,9 +387,89 @@ class AutomationService
         unset($config[$tick][$key]);
         if (empty($config[$tick])) {
             unset($config[$tick]);
+        } else {
+            $config[$tick] = array_values($config[$tick]);
         }
 
         // Save updated AI config
+        $dominion->ai_config = $config;
+        if (empty($config)) {
+            $dominion->ai_enabled = false;
+        }
+        $dominion->save();
+    }
+
+    public function reorderAction(Dominion $dominion, int $tick, int $key, string $direction): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        $config = $dominion->ai_config;
+        if (!isset($config[$tick]) || !isset($config[$tick][$key])) {
+            throw new GameException('Action not found.');
+        }
+
+        $actions = array_values($config[$tick]);
+        $swapKey = $direction === 'up' ? $key - 1 : $key + 1;
+
+        if (!isset($actions[$swapKey])) {
+            throw new GameException('Cannot move action further in that direction.');
+        }
+
+        [$actions[$key], $actions[$swapKey]] = [$actions[$swapKey], $actions[$key]];
+        $config[$tick] = $actions;
+
+        $dominion->ai_config = $config;
+        $dominion->save();
+    }
+
+    public function editAction(Dominion $dominion, int $tick, int $key, array $value): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        $config = $dominion->ai_config;
+        if (!isset($config[$tick]) || !isset($config[$tick][$key])) {
+            throw new GameException('Action not found.');
+        }
+
+        if ($value['action'] == 'spell' && in_array($value['key'], ['ares_call', 'fools_gold'])) {
+            throw new GameException('You cannot automate this spell.');
+        }
+
+        $config[$tick][$key] = $value;
+
+        $dominion->ai_config = $config;
+        $dominion->save();
+    }
+
+    public function duplicateAction(Dominion $dominion, int $sourceTick, int $sourceKey, int $targetTick): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        $config = $dominion->ai_config;
+        if (!isset($config[$sourceTick]) || !isset($config[$sourceTick][$sourceKey])) {
+            throw new GameException('Source action not found.');
+        }
+
+        $action = $config[$sourceTick][$sourceKey];
+
+        // Use setConfig to apply all validation (daily limits, tick range, etc.)
+        $this->setConfig($dominion, [
+            'tick' => $targetTick,
+            'value' => $action,
+        ]);
+    }
+
+    public function clearTick(Dominion $dominion, int $tick): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        $config = $dominion->ai_config;
+        if (!isset($config[$tick])) {
+            throw new GameException('No actions found for this tick.');
+        }
+
+        unset($config[$tick]);
+
         $dominion->ai_config = $config;
         if (empty($config)) {
             $dominion->ai_enabled = false;
