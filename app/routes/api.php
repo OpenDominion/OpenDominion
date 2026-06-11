@@ -8,6 +8,11 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
     $router->group(['middleware' => ['bindings', 'throttle:60,1']], static function (Router $router) {
         $router->get('pbbg')->uses('ApiController@getPbbg');
         $router->post('bugsnag')->uses('ApiController@postBugsnag');
+        $router->get('time', static function () {
+            return response()
+                ->json(['t' => now()->format('H:i:s')])
+                ->header('Cache-Control', 'no-store');
+        });
     });
 
     $router->group(['prefix' => 'dominion', 'middleware' => ['api', 'auth', 'dominionselected'], 'as' => 'dominion.'], static function (Router $router) {
