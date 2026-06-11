@@ -4,6 +4,7 @@ namespace OpenDominion\Console\Commands\Game;
 
 use Illuminate\Console\Command;
 use OpenDominion\Console\Commands\CommandInterface;
+use OpenDominion\Jobs\DailyRankingsAndStatsJob;
 use OpenDominion\Services\Dominion\TickService;
 
 class TickCommand extends Command implements CommandInterface
@@ -32,8 +33,8 @@ class TickCommand extends Command implements CommandInterface
      */
     public function handle(): void
     {
+        DailyRankingsAndStatsJob::dispatch();
         $this->tickService->tickHourly();
         $this->tickService->tickDaily();
-        $this->tickService->updateDailyRankings();
     }
 }

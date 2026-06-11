@@ -34,14 +34,22 @@ class ValhallaController extends AbstractController
             return $response;
         }
 
-        $races = $round->dominions
-            ->sortBy('race.name')
-            ->pluck('race.name', 'race.key')
-            ->unique();
+        $races = Race::whereIn('id', $round->dominions()->select('race_id')->distinct())
+            ->orderBy('name')
+            ->pluck('name', 'key');
+
+        $playersCount = $round->dominions()->whereNotNull('user_id')->count();
+        $botsCount = $round->dominions()->whereNull('user_id')->count();
+        $realmsCount = $round->realms()->count();
+        $packsCount = $round->packs()->count();
 
         return view('pages.valhalla.round', [
             'round' => $round,
             'races' => $races,
+            'playersCount' => $playersCount,
+            'botsCount' => $botsCount,
+            'realmsCount' => $realmsCount,
+            'packsCount' => $packsCount,
         ]);
     }
 
@@ -210,32 +218,55 @@ class ValhallaController extends AbstractController
             }
         }
 
+        $dominionsByLeague = $dominions->groupBy('round.round_league_id');
+
         $leagueStats = [];
+        $leagueDominions = [];
+        $rankingStats = [];
         foreach ($leagues as $league) {
-            $leagueDominions = $dominions->where('round.round_league_id', $league->id);
-            if ($leagueDominions->isEmpty()) {
+            $leagueRounds = $dominionsByLeague->get($league->id, collect());
+            if ($leagueRounds->isEmpty()) {
                 continue;
             }
 
             $rankings = $dailyRankings[$league->id] ?? collect();
-            $raceCounts = $leagueDominions->groupBy('race.name')->map->count()->sortDesc();
+            $rankingsByKey = $rankings->groupBy('key');
+            $largestDominions = $rankingsByKey->get('largest-dominions', collect());
+            $titles = $rankings->where('rank', 1)->count();
+            $roundsPlayed = $leagueRounds->count();
+            $raceCounts = $leagueRounds->groupBy('race.name')->map->count()->sortDesc();
+
+            $leagueDominions[$league->id] = $leagueRounds;
 
             $leagueStats[$league->id] = [
-                'rounds_played' => $leagueDominions->count(),
-                'round_wins' => $rankings->where('key', 'largest-dominions')->where('rank', 1)->count(),
+                'rounds_played' => $roundsPlayed,
+                'round_wins' => $largestDominions->where('rank', 1)->count(),
                 'realm_wins' => $realmWinsByLeague[$league->id] ?? 0,
-                'titles' => $rankings->where('rank', 1)->count(),
-                'best_land' => (int)$rankings->where('key', 'largest-dominions')->max('value'),
+                'titles' => $titles,
+                'titles_avg' => $roundsPlayed > 0 ? $titles / $roundsPlayed : 0,
+                'best_land' => (int)$largestDominions->max('value'),
                 'top_race' => $raceCounts->keys()->first(),
             ];
+
+            $perRanking = [];
+            foreach ($rankingsHelper->getRankings() as $ranking) {
+                $bucket = $rankingsByKey->get($ranking['key'], collect());
+                $perRanking[$ranking['key']] = [
+                    'avg' => $bucket->avg('value'),
+                    'sum' => $bucket->sum('value'),
+                    'best' => $bucket->min('rank'),
+                ];
+            }
+            $rankingStats[$league->id] = $perRanking;
         }
 
         return view('pages.valhalla.user', [
             'user' => $user,
             'dominions' => $dominions,
             'leagues' => $leagues,
-            'dailyRankings' => $dailyRankings,
+            'leagueDominions' => $leagueDominions,
             'leagueStats' => $leagueStats,
+            'rankingStats' => $rankingStats,
             'landCalculator' => $landCalculator,
             'networthCalculator' => $networthCalculator,
             'rankingsHelper' => $rankingsHelper,

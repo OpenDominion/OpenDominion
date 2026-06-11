@@ -262,7 +262,7 @@ class HeroActionService
                 'class' => $selectedClass['key'],
                 'experience' => $xp,
                 'class_data' => $classData,
-                'last_class_change_at' => now(),
+                'last_class_change_at' => $dominion->round->hasStarted() ? now() : $dominion->round->start_date,
             ]);
 
             $dominion->save([

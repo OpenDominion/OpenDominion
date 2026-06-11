@@ -36,25 +36,25 @@
                             <tr>
                                 <td>Players</td>
                                 <td class="text-center">
-                                    {{ $round->dominions->where('user_id', '!=', null)->count() }}
+                                    {{ number_format($playersCount) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Bots</td>
                                 <td class="text-center">
-                                    {{ $round->dominions->where('user_id', null)->count() }}
+                                    {{ number_format($botsCount) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Realms</td>
                                 <td class="text-center">
-                                    {{ $round->realms->count() }}
+                                    {{ number_format($realmsCount) }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Packs</td>
                                 <td class="text-center">
-                                    {{ $round->packs->count() }}
+                                    {{ number_format($packsCount) }}
                                 </td>
                             </tr>
                         </tbody>

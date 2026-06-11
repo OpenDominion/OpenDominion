@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use DB;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Log;
@@ -1258,5 +1259,152 @@ class TickService
             $valorService->updateValor($round);
             Log::debug('Valor calculation finished');
         }
+    }
+
+    public function tickDailyStats(): void
+    {
+        foreach (Round::activeRankings()->get() as $round) {
+            if ($round->start_date->hour != now()->hour) {
+                continue;
+            }
+
+            $result = $this->sendDailyStats($round);
+            if (!config('app.discord_stats_webhook')) {
+                Log::info($result['output']);
+                Log::info($result['topLand']);
+            }
+        }
+    }
+
+    /**
+     * @return array{output: string, topLand: string}
+     */
+    public function sendDailyStats(Round $round): array
+    {
+        $daysInRound = $round->daysInRound() - 1;
+
+        $dominions = Dominion::with('race')
+            ->where([
+                'round_id' => $round->id,
+                'locked_at' => null,
+                'protection_finished' => true,
+            ])
+            ->get();
+
+        $totalDominions = $dominions->count();
+        $totalPlayerDominions = $dominions->where('user_id', '!=', null)->count();
+        $totalNonPlayerDominions = $dominions->where('user_id', null)->count();
+        $raceSelection = $dominions->where('user_id', '!=', null)
+            ->groupBy('race.name')
+            ->map(function ($item) {
+                return $item->count();
+            })
+            ->sortKeys();
+
+        $landStandings = DB::table('daily_rankings AS r')
+            ->join('dominions AS d', 'd.id', '=', 'r.dominion_id')
+            ->where('r.round_id', $round->id)
+            ->where('r.key', 'largest-dominions')
+            ->whereNotNull('d.user_id')
+            ->orderBy('r.rank')
+            ->limit(10)
+            ->get(['r.dominion_name', 'r.value', 'r.rank']);
+
+        $topLandOutput = '';
+        foreach ($landStandings as $row) {
+            $topLandOutput .= "{$row->rank}. {$row->dominion_name} - {$row->value}\n";
+        }
+
+        $events = GameEvent::with(['source', 'target'])
+            ->where([
+                'round_id' => $round->id,
+                'type' => 'invasion',
+            ])
+            ->where('created_at', '>=', now()->startOfHour()->subDays(1))
+            ->where('created_at', '<', now()->startOfHour())
+            ->get()
+            ->map(function ($item) {
+                $item['landGain'] = 0;
+                $item['landRatio'] = 0;
+                if (isset($item->data['attacker']['landConquered'])) {
+                    $item['landGain'] = array_sum($item->data['attacker']['landConquered']);
+                    $item['landRatio'] = $item->data['defender']['landSize'] / $item->data['attacker']['landSize'];
+                }
+                return $item;
+            });
+
+        $totalInvasions = $events->count();
+        $invasionsSuccessful = $events->where('data.result.success', true)->count();
+        $invasionsSuccessfulPercent = round($totalInvasions ? ($invasionsSuccessful / $totalInvasions * 100) : 0, 2);
+        $invasionsFailed = $events->where('data.result.success', false)->count();
+        $invasionsFailedPercent = round($totalInvasions ? ($invasionsFailed / $totalInvasions * 100) : 0, 2);
+        $invasionsBots = $events->where('target.user_id', null)->count();
+        $invasionsBotsPercent = round($totalInvasions ? ($invasionsBots / $totalInvasions * 100) : 0, 2);
+        $invasionsPlayers = $events->where('target.user_id', '!=', null)->count();
+        $invasionsPlayersPercent = round($totalInvasions ? ($invasionsPlayers / $totalInvasions * 100) : 0, 2);
+        $uniqueAttackers = $events->unique('source.id')->count();
+        $attackersPercent = round($totalDominions ? ($uniqueAttackers / $totalDominions * 100) : 0, 2);
+        $uniqueDefenders = $events->unique('target.id')->count();
+        $averageAttackCount = $events->groupBy('source.id')
+            ->map(function ($item) {
+                return $item->count();
+            })
+            ->avg();
+        $averageAttackCount = round($averageAttackCount, 2);
+        $maxAttackCount = $events->groupBy('source.id')
+            ->map(function ($item) {
+                return $item->count();
+            })
+            ->max();
+        $averageLandGain = round($events->avg('landGain'), 2);
+        $maxLandGain = $events->max('landGain');
+        if ($maxLandGain) {
+            $maxLandAttacker = $events->where('landGain', $maxLandGain)->first()->source->name;
+            $maxLandDefender = $events->where('landGain', $maxLandGain)->first()->target->name;
+            $largestHit = "{$maxLandAttacker} invaded {$maxLandDefender} for {$maxLandGain} acres";
+        } else {
+            $largestHit = '';
+        }
+
+        $output = "
+**{$round->name} Day {$daysInRound} Statistics**
+
+Active Dominions: {$totalDominions}
+Players: {$totalPlayerDominions}
+Bots: {$totalNonPlayerDominions}
+
+Total Invasions: {$totalInvasions}
+Successful Invasions: {$invasionsSuccessful} ({$invasionsSuccessfulPercent}%)
+Failed Invasions: {$invasionsFailed} ({$invasionsFailedPercent}%)
+Invasions against bots: {$invasionsBots} ({$invasionsBotsPercent}%)
+Invasions against players: {$invasionsPlayers} ({$invasionsPlayersPercent}%)
+
+Unique attackers: {$uniqueAttackers} ({$attackersPercent}% of players attacked)
+Unique targets: {$uniqueDefenders}
+
+Average number of attacks by attacking players: {$averageAttackCount}
+Highest number of attacks by a single player: {$maxAttackCount}
+Average land gain: {$averageLandGain} acres
+Largest hit: {$largestHit}
+        ";
+
+        $webhook = config('app.discord_stats_webhook');
+        if ($webhook) {
+            $client = new Client();
+            $response = $client->post($webhook, ['form_params' => [
+                'content' => $output,
+            ]]);
+            if ($response->getStatusCode() != 204) {
+                Log::warning('Failed to POST stats to webhook.');
+            }
+            $response = $client->post($webhook, ['form_params' => [
+                'content' => "Top 10 Largest Dominions\n{$topLandOutput}",
+            ]]);
+            if ($response->getStatusCode() != 204) {
+                Log::warning('Failed to POST charts to webhook.');
+            }
+        }
+
+        return ['output' => $output, 'topLand' => $topLandOutput];
     }
 }

@@ -159,6 +159,55 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(800, $hero->class_data['farmer']['experience']); // Preserved
     }
 
+    public function testChangeClass_BeforeRoundStart_SetsLastClassChangeAtToRoundStartDate()
+    {
+        // Arrange - Create a round that hasn't started yet, and a hero in it
+        $futureRound = $this->createRound('+1 day', '+48 days');
+        $futureDominion = $this->createDominionWithLegacyStats(
+            $this->createUser(),
+            $futureRound,
+            Race::where('name', 'Human')->firstOrFail()
+        );
+
+        $hero = Hero::create([
+            'dominion_id' => $futureDominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        // Act - Change class before the round starts
+        $this->heroActionService->changeClass($futureDominion, 'blacksmith');
+
+        // Assert - last_class_change_at should match round start_date, not now()
+        $hero->refresh();
+        $this->assertEquals('blacksmith', $hero->class);
+        $this->assertEquals(
+            $futureRound->start_date->timestamp,
+            $hero->last_class_change_at->timestamp
+        );
+    }
+
+    public function testChangeClass_AfterRoundStart_SetsLastClassChangeAtToNow()
+    {
+        // Arrange - Round in setUp already started 3 days ago
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        // Act
+        $this->heroActionService->changeClass($this->dominion, 'blacksmith');
+
+        // Assert - last_class_change_at should be ~now, not round start_date
+        $hero->refresh();
+        $this->assertEqualsWithDelta(now()->timestamp, $hero->last_class_change_at->timestamp, 5);
+    }
+
     public function testChangeClass_RestoresPreviousClassExperience()
     {
         // Arrange - Create hero with previous blacksmith experience
