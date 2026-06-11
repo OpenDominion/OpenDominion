@@ -123,7 +123,7 @@ class Ticker {
         if (this.tickerServerElement !== null) {
             const elapsed = Date.now() - this.localTimeAtLoad;
             currentTime = new Date(this.serverTimeAtLoad + elapsed);
-            this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
+            this.tickerServerElement.innerHTML = Ticker.hms(currentTime);
 
             if (this.nextHour == null) {
                 this.nextHour = Ticker.computeNextHour(currentTime);
@@ -186,9 +186,9 @@ class Ticker {
         let seconds = 0;
 
         if (value instanceof Date) {
-            hours = value.getHours();
-            minutes = value.getMinutes();
-            seconds = value.getSeconds();
+            hours = value.getUTCHours();
+            minutes = value.getUTCMinutes();
+            seconds = value.getUTCSeconds();
 
         } else if (typeof value === 'number') {
             value /= 1000;
@@ -220,23 +220,6 @@ class Ticker {
         return value.toString().padStart(2, '0');
     }
 
-    /**
-     * Converts a Date into UTC.
-     *
-     * @param {Date} date
-     * @returns {Date}
-     * @private
-     */
-    static utc(date) {
-        return new Date(
-            date.getUTCFullYear(),
-            date.getUTCMonth(),
-            date.getUTCDate(),
-            date.getUTCHours(),
-            date.getUTCMinutes(),
-            date.getUTCSeconds()
-        );
-    }
 }
 
 export default new Ticker;
