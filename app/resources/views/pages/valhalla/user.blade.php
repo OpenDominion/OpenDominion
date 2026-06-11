@@ -145,8 +145,8 @@
             <div class="card-body table-responsive">
                 <div class="row">
                     @foreach ($leagues as $league)
-                        @php $leagueDominions = $dominions->where('round.round_league_id', $league->id); @endphp
-                        @if ($leagueDominions->isEmpty()) @continue @endif
+                        @if (!isset($leagueDominions[$league->id])) @continue @endif
+                        @php $rounds = $leagueDominions[$league->id]; @endphp
                         <div class="col-md-12">
                             <h4>{{ $league->description }}</h4>
                             <table class="table table-striped">
@@ -161,7 +161,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($leagueDominions as $dominion)
+                                    @foreach ($rounds as $dominion)
                                         <tr>
                                             <td>
                                                 <a href="{{ route('valhalla.round', $dominion->round_id) }}">
@@ -187,7 +187,8 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            @if (isset($dailyRankings[$league->id]))
+                            @if (isset($rankingStats[$league->id]))
+                                @php $stats = $leagueStats[$league->id]; @endphp
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -200,17 +201,17 @@
                                     <tbody>
                                         <tr>
                                             <td>Most Decorated (Titles)</td>
-                                            <td>{{ number_format($dailyRankings[$league->id]->where('rank', 1)->count() / $leagueDominions->count(), 2) }}</td>
-                                            <td>{{ number_format($dailyRankings[$league->id]->where('rank', 1)->count()) }}</td>
+                                            <td>{{ number_format($stats['titles_avg'], 2) }}</td>
+                                            <td>{{ number_format($stats['titles']) }}</td>
                                             <td>--</td>
                                         </tr>
                                         @foreach ($rankingsHelper->getRankings() as $ranking)
-                                            @php $bestRank = $dailyRankings[$league->id]->where('key', $ranking['key'])->min('rank'); @endphp
+                                            @php $r = $rankingStats[$league->id][$ranking['key']]; @endphp
                                             <tr>
                                                 <td>{{ $ranking['name'] }} ({{ $ranking['stat_label'] }})</td>
-                                                <td>{{ number_format($dailyRankings[$league->id]->where('key', $ranking['key'])->avg('value'), 2) }}</td>
-                                                <td>{{ number_format($dailyRankings[$league->id]->where('key', $ranking['key'])->sum('value')) }}</td>
-                                                <td>{{ $bestRank ? '#'.$bestRank : '--' }}</td>
+                                                <td>{{ number_format($r['avg'], 2) }}</td>
+                                                <td>{{ number_format($r['sum']) }}</td>
+                                                <td>{{ $r['best'] ? '#'.$r['best'] : '--' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
