@@ -40,7 +40,15 @@ class ApiController extends Controller
     public function postBugsnag(Request $request)
     {
         $ip = $request->ip();
-        if (!in_array($ip, ['104.196.245.109', '104.196.254.247'])) {
+        if (!in_array($ip, [
+            '104.196.245.109',
+            '104.196.254.247',
+            '107.23.160.224',
+            '34.231.155.113',
+            '34.235.33.231',
+            '52.207.146.211',
+            '52.55.78.127'
+        ])) {
             return ['error' => 'Access denied'];
         }
 
