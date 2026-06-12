@@ -62,7 +62,7 @@
     </div>
     <div class="mb-2 action-options train construct explore rezone release draft_rate" style="{{ in_array($selectedAction, ['spell', 'daily_bonus']) ? 'display: none;' : '' }}">
         Amount:
-        <input type="number" name="amount" class="form-control form-control-sm" placeholder="Amount" min="0"
+        <input type="number" name="amount" class="form-control" placeholder="Amount" min="0"
                value="{{ $item['amount'] ?? '' }}"
                {{ (in_array($selectedAction, ['spell', 'daily_bonus']) || $isLocked) ? 'disabled' : null }} />
     </div>
