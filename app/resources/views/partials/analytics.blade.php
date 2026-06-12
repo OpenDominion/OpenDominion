@@ -4,6 +4,8 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag("js", new Date());
+  var colorMode = document.documentElement.getAttribute("data-color-scheme") || "light";
+  gtag("set", "user_properties", { color_mode: colorMode });
   @if (Auth::user())
     gtag("config", "{{ config('app.google_analytics_id') }}", {
       "user_id": "{{ Auth::user()->id }}"
