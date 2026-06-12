@@ -21,7 +21,7 @@
                         $isLocked = $selectedDominion->isLocked();
                     @endphp
 
-                    <div style="margin-bottom: 15px;">
+                    <div class="mb-3">
                         <strong>Current Tick:</strong>
                         Day {{ $selectedDominion->round->daysInRound() }}, Hour {{ $selectedDominion->round->hoursInDay() }}
                     </div>
@@ -135,7 +135,7 @@
                                                         <input type="hidden" name="source_key" value="{{ $index }}" />
                                                         <div class="mb-2">
                                                             Duplicate to tick:
-                                                            <select class="form-select form-select-sm" name="target_tick">
+                                                            <select class="form-select" name="target_tick">
                                                                 @foreach (range(1, 12) as $h)
                                                                     <option value="{{ $currentTick + $h }}">
                                                                         Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($h)) }},
@@ -190,7 +190,7 @@
                                 @csrf
                                 <div class="mb-2">
                                     Tick:
-                                    <select class="form-select form-select-sm" name="tick" {{ $isLocked ? 'disabled' : null }}>
+                                    <select class="form-select" name="tick" {{ $isLocked ? 'disabled' : null }}>
                                         @foreach (range(1, 12) as $hours)
                                             <option value="{{ $currentTick + $hours }}" {{ (($currentTick + $hours) == old('tick')) ? 'selected' : null }}>
                                                 Day {{ $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours)) }},
