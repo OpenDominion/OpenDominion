@@ -72,7 +72,7 @@ class Ticker {
     async resync() {
         if (this.tickerServerElement === null) return;
         if (this.resyncInFlight) return;
-        if (Date.now() - this.lastResyncAt < 2000) return;
+        if (Date.now() - this.lastResyncAt < 3000) return;
 
         this.resyncInFlight = true;
         try {
