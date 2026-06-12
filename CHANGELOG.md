@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.50.2] - 2026-06-12
+### Changed
+- Updated hero name randomizer
+- Can now rename heroes before round start
+- Fixed Lead from the Front (was still 2.5x)
+- Server time in header will now occasionally sync with backend
+- Moved daily rankings and stats to a queued job (faster and more accurate)
+- Enhanced automation UI (edit/reorder/copy/delete)
+
 ## [1.50.1] - 2026-05-30
 ### Changed
 - Scion now requires 8 successful 75% attacks to select (was 6) and can no longer be selected until Day 8 (was Day 4)
@@ -2666,7 +2675,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.50.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.50.2...HEAD
+[1.50.2]: https://github.com/OpenDominion/OpenDominion/compare/1.50.1...1.50.2
+[1.50.1]: https://github.com/OpenDominion/OpenDominion/compare/1.50.0...1.50.1
 [1.50.0]: https://github.com/OpenDominion/OpenDominion/compare/1.49.0...1.50.0
 [1.49.0]: https://github.com/OpenDominion/OpenDominion/compare/1.48.0...1.49.0
 [1.48.0]: https://github.com/OpenDominion/OpenDominion/compare/1.47.1...1.48.0
