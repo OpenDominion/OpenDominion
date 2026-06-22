@@ -652,6 +652,13 @@ class HeroHelper
                 'limited' => false,
                 'special' => true,
             ],
+            'aspect_shift' => [
+                'name' => 'Aspect Shift',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+            ],
             'weakened' => [
                 'name' => 'Weakened',
                 'processor' => null,
@@ -691,7 +698,12 @@ class HeroHelper
             return $combatActions;
         }
 
-        return $combatActions->filter(function ($action, $key) use ($combatant) {
+        $hasFortify = in_array('fortify', $combatant->abilities ?? []);
+
+        return $combatActions->filter(function ($action, $key) use ($combatant, $hasFortify) {
+            if ($key === 'defend' && $hasFortify) {
+                return false;
+            }
             if (!$action['special']) {
                 return true;
             }
@@ -721,6 +733,7 @@ class HeroHelper
     {
         $descriptions = [
             'arcane_shield' => 'Arcane Shield: Defense value is increased by 10.',
+            'aspect_shift' => 'Aspect Shift: Upon death, transforms into a new aspect.',
             'blade_flurry' => 'Blade Flurry: Attack twice for 75% damage each time.',
             'channeling' => 'Channeling: Focus can be used while already active, stacking bonus damage.',
             'combat_analysis' => 'Combat Analysis: Decreases target\'s defense value by 1 for the remainder of the battle.',

@@ -278,6 +278,11 @@ class HeroBattleService
             $combatant->current_target = $nextAction['target'];
         }
 
+        // Fortify resolves before damage regardless of combatant order
+        $livingCombatants = $livingCombatants->sortBy(function ($combatant) {
+            return $combatant->current_action === 'fortify' ? 0 : 1;
+        });
+
         // Perform the actions and persist results
         foreach ($livingCombatants as $combatant) {
             $actionDefinitions = $this->heroHelper->getAvailableCombatActions($combatant);
@@ -371,6 +376,9 @@ class HeroBattleService
                 ]);
             }
         }
+
+        // Reload combatants so newly-spawned forms (e.g. aspect_shift) are seen by the win check
+        $heroBattle->load('combatants');
 
         $livingCombatants = $heroBattle->combatants->where('current_health', '>', '0');
         if ($livingCombatants->count() == 0) {
@@ -966,6 +974,33 @@ class HeroBattleService
                             $changesString = implode(', ', $changes);
                             return " As {$combatant->name} falls, dark tendrils stream from the body into {$targetName} ({$changesString}). He grows stronger.";
                         }
+                    }
+                }
+            }
+        }
+
+        // Aspect shift: when this combatant dies, a new form takes its place
+        if (in_array('aspect_shift', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
+            $this->spendAbility($combatant, 'aspect_shift');
+
+            $status = $combatant->status ?? [];
+            $aspectShiftConfig = $status['aspect_shift'] ?? null;
+
+            if ($aspectShiftConfig) {
+                $nextForm = $aspectShiftConfig['next_form'] ?? null;
+                $nextName = $aspectShiftConfig['name'] ?? null;
+
+                if ($nextForm) {
+                    $enemies = $this->heroEncounterHelper->getEnemies();
+                    $enemyStats = $enemies->get($nextForm);
+
+                    if ($enemyStats !== null) {
+                        if ($nextName) {
+                            $enemyStats['name'] = $nextName;
+                        }
+                        $this->createNonPlayerCombatant($combatant->battle, $enemyStats);
+
+                        return " {$combatant->name} begins to shift form, transforming into {$enemyStats['name']}!";
                     }
                 }
             }

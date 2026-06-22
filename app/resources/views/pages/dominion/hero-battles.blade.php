@@ -72,14 +72,13 @@
                                                                 @if ($actionData['type'] == 'hostile')
                                                                     <tr>
                                                                         <td colspan=2>
-                                                                            @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
+                                                                            @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0 || $combatant->current_health <= 0)
                                                                                 <a class="btn btn-block btn-secondary mb-1" disabled>
                                                                                     {{ $actionData['name'] }}
                                                                                 </a>
                                                                             @else
                                                                                 <a class="btn btn-block btn-primary mb-1"
-                                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}"
-                                                                                    {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
+                                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}">
                                                                                     {{ $actionData['name'] }}
                                                                                 </a>
                                                                             @endif
@@ -178,7 +177,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="max-height: {{ $battle->finished ? '272px' : '645px' }}; overflow-y: scroll;">
+                                <div class="col-md-6" style="max-height: {{ $battle->combatants->count() > 2 ? '645px' : '272px' }}; overflow-y: scroll;">
                                     <table class="table table-sm">
                                         <thead>
                                             <tr>

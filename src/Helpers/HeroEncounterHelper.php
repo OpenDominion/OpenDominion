@@ -346,38 +346,53 @@ class HeroEncounterHelper
                     ],
                 ],
             ],
-            'thessadrash' => [
-                'name' => 'Thessadrash',
-                'health' => 160,
+            'thessadrash_veil' => [
+                'name' => 'Veil of Thessadrash',
+                'health' => 100,
                 'attack' => 30,
                 'defense' => 10,
-                'evasion' => 10,
-                'focus' => 10,
-                'counter' => 20,
-                'recover' => 10,
+                'evasion' => 0,
+                'focus' => 15,
+                'counter' => 10,
+                'recover' => 15,
                 'strategy' => 'aggressive',
-                'abilities' => ['enrage'],
-            ],
-            'lizardfolk_blood_priest' => [
-                'name' => 'Lizardfolk Blood Priest',
-                'health' => 50,
-                'attack' => 25,
-                'defense' => 10,
-                'evasion' => 10,
-                'focus' => 0,
-                'counter' => 0,
-                'recover' => 10,
-                'strategy' => 'defensive',
-                'abilities' => ['soul_tribute'],
+                'abilities' => ['aspect_shift', 'enrage'],
                 'status' => [
-                    'soul_tribute' => [
-                        'target_name' => 'Thessadrash',
-                        'stat_increases' => [
-                            'attack' => 5,
-                            'defense' => 5,
-                        ],
+                    'aspect_shift' => [
+                        'next_form' => 'thessadrash_shadow',
+                        'name' => 'Shadow of Thessadrash',
                     ],
                 ],
+            ],
+            'thessadrash_shadow' => [
+                'name' => 'Shadow of Thessadrash',
+                'health' => 100,
+                'attack' => 25,
+                'defense' => 10,
+                'evasion' => 50,
+                'focus' => 10,
+                'counter' => 20,
+                'recover' => 20,
+                'strategy' => 'wraith',
+                'abilities' => ['aspect_shift', 'elusive'],
+                'status' => [
+                    'aspect_shift' => [
+                        'next_form' => 'thessadrash_maw',
+                        'name' => 'Maw of Thessadrash',
+                    ],
+                ],
+            ],
+            'thessadrash_maw' => [
+                'name' => 'Maw of Thessadrash',
+                'health' => 125,
+                'attack' => 25,
+                'defense' => 25,
+                'evasion' => 0,
+                'focus' => 0,
+                'counter' => 30,
+                'recover' => 20,
+                'strategy' => 'fortify',
+                'abilities' => ['fortify', 'hardiness'],
             ],
         ]);
     }
@@ -489,13 +504,11 @@ class HeroEncounterHelper
                     ['key' => 'orc_hexcaller', 'name' => 'Orc Hexcaller'],
                 ],
             ],
-            'thessadrash' => [
-                'name' => 'Thessadrash',
+            'dream_of_thessadrash' => [
+                'name' => 'The Dream of Thessadrash',
                 'source' => 'Raid (Omen of Fire)',
                 'enemies' => [
-                    ['key' => 'thessadrash', 'name' => 'Thessadrash'],
-                    ['key' => 'lizardfolk_blood_priest', 'name' => 'Blood Priest #1'],
-                    ['key' => 'lizardfolk_blood_priest', 'name' => 'Blood Priest #2'],
+                    ['key' => 'thessadrash_veil', 'name' => 'Veil of Thessadrash'],
                 ],
             ],
         ]);
