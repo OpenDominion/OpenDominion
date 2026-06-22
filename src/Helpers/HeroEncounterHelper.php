@@ -346,6 +346,39 @@ class HeroEncounterHelper
                     ],
                 ],
             ],
+            'thessadrash' => [
+                'name' => 'Thessadrash',
+                'health' => 160,
+                'attack' => 30,
+                'defense' => 15,
+                'evasion' => 10,
+                'focus' => 10,
+                'counter' => 20,
+                'recover' => 15,
+                'strategy' => 'aggressive',
+                'abilities' => ['enrage'],
+            ],
+            'lizardman_blood_priest' => [
+                'name' => 'Lizardman Blood Priest',
+                'health' => 55,
+                'attack' => 25,
+                'defense' => 10,
+                'evasion' => 10,
+                'focus' => 0,
+                'counter' => 0,
+                'recover' => 10,
+                'strategy' => 'defensive',
+                'abilities' => ['soul_tribute'],
+                'status' => [
+                    'soul_tribute' => [
+                        'target_name' => 'Thessadrash',
+                        'stat_increases' => [
+                            'attack' => 10,
+                            'defense' => 5,
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -454,6 +487,15 @@ class HeroEncounterHelper
                     ['key' => 'dreadsoul', 'name' => 'Dreadsoul Skullkeeper'],
                     ['key' => 'orc_boneguard', 'name' => 'Orc Boneguard'],
                     ['key' => 'orc_hexcaller', 'name' => 'Orc Hexcaller'],
+                ],
+            ],
+            'thessadrash' => [
+                'name' => 'Thessadrash',
+                'source' => 'Raid (Awakening of Thessadrash)',
+                'enemies' => [
+                    ['key' => 'thessadrash', 'name' => 'Thessadrash'],
+                    ['key' => 'lizardman_blood_priest', 'name' => 'Blood Priest of the Well'],
+                    ['key' => 'lizardman_blood_priest', 'name' => 'Blood Priest of the Slab'],
                 ],
             ],
         ]);

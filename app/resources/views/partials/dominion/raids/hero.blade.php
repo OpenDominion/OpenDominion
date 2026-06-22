@@ -68,6 +68,30 @@
                                         </td>
                                     </tr>
                                 @endif
+                                @if (($tactic->attributes['encounter'] ?? null) === 'thessadrash')
+                                    @php
+                                        $priorWins = \OpenDominion\Models\RaidContribution::where('raid_tactic_id', $tactic->id)
+                                            ->where('realm_id', $selectedDominion->realm_id)
+                                            ->count();
+                                    @endphp
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="alert alert-info" style="margin-bottom: 0;">
+                                                <strong><i class="fa fa-shield"></i> Realm Wounds</strong><br>
+                                                @if ($priorWins === 0)
+                                                    No heroes in your realm have wounded Thessadrash yet. He will enter your battle at full strength.
+                                                @else
+                                                    <strong>{{ $priorWins }}</strong> {{ $priorWins === 1 ? 'hero has' : 'heroes have' }} already wounded Thessadrash in your realm.
+                                                    He will enter your battle at <strong>{{ max(100 - ($priorWins * 2), 50) }}% health</strong>.
+                                                @endif
+                                                <br/>
+                                                <small class="text-muted">
+                                                    The Blood Priests channel their life force into Thessadrash. When they fall, their strength flows into the dragon.
+                                                </small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
                                 @if (($tactic->attributes['encounter'] ?? null) === 'dreadsoul_skullkeeper')
                                     @php
                                         $priorWins = \OpenDominion\Models\RaidContribution::where('raid_tactic_id', $tactic->id)
