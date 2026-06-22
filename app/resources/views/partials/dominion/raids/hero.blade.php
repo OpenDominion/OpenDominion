@@ -82,11 +82,11 @@
                                                     No heroes in your realm have wounded Thessadrash yet. He will enter your battle at full strength.
                                                 @else
                                                     <strong>{{ $priorWins }}</strong> {{ $priorWins === 1 ? 'hero has' : 'heroes have' }} already wounded Thessadrash in your realm.
-                                                    He will enter your battle at <strong>{{ max(100 - ($priorWins * 2), 50) }}% health</strong>.
+                                                    He will enter your battle at <strong>{{ max(100 - ($priorWins * 5), 50) }}% health</strong>.
                                                 @endif
                                                 <br/>
                                                 <small class="text-muted">
-                                                    The Blood Priests channel their life force into Thessadrash. When they fall, their strength flows into the dragon.
+                                                    The Blood Priests channel their life force into Thessadrash. When they fall, the dragon gains strength.
                                                 </small>
                                             </div>
                                         </td>

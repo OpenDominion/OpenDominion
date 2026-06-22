@@ -259,7 +259,7 @@
                 <div class="card-body">
                     @include('partials.dominion.hero-combat')
                     @if ($activeBattles->where('finished', false)->count() == 0)
-                        <a class="btn btn-primary btn-block" href="{{ route('dominion.heroes.battles.practice') }}">
+                        <a class="btn btn-primary btn-block mb-2" href="{{ route('dominion.heroes.battles.practice') }}">
                             Practice Battles
                         </a>
                         @if ($hero->isInQueue())

@@ -350,17 +350,17 @@ class HeroEncounterHelper
                 'name' => 'Thessadrash',
                 'health' => 160,
                 'attack' => 30,
-                'defense' => 15,
+                'defense' => 10,
                 'evasion' => 10,
                 'focus' => 10,
                 'counter' => 20,
-                'recover' => 15,
+                'recover' => 10,
                 'strategy' => 'aggressive',
                 'abilities' => ['enrage'],
             ],
-            'lizardman_blood_priest' => [
-                'name' => 'Lizardman Blood Priest',
-                'health' => 55,
+            'lizardfolk_blood_priest' => [
+                'name' => 'Lizardfolk Blood Priest',
+                'health' => 50,
                 'attack' => 25,
                 'defense' => 10,
                 'evasion' => 10,
@@ -373,7 +373,7 @@ class HeroEncounterHelper
                     'soul_tribute' => [
                         'target_name' => 'Thessadrash',
                         'stat_increases' => [
-                            'attack' => 10,
+                            'attack' => 5,
                             'defense' => 5,
                         ],
                     ],
@@ -491,11 +491,11 @@ class HeroEncounterHelper
             ],
             'thessadrash' => [
                 'name' => 'Thessadrash',
-                'source' => 'Raid (Awakening of Thessadrash)',
+                'source' => 'Raid (Omen of Fire)',
                 'enemies' => [
                     ['key' => 'thessadrash', 'name' => 'Thessadrash'],
-                    ['key' => 'lizardman_blood_priest', 'name' => 'Blood Priest of the Well'],
-                    ['key' => 'lizardman_blood_priest', 'name' => 'Blood Priest of the Slab'],
+                    ['key' => 'lizardfolk_blood_priest', 'name' => 'Blood Priest #1'],
+                    ['key' => 'lizardfolk_blood_priest', 'name' => 'Blood Priest #2'],
                 ],
             ],
         ]);

@@ -242,7 +242,7 @@ class RaidActionService
             }
 
             if ($encounterKey == 'thessadrash' && $enemy['key'] == 'thessadrash' && $priorWins > 0) {
-                $hpMultiplier = max(0.5, 1 - ($priorWins * 0.02));
+                $hpMultiplier = max(0.5, 1 - ($priorWins * 0.05));
                 $enemyStats['health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
             }
 
