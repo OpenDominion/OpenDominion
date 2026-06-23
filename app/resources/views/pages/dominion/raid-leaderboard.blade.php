@@ -87,11 +87,11 @@
                                             <tr>
                                                 <td>
                                                     @if ($index == 0)
-                                                        <i class="fa fa-trophy text-orange"></i>
+                                                        <i class="fa fa-trophy text-warning"></i>
                                                     @elseif ($index == 1)
                                                         <i class="fa fa-trophy text-grey"></i>
                                                     @elseif ($index == 2)
-                                                        <i class="fa fa-trophy text-warning"></i>
+                                                        <i class="fa fa-trophy text-orange"></i>
                                                     @else
                                                         {{ $index + 1 }}
                                                     @endif
