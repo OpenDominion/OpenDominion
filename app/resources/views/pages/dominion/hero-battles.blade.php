@@ -73,7 +73,7 @@
                                                                     <tr>
                                                                         <td colspan=2>
                                                                             @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0 || $combatant->current_health <= 0)
-                                                                                <a class="btn btn-block btn-secondary mb-1" disabled>
+                                                                                <a class="btn btn-block btn-secondary disabled mb-1" aria-disabled="true" tabindex="-1">
                                                                                     {{ $actionData['name'] }}
                                                                                 </a>
                                                                             @else
@@ -129,7 +129,7 @@
                                                         <div>
                                                             @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
                                                                 @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                    <a class="btn btn-block btn-secondary mb-1" disabled>
+                                                                    <a class="btn btn-block btn-secondary disabled mb-1" aria-disabled="true" tabindex="-1">
                                                                         {{ $actionData['name'] }}
                                                                     </a>
                                                                 @elseif ($actionData['type'] == 'hostile')
