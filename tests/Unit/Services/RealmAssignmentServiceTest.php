@@ -959,6 +959,51 @@ class RealmAssignmentServiceTest extends AbstractTestCase
     }
 
     /**
+     * Test that getCandidateRealms counts in-protection dominions toward realm size.
+     *
+     * Regression test: previously `active_dominions_count` filtered by `protection_finished = true`
+     * once the round had started, so a realm filled by late registrants (who all begin in protection)
+     * kept being ranked as the smallest and was repeatedly chosen by `findRealm`.
+     */
+    public function testGetCandidateRealmsCountsInProtectionDominions()
+    {
+        $round = $this->createRound('-5 days', '+42 days');
+        $race  = Race::where('name', 'Human')->firstOrFail();
+
+        // Small realm: 3 dominions, all out of protection
+        $smallRealm = $this->createRealm($round, 'good');
+        $smallRealm->update(['number' => 1]);
+        foreach (range(1, 3) as $i) {
+            $this->createDominion($this->createUser(), $round, $race, $smallRealm, ['protection_finished' => true]);
+        }
+
+        // Large realm: 10 dominions, all still in protection (e.g. just joined as late registrants)
+        $largeRealm = $this->createRealm($round, 'good');
+        $largeRealm->update(['number' => 2]);
+        foreach (range(1, 10) as $i) {
+            $this->createDominion($this->createUser(), $round, $race, $largeRealm, ['protection_finished' => false]);
+        }
+
+        $candidates = $this->service->getCandidateRealms($round, $race);
+
+        $this->assertEquals(
+            $smallRealm->id,
+            $candidates->first()->id,
+            'Smaller realm should be ranked first even when the larger realm is full of in-protection dominions'
+        );
+        $this->assertEquals(
+            3,
+            $candidates->firstWhere('id', $smallRealm->id)->active_dominions_count,
+            'active_dominions_count should reflect all dominions in the small realm'
+        );
+        $this->assertEquals(
+            10,
+            $candidates->firstWhere('id', $largeRealm->id)->active_dominions_count,
+            'active_dominions_count should include in-protection dominions in the large realm'
+        );
+    }
+
+    /**
      * Test that a non-Discord user falls back to a Discord realm when no non-Discord realm exists.
      *
      * findRealm checks for non-Discord realms first; if none exist it falls through to
