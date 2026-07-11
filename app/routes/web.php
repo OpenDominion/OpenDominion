@@ -58,6 +58,12 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
     $router->get('settings')->uses('SettingsController@getIndex')->name('settings');
     $router->post('settings')->uses('SettingsController@postIndex');
 
+    // New-player guide
+    $router->post('new-player-tour/advance')->uses('NewPlayerTourController@postAdvance')->name('new-player-tour.advance');
+    $router->post('new-player-tour/back')->uses('NewPlayerTourController@postBack')->name('new-player-tour.back');
+    $router->post('new-player-tour/skip')->uses('NewPlayerTourController@postSkip')->name('new-player-tour.skip');
+    $router->post('new-player-tour/restart')->uses('NewPlayerTourController@postRestart')->name('new-player-tour.restart');
+
     // Round Register
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
     $router->post('round/{round}/register')->uses('RoundController@postRegister');

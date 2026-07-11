@@ -123,6 +123,287 @@ a {
   .badge ~ .badge { margin-left: 0; }
 }
 
+.new-player-tour {
+  position: fixed;
+  z-index: 1055;
+  top: var(--tour-top, 5rem);
+  left: var(--tour-left, auto);
+  right: 1rem;
+  width: min(22.5rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--bs-primary) 45%, var(--bs-border-color));
+  border-radius: 0.65rem;
+  background: var(--bs-body-bg);
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.28);
+  animation: new-player-tour-enter 180ms ease-out;
+
+  h2 {
+    margin: 0.8rem 1.5rem 0.45rem 0;
+    font-size: 1.05rem;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    color: var(--bs-secondary-color);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+.new-player-tour-progress,
+.new-player-tour-actions {
+  display: flex;
+  align-items: center;
+}
+
+.new-player-tour-progress {
+  justify-content: space-between;
+  color: var(--bs-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+@media (min-width: 768px) {
+  .new-player-tour-progress {
+    cursor: grab;
+    user-select: none;
+  }
+
+  .new-player-tour--dragging .new-player-tour-progress {
+    cursor: grabbing;
+  }
+}
+
+.new-player-tour-meter {
+  height: 2px;
+  margin-top: 0.4rem;
+  overflow: hidden;
+  background: var(--bs-border-color);
+
+  span {
+    display: block;
+    height: 100%;
+    background: var(--bs-primary);
+  }
+}
+
+.new-player-tour-actions form {
+  margin: 0;
+}
+
+.new-player-tour-details {
+  margin: -0.25rem 0 0.85rem;
+  border-top: 1px solid var(--bs-border-color);
+  border-bottom: 1px solid var(--bs-border-color);
+
+  summary {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    color: var(--bs-secondary-color);
+    font-size: 0.78rem;
+    cursor: pointer;
+
+    &::after {
+      color: var(--bs-primary);
+      content: '\203A';
+      font-size: 1rem;
+      line-height: 1;
+      transition: transform 150ms ease-out;
+    }
+  }
+
+  ol {
+    margin: 0;
+    padding: 0 0 0.65rem;
+    list-style: none;
+  }
+}
+
+.new-player-tour-objective {
+  display: grid;
+  grid-template-columns: 1rem 1fr;
+  gap: 0.45rem;
+  margin: -0.15rem 0 0.85rem;
+  padding: 0.6rem 0.7rem;
+  border-left: 3px solid var(--bs-warning);
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--bs-warning) 10%, transparent);
+  color: var(--bs-secondary-color);
+  font-size: 0.78rem;
+
+  strong {
+    display: block;
+    color: var(--bs-body-color);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+.new-player-tour-objective--complete {
+  border-left-color: var(--bs-success);
+  background: color-mix(in srgb, var(--bs-success) 9%, transparent);
+
+  > i,
+  strong {
+    color: var(--bs-success);
+  }
+}
+
+.new-player-tour-details[open] summary::after {
+  transform: rotate(90deg);
+}
+
+.new-player-tour-details-count {
+  white-space: nowrap;
+}
+
+.new-player-tour-progress-item {
+  display: grid;
+  grid-template-columns: 1rem 1fr auto;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.18rem 0;
+  color: var(--bs-secondary-color);
+  font-size: 0.75rem;
+
+  small {
+    font-size: 0.72rem;
+  }
+}
+
+.new-player-tour-progress-item--completed {
+  color: var(--bs-success);
+}
+
+.new-player-tour-progress-item--ready {
+  color: var(--bs-success);
+  font-weight: 600;
+}
+
+.new-player-tour-progress-item--current {
+  color: var(--bs-body-color);
+  font-weight: 600;
+}
+
+.new-player-tour-progress-item--locked {
+  opacity: 0.72;
+}
+
+.new-player-tour-show-page {
+  display: none;
+}
+
+.new-player-tour-collapse {
+  position: absolute;
+  top: 2.35rem;
+  right: 0.7rem;
+  border: 0;
+  background: transparent;
+  color: var(--bs-secondary-color);
+}
+
+.new-player-tour-resume {
+  position: fixed;
+  z-index: 1055;
+  right: 1rem;
+  bottom: 1rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--bs-primary);
+  border-radius: 999px;
+  background: var(--bs-body-bg);
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2);
+  color: var(--bs-body-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.new-player-tour-resume--paused {
+  border-color: var(--bs-border-color);
+  color: var(--bs-secondary-color);
+}
+
+.new-player-tour-resume-form {
+  margin: 0;
+}
+
+.new-player-tour-resume--complete {
+  border-color: var(--bs-success);
+  color: var(--bs-success);
+}
+
+.new-player-tour-collapse:focus-visible,
+.new-player-tour-resume:focus-visible {
+  outline: 0.2rem solid color-mix(in srgb, var(--bs-primary) 45%, transparent);
+  outline-offset: 0.15rem;
+}
+
+.new-player-tour-target {
+  position: relative;
+  z-index: 1045;
+  outline: 2px solid var(--bs-primary);
+  outline-offset: 3px;
+}
+
+.new-player-tour-nav-target {
+  box-shadow: inset 3px 0 0 var(--bs-primary);
+  animation: new-player-tour-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes new-player-tour-enter {
+  from { opacity: 0; transform: translateY(4px); }
+}
+
+@keyframes new-player-tour-pulse {
+  50% { background-color: color-mix(in srgb, var(--bs-primary) 20%, transparent); }
+}
+
+@media (max-width: 767.98px) {
+  .new-player-tour {
+    top: auto;
+    right: 0.75rem;
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    left: 0.75rem;
+    width: auto;
+    max-height: min(25rem, 46dvh);
+    padding-bottom: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .new-player-tour-actions {
+    position: sticky;
+    bottom: 0;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 -1rem;
+    padding: 0.65rem 1rem 0.85rem;
+    border-top: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+  }
+
+  .new-player-tour-show-page {
+    display: inline-block;
+  }
+
+  .new-player-tour-resume {
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    max-width: calc(100vw - 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new-player-tour,
+  .new-player-tour-nav-target {
+    animation: none;
+  }
+}
+
 .table-responsive td,
 .table-responsive th {
   white-space: nowrap;

@@ -10,6 +10,7 @@ import './sidebar.js';
 import './momentum.js';
 import './bootstrap-app.js';
 import './color-mode.js';
+import './new-player-tour.js';
 
 $(() => {
     // Ticker

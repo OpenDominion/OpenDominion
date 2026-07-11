@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="card card-primary">
+            <div class="card card-primary" data-onboarding-target="status">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</span>
                 </div>

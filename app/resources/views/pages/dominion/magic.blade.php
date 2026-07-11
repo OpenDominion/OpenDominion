@@ -241,7 +241,7 @@
                 </div>
 
                 <div class="col-md-12">
-                    <div class="card card-primary">
+                    <div class="card card-primary" data-onboarding-target="self-spells">
                         <div class="card-header">
                             <span class="card-title"><i class="ra ra-fairy-wand"></i> Self Spells</span>
                         </div>

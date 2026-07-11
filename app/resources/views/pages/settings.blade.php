@@ -91,6 +91,17 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- New-player guide --}}
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label">Game Guide</label>
+                                <div class="col-sm-9">
+                                    <p class="form-text mt-0">Restart the guided introduction to core pages, verified protection quests, and game concepts. Your sidebar will reveal features as you progress, and you can skip at any time.</p>
+                                    <button class="btn btn-outline-primary" type="submit" form="restart-new-player-tour">
+                                        <i class="fa fa-compass"></i> Restart Game Guide
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
 
@@ -246,6 +257,10 @@
                 <button type="submit" class="btn btn-primary">Update Settings</button>
             </div>
         </div>
+    </form>
+
+    <form id="restart-new-player-tour" action="{{ route('new-player-tour.restart') }}" method="post">
+        @csrf
     </form>
 
     @if (isset($selectedDominion))

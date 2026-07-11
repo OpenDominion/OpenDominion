@@ -6,7 +6,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="card card-primary">
+            <div class="card card-primary" data-onboarding-target="daily-bonus">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-gift"></i> Daily bonuses</span>
                 </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" data-onboarding-target="discord-community">
                 <div class="card-body">
                     <p>While you're here, consider supporting the project in one (or more) of the following ways:</p>
 

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Notification;
 use OpenDominion\Models\User;
 use OpenDominion\Notifications\User\RegisteredNotification;
+use OpenDominion\Services\NewPlayerTourService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RegisterTest extends AbstractBrowserKitTestCase
@@ -39,6 +40,10 @@ class RegisterTest extends AbstractBrowserKitTestCase
 
         $user = User::where('email', 'johndoe@example.com')->firstOrFail();
 
+        $this->assertSame(
+            ['status' => NewPlayerTourService::STATUS_ACTIVE, 'step' => 'status', 'new_account' => true],
+            $user->getSetting(NewPlayerTourService::SETTING_KEY)
+        );
         Notification::assertSentTo($user, RegisteredNotification::class);
     }
 

@@ -4,20 +4,26 @@ namespace OpenDominion\Listeners;
 
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Helpers\NotificationHelper;
+use OpenDominion\Services\NewPlayerTourService;
 
 class SetUserDefaultSettings
 {
     /** @var NotificationHelper */
     protected $notificationHelper;
 
+    /** @var NewPlayerTourService */
+    protected $newPlayerTourService;
+
     /**
      * SetUserDefaultSettings constructor.
      *
      * @param NotificationHelper $notificationHelper
+     * @param NewPlayerTourService $newPlayerTourService
      */
-    public function __construct(NotificationHelper $notificationHelper)
+    public function __construct(NotificationHelper $notificationHelper, NewPlayerTourService $newPlayerTourService)
     {
         $this->notificationHelper = $notificationHelper;
+        $this->newPlayerTourService = $newPlayerTourService;
     }
 
     /**
@@ -30,7 +36,9 @@ class SetUserDefaultSettings
     {
         $user = $event->getUser();
 
-        $settings = [];
+        $settings = [
+            NewPlayerTourService::SETTING_KEY => $this->newPlayerTourService->defaultState(),
+        ];
 
         // Notifications
         $settings['notifications'] = $this->notificationHelper->getDefaultUserNotificationSettings();
