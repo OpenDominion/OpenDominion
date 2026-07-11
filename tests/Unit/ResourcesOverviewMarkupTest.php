@@ -8,7 +8,7 @@ class ResourcesOverviewMarkupTest extends TestCase
 {
     public function testDominionSettingsButtonIsSeparatedFromTheDominionName(): void
     {
-        $markup = file_get_contents(__DIR__.'/../../app/resources/views/partials/resources-overview.blade.php');
+        $markup = file_get_contents(__DIR__ . '/../../app/resources/views/partials/resources-overview.blade.php');
 
         $titlePosition = strpos($markup, '<span class="card-title flex-grow-1">');
         $settingsButtonPosition = strpos($markup, '<a class="btn btn-sm btn-outline-secondary flex-shrink-0 dominion-settings-button"');
