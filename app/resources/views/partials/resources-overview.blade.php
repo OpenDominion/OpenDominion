@@ -27,7 +27,7 @@
             $config = $selectedDominion->settings['resources_overview'];
         }
     @endphp
-    <div class="card">
+    <div class="card" data-onboarding-target="resources-overview">
         <div class="card-header">
             <span class="card-title"><i class="fa fa-bar-chart"></i> Overview - {{ $selectedDominion->name }}</span>
             <a href="{{ route('dominion.misc.settings') }}" title="Resource Display Settings" data-bs-toggle="tooltip">

@@ -20,7 +20,7 @@
                     Protection Hour {{ $selectedDominion->protection_ticks - $selectedDominion->protection_ticks_remaining + 1 }}
                 @endif
             </div>
-            <div class="col-2 text-center text-sm-end">
+            <div class="col-2 text-center text-sm-end" data-onboarding-target="protection-confirm">
                 @if (!$selectedDominion->protection_finished)
                     <a href="{{ route('dominion.misc.tick') }}" class="btn btn-sm btn-primary py-0 disable-after-click">
                         @if ($selectedDominion->protection_ticks_remaining == 0)

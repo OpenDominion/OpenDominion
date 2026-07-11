@@ -79,6 +79,8 @@
 
 @include('partials.mobile-bottom-nav')
 
+@include('partials.new-player-tour')
+
 @include('partials.scripts')
 
 </body>

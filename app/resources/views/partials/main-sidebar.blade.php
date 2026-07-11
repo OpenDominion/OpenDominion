@@ -7,6 +7,7 @@
     <div class="sidebar-wrapper">
         @php
             $hiddenLinks = $selectedDominion->settings['hidden_links'] ?? [];
+            $navigationUnlocked = static fn (int $requiredStage): bool => $onboardingStage === null || $onboardingStage >= $requiredStage;
         @endphp
 
         @if (isset($selectedDominion))
@@ -24,22 +25,25 @@
 
                     <li class="nav-header">GENERAL</li>
                     <li class="nav-item {{ Route::is('dominion.status') ? 'active' : null }}">
-                        <a href="{{ route('dominion.status') }}" class="nav-link {{ Route::is('dominion.status') ? 'active' : null }}">
+                        <a href="{{ route('dominion.status') }}" class="nav-link {{ Route::is('dominion.status') ? 'active' : null }}" data-onboarding-nav="status">
                             <i class="nav-icon fa fa-bar-chart fa-fw"></i> <p>Status</p>
                         </a>
                     </li>
+                    @if ($navigationUnlocked(1))
                     <li class="nav-item {{ Route::is('dominion.advisors.*') ? 'active' : null }}">
-                        <a href="{{ route('dominion.advisors') }}" class="nav-link {{ Route::is('dominion.advisors.*') ? 'active' : null }}">
+                        <a href="{{ route('dominion.advisors') }}" class="nav-link {{ Route::is('dominion.advisors.*') ? 'active' : null }}" data-onboarding-nav="advisors">
                             <i class="nav-icon ra ra-classical-knowledge ra-fw"></i> <p>Advisors</p>
                         </a>
                     </li>
+                    @endif
+                    @if ($navigationUnlocked(2))
                     <li class="nav-item {{ Route::is('dominion.bonuses.actions') ? 'active' : null }}">
                         <a href="{{ route('dominion.bonuses.actions') }}" class="nav-link {{ Route::is('dominion.bonuses.actions') ? 'active' : null }}">
                             <i class="nav-icon ra ra-robot-arm ra-fw"></i> <p>Automation</p>
                         </a>
                     </li>
                     <li class="nav-item {{ Route::is('dominion.bonuses') ? 'active' : null }}">
-                        <a href="{{ route('dominion.bonuses') }}" class="nav-link {{ Route::is('dominion.bonuses') ? 'active' : null }}">
+                        <a href="{{ route('dominion.bonuses') }}" class="nav-link {{ Route::is('dominion.bonuses') ? 'active' : null }}" data-onboarding-nav="daily_bonus">
                             <i class="nav-icon fa fa-gift fa-fw"></i>
                             <p>Daily Bonus
                                 @if (!$selectedDominion->daily_land)
@@ -81,16 +85,20 @@
                             </a>
                         @endif
                     </li>
+                    @endif
 
+                    @if ($navigationUnlocked(3))
                     <li class="nav-header">DOMINION</li>
                     <li class="nav-item {{ Route::is('dominion.explore') ? 'active' : null }} {{ in_array('explore_land', $hiddenLinks) ? 'd-none' : null }}">
-                        <a href="{{ route('dominion.explore') }}" class="nav-link {{ Route::is('dominion.explore') ? 'active' : null }}">
+                        <a href="{{ route('dominion.explore') }}" class="nav-link {{ Route::is('dominion.explore') ? 'active' : null }}" data-onboarding-nav="explore">
                             <i class="nav-icon ra ra-telescope ra-fw"></i> <p>Explore Land</p>
                         </a>
                     </li>
+                    @endif
+                    @if ($navigationUnlocked(4))
                     @if ($selectedDominion->isBuildingPhase())
                         <li class="nav-item {{ Route::is('dominion.protection.buildings') ? 'active' : null }}">
-                            <a href="{{ route('dominion.protection.buildings') }}" class="nav-link {{ Route::is('dominion.protection.buildings') ? 'active' : null }}">
+                            <a href="{{ route('dominion.protection.buildings') }}" class="nav-link {{ Route::is('dominion.protection.buildings') ? 'active' : null }}" data-onboarding-nav="construction">
                                 <i class="nav-icon fa fa-home fa-fw"></i>
                                 <p>Construct Buildings
                                     @if ($barrenLand > 0)
@@ -101,7 +109,7 @@
                         </li>
                     @else
                         <li class="nav-item {{ Route::is('dominion.construct') ? 'active' : null }}">
-                            <a href="{{ route('dominion.construct') }}" class="nav-link {{ Route::is('dominion.construct') ? 'active' : null }}">
+                            <a href="{{ route('dominion.construct') }}" class="nav-link {{ Route::is('dominion.construct') ? 'active' : null }}" data-onboarding-nav="construction">
                                 <i class="nav-icon fa fa-home fa-fw"></i>
                                 <p>Construct Buildings
                                     @if ($barrenLand > 0)
@@ -116,6 +124,8 @@
                             <i class="nav-icon fa fa-refresh fa-fw"></i> <p>Re-zone Land</p>
                         </a>
                     </li>
+                    @endif
+                    @if ($navigationUnlocked(5))
                     <li class="nav-item {{ Route::is('dominion.improvements') ? 'active' : null }}">
                         <a href="{{ route('dominion.improvements') }}" class="nav-link {{ Route::is('dominion.improvements') ? 'active' : null }}">
                             <i class="nav-icon ra ra-castle ra-fw"></i> <p>Improvements</p>
@@ -187,20 +197,24 @@
                             <i class="nav-icon ra ra-scroll-quill ra-fw"></i> <p>Journal</p>
                         </a>
                     </li>
+                    @endif
 
+                    @if ($navigationUnlocked(5))
                     <li class="nav-header">OPERATIONS</li>
                     <li class="nav-item {{ Route::is('dominion.military') ? 'active' : null }}">
-                        <a href="{{ route('dominion.military') }}" class="nav-link {{ Route::is('dominion.military') ? 'active' : null }}">
+                        <a href="{{ route('dominion.military') }}" class="nav-link {{ Route::is('dominion.military') ? 'active' : null }}" data-onboarding-nav="military">
                             <i class="nav-icon ra ra-sword ra-fw"></i> <p>Military</p>
                         </a>
                     </li>
+                    @endif
+                    @if ($navigationUnlocked(6))
                     <li class="nav-item {{ Route::is('dominion.invade') ? 'active' : null }} {{ in_array('invade', $hiddenLinks) ? 'd-none' : null }}">
                         <a href="{{ route('dominion.invade') }}" class="nav-link {{ Route::is('dominion.invade') ? 'active' : null }}">
                             <i class="nav-icon ra ra-crossed-swords ra-fw"></i> <p>Invade</p>
                         </a>
                     </li>
                     <li class="nav-item {{ Route::is('dominion.magic') ? 'active' : null }}">
-                        <a href="{{ route('dominion.magic') }}" class="nav-link {{ Route::is('dominion.magic') ? 'active' : null }}">
+                        <a href="{{ route('dominion.magic') }}" class="nav-link {{ Route::is('dominion.magic') ? 'active' : null }}" data-onboarding-nav="magic">
                             <i class="nav-icon ra ra-fairy-wand ra-fw"></i>
                             <p>Magic
                                 @if ($activeSelfSpells > 0)
@@ -268,13 +282,17 @@
                             <i class="nav-icon fa fa-calculator fa-fw"></i> <p>Calculators</p>
                         </a>
                     </li>
+                    @endif
 
+                    @if ($navigationUnlocked(7))
                     <li class="nav-header">RELATIONS</li>
                     <li class="nav-item {{ Route::is('dominion.realm') ? 'active' : null }}">
-                        <a href="{{ route('dominion.realm') }}" class="nav-link {{ Route::is('dominion.realm') ? 'active' : null }}">
+                        <a href="{{ route('dominion.realm') }}" class="nav-link {{ Route::is('dominion.realm') ? 'active' : null }}" data-onboarding-nav="realm">
                             <i class="nav-icon ra ra-circle-of-circles ra-fw"></i> <p>Realms</p>
                         </a>
                     </li>
+                    @endif
+                    @if ($navigationUnlocked(8))
                     <li class="nav-item {{ Route::is('dominion.world') ? 'active' : null }} {{ in_array('world', $hiddenLinks) ? 'd-none' : null }}">
                         <a href="{{ route('dominion.world') }}" class="nav-link {{ Route::is('dominion.world') ? 'active' : null }}">
                             <i class="nav-icon fa fa-globe fa-fw"></i> <p>The World</p>
@@ -311,7 +329,7 @@
                         </a>
                     </li>
                     <li class="nav-item {{ Route::is('dominion.rankings') ? 'active' : null }} {{ in_array('rankings', $hiddenLinks) ? 'd-none' : null }}">
-                        <a href="{{ route('dominion.rankings') }}" class="nav-link {{ Route::is('dominion.rankings') ? 'active' : null }}">
+                        <a href="{{ route('dominion.rankings') }}" class="nav-link {{ Route::is('dominion.rankings') ? 'active' : null }}" data-onboarding-nav="rankings">
                             <i class="nav-icon fa fa-trophy fa-fw"></i> <p>Rankings</p>
                         </a>
                     </li>
@@ -335,7 +353,9 @@
                             </p>
                         </a>
                     </li>
+                    @endif
 
+                    @if ($onboardingStage === null)
                     <li class="nav-header">USER</li>
                     <li class="nav-item {{ Route::is('message-board*') ? 'active' : null }}">
                         <a href="{{ route('message-board') }}" class="nav-link {{ Route::is('message-board*') ? 'active' : null }}">
@@ -353,6 +373,7 @@
                                 <i class="nav-icon ra ra-dragon ra-fw"></i> <p>Debug Page</p>
                             </a>
                         </li>
+                    @endif
                     @endif
 
                 @else

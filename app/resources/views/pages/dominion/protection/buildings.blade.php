@@ -8,11 +8,11 @@
             $defaultBuildings = $buildingHelper->getDefaultBuildings($selectedDominion->protection_type == 'quick');
         @endphp
         <div class="col-sm-12 col-md-9">
-            <div class="card card-primary">
+            <div class="card card-primary" data-onboarding-target="starting-buildings">
                 <div class="card-header">
                     <span class="card-title"><i class="fa fa-home"></i> Select Starting Buildings</span>
                 </div>
-                <form action="{{ route('dominion.protection.buildings') }}" method="post" role="form">
+                <form id="starting-buildings-form" action="{{ route('dominion.protection.buildings') }}" method="post" role="form">
                     @csrf
                     <div class="card-body">
                         <div class="row">
@@ -140,7 +140,7 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            var submitButtonElement = $('button[type=submit]');
+            var submitButtonElement = $('#starting-buildings-form button[type=submit]');
             var totalBuildingsElement = $('#total_buildings');
             var totalLandElement = $('#total_land');
 

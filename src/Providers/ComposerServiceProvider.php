@@ -18,6 +18,7 @@ use OpenDominion\Models\MessageBoard;
 use OpenDominion\Models\Valuable;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\NewPlayerTourService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
 {
@@ -28,6 +29,31 @@ class ComposerServiceProvider extends AbstractServiceProvider
      */
     public function boot()
     {
+        view()->composer(['layouts.master', 'partials.main-sidebar', 'partials.mobile-bottom-nav'], function (View $view) {
+            // Included partials inherit this data from layouts.master. Avoid recomputing
+            // the tour when their composers run later in the same render.
+            if (array_key_exists('onboardingStage', $view->getData())) {
+                return;
+            }
+
+            $user = Auth::user();
+            if ($user === null) {
+                $view->with(['newPlayerTour' => null, 'onboardingStage' => null]);
+                return;
+            }
+
+            $selectorService = app(SelectorService::class);
+            $selectedDominion = $selectorService->hasUserSelectedDominion()
+                ? $selectorService->getUserSelectedDominion()
+                : null;
+
+            $view->with(app(NewPlayerTourService::class)->getViewData(
+                $user,
+                $selectedDominion,
+                request()
+            ));
+        });
+
         view()->composer('layouts.topnav', function (View $view) {
             $view->with('selectorService', app(SelectorService::class));
         });

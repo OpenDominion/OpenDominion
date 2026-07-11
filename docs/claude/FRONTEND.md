@@ -199,6 +199,46 @@ The light theme has a special dark sidebar/header defined directly in `app.scss`
 | `partials/notification-nav.blade.php` | Notifications dropdown |
 | `partials/auth-user-nav.blade.php` | User account dropdown |
 
+### New-player game guide
+
+Newly registered accounts begin an optional progressive guide. Its state is
+stored in the existing user `settings` JSON under `new_player_tour`; existing
+accounts without that key retain the complete navigation. The guide may be
+skipped at any time or restarted by any user from account settings.
+
+`NewPlayerTourService` owns the ordered stops, copy, routes, navigation stages,
+and persistence rules. `partials/new-player-tour.blade.php` renders the anchored
+field note, while `new-player-tour.js` positions it and supports collapse/resume.
+Desktop and mobile navigation both use `onboardingStage` so locked destinations
+are not leaked through shortcuts. Page cards and sidebar links expose stable
+`data-onboarding-target` and `data-onboarding-nav` attributes; preserve those
+identifiers when changing templates.
+
+The sequence is phase-aware. Status through Magic form the foundation chapter;
+Quick Start setup precedes Advisors and Starting Buildings, Community appears
+after Daily Bonus, a separate Construction quest follows Explore, and Realms and
+Rankings are active-play lessons. Explore and Construction each require both the
+page action and the following Quick Start protection advance. When the foundation
+is completed under protection, progress remains on Realm but the presentation
+becomes a non-blocking chapter checkpoint and all navigation is revealed. The
+active chapter resumes automatically only after
+`ProtectionService::isUnderProtection()` is false and the round reports that realm
+assignment is complete. Keep route eligibility, sidebar stage, and mobile shortcut
+visibility derived from this same service.
+
+Quick Start, Starting Buildings, Daily Bonus, Explore, Construction, Military,
+and Magic are verified quests. `NewPlayerTourService` checks existing dominion
+history/state for the quick restart, starting buildings, both daily claims,
+exploration, protection advances, training, and a self-spell before its advance
+endpoint will accept the step. Keep these predicates server-side and grounded in
+`HistoryService` events; never replace them with browser-only flags.
+Informational lessons remain manually advanced. The Quick Start quest applies
+only to newly registered users; restarting the guide later must not require
+restarting an established dominion. The Discord stop provides a direct invite
+action using the configured community URL (with the official repository invite
+as fallback), while the protection checkpoint links to the existing Restart or
+Rename page for players who want a clean slate.
+
 ## Adding a New Theme
 
 1. Create `app/resources/sass/_theme-<name>.scss` with a `[data-color-scheme="<name>"]` block
