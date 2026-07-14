@@ -9,6 +9,9 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\AutomationActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\AutomationReorderRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\AutomationTemplateRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\AutomationTickCopyRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesLandActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesPlatinumActionRequest;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
@@ -71,6 +74,7 @@ class DailyBonusesController extends AbstractDominionController
         $landHelper = app(LandHelper::class);
         $spellHelper = app(SpellHelper::class);
         $unitHelper = app(UnitHelper::class);
+        $automationService = app(AutomationService::class);
 
         $buildings = $buildingHelper->getBuildingTypes();
         $landTypes = $landHelper->getLandTypes();
@@ -78,14 +82,39 @@ class DailyBonusesController extends AbstractDominionController
             ->forget(['amplify_magic', 'ares_call', 'fools_gold'])
             ->sortBy('key');
         $unitTypes = $unitHelper->getUnitTypes();
+        $quickFillOptions = [
+            'race' => $dominion->race->name,
+            'storageKey' => 'opendominion.automationQuickFills.v1.user.' . $request->user()->id,
+            'units' => collect($unitTypes)->map(function ($unitType) use ($unitHelper, $dominion) {
+                return ['key' => $unitType, 'label' => $unitHelper->getUnitName($unitType, $dominion->race)];
+            })->values(),
+            'buildings' => collect($buildings)->map(function ($building) use ($buildingHelper) {
+                return ['key' => $building, 'label' => $buildingHelper->getBuildingName($building)];
+            })->values(),
+            'landTypes' => collect($landTypes)->map(function ($landType) {
+                return ['key' => $landType, 'label' => ucwords($landType)];
+            })->values(),
+            'spells' => $spells->map(function ($spell) {
+                return ['key' => $spell->key, 'label' => $spell->name];
+            })->values(),
+            'bonuses' => collect([
+                ['key' => 'land', 'label' => 'Land'],
+                ['key' => 'platinum', 'label' => 'Platinum'],
+            ]),
+        ];
 
         return view('pages.dominion.automation', [
             'buildingHelper' => $buildingHelper,
             'spellHelper' => $spellHelper,
             'unitHelper' => $unitHelper,
             'allowedActions' => AutomationService::DAILY_ACTIONS,
+            'automationTemplates' => $automationService->getTemplates($dominion),
             'buildings' => $buildings,
             'landTypes' => $landTypes,
+            'maxActionsPerTick' => AutomationService::MAX_ACTIONS_PER_TICK,
+            'maxScheduleHours' => AutomationService::MAX_SCHEDULE_HOURS,
+            'maxTemplateSlots' => AutomationService::MAX_TEMPLATE_SLOTS,
+            'quickFillOptions' => $quickFillOptions,
             'spells' => $spells,
             'unitTypes' => $unitTypes,
         ]);
@@ -139,13 +168,18 @@ class DailyBonusesController extends AbstractDominionController
         return redirect()->route('dominion.bonuses.actions');
     }
 
-    public function postReorderAutomatedAction(Request $request)
+    public function postReorderAutomatedAction(AutomationReorderRequest $request)
     {
         $dominion = $this->getSelectedDominion();
         $automationService = app(AutomationService::class);
 
         try {
-            $automationService->reorderAction($dominion, (int) $request->get('tick'), (int) $request->get('key'), $request->get('direction'));
+            $automationService->moveAction(
+                $dominion,
+                (int) $request->get('tick'),
+                (int) $request->get('key'),
+                (int) $request->get('target_key')
+            );
         } catch (GameException $e) {
             return redirect()->back()
                 ->withErrors([$e->getMessage()]);
@@ -197,6 +231,55 @@ class DailyBonusesController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', 'Action was successfully duplicated.');
+        return redirect()->route('dominion.bonuses.actions');
+    }
+
+    public function postCopyAutomatedTick(AutomationTickCopyRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+
+        try {
+            $automationService->copyTick(
+                $dominion,
+                (int) $request->get('source_tick'),
+                $request->get('target_ticks')
+            );
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'The complete tick was successfully copied.');
+        return redirect()->route('dominion.bonuses.actions');
+    }
+
+    public function postAutomationTemplate(AutomationTemplateRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $automationService = app(AutomationService::class);
+        $operation = $request->get('operation');
+        $slot = (int) $request->get('slot');
+
+        try {
+            if ($operation === 'save') {
+                $automationService->saveTemplate($dominion, $slot, $request->get('name'));
+                $message = 'Automation template saved.';
+            } elseif ($operation === 'load') {
+                $automationService->loadTemplate($dominion, $slot, $request->get('mode'));
+                $message = 'Automation template loaded relative to the current tick.';
+            } else {
+                $automationService->deleteTemplate($dominion, $slot);
+                $message = 'Automation template deleted.';
+            }
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', $message);
         return redirect()->route('dominion.bonuses.actions');
     }
 

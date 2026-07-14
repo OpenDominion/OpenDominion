@@ -1,8 +1,34 @@
 @php
     $isLocked = $selectedDominion->isLocked();
     $selectedAction = $item['action'] ?? 'train';
+    $quickFillId = "{$formId}-quick-fill";
 @endphp
 <div class="action-form-container" id="{{ $formId }}">
+    <div class="automation-quick-fill mb-3" data-quick-fill-root>
+        <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+            <label class="form-label mb-0" for="{{ $quickFillId }}">Quick fill</label>
+            <button class="btn btn-link btn-sm p-1 quick-fill-manage" type="button"
+                data-bs-toggle="modal" data-bs-target="#quickFillManagerModal">
+                Manage <span class="quick-fill-count">3/5</span>
+            </button>
+        </div>
+        <div class="quick-fill-combobox">
+            <input class="form-control" id="{{ $quickFillId }}" type="text"
+                role="combobox" aria-autocomplete="list" aria-expanded="false"
+                aria-controls="{{ $quickFillId }}-listbox"
+                aria-describedby="{{ $quickFillId }}-help {{ $quickFillId }}-status"
+                autocomplete="off" autocapitalize="none" spellcheck="false"
+                placeholder="e.g. train 120 archers" {{ $isLocked ? 'disabled' : null }}>
+            <div class="quick-fill-popover" data-quick-fill-popover hidden>
+                <ul class="quick-fill-listbox" id="{{ $quickFillId }}-listbox" role="listbox"
+                    aria-label="Quick fill suggestions"></ul>
+                <div class="quick-fill-foot" data-quick-fill-foot>Up to 5 current, player-controlled suggestions</div>
+            </div>
+        </div>
+        <div class="form-text" id="{{ $quickFillId }}-help">Type naturally or choose a suggestion. Structured fields remain editable.</div>
+        <div class="quick-fill-status" id="{{ $quickFillId }}-status" role="status" aria-live="polite"></div>
+        <div class="visually-hidden" data-quick-fill-live role="status" aria-live="polite"></div>
+    </div>
     <div class="mb-2">
         Action:
         <select class="form-select" name="action" {{ $isLocked ? 'disabled' : null }}>
