@@ -361,29 +361,6 @@ class AutomationService
         $dominion->save();
     }
 
-    public function reorderAction(Dominion $dominion, int $tick, int $key, string $direction): void
-    {
-        $this->guardLockedDominion($dominion);
-
-        $config = $dominion->ai_config;
-        if (!isset($config[$tick]) || !isset($config[$tick][$key])) {
-            throw new GameException('Action not found.');
-        }
-
-        $actions = array_values($config[$tick]);
-        $swapKey = $direction === 'up' ? $key - 1 : $key + 1;
-
-        if (!isset($actions[$swapKey])) {
-            throw new GameException('Cannot move action further in that direction.');
-        }
-
-        [$actions[$key], $actions[$swapKey]] = [$actions[$swapKey], $actions[$key]];
-        $config[$tick] = $actions;
-
-        $dominion->ai_config = $config;
-        $dominion->save();
-    }
-
     public function moveAction(Dominion $dominion, int $tick, int $key, int $targetKey): void
     {
         $this->guardLockedDominion($dominion);
@@ -524,8 +501,23 @@ class AutomationService
             throw new GameException('Template not found.');
         }
 
-        $config = $mode === 'replace' ? [] : ($dominion->ai_config ?? []);
         $currentTick = $dominion->round->getTick();
+        $config = $dominion->ai_config ?? [];
+        if ($mode === 'replace') {
+            $currentActions = array_values($config[$currentTick] ?? []);
+            $paidTemplateTickCount = collect($template['ticks'])
+                ->filter(fn (array $tick): bool => $this->containsPaidAction($tick['actions'] ?? []))
+                ->count();
+
+            $config = [];
+            if (!empty($currentActions) && (
+                $paidTemplateTickCount < static::DAILY_ACTIONS
+                || !$this->containsPaidAction($currentActions)
+            )) {
+                $config[$currentTick] = $currentActions;
+            }
+        }
+
         $loadedTicks = [];
         foreach ($template['ticks'] as $tick) {
             $targetTick = $currentTick + intval($tick['offset']);
@@ -591,7 +583,10 @@ class AutomationService
             if (in_array($tick, $scheduledTicks, true) && $tick <= $currentTick) {
                 throw new GameException('You cannot schedule actions for current or past ticks.');
             }
-            if (!is_array($actions) || count($actions) > static::MAX_ACTIONS_PER_TICK) {
+            if (!is_array($actions)) {
+                throw new GameException('Invalid automated action data.');
+            }
+            if (count($actions) > static::MAX_ACTIONS_PER_TICK) {
                 throw new GameException('You cannot schedule more than 10 actions in a single hour.');
             }
 
@@ -608,11 +603,8 @@ class AutomationService
             }
         }
 
-        $paidTicks = collect($normalizedConfig)->filter(function (array $actions) {
-            return collect($actions)->contains(function (array $action) {
-                return $action['action'] !== 'daily_bonus';
-            });
-        });
+        $paidTicks = collect($normalizedConfig)
+            ->filter(fn (array $actions): bool => $this->containsPaidAction($actions));
 
         $hoursUntilReset = 24 - $dominion->round->hoursInDay() + 1;
         $beforeResetCount = $paidTicks->filter(function (array $actions, int $tick) use ($currentTick, $hoursUntilReset) {
@@ -644,6 +636,17 @@ class AutomationService
         if ($action['action'] === 'spell' && in_array($action['key'] ?? null, ['ares_call', 'fools_gold'], true)) {
             throw new GameException('You cannot automate this spell.');
         }
+    }
+
+    protected function containsPaidAction(array $actions): bool
+    {
+        foreach ($actions as $action) {
+            if (is_array($action) && ($action['action'] ?? null) !== 'daily_bonus') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function validateTemplateSlot(int $slot): void

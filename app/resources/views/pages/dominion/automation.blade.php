@@ -405,7 +405,7 @@
                                         <input class="form-check-input" type="radio" name="mode" value="replace" checked>
                                         <span>
                                             <strong>Replace current schedule</strong>
-                                            <small>Load this template exactly as saved.</small>
+                                            <small>Replace future ticks. A pending +0 tick is kept unless the template fills all three paid automation slots; Daily Bonus does not use a slot.</small>
                                         </span>
                                     </label>
                                     <label class="automation-choice">
@@ -1109,7 +1109,7 @@
             }, {passive: false});
 
             function finishDrag(event, cancelled) {
-                if (!dragState) return;
+                if (!dragState || event.pointerId !== dragState.pointerId) return;
                 var state = dragState;
                 dragState = null;
                 clearDropIndicators();

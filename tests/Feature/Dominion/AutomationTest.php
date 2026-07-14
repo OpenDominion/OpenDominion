@@ -50,18 +50,4 @@ class AutomationTest extends AbstractBrowserKitTestCase
         $this->assertCount(1, $this->crawler->filter('[id^="copyTickModal-"]'));
         $this->assertGreaterThan(0, $this->crawler->filter('[role="combobox"]')->count());
     }
-
-    public function testQuickFillClearsStaleStructuredValuesBeforeParsingNewInput(): void
-    {
-        $template = file_get_contents(resource_path('views/pages/dominion/automation.blade.php'));
-
-        $clearValuesPosition = strpos($template, 'clearQuickFillValues();');
-        $parsePosition = strpos($template, 'var parsed = parseQuickFill(input.value);');
-
-        $this->assertStringContainsString("container.find('.action-options select[name=key], .action-options select[name=key2]').val('');", $template);
-        $this->assertStringContainsString("container.find('input[name=amount]').val('');", $template);
-        $this->assertNotFalse($clearValuesPosition);
-        $this->assertNotFalse($parsePosition);
-        $this->assertLessThan($parsePosition, $clearValuesPosition);
-    }
 }

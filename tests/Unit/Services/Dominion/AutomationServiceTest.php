@@ -148,6 +148,98 @@ class AutomationServiceTest extends AbstractBrowserKitTestCase
         $this->assertTrue($this->dominion->ai_enabled);
     }
 
+    public function testSavingATemplateOmitsTheCurrentTick(): void
+    {
+        $currentTick = $this->round->getTick();
+        $futureActions = [$this->automationAction('construct', 'alchemy', 45)];
+        $this->setConfig([
+            $currentTick => [$this->automationAction('daily_bonus', 'land')],
+            $currentTick + 2 => $futureActions,
+        ]);
+
+        $this->automationService->saveTemplate($this->dominion, 0, 'Future actions');
+
+        $this->dominion->refresh();
+        $template = $this->automationService->getTemplates($this->dominion)[0];
+        $this->assertSame([2], array_column($template['ticks'], 'offset'));
+        $this->assertSame($futureActions, $template['ticks'][0]['actions']);
+    }
+
+    public function testReplaceLoadingPreservesAPaidCurrentTickForATwoTickTemplate(): void
+    {
+        $currentTick = $this->round->getTick();
+        $firstActions = [$this->automationAction('construct', 'alchemy', 45)];
+        $secondActions = [$this->automationAction('train', 'unit2', 120)];
+        $this->setConfig([
+            $currentTick + 1 => $firstActions,
+            $currentTick + 3 => $secondActions,
+        ]);
+        $this->automationService->saveTemplate($this->dominion, 0, 'Two ticks');
+
+        $currentActions = [$this->automationAction('spell', 'midas_touch')];
+        $this->setConfig([
+            $currentTick => $currentActions,
+            $currentTick + 6 => [$this->automationAction('daily_bonus', 'land')],
+        ]);
+
+        $this->automationService->loadTemplate($this->dominion, 0, 'replace');
+
+        $this->dominion->refresh();
+        $this->assertSame($currentActions, $this->dominion->ai_config[$currentTick]);
+        $this->assertSame($firstActions, $this->dominion->ai_config[$currentTick + 1]);
+        $this->assertSame($secondActions, $this->dominion->ai_config[$currentTick + 3]);
+        $this->assertArrayNotHasKey($currentTick + 6, $this->dominion->ai_config);
+    }
+
+    public function testReplaceLoadingRemovesAPaidCurrentTickForAThreeTickTemplate(): void
+    {
+        $currentTick = $this->round->getTick();
+        $templateActions = [
+            1 => [$this->automationAction('construct', 'alchemy', 45)],
+            2 => [$this->automationAction('train', 'unit2', 120)],
+            3 => [$this->automationAction('spell', 'midas_touch')],
+        ];
+        $this->setConfig([
+            $currentTick + 1 => $templateActions[1],
+            $currentTick + 2 => $templateActions[2],
+            $currentTick + 3 => $templateActions[3],
+        ]);
+        $this->automationService->saveTemplate($this->dominion, 0, 'Three ticks');
+
+        $this->setConfig([
+            $currentTick => [$this->automationAction('construct', 'homes', 10)],
+            $currentTick + 6 => [$this->automationAction('daily_bonus', 'land')],
+        ]);
+
+        $this->automationService->loadTemplate($this->dominion, 0, 'replace');
+
+        $this->dominion->refresh();
+        $this->assertArrayNotHasKey($currentTick, $this->dominion->ai_config);
+        foreach ($templateActions as $offset => $actions) {
+            $this->assertSame($actions, $this->dominion->ai_config[$currentTick + $offset]);
+        }
+        $this->assertArrayNotHasKey($currentTick + 6, $this->dominion->ai_config);
+    }
+
+    public function testReplaceLoadingPreservesAFreeCurrentTickForAThreePaidTickTemplate(): void
+    {
+        $currentTick = $this->round->getTick();
+        $this->setConfig([
+            $currentTick + 1 => [$this->automationAction('construct', 'alchemy', 45)],
+            $currentTick + 2 => [$this->automationAction('train', 'unit2', 120)],
+            $currentTick + 3 => [$this->automationAction('spell', 'midas_touch')],
+        ]);
+        $this->automationService->saveTemplate($this->dominion, 0, 'Three ticks');
+
+        $currentActions = [$this->automationAction('daily_bonus', 'platinum')];
+        $this->setConfig([$currentTick => $currentActions]);
+
+        $this->automationService->loadTemplate($this->dominion, 0, 'replace');
+
+        $this->dominion->refresh();
+        $this->assertSame($currentActions, $this->dominion->ai_config[$currentTick]);
+    }
+
     public function testOpenTickTemplateLoadingSkipsCollisions(): void
     {
         $currentTick = $this->round->getTick();
@@ -187,6 +279,63 @@ class AutomationServiceTest extends AbstractBrowserKitTestCase
             [$actions[1], $actions[2], $actions[0]],
             $this->dominion->ai_config[$currentTick + 1]
         );
+    }
+
+    public function testTickCopyIsRejectedWhenItWouldExceedTheDailyPaidTickLimit(): void
+    {
+        $currentTick = $this->round->getTick();
+        $originalConfig = [
+            $currentTick + 1 => [$this->automationAction('construct', 'alchemy', 45)],
+        ];
+        $this->dominion->daily_actions = 1;
+        $this->setConfig($originalConfig);
+
+        try {
+            $this->automationService->copyTick($this->dominion, $currentTick + 1, [$currentTick + 2]);
+            $this->fail('Expected the daily paid tick limit to reject the copy.');
+        } catch (GameException $exception) {
+            $this->assertSame('You do not have enough scheduled actions remaining.', $exception->getMessage());
+        }
+
+        $this->dominion->refresh();
+        $this->assertSame($originalConfig, $this->dominion->ai_config);
+    }
+
+    public function testTickCopyRejectsTargetsOutsideTheTwelveHourWindow(): void
+    {
+        $currentTick = $this->round->getTick();
+        $originalConfig = [
+            $currentTick + 1 => [$this->automationAction('daily_bonus', 'land')],
+        ];
+        $this->setConfig($originalConfig);
+
+        try {
+            $this->automationService->copyTick(
+                $this->dominion,
+                $currentTick + 1,
+                [$currentTick + AutomationService::MAX_SCHEDULE_HOURS + 1]
+            );
+            $this->fail('Expected the target outside the scheduling window to be rejected.');
+        } catch (GameException $exception) {
+            $this->assertSame('You cannot schedule actions more than 12 hours in advance.', $exception->getMessage());
+        }
+
+        $this->dominion->refresh();
+        $this->assertSame($originalConfig, $this->dominion->ai_config);
+    }
+
+    public function testMalformedTickDataUsesAnAccurateValidationError(): void
+    {
+        $currentTick = $this->round->getTick();
+        $this->setConfig([$currentTick + 2 => 'invalid']);
+
+        $this->expectException(GameException::class);
+        $this->expectExceptionMessage('Invalid automated action data.');
+
+        $this->automationService->setConfig($this->dominion, [
+            'tick' => $currentTick + 1,
+            'value' => $this->automationAction('daily_bonus', 'land'),
+        ]);
     }
 
     protected function setConfig(array $config): void
