@@ -857,7 +857,16 @@
                     options[activeSuggestion].scrollIntoView({block: 'nearest'});
                 }
 
+                function clearQuickFillValues() {
+                    container.find('.action-options select[name=key], .action-options select[name=key2]').val('');
+                    container.find('input[name=amount]').val('');
+                }
+
                 function applyQuickFill() {
+                    if (input.value.trim()) {
+                        clearQuickFillValues();
+                    }
+
                     var parsed = parseQuickFill(input.value);
                     if (!parsed) {
                         status.textContent = input.value.trim() ? 'Keep typing or use the Action list below.' : '';
