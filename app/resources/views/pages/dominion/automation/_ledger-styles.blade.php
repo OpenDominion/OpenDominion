@@ -1,14 +1,15 @@
 <style>
     .automation-studio {
-        --automation-command: var(--od-primary, var(--bs-primary));
-        --automation-command-deep: var(--od-primary-dark, var(--bs-primary));
-        --automation-command-soft: var(--od-primary-bg-soft, color-mix(in srgb, var(--automation-command) 13%, transparent));
-        --automation-brass: var(--od-primary, var(--bs-primary));
+        --automation-accent: var(--od-primary, var(--bs-primary));
+        --automation-command: var(--od-primary-bg, var(--od-primary-dark, var(--od-primary, var(--bs-primary))));
+        --automation-command-deep: var(--od-primary-dark, var(--automation-command));
+        --automation-command-soft: var(--od-primary-bg-soft, color-mix(in srgb, var(--automation-accent) 13%, transparent));
+        --automation-brass: var(--automation-accent);
         --automation-paper: var(--od-surface, var(--bs-body-bg));
         --automation-paper-raised: var(--od-surface-elevated, var(--od-surface, var(--bs-body-bg)));
         --automation-paper-alt: var(--od-surface-alt, var(--bs-tertiary-bg));
         --automation-rule: var(--od-border-accent, var(--bs-border-color));
-        --automation-rule-soft: var(--od-border, var(--bs-border-color));
+        --automation-rule-soft: var(--od-border-soft, var(--od-rule-soft, var(--bs-border-color)));
         --automation-ink: var(--od-text-body, var(--bs-body-color));
         --automation-muted: var(--od-text-secondary, var(--bs-secondary-color));
         --automation-danger: var(--od-danger, var(--bs-danger));
@@ -19,6 +20,7 @@
     }
 
     [data-color-scheme="parchment"] .automation-studio {
+        --automation-accent: #2d5944;
         --automation-command: #2d5944;
         --automation-command-deep: #1f3f31;
         --automation-command-soft: #dfe8d9;
@@ -96,7 +98,7 @@
         height: 7px;
         background: color-mix(in srgb, var(--automation-rule) 72%, transparent);
     }
-    .automation-quota-track i.is-used { background: var(--automation-command); }
+    .automation-quota-track i.is-used { background: var(--automation-accent); }
 
     .automation-workspace {
         padding: 1.35rem;
@@ -149,8 +151,8 @@
         background: var(--automation-paper);
     }
     .automation-tick-row.is-occupied .automation-tick-mark {
-        border-color: var(--automation-command);
-        background: var(--automation-command);
+        border-color: var(--automation-accent);
+        background: var(--automation-accent);
     }
     .automation-tick-content { min-width: 0; padding-bottom: 1rem; }
 
@@ -169,7 +171,7 @@
     .automation-open-tick:hover,
     .automation-open-tick:focus-visible,
     .automation-open-tick[aria-expanded="true"] {
-        color: var(--automation-command);
+        color: var(--automation-accent);
         background: var(--automation-command-soft);
         border-color: var(--automation-rule);
         outline: none;
@@ -187,7 +189,7 @@
         overflow: hidden;
         background: var(--automation-paper-raised);
         border: 1px solid var(--automation-rule);
-        border-left: 4px solid var(--automation-command);
+        border-left: 4px solid var(--automation-accent);
         box-shadow: 0 3px 9px color-mix(in srgb, var(--automation-ink) 8%, transparent);
     }
 
@@ -218,9 +220,9 @@
     .automation-template-replace:focus-visible,
     .automation-template-save:hover,
     .automation-template-save:focus-visible {
-        color: var(--automation-command);
+        color: var(--automation-accent);
         background: var(--automation-command-soft);
-        border-color: var(--automation-command);
+        border-color: var(--automation-accent);
     }
     .automation-clear-tick { width: 40px; color: var(--automation-danger); }
     .automation-clear-tick:hover,
@@ -238,8 +240,8 @@
         background: var(--automation-paper-raised);
     }
     .action-display-row.is-dragging { opacity: .45; }
-    .action-display-row.drop-before { box-shadow: inset 0 3px 0 var(--automation-command); }
-    .action-display-row.drop-after { box-shadow: inset 0 -3px 0 var(--automation-command); }
+    .action-display-row.drop-before { box-shadow: inset 0 3px 0 var(--automation-accent); }
+    .action-display-row.drop-after { box-shadow: inset 0 -3px 0 var(--automation-accent); }
     .action-order-number { color: var(--automation-muted); font-size: .72rem; font-variant-numeric: tabular-nums; }
     .action-drag-handle {
         width: 32px;
@@ -274,7 +276,7 @@
         border: 1px solid transparent;
     }
     .automation-action-tool:hover,
-    .automation-action-tool:focus-visible { color: var(--automation-command); border-color: var(--automation-rule); }
+    .automation-action-tool:focus-visible { color: var(--automation-accent); border-color: var(--automation-rule); }
     .automation-action-tool.is-danger:hover,
     .automation-action-tool.is-danger:focus-visible { color: var(--automation-danger); }
     .automation-action-tool:disabled { opacity: .35; }
@@ -290,7 +292,7 @@
     .automation-tick-foot > span { color: var(--automation-muted); font-size: .72rem; }
     .automation-add-action { color: var(--automation-ink); background: transparent; border-color: transparent; }
     .automation-add-action:hover,
-    .automation-add-action:focus-visible { color: var(--automation-command); border-color: var(--automation-rule); }
+    .automation-add-action:focus-visible { color: var(--automation-accent); border-color: var(--automation-rule); }
 
     .automation-playbooks { display: grid; gap: 1rem; }
     .automation-playbook-panel,
@@ -333,9 +335,9 @@
     .template-offsets { margin-bottom: .65rem; display: flex; flex-wrap: wrap; gap: .3rem; }
     .template-offsets span {
         padding: .15rem .4rem;
-        color: var(--automation-command);
+        color: var(--automation-accent);
         background: var(--automation-command-soft);
-        border: 1px solid color-mix(in srgb, var(--automation-command) 30%, var(--automation-rule));
+        border: 1px solid color-mix(in srgb, var(--automation-accent) 30%, var(--automation-rule));
         font-size: .7rem;
         font-weight: 700;
     }
