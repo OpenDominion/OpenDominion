@@ -47,6 +47,10 @@ class AutomationTest extends AbstractBrowserKitTestCase
             ->see('Copy complete tick');
 
         $this->assertCount(3, $this->crawler->filter('.automation-template'));
+        $this->assertCount(3, $this->crawler->filter('.automation-quota-track > i'));
+        $this->assertCount(12, $this->crawler->filter('.automation-tick-row'));
+        $this->assertCount(1, $this->crawler->filter('.automation-tick-row.is-occupied'));
+        $this->assertCount(11, $this->crawler->filter('.automation-open-tick'));
         $this->assertCount(1, $this->crawler->filter('[id^="copyTickModal-"]'));
         $this->assertGreaterThan(0, $this->crawler->filter('[role="combobox"]')->count());
     }
