@@ -27,15 +27,6 @@
         --automation-brass: #9a6c1d;
     }
 
-    :is(
-        [data-color-scheme="classic"],
-        [data-color-scheme="dusk"],
-        [data-color-scheme="grimoire"]
-    ) .automation-studio {
-        --automation-paper-raised: var(--od-muted-surface, var(--od-surface, var(--bs-secondary-bg)));
-        --automation-paper-alt: var(--od-surface, var(--bs-secondary-bg));
-    }
-
     .automation-studio .btn-primary {
         color: #fff !important;
         background: var(--automation-command) !important;
