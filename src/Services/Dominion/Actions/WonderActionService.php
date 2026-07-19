@@ -4,7 +4,6 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use LogicException;
-use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -47,9 +46,6 @@ class WonderActionService
 
     /** @var InvasionService */
     protected $invasionService;
-
-    /** @var LandCalculator */
-    protected $landCalculator;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -107,7 +103,6 @@ class WonderActionService
      * @param GovernmentService $governmentService
      * @param GuardMembershipService $guardMembershipService
      * @param InvasionService $invasionService
-     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
      * @param OpsCalculator $opsCalculator
@@ -122,7 +117,6 @@ class WonderActionService
         GovernmentService $governmentService,
         GuardMembershipService $guardMembershipService,
         InvasionService $invasionService,
-        LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
         OpsCalculator $opsCalculator,
@@ -137,7 +131,6 @@ class WonderActionService
         $this->governmentService = $governmentService;
         $this->guardMembershipService = $guardMembershipService;
         $this->invasionService = $invasionService;
-        $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
         $this->opsCalculator = $opsCalculator;
