@@ -88,7 +88,10 @@
     @if ($inRealm)
         @include('partials.dominion.advisor-selector')
     @endif
-    <div class="row">
+
+    @include('partials.dominion.op-center.navigation')
+
+    <div class="row op-center-report-anchor" id="op-clear-sight">
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')
                 @slot('title', ('Status Screen - ' . $dominion->name . ' (#' . $dominion->realm->number . ')'))
@@ -277,7 +280,7 @@
         </div>
 
     </div>
-    <div class="row">
+    <div class="row op-center-report-anchor" id="op-revelation">
 
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
@@ -392,7 +395,7 @@
             @endcomponent
         </div>
 
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-6 op-center-report-anchor" id="op-castle-spy">
             @component('partials.dominion.op-center.box')
                 @slot('title', 'Improvements')
                 @slot('titleIconClass', 'fa fa-arrow-up')
@@ -454,7 +457,7 @@
         </div>
 
     </div>
-    <div class="row">
+    <div class="row op-center-report-anchor" id="op-barracks-spy">
 
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
@@ -533,7 +536,7 @@
         </div>
 
     </div>
-    <div class="row">
+    <div class="row op-center-report-anchor" id="op-survey-dominion">
 
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
@@ -616,7 +619,7 @@
         </div>
 
     </div>
-    <div class="row">
+    <div class="row op-center-report-anchor" id="op-land-spy">
 
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
@@ -696,7 +699,7 @@
         </div>
 
     </div>
-    <div class="row">
+    <div class="row op-center-report-anchor" id="op-vision">
 
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
@@ -777,7 +780,7 @@
         </div>
 
     </div>
-    <div class="row">
+    <div class="row op-center-report-anchor" id="op-disclosure">
 
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
