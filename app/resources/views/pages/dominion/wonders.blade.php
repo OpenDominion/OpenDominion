@@ -94,7 +94,9 @@
                                         <option></option>
                                         @foreach ($wonders as $wonder)
                                             @if ($wonder->realm == null || $governmentService->canAttackWonders($selectedDominion->realm, $wonder->realm))
-                                                <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
+                                                <option value="{{ $wonder->id }}"
+                                                        data-war="{{ $wonder->realm !== null ? 1 : 0 }}"
+                                                        data-cyclone-damage="{{ $cycloneDamageByWonder[$wonder->id] }}">
                                                     {{ $wonder->wonder->name }}
                                                     @if ($wonder->realm !== null)
                                                         (#{{ $wonder->realm->number }})
@@ -103,6 +105,10 @@
                                             @endif
                                         @endforeach
                                     </select>
+                                    <div class="small mt-2">
+                                        Current Cyclone damage:
+                                        <strong id="cyclone-damage" aria-live="polite">Select a target</strong>
+                                    </div>
                                 </div>
                                 <div class="col-3 col-lg-2">
                                     @foreach ($spellHelper->getSpells(null, 'wonder') as $spell)
@@ -373,6 +379,7 @@
 
             var invadeButtonElement = $('#attack-button');
             var allUnitInputs = $('input[name^=\'unit\']');
+            var cycloneDamageElement = $('#cyclone-damage');
 
             $('#target_wonder').select2({
                 templateResult: select2Template,
@@ -381,10 +388,12 @@
 
             @if (!$protectionService->isUnderProtection($selectedDominion))
                 updateUnitStats();
+                updateCycloneDamage();
             @endif
 
             $('#target_wonder').change(function (e) {
                 updateUnitStats();
+                updateCycloneDamage();
             });
 
             $('input[name^=\'calc\']').change(function (e) {
@@ -435,6 +444,17 @@
                         }
                     }
                 );
+            }
+
+            function updateCycloneDamage() {
+                var cycloneDamage = $('#target_wonder option:selected').attr('data-cyclone-damage');
+
+                if (cycloneDamage === undefined) {
+                    cycloneDamageElement.text('Select a target');
+                    return;
+                }
+
+                cycloneDamageElement.text(parseInt(cycloneDamage).toLocaleString());
             }
 
             function calculate() {

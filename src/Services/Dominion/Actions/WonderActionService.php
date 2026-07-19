@@ -39,16 +39,6 @@ class WonderActionService
      */
     protected const CASUALTIES_BASE_PERCENTAGE = 3.5;
 
-    /**
-     * @var float Base percentage for cyclone damage cap
-     */
-    protected const CYCLONE_DAMAGE_CAP_PERCENTAGE = 0.75;
-
-    /**
-     * @var float Wizard multiplier for cyclone damage
-     */
-    protected const CYCLONE_DAMAGE_MULTIPLIER = 1.5;
-
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -227,29 +217,7 @@ class WonderActionService
             $dominion->wizard_strength -= 5;
             $dominion->stat_spell_success += 1;
 
-            $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
-            $damageDealt = static::CYCLONE_DAMAGE_MULTIPLIER * $wizardRatio * $this->landCalculator->getTotalLand($dominion);
-            $damageCap = static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100;
-
-            $multiplier = 1;
-
-            // Techs
-            $multiplier += $dominion->getTechPerkMultiplier('wonder_damage');
-
-            // Heroes
-            if ($dominion->hero !== null) {
-                $multiplier += $dominion->hero->getPerkMultiplier('cyclone_damage');
-            }
-
-            $damageDealt *= $multiplier;
-
-            // Double damage if neutral wonder
-            if ($this->attackResult['wonder']['neutral']) {
-                $damageDealt *= 2;
-            }
-
-            // Cap at % of wonder max power
-            $damageDealt = round(min($damageDealt, $wonder->power * $damageCap));
+            $damageDealt = $this->wonderCalculator->getCycloneDamage($dominion, $wonder);
             $dominion->stat_cyclone_damage += $damageDealt;
 
             $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
