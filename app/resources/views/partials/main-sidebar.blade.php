@@ -203,6 +203,9 @@
                         <a href="{{ route('dominion.magic') }}" class="nav-link {{ Route::is('dominion.magic') ? 'active' : null }}">
                             <i class="nav-icon ra ra-fairy-wand ra-fw"></i>
                             <p>Magic
+                                @if ($expiringBeneficialSpells > 0)
+                                    <span class="badge text-bg-warning" title="Beneficial spells expiring next tick">{{ $expiringBeneficialSpells }}</span>
+                                @endif
                                 @if ($activeSelfSpells > 0)
                                     <span class="badge text-bg-info">{{ $activeSelfSpells }}</span>
                                 @endif
