@@ -28,10 +28,11 @@
         }
     @endphp
     <div class="card">
-        <div class="card-header">
-            <span class="card-title"><i class="fa fa-bar-chart"></i> Overview - {{ $selectedDominion->name }}</span>
-            <a href="{{ route('dominion.misc.settings') }}" title="Resource Display Settings" data-bs-toggle="tooltip">
-                <i class="fa fa-cog fa-sm"></i>
+        <div class="card-header d-flex align-items-center justify-content-between gap-3">
+            <span class="card-title flex-grow-1"><i class="fa fa-bar-chart"></i> Overview - {{ $selectedDominion->name }}</span>
+            <a class="btn btn-sm btn-outline-secondary flex-shrink-0 dominion-settings-button" href="{{ route('dominion.misc.settings') }}" aria-label="Dominion settings" title="Dominion Settings" data-bs-toggle="tooltip" data-bs-placement="left">
+                <i class="fa fa-sliders me-sm-1" aria-hidden="true"></i>
+                <span class="d-none d-sm-inline">Settings</span>
             </a>
         </div>
         <div class="card-body small">
