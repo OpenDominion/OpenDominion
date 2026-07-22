@@ -27,6 +27,16 @@
         --automation-brass: #9a6c1d;
     }
 
+    [data-color-scheme="classic"] .automation-studio {
+        --automation-command-soft: rgba(75, 177, 193, 0.18);
+        --automation-brass: #4bb1c1;
+    }
+    [data-color-scheme="classic"] .automation-open-tick:hover,
+    [data-color-scheme="classic"] .automation-open-tick:focus-visible,
+    [data-color-scheme="classic"] .automation-open-tick[aria-expanded="true"] {
+        color: #4bb1c1;
+    }
+
     .automation-studio .btn-primary {
         color: #fff !important;
         background: var(--automation-command) !important;
@@ -40,7 +50,6 @@
 
     .automation-studio-header {
         padding: 1.1rem 1.35rem;
-        border-top: 3px solid var(--automation-brass);
         border-bottom: 1px solid var(--automation-rule);
         background: var(--automation-paper-alt);
     }
