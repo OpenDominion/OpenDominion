@@ -69,13 +69,19 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->count();
             $view->with('forumUnreadCount', $forumUnreadCount);
 
-            $activeSelfSpells = $selectedDominion->spells->where('category', 'self')->count();
+            $expiringBeneficialSpells = $selectedDominion->spells->filter(function ($spell) {
+                return !$spell->isHarmful() && (int) $spell->pivot->duration === 1;
+            })->count();
+            $activeSelfSpells = $selectedDominion->spells->filter(function ($spell) {
+                return $spell->category === 'self' && (int) $spell->pivot->duration > 1;
+            })->count();
             $activeHostileSpells = $selectedDominion->spells->filter(function ($spell) {
                 return $spell->isHarmful();
             })->count();
             $activeFriendlySpells = $selectedDominion->spells->filter(function ($spell) {
-                return !$spell->isHarmful() && $spell->category !== 'self';
+                return !$spell->isHarmful() && $spell->category !== 'self' && (int) $spell->pivot->duration > 1;
             })->count();
+            $view->with('expiringBeneficialSpells', $expiringBeneficialSpells);
             $view->with('activeSelfSpells', $activeSelfSpells);
             $view->with('activeHostileSpells', $activeHostileSpells);
             $view->with('activeFriendlySpells', $activeFriendlySpells);
