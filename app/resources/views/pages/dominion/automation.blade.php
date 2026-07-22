@@ -20,7 +20,7 @@
             return $offset >= 1 && $offset <= $maxScheduleHours && !empty($actions);
         });
     @endphp
-    @include('pages.dominion.automation._ledger-content')
+    @include('partials.dominion.automation.ledger-content')
 
     @foreach ($automationTemplates as $slot => $template)
         <div class="modal fade" id="saveTemplateModal-{{ $slot }}" tabindex="-1"
@@ -42,7 +42,7 @@
                     <div class="modal-body">
                         <label class="form-label" for="template-name-{{ $slot }}">Template name</label>
                         <input class="form-control" id="template-name-{{ $slot }}" name="name" maxlength="32"
-                            value="{{ $template['name'] ?? '' }}" placeholder="e.g. Growth opening" required>
+                            value="{{ $template['name'] ?? '' }}" placeholder="e.g. Troop training" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
@@ -148,7 +148,7 @@
 @endsection
 
 @push('inline-styles')
-    @include('pages.dominion.automation._ledger-styles')
+    @include('partials.dominion.automation.ledger-styles')
 @endpush
 
 @push('inline-scripts')

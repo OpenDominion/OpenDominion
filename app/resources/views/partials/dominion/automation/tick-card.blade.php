@@ -92,7 +92,7 @@
                     @csrf
                     <input type="hidden" name="tick" value="{{ $tick }}" />
                     <input type="hidden" name="edit_key" value="{{ $index }}" />
-                    @include('pages.dominion.automation._action-form', [
+                    @include('partials.dominion.automation.action-form', [
                         'formId' => "edit-form-{$tick}-{$index}",
                         'item' => $item,
                         'showTick' => false,
@@ -141,7 +141,7 @@
         <form action="{{ route('dominion.bonuses.actions') }}" method="post">
             @csrf
             <input type="hidden" name="tick" value="{{ $tick }}" />
-            @include('pages.dominion.automation._action-form', [
+            @include('partials.dominion.automation.action-form', [
                 'formId' => "add-form-{$tick}",
                 'item' => null,
                 'showTick' => false,

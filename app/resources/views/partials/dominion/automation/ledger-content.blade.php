@@ -31,7 +31,7 @@
             @if (!empty($currentTickActions))
                 <section class="automation-current-queue mb-3" aria-labelledby="current-queue-title">
                     <h2 class="automation-section-label" id="current-queue-title">Pending current tick</h2>
-                    @include('pages.dominion.automation._tick-card', [
+                    @include('partials.dominion.automation.tick-card', [
                         'tick' => $currentTick,
                         'hours' => 0,
                         'day' => $selectedDominion->round->daysInRound(),
@@ -60,7 +60,7 @@
                         <div class="automation-tick-mark" aria-hidden="true"></div>
                         <div class="automation-tick-content">
                             @if ($isOccupied)
-                                @include('pages.dominion.automation._tick-card', [
+                                @include('partials.dominion.automation.tick-card', [
                                     'tick' => $tick,
                                     'hours' => $hours,
                                     'day' => $day,
@@ -80,7 +80,7 @@
                                     <form action="{{ route('dominion.bonuses.actions') }}" method="post">
                                         @csrf
                                         <input type="hidden" name="tick" value="{{ $tick }}" />
-                                        @include('pages.dominion.automation._action-form', [
+                                        @include('partials.dominion.automation.action-form', [
                                             'formId' => "open-tick-action-form-{$tick}",
                                             'item' => null,
                                             'showTick' => false,
