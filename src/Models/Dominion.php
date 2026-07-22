@@ -110,6 +110,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property bool $protection_finished
  * @property bool $ai_enabled
  * @property array|null $ai_config
+ * @property array|null $automation_templates
  * @property int $monarchy_vote_for_dominion_id
  * @property array|null $settings
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -222,6 +223,7 @@ class Dominion extends AbstractModel
         'protection_finished' => 'boolean',
         'ai_enabled' => 'boolean',
         'ai_config' => 'array',
+        'automation_templates' => 'array',
         'settings' => 'array',
     ];
 

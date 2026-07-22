@@ -3,7 +3,6 @@
 namespace OpenDominion\Services\Dominion;
 
 use DB;
-use Illuminate\Support\Arr;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
@@ -32,6 +31,20 @@ class AutomationService
     use DominionGuardsTrait;
 
     public const DAILY_ACTIONS = 3;
+    public const MAX_ACTIONS_PER_TICK = 10;
+    public const MAX_SCHEDULE_HOURS = 12;
+    public const MAX_TEMPLATE_SLOTS = 3;
+
+    public const AUTOMATABLE_ACTIONS = [
+        'construct',
+        'daily_bonus',
+        'draft_rate',
+        'explore',
+        'release',
+        'rezone',
+        'spell',
+        'train',
+    ];
 
     /** @var BankActionService */
     protected $bankActionService;
@@ -314,76 +327,26 @@ class AutomationService
         }
     }
 
-    public function setConfig(Dominion $dominion, array $data)
+    public function setConfig(Dominion $dominion, array $data): void
     {
-        $this->guardLockedDominion($dominion);
-
-        $actionsAllowed = static::DAILY_ACTIONS;
-        $currentTick = $dominion->round->getTick();
-
-        if ($data['tick'] > $currentTick + 12) {
-            throw new GameException('You cannot schedule actions more than 12 hours in advance.');
-        }
-
-        if ($data['tick'] <= $currentTick) {
-            throw new GameException('You cannot schedule actions for current or past ticks.');
-        }
-
-        if (!$dominion->protection_finished) {
-            throw new GameException('You cannot schedule actions while under protection.');
-        }
-
-        if ($data['value']['action'] == 'spell' && in_array($data['value']['key'], ['ares_call', 'fools_gold'])) {
-            throw new GameException('You cannot automate this spell.');
-        }
-
-        // Create new AI config
-        $config = $dominion->ai_config;
+        $config = $dominion->ai_config ?? [];
         if (!isset($config[$data['tick']])) {
             $config[$data['tick']] = [];
         }
-        array_push($config[$data['tick']], $data['value']);
+        $config[$data['tick']][] = $data['value'];
 
-        $tickCount = count($config[$data['tick']]);
-        if ($tickCount > 10) {
-            throw new GameException('You cannot schedule more than 10 actions in a single hour.');
-        }
-
-        $countCollection = collect($config)->filter(function ($tick) {
-            $nonBonusActions = Arr::where($tick, function ($action) {
-                return $action['action'] !== 'daily_bonus';
-            });
-            if (count($nonBonusActions)) {
-                return $nonBonusActions;
-            }
-        });
-
-        $hoursUntilReset = 24 - $dominion->round->hoursInDay() + 1;
-
-        $beforeResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {
-            return intval($key) - $currentTick < $hoursUntilReset;
-        })->count();
-        if ($dominion->daily_actions < $beforeResetCount) {
-            throw new GameException('You do not have enough scheduled actions remaining.');
-        }
-
-        $afterResetCount = $countCollection->filter(function ($value, $key) use ($currentTick, $hoursUntilReset) {
-            return intval($key) - $currentTick >= $hoursUntilReset;
-        })->count();
-        if ($afterResetCount > max($dominion->daily_actions, $actionsAllowed)) {
-            throw new GameException('You do not have enough scheduled actions remaining.');
-        }
-
-        // Save updated AI config
-        ksort($config);
-        $dominion->ai_config = $config;
-        $dominion->ai_enabled = true;
-        $dominion->save();
+        $this->saveAutomationConfig($dominion, $config, [(int) $data['tick']]);
     }
 
-    public function deleteAction(Dominion $dominion, int $tick, int $key)
+    public function deleteAction(Dominion $dominion, int $tick, int $key): void
     {
-        $config = $dominion->ai_config;
+        $this->guardLockedDominion($dominion);
+
+        $config = $dominion->ai_config ?? [];
+        if (!isset($config[$tick][$key])) {
+            throw new GameException('Action not found.');
+        }
+
         unset($config[$tick][$key]);
         if (empty($config[$tick])) {
             unset($config[$tick]);
@@ -391,7 +354,6 @@ class AutomationService
             $config[$tick] = array_values($config[$tick]);
         }
 
-        // Save updated AI config
         $dominion->ai_config = $config;
         if (empty($config)) {
             $dominion->ai_enabled = false;
@@ -399,23 +361,26 @@ class AutomationService
         $dominion->save();
     }
 
-    public function reorderAction(Dominion $dominion, int $tick, int $key, string $direction): void
+    public function moveAction(Dominion $dominion, int $tick, int $key, int $targetKey): void
     {
         $this->guardLockedDominion($dominion);
 
-        $config = $dominion->ai_config;
-        if (!isset($config[$tick]) || !isset($config[$tick][$key])) {
+        $config = $dominion->ai_config ?? [];
+        if (!isset($config[$tick][$key])) {
             throw new GameException('Action not found.');
         }
 
         $actions = array_values($config[$tick]);
-        $swapKey = $direction === 'up' ? $key - 1 : $key + 1;
-
-        if (!isset($actions[$swapKey])) {
-            throw new GameException('Cannot move action further in that direction.');
+        if ($targetKey < 0 || $targetKey >= count($actions)) {
+            throw new GameException('Invalid action position.');
         }
 
-        [$actions[$key], $actions[$swapKey]] = [$actions[$swapKey], $actions[$key]];
+        if ($key === $targetKey) {
+            return;
+        }
+
+        $movedActions = array_splice($actions, $key, 1);
+        array_splice($actions, $targetKey, 0, $movedActions);
         $config[$tick] = $actions;
 
         $dominion->ai_config = $config;
@@ -426,44 +391,166 @@ class AutomationService
     {
         $this->guardLockedDominion($dominion);
 
-        $config = $dominion->ai_config;
+        $config = $dominion->ai_config ?? [];
         if (!isset($config[$tick]) || !isset($config[$tick][$key])) {
             throw new GameException('Action not found.');
         }
 
-        if ($value['action'] == 'spell' && in_array($value['key'], ['ares_call', 'fools_gold'])) {
-            throw new GameException('You cannot automate this spell.');
-        }
-
         $config[$tick][$key] = $value;
-
-        $dominion->ai_config = $config;
-        $dominion->save();
+        $this->saveAutomationConfig($dominion, $config);
     }
 
     public function duplicateAction(Dominion $dominion, int $sourceTick, int $sourceKey, int $targetTick): void
     {
         $this->guardLockedDominion($dominion);
 
-        $config = $dominion->ai_config;
+        $config = $dominion->ai_config ?? [];
         if (!isset($config[$sourceTick]) || !isset($config[$sourceTick][$sourceKey])) {
             throw new GameException('Source action not found.');
         }
 
         $action = $config[$sourceTick][$sourceKey];
 
-        // Use setConfig to apply all validation (daily limits, tick range, etc.)
         $this->setConfig($dominion, [
             'tick' => $targetTick,
             'value' => $action,
         ]);
     }
 
+    public function copyTick(Dominion $dominion, int $sourceTick, array $targetTicks): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        $config = $dominion->ai_config ?? [];
+        if (!isset($config[$sourceTick]) || empty($config[$sourceTick])) {
+            throw new GameException('Source tick not found.');
+        }
+
+        $targetTicks = array_values(array_unique(array_map('intval', $targetTicks)));
+        if (empty($targetTicks)) {
+            throw new GameException('Select at least one target tick.');
+        }
+
+        foreach ($targetTicks as $targetTick) {
+            if ($targetTick === $sourceTick) {
+                throw new GameException('You cannot copy a tick onto itself.');
+            }
+
+            $config[$targetTick] = array_merge(
+                array_values($config[$targetTick] ?? []),
+                array_values($config[$sourceTick])
+            );
+        }
+
+        $this->saveAutomationConfig($dominion, $config, $targetTicks);
+    }
+
+    public function getTemplates(Dominion $dominion): array
+    {
+        $templates = array_values($dominion->automation_templates ?? []);
+        $templates = array_slice($templates, 0, static::MAX_TEMPLATE_SLOTS);
+
+        return array_pad($templates, static::MAX_TEMPLATE_SLOTS, null);
+    }
+
+    public function saveTemplate(Dominion $dominion, int $slot, string $name): void
+    {
+        $this->guardLockedDominion($dominion);
+        $this->validateTemplateSlot($slot);
+
+        $name = trim($name);
+        if ($name === '' || mb_strlen($name) > 32) {
+            throw new GameException('Template names must contain between 1 and 32 characters.');
+        }
+
+        $currentTick = $dominion->round->getTick();
+        $ticks = [];
+        foreach (($dominion->ai_config ?? []) as $tick => $actions) {
+            $offset = intval($tick) - $currentTick;
+            if ($offset >= 1 && $offset <= static::MAX_SCHEDULE_HOURS && !empty($actions)) {
+                $ticks[] = [
+                    'offset' => $offset,
+                    'actions' => array_values($actions),
+                ];
+            }
+        }
+
+        if (empty($ticks)) {
+            throw new GameException('Schedule at least one action before saving a template.');
+        }
+
+        $templates = $this->getTemplates($dominion);
+        $templates[$slot] = [
+            'name' => $name,
+            'ticks' => $ticks,
+        ];
+
+        $dominion->automation_templates = array_values($templates);
+        $dominion->save();
+    }
+
+    public function loadTemplate(Dominion $dominion, int $slot, string $mode): void
+    {
+        $this->validateTemplateSlot($slot);
+        if (!in_array($mode, ['replace', 'open'], true)) {
+            throw new GameException('Invalid template load behavior.');
+        }
+
+        $template = $this->getTemplates($dominion)[$slot];
+        if ($template === null) {
+            throw new GameException('Template not found.');
+        }
+
+        $currentTick = $dominion->round->getTick();
+        $config = $dominion->ai_config ?? [];
+        if ($mode === 'replace') {
+            $currentActions = array_values($config[$currentTick] ?? []);
+            $paidTemplateTickCount = collect($template['ticks'])
+                ->filter(fn (array $tick): bool => $this->containsPaidAction($tick['actions'] ?? []))
+                ->count();
+
+            $config = [];
+            if (!empty($currentActions) && (
+                $paidTemplateTickCount < static::DAILY_ACTIONS
+                || !$this->containsPaidAction($currentActions)
+            )) {
+                $config[$currentTick] = $currentActions;
+            }
+        }
+
+        $loadedTicks = [];
+        foreach ($template['ticks'] as $tick) {
+            $targetTick = $currentTick + intval($tick['offset']);
+            if ($mode === 'open' && isset($config[$targetTick])) {
+                continue;
+            }
+            $config[$targetTick] = array_values($tick['actions']);
+            $loadedTicks[] = $targetTick;
+        }
+
+        $this->saveAutomationConfig($dominion, $config, $loadedTicks);
+    }
+
+    public function deleteTemplate(Dominion $dominion, int $slot): void
+    {
+        $this->guardLockedDominion($dominion);
+        $this->validateTemplateSlot($slot);
+
+        $templates = $this->getTemplates($dominion);
+        if ($templates[$slot] === null) {
+            throw new GameException('Template not found.');
+        }
+
+        $templates[$slot] = null;
+        $dominion->automation_templates = array_values($templates);
+        $dominion->save();
+    }
+
     public function clearTick(Dominion $dominion, int $tick): void
     {
         $this->guardLockedDominion($dominion);
 
-        $config = $dominion->ai_config;
+        $config = $dominion->ai_config ?? [];
         if (!isset($config[$tick])) {
             throw new GameException('No actions found for this tick.');
         }
@@ -475,5 +562,97 @@ class AutomationService
             $dominion->ai_enabled = false;
         }
         $dominion->save();
+    }
+
+    protected function saveAutomationConfig(Dominion $dominion, array $config, array $scheduledTicks = []): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        if (!$dominion->protection_finished) {
+            throw new GameException('You cannot schedule actions while under protection.');
+        }
+
+        $currentTick = $dominion->round->getTick();
+        $scheduledTicks = array_map('intval', $scheduledTicks);
+        $normalizedConfig = [];
+        foreach ($config as $tick => $actions) {
+            $tick = intval($tick);
+            if (in_array($tick, $scheduledTicks, true) && $tick > $currentTick + static::MAX_SCHEDULE_HOURS) {
+                throw new GameException('You cannot schedule actions more than 12 hours in advance.');
+            }
+            if (in_array($tick, $scheduledTicks, true) && $tick <= $currentTick) {
+                throw new GameException('You cannot schedule actions for current or past ticks.');
+            }
+            if (!is_array($actions)) {
+                throw new GameException('Invalid automated action data.');
+            }
+            if (count($actions) > static::MAX_ACTIONS_PER_TICK) {
+                throw new GameException('You cannot schedule more than 10 actions in a single hour.');
+            }
+
+            $actions = array_values($actions);
+            foreach ($actions as $action) {
+                if (!is_array($action)) {
+                    throw new GameException('Invalid automated action.');
+                }
+
+                $this->validateAutomatedAction($action);
+            }
+            if (!empty($actions)) {
+                $normalizedConfig[$tick] = $actions;
+            }
+        }
+
+        $paidTicks = collect($normalizedConfig)
+            ->filter(fn (array $actions): bool => $this->containsPaidAction($actions));
+
+        $hoursUntilReset = 24 - $dominion->round->hoursInDay() + 1;
+        $beforeResetCount = $paidTicks->filter(function (array $actions, int $tick) use ($currentTick, $hoursUntilReset) {
+            return $tick - $currentTick < $hoursUntilReset;
+        })->count();
+        if ($dominion->daily_actions < $beforeResetCount) {
+            throw new GameException('You do not have enough scheduled actions remaining.');
+        }
+
+        $afterResetCount = $paidTicks->filter(function (array $actions, int $tick) use ($currentTick, $hoursUntilReset) {
+            return $tick - $currentTick >= $hoursUntilReset;
+        })->count();
+        if ($afterResetCount > max($dominion->daily_actions, static::DAILY_ACTIONS)) {
+            throw new GameException('You do not have enough scheduled actions remaining.');
+        }
+
+        ksort($normalizedConfig, SORT_NUMERIC);
+        $dominion->ai_config = $normalizedConfig;
+        $dominion->ai_enabled = !empty($normalizedConfig);
+        $dominion->save();
+    }
+
+    protected function validateAutomatedAction(array $action): void
+    {
+        if (!isset($action['action']) || !in_array($action['action'], static::AUTOMATABLE_ACTIONS, true)) {
+            throw new GameException('Invalid automated action.');
+        }
+
+        if ($action['action'] === 'spell' && in_array($action['key'] ?? null, ['ares_call', 'fools_gold'], true)) {
+            throw new GameException('You cannot automate this spell.');
+        }
+    }
+
+    protected function containsPaidAction(array $actions): bool
+    {
+        foreach ($actions as $action) {
+            if (is_array($action) && ($action['action'] ?? null) !== 'daily_bonus') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function validateTemplateSlot(int $slot): void
+    {
+        if ($slot < 0 || $slot >= static::MAX_TEMPLATE_SLOTS) {
+            throw new GameException('Invalid template slot.');
+        }
     }
 }
