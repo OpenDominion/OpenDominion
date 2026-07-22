@@ -218,6 +218,18 @@
   .btn-primary,
   .badge.text-bg-primary  { background: var(--od-primary) !important; border-color: var(--od-primary-dark) !important; color: #fff !important; }
   .btn-primary:hover      { background: var(--od-primary-dark) !important; }
+  .btn-outline-primary {
+    --bs-btn-color:                 var(--od-primary);
+    --bs-btn-border-color:          var(--od-primary);
+    --bs-btn-hover-color:           #fff;
+    --bs-btn-hover-bg:              var(--od-primary);
+    --bs-btn-hover-border-color:    var(--od-primary-dark);
+    --bs-btn-active-color:          #fff;
+    --bs-btn-active-bg:             var(--od-primary);
+    --bs-btn-active-border-color:   var(--od-primary-dark);
+    --bs-btn-disabled-color:        var(--od-primary);
+    --bs-btn-disabled-border-color: var(--od-primary);
+  }
   .btn-danger,
   .alert-danger,
   .badge.text-bg-danger   { background-color: var(--od-danger-bg) !important; border-color: var(--od-danger) !important; color: var(--od-danger) !important; }
