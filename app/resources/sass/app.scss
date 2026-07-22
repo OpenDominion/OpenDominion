@@ -104,6 +104,26 @@ a {
   white-space: nowrap;
 }
 
+// ─── Op Center report navigation ────────────────────────────────────────────
+
+.op-center-navigation {
+  position: sticky;
+  top: 0.5rem;
+  z-index: $zindex-sticky;
+}
+
+.op-center-navigation-scroller {
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 0.125rem;
+  scrollbar-color: var(--bs-border-color) transparent;
+  scrollbar-width: thin;
+}
+
+.op-center-report-anchor {
+  scroll-margin-top: 4.75rem;
+}
+
 // ─── Custom App Styles ────────────────────────────────────────────────────────
 
 @media (min-width: 768px) {
