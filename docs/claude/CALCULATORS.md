@@ -48,7 +48,8 @@ Round-end valor rankings.
 Wonder combat mechanics.
 - `PRESTIGE_BASE_GAIN` = 25, `PRESTIGE_CONTRIBUTION_MULTIPLIER` = 50
 - `MIN_SPAWN_POWER` = 150000, `MAX_SPAWN_POWER` = 500000
-- Methods: `getCurrentPower()`, `getDamageDealt()`, `getPrestigeGainForDominion()`
+- Methods: `getCurrentPower()`, `getDamageDealt()`, `getCycloneDamage()`, `getPrestigeGainForDominion()`
+- Cyclone damage includes wonder-damage tech, Cyclone hero perks, neutral-wonder doubling, and the per-wonder power cap.
 
 ### RaidCalculator
 Raid scoring, objectives, rewards, leaderboards.

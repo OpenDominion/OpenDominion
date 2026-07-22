@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
@@ -10,6 +11,16 @@ use OpenDominion\Models\Wonder;
 
 class WonderCalculator
 {
+    /**
+     * @var float Base percentage for Cyclone damage cap
+     */
+    protected const CYCLONE_DAMAGE_CAP_PERCENTAGE = 0.75;
+
+    /**
+     * @var float Wizard multiplier for Cyclone damage
+     */
+    protected const CYCLONE_DAMAGE_MULTIPLIER = 1.5;
+
     /**
      * @var float Base gain for dominions over the minimum threshold
      */
@@ -39,6 +50,41 @@ class WonderCalculator
      * @var float Maximum power after a neutral wonder is respawned
      */
     protected const MAX_SPAWN_POWER = 500000;
+
+    public function __construct(
+        protected LandCalculator $landCalculator,
+        protected MilitaryCalculator $militaryCalculator
+    )
+    {
+    }
+
+    /**
+     * Returns the damage a Cyclone cast would deal to a wonder.
+     *
+     * @param Dominion $dominion
+     * @param RoundWonder $wonder
+     * @return int
+     */
+    public function getCycloneDamage(Dominion $dominion, RoundWonder $wonder): int
+    {
+        $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
+        $damage = static::CYCLONE_DAMAGE_MULTIPLIER * $wizardRatio * $this->landCalculator->getTotalLand($dominion);
+
+        $multiplier = 1 + $dominion->getTechPerkMultiplier('wonder_damage');
+        if ($dominion->hero !== null) {
+            $multiplier += $dominion->hero->getPerkMultiplier('cyclone_damage');
+        }
+
+        $damage *= $multiplier;
+
+        if ($wonder->realm_id === null) {
+            $damage *= 2;
+        }
+
+        $damageCap = $wonder->power * (static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100);
+
+        return (int) round(min($damage, $damageCap));
+    }
 
     /**
      * Returns the wonder's power when being rebuilt.
@@ -136,7 +182,7 @@ class WonderCalculator
     * @param string $source
     * @return float
     */
-    public function getDamageDealtByDominion(RoundWonder $wonder, Dominion $dominion, string $source = null): float
+    public function getDamageDealtByDominion(RoundWonder $wonder, Dominion $dominion, ?string $source = null): float
     {
         $wonderDamage = $wonder->damage()->where('dominion_id', $dominion->id);
         if ($source !== null) {

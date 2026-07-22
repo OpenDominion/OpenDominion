@@ -36,14 +36,20 @@ class WonderController extends AbstractDominionController
             ->get()
             ->sortBy('wonder.name');
 
+        $wonderCalculator = app(WonderCalculator::class);
+        $cycloneDamageByWonder = $wonders->mapWithKeys(function (RoundWonder $wonder) use ($dominion, $wonderCalculator) {
+            return [$wonder->id => $wonderCalculator->getCycloneDamage($dominion, $wonder)];
+        });
+
         return view('pages.dominion.wonders', [
+            'cycloneDamageByWonder' => $cycloneDamageByWonder,
             'governmentService' => app(GovernmentService::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'protectionService' => app(ProtectionService::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
             'unitHelper' => app(UnitHelper::class),
-            'wonderCalculator' => app(WonderCalculator::class),
+            'wonderCalculator' => $wonderCalculator,
             'wonderHelper' => app(WonderHelper::class),
             'wonders' => $wonders,
         ]);
