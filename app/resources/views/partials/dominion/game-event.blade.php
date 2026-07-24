@@ -28,7 +28,7 @@
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                         conquered
-                        <span class="text-green text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
+                        <span class="text-green fw-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                         land from
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
@@ -48,7 +48,7 @@
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}<span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                         and captured
-                        <span class="text-red text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
+                        <span class="text-red fw-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                         land.
                     @else
                         Fellow dominion
@@ -66,7 +66,7 @@
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}<span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                         and captured
-                        <span class="text-orange text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
+                        <span class="text-orange fw-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                         land.
                     @else
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
@@ -80,21 +80,21 @@
         @elseif ($gameEvent->type === 'war_declared')
             @if ($gameEvent->target_type === \OpenDominion\Models\RealmWar::class)
                 <a href="{{ route('dominion.realm', [$gameEvent->target->sourceRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->source_realm_name_start }}</span> (#{{ $gameEvent->target->sourceRealm->number }})</a>
-                has declared <span class="text-red text-bold">WAR</span> on
+                has declared <span class="text-red fw-bold">WAR</span> on
                 <a href="{{ route('dominion.realm', [$gameEvent->target->targetRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->target_realm_name_start }}</span> (#{{ $gameEvent->target->targetRealm->number }})</a>.
             @else
                 <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
-                has declared <span class="text-red text-bold">WAR</span> on
+                has declared <span class="text-red fw-bold">WAR</span> on
                 <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
             @endif
         @elseif ($gameEvent->type === 'war_canceled')
             @if ($gameEvent->target_type === \OpenDominion\Models\RealmWar::class)
                 <a href="{{ route('dominion.realm', [$gameEvent->target->sourceRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->source_realm_name_end }}</span> (#{{ $gameEvent->target->sourceRealm->number }})</a>
-                has <span class="text-green text-bold">CANCELED</span> war against
+                has <span class="text-green fw-bold">CANCELED</span> war against
                 <a href="{{ route('dominion.realm', [$gameEvent->target->targetRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->target_realm_name_end }}</span> (#{{ $gameEvent->target->targetRealm->number }})</a>.
             @else
                 <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
-                has <span class="text-green text-bold">CANCELED</span> war against
+                has <span class="text-green fw-bold">CANCELED</span> war against
                 <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
             @endif
         @elseif ($gameEvent->type == 'wonder_spawned')
@@ -140,7 +140,7 @@
             @endphp
             <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->wonder->name }}</span></a>
             conquered
-            <span class="{{ in_array($gameEvent->target_id, $dominionIds, true) ? 'text-red' : 'text-orange' }} text-bold">{{ number_format($gameEvent->data['landLost']) }}</span>
+            <span class="{{ in_array($gameEvent->target_id, $dominionIds, true) ? 'text-red' : 'text-orange' }} fw-bold">{{ number_format($gameEvent->data['landLost']) }}</span>
             land from
             <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ in_array($gameEvent->target_id, $dominionIds, true) ? 'text-green' : 'text-light-blue' }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
             <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.

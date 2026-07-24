@@ -109,7 +109,7 @@
                                     </div>
                                     <div class="row" style="margin-top: 10px;">
                                         <div class="col-sm-12 col-md-6">
-                                            <div class="text-center text-bold" style="margin: 7px 0 -8px 0;">
+                                            <div class="text-center fw-bold" style="margin: 7px 0 -8px 0;">
                                                 Upgrades
                                             </div>
                                             <div class="row" style="font-size: 64px; margin-top: 20px;">

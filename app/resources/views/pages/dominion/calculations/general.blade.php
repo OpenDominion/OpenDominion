@@ -180,7 +180,7 @@
                             </div>
                             <div class="col-9">
                                 <a
-                                   class="text-bold"
+                                   class="fw-bold"
                                    href="#spell-wrapper"
                                    data-bs-toggle="collapse"
                                    data-bs-target="#spell-wrappper"
@@ -235,7 +235,7 @@
                             </div>
                             <div class="col-9">
                                 <a
-                                   class="text-bold"
+                                   class="fw-bold"
                                    href="#tech-wrapper"
                                    data-bs-toggle="collapse"
                                    data-bs-target="#tech-wrappper"
