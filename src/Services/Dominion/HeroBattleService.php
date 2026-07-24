@@ -1344,7 +1344,7 @@ class HeroBattleService
 
                     $telegraphMessages = [
                         'bloodrend' => "{$combatant->name} raises her hands slowly, blue veins pulsing beneath frost-white skin.",
-                        'frost_grip' => "The temperature plummets. Frost begins to creep up around your feet.",
+                        'frost_grip' => 'The temperature plummets. Frost begins to creep up around your feet.',
                         'winters_breath' => "{$combatant->name} inhales deeply, drawing the mountain's frigid air into her lungs.",
                     ];
                     $description .= ' ' . ($telegraphMessages[$nextMove] ?? '');
