@@ -11,34 +11,24 @@ use OpenDominion\Services\WonderService;
 
 class RoundFactory
 {
-    // todo: move to config somewhere?
-    private const ROUND_DURATION_IN_DAYS = 47;
+    public const ROUND_DURATION_IN_DAYS = 47;
 
     /**
      * Creates and returns a new Round in a RoundLeague.
-     *
-     * @param RoundLeague $league
-     * @param Carbon $startDate
-     * @param int $realmSize
-     * @param int $packSize
-     * @param int $playersPerRace
-     * @param bool $mixedAlignment
-     * @param int $techVersion
-     * @param string|null $discordGuildId
-     * @return Round
      */
     public function create(
         RoundLeague $league,
         Carbon $startDate,
-        int $realmSize,
         int $packSize,
         int $playersPerRace,
         bool $mixedAlignment,
         int $techVersion = TechHelper::CURRENT_VERSION,
-        ?string $discordGuildId = null
+        ?string $discordGuildId = null,
+        int $durationInDays = self::ROUND_DURATION_IN_DAYS,
+        ?string $description = null
     ): Round {
         $number = ($this->getLastRoundNumber($league) + 1);
-        $endDate = (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS);
+        $endDate = (clone $startDate)->addDays($durationInDays);
 
         /**
          * Random Disable - Skewed Distribution
@@ -58,10 +48,10 @@ class RoundFactory
             'round_league_id' => $league->id,
             'number' => $number,
             'name' => "Round {$number}",
+            'description' => $description,
             'start_date' => $startDate,
             'end_date' => $endDate,
             'offensive_actions_prohibited_at' => $offensiveActionsEndDate,
-            'realm_size' => $realmSize,
             'pack_size' => $packSize,
             'players_per_race' => $playersPerRace,
             'mixed_alignment' => $mixedAlignment,

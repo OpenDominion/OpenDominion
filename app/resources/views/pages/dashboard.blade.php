@@ -19,7 +19,11 @@
                     and starts in {{ $currentRound->timeUntilStart() }}
                 @endif
                 @if (!$currentRound->userAlreadyRegistered(Auth::user()))
-                    <a class="btn btn-primary btn-sm" href="{{ route('round.register', $currentRound) }}">Register</a>
+                    @if ($currentRound->registrationOpen())
+                        <a class="btn btn-primary btn-sm" href="{{ route('round.register', $currentRound) }}">Register</a>
+                    @else
+                        <span class="text-muted">(registration opens in {{ now()->longAbsoluteDiffForHumans($currentRound->registrationOpensAt(), 2) }})</span>
+                    @endif
                 @endif
             @endif
         </div>
@@ -195,6 +199,10 @@
                                                 Playing
                                             @elseif ($userAlreadyRegistered && !$round->hasStarted())
                                                 Registered
+                                            @elseif (!$round->registrationOpen())
+                                                <abbr title="Opens at {{ $round->registrationOpensAt() }}">
+                                                    Opens in {{ now()->longAbsoluteDiffForHumans($round->registrationOpensAt(), 2) }}
+                                                </abbr>
                                             @else
                                                 <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-sm">Register</a>
                                             @endif

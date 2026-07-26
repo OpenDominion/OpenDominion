@@ -10,6 +10,7 @@ $router->get('about')->uses('HomeController@getAboutPage')->name('about');
 $router->get('terms')->uses('HomeController@getTermsPage')->name('terms');
 $router->get('privacy')->uses('HomeController@getPrivacyPage')->name('privacy');
 $router->get('hall-of-fame')->uses('HomeController@getHallOfFame')->name('hall-of-fame');
+$router->get('round/calendar')->uses('RoundController@getCalendar')->name('round.calendar');
 
 // Authentication
 
@@ -415,6 +416,14 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->post('raids/{raid}/objectives/{objective}/tactics/{tactic}/edit', 'Staff\Administrator\RaidController@postEditTactic');
         $router->get('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@getDeleteTactic')->name('raids.objectives.tactics.delete');
         $router->post('raids/{raid}/objectives/{objective}/tactics/{tactic}/delete', 'Staff\Administrator\RaidController@postDeleteTactic');
+
+        // Rounds
+        $router->get('rounds', 'Staff\Administrator\RoundController@getIndex')->name('rounds.index');
+        $router->get('rounds/create', 'Staff\Administrator\RoundController@getCreate')->name('rounds.create');
+        $router->post('rounds/create', 'Staff\Administrator\RoundController@postCreate');
+        $router->get('rounds/{round}', 'Staff\Administrator\RoundController@getShow')->name('rounds.show');
+        $router->get('rounds/{round}/edit', 'Staff\Administrator\RoundController@getEdit')->name('rounds.edit');
+        $router->post('rounds/{round}/edit', 'Staff\Administrator\RoundController@postEdit');
 
         // Hero Tournaments
         $router->get('hero-tournaments', 'Staff\Administrator\HeroTournamentController@getIndex')->name('hero-tournaments.index');

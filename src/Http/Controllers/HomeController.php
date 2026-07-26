@@ -27,6 +27,8 @@ class HomeController extends AbstractController
             ->orderBy('created_at', 'desc')
             ->first();
 
+        $upcomingRounds = Round::upcoming()->limit(3)->get();
+
         $rankingsRound = Round::query()
             ->where('start_date', '<=', now())
             ->orderBy('start_date', 'desc')
@@ -59,6 +61,7 @@ class HomeController extends AbstractController
 
         return view('pages.home', [
             'currentRound' => $currentRound,
+            'upcomingRounds' => $upcomingRounds,
             'currentRankings' => $currentRankings,
             'playUrl' => $playUrl,
             'playLabel' => $playLabel,

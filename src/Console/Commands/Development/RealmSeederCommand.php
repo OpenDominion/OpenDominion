@@ -45,7 +45,7 @@ class RealmSeederCommand extends Command implements CommandInterface
                 foreach($realms as $realm) {
                     $races = Race::get(['id'])->toArray();
                     $dom_count = Dominion::where('realm_id', $realm->id)->count();
-                    $user = User::factory()->count($round->realm_size - $dom_count)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
+                    $user = User::factory()->count(8 - $dom_count)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
                         $randomString = Str::random(10);
 
                         $dominionFactory->create(
@@ -62,7 +62,7 @@ class RealmSeederCommand extends Command implements CommandInterface
                     $alignment = rand(0, 1) ? 'good' : 'evil';
                     $realm = app(RealmFactory::class)->create($round, $alignment);
                     $races = Race::get(['id'])->toArray();
-                    $user = User::factory()->count($round->realm_size)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
+                    $user = User::factory()->count(8)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
                         $randomString = Str::random(10);
 
                         $dominionFactory->create(

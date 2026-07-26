@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
  * @property int $round_league_id
  * @property int $number
  * @property string $name
- * @property int $realm_size
+ * @property string|null $description
  * @property int $pack_size
  * @property int $players_per_race
  * @property bool $mixed_alignment
@@ -42,6 +42,8 @@ use Illuminate\Support\Str;
  */
 class Round extends AbstractModel
 {
+    public const REGISTRATION_OPEN_DAYS_BEFORE_START = 8;
+
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
@@ -177,6 +179,20 @@ class Round extends AbstractModel
     }
 
     /**
+     * Scope a query to include only rounds whose start_date is in the future,
+     * ordered by soonest start first.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeUpcoming(Builder $query): Builder
+    {
+        return $query
+            ->where('start_date', '>', now())
+            ->orderBy('start_date');
+    }
+
+    /**
      * Scope a query to include only rounds that are ready to have realms assigned.
      * Used by TickService to trigger realm assignment.
      *
@@ -212,6 +228,23 @@ class Round extends AbstractModel
         $assignmentHours = \OpenDominion\Services\RealmAssignmentService::ASSIGNMENT_HOURS_BEFORE_START;
 
         return $this->start_date->copy()->subHours($assignmentHours);
+    }
+
+    /**
+     * Returns the moment individual registration opens for this round.
+     */
+    public function registrationOpensAt(): Carbon
+    {
+        return $this->start_date->copy()->subDays(self::REGISTRATION_OPEN_DAYS_BEFORE_START);
+    }
+
+    /**
+     * Returns whether individual registration is currently open for this round.
+     * Opens REGISTRATION_OPEN_DAYS_BEFORE_START days before start_date and closes when the round ends.
+     */
+    public function registrationOpen(): bool
+    {
+        return now() >= $this->registrationOpensAt() && !$this->hasEnded();
     }
 
     /**
