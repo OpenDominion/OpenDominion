@@ -27,10 +27,12 @@ class DashboardController extends AbstractController
             ->get();
 
         $rounds = Round::with('league')
+            ->where('start_date', '<=', now()->addDays(21))
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $currentRound = $rounds->sortByDesc('created_at')->first();
+        $currentRound = Round::active()->with('league')->orderBy('start_date')->first()
+            ?? Round::upcoming()->with('league')->first();
 
         return view('pages.dashboard', [
             'currentRound' => $currentRound,

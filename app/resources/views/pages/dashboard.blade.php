@@ -14,9 +14,10 @@
             @endif
 
             @if ($currentRound !== null && !$currentRound->hasEnded())
-                The current round is <b>{{ $currentRound->name }}</b>
-                @if (!$currentRound->hasStarted())
-                    and starts in {{ $currentRound->timeUntilStart() }}
+                @if ($currentRound->hasStarted())
+                    The current round is <b>{{ $currentRound->name }}</b>.
+                @else
+                    The next round is <b>{{ $currentRound->name }}</b> and starts in {{ $currentRound->timeUntilStart() }}.
                 @endif
                 @if (!$currentRound->userAlreadyRegistered(Auth::user()))
                     @if ($currentRound->registrationOpen())
