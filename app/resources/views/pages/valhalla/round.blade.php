@@ -69,12 +69,6 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Realm size</td>
-                                <td class="text-center">
-                                    {{ $round->realm_size }}
-                                </td>
-                            </tr>
-                            <tr>
                                 <td>Pack size</td>
                                 <td class="text-center">
                                     {{ $round->pack_size }}

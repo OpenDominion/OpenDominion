@@ -108,25 +108,25 @@
 <div class="row">
     <div class="col-sm-6 offset-sm-3">
         <p>
-            <div class="text-bold">Q. Can I create multiple accounts?</div>
+            <div class="fw-bold">Q. Can I create multiple accounts?</div>
             <div>A. No. Creating multiple accounts is a violation of rule 2, which will result in your account being suspended.</div>
-            <div class="text-bold">Q. I cannot access my account. What do I do?</div>
+            <div class="fw-bold">Q. I cannot access my account. What do I do?</div>
             <div>A. You can reset your password from the login page. If you no longer have access to the email account, you can contact an administrator for assistance*</div>
-            <div class="text-bold">Q. I don't like my account name. Can I create a new one?</div>
+            <div class="fw-bold">Q. I don't like my account name. Can I create a new one?</div>
             <div>A. No, if you'd like to change your lifetime account name, you can contact an administrator for assistance*</div>
-            <div class="text-bold">Q. I forgot to create/join a pack. Should I create a new dominion?</div>
+            <div class="fw-bold">Q. I forgot to create/join a pack. Should I create a new dominion?</div>
             <div>A. No, if you'd like to change your pack affiliation prior to being assigned a realm, you can contact an administrator for assistance*</div>
-            <div class="text-bold">Q. Can I play from the same location as someone else?</div>
+            <div class="fw-bold">Q. Can I play from the same location as someone else?</div>
             <div>A. Yes, but only if you disclose your relationship with another player to the Rules Committee prior to the start of play. If you live in the same household, those dominions must be in the same pack.</div>
-            <div class="text-bold">Q. I think someone is cheating. What do I do?</div>
+            <div class="fw-bold">Q. I think someone is cheating. What do I do?</div>
             <div>A. Contact an administrator*</div>
-            <div class="text-bold">Q. I think I found a bug. What do I do?</div>
+            <div class="fw-bold">Q. I think I found a bug. What do I do?</div>
             <div>A. You can post a message to the #bug-reports channel on Discord. If it involves sensitive information about a specific dominion, contact an administrator*</div>
-            <div class="text-bold">Q. Can I help out a friend in another realm?</div>
+            <div class="fw-bold">Q. Can I help out a friend in another realm?</div>
             <div>A. Giving general advice is encouraged, but sharing ops or giving any form of in-game assistance is strictly prohibited.</div>
-            <div class="text-bold">Q. Can I "raze" a dominion for a player in a realm that isn't my own??</div>
+            <div class="fw-bold">Q. Can I "raze" a dominion for a player in a realm that isn't my own??</div>
             <div>A. If there is no clear material, in-game benefit to your dominion or your realm, then the answer is no. This is a violation of rule 3d.</div>
-            <div class="text-bold">Q. What if I don't want to keep playing during the round?</div>
+            <div class="fw-bold">Q. What if I don't want to keep playing during the round?</div>
             <div>A. Please use the "abandon dominion" feature which can be found under "Information" on the Government page.</div>
         </p>
         <p class="small">* You can contact an administrator for assistance by: sending a direct message on Discord, using the Report a Problem link in the bottom right corner of the page, or sending an email to info@opendominion.net.</p>

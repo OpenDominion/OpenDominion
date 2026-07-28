@@ -346,6 +346,66 @@ class HeroEncounterHelper
                     ],
                 ],
             ],
+            'thessadrash_veil' => [
+                'name' => 'Veil of Thessadrash',
+                'health' => 100,
+                'attack' => 30,
+                'defense' => 10,
+                'evasion' => 0,
+                'focus' => 15,
+                'counter' => 10,
+                'recover' => 15,
+                'strategy' => 'aggressive',
+                'abilities' => ['aspect_shift', 'enrage'],
+                'status' => [
+                    'aspect_shift' => [
+                        'next_form' => 'thessadrash_shadow',
+                        'name' => 'Shadow of Thessadrash',
+                    ],
+                ],
+            ],
+            'thessadrash_shadow' => [
+                'name' => 'Shadow of Thessadrash',
+                'health' => 100,
+                'attack' => 25,
+                'defense' => 10,
+                'evasion' => 50,
+                'focus' => 10,
+                'counter' => 20,
+                'recover' => 20,
+                'strategy' => 'wraith',
+                'abilities' => ['aspect_shift', 'elusive'],
+                'status' => [
+                    'aspect_shift' => [
+                        'next_form' => 'thessadrash_maw',
+                        'name' => 'Maw of Thessadrash',
+                    ],
+                ],
+            ],
+            'thessadrash_maw' => [
+                'name' => 'Maw of Thessadrash',
+                'health' => 125,
+                'attack' => 25,
+                'defense' => 25,
+                'evasion' => 0,
+                'focus' => 0,
+                'counter' => 30,
+                'recover' => 20,
+                'strategy' => 'fortify',
+                'abilities' => ['fortify', 'hardiness'],
+            ],
+            'eliza_heart_of_ice' => [
+                'name' => 'Eliza, the Heart of Ice',
+                'health' => 200,
+                'attack' => 35,
+                'defense' => 15,
+                'evasion' => 25,
+                'focus' => 20,
+                'counter' => 15,
+                'recover' => 10,
+                'strategy' => 'wraith',
+                'abilities' => ['snow_witch_curse', 'frostbite'],
+            ],
         ]);
     }
 
@@ -454,6 +514,20 @@ class HeroEncounterHelper
                     ['key' => 'dreadsoul', 'name' => 'Dreadsoul Skullkeeper'],
                     ['key' => 'orc_boneguard', 'name' => 'Orc Boneguard'],
                     ['key' => 'orc_hexcaller', 'name' => 'Orc Hexcaller'],
+                ],
+            ],
+            'dream_of_thessadrash' => [
+                'name' => 'The Dream of Thessadrash',
+                'source' => 'Raid (Omen of Fire)',
+                'enemies' => [
+                    ['key' => 'thessadrash_veil', 'name' => 'Veil of Thessadrash'],
+                ],
+            ],
+            'heart_of_ice' => [
+                'name' => 'Eliza, the Heart of Ice',
+                'source' => 'Raid (Heart of Ice)',
+                'enemies' => [
+                    ['key' => 'eliza_heart_of_ice', 'name' => 'Eliza, the Heart of Ice'],
                 ],
             ],
         ]);

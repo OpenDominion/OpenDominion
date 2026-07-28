@@ -18,7 +18,7 @@
                     <li><strong>{{ $raid->objectives->sum(function($obj) { return $obj->tactics->count(); }) }} tactic(s)</strong></li>
                     <li><strong>All associated contributions</strong></li>
                 </ul>
-                <p class="text-bold">This action cannot be undone!</p>
+                <p class="fw-bold">This action cannot be undone!</p>
             </div>
 
             <table class="table table-bordered">

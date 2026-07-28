@@ -483,6 +483,11 @@ class HeroCalculator
     {
         $multiplier = 1;
 
+        // Frozen: attack, counter, and recover are reduced to 0 while frozen
+        if (!empty($combatant->status['frozen']) && in_array($stat, ['attack', 'counter', 'recover'])) {
+            return 0;
+        }
+
         if (in_array('last_stand', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
             $multiplier = 1.1;
         }
@@ -517,6 +522,11 @@ class HeroCalculator
                 if ($livingMinions > 0) {
                     return 999;
                 }
+            }
+            // Frostbite: each stack permanently reduces defense by 1 for this battle
+            $frostbiteStacks = (int) ($combatant->status['frostbite'] ?? 0);
+            if ($frostbiteStacks > 0) {
+                return max(0, round($combatant->defense * $multiplier) - $frostbiteStacks);
             }
         }
 

@@ -681,55 +681,87 @@
                 {{-- Left column: Round status + Podcast --}}
                 <div class="col-lg-3">
 
-                    {{-- Current Round --}}
+                    {{-- Round Status --}}
+                    @php
+                        $hasActiveRound = $currentRound !== null && $currentRound->isActive();
+                        $showUpcoming = !$hasActiveRound && $upcomingRounds->isNotEmpty();
+                    @endphp
                     <div class="landing-card landing-card-small">
                         <div class="landing-card-header">
-                            @if ($currentRound === null)
-                                <i class="fa fa-shield-halved fa-fw me-2"></i> Current Round
-                            @else
+                            @if ($showUpcoming)
+                                <i class="fa fa-calendar-days fa-fw me-2"></i> Upcoming Rounds
+                            @elseif ($hasActiveRound)
                                 <i class="fa fa-shield-halved fa-fw me-2"></i> Round #{{ $currentRound->number }}
-                            @endif
-                        </div>
-                        <div class="landing-card-body pb-1 text-center">
-                            @if ($currentRound === null || $currentRound->hasEnded())
-                                <p class="landing-status text-inactive">Inactive</p>
-                                <p>There is no ongoing round.</p>
-                                @if ($discordInviteLink = config('app.discord_invite_link'))
-                                    <p>Check the <a href="{{ $discordInviteLink }}" target="_blank" style="color: #afa170;">Discord server</a> for more information.</p>
-                                @endif
                             @else
-                                @if ($currentRound->realmAssignmentDate() > now())
-                                    <p class="landing-status text-registration">Open for Registration</p>
-                                    <p>Pack deadline in {{ $currentRound->timeUntilRealmAssignment() }}.<br/>
-                                    Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
-                                @elseif ($currentRound->start_date > now())
-                                    <p class="landing-status text-registration">Starting Soon</p>
-                                    <p>Individual registration still open!<br/>
-                                    Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
-                                @else
-                                    <p class="landing-status text-active p-0">Active</p>
-                                @endif
+                                <i class="fa fa-shield-halved fa-fw me-2"></i> Current Round
                             @endif
                         </div>
-                        @if ($currentRound !== null && !$currentRound->hasEnded())
-                            <div class="landing-card-body pt-0 mb-3">
-                                <table>
-                                    @if ($currentRound->hasStarted())
-                                        <tr>
-                                            <td class="stat-label"><i class="fa fa-clock fa-fw me-2"></i>Day</td>
-                                            <td class="text-end stat-value">{{ number_format($currentRound->daysInRound()) }} / {{ number_format($currentRound->durationInDays()) }}</td>
-                                        </tr>
-                                    @endif
-                                    <tr>
-                                        <td class="stat-label"><i class="fa fa-users fa-fw me-2"></i>Players</td>
-                                        <td class="text-end stat-value">{{ number_format($currentRound->dominions->where('user_id', '!=', null)->count()) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="stat-label"><i class="fa fa-flag fa-fw me-2"></i>Realms</td>
-                                        <td class="text-end stat-value">{{ number_format($currentRound->realms->count() - 1) }}</td>
-                                    </tr>
-                                </table>
+
+                        @if ($showUpcoming)
+                            <div class="landing-card-body pb-2 text-center">
+                                @foreach ($upcomingRounds as $upcomingRound)
+                                    <div class="mb-3">
+                                        <strong>{{ $upcomingRound->name }}</strong>
+                                        @if ($upcomingRound->description)
+                                            <br>{{ $upcomingRound->description }}
+                                        @endif
+                                        <br>
+                                        <small style="color: rgba(232, 224, 212, 0.65);">
+                                            {{ $upcomingRound->start_date->format('M j, Y') }} &ndash; {{ $upcomingRound->end_date->format('M j, Y') }}<br>
+                                            @if ($upcomingRound->registrationOpen())
+                                                Registration open now
+                                            @else
+                                                Registration opens in {{ now()->longAbsoluteDiffForHumans($upcomingRound->registrationOpensAt(), 2) }}
+                                            @endif
+                                        </small>
+                                    </div>
+                                @endforeach
+                                <div class="pt-1">
+                                    <a href="{{ route('round.calendar') }}" style="color: #afa170;">View calendar &rarr;</a>
+                                </div>
                             </div>
+                        @else
+                            <div class="landing-card-body pb-1 text-center">
+                                @if ($currentRound === null || $currentRound->hasEnded())
+                                    <p class="landing-status text-inactive">Inactive</p>
+                                    <p>There is no ongoing round.</p>
+                                    @if ($discordInviteLink = config('app.discord_invite_link'))
+                                        <p>Check the <a href="{{ $discordInviteLink }}" target="_blank" style="color: #afa170;">Discord server</a> for more information.</p>
+                                    @endif
+                                @else
+                                    @if ($currentRound->realmAssignmentDate() > now())
+                                        <p class="landing-status text-registration">Open for Registration</p>
+                                        <p>Pack deadline in {{ $currentRound->timeUntilRealmAssignment() }}.<br/>
+                                        Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
+                                    @elseif ($currentRound->start_date > now())
+                                        <p class="landing-status text-registration">Starting Soon</p>
+                                        <p>Individual registration still open!<br/>
+                                        Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
+                                    @else
+                                        <p class="landing-status text-active p-0">Active</p>
+                                    @endif
+                                @endif
+                            </div>
+                            @if ($currentRound !== null && !$currentRound->hasEnded())
+                                <div class="landing-card-body pt-0 mb-3">
+                                    <table>
+                                        @if ($currentRound->hasStarted())
+                                            <tr>
+                                                <td class="stat-label"><i class="fa fa-clock fa-fw me-2"></i>Day</td>
+                                                <td class="text-end stat-value">{{ number_format($currentRound->daysInRound()) }} / {{ number_format($currentRound->durationInDays()) }}</td>
+                                            </tr>
+                                        @endif
+                                        <tr>
+                                            <td class="stat-label"><i class="fa fa-users fa-fw me-2"></i>Players</td>
+                                            <td class="text-end stat-value">{{ number_format($currentRound->dominions->where('user_id', '!=', null)->count()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="stat-label"><i class="fa fa-flag fa-fw me-2"></i>Realms</td>
+                                            <td class="text-end stat-value">{{ number_format($currentRound->realms->count() - 1) }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            @endif
                         @endif
                     </div>
 

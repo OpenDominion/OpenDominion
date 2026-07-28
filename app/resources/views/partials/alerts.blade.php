@@ -35,6 +35,27 @@
             <p><i class="ra ra-robot-arm me-1"></i> You have <a href="{{ route('dominion.bonuses.actions') }}">automated actions</a> scheduled in {{ hours_until_next_action($selectedDominion->ai_config, $selectedDominion->round->getTick()) }} tick(s).</p>
         </div>
     @endif
+
+@endif
+
+@if (!Route::is(['home', 'round.calendar']))
+    @php
+        $selectedDominionRoundEnded = isset($selectedDominion) && $selectedDominion->round->hasEnded();
+        $noSelectedDominion = !isset($selectedDominion);
+        $showNextRoundBanner = ($selectedDominionRoundEnded || $noSelectedDominion) && !\OpenDominion\Models\Round::active()->exists();
+    @endphp
+    @if ($showNextRoundBanner)
+        @php($nextRound = \OpenDominion\Models\Round::upcoming()->first())
+        @if ($nextRound)
+            <div class="alert alert-info">
+                <p class="mb-0">
+                    <i class="ra ra-wooden-sign me-1"></i>
+                    The next round, <a href="{{ route('round.calendar') }}" class="alert-link"><strong>{{ $nextRound->name }}</strong></a>, starts {{ $nextRound->start_date->format('M j, Y') }} (in {{ $nextRound->timeUntilStart() }}).
+                    @if ($nextRound->description) — {{ $nextRound->description }} @endif
+                </p>
+            </div>
+        @endif
+    @endif
 @endif
 
 @if (!$errors->isEmpty())

@@ -42,7 +42,7 @@
                                     @foreach ($forumThreads as $thread)
                                         <tr>
                                             <td class="align-middle">
-                                                <a href="{{ route('dominion.forum.thread', $thread) }}" class="{{ $thread->last_activity > $lastRead ? 'text-bold' : null }}">
+                                                <a href="{{ route('dominion.forum.thread', $thread) }}" class="{{ $thread->last_activity > $lastRead ? 'fw-bold' : null }}">
                                                     {{ $thread->title }}
                                                 </a>
                                                 @php

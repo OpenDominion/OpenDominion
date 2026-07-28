@@ -61,6 +61,17 @@
                                                                 </td>
                                                             </tr>
                                                         @endforeach
+                                                        @if (!empty($combatant->status['frozen']))
+                                                            <tr>
+                                                                <td><span class="text-info" data-bs-toggle="tooltip" title="Attack, counter, and recover are reduced to 0 this turn.">Frozen</span></td>
+                                                                <td><i class="fa fa-snowflake text-info"></i></td>
+                                                            </tr>
+                                                        @elseif (!empty($combatant->status['frozen_pending']))
+                                                            <tr>
+                                                                <td><span class="text-warning" data-bs-toggle="tooltip" title="Will be frozen next turn.">Freezing</span></td>
+                                                                <td><i class="fa fa-snowflake text-warning"></i></td>
+                                                            </tr>
+                                                        @endif
                                                         <tr>
                                                             <td><span data-bs-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
                                                             <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
@@ -72,14 +83,13 @@
                                                                 @if ($actionData['type'] == 'hostile')
                                                                     <tr>
                                                                         <td colspan=2>
-                                                                            @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                                <a class="btn btn-block btn-secondary mb-1" disabled>
+                                                                            @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0 || $combatant->current_health <= 0)
+                                                                                <a class="btn btn-block btn-secondary disabled mb-1" aria-disabled="true" tabindex="-1">
                                                                                     {{ $actionData['name'] }}
                                                                                 </a>
                                                                             @else
                                                                                 <a class="btn btn-block btn-primary mb-1"
-                                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}"
-                                                                                    {{ $combatant->current_health <= 0 ? 'disabled' : null }}>
+                                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}">
                                                                                     {{ $actionData['name'] }}
                                                                                 </a>
                                                                             @endif
@@ -130,7 +140,7 @@
                                                         <div>
                                                             @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
                                                                 @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                    <a class="btn btn-block btn-secondary mb-1" disabled>
+                                                                    <a class="btn btn-block btn-secondary disabled mb-1" aria-disabled="true" tabindex="-1">
                                                                         {{ $actionData['name'] }}
                                                                     </a>
                                                                 @elseif ($actionData['type'] == 'hostile')
@@ -178,7 +188,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="max-height: {{ $battle->finished ? '272px' : '645px' }}; overflow-y: scroll;">
+                                <div class="col-md-6" style="max-height: {{ $battle->combatants->count() > 2 ? '645px' : '272px' }}; overflow-y: scroll;">
                                     <table class="table table-sm">
                                         <thead>
                                             <tr>
@@ -259,7 +269,7 @@
                 <div class="card-body">
                     @include('partials.dominion.hero-combat')
                     @if ($activeBattles->where('finished', false)->count() == 0)
-                        <a class="btn btn-primary btn-block" href="{{ route('dominion.heroes.battles.practice') }}">
+                        <a class="btn btn-primary btn-block mb-2" href="{{ route('dominion.heroes.battles.practice') }}">
                             Practice Battles
                         </a>
                         @if ($hero->isInQueue())

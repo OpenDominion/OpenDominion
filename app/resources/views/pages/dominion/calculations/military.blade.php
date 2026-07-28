@@ -854,8 +854,9 @@
                             <div class="col-3 text-start">
                                 <select name="calc[tech_offense]" class="form-select">
                                     <option value="0"></option>
-                                    <option value="2.5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_13_13")) ? 'selected' : null }}>Ares' Favor +2.5%</option>
-                                    <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>Avatar of Ares +5%</option>
+                                    <option value="2.5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_13_13") && !array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>+2.5% Ares' Favor</option>
+                                    <option value="2.5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && !array_get($targetInfoOps['vision']->data, "techs.tech_13_13") && array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>+2.5% Avatar of Ares ONLY</option>
+                                    <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_13_13") && array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>+5% Avatar of Ares + Ares' Favor</option>
                                 </select>
                             </div>
                             <div class="col-3 text-end">
@@ -879,8 +880,8 @@
                             <div class="col-3 text-start">
                                 <select name="calc[war_bonus]" class="form-select">
                                     <option value="0"></option>
-                                    <option value="4">Single +4%</option>
-                                    <option value="8">Mutual +8%</option>
+                                    <option value="4">+4% Single</option>
+                                    <option value="8">+8% Mutual</option>
                                 </select>
                             </div>
                             <div class="col-3 text-end">

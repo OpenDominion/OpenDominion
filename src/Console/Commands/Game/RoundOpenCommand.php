@@ -20,7 +20,6 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--days= : Start the round in +DAYS days midnight}
                              {--hours= : Adjust the start time by +/-HOURS, allowing for more fine-tuning}
                              {--league=standard : Round league to use}
-                             {--realm-size=8 : Maximum number of dominions in one realm}
                              {--pack-size=5 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
                              {--mixedAlignment=true : Allows for mixed alignments}
@@ -68,7 +67,6 @@ class RoundOpenCommand extends Command implements CommandInterface
         $days = $this->option('days');
         $hours = $this->option('hours');
         $league = $this->option('league');
-        $realmSize = $this->option('realm-size');
         $packSize = $this->option('pack-size');
         $playersPerRace = $this->option('playersPerRace');
         $mixedAlignments = $this->option('mixedAlignment');
@@ -79,16 +77,8 @@ class RoundOpenCommand extends Command implements CommandInterface
             throw new RuntimeException('Option --now may not be used on production');
         }
 
-        if ($realmSize <= 0) {
-            throw new RuntimeException('Option --realm-size must be greater than 0.');
-        }
-
         if ($packSize <= 0) {
             throw new RuntimeException('Option --pack-size must be greater than 0.');
-        }
-
-        if ($realmSize < $packSize) {
-            throw new RuntimeException('Option --realm-size must be greater than or equal to option --packSize.');
         }
 
         if ($playersPerRace < 0) {
@@ -132,7 +122,6 @@ class RoundOpenCommand extends Command implements CommandInterface
         $round = $this->roundFactory->create(
             $roundLeague,
             $startDate,
-            $realmSize,
             $packSize,
             $playersPerRace,
             $mixedAlignments,
@@ -140,6 +129,6 @@ class RoundOpenCommand extends Command implements CommandInterface
             $discordGuildId
         );
 
-        $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
+        $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a pack size of {$round->pack_size}");
     }
 }

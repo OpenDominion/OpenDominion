@@ -652,6 +652,13 @@ class HeroHelper
                 'limited' => false,
                 'special' => true,
             ],
+            'aspect_shift' => [
+                'name' => 'Aspect Shift',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+            ],
             'weakened' => [
                 'name' => 'Weakened',
                 'processor' => null,
@@ -672,6 +679,71 @@ class HeroHelper
                     'counter' => 15,
                 ],
             ],
+            'bloodrend' => [
+                'name' => 'Bloodrend',
+                'processor' => 'bloodrend',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'defend_damage' => 15,
+                    'default_damage' => 30,
+                    'attack_damage' => 50,
+                ],
+                'messages' => [
+                    'defend' => '%s tears into %s for %s damage, but their defensive stance blunts it. She heals for %s health.',
+                    'attack' => '%s reads %s\'s wild swing and drives her claws deep for %s damage. She feasts, healing %s health.',
+                    'default' => '%s tears into %s for %s damage. She heals for %s health.',
+                ]
+            ],
+            'frost_grip' => [
+                'name' => 'Frost Grip',
+                'processor' => 'frostGrip',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'recover_frostbite_stacks' => 5,
+                ],
+                'messages' => [
+                    'focus' => '%s\'s clarity of mind shatters the creeping ice.',
+                    'recover' => 'The ice climbs unnoticed as %s tends to their wounds. %s is frozen, frostbite seeping deep into their bones.',
+                    'default' => 'Ice locks around %s\'s legs. %s is frozen.',
+                ]
+            ],
+            'winters_breath' => [
+                'name' => 'Winter\'s Breath',
+                'processor' => 'wintersBreath',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'default_damage' => 30,
+                    'defend_damage' => 50,
+                ],
+                'messages' => [
+                    'attack' => '%s lunges through the gathering storm, interrupting %s\'s breath.',
+                    'defend' => '%s exhales a cone of killing frost. %s\'s defensive stance intensifies the cold, taking %s damage.',
+                    'default' => '%s exhales a cone of killing frost, dealing %s damage to %s.',
+                ]
+            ],
+            'snow_witch_curse' => [
+                'name' => 'Snow Witch\'s Curse',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'moves' => ['bloodrend', 'frost_grip', 'winters_breath'],
+                ],
+            ],
+            'frostbite' => [
+                'name' => 'Frostbite',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+            ],
         ]);
     }
 
@@ -691,7 +763,12 @@ class HeroHelper
             return $combatActions;
         }
 
-        return $combatActions->filter(function ($action, $key) use ($combatant) {
+        $hasFortify = in_array('fortify', $combatant->abilities ?? []);
+
+        return $combatActions->filter(function ($action, $key) use ($combatant, $hasFortify) {
+            if ($key === 'defend' && $hasFortify) {
+                return false;
+            }
             if (!$action['special']) {
                 return true;
             }
@@ -721,7 +798,9 @@ class HeroHelper
     {
         $descriptions = [
             'arcane_shield' => 'Arcane Shield: Defense value is increased by 10.',
+            'aspect_shift' => 'Aspect Shift: Upon death, transforms into a new aspect.',
             'blade_flurry' => 'Blade Flurry: Attack twice for 75% damage each time.',
+            'bloodrend' => 'Bloodrend: A telegraphed rending attack that heals for 100% of damage dealt.',
             'channeling' => 'Channeling: Focus can be used while already active, stacking bonus damage.',
             'combat_analysis' => 'Combat Analysis: Decreases target\'s defense value by 1 for the remainder of the battle.',
             'crushing_blow' => 'Crushing Blow: Deals 15 additional damage if the target is not defending.',
@@ -731,6 +810,8 @@ class HeroHelper
             'enrage' => 'Enrage: When at 40 health or less, attack value is increased by 10.',
             'elusive' => 'Elusive: When evading a non-focused attack, damage is reduced to 0 instead of half.',
             'forge' => 'Forge: Increases attack value by 1 for the remainder of the battle.',
+            'frostbite' => 'Frostbite: Each landed attack reduces the target\'s defense value by 1 for the remainder of the battle.',
+            'frost_grip' => 'Frost Grip: A telegraphed freeze effect.',
             'fortify' => 'Fortify: Prevent the next 20 non-counter damage dealt.',
             'great_flood' => 'Great Flood: Strike all living enemies for 75% attack damage, bypassing all defenses.',
             'hardiness' => 'Hardiness: Remain on 1 health the first time your health would be reduced below 1.',
@@ -741,6 +822,7 @@ class HeroHelper
             'rally' => 'Rally: When at 40 health or less, defense value is increased by 5.',
             'retribution' => 'Retribution: Counter attack damage is increased by 15.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
+            'snow_witch_curse' => 'Snow Witch\'s Curse: Every other turn, telegraphs a signature move that must be countered with the correct action. Choosing the wrong counter is catastrophic.',
             'soul_harvest' => 'Soul Harvest: Absorbs the strength of fallen allies, growing more powerful with each death.',
             'soul_rend' => 'Soul Rend: When wounded, charges a devastating attack that deals massive damage if not defended.',
             'soul_tribute' => 'Soul Tribute: Upon death, empowers Dreadsoul Skullkeeper, increasing his attack and defense.',
@@ -752,6 +834,7 @@ class HeroHelper
             'undying_legion' => 'Undying Legion: Immune to damage while any minions are alive.',
             'volatile_mixture' => 'Volatile Mixture: Attack for 150% damage, but 20% chance to hit yourself.',
             'weakened' => 'Weakened: Defense value is decreased by 15.',
+            'winters_breath' => 'Winter\'s Breath: A telegraphed cone of flat frost damage that bypasses defense and evasion.',
             'wounded_retreat' => 'Wounded Retreat: Upon defeat, this entity retreats across the planes rather than being destroyed.',
         ];
 

@@ -35,7 +35,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < max($round->realm_size, $dominions->count()); $i++)
+                            @for ($i = 0; $i < $dominions->count(); $i++)
                                 @php
                                     $dominion = $dominions->get($i);
                                 @endphp

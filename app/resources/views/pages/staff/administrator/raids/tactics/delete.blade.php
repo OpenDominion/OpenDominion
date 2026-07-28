@@ -12,7 +12,7 @@
 
             <div class="alert alert-warning">
                 <h4><i class="icon fa fa-warning"></i> Warning!</h4>
-                <p class="text-bold">This action cannot be undone!</p>
+                <p class="fw-bold">This action cannot be undone!</p>
             </div>
 
             <table class="table table-bordered">

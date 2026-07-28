@@ -413,7 +413,7 @@
                                         <div class="row">
                                             @foreach ($governmentService->getWarsEngaged($selectedDominion->realm->warsOutgoing) as $war)
                                                 <div class="col-sm-8 col-lg-10">
-                                                    You have declared <span class="text-red text-bold">WAR</span> on {{ $war->targetRealm->name }} (#{{ $war->targetRealm->number }})!
+                                                    You have declared <span class="text-red fw-bold">WAR</span> on {{ $war->targetRealm->name }} (#{{ $war->targetRealm->number }})!
                                                     @if ($governmentService->getHoursBeforeWarActive($war) > 0)
                                                         <br/><small class="text-info">War bonus will be active in {{ $governmentService->getHoursBeforeWarActive($war) }} hours.</small>
                                                     @endif

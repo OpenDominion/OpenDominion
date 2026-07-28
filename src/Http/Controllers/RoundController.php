@@ -41,9 +41,21 @@ class RoundController extends AbstractController
         $this->packService = $packService;
     }
 
+    public function getCalendar()
+    {
+        $activeRounds = Round::active()->with('league')->get();
+        $upcomingRounds = Round::upcoming()->with('league')->get();
+
+        return view('pages.round.calendar', [
+            'activeRounds' => $activeRounds,
+            'upcomingRounds' => $upcomingRounds,
+        ]);
+    }
+
     public function getRegister(Round $round)
     {
         try {
+            $this->guardAgainstRegistrationNotYetOpen($round);
             $this->guardAgainstUserAlreadyHavingDominionInRound($round);
         } catch (GameException $e) {
             return redirect()
@@ -82,6 +94,7 @@ class RoundController extends AbstractController
     public function postRegister(Request $request, Round $round)
     {
         try {
+            $this->guardAgainstRegistrationNotYetOpen($round);
             $this->guardAgainstUserAlreadyHavingDominionInRound($round);
         } catch (GameException $e) {
             return redirect()
@@ -233,6 +246,19 @@ class RoundController extends AbstractController
         );
 
         return redirect()->route('dominion.status');
+    }
+
+    /**
+     * Throws exception if registration for the round has not yet opened.
+     *
+     * @throws GameException
+     */
+    protected function guardAgainstRegistrationNotYetOpen(Round $round): void
+    {
+        if (!$round->registrationOpen()) {
+            $opensIn = now()->longAbsoluteDiffForHumans($round->registrationOpensAt(), 2);
+            throw new GameException("Registration for round {$round->number} opens in {$opensIn}.");
+        }
     }
 
     /**

@@ -33,7 +33,7 @@
                                     @foreach ($category->latestThreads as $thread)
                                         <tr>
                                             <td class="align-middle">
-                                                <a href="{{ route('message-board.thread', $thread) }}" class="{{ $thread->last_activity > $lastRead ? 'text-bold' : null }}">
+                                                <a href="{{ route('message-board.thread', $thread) }}" class="{{ $thread->last_activity > $lastRead ? 'fw-bold' : null }}">
                                                     {{ $thread->title }}
                                                 </a>
                                                 @php
