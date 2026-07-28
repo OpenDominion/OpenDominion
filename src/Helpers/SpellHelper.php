@@ -215,6 +215,7 @@ class SpellHelper
             'lumber_decay' => '%+g%% lumber rot',
             'mana_decay' => '%+g%% mana drain',
             'martyrdom' => 'Spy, assassin, wizard, and archmage costs reduced by 1%% per 15 prestige (max 50%%)',
+            'train_archmages_from_draftees' => 'Archmages are trained from draftees instead of wizards, at a cost of %d platinum',
             'spy_cost' => '%+g%% cost of spies',
             'spy_losses' => '%s%% spy losses on failed operations',
             'spy_power' => '%+g%% spy power',

@@ -11,8 +11,7 @@ home_land_type: mountain
 perks:
   defense: 5
   food_consumption: -50
-  lumber_production: -10
-  archmage_cost: -150
+  platinum_production: 5
 units:
   - name: Icebeast
     cost:

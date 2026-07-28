@@ -49,6 +49,13 @@ class TrainingCalculator
         $archmageBaseCost = 1000;
         $archmageBaseCost += $dominion->race->getPerkValue('archmage_cost');
 
+        // Overrides the base cost entirely and swaps the wizard cost for a draftee
+        $archmagesFromDraftees = $this->spellCalculator->resolveSpellPerk($dominion, 'train_archmages_from_draftees');
+
+        if ($archmagesFromDraftees) {
+            $archmageBaseCost = $archmagesFromDraftees;
+        }
+
         $spyCostMultiplier = $this->getSpyCostMultiplier($dominion);
         $assassinCostMultiplier = $this->getAssassinCostMultiplier($dominion);
         $wizardCostMultiplier = $this->getWizardCostMultiplier($dominion);
@@ -83,7 +90,13 @@ class TrainingCalculator
 
                 case 'archmages':
                     $cost['platinum'] = $archmagePlatinumCost;
-                    $cost['wizards'] = 1;
+
+                    if ($archmagesFromDraftees) {
+                        $cost['draftees'] = 1;
+                    } else {
+                        $cost['wizards'] = 1;
+                    }
+
                     break;
 
                 default:

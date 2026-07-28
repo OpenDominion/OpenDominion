@@ -257,6 +257,17 @@ alchemist_frost:
     - icekin
   perks:
     platinum_production: 15
+  active: false
+arcane_infusion:
+  name: Arcane Infusion
+  category: self
+  cost_mana: 5
+  cost_strength: 5
+  duration: 12
+  races:
+    - icekin
+  perks:
+    train_archmages_from_draftees: 1350
 mechanical_genius:
   name: Mechanical Genius
   category: self

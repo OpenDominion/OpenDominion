@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.51.0] - 2026-07-27
+### Changed
+- Icekin: Alchemist Frost removed (was +15% platinum production), replaced with a permanent +5% platinum production racial perk
+- Icekin: removed the lumber production penalty (was -10%)
+- Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion)
+- Icekin: new spell Arcane Infusion, which trains Archmages directly from draftees instead of wizards, at a cost of 1,350p
+
 ## [1.50.2] - 2026-06-12
 ### Changed
 - Updated hero name randomizer
