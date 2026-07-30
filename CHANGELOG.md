@@ -11,9 +11,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Demon Infernal Imp: +0.5 offense (from 3), +45p (360p from 315p)
 - Demon Succubus: +1 offense (from 0), gains +1 offensive power per 10% swamp (max +1)
 - Demon Archdemon: -75p (800p from 875p), +5m (35m from 30m), removed offensive casualty reduction (was -20%)
-- Gnome: removed offensive power bonus (was 7.5%)
-- Gnome Juggernaut: +0.5 offense (from 6.5), +25r (525r from 500r)
-- Gnome Rockapult: -25r (325r from 350r)
+- Gnome: removed offensive power bonus (was 7.5%), increased research production perk to 15% (from 10%)
+- Gnome Juggernaut: +0.5 offense (from 6.5)
 - Icekin: Alchemist Frost removed (was +15% platinum production), replaced with a permanent +5% platinum production racial perk
 - Icekin: new spell Arcane Infusion allows training Archmages directly from draftees instead of wizards, at a cost of 1400p
 - Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion), removed the lumber production penalty (was -10%)

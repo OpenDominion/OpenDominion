@@ -11,7 +11,7 @@ home_land_type: mountain
 perks:
   max_population: -5
   food_consumption: -20
-  tech_production: 10
+  tech_production: 15
 units:
   - name: Suicide Squad
     cost:
@@ -32,7 +32,7 @@ units:
   - name: Rockapult
     cost:
       platinum: 675
-      ore: 325
+      ore: 350
     power:
       offense: 2
       defense: 4
@@ -41,7 +41,7 @@ units:
   - name: Juggernaut
     cost:
       platinum: 725
-      ore: 550
+      ore: 525
     power:
       offense: 7
       defense: 3
