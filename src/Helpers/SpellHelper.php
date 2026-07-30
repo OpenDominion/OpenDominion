@@ -12,6 +12,33 @@ use OpenDominion\Models\SpellPerkType;
 class SpellHelper
 {
     /**
+     * Perk types that contribute to the offense section of the military calculator.
+     *
+     * @var string[]
+     */
+    public const OFFENSE_PERK_TYPES = ['offense', 'offense_from_barren_land', 'offense_from_spell', 'offense_unit1'];
+
+    /**
+     * Whether a spell is a net gain to offensive power.
+     *
+     * The offense section of the military calculator shows the worst case for the
+     * defender, so bonuses default to on and penalties default to off.
+     *
+     * @param Spell $spell
+     * @return bool
+     */
+    public function increasesOffense(Spell $spell): bool
+    {
+        foreach (static::OFFENSE_PERK_TYPES as $perkType) {
+            if ($spell->getPerkValue($perkType) > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns spell by key its key.
      *
      * @param string $key
@@ -157,7 +184,7 @@ class SpellHelper
             'upgrade_specs' => 'Sacrifice Skeletons and Ghouls to summon Death Knights and Necromancers (2 plus 1 per 1000 acres, hourly)',
 
             // Unit specific
-            'offense_unit1' => 'Infernal Imps gain %+g offense',
+            'offense_unit1' => '%+g offense for Infernal Imps',
             'flying_unit4' => 'Archdemons gain flying (no boats needed)',
 
             // Casualties related

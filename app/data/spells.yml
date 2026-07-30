@@ -644,9 +644,8 @@ infernal_command:
   races:
     - demon
   perks:
-    offense_unit1: 0.5
+    offense_unit1: -0.5
     flying_unit4: 1
-    apply_corruption: 1
 corruption:
   name: Corruption
   category: effect
@@ -657,6 +656,7 @@ corruption:
     - demon
   perks:
     platinum_production: -5
+  active: false
 satiated_thirst:
   name: Satiated Thirst
   category: effect

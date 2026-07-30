@@ -15,10 +15,10 @@ perks:
 units:
   - name: Infernal Imp
     cost:
-      platinum: 315
+      platinum: 375
       mana: 20
     power:
-      offense: 3
+      offense: 3.5
       defense: 0
     need_boat: false
   - name: Abyssal Fiend
@@ -33,17 +33,16 @@ units:
       platinum: 1050
       mana: 10
     power:
-      offense: 0
+      offense: 1
       defense: 5
     perks:
+      offense_from_land: swamp,10,1 # land type, ratio%, max
       defense_from_land: swamp,10,1 # land type, ratio%, max
       charm_spies: 1
   - name: Archdemon
     cost:
-      platinum: 875
+      platinum: 800
       mana: 30
     power:
       offense: 5
       defense: 2
-    perks:
-      casualties_offense: -20

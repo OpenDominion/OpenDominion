@@ -735,30 +735,18 @@
 
                             <div class="mb-3 row">
                                 @php
-                                    $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land', 'offense_from_spell', 'offense_unit1'], $race, 'self')->first();
-                                    $offenseEffectSpells = $spellHelper->getSpellsWithPerk('offense', $race, 'effect');
+                                    // Worst case for the defender: offensive bonuses default on, penalties default off
+                                    $offenseSpells = $spellHelper->getSpellsWithPerk($spellHelper::OFFENSE_PERK_TYPES, $race, 'self')->take(1)
+                                        ->merge($spellHelper->getSpellsWithPerk($spellHelper::OFFENSE_PERK_TYPES, $race, 'effect'));
                                 @endphp
-                                <div class="col-3 text-end">
-                                    @if ($racialSpell)
-                                        {{ $racialSpell->name }}
-                                    @endif
-                                </div>
-                                <div class="col-3 text-start">
-                                    @if ($racialSpell)
-                                        <input type="checkbox"
-                                                name="calc[{{ $racialSpell->key }}]"
-                                                checked />
-                                    @endif
-                                </div>
-                                @foreach ($offenseEffectSpells as $effectSpell)
+                                @foreach ($offenseSpells as $offenseSpell)
                                     <div class="col-3 text-end">
-                                        {{ $effectSpell->name }}
+                                        {{ $offenseSpell->name }}
                                     </div>
                                     <div class="col-3 text-start">
-                                        {{-- Worst case for the defender: offensive bonuses default on, penalties default off --}}
                                         <input type="checkbox"
-                                                name="calc[{{ $effectSpell->key }}]"
-                                                {{ $effectSpell->getPerkValue('offense') > 0 ? 'checked' : null }} />
+                                                name="calc[{{ $offenseSpell->key }}]"
+                                                {{ $spellHelper->increasesOffense($offenseSpell) ? 'checked' : null }} />
                                     </div>
                                 @endforeach
                                 @if ($race->key == 'nomad-rework')

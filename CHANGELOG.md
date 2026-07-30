@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Icekin: removed the lumber production penalty (was -10%)
 - Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion)
 - Icekin: new spell Arcane Infusion, which trains Archmages directly from draftees instead of wizards, at a cost of 1,350p
+- Demon: Infernal Command now reduces Infernal Imp offense by 0.5 (was an increase of 0.5) and no longer applies Corruption
+- Demon Infernal Imp: +0.5 offense (from 3), +60p (from 315p)
+- Demon Succubus: +1 offense (from 0), gains +1 offensive power per 10% swamp (max 1)
+- Demon Archdemon: -75p (from 875p), removed offensive casualty reduction (was -20%)
 - Vampire: Feast of Blood reworked. No longer cancels immortality or converts Bloodreavers into Kindred; now grants +25% conversion rate and applies Satiated Thirst to you after attacking
 - New Status Effect: Satiated Thirst, which reduces offensive power by 10% for 48 hours
 

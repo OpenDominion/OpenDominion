@@ -61,6 +61,24 @@ class CalculationsMilitaryTest extends AbstractTestCase
         $this->assertNull($this->offenseEffectSpellInput($dominion));
     }
 
+    public function testRacialSpellThatOnlyReducesOffenseDefaultsToOff(): void
+    {
+        $dominion = $this->createVampireDominion(Race::where('key', 'demon')->firstOrFail());
+
+        $response = $this->get(route('dominion.calculations.military', ['dominion' => $dominion->id]));
+        $response->assertOk();
+
+        // Infernal Command is -0.5 Infernal Imp offense, so leaving it off is the worst case
+        $matched = preg_match(
+            '/<input[^>]*name="calc\[infernal_command\]"[^>]*>/',
+            $response->getContent(),
+            $matches
+        );
+
+        $this->assertSame(1, $matched, 'Infernal Command should still render as an offense calc field');
+        $this->assertStringNotContainsString('checked', $matches[0]);
+    }
+
     protected function createVampireDominion(?Race $race = null): Dominion
     {
         $user = $this->createAndImpersonateUser();

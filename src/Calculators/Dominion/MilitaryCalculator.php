@@ -794,7 +794,13 @@ class MilitaryCalculator
         // Special Case for Infernal Command
         if ($dominion->race->key == 'demon' && $unit->slot == 1 && $powerType == 'offense') {
             if ($dominion->calc !== null) {
-                return isset($dominion->calc['infernal_command']) ? 0.5 : 0;
+                if (!isset($dominion->calc['infernal_command'])) {
+                    return 0;
+                }
+
+                $infernalCommand = $this->spellHelper->getSpellByKey('infernal_command');
+
+                return $infernalCommand === null ? 0 : (float)$infernalCommand->getPerkValue('offense_unit1');
             } else {
                 return $dominion->getSpellPerkValue('offense_unit1');
             }
