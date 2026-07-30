@@ -32,7 +32,7 @@ units:
   - name: Basher
     type: offensive_elite
     cost:
-      platinum: 1400
+      platinum: 1415
       ore: 150
     power:
       offense: 7
@@ -43,7 +43,7 @@ units:
   - name: Smasher
     type: hybrid_elite
     cost:
-      platinum: 1400
+      platinum: 1415
       ore: 150
     power:
       offense: 7

@@ -379,7 +379,7 @@ regeneration:
   races:
     - troll
   perks:
-    casualties: -30
+    casualties: -25
 parasitic_hunger:
   name: Parasitic Hunger
   category: self
