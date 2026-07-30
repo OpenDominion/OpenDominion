@@ -7,24 +7,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [1.51.0] - 2026-07-27
 ### Changed
-- Icekin: Alchemist Frost removed (was +15% platinum production), replaced with a permanent +5% platinum production racial perk
-- Icekin: removed the lumber production penalty (was -10%)
-- Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion)
-- Icekin: new spell Arcane Infusion, which trains Archmages directly from draftees instead of wizards, at a cost of 1,350p
-- Gnome: removed offensive power bonus (was 7.5%)
-- Gnome Rockapult: -25 ore (from 350)
-- Gnome Juggernaut: +0.5 offense (from 6.5), +25 ore (from 525)
-- Spirit Ghost: -30p (from 1100p)
 - Demon: Infernal Command now reduces Infernal Imp offense by 0.5 (was an increase of 0.5) and no longer applies Corruption
-- Demon Infernal Imp: +0.5 offense (from 3), +60p (from 315p)
-- Demon Succubus: +1 offense (from 0), gains +1 offensive power per 10% swamp (max 1)
-- Demon Archdemon: -75p (from 875p), removed offensive casualty reduction (was -20%)
-- Vampire: Feast of Blood reworked. No longer cancels immortality or converts Bloodreavers into Kindred; now grants +25% conversion rate and applies Satiated Thirst to you after attacking
-- New Status Effect: Satiated Thirst, which reduces offensive power by 10% for 48 hours
-- Locate Valuables now rolls a normal success/failure check against spy ratios before rolling for a discovery. Failed attempts kill spies and notify the target, and no longer build progress toward a discovery
-- Valuables: rarity is now split into five even bands, so Common and Legendary are no longer half as likely as the tiers between them. Uncommon and above now require a meaningfully larger or better defended target
-- Valuables: stolen valuables now hold their full sale price for 6 hours before the price begins to decay
-- Valuables: required spy-hours are now floored at 75% of the holding dominion's own land, scaled by rarity. Buying intel from a much smaller realmmate re-prices the heist against your size, so small dominions can no longer farm cheap heists for their larger realmmates
+- Demon Infernal Imp: +0.5 offense (from 3), +45p (360p from 315p)
+- Demon Succubus: +1 offense (from 0), gains +1 offensive power per 10% swamp (max +1)
+- Demon Archdemon: -75p (800p from 875p), +5m (35m from 30m), removed offensive casualty reduction (was -20%)
+- Gnome: removed offensive power bonus (was 7.5%)
+- Gnome Juggernaut: +0.5 offense (from 6.5), +25r (525r from 500r)
+- Gnome Rockapult: -25r (325r from 350r)
+- Icekin: Alchemist Frost removed (was +15% platinum production), replaced with a permanent +5% platinum production racial perk
+- Icekin: new spell Arcane Infusion allows training Archmages directly from draftees instead of wizards, at a cost of 1400p
+- Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion), removed the lumber production penalty (was -10%)
+- Spirit Ghost: -30p (1070p from 1100p)
+- Vampire: Feast of Blood no longer cancels immortality or converts dying Bloodreavers into Kindred, now grants 25% more conversions and applies Satiated Thirst to yourself after attacking, which is a new status effect that reduces your offensive power by 10% for 48 hours
+- Locate Valuables now rolls a normal success/failure check against spy ratios before rolling for a discovery, discovery chance slightly increased
+- Spies required for Valuables investigation against targets below your 75% range now treated as exactly 75% your size, even when the intel is purchased from another player, sale price frozen for first 6 hours after completion before it starts to decay
 
 ## [1.50.2] - 2026-06-12
 ### Changed
