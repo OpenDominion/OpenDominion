@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Icekin: removed the lumber production penalty (was -10%)
 - Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion)
 - Icekin: new spell Arcane Infusion, which trains Archmages directly from draftees instead of wizards, at a cost of 1,350p
+- Gnome: removed offensive power bonus (was 7.5%)
+- Gnome Rockapult: -25 ore (from 350)
+- Gnome Juggernaut: +0.5 offense (from 6.5), +25 ore (from 525)
 - Demon: Infernal Command now reduces Infernal Imp offense by 0.5 (was an increase of 0.5) and no longer applies Corruption
 - Demon Infernal Imp: +0.5 offense (from 3), +60p (from 315p)
 - Demon Succubus: +1 offense (from 0), gains +1 offensive power per 10% swamp (max 1)

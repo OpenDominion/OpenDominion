@@ -9,7 +9,6 @@ explorer_difficulty: 1
 converter_difficulty: 1
 home_land_type: mountain
 perks:
-  offense: 7.5
   max_population: -5
   food_consumption: -20
   tech_production: 10
@@ -33,7 +32,7 @@ units:
   - name: Rockapult
     cost:
       platinum: 675
-      ore: 350
+      ore: 325
     power:
       offense: 2
       defense: 4
@@ -42,9 +41,9 @@ units:
   - name: Juggernaut
     cost:
       platinum: 725
-      ore: 525
+      ore: 550
     power:
-      offense: 6.5
+      offense: 7
       defense: 3
     perks:
       offense_staggered_land_range: 85;0.5
