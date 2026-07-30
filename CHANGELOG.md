@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Gnome: removed offensive power bonus (was 7.5%)
 - Gnome Rockapult: -25 ore (from 350)
 - Gnome Juggernaut: +0.5 offense (from 6.5), +25 ore (from 525)
+- Spirit Ghost: -30p (from 1100p)
 - Demon: Infernal Command now reduces Infernal Imp offense by 0.5 (was an increase of 0.5) and no longer applies Corruption
 - Demon Infernal Imp: +0.5 offense (from 3), +60p (from 315p)
 - Demon Succubus: +1 offense (from 0), gains +1 offensive power per 10% swamp (max 1)

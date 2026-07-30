@@ -32,7 +32,7 @@ units:
       casualties_defense: -50
   - name: Ghost
     cost:
-      platinum: 1100
+      platinum: 1070
       mana: 25
     power:
       offense: 3
