@@ -33,7 +33,10 @@
                                         $insufficient = $selectedDominion->resource_platinum < $transferPrice;
                                         $ageHours = $valuable->discovered_at->diffInHours(now());
                                         $ageClass = $ageHours >= 48 ? 'text-danger' : ($ageHours >= 24 ? 'text-warning' : '');
-                                        $minSpiesNeeded = (int) ceil($valuable->required_spy_hours / \OpenDominion\Helpers\ValuablesHelper::MIN_INVESTIGATION_HOURS);
+                                        // Floored against your own size; only written to the database on purchase
+                                        $effectiveSpyHours = $valuablesHelper->getEffectiveRequiredSpyHours($valuable, $selectedDominion);
+                                        $isFloored = $effectiveSpyHours > $valuable->required_spy_hours;
+                                        $minSpiesNeeded = (int) ceil($effectiveSpyHours / \OpenDominion\Helpers\ValuablesHelper::MIN_INVESTIGATION_HOURS);
                                         $notEnoughSpies = $availableSpies < $minSpiesNeeded;
                                     @endphp
                                     <tr>
@@ -45,9 +48,14 @@
                                         <td>{{ $valuable->sourceDominion->name }}</td>
                                         <td class="{{ $notEnoughSpies ? 'text-danger' : '' }}">
                                             @if ($notEnoughSpies)
-                                                <span data-bs-toggle="tooltip" title="You need at least {{ number_format($minSpiesNeeded) }} spies">{{ number_format($valuable->required_spy_hours) }}</span>
+                                                <span data-bs-toggle="tooltip" title="You need at least {{ number_format($minSpiesNeeded) }} spies">{{ number_format($effectiveSpyHours) }}</span>
                                             @else
-                                                {{ number_format($valuable->required_spy_hours) }}
+                                                {{ number_format($effectiveSpyHours) }}
+                                            @endif
+                                            @if ($isFloored)
+                                                <i class="fa fa-info-circle text-muted"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Raised from {{ number_format($valuable->required_spy_hours) }}. A heist costs at least {{ number_format(\OpenDominion\Helpers\ValuablesHelper::MIN_SPY_HOURS_LAND_RATIO * 100) }}% of your own land, scaled by rarity."></i>
                                             @endif
                                         </td>
                                         <td>{{ number_format($transferPrice) }}p</td>
@@ -169,7 +177,19 @@
                                             <small class="text-muted">{{ ucfirst($valuable->rarity) }} &middot; {{ ucfirst($valuable->type) }}</small>
                                         </td>
                                         <td>{{ $valuable->targetDominion->name }}</td>
-                                        <td>{{ number_format($valuablesHelper->getCurrentSalePrice($valuable)) }}p</td>
+                                        @php
+                                            $graceHoursLeft = $valuablesHelper->getRemainingSalePriceGraceHours($valuable);
+                                        @endphp
+                                        <td>
+                                            {{ number_format($valuablesHelper->getCurrentSalePrice($valuable)) }}p
+                                            @if ($graceHoursLeft > 0)
+                                                <span class="badge text-bg-success"
+                                                      data-bs-toggle="tooltip"
+                                                      title="Full price for another {{ $graceHoursLeft }} {{ str_plural('hour', $graceHoursLeft) }} before it starts to decay.">
+                                                    Full price
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="text-end">
                                             <form action="{{ route('dominion.valuables.sell', $valuable->id) }}" method="post" class="d-inline">
                                                 @csrf

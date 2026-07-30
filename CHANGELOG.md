@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Status Effect: Satiated Thirst, which reduces offensive power by 10% for 48 hours
 - Locate Valuables now rolls a normal success/failure check against spy ratios before rolling for a discovery. Failed attempts kill spies and notify the target, and no longer build progress toward a discovery
 - Valuables: rarity is now split into five even bands, so Common and Legendary are no longer half as likely as the tiers between them. Uncommon and above now require a meaningfully larger or better defended target
+- Valuables: stolen valuables now hold their full sale price for 6 hours before the price begins to decay
+- Valuables: required spy-hours are now floored at 75% of the holding dominion's own land, scaled by rarity. Buying intel from a much smaller realmmate re-prices the heist against your size, so small dominions can no longer farm cheap heists for their larger realmmates
 
 ## [1.50.2] - 2026-06-12
 ### Changed

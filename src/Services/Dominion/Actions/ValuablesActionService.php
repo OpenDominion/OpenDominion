@@ -289,6 +289,10 @@ class ValuablesActionService
             $buyer->resource_platinum -= $price;
             $seller->resource_platinum += $price;
 
+            // Re-floor against the buyer, so buying intel off a much smaller
+            // realmmate does not hand over a trivially cheap heist.
+            $valuable->required_spy_hours = $this->valuablesHelper->getEffectiveRequiredSpyHours($valuable, $buyer);
+
             $valuable->source_dominion_id = $buyer->id;
             $valuable->is_listed = false;
             $valuable->transferred = true;

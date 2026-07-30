@@ -128,7 +128,10 @@ class ValuablesService
         $name = $this->valuablesHelper->generateName($type, $rarity);
         $config = ValuablesHelper::getRarityConfig()[$rarity];
         $targetLand = $this->landCalculator->getTotalLand($target);
-        $requiredSpyHours = (int) ceil($targetLand * $config['spy_hours_multiplier']);
+        $requiredSpyHours = max(
+            (int) ceil($targetLand * $config['spy_hours_multiplier']),
+            $this->valuablesHelper->getMinimumRequiredSpyHours($attacker, $rarity)
+        );
 
         $valuable = new Valuable();
         $valuable->round_id = $attacker->round_id;

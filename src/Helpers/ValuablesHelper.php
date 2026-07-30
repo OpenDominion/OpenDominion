@@ -31,6 +31,10 @@ class ValuablesHelper
     public const MAX_DISCOVERY_CHANCE       = 0.80;
     /** Hours after a discovery during which the same attacker cannot discover again from the same target. */
     public const DISCOVERY_COOLDOWN_HOURS   = 48;
+    /** Floor on required spy-hours, as a fraction of the holding dominion's own land. */
+    public const MIN_SPY_HOURS_LAND_RATIO   = 0.75;
+    /** Hours after a valuable is stolen during which it still fetches full price. */
+    public const SALE_PRICE_GRACE_HOURS     = 6;
 
     public const TYPES = ['relic', 'jewelry', 'artwork', 'equipment', 'text'];
 
@@ -125,6 +129,45 @@ class ValuablesHelper
     }
 
     /**
+     * Returns the floor on required spy-hours for a dominion holding a valuable.
+     *
+     * Spy-hours are otherwise scaled off the target's land, so a small dominion
+     * can discover a cheap heist and hand it to a much larger realmmate. Flooring
+     * at a fraction of the holder's own land keeps the effort proportional to
+     * whoever is actually running the heist, and carries the same rarity scaling
+     * the target-derived figure uses.
+     *
+     * @param Dominion $dominion
+     * @param string $rarity
+     * @return int
+     */
+    public function getMinimumRequiredSpyHours(Dominion $dominion, string $rarity): int
+    {
+        $multiplier = (float) self::getRarityConfig()[$rarity]['spy_hours_multiplier'];
+        $land = $this->landCalculator->getTotalLand($dominion);
+
+        return (int) ceil($land * self::MIN_SPY_HOURS_LAND_RATIO * $multiplier);
+    }
+
+    /**
+     * Returns the spy-hours a valuable would require for the given holder.
+     *
+     * This is display-safe: it never mutates the valuable. The stored value is
+     * only rewritten when a valuable actually changes hands.
+     *
+     * @param Valuable $valuable
+     * @param Dominion $holder
+     * @return int
+     */
+    public function getEffectiveRequiredSpyHours(Valuable $valuable, Dominion $holder): int
+    {
+        return max(
+            (int) $valuable->required_spy_hours,
+            $this->getMinimumRequiredSpyHours($holder, $valuable->rarity)
+        );
+    }
+
+    /**
      * Generates a name for a valuable of the given type and rarity.
      */
     public function generateName(string $type, string $rarity): string
@@ -190,7 +233,12 @@ class ValuablesHelper
     }
 
     /**
-     * Returns the current sale price (decays from max to min over EXPIRATION_HOURS after stolen_at).
+     * Returns the current sale price.
+     *
+     * Holds at the maximum for SALE_PRICE_GRACE_HOURS after the valuable is
+     * stolen, then decays to the minimum over EXPIRATION_HOURS. Stolen valuables
+     * are exempt from the staleness sweep, so the grace period shifts the curve
+     * rather than compressing it.
      */
     public function getCurrentSalePrice(Valuable $valuable): int
     {
@@ -201,11 +249,27 @@ class ValuablesHelper
         }
 
         $elapsedHours = $valuable->stolen_at->diffInSeconds(now()) / 3600;
-        $t = max(0.0, min($elapsedHours / self::EXPIRATION_HOURS, 1.0));
+        $decayHours = $elapsedHours - self::SALE_PRICE_GRACE_HOURS;
+        $t = max(0.0, min($decayHours / self::EXPIRATION_HOURS, 1.0));
 
         $price = $config['base_value_max'] - ($config['base_value_max'] - $config['base_value_min']) * $t;
 
         return (int) round($price);
+    }
+
+    /**
+     * Returns the whole hours of full-price grace a stolen valuable has left,
+     * or 0 once its price has started to decay.
+     */
+    public function getRemainingSalePriceGraceHours(Valuable $valuable): int
+    {
+        if ($valuable->stolen_at === null) {
+            return self::SALE_PRICE_GRACE_HOURS;
+        }
+
+        $elapsedHours = $valuable->stolen_at->diffInSeconds(now()) / 3600;
+
+        return (int) max(0, ceil(self::SALE_PRICE_GRACE_HOURS - $elapsedHours));
     }
 
     /**
