@@ -519,6 +519,10 @@ class NotificationHelper
                         $where = 'attempting to incite chaos';
                         break;
 
+                    case 'locate_valuables':
+                        $where = 'searching our lands for valuables';
+                        break;
+
                     default:
                         throw new LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }

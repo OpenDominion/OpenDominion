@@ -4,14 +4,20 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Notification;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\NotificationHelper;
+use OpenDominion\Helpers\ValuablesHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Hero;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
+use OpenDominion\Models\Valuable;
+use OpenDominion\Models\ValuablesTracking;
+use OpenDominion\Notifications\WebNotification;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -481,6 +487,119 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         $this->assertEqualsWithDelta(1.0, (float) $this->dominion->daily_xp, 0.0001);
+    }
+
+    public function testLocateValuables_Repelled_NoProgressAndSpiesLost()
+    {
+        // mockRandomChance defaults to false in setUp -> the new ratio check fails.
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 50000; // huge SPA disadvantage forces failure
+        $spiesBefore = $this->dominion->military_spies;
+
+        $result = $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('prevented our Locate Valuables attempt', $result['message']);
+        $this->assertLessThan($spiesBefore, $this->dominion->military_spies);
+        $this->assertEquals(1, $this->dominion->stat_espionage_failure);
+
+        // Being repelled must not advance discovery progress
+        $this->assertEquals(0, ValuablesTracking::count());
+        $this->assertEquals(0, Valuable::count());
+    }
+
+    public function testLocateValuables_Repelled_StillCostsSpyStrength()
+    {
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 50000;
+        $strengthBefore = $this->dominion->spy_strength;
+
+        $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
+
+        $this->assertEquals(
+            $strengthBefore - ValuablesHelper::SPY_OP_STRENGTH_COST,
+            $this->dominion->spy_strength
+        );
+    }
+
+    public function testLocateValuables_Repelled_NotifiesTarget()
+    {
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 50000;
+
+        $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
+
+        Notification::assertSentTo($this->target, WebNotification::class);
+    }
+
+    public function testLocateValuables_RepelledNotificationRenders()
+    {
+        // Notification::fake() short-circuits WebNotification::toArray(), so the
+        // renderer has to be exercised directly. Without a locate_valuables case
+        // this throws LogicException inside the action's DB transaction.
+        $message = app(NotificationHelper::class)->getNotificationMessage(
+            'irregular_dominion',
+            'repelled_spy_op',
+            [
+                'sourceDominionId' => $this->dominion->id,
+                'operationKey' => 'locate_valuables',
+                'unitsKilled' => '5 spies',
+            ]
+        );
+
+        $this->assertStringContainsString('searching our lands for valuables', $message);
+    }
+
+    public function testLocateValuables_Successful_CreatesValuable()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        $this->dominion->military_spies = 100000;
+        $this->target->military_spies = 0;
+        $spiesBefore = $this->dominion->military_spies;
+
+        $result = $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals(1, Valuable::where('source_dominion_id', $this->dominion->id)->count());
+        $this->assertEquals($spiesBefore, $this->dominion->military_spies);
+
+        $tracking = ValuablesTracking::where('source_dominion_id', $this->dominion->id)->first();
+        $this->assertEquals(0, $tracking->progress);
+        $this->assertNotNull($tracking->last_discovered_at);
+    }
+
+    public function testLocateValuables_ZeroSpyRatio_ThrowsAndCostsNothing()
+    {
+        $this->dominion->military_spies = 0;
+        $this->dominion->military_assassins = 0;
+        $this->dominion->save();
+        $strengthBefore = $this->dominion->spy_strength;
+
+        try {
+            $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
+            $this->fail('Expected a GameException for a zero spy ratio');
+        } catch (GameException $e) {
+            $this->assertStringContainsString('spy force is too weak', $e->getMessage());
+        }
+
+        $this->assertEquals($strengthBefore, $this->dominion->fresh()->spy_strength);
+    }
+
+    public function testLocateValuables_OffensiveActionsDisabled_Throws()
+    {
+        $this->round->offensive_actions_prohibited_at = now()->subHour();
+        $this->round->save();
+        $this->dominion->setRelation('round', $this->round->fresh());
+
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 5000;
+
+        $this->expectException(GameException::class);
+        $this->expectExceptionMessage('Black ops have been disabled');
+
+        $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
     }
 
     /**

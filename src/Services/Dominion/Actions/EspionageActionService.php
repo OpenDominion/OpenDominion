@@ -240,7 +240,7 @@ class EspionageActionService
             } elseif ($this->espionageHelper->isValuablesOperation($operationKey)) {
                 $spyStrengthLost = (int) ValuablesHelper::SPY_OP_STRENGTH_COST;
                 $xpValue = 0;
-                $result = $this->valuablesService->attemptDiscovery($dominion, $target);
+                $result = $this->performValuablesOperation($dominion, $operationKey, $target);
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
@@ -905,6 +905,80 @@ class EspionageActionService
             ),
             'damage' => $totalDamage,
         ];
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param string $operationKey
+     * @param Dominion $target
+     * @return array
+     * @throws Exception
+     */
+    protected function performValuablesOperation(Dominion $dominion, string $operationKey, Dominion $target): array
+    {
+        if ($dominion->round->hasOffensiveActionsDisabled()) {
+            throw new GameException('Black ops have been disabled for the remainder of the round.');
+        }
+
+        $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
+
+        $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
+        $targetSpa = $this->militaryCalculator->getSpyRatio($target, 'defense');
+
+        // You need at least some positive SPA to perform espionage operations
+        if ($selfSpa == 0) {
+            // Don't reduce spy strength by throwing an exception here
+            throw new GameException("Your spy force is too weak to perform {$operationInfo['name']}. Please train some more spies.");
+        }
+
+        $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa, $dominion->spy_strength, $target->spy_strength);
+
+        // Spells
+        $successRate -= ($target->getSpellPerkValue('enemy_espionage_chance') / 100);
+
+        // Wonders
+        $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
+
+        if (!random_chance($successRate)) {
+            list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
+
+            // Inform target that they repelled a search for their valuables
+            $sourceDominionId = $dominion->id;
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('espionage_fails_hide_identity')) {
+                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                    $sourceDominionId = null;
+                }
+            }
+
+            $this->notificationService
+                ->queueNotification('repelled_spy_op', [
+                    'sourceDominionId' => $sourceDominionId,
+                    'operationKey' => $operationKey,
+                    'unitsKilled' => $unitsKilledString,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+
+            if ($unitsKilledString) {
+                $message = sprintf(
+                    'The enemy has prevented our %s attempt and managed to capture %s.',
+                    $operationInfo['name'],
+                    $unitsKilledString
+                );
+            } else {
+                $message = sprintf(
+                    'The enemy has prevented our %s attempt.',
+                    $operationInfo['name']
+                );
+            }
+
+            return [
+                'success' => false,
+                'message' => $message,
+                'alert-type' => 'warning',
+            ];
+        }
+
+        return $this->valuablesService->attemptDiscovery($dominion, $target);
     }
 
     /**

@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Demon Archdemon: -75p (from 875p), removed offensive casualty reduction (was -20%)
 - Vampire: Feast of Blood reworked. No longer cancels immortality or converts Bloodreavers into Kindred; now grants +25% conversion rate and applies Satiated Thirst to you after attacking
 - New Status Effect: Satiated Thirst, which reduces offensive power by 10% for 48 hours
+- Locate Valuables now rolls a normal success/failure check against spy ratios before rolling for a discovery. Failed attempts kill spies and notify the target, and no longer build progress toward a discovery
+- Valuables: rarity is now split into five even bands, so Common and Legendary are no longer half as likely as the tiers between them. Uncommon and above now require a meaningfully larger or better defended target
 
 ## [1.50.2] - 2026-06-12
 ### Changed

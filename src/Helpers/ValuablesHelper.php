@@ -114,7 +114,11 @@ class ValuablesHelper
         $landScore = max(0.0, min(1.0, ($targetLand - 350) / 5650));
         $spyScore  = max(0.0, min(1.0, $this->militaryCalculator->getSpyRatio($target, 'defense')));
         $score = ($landScore + $spyScore) / 2;
-        $rarityIndex = (int) round($score * 4);
+
+        // Five even bands of 0.2. Rounding into 4 steps instead gave the first
+        // and last tiers half the width of the middle three, which made
+        // uncommon show up far earlier than intended.
+        $rarityIndex = (int) min(4, floor($score * 5));
 
         $rarities = array_keys(self::getRarityConfig());
         return $rarities[$rarityIndex] ?? self::RARITY_COMMON;
