@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Icekin: removed the lumber production penalty (was -10%)
 - Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion)
 - Icekin: new spell Arcane Infusion, which trains Archmages directly from draftees instead of wizards, at a cost of 1,350p
+- Vampire: Feast of Blood reworked. No longer cancels immortality or converts Bloodreavers into Kindred; now grants +25% conversion rate and applies Satiated Thirst to you after attacking
+- New Status Effect: Satiated Thirst, which reduces offensive power by 10% for 48 hours
 
 ## [1.50.2] - 2026-06-12
 ### Changed

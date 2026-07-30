@@ -625,8 +625,8 @@ feast_of_blood:
   races:
     - vampire
   perks:
-    cancels_immortal: 1
-    convert_vampires: 10
+    conversion_rate: 25
+    apply_satiated_thirst: 1
 martyrdom:
   name: Martyrdom
   category: effect
@@ -657,3 +657,13 @@ corruption:
     - demon
   perks:
     platinum_production: -5
+satiated_thirst:
+  name: Satiated Thirst
+  category: effect
+  cost_mana: 0
+  cost_strength: 0
+  duration: 48
+  races:
+    - vampire
+  perks:
+    offense: -10

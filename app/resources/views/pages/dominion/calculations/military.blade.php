@@ -243,7 +243,7 @@
 
                             <div class="mb-3 row">
                                 @php
-                                    $racialSpell = $spellHelper->getSpellsWithPerk('defense', $race)->first();
+                                    $racialSpell = $spellHelper->getSpellsWithPerk('defense', $race, 'self')->first();
                                 @endphp
                                 <div class="col-3 text-end">
                                     @if ($racialSpell)
@@ -735,7 +735,8 @@
 
                             <div class="mb-3 row">
                                 @php
-                                    $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land', 'offense_from_spell', 'offense_unit1'], $race)->first();
+                                    $racialSpell = $spellHelper->getSpellsWithPerk(['offense', 'offense_from_barren_land', 'offense_from_spell', 'offense_unit1'], $race, 'self')->first();
+                                    $offenseEffectSpells = $spellHelper->getSpellsWithPerk('offense', $race, 'effect');
                                 @endphp
                                 <div class="col-3 text-end">
                                     @if ($racialSpell)
@@ -749,6 +750,17 @@
                                                 checked />
                                     @endif
                                 </div>
+                                @foreach ($offenseEffectSpells as $effectSpell)
+                                    <div class="col-3 text-end">
+                                        {{ $effectSpell->name }}
+                                    </div>
+                                    <div class="col-3 text-start">
+                                        {{-- Worst case for the defender: offensive bonuses default on, penalties default off --}}
+                                        <input type="checkbox"
+                                                name="calc[{{ $effectSpell->key }}]"
+                                                {{ $effectSpell->getPerkValue('offense') > 0 ? 'checked' : null }} />
+                                    </div>
+                                @endforeach
                                 @if ($race->key == 'nomad-rework')
                                     <div class="col-3 text-end">
                                         Barren Land %

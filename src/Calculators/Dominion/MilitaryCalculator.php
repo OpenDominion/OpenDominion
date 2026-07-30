@@ -289,12 +289,19 @@ class MilitaryCalculator
         $spellFavorableTerrainCap = 10;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
-            $offenseSpells = $this->spellHelper->getSpellsWithPerk('offense');
+            $offenseSpells = $this->spellHelper->getSpellsWithPerk('offense', null, 'self');
 
             foreach ($offenseSpells->sortByDesc('pivot.value') as $spell) {
                 if (isset($dominion->calc[$spell->key])) {
                     $multiplier += ($spell->getPerkValue('offense') / 100);
                     break;
+                }
+            }
+
+            // Status effects stack on top of the racial self spell, so they are not part of the loop above
+            foreach ($this->spellHelper->getSpellsWithPerk('offense', null, 'effect') as $spell) {
+                if (isset($dominion->calc[$spell->key])) {
+                    $multiplier += ($spell->getPerkValue('offense') / 100);
                 }
             }
 
@@ -305,7 +312,8 @@ class MilitaryCalculator
                 );
             }
         } else {
-            $multiplier += $dominion->getSpellPerkMultiplier('offense');
+            // Resolved across categories so status effects (Satiated Thirst) stack with self spells
+            $multiplier += $this->spellCalculator->resolveSpellPerk($dominion, 'offense') / 100;
 
             if ($dominion->getSpellPerkValue('offense_from_barren_land')) {
                 $multiplier += min(
@@ -543,7 +551,7 @@ class MilitaryCalculator
         $multiplier = 0;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
-            $defenseSpells = $this->spellHelper->getSpellsWithPerk('defense');
+            $defenseSpells = $this->spellHelper->getSpellsWithPerk('defense', null, 'self');
 
             foreach ($defenseSpells->sortByDesc('pivot.value') as $spell) {
                 if (isset($dominion->calc[$spell->key])) {

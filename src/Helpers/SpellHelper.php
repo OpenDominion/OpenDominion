@@ -58,9 +58,10 @@ class SpellHelper
      *
      * @param string|string[] $perks
      * @param Race|null $race
+     * @param string|null $category
      * @return Collection
      */
-    public function getSpellsWithPerk($perks, Race|null $race = null): Collection
+    public function getSpellsWithPerk($perks, Race|null $race = null, string|null $category = null): Collection
     {
         if (!is_array($perks)) {
             $perks = [$perks];
@@ -72,6 +73,10 @@ class SpellHelper
             ->flatMap(function ($perkType) {
                 return $perkType->spells;
             });
+
+        if ($category !== null) {
+            $spells = $spells->where('category', $category);
+        }
 
         if ($race !== null) {
             return $spells->filter(function ($spell) use ($race) {
@@ -135,6 +140,7 @@ class SpellHelper
             'offense' => '%+g%% offensive power',
             'offense_from_barren_land' => '+1%% offensive power for every 1%% barren land (max %+g%%)',
             'apply_corruption' => 'Applies Corruption to yourself after attacking',
+            'apply_satiated_thirst' => 'Applies Satiated Thirst to yourself after attacking',
             'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
             'cancels_immortal' => 'Military units lose all casualty reductions (including immortality)',

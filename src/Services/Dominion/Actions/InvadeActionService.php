@@ -1180,6 +1180,12 @@ class InvadeActionService
         if ($dominion->getSpellPerkValue('apply_corruption')) {
             $this->invasionService->applySpell($dominion, $dominion, $spell, $spell->duration);
         }
+
+        // Satiated Thirst from Feast of Blood
+        $spell = Spell::active()->firstWhere('key', 'satiated_thirst');
+        if ($dominion->getSpellPerkValue('apply_satiated_thirst')) {
+            $this->invasionService->applySpell($dominion, $dominion, $spell, $spell->duration);
+        }
     }
 
     /**
