@@ -920,7 +920,10 @@ class InvadeActionService
         }
 
         $conversionMultiplier = 1;
-        $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversion_rate');
+        if ($landRatio >= 0.75) {
+            // No bonus conversion rate when bottom feeding
+            $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversion_rate');
+        }
         if ($target->user_id == null && $landRatio < 0.75) {
             $conversionMultiplier += $dominion->getSpellPerkMultiplier('conversions_range');
         }
@@ -1181,9 +1184,11 @@ class InvadeActionService
             $this->invasionService->applySpell($dominion, $dominion, $spell, $spell->duration);
         }
 
-        // Satiated Thirst from Feast of Blood
+        // Satiated Thirst from Feast of Blood. Skipped when bottom feeding, where
+        // the spell's conversion rate bonus does not apply either.
+        $landRatio = min(1, $this->invasionResult['result']['range'] / 100);
         $spell = Spell::active()->firstWhere('key', 'satiated_thirst');
-        if ($dominion->getSpellPerkValue('apply_satiated_thirst')) {
+        if ($landRatio >= 0.75 && $dominion->getSpellPerkValue('apply_satiated_thirst')) {
             $this->invasionService->applySpell($dominion, $dominion, $spell, $spell->duration);
         }
     }

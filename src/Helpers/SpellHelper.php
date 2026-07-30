@@ -171,7 +171,7 @@ class SpellHelper
             'auto_rezone_forest'=> '%d%% of captured land re-zoned into forest',
             'auto_rezone_water'=> '%d%% of captured land re-zoned into water',
             'cancels_immortal' => 'Military units lose all casualty reductions (including immortality)',
-            'conversion_rate' => '%+g%% conversion rate',
+            'conversion_rate' => '%+g%% conversion rate (75%%+ range only)',
             'conversions_range' => 'Conversions increased by %d%% against dominions in The Graveyard under 75%% of your size',
             'convert_vampires' => 'Bloodreavers convert additional Kindred equal to %g%% of units sent (8.5%% below 75%% of your size)',
             'convert_werewolves' => 'Werewolves convert enemy peasants into Werewolves (up to one for every %d sent on attack)',
