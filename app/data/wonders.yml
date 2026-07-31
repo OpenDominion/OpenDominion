@@ -188,4 +188,4 @@ planar_gates:
   perks:
     temporary_tech: 1
   power: 150000
-  active: true
+  active: false

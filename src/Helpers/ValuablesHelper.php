@@ -20,7 +20,7 @@ class ValuablesHelper
     public const SPY_STRENGTH_PER_INVESTIGATION = 2.0;
 
     /** Progress points added to tracking on each failed Locate Valuables op. */
-    public const SPY_OP_PROGRESS_INCREMENT  = 10;
+    public const SPY_OP_PROGRESS_INCREMENT  = 15;
     /** Progress points added to tracking on each failed passive info-op discovery. */
     public const PASSIVE_PROGRESS_INCREMENT = 1;
     /** Chance increase per progress point for Locate Valuables ops. */

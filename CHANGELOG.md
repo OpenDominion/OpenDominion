@@ -17,11 +17,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Icekin: new spell Arcane Infusion allows training Archmages directly from draftees instead of wizards, at a cost of 1400p
 - Icekin: removed the -150p Archmage cost racial perk (now folded into Arcane Infusion), removed the lumber production penalty (was -10%)
 - Spirit Ghost: -30p (1070p from 1100p)
+- Sylvan Centaur: -20p (950p from 970p)
 - Troll: Regeneration reduces casualties by 25% (from 30%)
 - Troll Basher/Smasher: +15p (1415p from 1400p)
 - Vampire: Feast of Blood no longer cancels immortality or converts dying Bloodreavers into Kindred, now grants 25% more conversions and applies Satiated Thirst to yourself after attacking, which is a new status effect that reduces your offensive power by 10% for 48 hours, neither take effect against dominions under 75% of your size
 - Locate Valuables now rolls a normal success/failure check against spy ratios before rolling for a discovery, discovery chance slightly increased
 - Spies required for Valuables investigation against targets below your 75% range now treated as exactly 75% your size, even when the intel is purchased from another player, sale price frozen for first 6 hours after completion before it starts to decay
+- Incoming military on bots at round start will now be spread across hours 4-9 (was 4-12)
+- Planar Gates removed
 
 ## [1.50.2] - 2026-06-12
 ### Changed
