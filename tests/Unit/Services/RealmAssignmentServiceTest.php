@@ -823,6 +823,50 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         }
     }
 
+    public function testNonDiscordRealmAssignmentDoesNotSplitPacks(): void
+    {
+        $packedNonDiscordPlayer = new Player([
+            'id' => 'packed-non-discord',
+            'rating' => 1500,
+            'packId' => 'pack-1',
+            'hasDiscord' => false,
+        ]);
+        $packedDiscordPlayer = new Player([
+            'id' => 'packed-discord',
+            'rating' => 1500,
+            'packId' => 'pack-1',
+            'hasDiscord' => true,
+        ]);
+        $soloNonDiscordPlayer = new Player([
+            'id' => 'solo-non-discord',
+            'rating' => 1500,
+            'packId' => null,
+            'hasDiscord' => false,
+        ]);
+
+        $this->service->players = collect()
+            ->put($packedNonDiscordPlayer->id, $packedNonDiscordPlayer)
+            ->put($packedDiscordPlayer->id, $packedDiscordPlayer)
+            ->put($soloNonDiscordPlayer->id, $soloNonDiscordPlayer);
+
+        $this->service->createNonDiscordRealms();
+
+        $this->assertTrue($this->service->players->has($packedNonDiscordPlayer->id));
+        $this->assertTrue($this->service->players->has($packedDiscordPlayer->id));
+        $this->assertFalse($this->service->players->has($soloNonDiscordPlayer->id));
+        $this->assertCount(1, $this->service->nonDiscordRealms);
+        $this->assertTrue(
+            $this->service->nonDiscordRealms->first()->players->has($soloNonDiscordPlayer->id)
+        );
+        $this->assertFalse(
+            $this->service->nonDiscordRealms->first()->players->has($packedNonDiscordPlayer->id)
+        );
+
+        $this->service->loadPacks();
+
+        $this->assertCount(2, $this->service->packs->get('pack-1')->members);
+    }
+
     /**
      * Test calculateRealmCount grows the realm count when total packed players
      * would exceed the packed-player headroom of the minimum realm count.
