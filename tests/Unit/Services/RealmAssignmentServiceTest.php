@@ -1241,5 +1241,4 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             'Feedback should match user IDs even when dominion IDs differ'
         );
     }
-
 }
