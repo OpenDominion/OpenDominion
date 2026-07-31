@@ -26,7 +26,7 @@ User ──has many──→ Dominion ──belongs to──→ Round
 - **Traits**: Authenticatable, Authorizable, HasRoles (Spatie), Notifiable
 - **Casts**: settings (array), affinities (array)
 - **Relations**: dominions, activities, identities, origins, discordUser, feedback, endorsements, achievements
-- **Key methods**: `isStaff()`, `isOnline()` (5min), `isInactive()` (72h), `getSetting()`, `getAffinity()`, `getEffectiveRating()` (uses 1000 for unrated users)
+- **Key methods**: `isStaff()`, `isOnline()` (5min), `isInactive()` (72h), `getSetting()`, `getAffinity()`, `hasKnownAffinities()` (complete, non-zero profile), `getEffectiveRating()` (uses 1000 for unrated users)
 
 ### Round (`rounds`)
 - **Relations**: dominions (through Realm), realms, packs, raids, tournaments, wonders, gameEvents, wars (through Realm), league

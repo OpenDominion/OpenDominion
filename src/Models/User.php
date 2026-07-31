@@ -56,6 +56,13 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     public const DEFAULT_RATING = 1000.0;
 
+    private const AFFINITY_KEYS = [
+        'attacker',
+        'converter',
+        'explorer',
+        'ops',
+    ];
+
     protected $casts = [
         'settings' => 'array',
         'affinities' => 'array',
@@ -173,6 +180,30 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         }
 
         return $rating;
+    }
+
+    /**
+     * Determine whether all affinity fields contain a meaningful calculated profile.
+     */
+    public function hasKnownAffinities(): bool
+    {
+        $affinities = $this->affinities;
+
+        if (!is_array($affinities)) {
+            return false;
+        }
+
+        $hasPositiveAffinity = false;
+
+        foreach (self::AFFINITY_KEYS as $key) {
+            if (!array_key_exists($key, $affinities) || !is_numeric($affinities[$key])) {
+                return false;
+            }
+
+            $hasPositiveAffinity = $hasPositiveAffinity || (float) $affinities[$key] > 0;
+        }
+
+        return $hasPositiveAffinity;
     }
 
     public function getAffinity(string $key)
