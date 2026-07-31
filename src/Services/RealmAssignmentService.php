@@ -344,13 +344,17 @@ class PlaceholderRealm
         $currentComp = $this->getPlaystyleComposition();
         $currentDeviation = $this->calculatePlaystyleDeviation($currentComp);
 
-        // Simulate adding new players
-        $newComp = $currentComp;
-        foreach ($players as $player) {
-            $newComp['attackerAffinity'] += $player->attackerAffinity;
-            $newComp['converterAffinity'] += $player->converterAffinity;
-            $newComp['explorerAffinity'] += $player->explorerAffinity;
-            $newComp['opsAffinity'] += $player->opsAffinity;
+        $projectedPlayerCount = $this->players->count() + $players->count();
+        if ($projectedPlayerCount === 0) {
+            return 0.0;
+        }
+
+        // Recalculate projected averages after adding the prospective players
+        $newComp = [];
+        foreach (array_keys(static::IDEAL_COMPOSITION) as $style) {
+            $newComp[$style] = (
+                $this->players->sum($style) + $players->sum($style)
+            ) / $projectedPlayerCount;
         }
 
         $newDeviation = $this->calculatePlaystyleDeviation($newComp);

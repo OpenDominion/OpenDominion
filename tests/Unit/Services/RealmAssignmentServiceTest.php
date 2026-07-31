@@ -1219,6 +1219,38 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         echo 'Worse composition deviation: ' . round($worseDeviation, 2) . "\n";
     }
 
+    public function testPlaystyleScoringUsesProjectedAverage(): void
+    {
+        $existingPlayer = new Player([
+            'id' => 'existing',
+            'rating' => 1500,
+            'attackerAffinity' => 50,
+            'converterAffinity' => 30,
+            'explorerAffinity' => 50,
+            'opsAffinity' => 30,
+            'favorability' => [],
+        ]);
+        $incomingPlayer = new Player([
+            'id' => 'incoming',
+            'rating' => 1500,
+            'attackerAffinity' => 50,
+            'converterAffinity' => 30,
+            'explorerAffinity' => 50,
+            'opsAffinity' => 30,
+            'favorability' => [],
+        ]);
+        $realm = new PlaceholderRealm('ideal', collect([$existingPlayer]));
+
+        $score = $realm->calculatePlaystyleScore(collect([$incomingPlayer]));
+
+        $this->assertEqualsWithDelta(
+            0,
+            $score,
+            0.0001,
+            'Adding an ideal player to an ideal realm should keep its composition unchanged'
+        );
+    }
+
     /**
      * Test that new playstyle scoring properly distinguishes balanced vs imbalanced compositions
      */
