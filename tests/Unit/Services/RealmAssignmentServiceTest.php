@@ -5,6 +5,7 @@ namespace OpenDominion\Tests\Unit\Services;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\User;
 use OpenDominion\Services\PlaceholderPack;
 use OpenDominion\Services\PlaceholderRealm;
 use OpenDominion\Services\Player;
@@ -23,6 +24,27 @@ class RealmAssignmentServiceTest extends AbstractTestCase
     {
         parent::setUp();
         $this->service = new RealmAssignmentService();
+    }
+
+    public function testPlayerFactoryResolvesUnratedUserDefaults(): void
+    {
+        $user = new User();
+        $user->rating = 0;
+        $user->affinities = null;
+
+        $player = Player::fromUser($user, ['id' => 'new-player']);
+
+        $this->assertSame(User::DEFAULT_RATING, $player->rating);
+        $this->assertSame(User::DEFAULT_AFFINITIES['attacker'], $player->attackerAffinity);
+        $this->assertSame(User::DEFAULT_AFFINITIES['converter'], $player->converterAffinity);
+        $this->assertSame(User::DEFAULT_AFFINITIES['explorer'], $player->explorerAffinity);
+        $this->assertSame(User::DEFAULT_AFFINITIES['ops'], $player->opsAffinity);
+        $this->assertSame([
+            'attackerAffinity' => $player->attackerAffinity,
+            'converterAffinity' => $player->converterAffinity,
+            'explorerAffinity' => $player->explorerAffinity,
+            'opsAffinity' => $player->opsAffinity,
+        ], PlaceholderRealm::IDEAL_COMPOSITION);
     }
 
     /**

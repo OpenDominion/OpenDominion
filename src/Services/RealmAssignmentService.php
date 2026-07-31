@@ -48,6 +48,25 @@ class Player
     }
 
     /**
+     * Create an assignment player using the user's effective rating profile.
+     *
+     * Database zero/null values remain storage sentinels and are resolved here
+     * before they can affect assignment scoring.
+     */
+    public static function fromUser(User $user, array $attributes = []): self
+    {
+        $affinities = $user->getEffectiveAffinities();
+
+        return new self(array_merge($attributes, [
+            'rating' => $user->getEffectiveRating(),
+            'attackerAffinity' => $affinities['attacker'],
+            'converterAffinity' => $affinities['converter'],
+            'explorerAffinity' => $affinities['explorer'],
+            'opsAffinity' => $affinities['ops'],
+        ]));
+    }
+
+    /**
      * Get favorability score with another player
      *
      * Returns the favorability rating this player has given to another player.
@@ -148,10 +167,10 @@ class PlaceholderRealm
      * @var array Ideal average playstyle affinities per player for balanced realms
      */
     public const IDEAL_COMPOSITION = [
-        'attackerAffinity' => 50,
-        'converterAffinity' => 30,
-        'explorerAffinity' => 50,
-        'opsAffinity' => 30,
+        'attackerAffinity' => User::DEFAULT_AFFINITIES['attacker'],
+        'converterAffinity' => User::DEFAULT_AFFINITIES['converter'],
+        'explorerAffinity' => User::DEFAULT_AFFINITIES['explorer'],
+        'opsAffinity' => User::DEFAULT_AFFINITIES['ops'],
     ];
 
     public string $id;
@@ -563,9 +582,8 @@ class RealmAssignmentService
      * Load all registered players for the round
      *
      * Fetches all registered dominions from the database and converts them
-     * to Player objects with favorability matrices, playstyle ratings, and
-     * other assignment-relevant data. Placeholder playstyle data is used
-     * until proper calculation is implemented.
+     * to Player objects with favorability matrices, effective ratings,
+     * playstyle affinities, and other assignment-relevant data.
      *
      * @param Round $round The round to load players for
      */
@@ -595,16 +613,11 @@ class RealmAssignmentService
             $hasDiscord = !($discordSetting !== null && $discordSetting === false);
 
             // Create player
-            $player = new Player([
+            $player = Player::fromUser($dominion->user, [
                 'id' => $dominion->id,
                 'packId' => $dominion->pack_id,
-                'rating' => $dominion->user->rating ?? 0,
                 'favorability' => $favorabilityMatrix,
                 'hasDiscord' => $hasDiscord,
-                'attackerAffinity' => $dominion->user->getAffinity('attacker'),
-                'converterAffinity' => $dominion->user->getAffinity('converter'),
-                'explorerAffinity' => $dominion->user->getAffinity('explorer'),
-                'opsAffinity' => $dominion->user->getAffinity('ops'),
             ]);
             $this->players->put($dominion->id, $player);
         }
@@ -1456,7 +1469,7 @@ class RealmAssignmentService
             return $round->realms()->where('number', 0)->first();
         }
 
-        if (!$useDiscord && !($user->rating > 1800)) {
+        if (!$useDiscord && !($user->getEffectiveRating() > 1800)) {
             // Filter down to non-Discord realms (those with usediscord = false in settings)
             $nonDiscordRealms = $round->realms->filter(function ($realm) {
                 return $realm->getSetting('usediscord') === false;
@@ -1569,15 +1582,10 @@ class RealmAssignmentService
             return [$targetId => $positive - $negative];
         })->toArray();
 
-        return new Player([
+        return Player::fromUser($user, [
             'id' => $user->id,
             'packId' => null, // Individual registration
-            'rating' => $user->rating ?? 0,
             'favorability' => $favorabilityMatrix,
-            'attackerAffinity' => $user->getAffinity('attacker'),
-            'converterAffinity' => $user->getAffinity('converter'),
-            'explorerAffinity' => $user->getAffinity('explorer'),
-            'opsAffinity' => $user->getAffinity('ops'),
         ]);
     }
 
@@ -1620,15 +1628,10 @@ class RealmAssignmentService
     public function createPlaceholderRealm(Realm $realm): PlaceholderRealm
     {
         $players = $realm->dominions()->human()->get()->map(function ($dominion) {
-            return new Player([
+            return Player::fromUser($dominion->user, [
                 'id' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
-                'rating' => $dominion->user->rating ?? 0,
                 'favorability' => [], // Not needed for existing players in this context
-                'attackerAffinity' => $dominion->user->getAffinity('attacker'),
-                'converterAffinity' => $dominion->user->getAffinity('converter'),
-                'explorerAffinity' => $dominion->user->getAffinity('explorer'),
-                'opsAffinity' => $dominion->user->getAffinity('ops'),
             ]);
         });
 

@@ -18,7 +18,7 @@ use OpenDominion\Models\User;
  */
 class UserRatingService
 {
-    const DEFAULT_RATING = 1000.0;
+    public const DEFAULT_RATING = User::DEFAULT_RATING;
 
     protected $landCalculator;
 
@@ -37,7 +37,7 @@ class UserRatingService
     {
         $ratings = $this->calculateUserRatings($user);
 
-        $oldRating = $user->rating ?? self::DEFAULT_RATING;
+        $oldRating = $user->getEffectiveRating();
         $newRating = $ratings['rating'];
         $rankingChanged = ($newRating !== $oldRating);
 
@@ -251,12 +251,7 @@ class UserRatingService
         $totalScores = count($dominionScores);
 
         if ($totalScores === 0) {
-            return [
-                'attacker' => 0,
-                'explorer' => 0,
-                'converter' => 0,
-                'ops' => 0,
-            ];
+            return User::DEFAULT_AFFINITIES;
         }
 
         $attackerCount = 0;
