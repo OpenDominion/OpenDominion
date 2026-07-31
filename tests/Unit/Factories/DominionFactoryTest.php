@@ -68,6 +68,35 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
         $this->assertEquals($dominion->id, $this->round->dominions()->first()->id);
     }
 
+    public function testCreateUsesEffectiveRatingsForPreStartRealmAverage(): void
+    {
+        $this->round->start_date = now()->addDay();
+        $this->round->save();
+        $this->realm->unsetRelation('round');
+
+        $this->user->rating = 0;
+        $this->user->save();
+
+        $this->dominionFactory->create(
+            $this->user,
+            $this->realm,
+            $this->race,
+            'Unrated Ruler',
+            'Unrated Dominion'
+        );
+
+        $ratedUser = $this->createUser(null, ['rating' => 1800]);
+        $this->dominionFactory->create(
+            $ratedUser,
+            $this->realm,
+            $this->race,
+            'Rated Ruler',
+            'Rated Dominion'
+        );
+
+        $this->assertSame(1400, $this->realm->fresh()->rating);
+    }
+
     public function testStartingResources()
     {
         $dominion = $this->dominionFactory->create(

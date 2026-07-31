@@ -148,10 +148,15 @@ class DominionFactory
         }
 
         if (!$realm->round->hasStarted()) {
+            $realmPlayers = $realm->dominions()
+                ->human()
+                ->with('user')
+                ->get();
+
             $realm->rating = (int) round(
-                Dominion::where('dominions.realm_id', $realm->id)
-                    ->join('users', 'users.id', '=', 'dominions.user_id')
-                    ->avg('users.rating') ?? 0
+                $realmPlayers->avg(
+                    fn (Dominion $realmDominion): float => $realmDominion->user->getEffectiveRating()
+                ) ?? 0
             );
             $realm->save();
         }

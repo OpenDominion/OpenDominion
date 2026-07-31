@@ -54,6 +54,8 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 {
     use Authenticatable, Authorizable, CanResetPassword, HasFactory, HasRoles, Notifiable;
 
+    public const DEFAULT_RATING = 1000.0;
+
     protected $casts = [
         'settings' => 'array',
         'affinities' => 'array',
@@ -160,6 +162,17 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         }
 
         return Arr::get($this->settings, $key);
+    }
+
+    public function getEffectiveRating(): float
+    {
+        $rating = (float) ($this->rating ?? 0);
+
+        if ($rating <= 0) {
+            return self::DEFAULT_RATING;
+        }
+
+        return $rating;
     }
 
     public function getAffinity(string $key)

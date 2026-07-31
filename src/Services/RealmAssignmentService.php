@@ -19,10 +19,11 @@ use OpenDominion\Services\NotificationService;
 class Player
 {
     public string $id;
+    public string $userId;
     public float $rating;
     public ?string $packId;
     public bool $hasDiscord = true;
-    public array $favorability = []; // player_id => score
+    public array $favorability = []; // user_id => score
 
     // Playstyle affinities (0-100 for each category)
     public float $attackerAffinity = 0;
@@ -45,6 +46,27 @@ class Player
                 $this->$key = $value;
             }
         }
+
+        if (!isset($this->userId)) {
+            $this->userId = $this->id;
+        }
+    }
+
+    /**
+     * Create an assignment player using the user's effective rating.
+     *
+     * The database zero value remains a storage sentinel and is resolved here
+     * before it can affect assignment scoring.
+     */
+    public static function fromUser(User $user, array $attributes = []): self
+    {
+        return new self(array_merge($attributes, [
+            'rating' => $user->getEffectiveRating(),
+            'attackerAffinity' => $user->getAffinity('attacker'),
+            'converterAffinity' => $user->getAffinity('converter'),
+            'explorerAffinity' => $user->getAffinity('explorer'),
+            'opsAffinity' => $user->getAffinity('ops'),
+        ]));
     }
 
     /**
@@ -54,12 +76,12 @@ class Player
      * Positive values indicate endorsement, negative values indicate negative feedback.
      * Returns 0 if no feedback has been given.
      *
-     * @param string $playerId The ID of the other player
+     * @param string $userId The user ID of the other player
      * @return float Favorability score (-1 to 1, typically)
      */
-    public function getFavorabilityWith(string $playerId): float
+    public function getFavorabilityWith(string $userId): float
     {
-        return $this->favorability[$playerId] ?? 0;
+        return $this->favorability[$userId] ?? 0;
     }
 
     /**
@@ -130,8 +152,8 @@ class PlaceholderPack
 
         foreach ($this->members as $member1) {
             foreach ($pack->members as $member2) {
-                $totalScore += $member1->getFavorabilityWith($member2->id);
-                $totalScore += $member2->getFavorabilityWith($member1->id);
+                $totalScore += $member1->getFavorabilityWith($member2->userId);
+                $totalScore += $member2->getFavorabilityWith($member1->userId);
             }
         }
 
@@ -312,8 +334,8 @@ class PlaceholderRealm
         foreach ($players as $newMember) {
             $favorabilityScore = 0;
             foreach ($this->players as $realmMember) {
-                $favorabilityScore += $realmMember->getFavorabilityWith($newMember->id);
-                $favorabilityScore += $newMember->getFavorabilityWith($realmMember->id);
+                $favorabilityScore += $realmMember->getFavorabilityWith($newMember->userId);
+                $favorabilityScore += $newMember->getFavorabilityWith($realmMember->userId);
             }
             if ($favorabilityScore < -10) {
                 // Heavy penalty for conflicts
@@ -567,9 +589,8 @@ class RealmAssignmentService
      * Load all registered players for the round
      *
      * Fetches all registered dominions from the database and converts them
-     * to Player objects with favorability matrices, playstyle ratings, and
-     * other assignment-relevant data. Placeholder playstyle data is used
-     * until proper calculation is implemented.
+     * to Player objects with favorability matrices, effective ratings,
+     * playstyle affinities, and other assignment-relevant data.
      *
      * @param Round $round The round to load players for
      */
@@ -599,16 +620,12 @@ class RealmAssignmentService
             $hasDiscord = !($discordSetting !== null && $discordSetting === false);
 
             // Create player
-            $player = new Player([
+            $player = Player::fromUser($dominion->user, [
                 'id' => $dominion->id,
+                'userId' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
-                'rating' => $dominion->user->rating ?? 0,
                 'favorability' => $favorabilityMatrix,
                 'hasDiscord' => $hasDiscord,
-                'attackerAffinity' => $dominion->user->getAffinity('attacker'),
-                'converterAffinity' => $dominion->user->getAffinity('converter'),
-                'explorerAffinity' => $dominion->user->getAffinity('explorer'),
-                'opsAffinity' => $dominion->user->getAffinity('ops'),
             ]);
             $this->players->put($dominion->id, $player);
         }
@@ -1460,7 +1477,7 @@ class RealmAssignmentService
             return $round->realms()->where('number', 0)->first();
         }
 
-        if (!$useDiscord && !($user->rating > 1800)) {
+        if (!$useDiscord && !($user->getEffectiveRating() > 1800)) {
             // Filter down to non-Discord realms (those with usediscord = false in settings)
             $nonDiscordRealms = $round->realms->filter(function ($realm) {
                 return $realm->getSetting('usediscord') === false;
@@ -1573,15 +1590,11 @@ class RealmAssignmentService
             return [$targetId => $positive - $negative];
         })->toArray();
 
-        return new Player([
+        return Player::fromUser($user, [
             'id' => $user->id,
+            'userId' => $user->id,
             'packId' => null, // Individual registration
-            'rating' => $user->rating ?? 0,
             'favorability' => $favorabilityMatrix,
-            'attackerAffinity' => $user->getAffinity('attacker'),
-            'converterAffinity' => $user->getAffinity('converter'),
-            'explorerAffinity' => $user->getAffinity('explorer'),
-            'opsAffinity' => $user->getAffinity('ops'),
         ]);
     }
 
@@ -1624,15 +1637,11 @@ class RealmAssignmentService
     public function createPlaceholderRealm(Realm $realm): PlaceholderRealm
     {
         $players = $realm->dominions()->human()->get()->map(function ($dominion) {
-            return new Player([
+            return Player::fromUser($dominion->user, [
                 'id' => $dominion->user_id,
+                'userId' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
-                'rating' => $dominion->user->rating ?? 0,
                 'favorability' => [], // Not needed for existing players in this context
-                'attackerAffinity' => $dominion->user->getAffinity('attacker'),
-                'converterAffinity' => $dominion->user->getAffinity('converter'),
-                'explorerAffinity' => $dominion->user->getAffinity('explorer'),
-                'opsAffinity' => $dominion->user->getAffinity('ops'),
             ]);
         });
 

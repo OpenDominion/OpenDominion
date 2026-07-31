@@ -189,7 +189,7 @@ Pre-round player distribution (RealmAssignmentService):
 2. Load players with ratings and favorability data
 3. Calculate realm count (8-14) based on large pack distribution
 4. Place large packs as realm seeds
-5. Segregate non-Discord players (preference-based)
+5. Segregate non-Discord solo players (packed players remain with their packs)
 6. Assign remaining packs by compatibility scoring
 7. Fill solos by rating balance + playstyle diversity
 8. Optimize via 50 iterations of random swap improvement
