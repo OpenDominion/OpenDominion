@@ -124,7 +124,7 @@ Daily ranking snapshots by category (land, networth, conquered, explored, etc.).
 ### RealmAssignmentService (largest service)
 Sophisticated pre-round realm assignment algorithm.
 - Constants: `MAX_PACKS_PER_REALM` = 3, `MAX_PACKED_PLAYERS_PER_REALM` = 8, realms 8-14
-- Uses nested classes: Player, PlaceholderPack, PlaceholderRealm
+- Uses nested classes: Player, PlaceholderPack, PlaceholderRealm; Player keeps distinct dominion and user IDs so feedback matches users
 - Resolves the database's unrated-player sentinel to rating 1000 before assignment scoring
 - Scoring: compatibility (favorability + playstyle balance) + rating deviation + size bonus
 - Optimization: 50 iterations of random solo-player swapping

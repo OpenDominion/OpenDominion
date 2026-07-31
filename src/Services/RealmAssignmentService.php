@@ -19,10 +19,11 @@ use OpenDominion\Services\NotificationService;
 class Player
 {
     public string $id;
+    public string $userId;
     public float $rating;
     public ?string $packId;
     public bool $hasDiscord = true;
-    public array $favorability = []; // player_id => score
+    public array $favorability = []; // user_id => score
 
     // Playstyle affinities (0-100 for each category)
     public float $attackerAffinity = 0;
@@ -44,6 +45,10 @@ class Player
             if (property_exists($this, $key)) {
                 $this->$key = $value;
             }
+        }
+
+        if (!isset($this->userId)) {
+            $this->userId = $this->id;
         }
     }
 
@@ -71,12 +76,12 @@ class Player
      * Positive values indicate endorsement, negative values indicate negative feedback.
      * Returns 0 if no feedback has been given.
      *
-     * @param string $playerId The ID of the other player
+     * @param string $userId The user ID of the other player
      * @return float Favorability score (-1 to 1, typically)
      */
-    public function getFavorabilityWith(string $playerId): float
+    public function getFavorabilityWith(string $userId): float
     {
-        return $this->favorability[$playerId] ?? 0;
+        return $this->favorability[$userId] ?? 0;
     }
 
     /**
@@ -147,8 +152,8 @@ class PlaceholderPack
 
         foreach ($this->members as $member1) {
             foreach ($pack->members as $member2) {
-                $totalScore += $member1->getFavorabilityWith($member2->id);
-                $totalScore += $member2->getFavorabilityWith($member1->id);
+                $totalScore += $member1->getFavorabilityWith($member2->userId);
+                $totalScore += $member2->getFavorabilityWith($member1->userId);
             }
         }
 
@@ -329,8 +334,8 @@ class PlaceholderRealm
         foreach ($players as $newMember) {
             $favorabilityScore = 0;
             foreach ($this->players as $realmMember) {
-                $favorabilityScore += $realmMember->getFavorabilityWith($newMember->id);
-                $favorabilityScore += $newMember->getFavorabilityWith($realmMember->id);
+                $favorabilityScore += $realmMember->getFavorabilityWith($newMember->userId);
+                $favorabilityScore += $newMember->getFavorabilityWith($realmMember->userId);
             }
             if ($favorabilityScore < -10) {
                 // Heavy penalty for conflicts
@@ -613,6 +618,7 @@ class RealmAssignmentService
             // Create player
             $player = Player::fromUser($dominion->user, [
                 'id' => $dominion->id,
+                'userId' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
                 'favorability' => $favorabilityMatrix,
                 'hasDiscord' => $hasDiscord,
@@ -1582,6 +1588,7 @@ class RealmAssignmentService
 
         return Player::fromUser($user, [
             'id' => $user->id,
+            'userId' => $user->id,
             'packId' => null, // Individual registration
             'favorability' => $favorabilityMatrix,
         ]);
@@ -1628,6 +1635,7 @@ class RealmAssignmentService
         $players = $realm->dominions()->human()->get()->map(function ($dominion) {
             return Player::fromUser($dominion->user, [
                 'id' => $dominion->user_id,
+                'userId' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
                 'favorability' => [], // Not needed for existing players in this context
             ]);
