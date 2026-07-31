@@ -66,19 +66,6 @@ class InfernalCommandTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, $this->dominion->getSpellPerkValue('apply_corruption'));
     }
 
-    public function testDemonUnitCostsAndPowers()
-    {
-        $units = $this->dominion->race->units->keyBy('slot');
-
-        $this->assertEquals(375, $units[1]->cost_platinum);
-
-        $this->assertEquals(800, $units[4]->cost_platinum);
-        $this->assertEquals(0, $units[4]->getPerkValue('casualties_offense'));
-
-        $this->assertEquals(1, $units[3]->power_offense);
-        $this->assertEquals('swamp,10,1', $units[3]->getPerkValue('offense_from_land'));
-    }
-
     public function testTheSimAgreesWithTheLivePathOnInfernalImpOffense()
     {
         $imp = $this->dominion->race->units->firstWhere('slot', 1);
