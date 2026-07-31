@@ -87,7 +87,7 @@ class TrainActionTest extends AbstractBrowserKitTestCase
 
         $result = app(TrainActionService::class)->train($dominion, ['military_archmages' => 2]);
 
-        $this->assertEquals(2700, $result['data']['totalCosts']['platinum']);
+        $this->assertEquals(2800, $result['data']['totalCosts']['platinum']);
         $this->assertEquals(2, $result['data']['totalCosts']['draftees']);
         $this->assertEquals(0, $result['data']['totalCosts']['wizards']);
     }
