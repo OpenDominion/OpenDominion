@@ -18,9 +18,8 @@ class UserRatingServiceTest extends TestCase
         $this->service = new UserRatingService($this->createStub(LandCalculator::class));
     }
 
-    public function testNoHistoryUsesNeutralRatingProfile(): void
+    public function testNoHistoryUsesDefaultRating(): void
     {
         $this->assertSame(User::DEFAULT_RATING, $this->service->averageBestFinishes([]));
-        $this->assertSame(User::DEFAULT_AFFINITIES, $this->service->calculateAffinities([]));
     }
 }

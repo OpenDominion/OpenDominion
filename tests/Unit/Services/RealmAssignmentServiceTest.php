@@ -26,25 +26,24 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $this->service = new RealmAssignmentService();
     }
 
-    public function testPlayerFactoryResolvesUnratedUserDefaults(): void
+    public function testPlayerFactoryUsesEffectiveRatingWithoutChangingAffinities(): void
     {
         $user = new User();
         $user->rating = 0;
-        $user->affinities = null;
+        $user->affinities = [
+            'attacker' => 80,
+            'converter' => 40,
+            'explorer' => 20,
+            'ops' => 10,
+        ];
 
         $player = Player::fromUser($user, ['id' => 'new-player']);
 
         $this->assertSame(User::DEFAULT_RATING, $player->rating);
-        $this->assertSame(User::DEFAULT_AFFINITIES['attacker'], $player->attackerAffinity);
-        $this->assertSame(User::DEFAULT_AFFINITIES['converter'], $player->converterAffinity);
-        $this->assertSame(User::DEFAULT_AFFINITIES['explorer'], $player->explorerAffinity);
-        $this->assertSame(User::DEFAULT_AFFINITIES['ops'], $player->opsAffinity);
-        $this->assertSame([
-            'attackerAffinity' => $player->attackerAffinity,
-            'converterAffinity' => $player->converterAffinity,
-            'explorerAffinity' => $player->explorerAffinity,
-            'opsAffinity' => $player->opsAffinity,
-        ], PlaceholderRealm::IDEAL_COMPOSITION);
+        $this->assertSame(80.0, $player->attackerAffinity);
+        $this->assertSame(40.0, $player->converterAffinity);
+        $this->assertSame(20.0, $player->explorerAffinity);
+        $this->assertSame(10.0, $player->opsAffinity);
     }
 
     /**

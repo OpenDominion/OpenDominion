@@ -37,7 +37,7 @@ class UserRatingService
     {
         $ratings = $this->calculateUserRatings($user);
 
-        $oldRating = $user->getEffectiveRating();
+        $oldRating = $user->rating ?? self::DEFAULT_RATING;
         $newRating = $ratings['rating'];
         $rankingChanged = ($newRating !== $oldRating);
 
@@ -251,7 +251,12 @@ class UserRatingService
         $totalScores = count($dominionScores);
 
         if ($totalScores === 0) {
-            return User::DEFAULT_AFFINITIES;
+            return [
+                'attacker' => 0,
+                'explorer' => 0,
+                'converter' => 0,
+                'ops' => 0,
+            ];
         }
 
         $attackerCount = 0;

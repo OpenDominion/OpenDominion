@@ -48,21 +48,19 @@ class Player
     }
 
     /**
-     * Create an assignment player using the user's effective rating profile.
+     * Create an assignment player using the user's effective rating.
      *
-     * Database zero/null values remain storage sentinels and are resolved here
-     * before they can affect assignment scoring.
+     * The database zero value remains a storage sentinel and is resolved here
+     * before it can affect assignment scoring.
      */
     public static function fromUser(User $user, array $attributes = []): self
     {
-        $affinities = $user->getEffectiveAffinities();
-
         return new self(array_merge($attributes, [
             'rating' => $user->getEffectiveRating(),
-            'attackerAffinity' => $affinities['attacker'],
-            'converterAffinity' => $affinities['converter'],
-            'explorerAffinity' => $affinities['explorer'],
-            'opsAffinity' => $affinities['ops'],
+            'attackerAffinity' => $user->getAffinity('attacker'),
+            'converterAffinity' => $user->getAffinity('converter'),
+            'explorerAffinity' => $user->getAffinity('explorer'),
+            'opsAffinity' => $user->getAffinity('ops'),
         ]));
     }
 
@@ -167,10 +165,10 @@ class PlaceholderRealm
      * @var array Ideal average playstyle affinities per player for balanced realms
      */
     public const IDEAL_COMPOSITION = [
-        'attackerAffinity' => User::DEFAULT_AFFINITIES['attacker'],
-        'converterAffinity' => User::DEFAULT_AFFINITIES['converter'],
-        'explorerAffinity' => User::DEFAULT_AFFINITIES['explorer'],
-        'opsAffinity' => User::DEFAULT_AFFINITIES['ops'],
+        'attackerAffinity' => 50,
+        'converterAffinity' => 30,
+        'explorerAffinity' => 50,
+        'opsAffinity' => 30,
     ];
 
     public string $id;

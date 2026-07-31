@@ -56,18 +56,6 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     public const DEFAULT_RATING = 1000.0;
 
-    /**
-     * Neutral playstyle profile used until calculated affinities are available.
-     *
-     * @var array<string, float>
-     */
-    public const DEFAULT_AFFINITIES = [
-        'attacker' => 50.0,
-        'converter' => 30.0,
-        'explorer' => 50.0,
-        'ops' => 30.0,
-    ];
-
     protected $casts = [
         'settings' => 'array',
         'affinities' => 'array',
@@ -187,29 +175,13 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         return $rating;
     }
 
-    /**
-     * Return calculated affinities, or the neutral profile for missing and
-     * legacy zero-only values.
-     *
-     * @return array<string, float>
-     */
-    public function getEffectiveAffinities(): array
+    public function getAffinity(string $key)
     {
-        $affinities = array_map(
-            static fn ($affinity): float => (float) $affinity,
-            $this->affinities ?? []
-        );
-
-        if (array_sum($affinities) <= 0) {
-            return self::DEFAULT_AFFINITIES;
+        if (!Arr::has($this->affinities, $key)) {
+            return 50;
         }
 
-        return array_replace(self::DEFAULT_AFFINITIES, $affinities);
-    }
-
-    public function getAffinity(string $key): float
-    {
-        return $this->getEffectiveAffinities()[$key] ?? 0.0;
+        return Arr::get($this->affinities, $key);
     }
 
     /**
