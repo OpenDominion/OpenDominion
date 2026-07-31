@@ -1269,6 +1269,32 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         echo 'Worse composition deviation: ' . round($worseDeviation, 2) . "\n";
     }
 
+    public function testCompatibilityMatchesFeedbackByUserId(): void
+    {
+        $realmMember = new Player([
+            'id' => 'dominion-101',
+            'userId' => 'user-1',
+            'rating' => 1500,
+            'favorability' => ['user-2' => 2],
+        ]);
+        $incomingPlayer = new Player([
+            'id' => 'dominion-202',
+            'userId' => 'user-2',
+            'rating' => 1500,
+            'favorability' => ['user-1' => 3],
+        ]);
+        $realm = new PlaceholderRealm('test', collect([$realmMember]));
+
+        $compatibilityScore = $realm->getCompatibilityScore(collect([$incomingPlayer]));
+        $playstyleScore = $realm->calculatePlaystyleScore(collect([$incomingPlayer]));
+
+        $this->assertEquals(
+            5,
+            $compatibilityScore - $playstyleScore,
+            'Feedback should match user IDs even when dominion IDs differ'
+        );
+    }
+
     /**
      * Test that new playstyle scoring properly distinguishes balanced vs imbalanced compositions
      */
