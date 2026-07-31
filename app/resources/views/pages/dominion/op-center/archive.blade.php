@@ -3,6 +3,11 @@
 @section('page-header', 'Op Center')
 
 @section('content')
+    @include('partials.dominion.op-center.navigation', [
+        'archiveDominion' => $dominion,
+        'activeInfoOpType' => $activeInfoOpType,
+    ])
+
     <div class="row">
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')

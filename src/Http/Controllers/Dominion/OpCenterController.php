@@ -200,7 +200,8 @@ class OpCenterController extends AbstractDominionController
             'unitHelper' => app(UnitHelper::class),
             'miscHelper' => app(MiscHelper::class),
             'dominion' => $dominion,
-            'infoOpArchive' => $infoOpArchive
+            'infoOpArchive' => $infoOpArchive,
+            'activeInfoOpType' => $type,
         ]);
     }
 
