@@ -81,7 +81,7 @@ class TrainActionTest extends AbstractBrowserKitTestCase
 
         $costs = $trainingCalculator->getTrainingCostsPerUnit($dominion)['archmages'];
 
-        $this->assertEquals(1350, $costs['platinum']);
+        $this->assertEquals(1400, $costs['platinum']);
         $this->assertEquals(1, $costs['draftees']);
         $this->assertArrayNotHasKey('wizards', $costs);
 
