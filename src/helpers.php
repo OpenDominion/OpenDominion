@@ -163,6 +163,7 @@ if (!function_exists('dominion_attr_display')) {
             'land_water' => 'water',
             'techCount' => 'unlocked techs',
             'attacking_success' => 'successful attacks',
+            'total_land_conquered' => 'acres conquered',
         ];
 
         if (isset($pluralAttributeDisplay[$attribute])) {

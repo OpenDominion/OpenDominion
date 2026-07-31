@@ -199,12 +199,6 @@ class HeroActionService
             }
         }
 
-        if ($selectedClass['key'] === 'scion') {
-            if ($dominion->round->daysInRound() < 8) {
-                throw new GameException('Advanced hero classes cannot be selected until day 8 of the round.');
-            }
-        }
-
         DB::transaction(function () use ($dominion, $selectedClass) {
             // TODO: Consider deleting upgrades for Scion?
             // HeroHeroUpgrade::where('hero_id', $dominion->hero->id)->delete();

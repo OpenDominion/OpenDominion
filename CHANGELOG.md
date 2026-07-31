@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-## [1.51.0] - 2026-07-27
+## [1.51.0] - 2026-07-30
 ### Changed
 - Demon: Infernal Command now reduces Infernal Imp offense by 0.5 (was an increase of 0.5) and no longer applies Corruption
 - Demon Infernal Imp: +0.5 offense (from 3), +45p (360p from 315p)
@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Locate Valuables now rolls a normal success/failure check against spy ratios before rolling for a discovery, discovery chance slightly increased
 - Spies required for Valuables investigation against targets below your 75% range now treated as exactly 75% your size, even when the intel is purchased from another player, sale price frozen for first 6 hours after completion before it starts to decay
 - Incoming military on bots at round start will now be spread across hours 4-9 (was 4-12)
+- Scion now requires 500 conquered acres to select (was 8 attacking successes)
 - Planar Gates removed
 
 ## [1.50.2] - 2026-06-12
@@ -2696,7 +2697,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.50.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.51.0...HEAD
+[1.51.0]: https://github.com/OpenDominion/OpenDominion/compare/1.50.2...1.51.0
 [1.50.2]: https://github.com/OpenDominion/OpenDominion/compare/1.50.1...1.50.2
 [1.50.1]: https://github.com/OpenDominion/OpenDominion/compare/1.50.0...1.50.1
 [1.50.0]: https://github.com/OpenDominion/OpenDominion/compare/1.49.0...1.50.0

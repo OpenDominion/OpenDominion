@@ -3,6 +3,8 @@
 namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
 use OpenDominion\Models\Race;
@@ -235,5 +237,76 @@ class HeroActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals('blacksmith', $hero->class);
         $this->assertEquals(2500, $hero->experience); // Restored blacksmith XP
         $this->assertEquals(1750, $hero->class_data['alchemist']['experience']); // Capped alchemist XP at level 4 minimum
+    }
+
+    public function testChangeClass_Scion_RequiresLandConqueredNotSuccessfulAttacks()
+    {
+        $this->arrangeForScion();
+
+        // Plenty of successful attacks no longer qualifies on its own
+        $this->dominion->stat_attacking_success = 50;
+        $this->dominion->stat_total_land_conquered = 499;
+        $this->dominion->save();
+
+        $this->expectException(GameException::class);
+        $this->expectExceptionMessage('do not meet the requirements');
+
+        $this->heroActionService->changeClass($this->dominion, 'scion');
+    }
+
+    public function testChangeClass_Scion_AllowedAtFiveHundredAcresConquered()
+    {
+        $this->arrangeForScion();
+
+        // No successful attacks at all, but enough land taken
+        $this->dominion->stat_attacking_success = 0;
+        $this->dominion->stat_total_land_conquered = 500;
+        $this->dominion->save();
+
+        $this->heroActionService->changeClass($this->dominion, 'scion');
+
+        $this->assertEquals('scion', $this->dominion->hero->fresh()->class);
+    }
+
+    public function testChangeClass_Scion_NotGatedByRoundDay()
+    {
+        $this->arrangeForScion();
+
+        // Day 2 of the round; only the acres requirement should matter now
+        $this->round->start_date = now()->subDays(1);
+        $this->round->save();
+        $this->dominion->setRelation('round', $this->round->fresh());
+
+        $this->dominion->stat_total_land_conquered = 500;
+        $this->dominion->save();
+
+        $this->heroActionService->changeClass($this->dominion, 'scion');
+
+        $this->assertEquals('scion', $this->dominion->hero->fresh()->class);
+    }
+
+    public function testScionRequirementIsDisplayedInAcres()
+    {
+        $scion = app(HeroHelper::class)->getClasses()->get('scion');
+
+        $this->assertEquals('stat_total_land_conquered', $scion['requirement_stat']);
+        $this->assertEquals(500, $scion['requirement_value']);
+        $this->assertEquals('500 acres conquered', app(HeroHelper::class)->getRequirementDisplay($scion));
+    }
+
+    /**
+     * Gives the dominion a hero that is eligible to change class.
+     */
+    protected function arrangeForScion(): void
+    {
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        $this->dominion->load('heroes');
     }
 }

@@ -96,8 +96,8 @@ class HeroHelper
                 'coefficient' => -0.25,
                 'perks' => ['disarmament', 'martyrdom', 'revised_strategy'],
                 'icon' => 'ra-ankh',
-                'requirement_stat' => 'stat_attacking_success',
-                'requirement_value' => 8
+                'requirement_stat' => 'stat_total_land_conquered',
+                'requirement_value' => 500
             ]
         ])->keyBy('key');
     }

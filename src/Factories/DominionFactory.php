@@ -618,7 +618,7 @@ class DominionFactory
         $additionalDefense = (2 * $landSize) + mt_rand(200, 500);
         $incSpecs = (int) ($additionalDefense / $defenseMod / $specPower * $specRatio);
         $incElites = (int) ($additionalDefense / $defenseMod / $elitePower * (1 - $specRatio));
-        $hourRange = collect(range(4, 12));
+        $hourRange = collect(range(4, 9));
         $hours = $hourRange->random(mt_rand(2, 5));
         foreach ($hours as $hour) {
             if ($hour == $hours->last()) {
