@@ -267,7 +267,7 @@ arcane_infusion:
   races:
     - icekin
   perks:
-    train_archmages_from_draftees: 1350
+    train_archmages_from_draftees: 1400
 mechanical_genius:
   name: Mechanical Genius
   category: self
