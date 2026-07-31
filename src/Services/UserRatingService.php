@@ -18,7 +18,7 @@ use OpenDominion\Models\User;
  */
 class UserRatingService
 {
-    const DEFAULT_RATING = 1000.0;
+    public const DEFAULT_RATING = User::DEFAULT_RATING;
 
     protected $landCalculator;
 

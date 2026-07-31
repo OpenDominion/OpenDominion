@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\User;
 use OpenDominion\Services\PlaceholderPack;
 use OpenDominion\Services\PlaceholderRealm;
 use OpenDominion\Services\Player;
@@ -24,6 +25,26 @@ class RealmAssignmentServiceTest extends AbstractTestCase
     {
         parent::setUp();
         $this->service = new RealmAssignmentService();
+    }
+
+    public function testPlayerFactoryUsesEffectiveRatingWithoutChangingAffinities(): void
+    {
+        $user = new User();
+        $user->rating = 0;
+        $user->affinities = [
+            'attacker' => 80,
+            'converter' => 40,
+            'explorer' => 20,
+            'ops' => 10,
+        ];
+
+        $player = Player::fromUser($user, ['id' => 'new-player']);
+
+        $this->assertSame(User::DEFAULT_RATING, $player->rating);
+        $this->assertSame(80.0, $player->attackerAffinity);
+        $this->assertSame(40.0, $player->converterAffinity);
+        $this->assertSame(20.0, $player->explorerAffinity);
+        $this->assertSame(10.0, $player->opsAffinity);
     }
 
     /**
