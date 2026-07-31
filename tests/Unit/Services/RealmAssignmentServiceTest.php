@@ -5,6 +5,7 @@ namespace OpenDominion\Tests\Unit\Services;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Round;
 use OpenDominion\Services\PlaceholderPack;
 use OpenDominion\Services\PlaceholderRealm;
 use OpenDominion\Services\Player;
@@ -823,7 +824,7 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         }
     }
 
-    public function testNonDiscordRealmAssignmentDoesNotSplitPacks(): void
+    public function testAssignmentOrchestrationKeepsNonDiscordPackMemberWithPack(): void
     {
         $packedNonDiscordPlayer = new Player([
             'id' => 'packed-non-discord',
@@ -844,27 +845,32 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             'hasDiscord' => false,
         ]);
 
-        $this->service->players = collect()
+        $service = $this->getMockBuilder(RealmAssignmentService::class)
+            ->onlyMethods(['loadPlayers'])
+            ->getMock();
+        $service->expects($this->once())
+            ->method('loadPlayers');
+        $service->players = collect()
             ->put($packedNonDiscordPlayer->id, $packedNonDiscordPlayer)
             ->put($packedDiscordPlayer->id, $packedDiscordPlayer)
             ->put($soloNonDiscordPlayer->id, $soloNonDiscordPlayer);
 
-        $this->service->createNonDiscordRealms();
+        $service->assignRealms(new Round(), true);
 
-        $this->assertTrue($this->service->players->has($packedNonDiscordPlayer->id));
-        $this->assertTrue($this->service->players->has($packedDiscordPlayer->id));
-        $this->assertFalse($this->service->players->has($soloNonDiscordPlayer->id));
-        $this->assertCount(1, $this->service->nonDiscordRealms);
-        $this->assertTrue(
-            $this->service->nonDiscordRealms->first()->players->has($soloNonDiscordPlayer->id)
-        );
-        $this->assertFalse(
-            $this->service->nonDiscordRealms->first()->players->has($packedNonDiscordPlayer->id)
-        );
+        $packRealm = $service->realms->first(function (PlaceholderRealm $realm) use ($packedNonDiscordPlayer) {
+            return $realm->players->has($packedNonDiscordPlayer->id);
+        });
+        $nonDiscordRealm = $service->realms->first(function (PlaceholderRealm $realm) use ($soloNonDiscordPlayer) {
+            return $realm->players->has($soloNonDiscordPlayer->id);
+        });
 
-        $this->service->loadPacks();
-
-        $this->assertCount(2, $this->service->packs->get('pack-1')->members);
+        $this->assertNotNull($packRealm);
+        $this->assertTrue($packRealm->discordEnabled);
+        $this->assertTrue($packRealm->players->has($packedDiscordPlayer->id));
+        $this->assertCount(2, $packRealm->players);
+        $this->assertNotNull($nonDiscordRealm);
+        $this->assertFalse($nonDiscordRealm->discordEnabled);
+        $this->assertFalse($nonDiscordRealm->players->has($packedNonDiscordPlayer->id));
     }
 
     /**

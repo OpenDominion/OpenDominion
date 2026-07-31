@@ -755,9 +755,7 @@ class RealmAssignmentService
      */
     public function createNonDiscordRealms(): void
     {
-        $nonDiscordSoloPlayers = $this->players
-            ->where('hasDiscord', false)
-            ->where('packId', null);
+        $nonDiscordSoloPlayers = $this->players->where('hasDiscord', false);
         $totalNonDiscordPlayers = $nonDiscordSoloPlayers->count();
 
         if ($totalNonDiscordPlayers === 0) {
