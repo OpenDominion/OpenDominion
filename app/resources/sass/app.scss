@@ -120,6 +120,12 @@ a {
   scrollbar-width: thin;
 }
 
+@media (max-width: 767.98px) {
+  .op-center-navigation-scroller {
+    padding-bottom: 0.5rem;
+  }
+}
+
 .op-center-report-anchor {
   scroll-margin-top: 4.75rem;
 }
