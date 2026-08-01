@@ -18,12 +18,20 @@ use OpenDominion\Services\NotificationService;
  */
 class Player
 {
+    private const AFFINITY_PROPERTIES = [
+        'attackerAffinity',
+        'converterAffinity',
+        'explorerAffinity',
+        'opsAffinity',
+    ];
+
     public string $id;
     public string $userId;
     public float $rating;
     public ?string $packId;
     public bool $hasDiscord = true;
     public array $favorability = []; // user_id => score
+    public bool $hasKnownAffinities;
 
     // Playstyle affinities (0-100 for each category)
     public float $attackerAffinity = 0;
@@ -41,11 +49,17 @@ class Player
      */
     public function __construct(array $attributes = [])
     {
+        $hasKnownAffinities = array_key_exists('hasKnownAffinities', $attributes)
+            ? (bool) $attributes['hasKnownAffinities']
+            : $this->attributesContainKnownAffinities($attributes);
+
         foreach ($attributes as $key => $value) {
             if (property_exists($this, $key)) {
                 $this->$key = $value;
             }
         }
+
+        $this->hasKnownAffinities = $hasKnownAffinities;
 
         if (!isset($this->userId)) {
             $this->userId = $this->id;
@@ -62,6 +76,7 @@ class Player
     {
         return new self(array_merge($attributes, [
             'rating' => $user->getEffectiveRating(),
+            'hasKnownAffinities' => $user->hasKnownAffinities(),
             'attackerAffinity' => $user->getAffinity('attacker'),
             'converterAffinity' => $user->getAffinity('converter'),
             'explorerAffinity' => $user->getAffinity('explorer'),
@@ -103,6 +118,21 @@ class Player
         ];
 
         return array_keys($affinities, max($affinities))[0];
+    }
+
+    private function attributesContainKnownAffinities(array $attributes): bool
+    {
+        $hasPositiveAffinity = false;
+
+        foreach (self::AFFINITY_PROPERTIES as $property) {
+            if (!array_key_exists($property, $attributes) || !is_numeric($attributes[$property])) {
+                return false;
+            }
+
+            $hasPositiveAffinity = $hasPositiveAffinity || (float) $attributes[$property] > 0;
+        }
+
+        return $hasPositiveAffinity;
     }
 }
 
@@ -354,58 +384,41 @@ class PlaceholderRealm
      * Calculate playstyle score for adding players to this realm
      *
      * Evaluates how adding players would move the realm closer to or further from
-     * the ideal playstyle composition. Uses configurable ideal ratios based on
-     * game balance research.
+     * the ideal playstyle composition. Players with unknown affinities are excluded
+     * from both the affinity totals and player counts.
      *
      * @param Collection $players Players to evaluate for addition
      * @return float Balance improvement score (positive is better)
      */
     public function calculatePlaystyleScore(Collection $players): float
     {
-        // Get current and projected compositions
-        $currentComp = $this->getPlaystyleComposition();
-        $currentDeviation = $this->calculatePlaystyleDeviation($currentComp);
-
-        // Simulate adding new players
-        $newComp = $currentComp;
-        foreach ($players as $player) {
-            $newComp['attackerAffinity'] += $player->attackerAffinity;
-            $newComp['converterAffinity'] += $player->converterAffinity;
-            $newComp['explorerAffinity'] += $player->explorerAffinity;
-            $newComp['opsAffinity'] += $player->opsAffinity;
+        $knownIncomingPlayers = $this->knownAffinityPlayers($players);
+        if ($knownIncomingPlayers->isEmpty()) {
+            return 0.0;
         }
 
-        $newDeviation = $this->calculatePlaystyleDeviation($newComp);
+        $currentComposition = $this->getPlaystyleCompositionFor($this->players);
+        $projectedComposition = $this->getPlaystyleCompositionFor(
+            $this->players->concat($knownIncomingPlayers)
+        );
 
-        // Return improvement (positive if we got closer to ideal)
-        return $currentDeviation - $newDeviation;
+        $currentDeviation = $this->calculatePlaystyleDeviation($currentComposition);
+        $projectedDeviation = $this->calculatePlaystyleDeviation($projectedComposition);
+
+        return $currentDeviation - $projectedDeviation;
     }
 
     /**
      * Get realm's current playstyle composition as averages
      *
-     * Calculates the average playstyle affinity for each category across all players.
-     * Returns averages that can be directly compared to IDEAL_COMPOSITION values.
+     * Calculates the average playstyle affinity for each category across players with
+     * known profiles. Returns averages that can be directly compared to IDEAL_COMPOSITION.
      *
      * @return array Associative array with playstyle averages (attackerAffinity, converterAffinity, etc.)
      */
     public function getPlaystyleComposition(): array
     {
-        if ($this->players->count() == 0) {
-            return [
-                'attackerAffinity' => 0,
-                'converterAffinity' => 0,
-                'explorerAffinity' => 0,
-                'opsAffinity' => 0,
-            ];
-        }
-
-        return [
-            'attackerAffinity' => $this->players->avg('attackerAffinity'),
-            'converterAffinity' => $this->players->avg('converterAffinity'),
-            'explorerAffinity' => $this->players->avg('explorerAffinity'),
-            'opsAffinity' => $this->players->avg('opsAffinity'),
-        ];
+        return $this->getPlaystyleCompositionFor($this->players);
     }
 
     /**
@@ -418,7 +431,7 @@ class PlaceholderRealm
      * @param array $composition Current playstyle averages
      * @return float Total deviation from ideal (lower is better)
      */
-    public function calculatePlaystyleDeviation(array $composition): float
+    private function calculatePlaystyleDeviation(array $composition): float
     {
         $idealAverages = static::IDEAL_COMPOSITION;
         $totalDeviation = 0;
@@ -429,6 +442,29 @@ class PlaceholderRealm
         }
 
         return $totalDeviation;
+    }
+
+    private function getPlaystyleCompositionFor(Collection $players): array
+    {
+        $knownPlayers = $this->knownAffinityPlayers($players);
+
+        if ($knownPlayers->isEmpty()) {
+            return array_fill_keys(array_keys(static::IDEAL_COMPOSITION), 0.0);
+        }
+
+        $composition = [];
+        foreach (array_keys(static::IDEAL_COMPOSITION) as $style) {
+            $composition[$style] = (float) $knownPlayers->avg($style);
+        }
+
+        return $composition;
+    }
+
+    private function knownAffinityPlayers(Collection $players): Collection
+    {
+        return $players->filter(function (Player $player): bool {
+            return $player->hasKnownAffinities;
+        });
     }
 }
 
@@ -1378,6 +1414,7 @@ class RealmAssignmentService
         $totalPlayers = 0;
         $totalNewPlayers = 0;
         $totalExperiencedPlayers = 0;
+        $totalKnownAffinityPlayers = 0;
         $realmSizes = [];
         $realmRatings = [];
         $totalPlaystyleAffinities = [
@@ -1391,6 +1428,7 @@ class RealmAssignmentService
             $realmSize = $realm->size;
             $realmRating = $realm->rating;
             $playstyleDist = $realm->getPlaystyleComposition();
+            $knownAffinityPlayerCount = $realm->players->where('hasKnownAffinities', true)->count();
             $newPlayerCount = $realm->players->where('rating', '<=', 1000)->count();
             $experiencedPlayerCount = $realm->players->where('rating', '>', 1000)->count();
 
@@ -1398,14 +1436,15 @@ class RealmAssignmentService
             $totalPlayers += $realmSize;
             $totalNewPlayers += $newPlayerCount;
             $totalExperiencedPlayers += $experiencedPlayerCount;
+            $totalKnownAffinityPlayers += $knownAffinityPlayerCount;
             $realmSizes[] = $realmSize;
             $realmRatings[] = $realmRating;
 
             // Accumulate playstyle affinities
-            $totalPlaystyleAffinities['attacker'] += $playstyleDist['attackerAffinity'] * $realmSize;
-            $totalPlaystyleAffinities['converter'] += $playstyleDist['converterAffinity'] * $realmSize;
-            $totalPlaystyleAffinities['explorer'] += $playstyleDist['explorerAffinity'] * $realmSize;
-            $totalPlaystyleAffinities['ops'] += $playstyleDist['opsAffinity'] * $realmSize;
+            $totalPlaystyleAffinities['attacker'] += $playstyleDist['attackerAffinity'] * $knownAffinityPlayerCount;
+            $totalPlaystyleAffinities['converter'] += $playstyleDist['converterAffinity'] * $knownAffinityPlayerCount;
+            $totalPlaystyleAffinities['explorer'] += $playstyleDist['explorerAffinity'] * $knownAffinityPlayerCount;
+            $totalPlaystyleAffinities['ops'] += $playstyleDist['opsAffinity'] * $knownAffinityPlayerCount;
 
             $stats['realms'][] = [
                 'id' => $realm->id,
@@ -1430,12 +1469,12 @@ class RealmAssignmentService
         $stats['average_realm_rating'] = count($realmRatings) > 0 ? round(array_sum($realmRatings) / count($realmRatings), 2) : 0;
 
         // Calculate overall playstyle distribution
-        if ($totalPlayers > 0) {
+        if ($totalKnownAffinityPlayers > 0) {
             $stats['overall_playstyle_distribution'] = [
-                'attacker' => round($totalPlaystyleAffinities['attacker'] / $totalPlayers, 2),
-                'converter' => round($totalPlaystyleAffinities['converter'] / $totalPlayers, 2),
-                'explorer' => round($totalPlaystyleAffinities['explorer'] / $totalPlayers, 2),
-                'ops' => round($totalPlaystyleAffinities['ops'] / $totalPlayers, 2),
+                'attacker' => round($totalPlaystyleAffinities['attacker'] / $totalKnownAffinityPlayers, 2),
+                'converter' => round($totalPlaystyleAffinities['converter'] / $totalKnownAffinityPlayers, 2),
+                'explorer' => round($totalPlaystyleAffinities['explorer'] / $totalKnownAffinityPlayers, 2),
+                'ops' => round($totalPlaystyleAffinities['ops'] / $totalKnownAffinityPlayers, 2),
             ];
         }
 

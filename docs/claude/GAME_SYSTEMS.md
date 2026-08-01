@@ -195,7 +195,7 @@ Pre-round player distribution (RealmAssignmentService):
 8. Optimize via 50 iterations of random swap improvement
 
 ### Scoring
-- **Compatibility**: Favorability matrix + playstyle balance (attacker/converter/explorer/ops)
+- **Compatibility**: Favorability matrix + weighted playstyle balance (attacker/converter/explorer/ops); players without a known affinity profile are excluded from playstyle sums and denominators
 - **Balance**: Rating deviation from target average
 - **Size**: Penalizes full realms, rewards undersize
 

@@ -124,9 +124,9 @@ Daily ranking snapshots by category (land, networth, conquered, explored, etc.).
 ### RealmAssignmentService (largest service)
 Sophisticated pre-round realm assignment algorithm.
 - Constants: `MAX_PACKS_PER_REALM` = 3, `MAX_PACKED_PLAYERS_PER_REALM` = 8, realms 8-14
-- Uses nested classes: Player, PlaceholderPack, PlaceholderRealm; Player keeps distinct dominion and user IDs so feedback matches users
+- Uses nested classes: Player, PlaceholderPack, PlaceholderRealm; Player keeps distinct dominion and user IDs so feedback matches users and explicitly tracks whether its affinity profile is known
 - Resolves the database's unrated-player sentinel to rating 1000 before assignment scoring
-- Scoring: compatibility (favorability + playstyle balance) + rating deviation + size bonus
+- Scoring: compatibility (favorability + weighted projected playstyle averages over known affinity profiles only) + rating deviation + size bonus; unknown profiles have zero playstyle weight
 - Optimization: 50 iterations of random solo-player swapping
 
 ### NotificationService
@@ -145,7 +145,7 @@ Town Crier event retrieval.
 Player skill ratings from round performance.
 - Default rating: 1000 (shared with `User::DEFAULT_RATING`)
 - Formula: 2000 * exp(-0.005 * (rank - 1)) + bonuses (land, ops, bounties, activity)
-- Playstyle affinities: attacker, converter, explorer, ops
+- Playstyle affinities: attacker, converter, explorer, ops; a missing or all-zero sentinel profile is treated as unknown by realm assignment
 - Averages best 3 finishes + feedback score
 
 ### WonderService
