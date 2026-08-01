@@ -7,6 +7,7 @@ use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
+use OpenDominion\Models\UserFeedback;
 use OpenDominion\Services\PlaceholderPack;
 use OpenDominion\Services\PlaceholderRealm;
 use OpenDominion\Services\Player;
@@ -1240,5 +1241,86 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             $compatibilityScore - $playstyleScore,
             'Feedback should match user IDs even when dominion IDs differ'
         );
+    }
+
+    public function testInboundFavorabilityLoadsWhatExistingMembersThinkOfTheNewcomer(): void
+    {
+        $round = $this->createRound();
+        $realm = $this->createRealm($round);
+
+        $critic = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($critic, $round, null, $realm);
+
+        $newcomer = $this->createUser(null, ['rating' => 1500]);
+        UserFeedback::create([
+            'source_id' => $critic->id,
+            'target_id' => $newcomer->id,
+            'round_id' => $round->id,
+            'endorsed' => false,
+        ]);
+
+        $player = Player::fromUser($newcomer, ['id' => $newcomer->id, 'userId' => $newcomer->id]);
+
+        $this->assertSame(
+            [$critic->id => [$newcomer->id => -1]],
+            $this->service->getInboundFavorability($player, collect([$realm]))
+        );
+    }
+
+    public function testSelectBestRealmAvoidsRealmsWhoseMembersDownvotedTheNewcomer(): void
+    {
+        $round = $this->createRound();
+        $hostileRealm = $this->createRealm($round);
+        $neutralRealm = $this->createRealm($round);
+
+        $newcomer = $this->createUser(null, ['rating' => 1500]);
+
+        // Both realms are identical in size, rating and affinities, so the only
+        // thing that can separate them is feedback the newcomer never gave.
+        foreach ([$hostileRealm, $neutralRealm] as $realm) {
+            foreach (range(1, 2) as $ignored) {
+                $member = $this->createUser(null, ['rating' => 1500]);
+                $this->createDominion($member, $round, null, $realm);
+
+                if ($realm->is($hostileRealm)) {
+                    UserFeedback::create([
+                        'source_id' => $member->id,
+                        'target_id' => $newcomer->id,
+                        'round_id' => $round->id,
+                        'endorsed' => false,
+                    ]);
+                }
+            }
+        }
+
+        $player = Player::fromUser($newcomer, ['id' => $newcomer->id, 'userId' => $newcomer->id]);
+
+        $selected = $this->service->selectBestRealm(
+            collect([$hostileRealm, $neutralRealm]),
+            $player,
+            $round
+        );
+
+        $this->assertTrue($selected->is($neutralRealm));
+    }
+
+    public function testPlaceholderRealmLoadsAffinitiesForExistingMembers(): void
+    {
+        $round = $this->createRound();
+        $realm = $this->createRealm($round);
+
+        $member = $this->createUser(null, [
+            'rating' => 1500,
+            'affinities' => ['attacker' => 80, 'converter' => 10, 'explorer' => 20, 'ops' => 10],
+        ]);
+        $this->createDominion($member, $round, null, $realm);
+
+        $player = $this->service->createPlaceholderRealm($realm)->players->first();
+
+        $this->assertTrue(
+            $player->hasKnownAffinities,
+            'existing members must reach playstyle scoring with their real affinities'
+        );
+        $this->assertSame(80.0, $player->attackerAffinity);
     }
 }

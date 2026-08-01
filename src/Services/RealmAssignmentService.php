@@ -99,27 +99,6 @@ class Player
         return $this->favorability[$userId] ?? 0;
     }
 
-    /**
-     * Get player's primary playstyle based on highest affinity
-     *
-     * Compares all playstyle affinities (attacker, converter, explorer, ops) and
-     * returns the playstyle with the highest value. Used for playstyle distribution
-     * analysis and realm balancing.
-     *
-     * @return string Primary playstyle ('attacker', 'converter', 'explorer', or 'ops')
-     */
-    public function getPrimaryPlaystyle(): string
-    {
-        $affinities = [
-            'attacker' => $this->attackerAffinity,
-            'converter' => $this->converterAffinity,
-            'explorer' => $this->explorerAffinity,
-            'ops' => $this->opsAffinity,
-        ];
-
-        return array_keys($affinities, max($affinities))[0];
-    }
-
     private function attributesContainKnownAffinities(array $attributes): bool
     {
         $hasPositiveAffinity = false;
@@ -197,14 +176,41 @@ class PlaceholderPack
 class PlaceholderRealm
 {
     /**
-     * @var array Ideal average playstyle affinities per player for balanced realms
+     * @var int Affinity at which a player is treated as capable of a playstyle
+     *
+     * Affinities are the percentage of a player's past dominions flagged with a
+     * playstyle, so 50 means they have spent half their rounds doing it — enough
+     * to treat them as able and willing to do it again.
+     */
+    public const SPECIALIST_THRESHOLD = 50;
+
+    /**
+     * @var array Percentage of a realm's players that should be capable of each playstyle
+     *
+     * These are targets for the share of players clearing SPECIALIST_THRESHOLD, not
+     * average affinities. Playstyles are not mutually exclusive, so the values do not
+     * sum to 100 — one player can count toward several at once.
+     *
+     * Measured across the last three rounds: 174 users with computed affinities among
+     * the 190 distinct users who cleared protection. Setting the targets to the observed
+     * population shares keeps them achievable, so a balanced realm approaches zero
+     * deviation rather than carrying a permanent offset.
+     *
+     * Attacker and explorer swing by roughly 10 points between individual rounds, so
+     * these need re-measuring over several rounds rather than one, and a single round
+     * is not a safe basis for changing them.
      */
     public const IDEAL_COMPOSITION = [
-        'attackerAffinity' => 50,
-        'converterAffinity' => 30,
-        'explorerAffinity' => 50,
-        'opsAffinity' => 30,
+        'attackerAffinity' => 51,
+        'converterAffinity' => 25,
+        'explorerAffinity' => 55,
+        'opsAffinity' => 28,
     ];
+
+    /**
+     * @var float Scale applied to the playstyle term in getCompatibilityScore()
+     */
+    public const PLAYSTYLE_SCORE_WEIGHT = 1.0;
 
     public string $id;
     public Collection $players;
@@ -374,7 +380,6 @@ class PlaceholderRealm
             $totalScore += $favorabilityScore;
         }
 
-        // TODO: Weight this
         $totalScore += $this->calculatePlaystyleScore($players);
 
         return $totalScore;
@@ -384,8 +389,9 @@ class PlaceholderRealm
      * Calculate playstyle score for adding players to this realm
      *
      * Evaluates how adding players would move the realm closer to or further from
-     * the ideal playstyle composition. Players with unknown affinities are excluded
-     * from both the affinity totals and player counts.
+     * the ideal number of players capable of each playstyle. Players with unknown
+     * affinities are excluded from both the specialist counts and the targets those
+     * counts are measured against.
      *
      * @param Collection $players Players to evaluate for addition
      * @return float Balance improvement score (positive is better)
@@ -397,22 +403,27 @@ class PlaceholderRealm
             return 0.0;
         }
 
-        $currentComposition = $this->getPlaystyleCompositionFor($this->players);
-        $projectedComposition = $this->getPlaystyleCompositionFor(
-            $this->players->concat($knownIncomingPlayers)
+        $knownCurrentPlayers = $this->knownAffinityPlayers($this->players);
+        if ($knownCurrentPlayers->isEmpty()) {
+            // Nothing to improve on. Scoring an empty baseline would report the
+            // maximum possible improvement and swamp the size and rating terms.
+            return 0.0;
+        }
+
+        $currentDeviation = $this->calculatePlaystyleDeviation($knownCurrentPlayers);
+        $projectedDeviation = $this->calculatePlaystyleDeviation(
+            $knownCurrentPlayers->concat($knownIncomingPlayers)
         );
 
-        $currentDeviation = $this->calculatePlaystyleDeviation($currentComposition);
-        $projectedDeviation = $this->calculatePlaystyleDeviation($projectedComposition);
-
-        return $currentDeviation - $projectedDeviation;
+        return ($currentDeviation - $projectedDeviation) * static::PLAYSTYLE_SCORE_WEIGHT;
     }
 
     /**
      * Get realm's current playstyle composition as averages
      *
-     * Calculates the average playstyle affinity for each category across players with
-     * known profiles. Returns averages that can be directly compared to IDEAL_COMPOSITION.
+     * Reported in assignment statistics only. Scoring uses specialist counts instead,
+     * because averaging affinities across a realm cannot tell a realm of specialists
+     * apart from a realm of generalists — both average out to the same figures.
      *
      * @return array Associative array with playstyle averages (attackerAffinity, converterAffinity, etc.)
      */
@@ -422,23 +433,65 @@ class PlaceholderRealm
     }
 
     /**
-     * Calculate how far a composition deviates from ideal averages
+     * Count how many of the given players are capable of each playstyle
      *
-     * Measures the total absolute deviation from the ideal playstyle composition.
-     * Both composition and ideal values are averages, so direct comparison works.
-     * Lower values indicate better balance according to the configured ideal averages.
+     * A player counts toward a playstyle once their affinity reaches
+     * SPECIALIST_THRESHOLD. Playstyles are independent, so one player can count
+     * toward several at once.
      *
-     * @param array $composition Current playstyle averages
-     * @return float Total deviation from ideal (lower is better)
+     * Players with unknown affinities are filtered out here rather than by the caller:
+     * User::getAffinity() falls back to 50 for missing data, which clears the threshold
+     * and would silently count every unrated player as an attacker and an explorer.
+     *
+     * @param Collection $players Players to count
+     * @return array Associative array of playstyle => number of capable players
      */
-    private function calculatePlaystyleDeviation(array $composition): float
+    public function getSpecialistCounts(Collection $players): array
     {
-        $idealAverages = static::IDEAL_COMPOSITION;
-        $totalDeviation = 0;
+        $knownPlayers = $this->knownAffinityPlayers($players);
+        $counts = [];
 
-        foreach ($idealAverages as $style => $idealAverage) {
-            $actualAverage = $composition[$style] ?? 0;
-            $totalDeviation += abs($actualAverage - $idealAverage);
+        foreach (array_keys(static::IDEAL_COMPOSITION) as $style) {
+            $counts[$style] = $knownPlayers->filter(function (Player $player) use ($style): bool {
+                return $player->$style >= static::SPECIALIST_THRESHOLD;
+            })->count();
+        }
+
+        return $counts;
+    }
+
+    /**
+     * Report how far this realm's specialist mix sits from ideal
+     *
+     * The same figure the assignment scoring minimises, exposed for dry-run statistics.
+     * Zero means every playstyle is represented in its target proportion.
+     */
+    public function getPlaystyleDeviation(): float
+    {
+        return $this->calculatePlaystyleDeviation($this->players);
+    }
+
+    /**
+     * Calculate how far a set of players deviates from the ideal specialist mix
+     *
+     * Deviations are squared rather than absolute. Absolute deviation is linear below
+     * the target, so it scores an even split of a scarce playstyle identically to a
+     * stacked one — 3+1 and 2+2 both cost 3.20 against a target of 3.6. That is exactly
+     * the decision the assignment and swap passes make, and scarce playstyles sit below
+     * target almost always. Squaring makes the even split win.
+     *
+     * @param Collection $players Players with known affinities
+     * @return float Total squared deviation from ideal (lower is better)
+     */
+    private function calculatePlaystyleDeviation(Collection $players): float
+    {
+        $specialistCounts = $this->getSpecialistCounts($players);
+        $playerCount = $this->knownAffinityPlayers($players)->count();
+        $totalDeviation = 0.0;
+
+        foreach (static::IDEAL_COMPOSITION as $style => $idealPercentage) {
+            $target = $idealPercentage / 100 * $playerCount;
+            $totalDeviation += ($specialistCounts[$style] - $target) ** 2;
         }
 
         return $totalDeviation;
@@ -487,6 +540,16 @@ class RealmAssignmentService
      * @var int Number of hours before round start to begin realm assignment
      */
     public const ASSIGNMENT_HOURS_BEFORE_START = 96;
+
+    /**
+     * @var float Rating at or below which a player is treated as new
+     *
+     * User::getEffectiveRating() resolves an unrated user to User::DEFAULT_RATING, so
+     * the boundary must be inclusive — a player sitting exactly on it has no rating
+     * history to place them by. Comparisons against this value must be `<=` for new
+     * and `>` for experienced, so unrated players land on one side everywhere.
+     */
+    public const NEW_PLAYER_RATING = User::DEFAULT_RATING;
 
     /**
      * @var int Minimum number of realms to create
@@ -1039,14 +1102,15 @@ class RealmAssignmentService
      * Assign solo players to realms
      *
      * Orchestrates the assignment of individual players in two phases:
-     * Phase 1 distributes new players (rating=0) evenly using round-robin.
-     * Phase 2 assigns experienced players using full scoring with size constraints.
-     * This ensures fair distribution while optimizing for compatibility and balance.
+     * Phase 1 distributes new players (at or below NEW_PLAYER_RATING) evenly using
+     * round-robin. Phase 2 assigns experienced players using full scoring with size
+     * constraints. This ensures fair distribution while optimizing for compatibility
+     * and balance.
      */
     public function assignSolos(): void
     {
         // Phase 1: Distribute new players using round-robin
-        $newPlayers = $this->players->where('rating', '<=', 1000)->values(); // Get indexed collection
+        $newPlayers = $this->players->where('rating', '<=', self::NEW_PLAYER_RATING)->values(); // Get indexed collection
         $realmCount = $this->realms->count();
 
         // Assign all new players using round-robin across realms
@@ -1064,10 +1128,11 @@ class RealmAssignmentService
     /**
      * Assign experienced players using full scoring system
      *
-     * Assigns players with rating > 0 using comprehensive scoring that considers
-     * compatibility, balance, and size constraints. Players are sorted by rating
-     * (highest first) for strategic placement. Hard conflicts are avoided and
-     * the size penalty ensures equal distribution across realms.
+     * Assigns whichever players assignSolos() did not round-robin — those above
+     * NEW_PLAYER_RATING — using comprehensive scoring that considers compatibility,
+     * balance, and size constraints. Players are sorted by rating (highest first)
+     * for strategic placement. Hard conflicts are avoided and the size penalty
+     * ensures equal distribution across realms.
      */
     public function assignExperiencedPlayers(): void
     {
@@ -1119,8 +1184,8 @@ class RealmAssignmentService
             }
 
             // Find the best solo player to move (one that improves or least worsens rating balance)
-            // Prefer players rated > 1000, but fall back to any available solo player
-            $availablePlayers = $largest->soloPlayers()->where('rating', '>', 1000);
+            // Prefer experienced players, but fall back to any available solo player
+            $availablePlayers = $largest->soloPlayers()->where('rating', '>', self::NEW_PLAYER_RATING);
             if ($availablePlayers->isEmpty()) {
                 $availablePlayers = $largest->soloPlayers();
             }
@@ -1190,7 +1255,7 @@ class RealmAssignmentService
             // Collect all solo players with their realm assignments
             $soloPlayers = collect();
             foreach ($this->realms as $realm) {
-                foreach ($realm->soloPlayers()->where('rating', '>=', 1000) as $player) {
+                foreach ($realm->soloPlayers()->where('rating', '>', self::NEW_PLAYER_RATING) as $player) {
                     $soloPlayers->push([
                         'player' => $player,
                         'realm' => $realm
@@ -1387,26 +1452,35 @@ class RealmAssignmentService
      */
     public function getAssignmentStats(): array
     {
+        $styles = array_keys(PlaceholderRealm::IDEAL_COMPOSITION);
+        $shortNames = array_combine($styles, array_map(
+            fn ($style) => str_replace('Affinity', '', $style),
+            $styles
+        ));
+
         $stats = [
             'realm_count' => $this->realms->count(),
             'total_players' => 0,
             'total_new_players' => 0,
             'total_experienced_players' => 0,
+            'total_known_affinity_players' => 0,
             'average_realm_size' => 0,
             'average_realm_rating' => 0,
             'target_realm_strength' => $this->targetRealmStrength,
             'target_realm_size' => $this->targetRealmSize,
-            'overall_playstyle_distribution' => [
-                'attacker' => 0,
-                'converter' => 0,
-                'explorer' => 0,
-                'ops' => 0,
-            ],
+            'specialist_threshold' => PlaceholderRealm::SPECIALIST_THRESHOLD,
+            'ideal_specialist_distribution' => array_combine(
+                $shortNames,
+                array_values(PlaceholderRealm::IDEAL_COMPOSITION)
+            ),
+            'overall_specialist_distribution' => array_fill_keys(array_values($shortNames), 0),
+            'overall_playstyle_distribution' => array_fill_keys(array_values($shortNames), 0),
             'balance_metrics' => [
                 'size_variance' => 0,
                 'rating_variance' => 0,
                 'max_size_deviation' => 0,
                 'max_rating_deviation' => 0,
+                'max_playstyle_deviation' => 0,
             ],
             'realms' => []
         ];
@@ -1417,20 +1491,19 @@ class RealmAssignmentService
         $totalKnownAffinityPlayers = 0;
         $realmSizes = [];
         $realmRatings = [];
-        $totalPlaystyleAffinities = [
-            'attacker' => 0,
-            'converter' => 0,
-            'explorer' => 0,
-            'ops' => 0,
-        ];
+        $playstyleDeviations = [];
+        $totalPlaystyleAffinities = array_fill_keys($styles, 0);
+        $totalSpecialists = array_fill_keys($styles, 0);
 
         foreach ($this->realms as $realm) {
             $realmSize = $realm->size;
             $realmRating = $realm->rating;
             $playstyleDist = $realm->getPlaystyleComposition();
+            $specialistCounts = $realm->getSpecialistCounts($realm->players);
+            $playstyleDeviation = $realm->getPlaystyleDeviation();
             $knownAffinityPlayerCount = $realm->players->where('hasKnownAffinities', true)->count();
-            $newPlayerCount = $realm->players->where('rating', '<=', 1000)->count();
-            $experiencedPlayerCount = $realm->players->where('rating', '>', 1000)->count();
+            $newPlayerCount = $realm->players->where('rating', '<=', self::NEW_PLAYER_RATING)->count();
+            $experiencedPlayerCount = $realm->players->where('rating', '>', self::NEW_PLAYER_RATING)->count();
 
             // Accumulate totals
             $totalPlayers += $realmSize;
@@ -1439,23 +1512,32 @@ class RealmAssignmentService
             $totalKnownAffinityPlayers += $knownAffinityPlayerCount;
             $realmSizes[] = $realmSize;
             $realmRatings[] = $realmRating;
+            $playstyleDeviations[] = $playstyleDeviation;
 
-            // Accumulate playstyle affinities
-            $totalPlaystyleAffinities['attacker'] += $playstyleDist['attackerAffinity'] * $knownAffinityPlayerCount;
-            $totalPlaystyleAffinities['converter'] += $playstyleDist['converterAffinity'] * $knownAffinityPlayerCount;
-            $totalPlaystyleAffinities['explorer'] += $playstyleDist['explorerAffinity'] * $knownAffinityPlayerCount;
-            $totalPlaystyleAffinities['ops'] += $playstyleDist['opsAffinity'] * $knownAffinityPlayerCount;
+            // Averages are per known-affinity player, so weight them back up by that
+            // count rather than realm size before pooling them across realms.
+            foreach ($styles as $style) {
+                $totalPlaystyleAffinities[$style] += $playstyleDist[$style] * $knownAffinityPlayerCount;
+                $totalSpecialists[$style] += $specialistCounts[$style];
+            }
 
             $stats['realms'][] = [
                 'id' => $realm->id,
                 'size' => $realmSize,
-                'total_rating' => round($realm->rating, 2),
+                'total_rating' => round($realm->players->sum('rating'), 2),
                 'average_rating' => $realmRating,
                 'new_players' => $newPlayerCount,
                 'experienced_players' => $experiencedPlayerCount,
+                'known_affinity_players' => $knownAffinityPlayerCount,
                 'packed_players' => $realm->packedPlayerCount(),
                 'solo_players' => $realm->soloPlayers()->count(),
                 'playstyle_distribution' => $playstyleDist,
+                'specialist_counts' => array_combine($shortNames, array_values($specialistCounts)),
+                'specialist_targets' => array_combine($shortNames, array_map(
+                    fn ($ideal) => round($ideal / 100 * $knownAffinityPlayerCount, 2),
+                    array_values(PlaceholderRealm::IDEAL_COMPOSITION)
+                )),
+                'playstyle_deviation' => round($playstyleDeviation, 2),
                 'deviation_from_target_size' => round(abs($realmSize - $this->targetRealmSize), 2),
                 'deviation_from_target_rating' => round(abs($realmRating - $this->targetRealmStrength), 2),
             ];
@@ -1465,17 +1547,20 @@ class RealmAssignmentService
         $stats['total_players'] = $totalPlayers;
         $stats['total_new_players'] = $totalNewPlayers;
         $stats['total_experienced_players'] = $totalExperiencedPlayers;
+        $stats['total_known_affinity_players'] = $totalKnownAffinityPlayers;
         $stats['average_realm_size'] = $totalPlayers > 0 ? round($totalPlayers / $this->realms->count(), 2) : 0;
         $stats['average_realm_rating'] = count($realmRatings) > 0 ? round(array_sum($realmRatings) / count($realmRatings), 2) : 0;
 
-        // Calculate overall playstyle distribution
+        // Both distributions are per known-affinity player. The specialist shares are
+        // directly comparable to ideal_specialist_distribution and are what assignment
+        // actually optimises; the averages are reported for context only.
         if ($totalKnownAffinityPlayers > 0) {
-            $stats['overall_playstyle_distribution'] = [
-                'attacker' => round($totalPlaystyleAffinities['attacker'] / $totalKnownAffinityPlayers, 2),
-                'converter' => round($totalPlaystyleAffinities['converter'] / $totalKnownAffinityPlayers, 2),
-                'explorer' => round($totalPlaystyleAffinities['explorer'] / $totalKnownAffinityPlayers, 2),
-                'ops' => round($totalPlaystyleAffinities['ops'] / $totalKnownAffinityPlayers, 2),
-            ];
+            foreach ($styles as $style) {
+                $stats['overall_playstyle_distribution'][$shortNames[$style]] =
+                    round($totalPlaystyleAffinities[$style] / $totalKnownAffinityPlayers, 2);
+                $stats['overall_specialist_distribution'][$shortNames[$style]] =
+                    round(100 * $totalSpecialists[$style] / $totalKnownAffinityPlayers, 2);
+            }
         }
 
         // Calculate balance metrics
@@ -1491,6 +1576,7 @@ class RealmAssignmentService
                 'rating_variance' => round(array_sum($ratingVariances) / count($ratingVariances), 2),
                 'max_size_deviation' => round(max(array_map(fn ($size) => abs($size - $this->targetRealmSize), $realmSizes)), 2),
                 'max_rating_deviation' => round(max(array_map(fn ($rating) => abs($rating - $this->targetRealmStrength), $realmRatings)), 2),
+                'max_playstyle_deviation' => round(max($playstyleDeviations), 2),
             ];
         }
 
@@ -1553,15 +1639,23 @@ class RealmAssignmentService
             ->filter()
             ->values();
 
+        // Members are loaded by createPlaceholderRealm() instead of eager loaded here.
+        // A partial select of the users table would leave affinities missing and
+        // silently downgrade every member to unknown for playstyle scoring.
+        //
+        // The count drives both the smallest-realm ordering and the draft-pack
+        // comparison, so it has to mean "players still occupying a slot". Locked and
+        // abandoned dominions are not, and counting them makes a realm that needs
+        // players look full. Matches Round::activeDominions() and RaidService.
         $query = Realm::active()
             ->where('number', '!=', 0)
             ->where('round_id', $round->id)
-            ->withCount('dominions as active_dominions_count')
-            ->with(['dominions' => function ($query) {
-                $query->select('realm_id', 'user_id')
-                      ->with(['user' => function ($userQuery) {
-                          $userQuery->select('id', 'rating');
-                      }]);
+            ->withCount(['dominions as active_dominions_count' => function ($query) {
+                $query->whereNull('locked_at')
+                    ->where(function ($query) {
+                        $query->whereNull('abandoned_at')
+                            ->orWhere('abandoned_at', '>', now());
+                    });
             }]);
 
         // Apply alignment filtering if needed
@@ -1634,6 +1728,35 @@ class RealmAssignmentService
     }
 
     /**
+     * Load what existing players think of the incoming player
+     *
+     * getCompatibilityScore() sums favorability in both directions. Scoring with only
+     * the incoming player's own outbound feedback silently discards every downvote
+     * cast about them by the people already in the realm, which is the half that
+     * should keep them out.
+     *
+     * @param Player $player The incoming player
+     * @param Collection $candidateRealms Realms whose members may have rated them
+     * @return array Member user id => [incoming user id => score]
+     */
+    public function getInboundFavorability(Player $player, Collection $candidateRealms): array
+    {
+        $sourceUserIds = Dominion::whereIn('realm_id', $candidateRealms->pluck('id'))
+            ->pluck('user_id');
+
+        return UserFeedback::where('target_id', $player->userId)
+            ->whereIn('source_id', $sourceUserIds)
+            ->get()
+            ->groupBy('source_id')
+            ->mapWithKeys(function ($feedbacks, $sourceId) use ($player) {
+                $positive = $feedbacks->where('endorsed', true)->count();
+                $negative = $feedbacks->where('endorsed', false)->count();
+                return [$sourceId => [$player->userId => $positive - $negative]];
+            })
+            ->toArray();
+    }
+
+    /**
      * Select the best realm using compatibility and rating balance scoring
      */
     public function selectBestRealm(Collection $candidateRealms, Player $player, Round $round): ?Realm
@@ -1641,12 +1764,14 @@ class RealmAssignmentService
         // Calculate dynamic targets from all realms in the round
         $this->calculateDynamicTargets($round);
 
+        $inboundFavorability = $this->getInboundFavorability($player, $candidateRealms);
+
         $bestRealm = null;
         $bestScore = -INF;
 
         foreach ($candidateRealms as $realm) {
             // Create placeholder realm for scoring
-            $placeholderRealm = $this->createPlaceholderRealm($realm);
+            $placeholderRealm = $this->createPlaceholderRealm($realm, $inboundFavorability);
 
             // Calculate compatibility score using existing method
             $compatibilityScore = $placeholderRealm->getCompatibilityScore(collect([$player]));
@@ -1668,15 +1793,22 @@ class RealmAssignmentService
 
     /**
      * Convert a database Realm to PlaceholderRealm for scoring
+     *
+     * Loads the full user record for each member rather than reusing any partially
+     * selected relation, so affinities are present and the playstyle term scores the
+     * realm on real data instead of getAffinity()'s fallbacks.
+     *
+     * @param Realm $realm The realm to convert
+     * @param array $favorabilityByUserId Member user id => favorability map for that member
      */
-    public function createPlaceholderRealm(Realm $realm): PlaceholderRealm
+    public function createPlaceholderRealm(Realm $realm, array $favorabilityByUserId = []): PlaceholderRealm
     {
-        $players = $realm->dominions()->human()->get()->map(function ($dominion) {
+        $players = $realm->dominions()->human()->with('user')->get()->map(function ($dominion) use ($favorabilityByUserId) {
             return Player::fromUser($dominion->user, [
                 'id' => $dominion->user_id,
                 'userId' => $dominion->user_id,
                 'packId' => $dominion->pack_id,
-                'favorability' => [], // Not needed for existing players in this context
+                'favorability' => $favorabilityByUserId[$dominion->user_id] ?? [],
             ]);
         });
 
