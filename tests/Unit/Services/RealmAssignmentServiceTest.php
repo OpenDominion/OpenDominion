@@ -7,6 +7,7 @@ use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
+use OpenDominion\Models\UserFeedback;
 use OpenDominion\Services\PlaceholderPack;
 use OpenDominion\Services\PlaceholderRealm;
 use OpenDominion\Services\Player;
@@ -1240,5 +1241,230 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             $compatibilityScore - $playstyleScore,
             'Feedback should match user IDs even when dominion IDs differ'
         );
+    }
+
+    private function scoringPlayer(string $id, float $rating = 1500, ?string $packId = null): Player
+    {
+        return new Player([
+            'id' => $id,
+            'userId' => $id,
+            'rating' => $rating,
+            'packId' => $packId,
+            'hasKnownAffinities' => false,
+        ]);
+    }
+
+    private function scoringRealm(string $id, int $size, float $rating = 1500, bool $packed = false): PlaceholderRealm
+    {
+        return new PlaceholderRealm($id, collect(range(1, $size))->map(
+            fn (int $i) => $this->scoringPlayer("{$id}_{$i}", $rating, $packed ? 'seed' : null)
+        ));
+    }
+
+    private function scoringPack(string $id, int $size, float $rating = 1500): PlaceholderPack
+    {
+        return new PlaceholderPack($id, collect(range(1, $size))->map(
+            fn (int $i) => $this->scoringPlayer("{$id}_{$i}", $rating, $id)
+        ));
+    }
+
+    public function testSizeBonusPenalisesAPlacementThatWouldOvershootTheTarget(): void
+    {
+        $this->service->targetRealmSize = 12;
+        $realm = $this->scoringRealm('realm', 8);
+
+        // One more player still fits; a six player pack would land the realm on 14.
+        $this->assertGreaterThan(0, $this->service->calculateSizeBonus($realm, 1));
+        $this->assertLessThan(
+            -5000,
+            $this->service->calculateSizeBonus($realm, 6),
+            'the penalty must fire before the pack lands, not on the next placement'
+        );
+    }
+
+    public function testSizeBonusRanksTheLeastOverTargetRealmHighest(): void
+    {
+        $this->service->targetRealmSize = 12;
+
+        // targetRealmSize is floor(players / realms), so some realms must exceed it.
+        // A flat penalty made all of these identical.
+        $previous = null;
+        foreach ([13, 18, 25, 40] as $size) {
+            $bonus = $this->service->calculateSizeBonus($this->scoringRealm("size-{$size}", $size), 0);
+
+            $this->assertLessThan(-5000, $bonus);
+            if ($previous !== null) {
+                $this->assertLessThan($previous, $bonus, 'a fuller realm must score worse');
+            }
+            $previous = $bonus;
+        }
+    }
+
+    public function testOverTargetRealmLosesToAnUnderTargetRealmEvenWhenItIsABetterRatingFit(): void
+    {
+        $this->service->targetRealmSize = 12;
+        $this->service->targetRealmStrength = 1500;
+
+        $pack = $this->scoringPack('subject', 2, 2400);
+        $overTarget = $this->scoringRealm('over', 13, 900);   // adding the pack improves its rating
+        $underTarget = $this->scoringRealm('under', 4, 2400); // adding the pack worsens its rating
+
+        $this->assertGreaterThan(
+            $this->service->calculatePlacementScore($overTarget, $pack->members),
+            $this->service->calculatePlacementScore($underTarget, $pack->members),
+            'the size penalty must outweigh a favourable rating balance'
+        );
+    }
+
+    public function testOpportunityCostDoesNotScaleWithTheRealmSizeBonus(): void
+    {
+        $this->service->targetRealmSize = 12;
+        $this->service->targetRealmStrength = 1500;
+
+        $pack = $this->scoringPack('subject', 2);
+        $this->service->packs = collect(['subject' => $pack]);
+        foreach (range(1, 5) as $i) {
+            $this->service->packs->put("rival-{$i}", $this->scoringPack("rival-{$i}", 2));
+        }
+
+        // Identical size, so an identical size bonus. Rival packs are identical to the
+        // subject, so every opportunity cost term is zero and cannot separate them —
+        // the only difference is how many rivals canFitPack() admits.
+        $roomy = $this->scoringRealm('roomy', 8);
+        $stuffed = $this->scoringRealm('stuffed', 8, 1500, true);
+
+        $this->assertEqualsWithDelta(
+            $this->service->evaluatePackPlacement($pack, $stuffed),
+            $this->service->evaluatePackPlacement($pack, $roomy),
+            0.0001,
+            'the size bonus must count once, not once per rival pack that happens to fit'
+        );
+    }
+
+    public function testInboundFavorabilityLoadsWhatExistingMembersThinkOfTheNewcomer(): void
+    {
+        $round = $this->createRound();
+        $realm = $this->createRealm($round);
+
+        $critic = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($critic, $round, null, $realm);
+
+        $newcomer = $this->createUser(null, ['rating' => 1500]);
+        UserFeedback::create([
+            'source_id' => $critic->id,
+            'target_id' => $newcomer->id,
+            'round_id' => $round->id,
+            'endorsed' => false,
+        ]);
+
+        $player = Player::fromUser($newcomer, ['id' => $newcomer->id, 'userId' => $newcomer->id]);
+
+        $this->assertSame(
+            [$critic->id => [$newcomer->id => -1]],
+            $this->service->getInboundFavorability($player, collect([$realm]))
+        );
+    }
+
+    public function testSelectBestRealmAvoidsRealmsWhoseMembersDownvotedTheNewcomer(): void
+    {
+        $round = $this->createRound();
+        $hostileRealm = $this->createRealm($round);
+        $neutralRealm = $this->createRealm($round);
+
+        $newcomer = $this->createUser(null, ['rating' => 1500]);
+
+        // Both realms are identical in size, rating and affinities, so the only
+        // thing that can separate them is feedback the newcomer never gave.
+        foreach ([$hostileRealm, $neutralRealm] as $realm) {
+            foreach (range(1, 2) as $ignored) {
+                $member = $this->createUser(null, ['rating' => 1500]);
+                $this->createDominion($member, $round, null, $realm);
+
+                if ($realm->is($hostileRealm)) {
+                    UserFeedback::create([
+                        'source_id' => $member->id,
+                        'target_id' => $newcomer->id,
+                        'round_id' => $round->id,
+                        'endorsed' => false,
+                    ]);
+                }
+            }
+        }
+
+        $player = Player::fromUser($newcomer, ['id' => $newcomer->id, 'userId' => $newcomer->id]);
+
+        $selected = $this->service->selectBestRealm(
+            collect([$hostileRealm, $neutralRealm]),
+            $player,
+            $round
+        );
+
+        $this->assertTrue($selected->is($neutralRealm));
+    }
+
+    public function testRealmMembershipConsistentlyExcludesLockedAndAbandonedDominions(): void
+    {
+        $round = $this->createRound();
+        $realm = $this->createRealm($round);
+
+        $active = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($active, $round, null, $realm);
+
+        $locked = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($locked, $round, null, $realm)
+            ->update(['locked_at' => now()->subDay()]);
+
+        $abandoned = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($abandoned, $round, null, $realm)
+            ->update(['abandoned_at' => now()->subHour()]);
+
+        // Scheduled abandonment has not taken effect yet, so this one still counts.
+        $leaving = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($leaving, $round, null, $realm)
+            ->update(['abandoned_at' => now()->addDay()]);
+
+        $newcomer = $this->createUser(null, ['rating' => 1500]);
+        foreach ([$locked, $abandoned] as $departed) {
+            UserFeedback::create([
+                'source_id' => $departed->id,
+                'target_id' => $newcomer->id,
+                'round_id' => $round->id,
+                'endorsed' => false,
+            ]);
+        }
+
+        $placeholderRealm = $this->service->createPlaceholderRealm($realm);
+        $player = Player::fromUser($newcomer, ['id' => $newcomer->id, 'userId' => $newcomer->id]);
+
+        $this->assertSame(
+            2,
+            $placeholderRealm->players->count(),
+            'only the active and not-yet-abandoned members occupy a slot'
+        );
+        $this->assertSame(
+            [],
+            $this->service->getInboundFavorability($player, collect([$realm])),
+            'feedback from departed members must not follow a newcomer around'
+        );
+    }
+
+    public function testPlaceholderRealmLoadsAffinitiesForExistingMembers(): void
+    {
+        $round = $this->createRound();
+        $realm = $this->createRealm($round);
+
+        $member = $this->createUser(null, [
+            'rating' => 1500,
+            'affinities' => ['attacker' => 80, 'converter' => 10, 'explorer' => 20, 'ops' => 10],
+        ]);
+        $this->createDominion($member, $round, null, $realm);
+
+        $player = $this->service->createPlaceholderRealm($realm)->players->first();
+
+        $this->assertTrue(
+            $player->hasKnownAffinities,
+            'existing members must reach playstyle scoring with their real affinities'
+        );
+        $this->assertSame(80.0, $player->attackerAffinity);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
+use Illuminate\Support\Collection;
 use OpenDominion\Models\User;
 use OpenDominion\Services\PlaceholderRealm;
 use OpenDominion\Services\Player;
@@ -10,6 +11,19 @@ use PHPUnit\Framework\TestCase;
 
 class PlaceholderRealmTest extends TestCase
 {
+    /**
+     * Player, PlaceholderPack and PlaceholderRealm are all declared inside
+     * RealmAssignmentService.php, so PSR-4 cannot resolve them by name and the
+     * `use` statements above are not enough to load them. Referencing the one
+     * class that does match its filename pulls the whole file in.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        class_exists(RealmAssignmentService::class);
+    }
+
     public function testPlayerFactoryMarksMissingAndZeroAffinitiesUnknown(): void
     {
         $missingAffinitiesUser = new User();
@@ -48,21 +62,79 @@ class PlaceholderRealmTest extends TestCase
         ], $realm->getPlaystyleComposition());
     }
 
-    public function testProjectedCompositionUsesAWeightedAverage(): void
+    public function testSpecialistAndGeneralistRealmsAreScoredDifferently(): void
     {
-        $existingPlayers = collect();
-        foreach (range(1, 9) as $id) {
-            $existingPlayers->push($this->knownPlayer("existing-{$id}", [40, 30, 50, 30]));
-        }
+        // Both realms average to an identical composition, so scoring on average
+        // affinity cannot tell them apart -- but one has a dedicated ops player
+        // and a dedicated converter, and the other has nobody who does either.
+        $specialists = new PlaceholderRealm('specialists', collect([
+            $this->knownPlayer('s1', [100, 0, 100, 0]),
+            $this->knownPlayer('s2', [100, 0, 100, 0]),
+            $this->knownPlayer('s3', [0, 100, 0, 0]),
+            $this->knownPlayer('s4', [0, 20, 0, 100]),
+        ]));
+        $generalists = new PlaceholderRealm('generalists', collect([
+            $this->knownPlayer('g1', [50, 30, 50, 25]),
+            $this->knownPlayer('g2', [50, 30, 50, 25]),
+            $this->knownPlayer('g3', [50, 30, 50, 25]),
+            $this->knownPlayer('g4', [50, 30, 50, 25]),
+        ]));
 
-        $realm = new PlaceholderRealm('test', $existingPlayers);
-        $incomingPlayer = $this->knownPlayer('incoming', [100, 30, 50, 30]);
-
-        $this->assertEqualsWithDelta(
-            6.0,
-            $realm->calculatePlaystyleScore(collect([$incomingPlayer])),
-            0.0001
+        $this->assertSame(
+            $specialists->getPlaystyleComposition(),
+            $generalists->getPlaystyleComposition(),
+            'the two realms must be indistinguishable by average affinity'
         );
+
+        $opsPlayer = $this->knownPlayer('ops', [20, 20, 20, 90]);
+
+        // The realm with no ops player wants one; the realm that already has one
+        // does not. The average-based score returned exactly 0 for both.
+        $this->assertGreaterThan(
+            $specialists->calculatePlaystyleScore(collect([$opsPlayer])),
+            $generalists->calculatePlaystyleScore(collect([$opsPlayer]))
+        );
+    }
+
+    public function testScarcePlaystyleIsSpreadRatherThanStacked(): void
+    {
+        // Ops target is 30% of realm size, so both realms sit below it. Absolute
+        // deviation improves by exactly 0.7 for either placement and cannot pick
+        // between them; squared deviation prefers the realm with fewer.
+        $fewer = new PlaceholderRealm('fewer', $this->realmWithOpsSpecialists(1));
+        $more = new PlaceholderRealm('more', $this->realmWithOpsSpecialists(2));
+
+        $opsPlayer = $this->knownPlayer('ops', [20, 20, 20, 90]);
+
+        $this->assertGreaterThan(
+            $more->calculatePlaystyleScore(collect([$opsPlayer])),
+            $fewer->calculatePlaystyleScore(collect([$opsPlayer]))
+        );
+    }
+
+    public function testSpecialistCountsTreatPlaystylesAsIndependent(): void
+    {
+        $realm = new PlaceholderRealm('test', collect([
+            $this->knownPlayer('both', [80, 10, 10, 80]),
+            $this->knownPlayer('neither', [49, 49, 49, 49]),
+        ]));
+
+        $this->assertSame([
+            'attackerAffinity' => 1,
+            'converterAffinity' => 0,
+            'explorerAffinity' => 0,
+            'opsAffinity' => 1,
+        ], $realm->getSpecialistCounts($realm->players));
+    }
+
+    /**
+     * Ten players identical but for ops, so only the ops counts differ.
+     */
+    private function realmWithOpsSpecialists(int $count): Collection
+    {
+        return collect(range(1, 10))->map(function (int $id) use ($count): Player {
+            return $this->knownPlayer("p{$id}", [60, 20, 60, $id <= $count ? 90 : 10]);
+        });
     }
 
     public function testUnknownIncomingPlayersDoNotChangeIdealOrNonIdealRealmScores(): void
