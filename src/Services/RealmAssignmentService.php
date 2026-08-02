@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Services;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
@@ -1630,6 +1632,27 @@ class RealmAssignmentService
      * every other realm has at least 2 more total players — in which case the draft-pack
      * realm is the least-loaded option and should be considered.
      */
+    /**
+     * Constrain a dominion query to members still occupying a realm slot
+     *
+     * Locked and abandoned dominions are not coming back, so they must not count
+     * toward a realm's size, rating, playstyle composition, or favorability. Every
+     * membership query in the findRealm path routes through here so the definition
+     * cannot drift between them — filtering the size count but not the scoring would
+     * let a realm rank as small and still be scored as though it were full.
+     *
+     * Abandonment is scheduled 24h ahead, so a future abandoned_at is still active.
+     * Matches Round::activeDominions(), RaidService and TickService.
+     */
+    private function scopeOccupiedSlots(Builder|Relation $query): Builder|Relation
+    {
+        return $query->whereNull('locked_at')
+            ->where(function (Builder $query) {
+                $query->whereNull('abandoned_at')
+                    ->orWhere('abandoned_at', '>', now());
+            });
+    }
+
     public function getCandidateRealms(Round $round, Race $race): Collection
     {
         // Find realm IDs that contain a draft pack
@@ -1650,12 +1673,8 @@ class RealmAssignmentService
         $query = Realm::active()
             ->where('number', '!=', 0)
             ->where('round_id', $round->id)
-            ->withCount(['dominions as active_dominions_count' => function ($query) {
-                $query->whereNull('locked_at')
-                    ->where(function ($query) {
-                        $query->whereNull('abandoned_at')
-                            ->orWhere('abandoned_at', '>', now());
-                    });
+            ->withCount(['dominions as active_dominions_count' => function (Builder $query) {
+                $this->scopeOccupiedSlots($query);
             }]);
 
         // Apply alignment filtering if needed
@@ -1704,7 +1723,7 @@ class RealmAssignmentService
     {
         // Get all dominion IDs in candidate realms
         $candidateRealmIds = $candidateRealms->pluck('id');
-        $targetUserIds = Dominion::whereIn('realm_id', $candidateRealmIds)
+        $targetUserIds = $this->scopeOccupiedSlots(Dominion::whereIn('realm_id', $candidateRealmIds))
             ->pluck('user_id')
             ->toArray();
 
@@ -1741,7 +1760,7 @@ class RealmAssignmentService
      */
     public function getInboundFavorability(Player $player, Collection $candidateRealms): array
     {
-        $sourceUserIds = Dominion::whereIn('realm_id', $candidateRealms->pluck('id'))
+        $sourceUserIds = $this->scopeOccupiedSlots(Dominion::whereIn('realm_id', $candidateRealms->pluck('id')))
             ->pluck('user_id');
 
         return UserFeedback::where('target_id', $player->userId)
@@ -1803,7 +1822,9 @@ class RealmAssignmentService
      */
     public function createPlaceholderRealm(Realm $realm, array $favorabilityByUserId = []): PlaceholderRealm
     {
-        $players = $realm->dominions()->human()->with('user')->get()->map(function ($dominion) use ($favorabilityByUserId) {
+        $members = $this->scopeOccupiedSlots($realm->dominions()->human())->with('user')->get();
+
+        $players = $members->map(function ($dominion) use ($favorabilityByUserId) {
             return Player::fromUser($dominion->user, [
                 'id' => $dominion->user_id,
                 'userId' => $dominion->user_id,
@@ -1828,7 +1849,9 @@ class RealmAssignmentService
     {
         $realms = Realm::where('round_id', $round->id)
             ->where('number', '!=', 0)
-            ->withCount('dominions')
+            ->withCount(['dominions' => function (Builder $query) {
+                $this->scopeOccupiedSlots($query);
+            }])
             ->get(['id', 'rating']);
 
         $realmCount = $realms->count();

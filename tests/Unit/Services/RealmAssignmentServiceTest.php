@@ -1304,6 +1304,52 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $this->assertTrue($selected->is($neutralRealm));
     }
 
+    public function testRealmMembershipConsistentlyExcludesLockedAndAbandonedDominions(): void
+    {
+        $round = $this->createRound();
+        $realm = $this->createRealm($round);
+
+        $active = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($active, $round, null, $realm);
+
+        $locked = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($locked, $round, null, $realm)
+            ->update(['locked_at' => now()->subDay()]);
+
+        $abandoned = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($abandoned, $round, null, $realm)
+            ->update(['abandoned_at' => now()->subHour()]);
+
+        // Scheduled abandonment has not taken effect yet, so this one still counts.
+        $leaving = $this->createUser(null, ['rating' => 1500]);
+        $this->createDominion($leaving, $round, null, $realm)
+            ->update(['abandoned_at' => now()->addDay()]);
+
+        $newcomer = $this->createUser(null, ['rating' => 1500]);
+        foreach ([$locked, $abandoned] as $departed) {
+            UserFeedback::create([
+                'source_id' => $departed->id,
+                'target_id' => $newcomer->id,
+                'round_id' => $round->id,
+                'endorsed' => false,
+            ]);
+        }
+
+        $placeholderRealm = $this->service->createPlaceholderRealm($realm);
+        $player = Player::fromUser($newcomer, ['id' => $newcomer->id, 'userId' => $newcomer->id]);
+
+        $this->assertSame(
+            2,
+            $placeholderRealm->players->count(),
+            'only the active and not-yet-abandoned members occupy a slot'
+        );
+        $this->assertSame(
+            [],
+            $this->service->getInboundFavorability($player, collect([$realm])),
+            'feedback from departed members must not follow a newcomer around'
+        );
+    }
+
     public function testPlaceholderRealmLoadsAffinitiesForExistingMembers(): void
     {
         $round = $this->createRound();
