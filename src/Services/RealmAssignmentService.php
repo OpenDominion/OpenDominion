@@ -969,7 +969,18 @@ class RealmAssignmentService
         PlaceholderRealm $realm
     ): float {
         $placementScore = $this->calculatePlacementScore($realm, $pack->members);
-        $opportunityCost = $this->calculateOpportunityCost($realm, $pack, $placementScore);
+
+        // Opportunity cost compares two packs competing for the SAME realm, so both
+        // would collect that realm's identical size bonus and it says nothing about
+        // which pack deserves the slot. Comparing a size-inclusive current score
+        // against size-free rival scores left the bonus behind on every iteration,
+        // scaling it by however many rival packs happened to fit — a realm with more
+        // pack headroom had its size term multiplied by (1 + 0.3 * rivals).
+        $opportunityCost = $this->calculateOpportunityCost(
+            $realm,
+            $pack,
+            $this->calculatePlacementScore($realm, $pack->members, false)
+        );
 
         return $placementScore + $opportunityCost;
     }
@@ -1057,26 +1068,33 @@ class RealmAssignmentService
     /**
      * Calculate size bonus/penalty for realm assignments
      *
-     * Provides a large penalty (-1000) for realms at or above target size to
-     * enforce equal distribution. Realms below target receive a small bonus
-     * proportional to how many players they need. This ensures all realms
-     * reach approximately the same size.
+     * Scored on the size the realm would have *after* the placement, so a pack that
+     * would overshoot the target is penalised before it lands rather than on the next
+     * placement. Realms below target receive a small bonus proportional to how many
+     * players they still need.
+     *
+     * The over-target penalty is large enough to remove a realm from contention —
+     * it dominates realistic compatibility and balance scores by an order of
+     * magnitude — but it grows with the overshoot rather than being a flat cliff.
+     * targetRealmSize is floor(players / realms), so whenever players do not divide
+     * evenly some realms must exceed the target; a flat penalty made a realm of 40
+     * indistinguishable from one of 13 and let placements land on the worst of them.
      *
      * @param PlaceholderRealm $realm The realm to evaluate
-     * @return float Size bonus/penalty (-1000 for full realms, positive for others)
+     * @param int $incomingPlayers How many players the placement would add
+     * @return float Size bonus/penalty (large negative when over target)
      */
-    public function calculateSizeBonus(PlaceholderRealm $realm): float
+    public function calculateSizeBonus(PlaceholderRealm $realm, int $incomingPlayers): float
     {
-        $currentSize = $realm->players->count();
+        $projectedSize = $realm->players->count() + $incomingPlayers;
         $targetSize = $this->targetRealmSize;
 
-        // Tiered penalty/bonus system for balanced distribution
-        if ($currentSize > $targetSize) {
-            return -5000; // Strong penalty for exceeding limit
+        if ($projectedSize > $targetSize) {
+            return -5000 - ($projectedSize - $targetSize) * 100;
         }
 
         // Moderate bonus for realms under ideal size
-        return ($targetSize - $currentSize) * 10;
+        return ($targetSize - $projectedSize) * 10;
     }
 
     /**
@@ -1095,7 +1113,7 @@ class RealmAssignmentService
     {
         $compatibilityScore = $realm->getCompatibilityScore($players);
         $balanceScore = $this->calculateBalanceScore($realm, $players);
-        $sizeBonus = $includeSize ? $this->calculateSizeBonus($realm) : 0;
+        $sizeBonus = $includeSize ? $this->calculateSizeBonus($realm, $players->count()) : 0;
 
         return $compatibilityScore + $balanceScore + $sizeBonus;
     }

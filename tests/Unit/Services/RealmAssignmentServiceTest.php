@@ -1243,6 +1243,104 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         );
     }
 
+    private function scoringPlayer(string $id, float $rating = 1500, ?string $packId = null): Player
+    {
+        return new Player([
+            'id' => $id,
+            'userId' => $id,
+            'rating' => $rating,
+            'packId' => $packId,
+            'hasKnownAffinities' => false,
+        ]);
+    }
+
+    private function scoringRealm(string $id, int $size, float $rating = 1500, bool $packed = false): PlaceholderRealm
+    {
+        return new PlaceholderRealm($id, collect(range(1, $size))->map(
+            fn (int $i) => $this->scoringPlayer("{$id}_{$i}", $rating, $packed ? 'seed' : null)
+        ));
+    }
+
+    private function scoringPack(string $id, int $size, float $rating = 1500): PlaceholderPack
+    {
+        return new PlaceholderPack($id, collect(range(1, $size))->map(
+            fn (int $i) => $this->scoringPlayer("{$id}_{$i}", $rating, $id)
+        ));
+    }
+
+    public function testSizeBonusPenalisesAPlacementThatWouldOvershootTheTarget(): void
+    {
+        $this->service->targetRealmSize = 12;
+        $realm = $this->scoringRealm('realm', 8);
+
+        // One more player still fits; a six player pack would land the realm on 14.
+        $this->assertGreaterThan(0, $this->service->calculateSizeBonus($realm, 1));
+        $this->assertLessThan(
+            -5000,
+            $this->service->calculateSizeBonus($realm, 6),
+            'the penalty must fire before the pack lands, not on the next placement'
+        );
+    }
+
+    public function testSizeBonusRanksTheLeastOverTargetRealmHighest(): void
+    {
+        $this->service->targetRealmSize = 12;
+
+        // targetRealmSize is floor(players / realms), so some realms must exceed it.
+        // A flat penalty made all of these identical.
+        $previous = null;
+        foreach ([13, 18, 25, 40] as $size) {
+            $bonus = $this->service->calculateSizeBonus($this->scoringRealm("size-{$size}", $size), 0);
+
+            $this->assertLessThan(-5000, $bonus);
+            if ($previous !== null) {
+                $this->assertLessThan($previous, $bonus, 'a fuller realm must score worse');
+            }
+            $previous = $bonus;
+        }
+    }
+
+    public function testOverTargetRealmLosesToAnUnderTargetRealmEvenWhenItIsABetterRatingFit(): void
+    {
+        $this->service->targetRealmSize = 12;
+        $this->service->targetRealmStrength = 1500;
+
+        $pack = $this->scoringPack('subject', 2, 2400);
+        $overTarget = $this->scoringRealm('over', 13, 900);   // adding the pack improves its rating
+        $underTarget = $this->scoringRealm('under', 4, 2400); // adding the pack worsens its rating
+
+        $this->assertGreaterThan(
+            $this->service->calculatePlacementScore($overTarget, $pack->members),
+            $this->service->calculatePlacementScore($underTarget, $pack->members),
+            'the size penalty must outweigh a favourable rating balance'
+        );
+    }
+
+    public function testOpportunityCostDoesNotScaleWithTheRealmSizeBonus(): void
+    {
+        $this->service->targetRealmSize = 12;
+        $this->service->targetRealmStrength = 1500;
+
+        $pack = $this->scoringPack('subject', 2);
+        $this->service->packs = collect(['subject' => $pack]);
+        foreach (range(1, 5) as $i) {
+            $this->service->packs->put("rival-{$i}", $this->scoringPack("rival-{$i}", 2));
+        }
+
+        // Identical size, so an identical size bonus. Rival packs are identical to the
+        // subject, so every opportunity cost term is zero and cannot separate them —
+        // the only difference is how many rivals canFitPack() admits.
+        $roomy = $this->scoringRealm('roomy', 8);
+        $stuffed = $this->scoringRealm('stuffed', 8, 1500, true);
+
+        $this->assertEqualsWithDelta(
+            $this->service->evaluatePackPlacement($pack, $stuffed),
+            $this->service->evaluatePackPlacement($pack, $roomy),
+            0.0001,
+            'the size bonus must count once, not once per rival pack that happens to fit'
+        );
+    }
+
     public function testInboundFavorabilityLoadsWhatExistingMembersThinkOfTheNewcomer(): void
     {
         $round = $this->createRound();
