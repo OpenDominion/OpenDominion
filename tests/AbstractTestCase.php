@@ -11,7 +11,6 @@ abstract class AbstractTestCase extends TestCase
 {
     use CreatesApplication;
     use CreatesData;
-
     /**
      * Roll back everything each test writes.
      *
