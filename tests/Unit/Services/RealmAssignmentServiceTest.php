@@ -910,6 +910,127 @@ class RealmAssignmentServiceTest extends AbstractTestCase
      * calculateRealmCount should return ceil(76/8) = 10 realms and upgrade enough
      * small packs to seed them, so createPlaceholderRealms produces 10 realms.
      */
+    public function testOptimizationKeepsSamplingAfterAnUnproductivePass(): void
+    {
+        // Every player is identical, so no swap can ever improve anything and every pass is
+        // guaranteed barren. That makes the stopping behaviour deterministic even though the
+        // pass draws its pairs from a CSPRNG.
+        $this->service->targetRealmStrength = 1500.0;
+        $this->service->targetRealmSize = 4;
+        $this->service->nonDiscordRealms = collect();
+        $this->service->draftPackRealms = collect();
+        $this->service->realms = collect(range(1, 3))->map(
+            fn (int $r) => new PlaceholderRealm("realm-{$r}", collect(range(1, 4))->map(
+                fn (int $i) => new Player([
+                    'id' => "r{$r}p{$i}", 'userId' => "u{$r}{$i}", 'packId' => null, 'rating' => 1500.0,
+                    'attackerAffinity' => 60, 'converterAffinity' => 60,
+                    'explorerAffinity' => 60, 'opsAffinity' => 60,
+                ])
+            ))
+        );
+
+        $result = $this->service->optimizeAssignments();
+
+        $this->assertSame(0, $result['swaps'], 'identical players offer nothing worth swapping');
+        $this->assertSame('barren', $result['stopped']);
+        $this->assertSame(
+            RealmAssignmentService::OPTIMIZATION_BARREN_ITERATIONS,
+            $result['iterations'],
+            'the pass must keep sampling after an unproductive iteration rather than quitting on the first'
+        );
+        $this->assertGreaterThan(
+            1,
+            RealmAssignmentService::OPTIMIZATION_BARREN_ITERATIONS,
+            'quitting on the first barren pass left several hundred improving swaps unmade'
+        );
+    }
+
+    public function testOptimizationClearsMostAvailableSwaps(): void
+    {
+        // Each realm is stacked with a single playstyle and rating band, so essentially
+        // every cross-realm pair starts out worth swapping. The exact figure left behind
+        // varies run to run, so this bounds the outcome loosely rather than pinning it.
+        $service = $this->stackedRealmsService();
+        $before = $this->countImprovingSwaps($service);
+        $this->assertGreaterThan(900, $before, 'sanity check: the fixture starts badly arranged');
+
+        $service->optimizeAssignments();
+
+        $after = $this->countImprovingSwaps($service);
+        $this->assertLessThan(
+            $before * 0.2,
+            $after,
+            'optimization should clear the large majority of available swaps'
+        );
+    }
+
+    /**
+     * Build realms deliberately stacked by playstyle and rating band
+     */
+    private function stackedRealmsService(): RealmAssignmentService
+    {
+        $service = new RealmAssignmentService();
+        $service->targetRealmStrength = 1500.0;
+        $service->targetRealmSize = 8;
+        $service->nonDiscordRealms = collect();
+        $service->draftPackRealms = collect();
+        $service->realms = collect();
+
+        $profiles = [
+            [90, 10, 10, 10, 2200], [10, 90, 10, 10, 1900], [10, 10, 90, 10, 1650],
+            [10, 10, 10, 90, 1400], [90, 10, 90, 10, 1150], [10, 90, 10, 90, 1050],
+        ];
+
+        $id = 0;
+        foreach ($profiles as $index => [$attacker, $converter, $explorer, $ops, $rating]) {
+            $members = collect();
+            foreach (range(1, 8) as $ignored) {
+                $id++;
+                $members->push(new Player([
+                    'id' => "p{$id}", 'userId' => "u{$id}", 'packId' => null, 'rating' => (float) $rating,
+                    'attackerAffinity' => $attacker, 'converterAffinity' => $converter,
+                    'explorerAffinity' => $explorer, 'opsAffinity' => $ops,
+                ]));
+            }
+            $service->realms->push(new PlaceholderRealm("stacked-{$index}", $members));
+        }
+
+        return $service;
+    }
+
+    /**
+     * Count cross-realm solo pairs that shouldSwapSolos() would still accept
+     */
+    private function countImprovingSwaps(RealmAssignmentService $service): int
+    {
+        $solos = [];
+        foreach ($service->realms as $realm) {
+            foreach ($realm->soloPlayers()->where('rating', '>', RealmAssignmentService::NEW_PLAYER_RATING) as $player) {
+                $solos[] = ['player' => $player, 'realm' => $realm];
+            }
+        }
+
+        $improving = 0;
+        $total = count($solos);
+        for ($i = 0; $i < $total; $i++) {
+            for ($j = $i + 1; $j < $total; $j++) {
+                if ($solos[$i]['realm']->id === $solos[$j]['realm']->id) {
+                    continue;
+                }
+                if ($service->shouldSwapSolos(
+                    $solos[$i]['player'],
+                    $solos[$j]['player'],
+                    $solos[$i]['realm'],
+                    $solos[$j]['realm']
+                )) {
+                    $improving++;
+                }
+            }
+        }
+
+        return $improving;
+    }
+
     public function testFavorabilityStatsReportClampedPairsKeyedByUserId(): void
     {
         // Dominion ids and user ids differ in the assignment path. Reading feedback by
