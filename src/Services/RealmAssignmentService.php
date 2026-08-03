@@ -538,6 +538,71 @@ class PlaceholderRealm
     }
 
     /**
+     * Report the favorability actually realised between this realm's members
+     *
+     * Exposed for dry-run statistics. Each unordered pair is measured once, summing both
+     * directions the way getCompatibilityScore() does and bounded by the same
+     * FAVORABILITY_PAIR_LIMIT, so the figures describe what scoring saw rather than the raw
+     * database totals. Feedback is keyed by user id, not dominion id — the two differ in the
+     * assignment path and reading the wrong one silently reports zero for everybody.
+     *
+     * conflict_pairs is the metric to watch: it counts members who ended up together despite
+     * negative history, which is what the negative weight exists to prevent.
+     *
+     * FAVORABILITY_POSITIVE_LIMIT is deliberately not applied. That cap bounds a single
+     * placement decision, not the total history within a finished realm, so imposing it here
+     * would understate what is actually present.
+     *
+     * @return array{total: float, positive: float, negative: float, conflict_pairs: int,
+     *               clamped_pairs: int, weighted_total: float}
+     */
+    public function getFavorabilityStats(): array
+    {
+        $players = $this->players->values();
+        $playerCount = $players->count();
+        $positive = 0.0;
+        $negative = 0.0;
+        $conflictPairs = 0;
+        $clampedPairs = 0;
+
+        for ($i = 0; $i < $playerCount; $i++) {
+            for ($j = $i + 1; $j < $playerCount; $j++) {
+                $first = $players[$i];
+                $second = $players[$j];
+
+                $rawScore = $first->getFavorabilityWith($second->userId)
+                    + $second->getFavorabilityWith($first->userId);
+
+                $pairScore = max(
+                    -static::FAVORABILITY_PAIR_LIMIT,
+                    min(static::FAVORABILITY_PAIR_LIMIT, $rawScore)
+                );
+
+                if ((float) $pairScore !== (float) $rawScore) {
+                    $clampedPairs++;
+                }
+
+                if ($pairScore > 0) {
+                    $positive += $pairScore;
+                } elseif ($pairScore < 0) {
+                    $negative += $pairScore;
+                    $conflictPairs++;
+                }
+            }
+        }
+
+        return [
+            'total' => $positive + $negative,
+            'positive' => $positive,
+            'negative' => $negative,
+            'conflict_pairs' => $conflictPairs,
+            'clamped_pairs' => $clampedPairs,
+            'weighted_total' => $positive * static::FAVORABILITY_POSITIVE_WEIGHT
+                + $negative * static::FAVORABILITY_NEGATIVE_WEIGHT,
+        ];
+    }
+
+    /**
      * Calculate how far a set of players deviates from the ideal specialist mix
      *
      * Deviations are squared rather than absolute. Absolute deviation is linear below
@@ -672,11 +737,16 @@ class RealmAssignmentService
      * This is the main entry point for the realm assignment algorithm. It orchestrates
      * the entire process: closing packs, loading players, calculating optimal realm
      * structure, assigning packs and solo players, and performing post-assignment
-     * optimization. Returns the final realm assignments.
+     * optimization.
+     *
+     * A dry run leaves the database untouched and returns the statistics array from
+     * getAssignmentStats() for inspection; note that it also skips closePacks(), so
+     * single-member packs are still treated as packs and pack sizes and ratings are
+     * whatever was last persisted. A real run returns nothing.
      *
      * @param Round $round The round to perform realm assignment for
-     * @param bool $dryRun If true, skips database creation and outputs stats to console
-     * @return Collection Collection of PlaceholderRealm objects with assigned players
+     * @param bool $dryRun If true, skips database writes and returns assignment statistics
+     * @return array|null Assignment statistics when $dryRun is true, otherwise null
      */
     public function assignRealms(Round $round, bool $dryRun = false)
     {
@@ -1578,6 +1648,18 @@ class RealmAssignmentService
             ),
             'overall_specialist_distribution' => array_fill_keys(array_values($shortNames), 0),
             'overall_playstyle_distribution' => array_fill_keys(array_values($shortNames), 0),
+            'favorability' => [
+                'pair_limit' => PlaceholderRealm::FAVORABILITY_PAIR_LIMIT,
+                'positive_weight' => PlaceholderRealm::FAVORABILITY_POSITIVE_WEIGHT,
+                'negative_weight' => PlaceholderRealm::FAVORABILITY_NEGATIVE_WEIGHT,
+                'total' => 0,
+                'positive' => 0,
+                'negative' => 0,
+                'conflict_pairs' => 0,
+                'clamped_pairs' => 0,
+                'weighted_total' => 0,
+                'conflict_free_realms' => 0,
+            ],
             'balance_metrics' => [
                 'size_variance' => 0,
                 'rating_variance' => 0,
@@ -1604,6 +1686,7 @@ class RealmAssignmentService
             $playstyleDist = $realm->getPlaystyleComposition();
             $specialistCounts = $realm->getSpecialistCounts($realm->players);
             $playstyleDeviation = $realm->getPlaystyleDeviation();
+            $favorabilityStats = $realm->getFavorabilityStats();
             $knownAffinityPlayerCount = $realm->players->where('hasKnownAffinities', true)->count();
             $newPlayerCount = $realm->players->where('rating', '<=', self::NEW_PLAYER_RATING)->count();
             $experiencedPlayerCount = $realm->players->where('rating', '>', self::NEW_PLAYER_RATING)->count();
@@ -1616,6 +1699,13 @@ class RealmAssignmentService
             $realmSizes[] = $realmSize;
             $realmRatings[] = $realmRating;
             $playstyleDeviations[] = $playstyleDeviation;
+
+            foreach (['total', 'positive', 'negative', 'conflict_pairs', 'clamped_pairs', 'weighted_total'] as $key) {
+                $stats['favorability'][$key] += $favorabilityStats[$key];
+            }
+            if ($favorabilityStats['conflict_pairs'] === 0) {
+                $stats['favorability']['conflict_free_realms']++;
+            }
 
             // Averages are per known-affinity player, so weight them back up by that
             // count rather than realm size before pooling them across realms.
@@ -1641,6 +1731,7 @@ class RealmAssignmentService
                     array_values(PlaceholderRealm::IDEAL_COMPOSITION)
                 )),
                 'playstyle_deviation' => round($playstyleDeviation, 2),
+                'favorability' => $favorabilityStats,
                 'deviation_from_target_size' => round(abs($realmSize - $this->targetRealmSize), 2),
                 'deviation_from_target_rating' => round(abs($realmRating - $this->targetRealmStrength), 2),
             ];

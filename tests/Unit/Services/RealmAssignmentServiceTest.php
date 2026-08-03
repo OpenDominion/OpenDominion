@@ -910,6 +910,63 @@ class RealmAssignmentServiceTest extends AbstractTestCase
      * calculateRealmCount should return ceil(76/8) = 10 realms and upgrade enough
      * small packs to seed them, so createPlaceholderRealms produces 10 realms.
      */
+    public function testFavorabilityStatsReportClampedPairsKeyedByUserId(): void
+    {
+        // Dominion ids and user ids differ in the assignment path. Reading feedback by
+        // dominion id reports zero for everyone, so pin the user-id keying here too.
+        $realm = new PlaceholderRealm('test', collect([
+            new Player(['id' => 'dom-1', 'userId' => 'user-1', 'rating' => 1500, 'favorability' => ['user-2' => 9]]),
+            new Player(['id' => 'dom-2', 'userId' => 'user-2', 'rating' => 1500, 'favorability' => ['user-1' => 1]]),
+            new Player(['id' => 'dom-3', 'userId' => 'user-3', 'rating' => 1500, 'favorability' => ['user-1' => -2]]),
+        ]));
+
+        $stats = $realm->getFavorabilityStats();
+
+        // Pairs: 1<->2 raw 10 clamped to 3; 1<->3 raw -2; 2<->3 raw 0.
+        $this->assertEquals(3, $stats['positive']);
+        $this->assertEquals(-2, $stats['negative']);
+        $this->assertEquals(1, $stats['total']);
+        $this->assertEquals(1, $stats['conflict_pairs'], 'the 1<->3 pair carries negative history');
+        $this->assertEquals(1, $stats['clamped_pairs'], 'only the 1<->2 pair exceeded the limit');
+        $this->assertEqualsWithDelta(
+            3 * PlaceholderRealm::FAVORABILITY_POSITIVE_WEIGHT - 2 * PlaceholderRealm::FAVORABILITY_NEGATIVE_WEIGHT,
+            $stats['weighted_total'],
+            0.0001
+        );
+    }
+
+    public function testAssignmentStatsAggregateFavorabilityAcrossRealms(): void
+    {
+        $this->service->realms = collect([
+            new PlaceholderRealm('clean', collect([
+                new Player(['id' => 'a', 'userId' => 'a', 'rating' => 1500, 'favorability' => ['b' => 2]]),
+                new Player(['id' => 'b', 'userId' => 'b', 'rating' => 1500]),
+            ])),
+            new PlaceholderRealm('conflicted', collect([
+                new Player(['id' => 'c', 'userId' => 'c', 'rating' => 1500, 'favorability' => ['d' => -1]]),
+                new Player(['id' => 'd', 'userId' => 'd', 'rating' => 1500]),
+            ])),
+        ]);
+
+        $stats = $this->service->getAssignmentStats();
+
+        $this->assertEquals(2, $stats['favorability']['positive']);
+        $this->assertEquals(-1, $stats['favorability']['negative']);
+        $this->assertEquals(1, $stats['favorability']['total']);
+        $this->assertEquals(1, $stats['favorability']['conflict_pairs']);
+        $this->assertEquals(
+            1,
+            $stats['favorability']['conflict_free_realms'],
+            'only the realm with no negative pair should count as conflict free'
+        );
+        $this->assertEquals(
+            PlaceholderRealm::FAVORABILITY_PAIR_LIMIT,
+            $stats['favorability']['pair_limit'],
+            'the active bounds should travel with the stats so output is self-describing'
+        );
+        $this->assertArrayHasKey('favorability', $stats['realms'][0]);
+    }
+
     public function testCreatePlaceholderRealmsBuildsExactlyTheRequestedCount(): void
     {
         // With no packs at all, the top-up path is the only thing creating realms. An
