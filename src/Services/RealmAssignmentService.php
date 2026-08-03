@@ -211,8 +211,65 @@ class PlaceholderRealm
 
     /**
      * @var float Scale applied to the playstyle term in getCompatibilityScore()
+     *
+     * Calibrated against the rating balance term, which is the only other signal of
+     * comparable size. At an assignment-time realm of ten players, moving a player 200
+     * rating points further from target costs ~54.5 score units, and the best-versus-worst
+     * playstyle spread across candidate realms is ~12.7 units at p95. A weight of 4 makes
+     * a p95 composition improvement worth a little under 200 rating points. At a weight of
+     * 1 it was worth ~47, which is why playstyle almost never changed a placement.
      */
-    public const PLAYSTYLE_SCORE_WEIGHT = 1.0;
+    public const PLAYSTYLE_SCORE_WEIGHT = 4.0;
+
+    /**
+     * @var int Bound applied to the net favorability of a single pair
+     *
+     * Feedback is stored one row per pair per round and is never scoped to a round when
+     * read, so a pair that has endorsed each other every round accumulates without limit —
+     * observed up to +14 in production, more than an entire typical realm's worth of signal
+     * from one relationship. Clamping per pair makes the term mean "these two get along"
+     * rather than "these two have played together a lot".
+     *
+     * Measured over active players: this trims ~7% of positive pairs and ~0% of negative
+     * ones, so it is almost entirely a control on friend-stacking.
+     */
+    public const FAVORABILITY_PAIR_LIMIT = 3;
+
+    /**
+     * @var int Bound applied to the summed positive favorability for one placement
+     *
+     * The per-pair limit alone still lets an organised group stack: ten members at +3 is
+     * +30, which would let mutual endorsement history route around
+     * MAX_PACKED_PLAYERS_PER_REALM. The highest total observed in a real assigned round was
+     * +19, so this bounds the adversarial case without touching realistic ones.
+     *
+     * Deliberately not applied to the negative side, which must be able to stack into a veto.
+     */
+    public const FAVORABILITY_POSITIVE_LIMIT = 20;
+
+    /**
+     * @var float Weight applied to positive favorability
+     *
+     * Production feedback runs 5.9 positive to 1 negative, so this term is mostly a
+     * friend-clustering mechanism. Kept deliberately modest: at this weight a p95 friend
+     * cluster (+14) is worth ~128 rating points and the capped maximum ~183, so it nudges
+     * placement without overriding rating balance.
+     */
+    public const FAVORABILITY_POSITIVE_WEIGHT = 2.5;
+
+    /**
+     * @var float Weight applied to negative favorability
+     *
+     * Weighted far above the positive side because downvotes are rare, deliberate, and the
+     * cost of ignoring one is high. One downvoter is worth ~55 rating points — enough to
+     * cancel a median friend cluster — and a sustained multi-round feud ~165.
+     *
+     * This replaces the former -100 conflict cliff, which required 11 net downvotes from
+     * inside a single realm to fire and so never did. Scaling linearly reaches the same
+     * magnitude at a reachable level and avoids a discontinuity that could make the
+     * optimisation pass oscillate.
+     */
+    public const FAVORABILITY_NEGATIVE_WEIGHT = 15.0;
 
     public string $id;
     public Collection $players;
@@ -354,37 +411,44 @@ class PlaceholderRealm
     /**
      * Calculate compatibility score for adding players to this realm
      *
-     * Computes a comprehensive compatibility score that includes both
-     * favorability ratings between players and playstyle fit. The score
-     * considers both existing realm members and the potential new players.
-     *
-     * Heavy penalties (-100) are applied when favorability is very negative
-     * to discourage placing conflicting players together.
+     * Combines favorability between players with playstyle fit. Favorability is summed
+     * per pair across both directions, bounded by FAVORABILITY_PAIR_LIMIT so that a long
+     * history between two players cannot outweigh the rest of the realm, then weighted
+     * asymmetrically: positive feedback is a mild clustering nudge, negative feedback is a
+     * strong deterrent. See the constants for the measurements behind each bound.
      *
      * @param Collection $players Collection of Player objects to evaluate
      * @return float Total compatibility score (higher is better)
      */
     public function getCompatibilityScore(Collection $players): float
     {
-        $favorabilityScore = 0;
-        $totalScore = 0;
+        $positiveScore = 0;
+        $negativeScore = 0;
 
         foreach ($players as $newMember) {
-            $favorabilityScore = 0;
             foreach ($this->players as $realmMember) {
-                $favorabilityScore += $realmMember->getFavorabilityWith($newMember->userId);
-                $favorabilityScore += $newMember->getFavorabilityWith($realmMember->userId);
+                // Both directions belong to one relationship, so the limit applies to
+                // their sum. Bounding each direction separately would let a mutual pair
+                // reach twice the intended ceiling.
+                $pairScore = $realmMember->getFavorabilityWith($newMember->userId)
+                    + $newMember->getFavorabilityWith($realmMember->userId);
+
+                $pairScore = max(
+                    -static::FAVORABILITY_PAIR_LIMIT,
+                    min(static::FAVORABILITY_PAIR_LIMIT, $pairScore)
+                );
+
+                if ($pairScore > 0) {
+                    $positiveScore += $pairScore;
+                } else {
+                    $negativeScore += $pairScore;
+                }
             }
-            if ($favorabilityScore < -10) {
-                // Heavy penalty for conflicts
-                $favorabilityScore = -100;
-            }
-            $totalScore += $favorabilityScore;
         }
 
-        $totalScore += $this->calculatePlaystyleScore($players);
-
-        return $totalScore;
+        return min($positiveScore, static::FAVORABILITY_POSITIVE_LIMIT) * static::FAVORABILITY_POSITIVE_WEIGHT
+            + $negativeScore * static::FAVORABILITY_NEGATIVE_WEIGHT
+            + $this->calculatePlaystyleScore($players);
     }
 
     /**
@@ -634,11 +698,19 @@ class RealmAssignmentService
         // Separate non-Discord players early, before any calculations
         $this->createNonDiscordRealms();
 
+        // Assign large packs. calculateRealmCount() has already subtracted the non-Discord
+        // realms created above from both the minimum and the maximum.
         $discordRealmCount = $this->calculateRealmCount();
-        $this->targetRealmSize = floor($discordPlayerCount / $discordRealmCount);
+        $this->createPlaceholderRealms($discordRealmCount);
 
-        // Assign large packs
-        $this->createPlaceholderRealms();
+        // Draft-pack realms are set aside by createPlaceholderRealms() and take no part in
+        // solo assignment or size balancing, so neither they nor their members belong in the
+        // size target. Counting them left the target too high for the realms that remain.
+        $assignableRealmCount = $this->realms->count();
+        $assignablePlayerCount = $discordPlayerCount - $this->draftPackRealms->sum('size');
+        $this->targetRealmSize = $assignableRealmCount > 0
+            ? floor($assignablePlayerCount / $assignableRealmCount)
+            : 0;
 
         // Assign small packs
         $this->assignPacks();
@@ -773,7 +845,11 @@ class RealmAssignmentService
         // headroom (each realm caps at MAX_PACKED_PLAYERS_PER_REALM) to absorb
         // every packed player without overflowing.
         $desiredRealms = max($largePacks, $packedHeadroomRealms);
-        $targetRealms = max($minDiscordRealms, min($maxDiscordRealms, $desiredRealms));
+
+        // The trailing 1 keeps at least one Discord realm alive even when non-Discord
+        // realms have already consumed ASSIGNMENT_MAX_REALM_COUNT, which would otherwise
+        // leave createPlaceholderRealms() building nothing for the remaining players.
+        $targetRealms = max($minDiscordRealms, min($maxDiscordRealms, $desiredRealms), 1);
 
         if ($largePacks > $targetRealms) {
             $this->downgradePacks($largePacks - $targetRealms);
@@ -821,12 +897,23 @@ class RealmAssignmentService
     /**
      * Create initial Discord-enabled realms from packs
      *
-     * Creates regular Discord-enabled realms from large packs, then small packs if needed.
-     * Non-Discord realms are handled separately.
+     * Builds exactly $targetRealmCount Discord realms: one seeded from each large pack,
+     * topped up from small packs and then with empty realms. Non-Discord realms are created
+     * separately and are already subtracted from the target by calculateRealmCount().
+     *
+     * The count has to come from the caller rather than being re-derived here. This method
+     * previously topped up against ASSIGNMENT_MIN_REALM_COUNT using an inclusive range(),
+     * which both ignored the count assignRealms() had already calculated and overshot it by
+     * one — eight realms were requested and nine were built. targetRealmSize is derived from
+     * the requested count, so the extra realm left the size target too high and the
+     * over-target penalty in calculateSizeBonus() never engaged.
+     *
+     * @param int $targetRealmCount Number of Discord realms to create, including any that
+     *                              turn out to hold a draft pack
      */
-    public function createPlaceholderRealms(): void
+    public function createPlaceholderRealms(int $targetRealmCount): void
     {
-        // Step 1: Create regular Discord-enabled realms from remaining packs
+        // Step 1: Seed one realm per large pack
         $largePacks = $this->packs->where('large', true);
         foreach ($largePacks as $idx => $pack) {
             $realm = new PlaceholderRealm("large-{$idx}", $pack->members);
@@ -834,28 +921,24 @@ class RealmAssignmentService
             $this->packs->forget($pack->id);
         }
 
-        // Step 3: Use small packs if we need more realms
-        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
-            $smallPacks = $this->packs->where('large', false);
-            foreach ($smallPacks as $idx => $pack) {
-                $realm = new PlaceholderRealm("small-{$idx}", $pack->members);
-                $this->realms->push($realm);
-                $this->packs->forget($pack->id);
-                if ($this->getRealmCount() >= self::ASSIGNMENT_MIN_REALM_COUNT) {
-                    break;
-                }
+        // Step 2: Use small packs to seed any realms the large packs did not cover
+        $smallPacks = $this->packs->where('large', false);
+        foreach ($smallPacks as $idx => $pack) {
+            if ($this->realms->count() >= $targetRealmCount) {
+                break;
             }
+            $realm = new PlaceholderRealm("small-{$idx}", $pack->members);
+            $this->realms->push($realm);
+            $this->packs->forget($pack->id);
         }
 
-        // Step 4: Create empty Discord-enabled realms if needed
-        if ($this->getRealmCount() < self::ASSIGNMENT_MIN_REALM_COUNT) {
-            foreach (range($this->getRealmCount(), self::ASSIGNMENT_MIN_REALM_COUNT) as $idx) {
-                $realm = new PlaceholderRealm("solo-{$idx}", collect());
-                $this->realms->push($realm);
-            }
+        // Step 3: Fill the remainder with empty realms
+        while ($this->realms->count() < $targetRealmCount) {
+            $realm = new PlaceholderRealm('solo-' . $this->realms->count(), collect());
+            $this->realms->push($realm);
         }
 
-        // Step 5: Separate draft pack realms so solo assignment and balancing ignore them
+        // Step 4: Separate draft pack realms so solo assignment and balancing ignore them
         $this->draftPackRealms = $this->realms->filter(function ($realm) {
             return $realm->isDraftPackRealm();
         });

@@ -458,7 +458,7 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         // Create placeholder realms from large packs
         $createPlaceholderRealmsMethod = $reflection->getMethod('createPlaceholderRealms');
         $createPlaceholderRealmsMethod->setAccessible(true);
-        $createPlaceholderRealmsMethod->invoke($this->service);
+        $createPlaceholderRealmsMethod->invoke($this->service, $realmCount);
 
         // Assign remaining packs
         $assignPacksMethod = $reflection->getMethod('assignPacks');
@@ -785,7 +785,12 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $this->service->targetRealmSize = floor($totalPlayers / RealmAssignmentService::ASSIGNMENT_MIN_REALM_COUNT);
 
         $reflection = new \ReflectionClass($this->service);
-        foreach (['createPlaceholderRealms', 'assignPacks', 'assignSolos'] as $method) {
+
+        $createPlaceholderRealms = $reflection->getMethod('createPlaceholderRealms');
+        $createPlaceholderRealms->setAccessible(true);
+        $createPlaceholderRealms->invoke($this->service, RealmAssignmentService::ASSIGNMENT_MIN_REALM_COUNT);
+
+        foreach (['assignPacks', 'assignSolos'] as $method) {
             $m = $reflection->getMethod($method);
             $m->setAccessible(true);
             $m->invoke($this->service);
@@ -905,6 +910,51 @@ class RealmAssignmentServiceTest extends AbstractTestCase
      * calculateRealmCount should return ceil(76/8) = 10 realms and upgrade enough
      * small packs to seed them, so createPlaceholderRealms produces 10 realms.
      */
+    public function testCreatePlaceholderRealmsBuildsExactlyTheRequestedCount(): void
+    {
+        // With no packs at all, the top-up path is the only thing creating realms. An
+        // inclusive range() here used to build one realm more than was asked for.
+        $this->service->players = collect();
+        $this->service->packs = collect();
+        $this->service->realms = collect();
+
+        $requested = $this->service->calculateRealmCount();
+        $this->service->createPlaceholderRealms($requested);
+
+        $this->assertEquals(
+            RealmAssignmentService::ASSIGNMENT_MIN_REALM_COUNT,
+            $requested,
+            'with no packs the target should fall back to the minimum'
+        );
+        $this->assertCount(
+            $requested,
+            $this->service->realms,
+            'createPlaceholderRealms must build exactly the number of realms it was given'
+        );
+    }
+
+    public function testNonDiscordRealmsCountTowardTheRealmLimits(): void
+    {
+        $this->service->players = collect();
+        $this->service->packs = collect();
+        $this->service->realms = collect();
+        $this->service->nonDiscordRealms = collect([new PlaceholderRealm('non-discord-1', collect(), false)]);
+
+        $requested = $this->service->calculateRealmCount();
+        $this->service->createPlaceholderRealms($requested);
+
+        $this->assertEquals(
+            RealmAssignmentService::ASSIGNMENT_MIN_REALM_COUNT - 1,
+            $requested,
+            'an existing non-Discord realm must be subtracted from the Discord realm target'
+        );
+        $this->assertEquals(
+            RealmAssignmentService::ASSIGNMENT_MIN_REALM_COUNT,
+            $this->service->getRealmCount(),
+            'the round should still end up with the minimum number of realms in total'
+        );
+    }
+
     public function testCalculateRealmCountGrowsForPackedHeadroom()
     {
         $this->service->players = collect();
@@ -1236,11 +1286,88 @@ class RealmAssignmentServiceTest extends AbstractTestCase
         $compatibilityScore = $realm->getCompatibilityScore(collect([$incomingPlayer]));
         $playstyleScore = $realm->calculatePlaystyleScore(collect([$incomingPlayer]));
 
-        $this->assertEquals(
-            5,
+        // The pair nets 2 + 3 = 5, clamped to FAVORABILITY_PAIR_LIMIT before weighting.
+        $this->assertEqualsWithDelta(
+            PlaceholderRealm::FAVORABILITY_PAIR_LIMIT * PlaceholderRealm::FAVORABILITY_POSITIVE_WEIGHT,
             $compatibilityScore - $playstyleScore,
+            0.0001,
             'Feedback should match user IDs even when dominion IDs differ'
         );
+    }
+
+    public function testFavorabilityIsBoundedPerPairSoOneRelationshipCannotDominate(): void
+    {
+        // A pair that has endorsed each other every round for years accumulates without
+        // limit in the database; production data reaches +14 for a single pair.
+        $realm = new PlaceholderRealm('test', collect([
+            new Player(['id' => 'a', 'userId' => 'user-a', 'rating' => 1500, 'favorability' => ['user-x' => 7]]),
+        ]));
+        $newcomer = new Player([
+            'id' => 'x', 'userId' => 'user-x', 'rating' => 1500, 'favorability' => ['user-a' => 7],
+        ]);
+
+        $favorability = $realm->getCompatibilityScore(collect([$newcomer]))
+            - $realm->calculatePlaystyleScore(collect([$newcomer]));
+
+        $this->assertEqualsWithDelta(
+            PlaceholderRealm::FAVORABILITY_PAIR_LIMIT * PlaceholderRealm::FAVORABILITY_POSITIVE_WEIGHT,
+            $favorability,
+            0.0001,
+            'a single relationship must not scale with how many rounds it has accumulated'
+        );
+    }
+
+    public function testStackedPositiveFavorabilityIsCappedBelowTheRatingBalanceTerm(): void
+    {
+        // An organised group could otherwise use mutual endorsement history to pull a
+        // newcomer into their realm, routing around MAX_PACKED_PLAYERS_PER_REALM.
+        $members = collect(range(1, 12))->map(fn (int $i) => new Player([
+            'id' => "m{$i}", 'userId' => "user-{$i}", 'rating' => 1500, 'favorability' => ['user-x' => 3],
+        ]));
+        $realm = new PlaceholderRealm('clique', $members);
+        $newcomer = new Player([
+            'id' => 'x',
+            'userId' => 'user-x',
+            'rating' => 1500,
+            'favorability' => collect(range(1, 12))->mapWithKeys(fn (int $i) => ["user-{$i}" => 3])->toArray(),
+        ]);
+
+        $favorability = $realm->getCompatibilityScore(collect([$newcomer]))
+            - $realm->calculatePlaystyleScore(collect([$newcomer]));
+
+        $this->assertEqualsWithDelta(
+            PlaceholderRealm::FAVORABILITY_POSITIVE_LIMIT * PlaceholderRealm::FAVORABILITY_POSITIVE_WEIGHT,
+            $favorability,
+            0.0001,
+            'stacked positive feedback must saturate at the cap'
+        );
+    }
+
+    public function testOneDownvoterOutweighsAMedianFriendCluster(): void
+    {
+        // Measured against production: the median player shares +6 of clamped favorability
+        // with their realm, and negative feedback must be able to override that.
+        $friendly = collect(range(1, 3))->map(fn (int $i) => new Player([
+            'id' => "f{$i}", 'userId' => "friend-{$i}", 'rating' => 1500, 'favorability' => ['user-x' => 2],
+        ]));
+        $hostile = $friendly->concat([new Player([
+            'id' => 'h', 'userId' => 'hater', 'rating' => 1500, 'favorability' => ['user-x' => -1],
+        ])]);
+        $newcomer = new Player(['id' => 'x', 'userId' => 'user-x', 'rating' => 1500]);
+
+        $friendlyScore = (new PlaceholderRealm('friendly', $friendly))->getCompatibilityScore(collect([$newcomer]));
+        $hostileScore = (new PlaceholderRealm('hostile', $hostile))->getCompatibilityScore(collect([$newcomer]));
+
+        // A median cluster is +6 of clamped favorability, which the positive weight turns
+        // into +15; a single downvoter is -1 against the negative weight, also 15. So the
+        // realm must score no better than one where nobody has any history with the
+        // newcomer at all -- the friends cannot buy off the objection.
+        $this->assertLessThanOrEqual(
+            0,
+            $hostileScore,
+            'a single downvoter must at least cancel a median friend cluster'
+        );
+        $this->assertLessThan($friendlyScore, $hostileScore);
     }
 
     private function scoringPlayer(string $id, float $rating = 1500, ?string $packId = null): Player
