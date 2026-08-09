@@ -223,6 +223,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td>
+                                            Home land
+                                        </td>
+                                        <td class="text-center">
+                                            {{ ucwords($dominion->race->home_land_type) }}
+                                        </td>
+                                    </tr>
                                     @foreach ($dominion->race->perks as $perk)
                                         @php
                                             $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
