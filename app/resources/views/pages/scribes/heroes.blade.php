@@ -11,10 +11,10 @@
                 <div class="col-md-12">
                     <p>Each dominion can select one hero that gains experience and levels up, increasing a passive bonus based on its class and unlocking new upgrades.</p>
                     <p>
-                        Heroes gain 1 XP per acre gained from invasion (against dominions at least 75% of your size), 0.6 XP per acre explored, 0.5 XP per spy strength spent on successful espionage operations (excluding theft), and 1 XP per wizard strength spent on successful magic operations.
+                        Heroes gain 1 XP per acre gained from invasion (against dominions at least 75% of your size), 0.8 XP per acre explored, 0.5 XP per spy strength spent on successful espionage operations (excluding theft), and 1 XP per wizard strength spent on successful magic operations.
                         Heroes lose 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.
                     </p>
-                    <p>You can change your hero class at any time, but you'll lose any progress you've made toward the next level. Any bonuses you've acquired from other classes will be halved while inactive.</p>
+                    <p>You can change your hero class at any time, but you'll pay a penalty of {{ \OpenDominion\Calculators\Dominion\HeroCalculator::CLASS_CHANGE_XP_PENALTY }} XP. Any bonuses you've acquired from other classes will be halved while inactive.</p>
                     <p>Advanced hero classes have special requirements to select and unlock additional upgrades on first use. All hero upgrades are <b>permanent</b>.</p>
                     <p>There is a {{ \OpenDominion\Calculators\Dominion\HeroCalculator::CLASS_CHANGE_COOLDOWN_HOURS }} hour cooldown between class changes.</p>
                 </div>

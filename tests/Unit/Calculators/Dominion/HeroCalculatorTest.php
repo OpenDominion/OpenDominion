@@ -260,6 +260,36 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(2.0, $this->heroCalculator->getRawExperienceGain($this->dominion, 2, 'magic'));
     }
 
+    public function testGetRawExperienceGain_ExplorationCoefficient()
+    {
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        // exploration coefficient is 0.8 — raw = 0.8 * value
+        $this->assertEquals(4.0, $this->heroCalculator->getRawExperienceGain($this->dominion, 5, 'exploration'));
+        $this->assertEquals(1.6, $this->heroCalculator->getRawExperienceGain($this->dominion, 2, 'exploration'));
+    }
+
+    public function testGetRawExperienceGain_InvasionCoefficient()
+    {
+        Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 0,
+            'class_data' => []
+        ]);
+
+        // invasion coefficient is 1.0 — raw = 1.0 * value
+        $this->assertEquals(5.0, $this->heroCalculator->getRawExperienceGain($this->dominion, 5, 'invasion'));
+        $this->assertEquals(2.0, $this->heroCalculator->getRawExperienceGain($this->dominion, 2, 'invasion'));
+    }
+
     public function testGetRawExperienceGain_IgnoresShrineMultiplier()
     {
         Hero::create([

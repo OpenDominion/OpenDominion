@@ -229,9 +229,9 @@ class HeroActionService
                 $xp = $classData[$selectedClass['key']]['experience'];
             }
 
-            // Cap current class XP at minimum for current level (lose excess XP), with a max loss of 500
+            // Cap current class XP at minimum for current level (lose excess XP), with a max loss of CLASS_CHANGE_XP_PENALTY
             $cappedExperience = min($dominion->hero->experience, $this->heroCalculator->getCurrentLevelXP($dominion->hero));
-            $cappedExperience = max($cappedExperience, $dominion->hero->experience - 500);
+            $cappedExperience = max($cappedExperience, $dominion->hero->experience - HeroCalculator::CLASS_CHANGE_XP_PENALTY);
             $currentLevel = $this->heroCalculator->getHeroLevel($dominion->hero);
             $currentPerkType = $this->heroHelper->getPassivePerkType($dominion->hero->class);
             $currentBonus = $this->heroCalculator->calculatePassiveBonus($currentPerkType, $currentLevel) * (1 - HeroCalculator::INACTIVE_CLASS_PENALTY);

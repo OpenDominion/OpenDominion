@@ -22,6 +22,11 @@ class HeroCalculator
     public const CLASS_CHANGE_COOLDOWN_HOURS = 96;
 
     /**
+     * @var int Maximum XP lost from the current class when changing class
+     */
+    public const CLASS_CHANGE_XP_PENALTY = 500;
+
+    /**
      * @var int Daily cap on raw XP gained from spy + magic operations combined.
      *          Measured pre-getExperienceMultiplier so shrine/racial/wonder bonuses
      *          do not accelerate hitting the cap.

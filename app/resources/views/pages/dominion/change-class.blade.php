@@ -17,7 +17,7 @@
                             <div class="col-md-12">
                                 <h4>{{ $hero->name }} - Level {{ $heroCalculator->getHeroLevel($hero) }} {{ $heroHelper->getClassDisplayName($hero->class) }} - {{ $hero->experience }} / {{ $heroCalculator->getNextLevelXP($hero) }} XP</h4>
                                 <p>Are you sure you want to change your hero class to <strong>{{ $targetClass['name'] }}</strong>?</p>
-                                <p>You will lose any progress you've made toward the next level (<b class="text-red">-{{ $hero->experience - $heroCalculator->getCurrentLevelXP($hero) }} XP</b>).</p>
+                                <p>You will lose any progress you've made toward the next level, up to a maximum of {{ \OpenDominion\Calculators\Dominion\HeroCalculator::CLASS_CHANGE_XP_PENALTY }} XP (<b class="text-red">-{{ min($hero->experience - $heroCalculator->getCurrentLevelXP($hero), \OpenDominion\Calculators\Dominion\HeroCalculator::CLASS_CHANGE_XP_PENALTY) }} XP</b>).</p>
                                 <p>You will continue where you left off if you've used this class before, or start at 0 XP if not.</p>
                                 <p>Your current <strong>{{ $heroHelper->getClassDisplayName($hero->class) }}</strong> class bonus bonus will be reduced by half while inactive.</p>
                                 @if ($targetClass['key'] == 'scion')
@@ -171,9 +171,9 @@
                 </div>
                 <div class="card-body">
                     <p>Your hero gains experience and levels up, increasing its class bonuses and unlocking new upgrades.</p>
-                    <p>Your hero gains 1 XP per acre gained from invasion (against dominions at least 75% of your size), 0.6 XP per acre explored, 0.5 XP per spy strength spent on successful espionage operations (excluding theft), and 1 XP per wizard strength spent on successful magic operations.</p>
+                    <p>Your hero gains 1 XP per acre gained from invasion (against dominions at least 75% of your size), 0.8 XP per acre explored, 0.5 XP per spy strength spent on successful espionage operations (excluding theft), and 1 XP per wizard strength spent on successful magic operations.</p>
                     <p>Your hero loses 1 XP per acre lost from invasion, however this loss cannot exceed the XP required to maintain its current level.</p>
-                    <p>You can change your hero class at any time, but you'll lose any progress you've made toward the next level. Any bonuses you've acquired from other classes will be halved while inactive.</p>
+                    <p>You can change your hero class at any time, but you'll pay a penalty of {{ \OpenDominion\Calculators\Dominion\HeroCalculator::CLASS_CHANGE_XP_PENALTY }} XP. Any bonuses you've acquired from other classes will be halved while inactive.</p>
                     <p>Advanced hero classes have special requirements to select and unlock additional upgrades on first use. All hero upgrades are <b>permanent</b>.</p>
                     <p>There is a {{ \OpenDominion\Calculators\Dominion\HeroCalculator::CLASS_CHANGE_COOLDOWN_HOURS }} hour cooldown between class changes.</p>
                 </div>
