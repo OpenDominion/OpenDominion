@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Tests\Feature\Dominion;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -38,6 +39,13 @@ class AutomationTest extends AbstractBrowserKitTestCase
         ]);
     }
 
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow();
+
+        parent::tearDown();
+    }
+
     public function testAutomationPageRendersTheUpgradedControls(): void
     {
         $this->visitRoute('dominion.bonuses.actions')
@@ -54,5 +62,24 @@ class AutomationTest extends AbstractBrowserKitTestCase
         $this->assertCount(11, $this->crawler->filter('.automation-open-tick'));
         $this->assertCount(1, $this->crawler->filter('[id^="copyTickModal-"]'));
         $this->assertGreaterThan(0, $this->crawler->filter('[role="combobox"]')->count());
+    }
+
+    public function testAutomationTickRowsDisplayTheirClockTime(): void
+    {
+        Carbon::setTestNow(now()->startOfHour()->addMinutes(10));
+
+        $this->visitRoute('dominion.bonuses.actions')
+            ->seeStatusCode(200);
+
+        $times = $this->crawler->filter('.automation-tick-time time');
+        $this->assertCount(12, $times);
+
+        $expected = collect(range(1, 12))->map(function (int $hours) {
+            return now()->startOfHour()->addHours($hours)->format('H:i');
+        })->all();
+
+        $this->assertSame($expected, $times->each(function ($node) {
+            return trim($node->text());
+        }));
     }
 }

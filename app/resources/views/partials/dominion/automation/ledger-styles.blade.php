@@ -149,6 +149,13 @@
     }
     .automation-tick-time strong { display: block; font-size: .8rem; }
     .automation-tick-time span { color: var(--automation-muted); font-size: .72rem; }
+    .automation-tick-time time {
+        display: block;
+        color: var(--automation-muted);
+        font-size: .68rem;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
     .automation-tick-mark {
         position: relative;
         z-index: 1;
@@ -461,6 +468,7 @@
         .automation-tick-time { padding-top: .5rem; }
         .automation-tick-time strong { font-size: .68rem; }
         .automation-tick-time span { display: none; }
+        .automation-tick-time time { font-size: .6rem; }
         .automation-tick-mark { width: 12px; height: 12px; margin-top: .5rem; }
         .automation-tick-content { padding-bottom: .55rem; }
         .automation-open-tick { min-height: 36px; padding: .35rem .25rem; gap: .35rem; }
