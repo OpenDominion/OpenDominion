@@ -3,7 +3,6 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
@@ -13,6 +12,7 @@ use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\CastSpellActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\BountyService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
@@ -40,12 +40,19 @@ class MagicController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $spellActionService = app(SpellActionService::class);
+        $fromBountyBoard = $request->boolean('from_bounty_board');
 
         try {
+            $targetDominion = ($request->has('target_dominion') ? Dominion::withGameRelations()->findOrFail($request->get('target_dominion')) : null);
+
+            if ($fromBountyBoard && $targetDominion !== null) {
+                app(BountyService::class)->guardActiveBounty($dominion, $targetDominion, $request->get('spell'));
+            }
+
             $result = $spellActionService->castSpell(
                 $dominion,
                 $request->get('spell'),
-                ($request->has('target_dominion') ? Dominion::withGameRelations()->findOrFail($request->get('target_dominion')) : null)
+                $targetDominion
             );
         } catch (GameException $e) {
             return redirect()->back()
@@ -55,10 +62,7 @@ class MagicController extends AbstractDominionController
 
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
 
-        $bountyRedirect = null;
-        if (Str::contains($request->session()->previousUrl(), 'bounty-board')) {
-            $bountyRedirect = route('dominion.bounty-board');
-        }
+        $bountyRedirect = $fromBountyBoard ? route('dominion.bounty-board') : null;
 
         return redirect()
             ->to($bountyRedirect ?? $result['redirect'] ?? route('dominion.magic'))

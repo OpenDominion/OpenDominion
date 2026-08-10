@@ -33,6 +33,7 @@
         @csrf
         <input type="hidden" name="target_dominion" value="{{ $targetDominion->id }}">
         <input type="hidden" name="{{ $name }}" value="{{ $opType }}">
+        <input type="hidden" name="from_bounty_board" value="1">
         <button
             type="submit"
             class="btn btn-sm btn-primary"
