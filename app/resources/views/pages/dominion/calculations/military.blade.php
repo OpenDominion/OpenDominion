@@ -788,7 +788,7 @@
                                                 class="form-control text-center"
                                                 placeholder="0"
                                                 min="0"
-                                                value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 6) : null }}" />
+                                                value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 6) : 60 }}" />
                                     </div>
                                 @endforeach
                                 @if ($wizardRatioRequired)
