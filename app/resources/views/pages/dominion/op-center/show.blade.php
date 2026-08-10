@@ -125,7 +125,7 @@
                     @endphp
 
                     @if ($recentlyInvadedCount > 0)
-                        <p class="text-center" style="margin-bottom: 0.5em;" data-bs-toggle="tooltip" title="Defensive casualties reduced by {{ 20 * $recentlyInvadedCount }}%.">
+                        <p class="text-center" style="margin-bottom: 0.5em;" data-bs-toggle="tooltip" title="Defensive casualties reduced by {{ min(75, 25 * $recentlyInvadedCount) }}%.">
                             This dominion has been invaded <strong>{{ $recentlyInvadedCount }}</strong> time(s) in the last 24 hours.
                         </p>
                     @endif
