@@ -183,6 +183,38 @@ class BountyService
     }
 
     /**
+     * Determine whether an uncollected bounty of the given type exists for a target
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return bool
+     */
+    public function hasActiveBounty(Dominion $dominion, Dominion $target, string $type): bool
+    {
+        return Bounty::active()
+            ->where('source_realm_id', $dominion->realm_id)
+            ->where('target_dominion_id', $target->id)
+            ->where('type', $type)
+            ->exists();
+    }
+
+    /**
+     * Throw an exception if no bounty is available for a dominion to collect
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @throws GameException
+     */
+    public function guardActiveBounty(Dominion $dominion, Dominion $target, string $type): void
+    {
+        if (!$this->hasActiveBounty($dominion, $target, $type)) {
+            throw new GameException('That bounty is no longer available.');
+        }
+    }
+
+    /**
      * Set a bounty as collected
      *
      * @param Dominion $dominion
