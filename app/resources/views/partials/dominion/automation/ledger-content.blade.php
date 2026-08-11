@@ -46,8 +46,9 @@
                 @foreach (range(1, $maxScheduleHours) as $hours)
                     @php
                         $tick = $currentTick + $hours;
-                        $day = $selectedDominion->round->daysInRound($actionStartDate->copy()->addHours($hours));
-                        $hour = $selectedDominion->round->hoursInDay($actionStartDate->copy()->addHours($hours));
+                        $tickAt = $actionStartDate->copy()->addHours($hours);
+                        $day = $selectedDominion->round->daysInRound($tickAt);
+                        $hour = $selectedDominion->round->hoursInDay($tickAt);
                         $actions = array_values($automationConfig[$tick] ?? []);
                         $isOccupied = !empty($actions);
                         $openTickFormVisible = intval(old('tick')) === $tick;
@@ -56,6 +57,7 @@
                         <div class="automation-tick-time" aria-hidden="true">
                             <strong>+{{ $hours }}</strong>
                             <span>D{{ $day }} · H{{ $hour }}</span>
+                            <time datetime="{{ $tickAt->toIso8601String() }}">{{ $tickAt->format('H:i') }}</time>
                         </div>
                         <div class="automation-tick-mark" aria-hidden="true"></div>
                         <div class="automation-tick-content">
