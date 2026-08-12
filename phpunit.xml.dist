@@ -21,8 +21,8 @@
   </testsuites>
   <!--
     Benchmarks seed tens of dominions and tick them; they are far too slow for
-    the default run. Excluded here, opted into with `--group=benchmark`, which
-    overrides this exclusion.
+    the default run. Excluded here, and opted into by passing the group on the
+    command line, which overrides this exclusion.
   -->
   <groups>
     <exclude>
