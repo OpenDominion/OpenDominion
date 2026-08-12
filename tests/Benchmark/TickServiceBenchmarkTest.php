@@ -42,6 +42,12 @@ class TickServiceBenchmarkTest extends AbstractTickBenchmarkTestCase
             1
         );
 
+        $this->reportBudget(
+            'precalculateTick(), one dominion',
+            $profile->queryCount(),
+            TickBenchmarkBudgets::PRECALCULATE_MAX_QUERIES
+        );
+
         $this->assertLessThanOrEqual(
             TickBenchmarkBudgets::PRECALCULATE_MAX_QUERIES,
             $profile->queryCount(),
@@ -76,6 +82,12 @@ class TickServiceBenchmarkTest extends AbstractTickBenchmarkTestCase
             1
         );
 
+        $this->reportBudget(
+            'performTick(), single dominion (cold relations)',
+            $profile->queryCount(),
+            TickBenchmarkBudgets::SINGLE_DOMINION_TICK_MAX_QUERIES
+        );
+
         $this->assertLessThanOrEqual(
             TickBenchmarkBudgets::SINGLE_DOMINION_TICK_MAX_QUERIES,
             $profile->queryCount(),
@@ -106,6 +118,12 @@ class TickServiceBenchmarkTest extends AbstractTickBenchmarkTestCase
                 $tickService->performTick($fixture->round);
             },
             TickBenchmarkBudgets::LARGE_N
+        );
+
+        $this->reportBudget(
+            'performTick(), queries per dominion',
+            $profile->queriesPerDominion(),
+            TickBenchmarkBudgets::PER_DOMINION_MAX_QUERIES
         );
 
         $this->assertLessThanOrEqual(
@@ -155,6 +173,12 @@ class TickServiceBenchmarkTest extends AbstractTickBenchmarkTestCase
 
         $marginal = ($largeProfile->queryCount() - $smallProfile->queryCount())
             / (TickBenchmarkBudgets::LARGE_N - TickBenchmarkBudgets::SMALL_N);
+
+        $this->reportBudget(
+            'marginal queries per additional dominion',
+            $marginal,
+            TickBenchmarkBudgets::MAX_MARGINAL_QUERIES
+        );
 
         $this->assertLessThanOrEqual(
             TickBenchmarkBudgets::MAX_MARGINAL_QUERIES,
@@ -207,6 +231,19 @@ class TickServiceBenchmarkTest extends AbstractTickBenchmarkTestCase
 
         $smallCount = $smallProfile->countMatchingPattern(TickBenchmarkBudgets::PHASE_A_PATTERN);
         $largeCount = $largeProfile->countMatchingPattern(TickBenchmarkBudgets::PHASE_A_PATTERN);
+
+        $this->reportBudget(
+            'phase A statements (N=' . TickBenchmarkBudgets::SMALL_N . ')',
+            $smallCount,
+            TickBenchmarkBudgets::PHASE_A_STATEMENTS,
+            'statements'
+        );
+        $this->reportBudget(
+            'phase A statements (N=' . TickBenchmarkBudgets::LARGE_N . ')',
+            $largeCount,
+            TickBenchmarkBudgets::PHASE_A_STATEMENTS,
+            'statements'
+        );
 
         $this->assertSame(
             TickBenchmarkBudgets::PHASE_A_STATEMENTS,
@@ -262,6 +299,13 @@ class TickServiceBenchmarkTest extends AbstractTickBenchmarkTestCase
         $this->assertNotNull($worst, 'Expected the tick to issue at least one repeated statement.');
 
         [$sql, $count] = $worst;
+
+        $this->reportBudget(
+            'most-repeated statement, per dominion',
+            $count / TickBenchmarkBudgets::LARGE_N,
+            TickBenchmarkBudgets::MAX_REPEATS_PER_DOMINION,
+            'executions'
+        );
 
         $this->assertLessThanOrEqual(
             $ceiling,

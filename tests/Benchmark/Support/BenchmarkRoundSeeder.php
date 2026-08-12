@@ -12,6 +12,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
+use OpenDominion\Models\SpellPerkType;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Dominion\TickService;
 use RuntimeException;
@@ -81,6 +82,35 @@ final class BenchmarkRoundSeeder
     private const FACTORY_SEEDED_SPELL_KEYS = ['ares_call', 'midas_touch'];
 
     /**
+     * Perks that give performSpellEffects (TickService.php:762) per-dominion work
+     * ending in a Dominion::update(), which fires DominionSaved and so runs a
+     * SECOND precalculateTick for that dominion.
+     *
+     * These must NOT go on every dominion. They sit on the highest-perk spells,
+     * so a naive "pick the spells with the most perks" fixture puts them on all
+     * of them and makes the double-precalculation look universal when in
+     * production it is confined to the dominions actually carrying these spells.
+     *
+     * @var array<int, string>
+     */
+    private const SPECIAL_PERK_KEYS = [
+        'upgrade_specs',
+        'convert_peasants_to_self_military_unit1',
+        'wizard_guilds_produce_military_unit3',
+    ];
+
+    /** Fraction of dominions carrying one of the SPECIAL_PERK_KEYS spells. */
+    private const SPECIAL_SPELL_RATIO = 0.1;
+
+    /**
+     * performSpellEffects converts expired burning / lightning_storm rows into
+     * this spell by UPDATEing dominion_spells.spell_id. If the dominion already
+     * holds a row for it, that update collides on the (dominion_id, spell_id)
+     * primary key - so it must never be seeded directly.
+     */
+    private const CONVERSION_TARGET_SPELL_KEY = 'rejuvenation';
+
+    /**
      * Durations assigned to the beneficial and harmful spells picked below.
      *
      * A duration of 1 decrements to 0 and drives cleanupActiveSpells (and the
@@ -91,8 +121,15 @@ final class BenchmarkRoundSeeder
      */
     private const BENEFICIAL_DURATIONS = [1, 2, 6, 10];
 
-    /** @var array<int, int> */
-    private const HARMFUL_DURATIONS = [1, 8];
+    /**
+     * Ordered against the harmful spells picked below, which sort as
+     * [lightning_bolt, burning]. Burning gets duration 1 so it decrements to 0
+     * and drives the burning -> rejuvenation conversion in performSpellEffects,
+     * which is only safe because CONVERSION_TARGET_SPELL_KEY is never seeded.
+     *
+     * @var array<int, int>
+     */
+    private const HARMFUL_DURATIONS = [8, 1];
 
     public function __construct(
         private readonly DominionFactory $dominionFactory,
@@ -101,13 +138,23 @@ final class BenchmarkRoundSeeder
     ) {
     }
 
-    public function seed(int $dominionCount): BenchmarkRound
+    /**
+     * @param int $inProtectionCount How many of the dominions are still in
+     *        protection. Phase A skips them (protection_finished = true is part
+     *        of its where clause at TickService.php:275) while phase B does not,
+     *        which is finding M1 of secondroundfindings.txt.
+     */
+    public function seed(int $dominionCount, int $inProtectionCount = 0): BenchmarkRound
     {
         if ($dominionCount < 1) {
             throw new RuntimeException('Benchmark fixtures need at least one dominion.');
         }
 
-        return $this->withDeterministicRandomness(function () use ($dominionCount): BenchmarkRound {
+        if ($inProtectionCount > $dominionCount) {
+            throw new RuntimeException('Cannot put more dominions in protection than exist.');
+        }
+
+        return $this->withDeterministicRandomness(function () use ($dominionCount, $inProtectionCount): BenchmarkRound {
             $round = $this->createRound();
             $races = $this->racesByAlignment();
 
@@ -130,6 +177,8 @@ final class BenchmarkRoundSeeder
             $playerCount = $this->attachUsers($dominionIds);
             $this->seedQueues($dominionIds);
             $this->seedSpells($dominionIds);
+            $specialSpellCount = $this->seedSpecialSpells($dominionIds);
+            $this->applyProtection($dominionIds, $inProtectionCount);
 
             $this->precalculate($dominionIds);
 
@@ -139,7 +188,9 @@ final class BenchmarkRoundSeeder
                 $realmCount,
                 $playerCount,
                 DB::table('dominion_queue')->whereIn('dominion_id', $dominionIds)->count(),
-                DB::table('dominion_spells')->whereIn('dominion_id', $dominionIds)->count()
+                DB::table('dominion_spells')->whereIn('dominion_id', $dominionIds)->count(),
+                $specialSpellCount,
+                $inProtectionCount
             );
         });
     }
@@ -226,6 +277,28 @@ final class BenchmarkRoundSeeder
     }
 
     /**
+     * Puts the LAST $count dominions into protection, so the special-spell
+     * dominions at the front of the list stay independent of this.
+     *
+     * @param array<int, int> $dominionIds
+     */
+    private function applyProtection(array $dominionIds, int $count): void
+    {
+        if ($count < 1) {
+            return;
+        }
+
+        $ids = array_slice($dominionIds, -$count);
+
+        DB::table('dominions')
+            ->whereIn('id', $ids)
+            ->update([
+                'protection_finished' => false,
+                'protection_ticks_remaining' => 24,
+            ]);
+    }
+
+    /**
      * @param array<int, int> $dominionIds
      */
     private function seedQueues(array $dominionIds): void
@@ -305,8 +378,14 @@ final class BenchmarkRoundSeeder
             ->orderBy('id')
             ->get();
 
+        $excludedKeys = array_merge(
+            self::FACTORY_SEEDED_SPELL_KEYS,
+            [self::CONVERSION_TARGET_SPELL_KEY],
+            $this->specialSpellKeys()
+        );
+
         $spells = $spells->reject(
-            fn (Spell $spell): bool => in_array($spell->key, self::FACTORY_SEEDED_SPELL_KEYS, true)
+            fn (Spell $spell): bool => in_array($spell->key, $excludedKeys, true)
         );
 
         $beneficial = $spells->reject(fn (Spell $spell): bool => $spell->isHarmful())
@@ -322,6 +401,66 @@ final class BenchmarkRoundSeeder
         }
 
         return [$beneficial, $harmful];
+    }
+
+    /**
+     * The spells carrying SPECIAL_PERK_KEYS, resolved through the perk types so
+     * this tracks the game data rather than hardcoding spell keys.
+     *
+     * @return array<int, string>
+     */
+    private function specialSpellKeys(): array
+    {
+        return SpellPerkType::whereIn('key', self::SPECIAL_PERK_KEYS)
+            ->with('spells')
+            ->get()
+            ->flatMap(fn (SpellPerkType $perkType): Collection => $perkType->spells->pluck('key'))
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Puts a special spell on SPECIAL_SPELL_RATIO of the dominions so
+     * performSpellEffects' three per-dominion branches - and the second
+     * precalculateTick they trigger through DominionSaved - are exercised at a
+     * realistic rate rather than universally.
+     *
+     * @param array<int, int> $dominionIds
+     */
+    private function seedSpecialSpells(array $dominionIds): int
+    {
+        $spells = Spell::whereIn('key', $this->specialSpellKeys())->orderBy('id')->get();
+
+        if ($spells->isEmpty()) {
+            return 0;
+        }
+
+        $affectedCount = (int)floor(count($dominionIds) * self::SPECIAL_SPELL_RATIO);
+
+        if ($affectedCount === 0) {
+            return 0;
+        }
+
+        $now = now();
+        $rows = [];
+
+        for ($i = 0; $i < $affectedCount; $i++) {
+            $spell = $spells[$i % $spells->count()];
+
+            $rows[] = [
+                'dominion_id' => $dominionIds[$i],
+                'spell_id' => $spell->id,
+                'duration' => 6,
+                'cast_by_dominion_id' => $dominionIds[$i],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        DB::table('dominion_spells')->insert($rows);
+
+        return $affectedCount;
     }
 
     /**

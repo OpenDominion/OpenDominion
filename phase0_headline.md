@@ -1,5 +1,25 @@
 # Tick Benchmark — Phase 0 Headline Numbers
 
+> **⚠ SUPERSEDED — the per-dominion figures below are inflated by roughly 2x.**
+>
+> These were measured against a skewed fixture. `BenchmarkRoundSeeder` picked the
+> spells carrying the most perks, and `death_and_decay` — which holds
+> `convert_peasants_to_self_military_unit1` — is among them. That put a
+> `performSpellEffects` special case on **every** dominion, so every dominion
+> took a `Dominion::update()`, fired `DominionSaved`, and paid for a second
+> `precalculateTick`.
+>
+> Corrected in phase 2. Per-dominion cost is **31.57**, not 58.95; marginal cost
+> is **30.90**, not 58.23. See `TickBenchmarkBudgets` for the current numbers.
+>
+> Two conclusions below are wrong as written: the claim that `precalculateTick`
+> runs 2–3x for *every* dominion (it runs once per dominion plus once per
+> dominion carrying one of three special spells — 44 calls for 40 dominions), and
+> the ~87,000 query / ~150 s extrapolation to N=1500, which halves.
+>
+> What still holds: the 19-query `precalculateTick` figure, the 74–76% PHP share,
+> the linear scaling, and every N+1 identified.
+
 Baseline measurement of `TickService` before any optimization work.
 
 - **Date:** 2026-08-12

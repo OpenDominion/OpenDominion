@@ -90,4 +90,25 @@ abstract class AbstractTickBenchmarkTestCase extends AbstractTestCase
     {
         fwrite(STDERR, $text);
     }
+
+    /**
+     * Reports where a measurement sits against its budget, pass or fail.
+     *
+     * A budget test that only speaks up when it breaks tells you nothing about
+     * headroom - you cannot see a change eating 90% of the allowance until it
+     * eats 101%. Printing every run also means the numbers to ratchet to are
+     * already on screen after an optimization lands.
+     */
+    protected function reportBudget(string $label, float $measured, float $budget, string $unit = 'queries'): void
+    {
+        $this->write(sprintf(
+            '  %-46s %10.2f / %8.2f %s  (%.0f%% of budget)%s',
+            $label,
+            $measured,
+            $budget,
+            $unit,
+            $budget > 0 ? ($measured / $budget) * 100 : 0,
+            PHP_EOL
+        ));
+    }
 }
