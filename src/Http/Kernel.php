@@ -59,6 +59,7 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'apikey' => \OpenDominion\Http\Middleware\DominionApiKey::class,
         'dominionselected' => \OpenDominion\Http\Middleware\DominionSelected::class,
         'updatelastonline' => \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
         'guest' => \OpenDominion\Http\Middleware\RedirectIfAuthenticated::class,

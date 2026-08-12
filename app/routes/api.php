@@ -28,4 +28,18 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
         $router->get('feedback')->uses('Dominion\APIController@endorsePlayer')->name('feedback');
     });
 
+    // Read-only public API: rounds, per-round dominion snapshots, town crier events.
+    $router->group(['prefix' => 'rounds', 'middleware' => ['bindings', 'throttle:60,1'], 'as' => 'rounds.'], static function (Router $router) {
+        $router->get('/')->uses('Api\V1\RoundController@index')->name('index');
+        $router->get('{round}/dominions')->uses('Api\V1\RoundController@dominions')->name('dominions');
+        $router->get('{round}/events')->uses('Api\V1\RoundController@events')->name('events');
+    });
+
+    // Read-only authenticated API: per-dominion op center via X-API-Key header.
+    $router->group(['prefix' => 'dominions', 'middleware' => ['bindings', 'throttle:120,1', 'apikey'], 'as' => 'dominions.'], static function (Router $router) {
+        $router->get('me')->uses('Api\V1\OpCenterController@me')->name('me');
+        $router->get('me/ops')->uses('Api\V1\OpCenterController@ops')->name('ops');
+        $router->get('me/ops/{target}')->uses('Api\V1\OpCenterController@opsForTarget')->name('ops.target');
+    });
+
 });

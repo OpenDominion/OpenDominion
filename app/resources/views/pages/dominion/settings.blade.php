@@ -207,6 +207,58 @@
         </div>
 
     </form>
+
+    <div class="card card-primary">
+        <div class="card-header">
+            <span class="card-title"><i class="fa fa-key"></i> API Key</span>
+        </div>
+        <div class="card-body">
+            <p class="small mb-2">
+                Grants read-only access to your realm's Op Center and this dominion's round info via
+                <code>/api/v1/dominions/me</code>. Send the key in the <code>X-API-Key</code> header.
+                The key stops working when this round ends.
+            </p>
+            @if (empty($selectedDominion->api_key))
+                <form action="{{ route('dominion.misc.api-key.generate') }}" method="post" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-plus"></i> Generate API Key
+                    </button>
+                </form>
+            @else
+                <div class="mb-2">
+                    <label class="form-label">Current key:</label>
+                    <div class="input-group">
+                        <input type="password"
+                               class="form-control font-monospace"
+                               id="api_key_field"
+                               value="{{ $selectedDominion->api_key }}"
+                               readonly />
+                        <button type="button" class="btn btn-secondary" id="api_key_toggle">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="api_key_copy">
+                            <i class="fa fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <form action="{{ route('dominion.misc.api-key.generate') }}" method="post" class="d-inline"
+                      onsubmit="return confirm('Regenerate the API key? Any tools using the current key will stop working.');">
+                    @csrf
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa fa-refresh"></i> Regenerate
+                    </button>
+                </form>
+                <form action="{{ route('dominion.misc.api-key.revoke') }}" method="post" class="d-inline"
+                      onsubmit="return confirm('Revoke the API key? Tools using it will lose access immediately.');">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-times"></i> Revoke
+                    </button>
+                </form>
+            @endif
+        </div>
+    </div>
 @endsection
 
 @push('inline-scripts')
@@ -252,5 +304,26 @@
                 select.value = select.getAttribute('data-default');
             });
         });
+
+        (function() {
+            var toggle = document.getElementById('api_key_toggle');
+            var copy = document.getElementById('api_key_copy');
+            var field = document.getElementById('api_key_field');
+            if (toggle && field) {
+                toggle.addEventListener('click', function() {
+                    field.type = field.type === 'password' ? 'text' : 'password';
+                });
+            }
+            if (copy && field) {
+                copy.addEventListener('click', function() {
+                    var prevType = field.type;
+                    field.type = 'text';
+                    field.select();
+                    field.setSelectionRange(0, field.value.length);
+                    try { document.execCommand('copy'); } catch (e) {}
+                    field.type = prevType;
+                });
+            }
+        })();
     </script>
 @endpush
