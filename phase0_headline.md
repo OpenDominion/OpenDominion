@@ -12,9 +12,18 @@ Baseline measurement of `TickService` before any optimization work.
 | Measurement | Queries | Wall time | Share in PHP |
 |---|---|---|---|
 | `precalculateTick()`, one dominion | **19** | 38.9 ms | 80% |
-| `performTick($round, $dominion)`, single-dominion path | **77** | 129.5 ms | 76% |
+| `performTick($round, $dominion)`, single-dominion path | **77** [^1] | 129.5 ms | 76% |
 | `performTick($round)`, N = 10 | **611** (61.10/dom) | 994.5 ms | 75% |
 | `performTick($round)`, N = 40 | **2358** (58.95/dom) | 3973.8 ms | 74% |
+
+[^1]: This figure is measurement-order dependent, and phase 1 measures **91**
+    for the same call. The single-dominion branch skips the eager-load at
+    `TickService.php:395-409`, so it inherits whatever relation state the
+    caller's model carries; `precalculateTick`'s `loadMissing()` for the race
+    relations then costs 0 or 14 queries accordingly. The run above profiled
+    `precalculateTick` on the same instance immediately beforehand, leaving them
+    warm. `TickBenchmarkBudgets::SINGLE_DOMINION_TICK_MAX_QUERIES` holds the cold
+    number, 91, as the worst case.
 
 ## Scaling (N = 10 → 40)
 

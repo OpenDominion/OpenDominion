@@ -2,17 +2,9 @@
 
 namespace OpenDominion\Tests\Benchmark;
 
-use OpenDominion\Factories\DominionFactory;
-use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Race;
-use OpenDominion\Models\Round;
-use OpenDominion\Services\Dominion\TickService;
-use OpenDominion\Tests\AbstractTestCase;
 use OpenDominion\Tests\Benchmark\Support\BenchmarkRound;
-use OpenDominion\Tests\Benchmark\Support\BenchmarkRoundSeeder;
 use OpenDominion\Tests\Benchmark\Support\TickProfile;
-use OpenDominion\Tests\Benchmark\Support\TickProfiler;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -37,27 +29,11 @@ use PHPUnit\Framework\Attributes\Group;
  *    established by the slope between the two, not by absolute magnitude.
  */
 #[Group('benchmark')]
-class TickBaselineReportTest extends AbstractTestCase
+class TickBaselineReportTest extends AbstractTickBenchmarkTestCase
 {
-    private const SMALL_N = 10;
+    private const SMALL_N = TickBenchmarkBudgets::SMALL_N;
 
-    private const LARGE_N = 40;
-
-    private TickProfiler $profiler;
-
-    private BenchmarkRoundSeeder $seeder;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->profiler = new TickProfiler();
-        $this->seeder = new BenchmarkRoundSeeder(
-            $this->app->make(DominionFactory::class),
-            $this->app->make(RealmFactory::class),
-            $this->app->make(TickService::class),
-        );
-    }
+    private const LARGE_N = TickBenchmarkBudgets::LARGE_N;
 
     /**
      * Isolates the two single-dominion entry points.
@@ -65,11 +41,18 @@ class TickBaselineReportTest extends AbstractTestCase
      * precalculateTick is the ~20-queries-per-dominion claim in finding 2.1;
      * measuring it alone separates it from cleanup and notifications, which the
      * production Log::info at TickService.php:436 lumps together.
+     *
+     * Note the ordering effect on the second profile: profiling precalculateTick
+     * first leaves the race relations hydrated on $dominion, so the performTick
+     * measurement below reports the WARM number (77 rather than 91). That is a
+     * legitimate production shape - it is what NPD generation does at
+     * TickService.php:241-242 - but the budget in TickServiceBenchmarkTest holds
+     * the cold number instead.
      */
     public function testReportSingleDominionBaseline(): void
     {
         $fixture = $this->seeder->seed(1);
-        $tickService = $this->app->make(TickService::class);
+        $tickService = $this->tickService();
         $dominion = Dominion::findOrFail($fixture->dominionIds[0]);
 
         $this->warmUp($fixture);
@@ -106,7 +89,7 @@ class TickBaselineReportTest extends AbstractTestCase
         $small = $this->seeder->seed(self::SMALL_N);
         $large = $this->seeder->seed(self::LARGE_N);
 
-        $tickService = $this->app->make(TickService::class);
+        $tickService = $this->tickService();
 
         $this->warmUp($small, $large);
 
@@ -131,46 +114,6 @@ class TickBaselineReportTest extends AbstractTestCase
         $this->reportSlope($smallProfile, $largeProfile);
 
         $this->assertGreaterThan(0, $largeProfile->queryCount());
-    }
-
-    /**
-     * Excludes one-off setup from the measurement: container singletons,
-     * autoloading, opcache, and the two rememberForever caches the tick reads
-     * through - Race::findWithRelationsCached and Round::findCached.
-     *
-     * EVERY fixture that will be measured has to be warmed, not just the first.
-     * The race cache is keyed per race id, so a larger round touches races a
-     * smaller one never did; leaving those cold would charge the larger run for
-     * cache population and fake a superlinear slope.
-     *
-     * What this deliberately hides: roughly one query per distinct race plus one
-     * per round. That is fixed reference-data cost, not per-dominion cost, and
-     * whether production pays it hourly depends on its cache driver.
-     *
-     * precalculateTick is deterministic, so re-running it on an already-seeded
-     * dominion leaves the fixture unchanged.
-     */
-    private function warmUp(BenchmarkRound ...$fixtures): void
-    {
-        $tickService = $this->app->make(TickService::class);
-
-        foreach ($fixtures as $fixture) {
-            $raceIds = Dominion::whereIn('id', $fixture->dominionIds)
-                ->distinct()
-                ->pluck('race_id');
-
-            $dominion = Dominion::findOrFail($fixture->dominionIds[0]);
-
-            $this->profiler->warmUp(static function () use ($tickService, $fixture, $raceIds, $dominion): void {
-                Round::findCached($fixture->round->id);
-
-                foreach ($raceIds as $raceId) {
-                    Race::findWithRelationsCached($raceId);
-                }
-
-                $tickService->precalculateTick($dominion);
-            });
-        }
     }
 
     /**
@@ -220,15 +163,6 @@ class TickBaselineReportTest extends AbstractTestCase
         ];
 
         $this->write(implode(PHP_EOL, $lines) . PHP_EOL);
-    }
-
-    /**
-     * STDERR rather than echo: PHPUnit captures test output and, depending on
-     * configuration, flags it as risky. STDERR goes straight to the terminal.
-     */
-    private function write(string $text): void
-    {
-        fwrite(STDERR, $text);
     }
 
     private function writeJson(TickProfile $profile): void

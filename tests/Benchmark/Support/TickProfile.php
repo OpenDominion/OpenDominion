@@ -126,6 +126,65 @@ final class TickProfile
     }
 
     /**
+     * Number of statements whose SQL matches the given regex. Used to isolate a
+     * specific phase, e.g. the three bulk join-updates of phase A.
+     */
+    public function countMatchingPattern(string $pattern): int
+    {
+        $matches = 0;
+
+        foreach ($this->queries as $query) {
+            if (preg_match($pattern, $this->normalize($query['sql'])) === 1) {
+                $matches++;
+            }
+        }
+
+        return $matches;
+    }
+
+    /**
+     * The normalized statements matching a regex, keyed by SQL and counted.
+     * Exists so a failing budget can show what it actually saw.
+     *
+     * @return array<string, int>
+     */
+    public function statementsMatching(string $pattern): array
+    {
+        $found = [];
+
+        foreach ($this->queries as $query) {
+            $normalized = $this->normalize($query['sql']);
+
+            if (preg_match($pattern, $normalized) === 1) {
+                $found[$normalized] = ($found[$normalized] ?? 0) + 1;
+            }
+        }
+
+        arsort($found);
+
+        return $found;
+    }
+
+    /**
+     * The single most-repeated statement, as [sql, count]. Null when nothing ran
+     * more than once.
+     *
+     * @return array{0: string, 1: int}|null
+     */
+    public function mostRepeatedStatement(): ?array
+    {
+        $groups = $this->duplicateGroups();
+
+        if ($groups === []) {
+            return null;
+        }
+
+        $sql = array_key_first($groups);
+
+        return [$sql, $groups[$sql]];
+    }
+
+    /**
      * Statements executed more than once, keyed by normalized SQL and ordered by
      * execution count descending. This is the N+1 detector: a statement repeated
      * once per dominion (or once per row) shows up at the top.
