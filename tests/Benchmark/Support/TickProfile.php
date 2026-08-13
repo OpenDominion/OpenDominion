@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Tests\Benchmark\Support;
 
+use OpenDominion\Services\QueryProfilerService;
+
 /**
  * Immutable result of a single profiled run.
  *
@@ -320,24 +322,17 @@ final class TickProfile
     }
 
     /**
-     * Collapses bind-list width and whitespace so the same logical statement
-     * groups together regardless of how many ids it was called with.
+     * Delegated to the shared service so test-scale and real-scale reports group
+     * and attribute statements identically.
      */
     private function normalize(string $sql): string
     {
-        $sql = preg_replace('/\s+/', ' ', trim($sql));
-        $sql = preg_replace('/\(\s*\?(?:\s*,\s*\?)*\s*\)/', '(?)', $sql);
-
-        return $sql;
+        return QueryProfilerService::normalize($sql);
     }
 
     private function primaryTable(string $sql): ?string
     {
-        if (preg_match('/\b(?:from|into|update|join)\s+`?([a-zA-Z0-9_]+)`?/i', $sql, $matches) === 1) {
-            return $matches[1];
-        }
-
-        return null;
+        return QueryProfilerService::primaryTable($sql);
     }
 
     private function truncate(string $value, int $length): string
