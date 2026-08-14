@@ -237,6 +237,26 @@ class Dominion extends AbstractModel
 
     public $calc = null;
 
+    /**
+     * Spell perks grouped as [category][key] => Collection<SpellPerkType>.
+     *
+     * Built lazily by getSpellPerksByCategory() and thrown away whenever the
+     * spells relation changes. Perk lookups are among the hottest operations in
+     * the game - ProductionCalculator alone resolves them ~26 times per
+     * pre-calculation, and each resolution used to walk every active spell and
+     * its perks from scratch.
+     *
+     * @var array<string, array<string, \Illuminate\Support\Collection>>|null
+     */
+    protected $spellPerksByCategory = null;
+
+    /**
+     * Tech perks grouped as [key] => Collection<TechPerkType>.
+     *
+     * @var array<string, \Illuminate\Support\Collection>|null
+     */
+    protected $techPerksByKey = null;
+
     // Relations
 
     public function councilThreads()
@@ -728,6 +748,88 @@ class Dominion extends AbstractModel
         return min($moraleGain, 100 - $this->morale);
     }
 
+    /**
+     * Discards the memoized perk groupings.
+     *
+     * Called from every route by which the underlying relations can change, so
+     * that no caller has to remember to invalidate anything. The cache's
+     * lifetime is exactly the loaded relation's lifetime - that is what makes it
+     * safe, and it is why nothing here is keyed on the dominion id.
+     */
+    protected function flushPerkCache(): void
+    {
+        $this->spellPerksByCategory = null;
+        $this->techPerksByKey = null;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Eloquent funnels every relation population through here - eager loads,
+     * lazy loads, load() and refresh() alike - which makes it the one hook that
+     * cannot be bypassed by a normal relation read.
+     */
+    public function setRelation($relation, $value)
+    {
+        if ($relation === 'spells' || $relation === 'techs') {
+            $this->flushPerkCache();
+        }
+
+        return parent::setRelation($relation, $value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unsetRelation($relation)
+    {
+        if ($relation === 'spells' || $relation === 'techs') {
+            $this->flushPerkCache();
+        }
+
+        return parent::unsetRelation($relation);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Assigns $this->relations wholesale, bypassing setRelation(), so it needs
+     * its own hook.
+     */
+    public function setRelations(array $relations)
+    {
+        $this->flushPerkCache();
+
+        return parent::setRelations($relations);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * As setRelations(): clears $this->relations directly.
+     */
+    public function unsetRelations()
+    {
+        $this->flushPerkCache();
+
+        return parent::unsetRelations();
+    }
+
+    /**
+     * PHP performs the shallow copy before this runs, so the clone would
+     * otherwise inherit a cache describing the original's relations.
+     * DominionSaved clones a dominion and then reloads its relations on the
+     * copy, which is exactly that situation.
+     */
+    public function __clone(): void
+    {
+        $this->flushPerkCache();
+    }
+
+    /**
+     * @deprecated Superseded by getSpellPerksByCategory(). Retained because it
+     *             is public API; no longer used internally.
+     */
     public function getSpellPerks() {
         return $this->spells->flatMap(
             function ($spell) {
@@ -742,22 +844,68 @@ class Dominion extends AbstractModel
     }
 
     /**
+     * Active spell perks, grouped by the casting spell's category and then by
+     * perk key.
+     *
+     * Grouping by category is what the TODO on getSpellPerkValue asked for. The
+     * category lives on the Spell, not the perk type, which is why the old code
+     * projected it onto each perk model on every call - writing an attribute
+     * that has no matching column. Here it is simply the outer array key.
+     *
+     * @return array<string, array<string, \Illuminate\Support\Collection>>
+     */
+    protected function getSpellPerksByCategory(): array
+    {
+        if ($this->spellPerksByCategory !== null) {
+            return $this->spellPerksByCategory;
+        }
+
+        $grouped = [];
+
+        foreach ($this->spells as $spell) {
+            foreach ($spell->perks as $perk) {
+                $grouped[$spell->category][$perk->key][] = $perk;
+            }
+        }
+
+        foreach ($grouped as $category => $keys) {
+            foreach ($keys as $key => $perks) {
+                $grouped[$category][$key] = collect($perks);
+            }
+        }
+
+        return $this->spellPerksByCategory = $grouped;
+    }
+
+    /**
      * @param string $key
      * @param array $types
      * @return float
      */
     public function getSpellPerkValue(string $key, array $types = ['self', 'friendly']): float
     {
-        // TODO: Group by category and remove resolveSpellPerk
-        $perks = $this->getSpellPerks()->whereIn('category', $types)->groupBy('key');
-        if (isset($perks[$key])) {
-            if ($perks[$key]->count() == 1) {
-                return $perks[$key]->first()->pivot->value;
+        $grouped = $this->getSpellPerksByCategory();
+
+        $perks = null;
+
+        foreach ($types as $type) {
+            $group = $grouped[$type][$key] ?? null;
+
+            if ($group === null) {
+                continue;
+            }
+
+            $perks = ($perks === null) ? $group : $perks->concat($group);
+        }
+
+        if ($perks !== null) {
+            if ($perks->count() == 1) {
+                return $perks->first()->pivot->value;
             }
             // Spell perks do not stack
-            $perkValue = (float)$perks[$key]->max('pivot.value');
+            $perkValue = (float)$perks->max('pivot.value');
             if ($perkValue < 0) {
-                $perkValue = (float)$perks[$key]->min('pivot.value');
+                $perkValue = (float)$perks->min('pivot.value');
             }
             return $perkValue;
         }
@@ -773,6 +921,9 @@ class Dominion extends AbstractModel
         return ($this->getSpellPerkValue($key) / 100);
     }
 
+    /**
+     * @deprecated Superseded by getTechPerksByKey(). No longer used internally.
+     */
     protected function getTechPerks() {
         return $this->techs->flatMap(
             function ($tech) {
@@ -782,12 +933,43 @@ class Dominion extends AbstractModel
     }
 
     /**
+     * Tech perks grouped by key.
+     *
+     * Iteration order is preserved deliberately: tech perks stack via sum(), and
+     * floating-point addition is not associative, so reordering could shift a
+     * result in the last bits.
+     *
+     * @return array<string, \Illuminate\Support\Collection>
+     */
+    protected function getTechPerksByKey(): array
+    {
+        if ($this->techPerksByKey !== null) {
+            return $this->techPerksByKey;
+        }
+
+        $grouped = [];
+
+        foreach ($this->techs as $tech) {
+            foreach ($tech->perks as $perk) {
+                $grouped[$perk->key][] = $perk;
+            }
+        }
+
+        return $this->techPerksByKey = array_map(
+            static function (array $perks) {
+                return collect($perks);
+            },
+            $grouped
+        );
+    }
+
+    /**
      * @param string $key
      * @return float
      */
     public function getTechPerkValue(string $key): float
     {
-        $perks = $this->getTechPerks()->groupBy('key');
+        $perks = $this->getTechPerksByKey();
         if (isset($perks[$key])) {
             return (float)$perks[$key]->sum('pivot.value');
         }
