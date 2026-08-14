@@ -15,7 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('game:tick')->hourlyAt(0);
+        // Without the overlap guard, a tick running longer than an hour would
+        // have a second one start on top of it and apply phase A's deltas twice.
+        $schedule->command('game:tick')->hourlyAt(0)->withoutOverlapping(120);
         $schedule->command('game:ai')->hourlyAt(30);
 
         if (app()->environment('production')) {

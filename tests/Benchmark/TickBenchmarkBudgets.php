@@ -14,8 +14,21 @@ namespace OpenDominion\Tests\Benchmark;
  * message. It means the tick got more expensive on purpose.
  *
  * ---------------------------------------------------------------------------
- * BASELINE: 2026-08-12, after the phase 2 fixture correction
+ * CURRENT: after stage 0 of the optimization work
  * Docker (php:8.5-apache, PHP 8.5.9, MariaDB 10.11), PHPUnit 12.5.24
+ *
+ * Stage 0 moved the numbers as follows, all reproduced exactly across runs:
+ *
+ *     precalculateTick, one dominion      19    -> 16
+ *     performTick, single dominion (cold) 61    -> 49
+ *     queries per dominion                31.57 -> 22.20
+ *     marginal queries per dominion       30.90 -> 21.50
+ *     most-repeated statement per dominion 6.10 -> 1.20
+ *     wall time at N=40                   3974ms -> 1434ms
+ *
+ * The bulk of it came from one line: TickService.php:402 now eager-loads
+ * spells.perks alongside spells. Without it the first perk lookup of the tick
+ * lazily loaded perks once per active spell per dominion.
  * ---------------------------------------------------------------------------
  *
  * These numbers REPLACE the ones recorded in phase0_headline.md, which were
@@ -51,24 +64,25 @@ final class TickBenchmarkBudgets
     /**
      * TickService::precalculateTick() for a single dominion.
      *
-     * Measured: 19. Finding 2.1 of firstroundfindings.txt predicted "~19-20"
-     * from static analysis; this is that prediction confirmed exactly.
+     * Measured: 16, down from 19 after stage 0 removed the discarded
+     * getActiveSpells() call at TickService.php:1040 (a no-op since 2021).
+     * Finding 2.1 predicted "~19-20" from static analysis and was exactly right
+     * about the original.
      *
      * Single dominion, single code path, no variance across runs, so held at the
      * measured value with no tolerance.
      */
-    public const PRECALCULATE_MAX_QUERIES = 19;
+    public const PRECALCULATE_MAX_QUERIES = 16;
 
     /**
      * TickService::performTick($round, $dominion) - the single-dominion branch
      * used by the manual advance-tick path (MiscController.php:404) and by NPD
      * generation.
      *
-     * Measured: 60-61 across runs. Budget is one above the highest observed,
-     * because this is the only measurement that still drifts by a query - the
-     * whole-round numbers are exact. A regression that adds a single query to
-     * just this path is far less significant than one that adds a query per
-     * dominion, which PER_DOMINION_MAX_QUERIES catches tightly.
+     * Measured: 49, down from 60-61. It also stopped drifting: the ±1 variance
+     * this path used to show came from the lazy perk loads, whose count varied
+     * with how many spells happened to be active. Budget keeps one query of
+     * headroom anyway, since the drift may return.
      *
      * This branch skips the eager-load at TickService.php:395-409 and does
      * `collect([$dominion])`, so it inherits whatever relation state the CALLER's
@@ -82,30 +96,30 @@ final class TickBenchmarkBudgets
      * relations warm. That is also a real production shape - NPD generation does
      * exactly that at TickService.php:241-242.
      */
-    public const SINGLE_DOMINION_TICK_MAX_QUERIES = 62;
+    public const SINGLE_DOMINION_TICK_MAX_QUERIES = 50;
 
     /**
      * Queries per dominion for a whole-round performTick() at LARGE_N.
      *
-     * Measured: 31.57 (1263 queries / 40 dominions).
+     * Measured: 22.20 (888 queries / 40 dominions), down from 31.57.
      *
-     * Still well above the 19 that precalculateTick alone costs. Both findings
+     * Still above the 16 that precalculateTick alone costs. Both findings
      * reports anchored on precalculateTick and neither costed the rest of phase
      * B; the loop's real per-dominion price is this number.
      *
      * Tolerance: ~0.5 queries/dominion (about 20 queries at N=40), which fails on
      * a regression of one query per dominion.
      */
-    public const PER_DOMINION_MAX_QUERIES = 32.1;
+    public const PER_DOMINION_MAX_QUERIES = 22.7;
 
     /**
      * Marginal queries per additional dominion, from the SMALL_N -> LARGE_N
      * slope. This is what catches accidental superlinearity: it is a ratio of two
      * measurements, so it carries more noise than either alone.
      *
-     * Measured: 30.90. Budget is measured x 1.15.
+     * Measured: 21.50, down from 30.90. Budget is measured x 1.15.
      */
-    public const MAX_MARGINAL_QUERIES = 35.5;
+    public const MAX_MARGINAL_QUERIES = 24.7;
 
     /**
      * Phase A - the bulk join-updates against dominions, dominion_spells and
@@ -120,19 +134,21 @@ final class TickBenchmarkBudgets
     /**
      * How many times any single statement may execute, per dominion.
      *
-     * Measured: 6.10 (244 executions at N=40) - the spell_perk_types pivot
-     * select, which is both the most repeated statement and the slowest by total
-     * time. That is finding 2.3's unmemoized perk rebuilds surfacing as real
-     * queries, because $spell->perks is lazily loaded.
+     * Measured: 1.20, down from 6.10.
      *
-     * The .10 above a flat 6 is the three per-dominion N+1s inside
-     * performSpellEffects (finding 3.5), paid only by the SPECIAL_SPELL_RATIO of
-     * dominions carrying those spells.
+     * The old figure was the spell_perk_types pivot select, lazily loaded once
+     * per active spell per dominion because the tick's eager load omitted
+     * spells.perks. Adding it (TickService.php:402) collapsed six executions per
+     * dominion into one batched load per round.
      *
-     * Lower toward 3 when finding 2.2 (the lazy ->spell in cleanupActiveSpells)
-     * is fixed, and toward 1 when perk memoization lands.
+     * What remains at 1.20 is the lazy ->spell in cleanupActiveSpells
+     * (TickService.php:906, finding 2.2) - one select per expiring spell. Lower
+     * this toward 1 when that is batched against a Spell::all()->keyBy('id').
+     *
+     * Note this budget is now dominated by an N+1 over ROWS, not dominions, so
+     * it moves with the fixture's expiring-spell count as well as with the code.
      */
-    public const MAX_REPEATS_PER_DOMINION = 6.25;
+    public const MAX_REPEATS_PER_DOMINION = 1.5;
 
     /**
      * Matches only phase A's three join-updates. Laravel's MySQL grammar emits

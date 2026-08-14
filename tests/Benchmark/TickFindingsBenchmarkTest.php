@@ -153,21 +153,17 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
     }
 
     /**
-     * CHARACTERIZATION - finding 3.7.
+     * REGRESSION GUARD - finding 3.7, fixed.
      *
-     * tickDaily() opens with Round::with('dominions')->active()->get()
-     * (TickService.php:726) and then never reads the loaded relation: the body
-     * uses $round->realms(), $round->dominions() (a fresh query builder, not the
-     * relation) and $round->daysInRound(). The eager load hydrates a full model
-     * per dominion in the round for nothing.
+     * tickDaily() used to open with Round::with('dominions')->active()->get(),
+     * hydrating a full model for every dominion in the round and reading none of
+     * them: the body uses $round->realms(), $round->dominions() (a fresh query
+     * builder, not the relation) and $round->daysInRound().
      *
-     * Query COUNT does not reveal this - it is one statement regardless of N -
-     * so this asserts the statement is issued at all.
-     *
-     * WHEN 3.7 IS FIXED: drop the with('dominions'), this assertion fails, and it
-     * should be inverted to assertSame(0, ...).
+     * Query COUNT alone would not catch a reintroduction - it is one statement
+     * regardless of N - so this asserts the statement is absent entirely.
      */
-    public function testTickDailyEagerLoadsDominionsItNeverReads(): void
+    public function testTickDailyDoesNotEagerLoadDominions(): void
     {
         $fixture = $this->seeder->seed(TickBenchmarkBudgets::SMALL_N);
         $tickService = $this->tickService();
@@ -185,18 +181,18 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
         $deadLoads = $profile->countMatchingPattern('/^select `dominions`\.\*.*from `dominions`.*`realms`/is');
 
         $this->write(sprintf(
-            "  tickDaily(): %d queries total, %d of them the dead dominions eager-load%s",
+            "  tickDaily(): %d queries total, %d of them a dominions eager-load%s",
             $profile->queryCount(),
             $deadLoads,
             PHP_EOL
         ));
 
-        $this->assertGreaterThan(
+        $this->assertSame(
             0,
             $deadLoads,
-            "Expected tickDaily() to still perform the dead with('dominions') eager load described by finding 3.7.\n"
-            . "Seeing zero means it has been removed - invert this assertion to assertSame(0, \$deadLoads) and "
-            . "record the win.\n\n"
+            "tickDaily() is eager-loading dominions again (finding 3.7). The body reads none of them - "
+            . "it uses \$round->realms() and \$round->dominions(), both fresh query builders - so this "
+            . "hydrates a model per dominion in the round for nothing.\n\n"
             . $profile->render()
         );
     }
