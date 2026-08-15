@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+      # Pinned because the Dockerfile is multi-stage: without a target Docker
+      # builds the last stage, which would ship the profilers in this image.
+      target: app
     image: opendominion-app
     ports:
       - '${APP_PORT:-80}:80'
@@ -38,6 +41,67 @@ services:
     networks:
       - opendominion
 
+  # Profiling environment. Behind a compose profile, so `docker compose up -d`
+  # still brings up exactly what it did before - app and mariadb, nothing else.
+  # Reach it with `docker compose run --rm benchmark <command>`, which activates
+  # the profile automatically.
+  benchmark:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: benchmark
+    image: opendominion-benchmark
+    profiles:
+      - benchmark
+    # The image ENTRYPOINT is docker/entrypoint.sh, which bootstraps Apache and
+    # is in any case unrunnable from a Windows checkout (it is LF in git's index
+    # but CRLF in the working tree, so it dies with `env: 'bash\r'`). The base
+    # PHP image's entrypoint just execs its arguments, which is what a CLI
+    # container wants.
+    entrypoint: ['/usr/local/bin/docker-php-entrypoint']
+    command: ['sleep', 'infinity']
+    volumes:
+      - '.:/var/www/html'
+      # Shared with the app service so this image needs no separate install.
+      - 'opendominion-vendor:/var/www/html/vendor'
+    environment:
+      # These win over the bind-mounted .env: Laravel's Dotenv repository is
+      # immutable, so a real environment variable takes precedence.
+      DB_HOST: mariadb-benchmark
+      DB_PORT: 3306
+      DB_DATABASE: '${BENCHMARK_DB_DATABASE:-opendominion_benchmark}'
+      DB_USERNAME: '${DB_USERNAME:-opendominion}'
+      DB_PASSWORD: '${DB_PASSWORD:-secret}'
+    depends_on:
+      mariadb-benchmark:
+        condition: service_healthy
+    networks:
+      - opendominion
+
+  # Dedicated database so measurements do not depend on what the test suites
+  # last left behind. The dev database currently carries orphan rounds leaked by
+  # a crashing suite, three of which start at the same hour and so change what
+  # tickDaily() does depending on the time of day.
+  mariadb-benchmark:
+    image: 'mariadb:10.11'
+    profiles:
+      - benchmark
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secret}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${BENCHMARK_DB_DATABASE:-opendominion_benchmark}'
+      MYSQL_USER: '${DB_USERNAME:-opendominion}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+      - 'opendominion-mariadb-benchmark:/var/lib/mysql'
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-uroot', '-p${DB_PASSWORD:-secret}']
+      retries: 5
+      interval: 5s
+      timeout: 5s
+    networks:
+      - opendominion
+
   mariadb:
     image: 'mariadb:10.11'
     ports:
@@ -64,6 +128,8 @@ networks:
 
 volumes:
   opendominion-mariadb:
+    driver: local
+  opendominion-mariadb-benchmark:
     driver: local
   opendominion-vendor:
     driver: local

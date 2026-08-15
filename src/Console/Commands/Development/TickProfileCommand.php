@@ -34,7 +34,10 @@ class TickProfileCommand extends Command implements CommandInterface
                              {--round= : Round id to profile. Defaults to the most recent active round.}
                              {--commit : Keep the tick. By default everything is rolled back.}
                              {--rankings : Also profile updateDailyRankings(), which is where finding 4.1 lives.}
-                             {--limit=15 : How many repeated statements to list.}';
+                             {--limit=15 : How many repeated statements to list.}
+                             {--sample : Attribute PHP time to functions with the excimer sampling profiler. Requires the benchmark image.}
+                             {--period=0.001 : Sampling period in seconds for --sample.}
+                             {--collapsed= : Write folded stacks to this path for flamegraph rendering.}';
 
     /** @var string The console command description. */
     protected $description = 'Profiles a real tick at production scale and reports query counts and timings.';
@@ -168,6 +171,8 @@ class TickProfileCommand extends Command implements CommandInterface
 
     private function profileTick(Round $round, int $dominionCount): void
     {
+        $sampler = $this->startSampler();
+
         $this->profiler->start();
         $startedAt = hrtime(true);
 
@@ -182,6 +187,97 @@ class TickProfileCommand extends Command implements CommandInterface
         $queries = $this->profiler->stop();
 
         $this->report('performTick()', $queries, $wallMs, $dominionCount);
+        $this->reportSamples($sampler);
+    }
+
+    /**
+     * Starts the excimer sampling profiler, if --sample was passed and the
+     * extension is present.
+     *
+     * Query counts tell you nothing about the ~75% of the tick that is spent in
+     * PHP rather than in the driver. This is what attributes that share to
+     * actual functions.
+     *
+     * @return \ExcimerProfiler|null
+     */
+    private function startSampler(): ?object
+    {
+        if (!$this->option('sample')) {
+            return null;
+        }
+
+        if (!extension_loaded('excimer')) {
+            $this->warn('--sample needs the excimer extension; run this in the benchmark image:');
+            $this->warn('  docker compose run --rm benchmark php artisan dev:tick:profile --sample');
+            $this->line('');
+
+            return null;
+        }
+
+        $profiler = new \ExcimerProfiler();
+        $profiler->setPeriod((float)$this->option('period'));
+        $profiler->setEventType(EXCIMER_REAL);
+        $profiler->start();
+
+        return $profiler;
+    }
+
+    /**
+     * @param \ExcimerProfiler|null $sampler
+     */
+    private function reportSamples(?object $sampler): void
+    {
+        if ($sampler === null) {
+            return;
+        }
+
+        $sampler->stop();
+        $log = $sampler->getLog();
+
+        $collapsedPath = $this->option('collapsed');
+
+        if ($collapsedPath) {
+            $directory = dirname($collapsedPath);
+
+            if (!is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            file_put_contents($collapsedPath, $log->formatCollapsed());
+            $this->line(sprintf('  folded stacks written to %s', $collapsedPath));
+        }
+
+        $aggregated = $log->aggregateByFunction();
+
+        if ($aggregated === []) {
+            $this->warn('  excimer collected no samples - the run may have been too short for the sampling period.');
+
+            return;
+        }
+
+        $totalSamples = array_sum(array_column($aggregated, 'self'));
+
+        $this->line('');
+        $this->info(sprintf('PHP time by function (%s samples at %ss)', number_format($totalSamples), $this->option('period')));
+        $this->line(str_repeat('-', 72));
+
+        // Self time is what identifies the function actually burning CPU;
+        // inclusive time identifies the caller responsible for it. Both are
+        // needed - a hot leaf is useless without knowing who calls it.
+        uasort($aggregated, static fn (array $a, array $b): int => $b['self'] <=> $a['self']);
+
+        $rows = [];
+
+        foreach (array_slice($aggregated, 0, (int)$this->option('limit'), true) as $function => $counts) {
+            $rows[] = [
+                number_format($counts['self']),
+                sprintf('%.1f%%', $totalSamples > 0 ? ($counts['self'] / $totalSamples) * 100 : 0),
+                number_format($counts['inclusive']),
+                mb_strimwidth($function, 0, 78, '...'),
+            ];
+        }
+
+        $this->table(['self', 'self %', 'incl', 'function'], $rows);
     }
 
     private function profileRankings(bool $commit): void
