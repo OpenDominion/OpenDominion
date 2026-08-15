@@ -101,7 +101,8 @@ final class TickBenchmarkBudgets
     /**
      * Queries per dominion for a whole-round performTick() at LARGE_N.
      *
-     * Measured: 22.20 (888 queries / 40 dominions), down from 31.57.
+     * Measured: 21.23, down from 22.20 after skipping the cleanup deletes that
+     * matched no rows and removing the expiring-spell N+1.
      *
      * Still above the 16 that precalculateTick alone costs. Both findings
      * reports anchored on precalculateTick and neither costed the rest of phase
@@ -110,16 +111,16 @@ final class TickBenchmarkBudgets
      * Tolerance: ~0.5 queries/dominion (about 20 queries at N=40), which fails on
      * a regression of one query per dominion.
      */
-    public const PER_DOMINION_MAX_QUERIES = 22.7;
+    public const PER_DOMINION_MAX_QUERIES = 21.8;
 
     /**
      * Marginal queries per additional dominion, from the SMALL_N -> LARGE_N
      * slope. This is what catches accidental superlinearity: it is a ratio of two
      * measurements, so it carries more noise than either alone.
      *
-     * Measured: 21.50, down from 30.90. Budget is measured x 1.15.
+     * Measured: 20.47, down from 21.50. Budget is measured x 1.15.
      */
-    public const MAX_MARGINAL_QUERIES = 24.7;
+    public const MAX_MARGINAL_QUERIES = 23.5;
 
     /**
      * Phase A - the bulk join-updates against dominions, dominion_spells and
@@ -141,12 +142,12 @@ final class TickBenchmarkBudgets
      * spells.perks. Adding it (TickService.php:402) collapsed six executions per
      * dominion into one batched load per round.
      *
-     * What remains at 1.20 is the lazy ->spell in cleanupActiveSpells
-     * (TickService.php:906, finding 2.2) - one select per expiring spell. Lower
-     * this toward 1 when that is batched against a Spell::all()->keyBy('id').
-     *
-     * Note this budget is now dominated by an N+1 over ROWS, not dominions, so
-     * it moves with the fixture's expiring-spell count as well as with the code.
+     * The expiring-spell N+1 that used to sit here is gone - cleanupActiveSpells
+     * now resolves against a Spell collection keyed once per tick. The statement
+     * at 1.20 today is a different one: `select * from dominions where id = ?`,
+     * which is precalculateTick's fresh-row refetch plus the lazy
+     * $dominionSpell->dominion in performSpellEffects. Same rate, different
+     * cause - do not read a flat budget here as "nothing changed".
      */
     public const MAX_REPEATS_PER_DOMINION = 1.5;
 

@@ -82,6 +82,14 @@ services:
   # last left behind. The dev database currently carries orphan rounds leaked by
   # a crashing suite, three of which start at the same hour and so change what
   # tickDaily() does depending on the time of day.
+  #
+  # This database is for `dev:tick:profile`, and is expected to hold a large
+  # persistent round so profiling runs are fast and reproducible. Do NOT run the
+  # PHPUnit suite against it while that fixture is loaded: UserFactory's
+  # faker->unique() only dedupes within one process, so a few hundred seeded
+  # users make email collisions likely (see the note in tests/AbstractTestCase).
+  # Run tests against the app service, or reset this database first with
+  # `migrate:fresh --seed`.
   mariadb-benchmark:
     image: 'mariadb:10.11'
     profiles:

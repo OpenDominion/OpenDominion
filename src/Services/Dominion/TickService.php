@@ -92,6 +92,13 @@ class TickService
     protected $wonderService;
 
     /**
+     * Spells keyed by id, memoized for the lifetime of a tick.
+     *
+     * @var Collection<int, Spell>|null
+     */
+    protected ?Collection $spellsById = null;
+
+    /**
      * TickService constructor.
      */
     public function __construct()
@@ -912,15 +919,41 @@ class TickService
         }, 5);
     }
 
+    /**
+     * The spell reference table, keyed by id and fetched once per tick.
+     *
+     * @return \Illuminate\Support\Collection<int, Spell>
+     */
+    protected function spellsById(): Collection
+    {
+        if ($this->spellsById === null) {
+            $this->spellsById = Spell::all()->keyBy('id');
+        }
+
+        return $this->spellsById;
+    }
+
     protected function cleanupActiveSpells(Dominion $dominion)
     {
-        $finished = DominionSpell::query()
+        $expired = DominionSpell::query()
             ->where('dominion_id', $dominion->id)
             ->where('duration', '<=', 0)
-            ->get()
-            ->map(function ($dominionSpell) {
-                return $dominionSpell->spell;
-            });
+            ->get();
+
+        if ($expired->isEmpty()) {
+            return;
+        }
+
+        // Resolved from the reference table, fetched once per tick, rather than
+        // $dominionSpell->spell, which lazily fetched one row per expiring
+        // spell per dominion.
+        $spellsById = $this->spellsById();
+
+        $finished = $expired
+            ->map(static function ($dominionSpell) use ($spellsById) {
+                return $spellsById->get($dominionSpell->spell_id);
+            })
+            ->filter();
 
         $beneficialSpells = $finished->filter(function ($spell) {
             return !$spell->isHarmful();
@@ -950,6 +983,12 @@ class TickService
             ->where('dominion_id', $dominion->id)
             ->where('hours', '<=', 0)
             ->get();
+
+        // Nothing arrived this hour: skip the delete rather than issue one that
+        // matches no rows. Most dominions are in this state most hours.
+        if ($finished->isEmpty()) {
+            return;
+        }
 
         foreach ($finished->groupBy('source') as $source => $group) {
             if ($source === 'operations') continue;
@@ -1009,13 +1048,27 @@ class TickService
         $this->queueService->setForTick(true);
 
         // Reset tick values
+        //
+        // Written as one raw assignment rather than ~80 individual sets. Each
+        // set went through Eloquent's cast machinery, and Model::hasCast()
+        // rebuilds the merged cast map every time - with a column per tracked
+        // resource that made this loop the largest single source of attribute
+        // churn in the tick. The key selection below is identical to the
+        // per-attribute version it replaces; '[]' is exactly what an array cast
+        // stores for an empty array.
+        $resetAttributes = [];
+
         foreach ($tick->getAttributes() as $attr => $value) {
-            if (!in_array($attr, ['id', 'dominion_id', 'updated_at', 'starvation_casualties', 'expiring_spells'], true)) {
-                $tick->{$attr} = 0;
-            } elseif ($attr === 'starvation_casualties' || $attr === 'expiring_spells') {
-                $tick->{$attr} = [];
+            if ($attr === 'starvation_casualties' || $attr === 'expiring_spells') {
+                $resetAttributes[$attr] = '[]';
+            } elseif (in_array($attr, ['id', 'dominion_id', 'updated_at'], true)) {
+                $resetAttributes[$attr] = $value;
+            } else {
+                $resetAttributes[$attr] = 0;
             }
         }
+
+        $tick->setRawAttributes($resetAttributes);
 
         // Refresh attributes - guards against tick concurrency writing
         // delta-style updates between the caller's request and this
