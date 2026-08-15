@@ -1247,39 +1247,51 @@ class TickService
                 }
             }
 
-            // Saving current statistics
-            DB::table('daily_rankings')->upsert(
-                $statistics,
-                ['dominion_id', 'key'],
-                ['dominion_name', 'race_name', 'realm_number', 'realm_name', 'value'],
-            );
+            DB::transaction(function () use ($round, $statistics) {
+                // Saving current statistics
+                //
+                // Chunked because Laravel binds one placeholder per column per
+                // row and the MySQL protocol caps a prepared statement at
+                // 65,535 of them, which eight-column rows reach at ~8,000.
+                foreach (array_chunk($statistics, 1000) as $chunk) {
+                    DB::table('daily_rankings')->upsert(
+                        $chunk,
+                        ['dominion_id', 'key'],
+                        ['dominion_name', 'race_name', 'realm_number', 'realm_name', 'value'],
+                    );
+                }
 
-            // Calculate ranks
-            $ranks = DB::table('daily_rankings AS a')
-                ->select(DB::raw('a.*, COUNT(b.value)+1 AS new_rank'))
-                ->leftJoin('daily_rankings AS b', function ($join) use ($round) {
-                    $join->on('a.value', '<', 'b.value');
-                    $join->on('a.key', '=', 'b.key');
-                    $join->where('b.round_id', $round->id);
-                })
-                ->where('a.round_id', $round->id)
-                ->groupBy('a.dominion_id', 'a.key', 'a.value')
-                ->orderBy('new_rank')
-                ->get()
-                ->map(function ($obj) {
-                    $obj->previous_rank = $obj->rank;
-                    $obj->rank = $obj->new_rank;
-                    unset($obj->new_rank);
-                    return (array) $obj;
-                })
-                ->toArray();
+                // Calculate ranks
+                //
+                // RANK() reproduces the previous COUNT(b.value)+1 self-join
+                // exactly: tied values share a rank and the next distinct value
+                // skips the gap. That is load-bearing - ValorCalculator scores
+                // rank non-linearly and several features key off rank == 1 - so
+                // DENSE_RANK and ROW_NUMBER are both behaviour changes.
+                //
+                // The old rank is read inside the derived table rather than
+                // assigned from daily_rankings.rank in the SET clause: this is a
+                // multi-table update, where assignment order is not guaranteed.
+                // Because the derived table carries a window function it cannot
+                // be merged, so it is always materialised before the first row
+                // is updated - which is also why this does not raise the
+                // "can't specify target table for update" error.
+                $ranked = DB::table('daily_rankings')
+                    ->select('id', 'rank as old_rank')
+                    ->selectRaw('RANK() OVER (PARTITION BY `key` ORDER BY `value` DESC) as new_rank')
+                    ->where('round_id', $round->id);
 
-            // Update ranks
-            DB::table('daily_rankings')->upsert(
-                $ranks,
-                ['dominion_id', 'key'],
-                ['rank', 'previous_rank'],
-            );
+                // The outer round_id filter is required, not redundant: without
+                // it the update scans daily_rankings across every round ever
+                // played instead of seeking on the round.
+                DB::table('daily_rankings')
+                    ->joinSub($ranked, 'ranked', 'ranked.id', '=', 'daily_rankings.id')
+                    ->where('daily_rankings.round_id', $round->id)
+                    ->update([
+                        'daily_rankings.rank' => DB::raw('ranked.new_rank'),
+                        'daily_rankings.previous_rank' => DB::raw('ranked.old_rank'),
+                    ]);
+            }, 5);
 
             Log::debug('Daily rankings finished');
 
