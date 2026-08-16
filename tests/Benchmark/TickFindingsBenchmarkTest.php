@@ -58,7 +58,7 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
         $expected = $fixture->dominionCount() + $fixture->specialSpellCount;
 
         $this->write(sprintf(
-            "  precalculateTick invocations: %d for %d dominions (%d carrying a special spell)%s",
+            '  precalculateTick invocations: %d for %d dominions (%d carrying a special spell)%s',
             $invocations,
             $fixture->dominionCount(),
             $fixture->specialSpellCount,
@@ -69,11 +69,11 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
             $expected,
             $invocations,
             sprintf(
-                "Expected %d precalculateTick calls (one per dominion, plus one more for each of the %d "
+                'Expected %d precalculateTick calls (one per dominion, plus one more for each of the %d '
                 . "carrying a performSpellEffects special-case spell), saw %d.\n\n"
-                . "MORE than expected means DominionSaved is now firing for dominions it did not before - "
+                . 'MORE than expected means DominionSaved is now firing for dominions it did not before - '
                 . "every extra call is roughly %d wasted queries.\n"
-                . "FEWER means finding 3.4 has been fixed; update this test to expect one call per dominion.",
+                . 'FEWER means finding 3.4 has been fixed; update this test to expect one call per dominion.',
                 $expected,
                 $fixture->specialSpellCount,
                 $invocations,
@@ -128,7 +128,7 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
         $ratio = $protectedProfile->queryCount() / $activeProfile->queryCount();
 
         $this->write(sprintf(
-            "  phase B with %d/%d in protection: %d queries vs %d all-active (%.0f%%)%s",
+            '  phase B with %d/%d in protection: %d queries vs %d all-active (%.0f%%)%s',
             $half,
             TickBenchmarkBudgets::LARGE_N,
             $protectedProfile->queryCount(),
@@ -142,7 +142,7 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
             $ratio,
             sprintf(
                 "A round with half its dominions in protection cost %.0f%% of a fully active one (%d vs %d queries).\n\n"
-                . "This test CHARACTERIZES finding M1: protection dominions are expected to cost the same as active "
+                . 'This test CHARACTERIZES finding M1: protection dominions are expected to cost the same as active '
                 . "ones today, because phase B does not filter on protection_finished.\n"
                 . 'A ratio near 0.5 means M1 has been fixed - invert this assertion to assert the saving.',
                 $ratio * 100,
@@ -181,7 +181,7 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
         $deadLoads = $profile->countMatchingPattern('/^select `dominions`\.\*.*from `dominions`.*`realms`/is');
 
         $this->write(sprintf(
-            "  tickDaily(): %d queries total, %d of them a dominions eager-load%s",
+            '  tickDaily(): %d queries total, %d of them a dominions eager-load%s',
             $profile->queryCount(),
             $deadLoads,
             PHP_EOL
@@ -190,8 +190,8 @@ class TickFindingsBenchmarkTest extends AbstractTickBenchmarkTestCase
         $this->assertSame(
             0,
             $deadLoads,
-            "tickDaily() is eager-loading dominions again (finding 3.7). The body reads none of them - "
-            . "it uses \$round->realms() and \$round->dominions(), both fresh query builders - so this "
+            'tickDaily() is eager-loading dominions again (finding 3.7). The body reads none of them - '
+            . 'it uses $round->realms() and $round->dominions(), both fresh query builders - so this '
             . "hydrates a model per dominion in the round for nothing.\n\n"
             . $profile->render()
         );

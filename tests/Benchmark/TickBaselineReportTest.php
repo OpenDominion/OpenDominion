@@ -57,7 +57,6 @@ class TickBaselineReportTest extends AbstractTickBenchmarkTestCase
 
         $this->warmUp($fixture);
 
-
         $precalculate = $this->profiler->profile(
             'precalculateTick() - one dominion',
             static function () use ($tickService, $dominion): void {
@@ -150,7 +149,8 @@ class TickBaselineReportTest extends AbstractTickBenchmarkTestCase
             sprintf('  marginal cost    %.2f queries per additional dominion', $marginal),
             sprintf('  fixed overhead   %.1f queries per round', $fixedOverhead),
             '',
-            sprintf('  wall time        %.1f ms -> %.1f ms (%.2fx for %.2fx the dominions)',
+            sprintf(
+                '  wall time        %.1f ms -> %.1f ms (%.2fx for %.2fx the dominions)',
                 $small->wallTimeMs(),
                 $large->wallTimeMs(),
                 $small->wallTimeMs() > 0 ? $large->wallTimeMs() / $small->wallTimeMs() : 0,
