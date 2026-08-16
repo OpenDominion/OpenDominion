@@ -70,7 +70,7 @@ class TickProfileCommand extends Command implements CommandInterface
         $this->line('');
         $this->info(sprintf('Profiling round %d (%s)', $round->id, $round->name));
         $this->line(sprintf('  active dominions   %s', number_format($dominionCount)));
-        $this->line(sprintf('  mode               %s', $commit ? 'COMMIT - the tick will be kept' : 'rollback - nothing is kept'));
+        $this->line(sprintf('  mode               %s', $commit ? 'COMMIT - the tick will be kept' : 'rollback - nothing is kept, mail discarded'));
         $this->line('');
 
         if ($commit && !$this->confirmCommit($round, $dominionCount)) {
@@ -78,18 +78,30 @@ class TickProfileCommand extends Command implements CommandInterface
             return;
         }
 
-        $this->warmUp($round);
+        if (!$commit) {
+            // A database rollback cannot recall an email. The hourly digest
+            // notification is ShouldQueue and the default queue connection is
+            // sync, so it would be delivered inline part-way through a
+            // profiling run. Discard mail for the duration instead.
+            config(['mail.default' => 'array']);
+        }
 
         if ($commit) {
+            $this->warmUp($round);
             $this->profileTick($round, $dominionCount);
         } else {
+            // Warm-up runs inside the transaction too: it calls
+            // precalculateTick(), which saves, so leaving it outside meant the
+            // command persisted one dominion's prediction while reporting that
+            // nothing was kept.
             $this->withRollback(function () use ($round, $dominionCount): void {
+                $this->warmUp($round);
                 $this->profileTick($round, $dominionCount);
             });
         }
 
         if ($this->option('rankings')) {
-            $this->profileRankings($commit);
+            $this->profileRankings($round, $commit);
         }
     }
 
@@ -280,14 +292,22 @@ class TickProfileCommand extends Command implements CommandInterface
         $this->table(['self', 'self %', 'incl', 'function'], $rows);
     }
 
-    private function profileRankings(bool $commit): void
+    /**
+     * Profiles the ranking pass for the round being profiled.
+     *
+     * Calls updateDailyRankingsForRound() rather than the scheduler's
+     * updateDailyRankings(), which sweeps every eligible round and skips any
+     * whose start hour is not the current hour - so it profiled a no-op for 23
+     * hours out of 24, and never the round named by --round.
+     */
+    private function profileRankings(Round $round, bool $commit): void
     {
-        $run = function (): array {
+        $run = function () use ($round): array {
             $this->profiler->start();
             $startedAt = hrtime(true);
 
             try {
-                $this->tickService->updateDailyRankings();
+                $this->tickService->updateDailyRankingsForRound($round);
             } catch (Throwable $e) {
                 $this->profiler->stop();
                 throw $e;

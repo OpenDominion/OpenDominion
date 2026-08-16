@@ -1241,6 +1241,9 @@ class TickService
         $this->queueService->setForTick(false);
     }
 
+    /**
+     * Scheduler entry point: ranks every round that is due this hour.
+     */
     public function updateDailyRankings(): void
     {
         // Update rankings
@@ -1252,108 +1255,121 @@ class TickService
                 continue;
             }
 
-            Log::debug('Daily rankings started');
+            $this->updateDailyRankingsForRound($round);
+        }
+    }
 
-            $activeDominions = $round->dominions()->with([
-                'race',
-                'realm',
-            ])->get();
+    /**
+     * Ranks a single round, without the once-a-day gate.
+     *
+     * Split out from updateDailyRankings() so callers that already know which
+     * round they want - dev:tick:profile in particular - are not at the mercy
+     * of the scheduler's hour check, which otherwise makes profiling a no-op
+     * for 23 hours out of 24.
+     */
+    public function updateDailyRankingsForRound(Round $round): void
+    {
+        Log::debug('Daily rankings started');
 
-            // Calculate current statistics
-            $statistics = [];
-            foreach ($activeDominions as $dominion) {
-                $isAbandoned = ($dominion->abandoned_at !== null && $dominion->abandoned_at < now());
-                $isLocked = $dominion->locked_at !== null;
+        $activeDominions = $round->dominions()->with([
+            'race',
+            'realm',
+        ])->get();
 
-                foreach ($this->rankingsHelper->getRankings() as $ranking) {
+        // Calculate current statistics
+        $statistics = [];
+        foreach ($activeDominions as $dominion) {
+            $isAbandoned = ($dominion->abandoned_at !== null && $dominion->abandoned_at < now());
+            $isLocked = $dominion->locked_at !== null;
 
-                    if ($ranking['stat'] == 'land') {
-                        $value = $this->landCalculator->getTotalLand($dominion);
-                    } elseif ($ranking['stat'] == 'networth') {
-                        $value = $this->networthCalculator->getDominionNetworth($dominion);
-                    } elseif ($ranking['stat'] == 'land_explored') {
-                        $value = max(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
-                    } elseif ($ranking['stat'] == 'land_conquered') {
-                        $value = max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
-                    } else {
-                        $value = $dominion->{$ranking['stat']};
-                    }
+            foreach ($this->rankingsHelper->getRankings() as $ranking) {
 
-                    $zeroOutRank = false;
-                    if($value != 0 && ($isAbandoned || $isLocked)) {
-                        $value = 0;
-                        $zeroOutRank = true;
-                    }
+                if ($ranking['stat'] == 'land') {
+                    $value = $this->landCalculator->getTotalLand($dominion);
+                } elseif ($ranking['stat'] == 'networth') {
+                    $value = $this->networthCalculator->getDominionNetworth($dominion);
+                } elseif ($ranking['stat'] == 'land_explored') {
+                    $value = max(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
+                } elseif ($ranking['stat'] == 'land_conquered') {
+                    $value = max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
+                } else {
+                    $value = $dominion->{$ranking['stat']};
+                }
 
-                    if ($value != 0 || $zeroOutRank) {
-                        $statistics[] = [
-                            'round_id' => $round->id,
-                            'dominion_id' => $dominion->id,
-                            'dominion_name' => $dominion->name,
-                            'race_name' => $dominion->race->name,
-                            'realm_number' => $dominion->realm->number,
-                            'realm_name' => $dominion->realm->name,
-                            'key' => $ranking['key'],
-                            'value' => $value,
-                        ];
-                    }
+                $zeroOutRank = false;
+                if($value != 0 && ($isAbandoned || $isLocked)) {
+                    $value = 0;
+                    $zeroOutRank = true;
+                }
+
+                if ($value != 0 || $zeroOutRank) {
+                    $statistics[] = [
+                        'round_id' => $round->id,
+                        'dominion_id' => $dominion->id,
+                        'dominion_name' => $dominion->name,
+                        'race_name' => $dominion->race->name,
+                        'realm_number' => $dominion->realm->number,
+                        'realm_name' => $dominion->realm->name,
+                        'key' => $ranking['key'],
+                        'value' => $value,
+                    ];
                 }
             }
-
-            DB::transaction(function () use ($round, $statistics) {
-                // Saving current statistics
-                //
-                // Chunked because Laravel binds one placeholder per column per
-                // row and the MySQL protocol caps a prepared statement at
-                // 65,535 of them, which eight-column rows reach at ~8,000.
-                foreach (array_chunk($statistics, 1000) as $chunk) {
-                    DB::table('daily_rankings')->upsert(
-                        $chunk,
-                        ['dominion_id', 'key'],
-                        ['dominion_name', 'race_name', 'realm_number', 'realm_name', 'value'],
-                    );
-                }
-
-                // Calculate ranks
-                //
-                // RANK() reproduces the previous COUNT(b.value)+1 self-join
-                // exactly: tied values share a rank and the next distinct value
-                // skips the gap. That is load-bearing - ValorCalculator scores
-                // rank non-linearly and several features key off rank == 1 - so
-                // DENSE_RANK and ROW_NUMBER are both behaviour changes.
-                //
-                // The old rank is read inside the derived table rather than
-                // assigned from daily_rankings.rank in the SET clause: this is a
-                // multi-table update, where assignment order is not guaranteed.
-                // Because the derived table carries a window function it cannot
-                // be merged, so it is always materialised before the first row
-                // is updated - which is also why this does not raise the
-                // "can't specify target table for update" error.
-                $ranked = DB::table('daily_rankings')
-                    ->select('id', 'rank as old_rank')
-                    ->selectRaw('RANK() OVER (PARTITION BY `key` ORDER BY `value` DESC) as new_rank')
-                    ->where('round_id', $round->id);
-
-                // The outer round_id filter is required, not redundant: without
-                // it the update scans daily_rankings across every round ever
-                // played instead of seeking on the round.
-                DB::table('daily_rankings')
-                    ->joinSub($ranked, 'ranked', 'ranked.id', '=', 'daily_rankings.id')
-                    ->where('daily_rankings.round_id', $round->id)
-                    ->update([
-                        'daily_rankings.rank' => DB::raw('ranked.new_rank'),
-                        'daily_rankings.previous_rank' => DB::raw('ranked.old_rank'),
-                    ]);
-            }, 5);
-
-            Log::debug('Daily rankings finished');
-
-            // Update Valor rankings
-            Log::debug('Valor calculation started');
-            $valorService = app(ValorService::class);
-            $valorService->updateValor($round);
-            Log::debug('Valor calculation finished');
         }
+
+        DB::transaction(function () use ($round, $statistics) {
+            // Saving current statistics
+            //
+            // Chunked because Laravel binds one placeholder per column per
+            // row and the MySQL protocol caps a prepared statement at
+            // 65,535 of them, which eight-column rows reach at ~8,000.
+            foreach (array_chunk($statistics, 1000) as $chunk) {
+                DB::table('daily_rankings')->upsert(
+                    $chunk,
+                    ['dominion_id', 'key'],
+                    ['dominion_name', 'race_name', 'realm_number', 'realm_name', 'value'],
+                );
+            }
+
+            // Calculate ranks
+            //
+            // RANK() reproduces the previous COUNT(b.value)+1 self-join
+            // exactly: tied values share a rank and the next distinct value
+            // skips the gap. That is load-bearing - ValorCalculator scores
+            // rank non-linearly and several features key off rank == 1 - so
+            // DENSE_RANK and ROW_NUMBER are both behaviour changes.
+            //
+            // The old rank is read inside the derived table rather than
+            // assigned from daily_rankings.rank in the SET clause: this is a
+            // multi-table update, where assignment order is not guaranteed.
+            // Because the derived table carries a window function it cannot
+            // be merged, so it is always materialised before the first row
+            // is updated - which is also why this does not raise the
+            // "can't specify target table for update" error.
+            $ranked = DB::table('daily_rankings')
+                ->select('id', 'rank as old_rank')
+                ->selectRaw('RANK() OVER (PARTITION BY `key` ORDER BY `value` DESC) as new_rank')
+                ->where('round_id', $round->id);
+
+            // The outer round_id filter is required, not redundant: without
+            // it the update scans daily_rankings across every round ever
+            // played instead of seeking on the round.
+            DB::table('daily_rankings')
+                ->joinSub($ranked, 'ranked', 'ranked.id', '=', 'daily_rankings.id')
+                ->where('daily_rankings.round_id', $round->id)
+                ->update([
+                    'daily_rankings.rank' => DB::raw('ranked.new_rank'),
+                    'daily_rankings.previous_rank' => DB::raw('ranked.old_rank'),
+                ]);
+        }, 5);
+
+        Log::debug('Daily rankings finished');
+
+        // Update Valor rankings
+        Log::debug('Valor calculation started');
+        $valorService = app(ValorService::class);
+        $valorService->updateValor($round);
+        Log::debug('Valor calculation finished');
     }
 
     public function tickDailyStats(): void
