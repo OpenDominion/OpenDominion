@@ -52,22 +52,56 @@ class Round extends AbstractModel
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Per-process memo sitting in front of the shared cache.
+     *
+     * @var array<int, Round>
+     */
+    private static array $memoizedRounds = [];
+
     protected static function booted(): void
     {
         static::saved(static function (Round $round): void {
-            Cache::forget("game:round:{$round->id}");
+            static::forgetCached($round->id);
         });
 
         static::deleted(static function (Round $round): void {
-            Cache::forget("game:round:{$round->id}");
+            static::forgetCached($round->id);
         });
     }
 
+    /**
+     * Returns a round, avoiding both a query and a cache round-trip.
+     *
+     * The shared cache alone is not enough here. Dominion::scopeWithCachedRound
+     * calls this once per dominion, and every dominion in a round shares an id,
+     * so an hourly tick over a few hundred dominions turned into that many
+     * locked file reads and unserializes of the same row - profiled at ~40% of
+     * the tick's PHP time, and the single largest cost in it.
+     */
     public static function findCached(int $id): Round
     {
-        return Cache::rememberForever("game:round:{$id}", static function () use ($id) {
-            return Round::findOrFail($id);
-        });
+        if (!isset(static::$memoizedRounds[$id])) {
+            static::$memoizedRounds[$id] = Cache::rememberForever("game:round:{$id}", static function () use ($id) {
+                return Round::findOrFail($id);
+            });
+        }
+
+        // Cloned so each caller still gets its own instance, exactly as it did
+        // when every lookup deserialized a fresh copy. InvadeActionService
+        // writes to $dominion->round, and callers should not see each other's
+        // in-flight mutations.
+        return clone static::$memoizedRounds[$id];
+    }
+
+    /**
+     * Drops a round from both the memo and the shared cache.
+     */
+    public static function forgetCached(int $id): void
+    {
+        unset(static::$memoizedRounds[$id]);
+
+        Cache::forget("game:round:{$id}");
     }
 
     // Eloquent Relations

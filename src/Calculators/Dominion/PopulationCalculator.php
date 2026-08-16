@@ -349,12 +349,17 @@ class PopulationCalculator
      */
     public function getPopulationPeasantGrowth(Dominion $dominion): int
     {
-        $maximumPeasantDeath = round(-0.05 * $dominion->peasants - $this->getPopulationDrafteeGrowth($dominion));
+        // Hoisted: each call walks getPopulationMilitary twice, and that scans
+        // the dominion's whole queue collection five times over. Three calls
+        // here cost roughly thirty queue scans; one costs ten.
+        $drafteeGrowth = $this->getPopulationDrafteeGrowth($dominion);
+
+        $maximumPeasantDeath = round(-0.05 * $dominion->peasants - $drafteeGrowth);
         if ($maximumPeasantDeath > -50) {
             $maximumPeasantDeath = max(-50, -$dominion->peasants);
         }
-        $roomForPeasants = ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion));
-        $currentPopulationChange = ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion));
+        $roomForPeasants = ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $drafteeGrowth);
+        $currentPopulationChange = ($this->getPopulationBirth($dominion) - $drafteeGrowth);
 
         $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
         return max($maximumPeasantDeath, $maximumPopulationChange);

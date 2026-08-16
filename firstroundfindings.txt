@@ -1,0 +1,481 @@
+================================================================================
+OpenDominion Hourly Tick - Performance Review
+================================================================================
+
+Scope:  game:tick -> TickService::tickHourly() and everything it reaches, plus
+        the calculator/model layer it drives.
+Method: static analysis of the call graph. No .env is present in this checkout,
+        so profiling against a live database was not possible - all quantities
+        below are derived by hand-tracing the code and are marked as estimates
+        where that matters.
+
+Let N = active dominions in a round (real players + ~80% NPDs, so realistically
+4-8x the human player count).
+
+
+================================================================================
+1. HOW THE TICK IS STRUCTURED TODAY
+================================================================================
+
+TickService::performTick() (src/Services/Dominion/TickService.php:265) is
+genuinely well-designed at the top:
+
+Phase A - bulk SQL (fast, correct).
+    One UPDATE ... JOIN dominion_tick applying ~70 pre-computed deltas for the
+    whole round, plus one UPDATE dominion_spells and one UPDATE dominion_queue,
+    all in a single transaction (lines 282-381). This is the right shape and is
+    not where the time goes.
+
+Phase B - per-dominion PHP loop (lines 417-433).
+    For every dominion: a DB::transaction, spell cleanup, queue cleanup,
+    precalculateTick(), and notification dispatch.
+
+Essentially all the cost is Phase B. Phase A is O(1) statements; Phase B is O(N)
+statements AND O(N) heavy PHP. The pre-calculation architecture was clearly
+built to make Phase A cheap, but Phase B was never given the same treatment.
+
+
+================================================================================
+2. TIER 1 - STRUCTURAL FINDINGS (LARGEST WINS)
+================================================================================
+
+--------------------------------------------------------------------------------
+2.1 precalculateTick() issues ~20 queries per dominion, mostly re-fetching data
+    the tick already loaded
+--------------------------------------------------------------------------------
+
+performTick() eager-loads a good relation set for all dominions at once
+(lines 395-409): queues, race.*, spells, techs.perks, tick, user, cached round.
+
+Then precalculateTick() (line 962), for EACH dominion, throws most of it away:
+
+    // TickService.php:1018-1028
+    foreach (['queues', 'spells', 'techs', 'hero', 'realm'] as $rel) {
+        $dominion->unsetRelation($rel);
+    }
+    $dominion->load([
+        'queues', 'spells', 'spells.perks', 'techs', 'techs.perks',
+        'hero', 'hero.upgrades', 'realm.wonders', 'realm.wonders.perks',
+    ]);
+
+load() (unlike loadMissing()) always re-queries. Per dominion that's ~9-10
+SELECTs. Adding the rest of the method:
+
+    Query                              Line    Count
+    ---------------------------------------------------
+    Tick::firstOrCreate                965     1
+    HistoryService::record insert      985     1
+    fresh-row refetch                  1007    1
+    load([...])                        1022    ~9-10
+    getActiveSpells()                  1040    ~3
+    incoming-queue select              1043    1
+    Valuable count (via spy regen)     -       1
+    expiring-spells select             1147    1
+    $tick->save()                      1152    1
+
+~19-20 queries x N. At N = 1,500 that is roughly 30,000 round-trips in the loop,
+against 3 statements in Phase A.
+
+Two things make this worse than it looks:
+
+  - The realm relations are re-fetched per dominion, not per realm. 12-15
+    dominions in a realm each independently load the same realm,
+    realm.wonders, realm.wonders.perks.
+
+  - The eager-load in performTick() is largely wasted - it pays to load
+    queues/spells/techs for everyone, then discards and re-loads them one at
+    a time.
+
+The unsetRelation + fresh-refetch is deliberate and correct - the comments at
+lines 1004-1017 explain it guards the ACTION-REQUEST path (via DominionSaved)
+against a tick landing mid-request. But the TICK path has the opposite
+guarantee: performTick() has just done the authoritative write and knows state
+is current. It does not need per-dominion re-reads.
+
+RECOMMENDATION
+    Give precalculateTick() a `bool $reloadState = true` parameter. In the tick
+    loop, pass false and instead re-hydrate in chunks after cleanup -
+    Dominion::whereIn('id', $chunkIds)->with([...])->withCachedRace()
+    ->withCachedRound()->get() for chunks of ~200. Query count drops from ~20N
+    to roughly 2N + 10*(N/200) (the Tick upsert and history insert still being
+    per-dominion until 2.4 below). The listener path keeps its current
+    behaviour unchanged.
+
+--------------------------------------------------------------------------------
+2.2 Queue and spell cleanup are per-dominion; they should be per-round
+--------------------------------------------------------------------------------
+
+cleanupActiveSpells() (line 899) and cleanupQueues() (line 931) each run a
+SELECT and a DELETE per dominion - 4N statements - and only exist to collect
+notification payloads before deleting.
+
+Worse, cleanupActiveSpells has a nested N+1:
+
+    // TickService.php:901-907
+    $finished = DominionSpell::query()
+        ->where('dominion_id', $dominion->id)
+        ->where('duration', '<=', 0)
+        ->get()
+        ->map(function ($dominionSpell) {
+            return $dominionSpell->spell;   // lazy belongsTo - one query per row
+        });
+
+spells is a small static reference table. Every expiring spell row costs a
+fresh SELECT.
+
+RECOMMENDATION
+    Both are trivially batchable:
+      - One SELECT ... WHERE dominion_id IN (chunk) AND duration <= 0, grouped
+        in PHP by dominion_id, with spells resolved from a
+        Spell::all()->keyBy('id') cached once per tick (mirroring the existing
+        Race::findWithRelationsCached / Round::findCached pattern).
+      - One SELECT + one DELETE for queues over the same chunk.
+
+    4N + (expiring spell count) statements -> ~4 per chunk.
+
+--------------------------------------------------------------------------------
+2.3 Every perk lookup rebuilds a collection from scratch
+--------------------------------------------------------------------------------
+
+This is the single largest CPU item, and it is in Dominion itself:
+
+    // Dominion.php:731-742
+    public function getSpellPerks() {
+        return $this->spells->flatMap(function ($spell) {
+            return $spell->perks->map(function ($perk) use ($spell) {
+                $perk->category = $spell->category;   // also mutates the model
+                return $perk;
+            });
+        });
+    }
+
+    // Dominion.php:749-765
+    public function getSpellPerkValue(string $key, array $types = ['self','friendly']): float
+    {
+        $perks = $this->getSpellPerks()->whereIn('category', $types)->groupBy('key');
+        ...
+    }
+
+Nothing is memoized. Every call does a full flatMap + attribute write +
+whereIn + groupBy over all spells x perks. getTechPerkValue (line 788) and
+getWonderPerkValue (line 822) have the identical shape.
+
+The multiplier is SpellCalculator::resolveSpellPerk() (SpellCalculator.php:254),
+which calls getSpellPerkValue() FIVE TO SIX TIMES for one logical lookup. And
+ProductionCalculator alone calls resolveSpellPerk ~10 times per pre-calculation
+(platinum, food, food consumption, wizard-guild mana, mana, mana decay, ore,
+gems, tech, boats), each expanding to 5-6 full rebuilds.
+
+Counting only ProductionCalculator, that's ~50 full spell-perk collection
+rebuilds per dominion; across PopulationCalculator, MilitaryCalculator, and
+NetworthCalculator the real figure is in the LOW HUNDREDS PER DOMINION PER TICK.
+
+Side note on the `$perk->category = $spell->category` write: it mutates a shared
+Eloquent model to smuggle a value through, marking it dirty. It works, but it's
+the kind of thing that produces a surprising "Unknown column 'category'" if one
+of those models is ever saved.
+
+RECOMMENDATION
+    Memoize per-dominion, keyed on a cheap fingerprint of the relation:
+
+        protected ?array $spellPerkCache = null;
+
+    built once (a flat ['category' => ['key' => value]] array, not a
+    Collection), invalidated in unsetRelation/setRelation for
+    spells/techs/realm. Because the tick and the request path both re-hydrate
+    relations explicitly, invalidation points are few and well-defined. The
+    "TODO: Group by category and remove resolveSpellPerk" already sitting at
+    Dominion.php:751 is the same idea - a category-keyed map makes
+    resolveSpellPerk one array read instead of six rebuilds.
+
+    This is a pure-compute change with no schema or query impact, and it
+    benefits every page render as much as the tick.
+
+--------------------------------------------------------------------------------
+2.4 Calculator fan-out: the same values are recomputed 10x per dominion
+--------------------------------------------------------------------------------
+
+PopulationCalculator::getPopulationPeasantGrowth() (PopulationCalculator.php:350):
+
+    $maximumPeasantDeath  = round(-0.05 * $dominion->peasants - $this->getPopulationDrafteeGrowth($dominion));
+    ...
+    $roomForPeasants      = ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion));
+    $currentPopulationChange = ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion));
+
+getPopulationDrafteeGrowth() is called 4 TIMES (the fourth via
+getPopulationBirthRaw). Each one calls getPopulationMilitaryPercentage ->
+getPopulation + getPopulationMilitary, i.e. 2 getPopulationMilitary calls each.
+Add getMaxPopulation -> getMaxPopulationMilitaryBonus -> one more, and the
+direct getPopulation.
+
+~10 getPopulationMilitary() calls for one line of tick output.
+
+And getPopulationMilitary (line 101) is not cheap:
+
+    + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1)   // -> queue scan
+    + ... slots 2, 3, 4                                               // -> 3 more
+    + $this->queueService->getTrainingQueueTotal($dominion)           // -> another
+
+Each getTotalUnitsForSlot -> getInvasionQueueTotalByResource ->
+QueueService::getQueue (QueueService.php:47), which does
+->where('source',...)->where('hours','>',...) on the in-memory collection, then
+a filter and a sum - FOUR NEW COLLECTION ALLOCATIONS PER CALL, over the
+dominion's full queue set.
+
+~50 full scans of $dominion->queues, ~200 Collection allocations, for peasant
+growth alone. The queue data is immutable for the duration of one
+precalculateTick.
+
+RECOMMENDATION
+    Two independent options, either helps:
+
+      - Local memoization inside getPopulationPeasantGrowth - hoist
+        $drafteeGrowth, $populationMilitary, $population into locals. This is a
+        ~10-line, zero-risk change to a single method and removes the bulk of
+        the redundancy.
+
+      - A per-tick queue index. QueueService already has a forTick flag toggled
+        around the calculation (TickService.php:989-993, 1154-1158). That's a
+        natural place to also build a [source][resource] => amount array once
+        per dominion and serve getQueueTotalBy* from it, instead of re-scanning.
+
+
+================================================================================
+3. TIER 2 - DISCRETE WASTE (SMALL DIFFS, REAL SAVINGS)
+================================================================================
+
+3.1 A DISCARDED QUERY, xN.
+    TickService.php:1040:
+
+        $this->spellCalculator->getActiveSpells($dominion);
+
+    The return value is never assigned. getActiveSpells
+    (SpellCalculator.php:172) runs DominionSpell::with(['castByDominion',
+    'spell'])...->get() - ~3 queries, thrown away. $dominion->spells was
+    already loaded 18 lines above. DELETE THE LINE (worth confirming against
+    git log that it wasn't a deliberate cache-warm; nothing in the current code
+    reads from it).
+
+3.2 A Valuable COUNT PER DOMINION.
+    MilitaryCalculator::getSpyStrengthRegen() (MilitaryCalculator.php:1016) runs
+    a Valuable::query()->where(...)->count(). Called once per dominion per
+    pre-calculation. The index ['source_dominion_id','status'] exists, so each
+    is cheap, but it's N ROUND-TRIPS. In the tick, fetch investigating-valuable
+    counts for the whole round in one grouped query and pass them in (or attach
+    as a relation).
+
+3.3 USER-AGENT PARSING PER DOMINION.
+    precalculateTick -> HistoryService::record() (line 98) ->
+    ActivityService::getDeviceString() (line 38), which does `new Agent` and
+    $agent->browser() / platform() / version(). In a console context
+    request()->userAgent() is NULL, not 'Symfony/3.X', so the early-out at
+    ActivityService.php:44 DOES NOT FIRE and jenssegers/agent (Mobile_Detect)
+    runs its full regex battery - N TIMES PER TICK - to produce a device string
+    for a row nobody attributes to a browser. Broaden the guard to:
+
+        if ($userAgent === null || $userAgent === 'Symfony/3.X' || app()->runningInConsole())
+
+3.4 DominionSaved FIRES INSIDE THE TICK AND DUPLICATES THE WORK.
+    In performSpellEffects() (line 762), the Cull-the-Weak / Death-and-Decay /
+    Dark-Elf branches each call $dominionSpell->dominion->update([...]). Every
+    update() dispatches DominionSavedEvent -> DominionSaved::handle()
+    (src/Listeners/DominionSaved.php:19) -> a full networth recalculation AND a
+    full precalculateTick(). The main loop then runs precalculateTick() on the
+    same dominion again minutes later. Affected dominions pay for it twice.
+    Suppress the listener for the duration of the tick
+    (Dominion::withoutEvents(...) around performSpellEffects, or a TickService
+    re-entrancy flag), since performTick pre-calculates everything afterwards
+    anyway.
+
+3.5 N+1s INSIDE performSpellEffects.
+    Three near-identical blocks (lines 787, 813, 830) do:
+
+        $dominionSpells = DominionSpell::whereIn('spell_id', $spellIds)
+            ->whereIn('dominion_id', $dominionIds)->get();
+        foreach ($dominionSpells as $dominionSpell) {
+            $totalLand = $this->landCalculator->getTotalLand($dominionSpell->dominion);   // lazy belongsTo
+            $perk = $dominionSpell->spell->perks()->where('key', ...)->first();           // 2 more queries
+
+    ->with(['dominion', 'spell.perks']) on the outer query removes all of them.
+    Also, $dominionSpell->dominion->update() triggers Dominion::save(), whose
+    "verify tick hasn't happened" guard (Dominion.php:454-459) adds ANOTHER
+    SELECT per save because no 'protection' option is passed.
+
+3.6 LOADING EVERY DOMINION MODEL TO LOG A COUNT.
+    Lines 386 and 438:
+
+        number_format($round->activeDominions->count())
+
+    The dynamic property hydrates the entire activeDominions collection - full
+    model objects for the whole round - purely to log a number. The second one
+    is 30 lines below where $dominions already exists. Use $dominions->count(),
+    and $round->activeDominions()->count() for the first.
+
+3.7 tickDaily() EAGER-LOADS ALL DOMINIONS AND NEVER USES THEM.
+    Line 726:
+
+        foreach (Round::with('dominions')->active()->get() as $round) {
+
+    The body uses $round->start_date, $round->realms(), $round->dominions()
+    (a FRESH QUERY BUILDER, not the loaded relation), and $round->daysInRound().
+    The with('dominions') hydrates thousands of models that are never read.
+    DROP IT.
+
+3.8 SAME PATTERN IN RaidService::updateActivePlayerCounts()
+    (src/Services/RaidService.php:114): ->with(['dominions.user']) is loaded,
+    then every count is computed via a fresh $realm->dominions() query with a
+    whereHas. The eager load is dead weight, and $realms->fresh() at line 133
+    re-loads them all a second time to compute an average that could come from
+    the counts already in hand.
+
+3.9 ONE TRANSACTION PER DOMINION.
+    Line 418 opens a DB::transaction(..., 5) inside the loop - N x BEGIN/COMMIT.
+    Once cleanup is batched (2.2) and pre-calculation is chunked (2.1), this
+    naturally becomes one transaction per chunk.
+
+
+================================================================================
+4. TIER 3 - SQL AND SCHEMA
+================================================================================
+
+--------------------------------------------------------------------------------
+4.1 The daily-rankings self-join is quadratic and unindexed
+--------------------------------------------------------------------------------
+
+TickService::updateDailyRankings() (line 1228):
+
+    $ranks = DB::table('daily_rankings AS a')
+        ->select(DB::raw('a.*, COUNT(b.value)+1 AS new_rank'))
+        ->leftJoin('daily_rankings AS b', function ($join) use ($round) {
+            $join->on('a.value', '<', 'b.value');
+            $join->on('a.key', '=', 'b.key');
+            $join->where('b.round_id', $round->id);
+        })
+        ->where('a.round_id', $round->id)
+        ->groupBy('a.dominion_id', 'a.key', 'a.value')
+
+daily_rankings carries only unique(['dominion_id','key'])
+(2020_04_09_182859_refactor_daily_rankings.php:22) - NO INDEX ON
+(round_id, key, value). So this is a range self-join with nothing to seek on.
+With ~20 ranking keys and N dominions, the table holds ~20N rows and the join
+compares on the order of 20 x N^2 row pairs. At N = 1,500 that's ~45 MILLION
+comparisons in one statement.
+
+RECOMMENDATION
+    Replace with a window function (MySQL 8 / MariaDB 10.2+ both support it):
+
+        RANK() OVER (PARTITION BY `key` ORDER BY value DESC)
+
+    One sorted pass instead of a self-join, and it fixes the ranking semantics
+    too - the current COUNT(b.value)+1 is a RANK() (ties share a rank, gaps
+    follow), which is probably intended, but it's implicit. Add
+    index(['round_id','key','value']) regardless; it helps the leaderboard
+    reads as well.
+
+    This runs inside DailyRankingsAndStatsJob, so with a live worker it's off
+    the tick's critical path - but the job is dispatched at the same instant
+    the tick starts (TickCommand.php:36), so it contends for the same database.
+
+--------------------------------------------------------------------------------
+4.2 daily_rankings upsert is unbounded
+--------------------------------------------------------------------------------
+
+Line 1221 upserts the entire $statistics array - up to 20N rows - in a single
+statement, and line 1248 does the same for ranks. That's one very large packet
+that will hit max_allowed_packet as rounds grow. Chunk at ~1,000 rows.
+
+--------------------------------------------------------------------------------
+4.3 dominion_tick.dominion_id should be UNIQUE
+--------------------------------------------------------------------------------
+
+2019_08_04_210813_create_dominion_tick_table.php:74 adds only a foreign key.
+The relationship is 1:1 (Dominion::tick() is a hasOne, and
+Tick::firstOrCreate(['dominion_id' => ...]) assumes uniqueness). Two risks: a
+duplicate row would silently DOUBLE-APPLY every delta in the Phase-A join at
+line 285, and firstOrCreate has a race window with no constraint to catch it.
+Adding unique('dominion_id') closes both and makes the tick's join lookup a
+single-row seek.
+
+
+================================================================================
+5. TIER 4 - OPERATIONAL
+================================================================================
+
+5.1 NO OVERLAP GUARD ON THE TICK.
+    src/Console/Kernel.php:18:
+
+        $schedule->command('game:tick')->hourlyAt(0);
+
+    There is no ->withoutOverlapping(). If a tick ever exceeds one hour, a
+    second one starts on top of it and Phase A's dominions + dominion_tick
+    deltas apply TWICE - silent duplicate resource grants. Given that the loop
+    is the part that scales with player count, this is the failure mode the
+    current design is most exposed to. ->withoutOverlapping(120) is a one-line
+    insurance policy and I'd apply it regardless of whether anything else here
+    is done.
+
+5.2 LONG TRANSACTIONS BLOCK LIVE PLAYERS.
+    Phase A wraps three round-wide UPDATEs in one transaction, and
+    performRaceUnitProduction() (line 851) wraps a loop over EVERY dominion -
+    including resolveSpellPerk, military calculations, and one upsert per
+    dominion - in a single transaction (line 853). Every row touched holds a
+    lock for the whole duration. This is the mechanism behind the
+    'The Emperor is currently collecting taxes...' GameException at
+    Dominion.php:457. Shortening the loop directly shortens the window players
+    are locked out.
+
+5.3 YOU ARE FLYING WITH TWO DATA POINTS.
+    The only instrumentation is two Log::info timings (lines 384 and 436)
+    covering "the bulk update" and "everything else". The second covers cleanup
+    + pre-calculation + notifications as one number, so it can't tell you which
+    of them is the cost. Before acting on any of the above, add per-phase timers
+    and wrap the tick in DB::listen() under a debug flag to get an actual query
+    count per phase - it converts every estimate in this report into a
+    measurement.
+
+
+================================================================================
+6. SUGGESTED ORDER OF WORK
+================================================================================
+
+Sequenced by return-on-risk, not by size:
+
+ #  Change                                                    Risk     Expected effect
+ -- --------------------------------------------------------- -------- ------------------------------------------
+ 1  withoutOverlapping() on game:tick (5.1)                   none     correctness insurance
+ 2  Per-phase timing + DB::listen() query counts (5.3)        none     turns estimates into data
+ 3  Delete the discarded getActiveSpells() call (3.1)         none     -3N queries
+ 4  Drop unused eager loads in tickDaily /                    none     removes two full-round hydrations
+    updateActivePlayerCounts (3.7, 3.8)
+ 5  Console guard in getDeviceString() (3.3)                  none     -N Mobile_Detect runs
+ 6  Hoist repeated calls in                                   low      ~10x -> 1x on the heaviest population path
+    getPopulationPeasantGrowth (2.4)
+ 7  Batch cleanupActiveSpells / cleanupQueues (2.2)           low      4N + spell-N statements -> ~4/chunk
+ 8  with() fixes + withoutEvents in                           low      removes double pre-calculation
+    performSpellEffects (3.4, 3.5)
+ 9  Window-function ranking +                                 low      quadratic -> linear-ish
+    (round_id,key,value) index (4.1)
+10  Memoize perk lookups on Dominion (2.3)                    medium   hundreds of rebuilds -> one per dominion;
+                                                                       also speeds every page
+11  Chunked pre-calculation via $reloadState flag (2.1)       medium   ~20N queries -> ~2N + 10/chunk
+12  unique('dominion_id') on dominion_tick (4.3)              medium*  correctness + faster join
+
+ * Requires verifying no duplicates exist in production before the constraint
+   will apply.
+
+Items 1-9 are individually small and independently shippable. Items 10 and 11
+are the structural ones and are where the bulk of the time actually is - I'd
+want item 2's measurements in hand before committing to either.
+
+
+================================================================================
+CAVEAT
+================================================================================
+
+Every number above is derived by reading code, not by profiling. The call-graph
+fan-out and query counts are arithmetic and I'm confident in them; how they
+translate to wall-clock depends on database latency, connection locality, and
+actual N - which cannot be seen from a static read. Item 2 exists to close that
+gap.
+
+No changes were made to the repository as part of this review.

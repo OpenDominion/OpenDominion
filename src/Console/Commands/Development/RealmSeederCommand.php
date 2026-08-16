@@ -3,6 +3,7 @@
 namespace OpenDominion\Console\Commands\Development;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use OpenDominion\Console\Commands\CommandInterface;
@@ -43,7 +44,7 @@ class RealmSeederCommand extends Command implements CommandInterface
             DB::transaction(function () use ($count, $dominionFactory, $round) {
                 $realms = Realm::active()->where('round_id', '=', $round->id)->get();
                 foreach($realms as $realm) {
-                    $races = Race::get(['id'])->toArray();
+                    $races = $this->racesForRealm($round, $realm);
                     $dom_count = Dominion::where('realm_id', $realm->id)->count();
                     $user = User::factory()->count(8 - $dom_count)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
                         $randomString = Str::random(10);
@@ -51,7 +52,7 @@ class RealmSeederCommand extends Command implements CommandInterface
                         $dominionFactory->create(
                             $user,
                             $realm,
-                            Race::findOrFail($races[array_rand($races)]['id']),
+                            $races->random(),
                             "Ruler $randomString",
                             "Dominion $randomString",
                         );
@@ -61,14 +62,14 @@ class RealmSeederCommand extends Command implements CommandInterface
                 for ($n = count($realms)+1; $n <= $count; $n++) {
                     $alignment = rand(0, 1) ? 'good' : 'evil';
                     $realm = app(RealmFactory::class)->create($round, $alignment);
-                    $races = Race::get(['id'])->toArray();
+                    $races = $this->racesForRealm($round, $realm);
                     $user = User::factory()->count(8)->create()->each(function ($user) use ($dominionFactory, $realm, $races) {
                         $randomString = Str::random(10);
 
                         $dominionFactory->create(
                             $user,
                             $realm,
-                            Race::findOrFail($races[array_rand($races)]['id']),
+                            $races->random(),
                             "Ruler $randomString",
                             "Dominion $randomString",
                         );
@@ -78,5 +79,31 @@ class RealmSeederCommand extends Command implements CommandInterface
         } else {
             throw new RuntimeException('No rounds found, seed the development database first.');
         }
+    }
+
+    /**
+     * Returns the races that may legally be placed in a realm.
+     *
+     * DominionFactory rejects a race whose alignment differs from the realm's
+     * unless the round is mixed alignment, so picking from all races at random
+     * fails as soon as the coin lands the wrong way.
+     *
+     * @return \Illuminate\Support\Collection<int, Race>
+     */
+    private function racesForRealm(Round $round, Realm $realm): Collection
+    {
+        $races = Race::where('playable', true)
+            ->when(!$round->mixed_alignment, static function ($query) use ($realm) {
+                return $query->where('alignment', $realm->alignment);
+            })
+            ->get();
+
+        if ($races->isEmpty()) {
+            throw new RuntimeException(
+                "No playable races found for realm {$realm->number} ({$realm->alignment})."
+            );
+        }
+
+        return $races;
     }
 }
