@@ -406,6 +406,30 @@ class HeroEncounterHelper
                 'strategy' => 'wraith',
                 'abilities' => ['snow_witch_curse', 'frostbite'],
             ],
+            'admiral_varos' => [
+                'name' => 'Admiral Varos',
+                'health' => 180,
+                'attack' => 30,
+                'defense' => 15,
+                'evasion' => 15,
+                'focus' => 15,
+                'counter' => 15,
+                'recover' => 15,
+                'strategy' => 'pirate',
+                'abilities' => ['blade_flurry', 'admirals_orders'],
+            ],
+            'aurelis_defender' => [
+                'name' => 'Aurelis Defender',
+                'health' => 45,
+                'attack' => 25,
+                'defense' => 15,
+                'evasion' => 5,
+                'focus' => 5,
+                'counter' => 5,
+                'recover' => 5,
+                'strategy' => 'pirate',
+                'abilities' => ['blade_flurry'],
+            ],
         ]);
     }
 
@@ -528,6 +552,13 @@ class HeroEncounterHelper
                 'source' => 'Raid (Heart of Ice)',
                 'enemies' => [
                     ['key' => 'eliza_heart_of_ice', 'name' => 'Eliza, the Heart of Ice'],
+                ],
+            ],
+            'admiral_varos' => [
+                'name' => 'Admiral Varos',
+                'source' => 'Raid (The Tide of Vethara)',
+                'enemies' => [
+                    ['key' => 'admiral_varos', 'name' => 'Admiral Varos'],
                 ],
             ],
         ]);

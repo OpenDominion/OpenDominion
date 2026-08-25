@@ -744,6 +744,68 @@ class HeroHelper
                 'limited' => false,
                 'special' => true,
             ],
+            'broadside' => [
+                'name' => 'Broadside',
+                'processor' => 'broadside',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'defend_damage' => 15,
+                    'default_damage' => 30,
+                    'counter_damage' => 45,
+                    'volley_damage' => 45,
+                ],
+                'messages' => [
+                    'defend' => '%s\'s guns roar across the harbor. %s drops behind the stonework and the shot deals %s damage.',
+                    'counter' => '%s\'s guns roar across the harbor. %s stands poised to riposte a blade that never comes, and takes %s damage.',
+                    'default' => '%s\'s guns roar across the harbor, tearing into %s for %s damage.',
+                    'defenders' => ' The guns do not discriminate. The defenders are caught in the volley.',
+                ]
+            ],
+            'rally_the_defenders' => [
+                'name' => 'Rally the Defenders',
+                'processor' => 'rally',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'enemy' => 'aurelis_defender',
+                    'count' => 1,
+                    'max_defenders' => 2,
+                ],
+                'messages' => [
+                    'attack' => '%s prepares to call for reinforcements, but %s silences him with a blow to the chest.',
+                    'summon' => '%s\'s call carries across the harbor, and a defender rushes to his aid.',
+                    'at_cap' => '%s calls again, but no more defenders answer.',
+                ]
+            ],
+            'admirals_challenge' => [
+                'name' => 'The Admiral\'s Challenge',
+                'processor' => 'challenge',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'default_damage' => 25,
+                    'attack_damage' => 45,
+                ],
+                'messages' => [
+                    'focus' => '%s says nothing, watching the blade instead of the crew. %s\'s challenge goes unanswered.',
+                    'attack' => '%s takes the bait and lunges. %s was waiting for it, opening them up for %s damage.',
+                    'default' => '%s\'s cutlass finds its mark for %s damage.',
+                ]
+            ],
+            'admirals_orders' => [
+                'name' => 'Admiral\'s Orders',
+                'processor' => null,
+                'type' => 'passive',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    'moves' => ['broadside', 'rally_the_defenders', 'admirals_challenge'],
+                ],
+            ],
         ]);
     }
 
@@ -823,6 +885,7 @@ class HeroHelper
             'retribution' => 'Retribution: Counter attack damage is increased by 15.',
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
             'snow_witch_curse' => 'Snow Witch\'s Curse: Every other turn, telegraphs a signature move that must be countered with the correct action. Choosing the wrong counter is catastrophic.',
+            'admirals_orders' => 'Admiral\'s Orders: Every other turn, telegraphs an order to the crew one turn before it lands. Each order demands a different response, and the wrong answer is punished severely.',
             'soul_harvest' => 'Soul Harvest: Absorbs the strength of fallen allies, growing more powerful with each death.',
             'soul_rend' => 'Soul Rend: When wounded, charges a devastating attack that deals massive damage if not defended.',
             'soul_tribute' => 'Soul Tribute: Upon death, empowers Dreadsoul Skullkeeper, increasing his attack and defense.',
