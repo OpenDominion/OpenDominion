@@ -210,10 +210,15 @@ class WonderActionService
             $dominion->wizard_strength -= 5;
             $dominion->stat_spell_success += 1;
 
-            $damageDealt = $this->wonderCalculator->getCycloneDamage($dominion, $wonder);
+            // Cap damage at wonder health to prevent overkilling
+            $currentPower = $this->wonderCalculator->getCurrentPower($wonder);
+            $damageDealt = min(
+                $this->wonderCalculator->getCycloneDamage($dominion, $wonder),
+                $currentPower
+            );
             $dominion->stat_cyclone_damage += $damageDealt;
 
-            $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
+            $wonderPower = max(0, $currentPower - $damageDealt);
             $wonder->damage()->create([
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
@@ -353,7 +358,11 @@ class WonderActionService
 
             $damageDealt *= $multiplier;
 
-            $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
+            // Cap damage at wonder health to prevent overkilling
+            $currentPower = $this->wonderCalculator->getCurrentPower($wonder);
+            $damageDealt = min($damageDealt, $currentPower);
+
+            $wonderPower = max(0, $currentPower - $damageDealt);
             $wonder->damage()->create([
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
