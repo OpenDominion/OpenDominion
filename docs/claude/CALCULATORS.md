@@ -162,4 +162,7 @@ Land type conversion costs.
 Resource exchange rates with tech/wonder bonuses.
 
 ### TechCalculator
-Technology research costs.
+Technology research costs and unlock eligibility.
+- `getTechCost()` - 2.5x highest land achieved + 50/permanent tech (min 3750), scaled by tech_cost perk
+- `getUnlockableTechCount()` - affordable techs capped by `getAvailableTechCount()`, so a fully-teched Dominion never shows unlockable techs
+- `getAvailableTechCount()`, `hasPrerequisites()` - techs not yet unlocked for the round's `tech_version` that the Dominion meets prerequisites for
