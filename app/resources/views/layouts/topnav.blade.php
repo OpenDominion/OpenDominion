@@ -51,6 +51,7 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item {{ Route::is('about') ? 'active' : null }}"><a href="{{ route('about') }}" class="nav-link">About</a></li>
+                    <li class="nav-item {{ Route::is('round.calendar') ? 'active' : null }}"><a href="{{ route('round.calendar') }}" class="nav-link">Calendar</a></li>
                     <li class="nav-item {{ Route::is('user-agreement') ? 'active' : null }}"><a href="{{ route('user-agreement') }}" class="nav-link">Rules</a></li>
                     <li class="nav-item {{ Route::is('scribes.*') ? 'active' : null }}"><a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a></li>
                     @include('partials.staff-nav')

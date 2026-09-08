@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Tests\Http;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractTestCase;
 
 class HomeTest extends AbstractTestCase
@@ -14,6 +16,15 @@ class HomeTest extends AbstractTestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
+    }
+
+    public function testHomePageLinksToTheRoundCalendar()
+    {
+        $response = $this->get('/');
+
+        $response
+            ->assertStatus(200)
+            ->assertSee(route('round.calendar'));
     }
 
     public function testRedirectLoggedInUserWithoutSelectedDominionToDashboard()
@@ -59,5 +70,78 @@ class HomeTest extends AbstractTestCase
         $response
             ->assertStatus(200)
             ->assertSee('Play');
+    }
+
+    public function testHomePageShowsCurrentRoundWhenARoundIsInProgress()
+    {
+        $this->travelPastExistingRounds();
+        $this->createRoundWithNumber(1, '-10 days', '+20 days');
+        $this->createRoundWithNumber(2, '+30 days', '+70 days');
+
+        $response = $this->get('/');
+
+        $response
+            ->assertStatus(200)
+            ->assertSee('Round #1')
+            ->assertSee('Current Round Rankings')
+            ->assertDontSee('Upcoming Rounds')
+            ->assertDontSee('Previous Round Rankings');
+    }
+
+    public function testHomePageShowsUpcomingRoundsWhenNoRoundIsInProgress()
+    {
+        $this->travelPastExistingRounds();
+        $this->createRoundWithNumber(1, '-60 days', '-10 days');
+        $this->createRoundWithNumber(2, '+30 days', '+70 days');
+
+        $response = $this->get('/');
+
+        $response
+            ->assertStatus(200)
+            ->assertSee('Upcoming Rounds')
+            ->assertSee('Previous Round Rankings')
+            ->assertDontSee('Round #1');
+    }
+
+    public function testHomePageShowsInactiveWhenNoCurrentOrUpcomingRounds()
+    {
+        $this->travelPastExistingRounds();
+        $this->createRoundWithNumber(1, '-60 days', '-10 days');
+
+        $response = $this->get('/');
+
+        $response
+            ->assertStatus(200)
+            ->assertSee('There is no ongoing round.')
+            ->assertSee('Previous Round Rankings')
+            ->assertDontSee('Upcoming Rounds');
+    }
+
+    /**
+     * Freezes time beyond any round already present in the database, so that only
+     * the rounds created by the test itself are current or upcoming.
+     */
+    protected function travelPastExistingRounds(): void
+    {
+        Carbon::setTestNow(Carbon::create(2200, 1, 1, 0, 0, 0));
+    }
+
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow();
+
+        parent::tearDown();
+    }
+
+    protected function createRoundWithNumber(int $number, string $startDate, string $endDate): Round
+    {
+        return Round::create([
+            'round_league_id' => 1,
+            'number' => $number,
+            'name' => "Testing Round {$number}",
+            'start_date' => new Carbon($startDate),
+            'end_date' => new Carbon($endDate),
+            'pack_size' => 6,
+        ]);
     }
 }

@@ -31,7 +31,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($activeRounds->concat($upcomingRounds) as $round)
-                                        <tr @class(['table-success' => $round->isActive()])>
+                                        <tr>
                                             <td>
                                                 <strong>{{ $round->name }}</strong>
                                             </td>

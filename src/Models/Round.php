@@ -179,6 +179,20 @@ class Round extends AbstractModel
     }
 
     /**
+     * Scope a query to include only rounds that are currently in progress.
+     * Mirrors the isActive() check: started and not yet ended.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeInProgress(Builder $query): Builder
+    {
+        return $query
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>', now());
+    }
+
+    /**
      * Scope a query to include only rounds whose start_date is in the future,
      * ordered by soonest start first.
      *
