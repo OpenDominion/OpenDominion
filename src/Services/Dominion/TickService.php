@@ -92,6 +92,13 @@ class TickService
     protected $wonderService;
 
     /**
+     * Spells keyed by id, memoized for the lifetime of a tick.
+     *
+     * @var Collection<int, Spell>|null
+     */
+    protected ?Collection $spellsById = null;
+
+    /**
      * TickService constructor.
      */
     public function __construct()
@@ -400,6 +407,11 @@ class TickService
                     'race.units',
                     'race.units.perks',
                     'spells',
+                    // Without spells.perks, the first perk lookup of the tick
+                    // lazy-loads perks once per active spell per dominion -
+                    // roughly six queries each. performRaceUnitProduction below
+                    // is that first lookup.
+                    'spells.perks',
                     'techs',
                     'techs.perks',
                     'tick',
@@ -723,7 +735,10 @@ class TickService
      */
     public function tickDaily()
     {
-        foreach (Round::with('dominions')->active()->get() as $round) {
+        // No with('dominions'): the body below uses $round->realms() and
+        // $round->dominions(), both fresh query builders, so eager-loading the
+        // relation hydrates a model per dominion in the round and reads none.
+        foreach (Round::active()->get() as $round) {
             // Only runs once daily
             if ($round->start_date->hour != now()->hour) {
                 continue;
@@ -852,15 +867,23 @@ class TickService
     {
         DB::transaction(function () use ($dominions) {
             foreach ($dominions as $dominion) {
+                // Check the race first: only one race has a summoning unit, and
+                // races are cached, so this is near-free. resolveSpellPerk is
+                // not - it expands to five or six full perk-collection walks.
+                $summoningUnits = $dominion->race->units->filter(
+                    static fn ($unit): bool => (bool)$unit->getPerkValue('summons_unit')
+                );
+
+                if ($summoningUnits->isEmpty()) {
+                    continue;
+                }
+
                 if ($this->spellCalculator->resolveSpellPerk($dominion, 'disable_unit_summoning') > 0) {
                     continue;
                 }
 
-                foreach ($dominion->race->units as $sourceUnit) {
+                foreach ($summoningUnits as $sourceUnit) {
                     $perkValue = $sourceUnit->getPerkValue('summons_unit');
-                    if (!$perkValue) {
-                        continue;
-                    }
 
                     [$targetSlot, $perSource, $capPerSource] = array_map('intval', explode(',', $perkValue));
                     if ($targetSlot < 1 || $perSource < 1) {
@@ -896,15 +919,41 @@ class TickService
         }, 5);
     }
 
+    /**
+     * The spell reference table, keyed by id and fetched once per tick.
+     *
+     * @return \Illuminate\Support\Collection<int, Spell>
+     */
+    protected function spellsById(): Collection
+    {
+        if ($this->spellsById === null) {
+            $this->spellsById = Spell::all()->keyBy('id');
+        }
+
+        return $this->spellsById;
+    }
+
     protected function cleanupActiveSpells(Dominion $dominion)
     {
-        $finished = DominionSpell::query()
+        $expired = DominionSpell::query()
             ->where('dominion_id', $dominion->id)
             ->where('duration', '<=', 0)
-            ->get()
-            ->map(function ($dominionSpell) {
-                return $dominionSpell->spell;
-            });
+            ->get();
+
+        if ($expired->isEmpty()) {
+            return;
+        }
+
+        // Resolved from the reference table, fetched once per tick, rather than
+        // $dominionSpell->spell, which lazily fetched one row per expiring
+        // spell per dominion.
+        $spellsById = $this->spellsById();
+
+        $finished = $expired
+            ->map(static function ($dominionSpell) use ($spellsById) {
+                return $spellsById->get($dominionSpell->spell_id);
+            })
+            ->filter();
 
         $beneficialSpells = $finished->filter(function ($spell) {
             return !$spell->isHarmful();
@@ -934,6 +983,12 @@ class TickService
             ->where('dominion_id', $dominion->id)
             ->where('hours', '<=', 0)
             ->get();
+
+        // Nothing arrived this hour: skip the delete rather than issue one that
+        // matches no rows. Most dominions are in this state most hours.
+        if ($finished->isEmpty()) {
+            return;
+        }
 
         foreach ($finished->groupBy('source') as $source => $group) {
             if ($source === 'operations') continue;
@@ -993,13 +1048,27 @@ class TickService
         $this->queueService->setForTick(true);
 
         // Reset tick values
+        //
+        // Written as one raw assignment rather than ~80 individual sets. Each
+        // set went through Eloquent's cast machinery, and Model::hasCast()
+        // rebuilds the merged cast map every time - with a column per tracked
+        // resource that made this loop the largest single source of attribute
+        // churn in the tick. The key selection below is identical to the
+        // per-attribute version it replaces; '[]' is exactly what an array cast
+        // stores for an empty array.
+        $resetAttributes = [];
+
         foreach ($tick->getAttributes() as $attr => $value) {
-            if (!in_array($attr, ['id', 'dominion_id', 'updated_at', 'starvation_casualties', 'expiring_spells'], true)) {
-                $tick->{$attr} = 0;
-            } elseif ($attr === 'starvation_casualties' || $attr === 'expiring_spells') {
-                $tick->{$attr} = [];
+            if ($attr === 'starvation_casualties' || $attr === 'expiring_spells') {
+                $resetAttributes[$attr] = '[]';
+            } elseif (in_array($attr, ['id', 'dominion_id', 'updated_at'], true)) {
+                $resetAttributes[$attr] = $value;
+            } else {
+                $resetAttributes[$attr] = 0;
             }
         }
+
+        $tick->setRawAttributes($resetAttributes);
 
         // Refresh attributes - guards against tick concurrency writing
         // delta-style updates between the caller's request and this
@@ -1036,9 +1105,6 @@ class TickService
             'race.units.perks',
         ]);
 
-        // Active spells
-        $this->spellCalculator->getActiveSpells($dominion);
-
         // Queues
         $incomingQueue = DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
@@ -1067,24 +1133,41 @@ class TickService
         $tick->military_draftees = $drafteesGrowthRate;
 
         // Resources
+        //
+        // Each value is computed once and the net changes derived from those
+        // locals. Calling the getNetChange() helpers here instead would
+        // recompute production and decay a second time, and every one of those
+        // walks the full raw x multiplier chain including a resolveSpellPerk.
+        // The arithmetic below mirrors ProductionCalculator::get*NetChange()
+        // exactly, round() included.
+        $lumberProduction = $this->productionCalculator->getLumberProduction($dominion);
+        $lumberDecay = $this->productionCalculator->getLumberDecay($dominion);
+        $manaProduction = $this->productionCalculator->getManaProduction($dominion);
+        $manaDecay = $this->productionCalculator->getManaDecay($dominion);
+        $boatProduction = $this->productionCalculator->getBoatProduction($dominion);
+        $foodProduction = $this->productionCalculator->getFoodProduction($dominion);
+        $foodDecay = $this->productionCalculator->getFoodDecay($dominion);
+
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
-        $tick->resource_lumber_production += $this->productionCalculator->getLumberProduction($dominion);
-        $tick->resource_lumber_decay += $this->productionCalculator->getLumberDecay($dominion);
-        $tick->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
-        $tick->resource_mana_production += $this->productionCalculator->getManaProduction($dominion);
-        $tick->resource_mana_decay += $this->productionCalculator->getManaDecay($dominion);
-        $tick->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
+        $tick->resource_lumber_production += $lumberProduction;
+        $tick->resource_lumber_decay += $lumberDecay;
+        $tick->resource_lumber += (int)round($lumberProduction - $lumberDecay);
+        $tick->resource_mana_production += $manaProduction;
+        $tick->resource_mana_decay += $manaDecay;
+        $tick->resource_mana += (int)round($manaProduction - $manaDecay);
         $tick->resource_ore += $this->productionCalculator->getOreProduction($dominion);
         $tick->resource_gems += $this->productionCalculator->getGemProduction($dominion);
         $tick->resource_tech += $this->productionCalculator->getTechProduction($dominion);
-        $tick->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
-        $tick->resource_boat_production += $this->productionCalculator->getBoatProduction($dominion);
-        $tick->resource_food_production += $this->productionCalculator->getFoodProduction($dominion);
-        $tick->resource_food_decay += $this->productionCalculator->getFoodDecay($dominion);
+        $tick->resource_boats += $boatProduction;
+        $tick->resource_boat_production += $boatProduction;
+        $tick->resource_food_production += $foodProduction;
+        $tick->resource_food_decay += $foodDecay;
         // Special case for Alchemist Flame
         $tick->improvement_forges += (int)($dominion->building_alchemy * $dominion->getSpellPerkValue('alchemy_improvement_forges_raw'));
         // Check for starvation before adjusting food
-        $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
+        $foodNetChange = (int)round(
+            $foodProduction - $this->productionCalculator->getFoodConsumption($dominion) - $foodDecay
+        );
 
         // Starvation casualties
         if (($dominion->resource_food + $foodNetChange) < 0) {
@@ -1158,6 +1241,9 @@ class TickService
         $this->queueService->setForTick(false);
     }
 
+    /**
+     * Scheduler entry point: ranks every round that is due this hour.
+     */
     public function updateDailyRankings(): void
     {
         // Update rankings
@@ -1169,96 +1255,121 @@ class TickService
                 continue;
             }
 
-            Log::debug('Daily rankings started');
+            $this->updateDailyRankingsForRound($round);
+        }
+    }
 
-            $activeDominions = $round->dominions()->with([
-                'race',
-                'realm',
-            ])->get();
+    /**
+     * Ranks a single round, without the once-a-day gate.
+     *
+     * Split out from updateDailyRankings() so callers that already know which
+     * round they want - dev:tick:profile in particular - are not at the mercy
+     * of the scheduler's hour check, which otherwise makes profiling a no-op
+     * for 23 hours out of 24.
+     */
+    public function updateDailyRankingsForRound(Round $round): void
+    {
+        Log::debug('Daily rankings started');
 
-            // Calculate current statistics
-            $statistics = [];
-            foreach ($activeDominions as $dominion) {
-                $isAbandoned = ($dominion->abandoned_at !== null && $dominion->abandoned_at < now());
-                $isLocked = $dominion->locked_at !== null;
+        $activeDominions = $round->dominions()->with([
+            'race',
+            'realm',
+        ])->get();
 
-                foreach ($this->rankingsHelper->getRankings() as $ranking) {
+        // Calculate current statistics
+        $statistics = [];
+        foreach ($activeDominions as $dominion) {
+            $isAbandoned = ($dominion->abandoned_at !== null && $dominion->abandoned_at < now());
+            $isLocked = $dominion->locked_at !== null;
 
-                    if ($ranking['stat'] == 'land') {
-                        $value = $this->landCalculator->getTotalLand($dominion);
-                    } elseif ($ranking['stat'] == 'networth') {
-                        $value = $this->networthCalculator->getDominionNetworth($dominion);
-                    } elseif ($ranking['stat'] == 'land_explored') {
-                        $value = max(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
-                    } elseif ($ranking['stat'] == 'land_conquered') {
-                        $value = max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
-                    } else {
-                        $value = $dominion->{$ranking['stat']};
-                    }
+            foreach ($this->rankingsHelper->getRankings() as $ranking) {
 
-                    $zeroOutRank = false;
-                    if($value != 0 && ($isAbandoned || $isLocked)) {
-                        $value = 0;
-                        $zeroOutRank = true;
-                    }
+                if ($ranking['stat'] == 'land') {
+                    $value = $this->landCalculator->getTotalLand($dominion);
+                } elseif ($ranking['stat'] == 'networth') {
+                    $value = $this->networthCalculator->getDominionNetworth($dominion);
+                } elseif ($ranking['stat'] == 'land_explored') {
+                    $value = max(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
+                } elseif ($ranking['stat'] == 'land_conquered') {
+                    $value = max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
+                } else {
+                    $value = $dominion->{$ranking['stat']};
+                }
 
-                    if ($value != 0 || $zeroOutRank) {
-                        $statistics[] = [
-                            'round_id' => $round->id,
-                            'dominion_id' => $dominion->id,
-                            'dominion_name' => $dominion->name,
-                            'race_name' => $dominion->race->name,
-                            'realm_number' => $dominion->realm->number,
-                            'realm_name' => $dominion->realm->name,
-                            'key' => $ranking['key'],
-                            'value' => $value,
-                        ];
-                    }
+                $zeroOutRank = false;
+                if($value != 0 && ($isAbandoned || $isLocked)) {
+                    $value = 0;
+                    $zeroOutRank = true;
+                }
+
+                if ($value != 0 || $zeroOutRank) {
+                    $statistics[] = [
+                        'round_id' => $round->id,
+                        'dominion_id' => $dominion->id,
+                        'dominion_name' => $dominion->name,
+                        'race_name' => $dominion->race->name,
+                        'realm_number' => $dominion->realm->number,
+                        'realm_name' => $dominion->realm->name,
+                        'key' => $ranking['key'],
+                        'value' => $value,
+                    ];
                 }
             }
+        }
 
+        DB::transaction(function () use ($round, $statistics) {
             // Saving current statistics
-            DB::table('daily_rankings')->upsert(
-                $statistics,
-                ['dominion_id', 'key'],
-                ['dominion_name', 'race_name', 'realm_number', 'realm_name', 'value'],
-            );
+            //
+            // Chunked because Laravel binds one placeholder per column per
+            // row and the MySQL protocol caps a prepared statement at
+            // 65,535 of them, which eight-column rows reach at ~8,000.
+            foreach (array_chunk($statistics, 1000) as $chunk) {
+                DB::table('daily_rankings')->upsert(
+                    $chunk,
+                    ['dominion_id', 'key'],
+                    ['dominion_name', 'race_name', 'realm_number', 'realm_name', 'value'],
+                );
+            }
 
             // Calculate ranks
-            $ranks = DB::table('daily_rankings AS a')
-                ->select(DB::raw('a.*, COUNT(b.value)+1 AS new_rank'))
-                ->leftJoin('daily_rankings AS b', function ($join) use ($round) {
-                    $join->on('a.value', '<', 'b.value');
-                    $join->on('a.key', '=', 'b.key');
-                    $join->where('b.round_id', $round->id);
-                })
-                ->where('a.round_id', $round->id)
-                ->groupBy('a.dominion_id', 'a.key', 'a.value')
-                ->orderBy('new_rank')
-                ->get()
-                ->map(function ($obj) {
-                    $obj->previous_rank = $obj->rank;
-                    $obj->rank = $obj->new_rank;
-                    unset($obj->new_rank);
-                    return (array) $obj;
-                })
-                ->toArray();
+            //
+            // RANK() reproduces the previous COUNT(b.value)+1 self-join
+            // exactly: tied values share a rank and the next distinct value
+            // skips the gap. That is load-bearing - ValorCalculator scores
+            // rank non-linearly and several features key off rank == 1 - so
+            // DENSE_RANK and ROW_NUMBER are both behaviour changes.
+            //
+            // The old rank is read inside the derived table rather than
+            // assigned from daily_rankings.rank in the SET clause: this is a
+            // multi-table update, where assignment order is not guaranteed.
+            // Because the derived table carries a window function it cannot
+            // be merged, so it is always materialised before the first row
+            // is updated - which is also why this does not raise the
+            // "can't specify target table for update" error.
+            $ranked = DB::table('daily_rankings')
+                ->select('id', 'rank as old_rank')
+                ->selectRaw('RANK() OVER (PARTITION BY `key` ORDER BY `value` DESC) as new_rank')
+                ->where('round_id', $round->id);
 
-            // Update ranks
-            DB::table('daily_rankings')->upsert(
-                $ranks,
-                ['dominion_id', 'key'],
-                ['rank', 'previous_rank'],
-            );
+            // The outer round_id filter is required, not redundant: without
+            // it the update scans daily_rankings across every round ever
+            // played instead of seeking on the round.
+            DB::table('daily_rankings')
+                ->joinSub($ranked, 'ranked', 'ranked.id', '=', 'daily_rankings.id')
+                ->where('daily_rankings.round_id', $round->id)
+                ->update([
+                    'daily_rankings.rank' => DB::raw('ranked.new_rank'),
+                    'daily_rankings.previous_rank' => DB::raw('ranked.old_rank'),
+                ]);
+        }, 5);
 
-            Log::debug('Daily rankings finished');
+        Log::debug('Daily rankings finished');
 
-            // Update Valor rankings
-            Log::debug('Valor calculation started');
-            $valorService = app(ValorService::class);
-            $valorService->updateValor($round);
-            Log::debug('Valor calculation finished');
-        }
+        // Update Valor rankings
+        Log::debug('Valor calculation started');
+        $valorService = app(ValorService::class);
+        $valorService->updateValor($round);
+        Log::debug('Valor calculation finished');
     }
 
     public function tickDailyStats(): void

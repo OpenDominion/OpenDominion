@@ -41,7 +41,12 @@ class ActivityService
 
         $deviceString = null;
 
-        if ($userAgent === 'Symfony/3.X') {
+        // There is no browser behind a console request. The 'Symfony/3.X' test
+        // used to catch this, but Symfony's synthetic console user agent has
+        // been plain 'Symfony' since v4, so the guard silently stopped firing
+        // and every tick ran Mobile_Detect's full regex battery once per
+        // dominion to describe a device that does not exist.
+        if ($userAgent === null || $userAgent === 'Symfony' || $userAgent === 'Symfony/3.X' || app()->runningInConsole()) {
             $deviceString = 'Unknown';
 
         } else {
