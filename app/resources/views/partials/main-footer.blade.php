@@ -1,34 +1,36 @@
 <footer class="app-footer">
-    <div class="row">
+    <div class="app-footer-inner">
+        <div class="row">
 
-        <div class="col-6">
-            <span class="d-none d-sm-inline">Version: </span>{!! $version !!}
-            &nbsp;|&nbsp;
-            <span class="d-none d-lg-inline"><i class="fa fa-github"></i> View this project on </span><a href="https://github.com/OpenDominion/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>
-        </div>
-
-        @if (isset($selectedDominion))
-            <div class="col-6 text-end">
-                @if (config('app.discord_report_webhook'))
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#reportModal">Report a Problem</a>
-                @endif
-
-                @if ($selectedDominion->round->isActive())
-                    @if (config('app.discord_report_webhook'))
-                        &nbsp;|&nbsp;
-                    @endif
-                    @php
-                        $roundDay = $selectedDominion->round->daysInRound();
-                        $roundDurationInDays = $selectedDominion->round->durationInDays();
-                        $currentHour = $selectedDominion->round->hoursInDay();
-                    @endphp
-                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ now() }}">
-                        Day <strong>{{ $roundDay }}</strong>/{{ $roundDurationInDays }}, Hour <strong>{{ $currentHour }}</strong>
-                    </span>
-                @endif
+            <div class="col-6">
+                <span class="d-none d-sm-inline">Version: </span>{!! $version !!}
+                &nbsp;|&nbsp;
+                <span class="d-none d-lg-inline"><i class="fa fa-github"></i> View this project on </span><a href="https://github.com/OpenDominion/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>
             </div>
-        @endif
 
+            @if (isset($selectedDominion))
+                <div class="col-6 text-end">
+                    @if (config('app.discord_report_webhook'))
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#reportModal">Report a Problem</a>
+                    @endif
+
+                    @if ($selectedDominion->round->isActive())
+                        @if (config('app.discord_report_webhook'))
+                            &nbsp;|&nbsp;
+                        @endif
+                        @php
+                            $roundDay = $selectedDominion->round->daysInRound();
+                            $roundDurationInDays = $selectedDominion->round->durationInDays();
+                            $currentHour = $selectedDominion->round->hoursInDay();
+                        @endphp
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ now() }}">
+                            Day <strong>{{ $roundDay }}</strong>/{{ $roundDurationInDays }}, Hour <strong>{{ $currentHour }}</strong>
+                        </span>
+                    @endif
+                </div>
+            @endif
+
+        </div>
     </div>
 </footer>
 
