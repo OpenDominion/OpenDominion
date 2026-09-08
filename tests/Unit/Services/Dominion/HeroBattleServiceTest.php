@@ -112,7 +112,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(), $this->player, $this->actionDef('broadside')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('broadside')
         );
 
         // Assert
@@ -127,7 +129,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(), $this->player, $this->actionDef('broadside')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('broadside')
         );
 
         // Assert
@@ -142,7 +146,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(), $this->player, $this->actionDef('broadside')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('broadside')
         );
 
         // Assert
@@ -158,7 +164,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(), $this->player, $this->actionDef('broadside')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('broadside')
         );
 
         // Assert - the volley clears the board in one shot
@@ -177,7 +185,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(), $this->player, $this->actionDef('broadside')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('broadside')
         );
 
         // Assert
@@ -190,13 +200,17 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
         $this->addDefenders(2);
         $this->player->current_action = 'defend';
         $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(), $this->player, $this->actionDef('broadside')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('broadside')
         );
         $this->assertEquals(0, $this->countDefenders());
 
         // Act - Varos rallies again
         $this->heroBattleService->processRallyAction(
-            $this->freshVaros(), $this->player, $this->actionDef('rally_the_defenders')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('rally_the_defenders')
         );
 
         // Assert
@@ -214,7 +228,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processRallyAction(
-            $this->freshVaros(), $this->player, $this->actionDef('rally_the_defenders')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('rally_the_defenders')
         );
 
         // Assert
@@ -229,7 +245,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processRallyAction(
-            $this->freshVaros(), $this->player, $this->actionDef('rally_the_defenders')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('rally_the_defenders')
         );
 
         // Assert - one at a time, never a partial count
@@ -245,7 +263,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
         // Act - three calls against a cap of two
         for ($i = 0; $i < 3; $i++) {
             $this->heroBattleService->processRallyAction(
-                $this->freshVaros(), $this->player, $this->actionDef('rally_the_defenders')
+                $this->freshVaros(),
+                $this->player,
+                $this->actionDef('rally_the_defenders')
             );
         }
 
@@ -261,7 +281,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processRallyAction(
-            $this->freshVaros(), $this->player, $this->actionDef('rally_the_defenders')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('rally_the_defenders')
         );
 
         // Assert
@@ -280,7 +302,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $this->heroBattleService->processRallyAction(
-            $this->freshVaros(), $this->player, $this->actionDef('rally_the_defenders')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('rally_the_defenders')
         );
 
         // Assert - a fresh defender arrives
@@ -307,7 +331,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processChallengeAction(
-            $this->freshVaros(), $this->player, $this->actionDef('admirals_challenge')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('admirals_challenge')
         );
 
         // Assert
@@ -322,7 +348,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processChallengeAction(
-            $this->freshVaros(), $this->player, $this->actionDef('admirals_challenge')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('admirals_challenge')
         );
 
         // Assert
@@ -337,7 +365,9 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->heroBattleService->processChallengeAction(
-            $this->freshVaros(), $this->player, $this->actionDef('admirals_challenge')
+            $this->freshVaros(),
+            $this->player,
+            $this->actionDef('admirals_challenge')
         );
 
         // Assert
