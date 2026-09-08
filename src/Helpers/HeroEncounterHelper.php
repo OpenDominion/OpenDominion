@@ -430,6 +430,18 @@ class HeroEncounterHelper
                 'strategy' => 'pirate',
                 'abilities' => ['blade_flurry'],
             ],
+            'rex_lunae' => [
+                'name' => 'Rex Lunae',
+                'health' => 160,
+                'attack' => 35,
+                'defense' => 25,
+                'evasion' => 0,
+                'focus' => 10,
+                'counter' => 15,
+                'recover' => 0,
+                'strategy' => 'noctis',
+                'abilities' => ['hungering_moon'],
+            ],
         ]);
     }
 
@@ -559,6 +571,13 @@ class HeroEncounterHelper
                 'source' => 'Raid (The Tide of Vethara)',
                 'enemies' => [
                     ['key' => 'admiral_varos', 'name' => 'Admiral Varos'],
+                ],
+            ],
+            'rex_lunae' => [
+                'name' => 'Rex Lunae',
+                'source' => 'Raid (Plague of the Hungry Moon)',
+                'enemies' => [
+                    ['key' => 'rex_lunae', 'name' => 'Rex Lunae'],
                 ],
             ],
         ]);

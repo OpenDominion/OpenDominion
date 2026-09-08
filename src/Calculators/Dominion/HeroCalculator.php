@@ -572,6 +572,12 @@ class HeroCalculator
             $baseDefense -= 5;
         }
 
+        // Wide open while the curse is being cast
+        if ($target->current_action == 'hungering_moon') {
+            $moonDef = $this->heroHelper->getCombatActions()->get('hungering_moon');
+            $baseDefense -= $moonDef['attributes']['casting_vulnerability'] ?? 0;
+        }
+
         if ($target->current_action == 'defend') {
             $baseDefense *= 2;
             $baseDefense += $defendModifier;

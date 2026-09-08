@@ -224,6 +224,12 @@ class RaidActionService
             $dominionCombatant->save();
         }
 
+        // Rex Lunae grants Cleanse -- without it the curse cannot be answered
+        if ($encounterKey == 'rex_lunae') {
+            $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['cleanse']);
+            $dominionCombatant->save();
+        }
+
         foreach ($encounter['enemies'] as $enemy) {
             $enemyStats = $enemyDefinitions->get($enemy['key']);
             $enemyStats['name'] = $enemy['name'];

@@ -796,6 +796,45 @@ class HeroHelper
                     'default' => '%s\'s cutlass finds its mark for %s damage.',
                 ]
             ],
+            'hungering_moon' => [
+                'name' => 'Curse of the Hungry Moon',
+                'processor' => 'hungeringMoon',
+                'type' => 'hostile',
+                'limited' => false,
+                'special' => true,
+                'attributes' => [
+                    // Taken from the hero's *starting* maximum, so three misses converts
+                    // whatever they began with. A third of current health would asymptote.
+                    'max_health_loss_ratio' => 1 / 3,
+                    'transform_threshold_ratio' => 1 / 3,
+                    // It is wide open while casting -- strike it instead of guarding
+                    'casting_vulnerability' => 5,
+                    // Chance per eligible turn that it begins to reach
+                    'telegraph_chance' => 0.5,
+                    // Above this health it leaves a turn between curses so Cleanse is
+                    // always available; below it, curses can land back to back
+                    'frenzy_threshold' => 80,
+                    'transform_name' => 'Servus Lunae',
+                    'transform_defense_loss' => 5,
+                ],
+                'messages' => [
+                    'telegraph' => '%s begins casting the Curse of the Hungry Moon.',
+                    'cleansed' => '%s removes the curse before it takes hold.',
+                    'hit' => 'The curse takes hold, diminishing %s\'s humanity.',
+                    'transformed' => 'Little of %s\'s humanity remains. Servus Lunae stands in their place.',
+                    'converted' => 'Servus Lunae joins the pack.',
+                ]
+            ],
+            'cleanse' => [
+                'name' => 'Cleanse',
+                'processor' => 'cleanse',
+                'type' => 'self',
+                'limited' => true,
+                'special' => true,
+                'messages' => [
+                    'cleanse' => '%s draws on the well of silver light.',
+                ]
+            ],
             'admirals_orders' => [
                 'name' => 'Admiral\'s Orders',
                 'processor' => null,
@@ -886,6 +925,8 @@ class HeroHelper
             'shadow_strike' => 'Shadow Strike: Attack that cannot be evaded and deals +2 damage if the target is defending.',
             'snow_witch_curse' => 'Snow Witch\'s Curse: Every other turn, telegraphs a signature move that must be countered with the correct action. Choosing the wrong counter is catastrophic.',
             'admirals_orders' => 'Admiral\'s Orders: Every other turn, telegraphs an order to the crew one turn before it lands. Each order demands a different response, and the wrong answer is punished severely.',
+            'cleanse' => 'Cleanse: calls upon stored mana reserves to remove curses.',
+            'hungering_moon' => 'Curse of the Hungry Moon: If not cleansed immediately, permanently reduces the target\'s maximum health by one third. Defense value is reduced by 5 while casting.',
             'soul_harvest' => 'Soul Harvest: Absorbs the strength of fallen allies, growing more powerful with each death.',
             'soul_rend' => 'Soul Rend: When wounded, charges a devastating attack that deals massive damage if not defended.',
             'soul_tribute' => 'Soul Tribute: Upon death, empowers Dreadsoul Skullkeeper, increasing his attack and defense.',
@@ -963,6 +1004,11 @@ class HeroHelper
                 'name' => 'Warchief',
                 'type' => 'npc',
                 'options' => ['attack' => 3, 'counter' => 4, 'focus' => 2, 'recover' => 1]
+            ],
+            'noctis' => [
+                'name' => 'Noctis',
+                'type' => 'npc',
+                'options' => ['attack' => 3, 'counter' => 2, 'focus' => 1]
             ]
         ]);
     }

@@ -138,6 +138,12 @@ class HeroBattleService
             $dominionCombatant->save();
         }
 
+        // Rex Lunae grants Cleanse -- without it the curse cannot be answered
+        if ($encounter === 'rex_lunae') {
+            $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['cleanse']);
+            $dominionCombatant->save();
+        }
+
         if ($encounter == 'default') {
             $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
             $nonPlayerStats['name'] = 'Evil Twin';
@@ -412,6 +418,16 @@ class HeroBattleService
                 unset($status['telegraphed_move']);
                 $combatant->update(['status' => $status]);
                 return ['action' => $telegraphedMove, 'target' => null];
+            }
+        }
+
+        // The Hungry Moon: the curse takes hold the turn after it reaches out
+        if (in_array('hungering_moon', $combatant->abilities ?? [])) {
+            $status = $combatant->status ?? [];
+            if (!empty($status['curse_pending'])) {
+                unset($status['curse_pending']);
+                $combatant->update(['status' => $status]);
+                return ['action' => 'hungering_moon', 'target' => null];
             }
         }
 
@@ -1149,6 +1165,73 @@ class HeroBattleService
         ];
     }
 
+    public function processCleanseAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($actionDef['messages']['cleanse'], $combatant->name),
+        ];
+    }
+
+    /**
+     * The Hungry Moon takes maximum health rather than dealing damage. It cannot be
+     * healed back -- only prevented, by cleansing on the turn it takes hold.
+     */
+    public function processHungeringMoonAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $attributes = $actionDef['attributes'];
+        $messages = $actionDef['messages'];
+
+        if ($target->current_action === 'cleanse') {
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => sprintf($messages['cleansed'], $target->name),
+            ];
+        }
+
+        // Anchor every bite to what the hero began with, so three misses always converts
+        $status = $target->status ?? [];
+        $fullHealth = $status['full_health'] ?? $target->health;
+        $status['full_health'] = $fullHealth;
+        $target->status = $status;
+
+        $loss = (int) ceil($fullHealth * $attributes['max_health_loss_ratio']);
+        $target->health = max(0, $target->health - $loss);
+        if ($target->current_health > $target->health) {
+            $target->current_health = $target->health;
+        }
+
+        $description = sprintf($messages['hit'], $target->name);
+
+        // Nothing left to take -- the hero is converted rather than killed
+        if ($target->health <= 0) {
+            $target->current_health = 0;
+
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => $description . ' ' . sprintf($messages['converted'], $target->name),
+            ];
+        }
+
+        $transformThreshold = (int) ceil($fullHealth * $attributes['transform_threshold_ratio']);
+        if ($target->health <= $transformThreshold && empty($status['turned'])) {
+            $status['turned'] = true;
+            $target->status = $status;
+            $description .= ' ' . sprintf($messages['transformed'], $target->name);
+            $target->name = $attributes['transform_name'];
+            $target->defense = max(0, $target->defense - $attributes['transform_defense_loss']);
+        }
+
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => $description,
+        ];
+    }
+
     public function processPostCombat(HeroCombatant $combatant): string
     {
         if (in_array('dying_light', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
@@ -1471,6 +1554,26 @@ class HeroBattleService
                         'winters_breath' => "{$combatant->name} inhales deeply, drawing the mountain's frigid air into her lungs.",
                     ];
                     $description .= ' ' . ($telegraphMessages[$nextMove] ?? '');
+                }
+            }
+        }
+
+        // The Hungry Moon reaches for the hero a turn before it takes hold. The tell is
+        // free -- it never costs a turn of pressure -- and above the frenzy threshold it
+        // leaves a gap after each curse so the player's limited Cleanse is always ready.
+        if (in_array('hungering_moon', $combatant->abilities ?? []) && $combatant->current_health > 0) {
+            $moonDef = $this->heroHelper->getCombatActions()->get('hungering_moon');
+            $attributes = $moonDef['attributes'];
+            $status = $combatant->status ?? [];
+
+            $frenzied = $combatant->current_health < ($attributes['frenzy_threshold'] ?? 0);
+            $justTook = $combatant->last_action === 'hungering_moon';
+
+            if (empty($status['curse_pending']) && ($frenzied || !$justTook)) {
+                if (random_chance($attributes['telegraph_chance'] ?? 0.5)) {
+                    $status['curse_pending'] = true;
+                    $combatant->update(['status' => $status]);
+                    $description .= ' ' . sprintf($moonDef['messages']['telegraph'], $combatant->name);
                 }
             }
         }
