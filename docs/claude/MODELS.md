@@ -148,7 +148,8 @@ All use **SoftDeletes** and have `flagged_by` (array cast) for community moderat
 
 - **UserActivity** - Login/logout/action events with IP, device, status
 - **UserIdentity** - Browser fingerprints with count
-- **UserOrigin** - IP addresses per user with geolocation lookup
+- **UserOrigin** - IP addresses per user/dominion with count (relations: user, dominion, lookup)
+- **UserOriginLookup** - One row per IP with IPQS enrichment
 - **UserFeedback** - Endorsements between users per round
 - **DiscordUser** - Discord OAuth identity link
 - **DailyRanking** - Daily snapshots of dominion rankings by type

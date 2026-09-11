@@ -387,9 +387,13 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('invasions', 'Staff\Administrator\DominionController@getInvasions')->name('invasions');
         $router->get('theft', 'Staff\Administrator\DominionController@getTheft')->name('theft');
         $router->get('repeat-invasions', 'Staff\Administrator\DominionController@getRepeatInvasions')->name('repeat-invasions');
+        $router->get('ip-lookups', 'Staff\Administrator\OriginLookupController@getIndex')->name('ip-lookups');
+        $router->post('ip-lookups', 'Staff\Administrator\OriginLookupController@postIndex');
+        $router->get('ip-lookups/report', 'Staff\Administrator\OriginLookupController@getReport')->name('ip-lookups.report');
 
         $router->resource('dominions', 'Staff\Administrator\DominionController');
         $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');
+        $router->post('users/{user}/origin-lookup', 'Staff\Administrator\UserController@performOriginLookup')->name('users.origin-lookup');
         $router->resource('users', 'Staff\Administrator\UserController');
 
         // Raids

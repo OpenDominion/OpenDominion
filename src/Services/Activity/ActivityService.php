@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Services\Activity;
 
-use GuzzleHttp\Client;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Jenssegers\Agent\Agent;
 use OpenDominion\Models\User;
 use OpenDominion\Models\UserActivity;
@@ -12,6 +14,23 @@ use OpenDominion\Models\UserOriginLookup;
 
 class ActivityService
 {
+    /**
+     * IPQS response keys mapped to the user_origin_lookups columns they populate.
+     */
+    private const LOOKUP_COLUMNS = [
+        'ISP' => 'isp',
+        'organization' => 'organization',
+        'country_code' => 'country',
+        'region' => 'region',
+        'city' => 'city',
+        'proxy' => 'proxy',
+        'vpn' => 'vpn',
+        'tor' => 'tor',
+        'active_vpn' => 'active_vpn',
+        'active_tor' => 'active_tor',
+        'fraud_score' => 'score',
+    ];
+
     /**
      * Records an activity event for a user.
      *
@@ -138,58 +157,69 @@ class ActivityService
     }
 
     /**
-     * Performs a user origin lookup
+     * Performs a user origin lookup against IPQS.
+     *
+     * Lookup rows that already hold data are not requested again. A failed
+     * request (including an IPQS response with success=false, such as an
+     * invalid key or exhausted quota) leaves the row untouched so it can be retried.
      *
      * @param User $user
      * @param string|null $ip_address
-     * @return void
+     * @return bool Whether the lookup row holds IPQS data afterwards
      */
-    public function performLookup(User $user, string|null $ip_address): void
+    public function performLookup(User $user, string|null $ip_address): bool
     {
         if (!$ip_address || $ip_address == '127.0.0.1') {
-            return;
+            return false;
         }
 
         $origin = UserOriginLookup::where('ip_address', $ip_address)->first();
-        if ($origin && $origin->data === null) {
-            $key = config('app.ipqs_api_key');
-            if ($key) {
-                $client = new Client();
-                $lookupResponse = $client->get("https://www.ipqualityscore.com/api/json/ip/{$key}/{$ip_address}", [
-                    'verify' => false,
-                    'query' => [
-                        'userID' => $user->id,
-                        'strictness' => 1,
-                        'allow_public_access_points' => true
-                    ]
+        if (!$origin) {
+            return false;
+        }
+        if ($origin->data !== null) {
+            return true;
+        }
+
+        $key = config('app.ipqs_api_key');
+        if (!$key) {
+            return false;
+        }
+
+        try {
+            $lookupResponse = Http::withoutVerifying()
+                ->timeout(5)
+                ->get("https://www.ipqualityscore.com/api/json/ip/{$key}/{$ip_address}", [
+                    'userID' => $user->id,
+                    'strictness' => 1,
+                    'allow_public_access_points' => true
                 ]);
-                if ($lookupResponse->getStatusCode() == 200) {
-                    $result = json_decode($lookupResponse->getBody()->getContents(), true);
-                    if (isset($result['ISP'])) {
-                        $origin->isp = $result['ISP'];
-                    }
-                    if (isset($result['organization'])) {
-                        $origin->organization = $result['organization'];
-                    }
-                    if (isset($result['country_code'])) {
-                        $origin->country = $result['country_code'];
-                    }
-                    if (isset($result['region'])) {
-                        $origin->region = $result['region'];
-                    }
-                    if (isset($result['city'])) {
-                        $origin->city = $result['city'];
-                    }
-                    if (isset($result['vpn'])) {
-                        $origin->vpn = $result['vpn'];
-                    }
-                    if (isset($result['fraud_score'])) {
-                        $origin->score = $result['fraud_score'];
-                    }
-                    $origin->data = $result;
-                    $origin->save();
-                }
+        } catch (ConnectionException $e) {
+            Log::warning('IPQS lookup connection failed', [
+                'ip_address' => $ip_address,
+                'error' => str_replace($key, '[redacted]', $e->getMessage()),
+            ]);
+            return false;
+        }
+
+        $result = $lookupResponse->json();
+        if (!$lookupResponse->successful() || !is_array($result) || empty($result['success'])) {
+            Log::warning('IPQS lookup failed', [
+                'ip_address' => $ip_address,
+                'status' => $lookupResponse->status(),
+                'message' => is_array($result) ? ($result['message'] ?? null) : null,
+            ]);
+            return false;
+        }
+
+        foreach (self::LOOKUP_COLUMNS as $responseKey => $column) {
+            if (isset($result[$responseKey])) {
+                $origin->$column = $result[$responseKey];
             }
         }
+        $origin->data = $result;
+        $origin->save();
+
+        return true;
     }
 }

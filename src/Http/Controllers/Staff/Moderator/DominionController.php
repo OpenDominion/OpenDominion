@@ -15,6 +15,7 @@ use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\UserActivity;
 use OpenDominion\Models\UserOrigin;
+use OpenDominion\Models\UserOriginLookup;
 use OpenDominion\Services\Activity\ActivityEvent;
 use OpenDominion\Services\Activity\ActivityService;
 
@@ -66,12 +67,20 @@ class DominionController extends AbstractController
 
         $otherUserCount = $otherUserIps->count() - 1;
 
+        $lookups = UserOriginLookup::query()
+            ->whereIn('ip_address', $ipsUsed)
+            ->whereNotNull('data')
+            ->get()
+            ->filter->hasAnonymizerData();
+
         return view('pages.staff.moderator.dominions.show', [
             'dominion' => $dominion,
             'gameEvents' => $gameEvents,
             'userLogins' => $userLogins,
             'ipsUsedCount' => $ipsUsedCount,
-            'otherUserCount' => $otherUserCount
+            'otherUserCount' => $otherUserCount,
+            'lookedUpIpCount' => $lookups->count(),
+            'anonymizerFlags' => UserOriginLookup::combineAnonymizerFlags($lookups),
         ]);
     }
 
