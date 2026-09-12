@@ -316,6 +316,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/rename')->uses('Dominion\MiscController@postRenameDominion')->name('misc.rename');
             $router->get('misc/settings')->uses('Dominion\MiscController@getDominionSettings')->name('misc.settings');
             $router->post('misc/settings')->uses('Dominion\MiscController@postDominionSettings');
+            $router->post('misc/api-key/generate')->uses('Dominion\MiscController@postGenerateApiKey')->name('misc.api-key.generate');
+            $router->post('misc/api-key/revoke')->uses('Dominion\MiscController@postRevokeApiKey')->name('misc.api-key.revoke');
             $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
             $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick');
 

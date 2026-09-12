@@ -6,7 +6,9 @@ use DB;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
@@ -493,6 +495,56 @@ class MiscController extends AbstractDominionController
 
         $request->session()->flash('alert-success', 'Your settings have been updated!');
         return redirect()->route('dominion.misc.settings');
+    }
+
+    public function postGenerateApiKey(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+
+            if ($dominion->round->hasEnded()) {
+                throw new GameException('API keys cannot be generated for dominions in ended rounds.');
+            }
+
+            $dominion->api_key = $this->generateUniqueApiKey();
+            $dominion->save();
+        } catch (GameException $e) {
+            return redirect()->back()->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'A new API key has been generated. Copy it now — you can view it again later on this page.');
+        return redirect()->route('dominion.misc.settings');
+    }
+
+    public function postRevokeApiKey(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+
+            $dominion->api_key = null;
+            $dominion->save();
+        } catch (GameException $e) {
+            return redirect()->back()->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Your API key has been revoked.');
+        return redirect()->route('dominion.misc.settings');
+    }
+
+    private function generateUniqueApiKey(): string
+    {
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $key = Str::random(64);
+            if (!Dominion::where('api_key', $key)->exists()) {
+                return $key;
+            }
+        }
+
+        throw new GameException('Unable to generate a unique API key. Please try again.');
     }
 
     /**
