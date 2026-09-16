@@ -253,6 +253,7 @@ class SpellHelper
             'apply_burning' => 'chance to inflict Burning if at war',
             'destroy_peasants' => 'Kills %g%% unprotected peasants',
             'destroy_resource_food' => 'Destroys %g%% crops',
+            'destroy_resource_mana' => 'Destroys %g%% mana',
             'destroy_improvement_science' => 'Destroys %g%% science',
             'destroy_improvement_keep' => 'Destroys %g%% keep',
             'destroy_improvement_forges' => 'Destroys %g%% forges',
