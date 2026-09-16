@@ -118,6 +118,15 @@ class SpellActionService
 
     public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 3;
 
+    /** @var string[] Improvements that Lightning Bolt damages and Repair Castle restores */
+    public const REPAIRABLE_IMPROVEMENTS = ['science', 'keep', 'forges', 'walls'];
+
+    /** @var int Hours before a repair is finished */
+    public const REPAIR_HOURS = 1;
+
+    /** @var string[] Improvements whose repairs Ruin can slow, the ones that decide invasions */
+    public const DELAYABLE_IMPROVEMENTS = ['forges', 'walls'];
+
     /**
      * Casts a magic spell for a dominion, optionally aimed at another dominion.
      *
@@ -581,6 +590,10 @@ class SpellActionService
 
         if ($target->user_id == null) {
             throw new GameException('You cannot cast friendly spells on bots');
+        }
+
+        if ($spell->hasPerk('repair_improvements') && $this->getRepairableDamage($target) <= 0) {
+            throw new GameException("{$target->name}'s castle is undamaged, your wizards have nothing to repair");
         }
 
         if ($this->spellHelper->isInstantSpell($spell)) {
@@ -1178,7 +1191,20 @@ class SpellActionService
 
         foreach ($spell->perks as $perk) {
             $perksToIgnore = collect(['war_cancels']);
-            if (Str::startsWith($perk->key, 'reduce_duration_')) {
+            if ($perk->key === 'repair_improvements') {
+                $repairs = $this->repairImprovements($target, (float)$perk->pivot->value);
+
+                if ($repairs['repaired'] > 0) {
+                    $totalDamage += $repairs['repaired'];
+                    $damageDealt[] = sprintf(
+                        '%s %s underway%s',
+                        number_format($repairs['repaired']),
+                        dominion_attr_display('improvement', $repairs['repaired']),
+                        $repairs['delayed'] ? ', slowed by Ruin' : ''
+                    );
+                }
+                continue;
+            } elseif (Str::startsWith($perk->key, 'reduce_duration_')) {
                 $affected = $this->reduceSpellDuration(
                     $dominion,
                     $target,
@@ -1236,6 +1262,15 @@ class SpellActionService
                 $damage = min($damage, $peasantsUnprotected);
                 if ($damage == $peasantsUnprotected) {
                     $applyBurning = true;
+                }
+            }
+
+            // Permanent improvement damage can be repaired later
+            if (Str::startsWith($attr, 'improvement_') && $damage > 0) {
+                $improvement = str_replace('improvement_', '', $attr);
+                if (in_array($improvement, static::REPAIRABLE_IMPROVEMENTS, true)) {
+                    $ledger = "improvement_damage_{$improvement}";
+                    $target->{$ledger} = (int)$target->{$ledger} + $damage;
                 }
             }
 
@@ -1302,6 +1337,80 @@ class SpellActionService
             'applyBurning' => $applyBurning,
             'statusEffect' => $statusEffect,
         ];
+    }
+
+    /**
+     * Repairs a percentage of the castle damage recorded against $target.
+     *
+     * Each improvement is repaired in proportion to the damage it took, so a
+     * dominion can never be repaired past what it invested. Repairs land on the
+     * next tick rather than immediately, so that an attacker who scouts a castle
+     * knows what they are invading into for the rest of the hour. The damage is
+     * struck from the ledger as the repair is queued, so repeat casts cannot
+     * claim the same damage twice.
+     *
+     * @param Dominion $target
+     * @param float $percentage
+     * @return array{repaired: int, delayed: bool}
+     */
+    protected function repairImprovements(Dominion $target, float $percentage): array
+    {
+        // Ruin slows repairs to the improvements that decide invasions
+        $repairDelay = (int)$target->getSpellPerkValue('repair_delay', ['hostile', 'war', 'effect']);
+
+        $repaired = 0;
+        $delayed = false;
+        $repairs = [];
+        $delayedRepairs = [];
+
+        foreach (static::REPAIRABLE_IMPROVEMENTS as $improvement) {
+            $damageTaken = (int)$target->{"improvement_damage_{$improvement}"};
+
+            if ($damageTaken <= 0) {
+                continue;
+            }
+
+            $amount = min($damageTaken, (int)rceil($damageTaken * $percentage / 100));
+            $target->{"improvement_damage_{$improvement}"} -= $amount;
+            $repaired += $amount;
+
+            if ($repairDelay > static::REPAIR_HOURS && in_array($improvement, static::DELAYABLE_IMPROVEMENTS, true)) {
+                $delayedRepairs["improvement_{$improvement}"] = $amount;
+                $delayed = true;
+            } else {
+                $repairs["improvement_{$improvement}"] = $amount;
+            }
+        }
+
+        if ($repairs !== []) {
+            $this->queueService->queueResources('operations', $target, $repairs, static::REPAIR_HOURS);
+        }
+
+        if ($delayedRepairs !== []) {
+            $this->queueService->queueResources('operations', $target, $delayedRepairs, $repairDelay);
+        }
+
+        return [
+            'repaired' => $repaired,
+            'delayed' => $delayed,
+        ];
+    }
+
+    /**
+     * Returns the total castle damage recorded against $dominion.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    protected function getRepairableDamage(Dominion $dominion): int
+    {
+        $damage = 0;
+
+        foreach (static::REPAIRABLE_IMPROVEMENTS as $improvement) {
+            $damage += (int)$dominion->{"improvement_damage_{$improvement}"};
+        }
+
+        return $damage;
     }
 
     /**
@@ -1467,7 +1576,7 @@ class SpellActionService
         $warRewardsString = '';
 
         // Resilience Gains
-        if (in_array($spellKey, ['fireball', 'lightning_bolt'])) {
+        if (in_array($spellKey, ['fireball'])) {
             $meterGain = $this->opsCalculator->getSpellMeterGain($target, $spellKey);
             $target->{"{$spellKey}_meter"} += $meterGain;
         }

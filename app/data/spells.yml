@@ -96,7 +96,6 @@ lightning_bolt:
     destroy_improvement_keep: 0.2
     destroy_improvement_forges: 0.2
     destroy_improvement_walls: 0.2
-    apply_lightning_storm: 200
 cyclone:
   name: Cyclone
   category: wonder
@@ -757,3 +756,21 @@ fractured:
   duration: 6
   perks:
     blocks_magic_ward: 1
+repair_castle:
+  name: Repair Castle
+  category: friendly
+  school: transmutation
+  cost_mana: 2
+  cost_strength: 3
+  cooldown: 3
+  perks:
+    repair_improvements: 0.2
+ruin:
+  name: Ruin
+  category: war
+  school: transmutation
+  cost_mana: 3
+  cost_strength: 5
+  duration: 4
+  perks:
+    repair_delay: 6

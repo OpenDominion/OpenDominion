@@ -280,6 +280,8 @@ class SpellHelper
             'invalid_royal_guard' => 'Cannot be cast while in the Royal Guard',
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'apply_fractured' => 'Applies Fractured upon expiration',
+            'repair_improvements' => 'Repairs %g%% of castle damage taken from Lightning Bolt',
+            'repair_delay' => 'Repairs to forges and walls take %g hours to complete',
             'blocks_magic_ward' => 'Prevents Magic Ward from being cast',
             'reduce_duration_magic_ward' => 'Removes %g hours from the duration of Magic Ward',
             'immune_burning' => 'Immune to Burning',

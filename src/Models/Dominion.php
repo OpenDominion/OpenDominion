@@ -53,6 +53,10 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $improvement_spires
  * @property int $improvement_forges
  * @property int $improvement_walls
+ * @property int $improvement_damage_science
+ * @property int $improvement_damage_keep
+ * @property int $improvement_damage_forges
+ * @property int $improvement_damage_walls
  * @property int $improvement_harbor
  * @property int $military_draftees
  * @property int $military_unit1
@@ -167,6 +171,10 @@ class Dominion extends AbstractModel
         'improvement_spires' => 'integer',
         'improvement_forges' => 'integer',
         'improvement_walls' => 'integer',
+        'improvement_damage_science' => 'integer',
+        'improvement_damage_keep' => 'integer',
+        'improvement_damage_forges' => 'integer',
+        'improvement_damage_walls' => 'integer',
         'improvement_harbor' => 'integer',
         'military_draftees' => 'integer',
         'military_unit1' => 'integer',
