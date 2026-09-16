@@ -30,6 +30,11 @@ class OpsCalculator
     protected const FIREBALL_METER_GAIN = 10;
     protected const LIGHTNING_BOLT_METER_GAIN = 10;
 
+    /**
+     * @var bool Whether spy and wizard ratios are saturated before success rate calculations
+     */
+    protected const USE_ADJUSTED_POWER = true;
+
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -93,6 +98,37 @@ class OpsCalculator
     }
 
     /**
+     * Returns the adjusted spy or wizard power used to calculate success rates.
+     *
+     * A hyperbolic saturation centered on a ratio of 1.0 and approaching a
+     * maximum of 2.0, so that each additional point of ratio is worth less than
+     * the last. Raw ratios are still used everywhere else.
+     *
+     * @param float $ratio
+     * @return float
+     */
+    public function getAdjustedPower(float $ratio): float
+    {
+        return (2 * $ratio) / ($ratio + 1);
+    }
+
+    /**
+     * Returns the relative ratio of the attacker used to calculate success rates.
+     *
+     * @param float $selfRatio
+     * @param float $targetRatio
+     * @return float
+     */
+    protected function getRelativeRatio(float $selfRatio, float $targetRatio): float
+    {
+        if (!static::USE_ADJUSTED_POWER) {
+            return $selfRatio / $targetRatio;
+        }
+
+        return $this->getAdjustedPower($selfRatio) / $this->getAdjustedPower($targetRatio);
+    }
+
+    /**
      * Returns the chance of success for an info operation or spell.
      *
      * @param float $selfRatio
@@ -105,7 +141,7 @@ class OpsCalculator
             return 1;
         }
 
-        $relativeRatio = $selfRatio / $targetRatio;
+        $relativeRatio = $this->getRelativeRatio($selfRatio, $targetRatio);
         $successChance = 0.8 ** (2 / (($relativeRatio * 1.4) ** 1.2));
         $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.98);
@@ -124,7 +160,7 @@ class OpsCalculator
             return 1;
         }
 
-        $relativeRatio = $selfRatio / $targetRatio;
+        $relativeRatio = $this->getRelativeRatio($selfRatio, $targetRatio);
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
         $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.97);
@@ -143,7 +179,7 @@ class OpsCalculator
             return 1;
         }
 
-        $relativeRatio = $selfRatio / $targetRatio;
+        $relativeRatio = $this->getRelativeRatio($selfRatio, $targetRatio);
         $successChance = 0.7 ** (2 / (($relativeRatio * 1.3) ** 1.2));
         $successChance += $this->getSuccessModifier($selfStrength, $targetStrength);
         return clamp($successChance, 0.01, 0.97);
