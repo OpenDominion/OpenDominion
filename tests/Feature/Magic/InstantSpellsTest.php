@@ -25,7 +25,7 @@ class InstantSpellsTest extends AbstractBrowserKitTestCase
     use DatabaseTransactions;
 
     /** @var string[] Perk prefixes the shared resolver treats as instant effects */
-    protected const INSTANT_PERK_PREFIXES = ['destroy_', 'convert_'];
+    protected const INSTANT_PERK_PREFIXES = ['destroy_', 'convert_', 'reduce_duration_'];
 
     /** @var SpellActionService */
     protected $spellActionService;

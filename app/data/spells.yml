@@ -730,3 +730,30 @@ satiated_thirst:
     - vampire
   perks:
     offense: -10
+magic_ward:
+  name: Magic Ward
+  category: self
+  school: abjuration
+  cost_mana: 4
+  cost_strength: 5
+  duration: 24
+  perks:
+    enemy_spell_damage: -50
+    apply_fractured: 1
+break_ward:
+  name: Break Ward
+  category: war
+  school: abjuration
+  cost_mana: 3
+  cost_strength: 5
+  perks:
+    reduce_duration_magic_ward: 2
+fractured:
+  name: Fractured
+  category: effect
+  school: abjuration
+  cost_mana: 0
+  cost_strength: 0
+  duration: 6
+  perks:
+    blocks_magic_ward: 1

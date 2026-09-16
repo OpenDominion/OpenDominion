@@ -762,19 +762,29 @@ class TickService
     protected function performSpellEffects(array $dominionIds)
     {
         DB::transaction(function () use ($dominionIds) {
-            // Convert status effects
-            $burningSpell = Spell::where('key', 'burning')->first();
-            $lightningStormSpell = Spell::where('key', 'lightning_storm')->first();
-            $rejuvenationSpell = Spell::where('key', 'rejuvenation')->first();
+            // Convert expiring spells into the status effect they leave behind
+            // (Burning and Lightning Storm into Rejuvenation, Magic Ward into Fractured)
+            $expirationPerks = SpellPerkType::where('key', 'like', 'apply_%')->with('spells')->get();
+            foreach ($expirationPerks as $expirationPerk) {
+                $statusEffectSpell = Spell::where('key', str_replace('apply_', '', $expirationPerk->key))->first();
+                if ($statusEffectSpell === null) {
+                    continue;
+                }
 
-            if (($burningSpell || $lightningStormSpell) && $rejuvenationSpell) {
+                $expiringSpellIds = $expirationPerk->spells
+                    ->where('category', '!=', 'war')
+                    ->pluck('id');
+                if ($expiringSpellIds->isEmpty()) {
+                    continue;
+                }
+
                 DB::table('dominion_spells')
                     ->whereIn('dominion_id', $dominionIds)
-                    ->whereIn('spell_id', [$burningSpell->id, $lightningStormSpell->id])
+                    ->whereIn('spell_id', $expiringSpellIds)
                     ->where('duration', '<=', 0)
                     ->update([
-                        'spell_id' => $rejuvenationSpell->id,
-                        'duration' => $rejuvenationSpell->duration
+                        'spell_id' => $statusEffectSpell->id,
+                        'duration' => $statusEffectSpell->duration
                     ]);
             }
 

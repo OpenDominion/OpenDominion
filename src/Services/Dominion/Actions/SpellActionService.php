@@ -168,6 +168,19 @@ class SpellActionService
             throw new GameException('You must be a member of the Shadow League to cast this spell');
         }
 
+        // Status effects can block a spell from being cast at all (Fractured)
+        if ($dominion->getSpellPerkValue("blocks_{$spell->key}", ['self', 'friendly', 'hostile', 'war', 'effect'])) {
+            $blockingSpell = $dominion->spells->first(function ($activeSpell) use ($spell) {
+                return $activeSpell->hasPerk("blocks_{$spell->key}");
+            });
+            throw new GameException(sprintf(
+                'Your dominion is %s and cannot cast %s for another %s hours',
+                $blockingSpell->name,
+                $spell->name,
+                $blockingSpell->pivot->duration
+            ));
+        }
+
         if ($this->spellHelper->isOffensiveSpell($spell)) {
             if ($target === null) {
                 throw new GameException("You must select a target when casting offensive spell {$spell->name}");
@@ -191,6 +204,18 @@ class SpellActionService
 
             if ($dominion->realm->id === $target->realm->id) {
                 throw new GameException('Nice try, but you cannot cast spells on your realmies');
+            }
+
+            // Spells that strip a duration need that duration to be there
+            foreach ($spell->perks as $perk) {
+                if (!Str::startsWith($perk->key, 'reduce_duration_')) {
+                    continue;
+                }
+
+                $affectedSpell = $this->spellHelper->getSpellByKey(str_replace('reduce_duration_', '', $perk->key));
+                if ($affectedSpell !== null && !$this->spellCalculator->isSpellActive($target, $affectedSpell->key)) {
+                    throw new GameException("{$target->name} is not protected by {$affectedSpell->name}, your wizards have nothing to unravel");
+                }
             }
         }
 
@@ -856,6 +881,7 @@ class SpellActionService
             $damageDealt = $instantResult['effects'];
             $totalDamage = $instantResult['damage'];
             $applyBurning = $instantResult['applyBurning'];
+            $instantStatusEffect = $instantResult['statusEffect'];
 
             // Combine lightning bolt damage into single string
             if ($spell->key === 'lightning_bolt') {
@@ -884,13 +910,13 @@ class SpellActionService
             $damageString = generate_sentence_from_array($damageDealt);
 
             // Apply Status Effects
-            $statusEffect = null;
+            $statusEffect = $instantStatusEffect;
             $statusEffectString = '';
-            if (!$spellReflected && $warDeclared) {
+            if (!$spellReflected && $warDeclared && $statusEffect === null) {
                 $statusEffect = $this->handleStatusEffects($dominion, $target, $spell, $applyBurning, $mutualWarDeclared);
-                if ($statusEffect !== null) {
-                    $statusEffectString = "You inflicted {$statusEffect}.";
-                }
+            }
+            if ($statusEffect !== null) {
+                $statusEffectString = "You inflicted {$statusEffect}.";
             }
 
             $this->notificationService
@@ -1148,10 +1174,29 @@ class SpellActionService
         $damageDealt = [];
         $totalDamage = 0;
         $applyBurning = false;
+        $statusEffect = null;
 
         foreach ($spell->perks as $perk) {
             $perksToIgnore = collect(['war_cancels']);
-            if (Str::startsWith($perk->key, 'destroy_')) {
+            if (Str::startsWith($perk->key, 'reduce_duration_')) {
+                $affected = $this->reduceSpellDuration(
+                    $dominion,
+                    $target,
+                    str_replace('reduce_duration_', '', $perk->key),
+                    (int)$perk->pivot->value
+                );
+
+                if ($affected === null) {
+                    continue;
+                }
+
+                $totalDamage += $affected['hours'];
+                $damageDealt[] = $affected['effect'];
+                if ($affected['statusEffect'] !== null) {
+                    $statusEffect = $affected['statusEffect'];
+                }
+                continue;
+            } elseif (Str::startsWith($perk->key, 'destroy_')) {
                 $attr = str_replace('destroy_', '', $perk->key);
                 $convertAttr = null;
             } elseif (Str::startsWith($perk->key, 'convert_')) {
@@ -1255,7 +1300,80 @@ class SpellActionService
             'damage' => $totalDamage,
             'effects' => $damageDealt,
             'applyBurning' => $applyBurning,
+            'statusEffect' => $statusEffect,
         ];
+    }
+
+    /**
+     * Strips hours from a spell active on $target.
+     *
+     * When the remaining duration runs out the spell expires early, applying
+     * whatever status effect it would have applied on its own expiry.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $spellKey
+     * @param int $hours
+     * @return array{hours: int, effect: string, statusEffect: string|null}|null
+     */
+    protected function reduceSpellDuration(Dominion $dominion, Dominion $target, string $spellKey, int $hours): ?array
+    {
+        $activeSpell = $target->spells->where('key', $spellKey)->first();
+
+        if ($activeSpell === null) {
+            return null;
+        }
+
+        $hoursRemoved = min($hours, (int)$activeSpell->pivot->duration);
+        $remaining = (int)$activeSpell->pivot->duration - $hoursRemoved;
+        $statusEffect = null;
+
+        if ($remaining > 0) {
+            $activeSpell->pivot->duration = $remaining;
+            $activeSpell->pivot->save();
+        } else {
+            $statusEffectSpell = $this->getExpirationEffect($activeSpell);
+
+            DominionSpell::where([
+                'dominion_id' => $target->id,
+                'spell_id' => $activeSpell->id,
+            ])->delete();
+
+            if ($statusEffectSpell !== null) {
+                DominionSpell::create([
+                    'dominion_id' => $target->id,
+                    'spell_id' => $statusEffectSpell->id,
+                    'duration' => $statusEffectSpell->duration,
+                    'cast_by_dominion_id' => $dominion->id,
+                ]);
+                $statusEffect = $statusEffectSpell->name;
+            }
+
+            $target->unsetRelation('spells');
+        }
+
+        return [
+            'hours' => $hoursRemoved,
+            'effect' => sprintf('%s hours of %s', number_format($hoursRemoved), $activeSpell->name),
+            'statusEffect' => $statusEffect,
+        ];
+    }
+
+    /**
+     * Returns the status effect a spell applies when it expires, if any.
+     *
+     * @param Spell $spell
+     * @return Spell|null
+     */
+    protected function getExpirationEffect(Spell $spell): ?Spell
+    {
+        foreach ($spell->perks as $perk) {
+            if (Str::startsWith($perk->key, 'apply_')) {
+                return $this->spellHelper->getSpellByKey(str_replace('apply_', '', $perk->key));
+            }
+        }
+
+        return null;
     }
 
     /**
