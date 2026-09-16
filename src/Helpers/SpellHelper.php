@@ -129,6 +129,21 @@ class SpellHelper
         return $spell->category == 'self' && !empty($spell->races);
     }
 
+    /**
+     * Returns whether a spell resolves immediately instead of lasting a number of hours.
+     *
+     * Every category can have instant and duration spells. A spell is one or
+     * the other, never both: lingering effects of an instant spell are applied
+     * as a separate status effect, the way Fireball applies Burning.
+     *
+     * @param Spell $spell
+     * @return bool
+     */
+    public function isInstantSpell(Spell $spell): bool
+    {
+        return !$spell->duration;
+    }
+
     public function isOffensiveSpell(Spell $spell): bool
     {
         return !in_array($spell->category, ['self', 'friendly']);

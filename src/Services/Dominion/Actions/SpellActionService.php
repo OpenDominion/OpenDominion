@@ -306,11 +306,14 @@ class SpellActionService
             }
 
             if ($target == null) {
-                $dominion->save([
+                $delta = [
                     'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
                     'action' => $spell->key,
-                    'queue' => ['active_spells' => [$spell->key => $result['duration']]]
-                ]);
+                ];
+                if (isset($result['duration'])) {
+                    $delta['queue'] = ['active_spells' => [$spell->key => $result['duration']]];
+                }
+                $dominion->save($delta);
             } else {
                 $dominion->save([
                     'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
@@ -358,6 +361,18 @@ class SpellActionService
      */
     protected function castSelfSpell(Dominion $dominion, Spell $spell): array
     {
+        $this->applySelfSpellPerks($dominion, $spell);
+
+        if ($this->spellHelper->isInstantSpell($spell)) {
+            $result = $this->applyInstantPerks($dominion, $dominion, $spell);
+
+            return [
+                'success' => true,
+                'message' => $this->getInstantResultMessage($result['effects'], 'your dominion'),
+                'damage' => $result['damage'],
+            ];
+        }
+
         $duration = $this->spellCalculator->getSpellDuration($dominion, $spell);
 
         // Wonders
@@ -383,22 +398,6 @@ class SpellActionService
                 'duration' => $duration,
                 'cast_by_dominion_id' => $dominion->id,
             ]);
-        }
-
-        foreach ($spell->perks as $perk) {
-            if (Str::startsWith($perk->key, 'sacrifice_')) {
-                $attr = str_replace('sacrifice_', '', $perk->key);
-                $percentage = $perk->pivot->value / 100;
-                $dominion->{$attr} -= round($dominion->{$attr} * $percentage);
-            }
-
-            if (Str::startsWith($perk->key, 'cancels_')) {
-                $spellToCancel = str_replace('cancels_', '', $perk->key);
-                $activeSpells = $dominion->spells->keyBy('key');
-                if ($activeSpells->has($spellToCancel)) {
-                    $activeSpells->get($spellToCancel)->pivot->delete();
-                }
-            }
         }
 
         return [
@@ -557,6 +556,25 @@ class SpellActionService
 
         if ($target->user_id == null) {
             throw new GameException('You cannot cast friendly spells on bots');
+        }
+
+        if ($this->spellHelper->isInstantSpell($spell)) {
+            $result = $this->applyInstantPerks($dominion, $target, $spell);
+
+            // Inform target that they received a friendly spell
+            $this->notificationService
+                ->queueNotification('received_friendly_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spell->key,
+                    'spellName' => $spell->name,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+
+            return [
+                'success' => true,
+                'message' => $this->getInstantResultMessage($result['effects'], 'your target'),
+                'damage' => $result['damage'],
+            ];
         }
 
         $activeSpell = $target->spells->find($spell->id);
@@ -833,108 +851,11 @@ class SpellActionService
             }
         } else {
             // Cast spell instantly
-            $damageDealt = [];
-            $totalDamage = 0;
-            $applyBurning = false;
             $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($target, $spell->key, $dominion);
-
-            foreach ($spell->perks as $perk) {
-                $perksToIgnore = collect(['war_cancels']);
-                if (Str::startsWith($perk->key, 'destroy_')) {
-                    $attr = str_replace('destroy_', '', $perk->key);
-                    $convertAttr = null;
-                } elseif (Str::startsWith($perk->key, 'convert_')) {
-                    $components = Str::of($perk->key)->replace('convert_', '')->explode('_to_');
-                    list($attr, $convertAttr) = $components;
-                } elseif ($perksToIgnore->has($perk->key) || Str::startsWith($perk->key, 'apply_') || Str::startsWith($perk->key, 'immune_')) {
-                    continue;
-                } else {
-                    throw new GameException("Unrecognized perk {$perk->key}.");
-                }
-
-                $attrValue = $target->{$attr};
-                if ($attr == 'peasants') {
-                    // Account for peasants protected from Fireball
-                    $peasantsUnprotected = $this->opsCalculator->getPeasantsUnprotected($target);
-                    if ($peasantsUnprotected == 0) {
-                        throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to burn.");
-                    }
-                    $attrValue = $this->opsCalculator->getPeasantsVulnerable($target);
-                } elseif (Str::startsWith($attr, 'improvement_')) {
-                    $improvementsVulnerable = $this->opsCalculator->getImprovementsVulnerable($target);
-                    if ($improvementsVulnerable == 0) {
-                        throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to destroy.");
-                    }
-                }
-
-                // Cap damage reduction at 80%
-                $baseDamage = $perk->pivot->value / 100;
-                $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
-
-                if ($attr == 'peasants') {
-                    // Cap Fireball damage by protection
-                    $damage = min($damage, $peasantsUnprotected);
-                    if ($damage == $peasantsUnprotected) {
-                        $applyBurning = true;
-                    }
-                }
-
-                // Temporary lightning damage
-                if (Str::startsWith($attr, 'improvement_') && $damage > 0) {
-                    $lightningStormSpell = $target->spells->where('key', 'lightning_storm')->first();
-                    if ($lightningStormSpell !== null) {
-                        $lightningPerkValue = $target->getSpellPerkValue('lightning_storm', ['effect']) / 100;
-                        $amount = round($damage * $lightningPerkValue);
-                        $duration = $lightningStormSpell->pivot->duration;
-                        if ($amount > 0) {
-                            $this->queueService->queueResources(
-                                'operations',
-                                $target,
-                                [$attr => $amount],
-                                $duration
-                            );
-                            $damage += $amount;
-                        }
-                    }
-                }
-
-                // Immortal Wizards
-                if ($attr == 'military_wizards' && $target->race->getPerkValue('immortal_wizards') != 0) {
-                    $damage = 0;
-                }
-
-                $target->{$attr} -= $damage;
-                if ($convertAttr !== null) {
-                    if (Str::startsWith($convertAttr, 'self_') && !$spellReflected) {
-                        $convertAttr = str_replace('self_', '', $convertAttr);
-                        $converted = $damage;
-                        if (Str::startsWith($convertAttr, 'military_')) {
-                            // Military Conversions
-                            $converted = round($damage * 0.05);
-                        }
-                        $this->queueService->queueResources(
-                            'invasion',
-                            $dominion,
-                            [$convertAttr => $converted],
-                            12
-                        );
-                    } else {
-                        $target->{$convertAttr} += $damage;
-                    }
-                }
-
-                $totalDamage += $damage;
-                $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
-
-                // Update statistics
-                if (isset($dominion->{"stat_{$spell->key}_damage"})) {
-                    // Only count peasants killed by fireball
-                    if (!($spell->key == 'fireball' && $attr == 'resource_food')) {
-                        $dominion->{"stat_{$spell->key}_damage"} += $damage;
-                        $target->{"stat_{$spell->key}_damage_received"} += $damage;
-                    }
-                }
-            }
+            $instantResult = $this->applyInstantPerks($dominion, $target, $spell, $damageMultiplier, $spellReflected);
+            $damageDealt = $instantResult['effects'];
+            $totalDamage = $instantResult['damage'];
+            $applyBurning = $instantResult['applyBurning'];
 
             // Combine lightning bolt damage into single string
             if ($spell->key === 'lightning_bolt') {
@@ -1145,6 +1066,196 @@ class SpellActionService
         }
 
         return 'Your wizards successfully cast %s at a cost of %s mana.';
+    }
+
+    /**
+     * Applies the perks a self spell resolves on the caster regardless of
+     * whether the spell is instant or has a duration.
+     *
+     * @param Dominion $dominion
+     * @param Spell $spell
+     * @return void
+     */
+    protected function applySelfSpellPerks(Dominion $dominion, Spell $spell): void
+    {
+        foreach ($spell->perks as $perk) {
+            if (Str::startsWith($perk->key, 'sacrifice_')) {
+                $attr = str_replace('sacrifice_', '', $perk->key);
+                $percentage = $perk->pivot->value / 100;
+                $dominion->{$attr} -= round($dominion->{$attr} * $percentage);
+            }
+
+            if (Str::startsWith($perk->key, 'cancels_')) {
+                $spellToCancel = str_replace('cancels_', '', $perk->key);
+                $activeSpells = $dominion->spells->keyBy('key');
+                if ($activeSpells->has($spellToCancel)) {
+                    $activeSpells->get($spellToCancel)->pivot->delete();
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the message for an instant spell cast on the caster or a realmmate.
+     *
+     * @param array $effects
+     * @param string $affected
+     * @return string
+     */
+    protected function getInstantResultMessage(array $effects, string $affected): string
+    {
+        if ($effects === []) {
+            return 'Your wizards cast the spell successfully.';
+        }
+
+        return sprintf(
+            'Your wizards cast the spell successfully, affecting %s: %s.',
+            $affected,
+            generate_sentence_from_array($effects)
+        );
+    }
+
+    /**
+     * Applies the instant effects of a spell to $target.
+     *
+     * Shared by every category so that hostile, war, friendly, and self spells
+     * can all have instant versions. Effects are declared as perks:
+     *
+     * - `destroy_<attribute>` removes a percentage of the target's attribute.
+     * - `convert_<attribute>_to_<attribute>` moves it to another attribute, or
+     *   to the caster when the destination is prefixed with `self_`.
+     *
+     * New verbs belong in the chain below, alongside the two above. Perks that
+     * are not instant effects (`apply_`, `immune_`, `sacrifice_`, `cancels_`,
+     * `war_cancels`) are skipped here and handled by the caller.
+     *
+     * @param Dominion $dominion The caster
+     * @param Dominion $target The affected dominion, the caster for self spells
+     * @param Spell $spell
+     * @param float $damageMultiplier
+     * @param bool $spellReflected
+     * @return array{damage: int, effects: array, applyBurning: bool}
+     * @throws GameException
+     */
+    protected function applyInstantPerks(
+        Dominion $dominion,
+        Dominion $target,
+        Spell $spell,
+        float $damageMultiplier = 1,
+        bool $spellReflected = false
+    ): array
+    {
+        $damageDealt = [];
+        $totalDamage = 0;
+        $applyBurning = false;
+
+        foreach ($spell->perks as $perk) {
+            $perksToIgnore = collect(['war_cancels']);
+            if (Str::startsWith($perk->key, 'destroy_')) {
+                $attr = str_replace('destroy_', '', $perk->key);
+                $convertAttr = null;
+            } elseif (Str::startsWith($perk->key, 'convert_')) {
+                $components = Str::of($perk->key)->replace('convert_', '')->explode('_to_');
+                list($attr, $convertAttr) = $components;
+            } elseif ($perksToIgnore->has($perk->key) || Str::startsWith($perk->key, 'apply_') || Str::startsWith($perk->key, 'immune_')) {
+                continue;
+            } else {
+                throw new GameException("Unrecognized perk {$perk->key}.");
+            }
+
+            // Protection only applies to spells cast at an enemy
+            $hostile = $this->spellHelper->isHostileSpell($spell);
+
+            $attrValue = $target->{$attr};
+            $peasantsUnprotected = null;
+            if ($hostile && $attr == 'peasants') {
+                // Account for peasants protected from Fireball
+                $peasantsUnprotected = $this->opsCalculator->getPeasantsUnprotected($target);
+                if ($peasantsUnprotected == 0) {
+                    throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to burn.");
+                }
+                $attrValue = $this->opsCalculator->getPeasantsVulnerable($target);
+            } elseif ($hostile && Str::startsWith($attr, 'improvement_')) {
+                $improvementsVulnerable = $this->opsCalculator->getImprovementsVulnerable($target);
+                if ($improvementsVulnerable == 0) {
+                    throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to destroy.");
+                }
+            }
+
+            // Cap damage reduction at 80%
+            $baseDamage = $perk->pivot->value / 100;
+            $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
+
+            if ($peasantsUnprotected !== null) {
+                // Cap Fireball damage by protection
+                $damage = min($damage, $peasantsUnprotected);
+                if ($damage == $peasantsUnprotected) {
+                    $applyBurning = true;
+                }
+            }
+
+            // Temporary lightning damage
+            if (Str::startsWith($attr, 'improvement_') && $damage > 0) {
+                $lightningStormSpell = $target->spells->where('key', 'lightning_storm')->first();
+                if ($lightningStormSpell !== null) {
+                    $lightningPerkValue = $target->getSpellPerkValue('lightning_storm', ['effect']) / 100;
+                    $amount = round($damage * $lightningPerkValue);
+                    $duration = $lightningStormSpell->pivot->duration;
+                    if ($amount > 0) {
+                        $this->queueService->queueResources(
+                            'operations',
+                            $target,
+                            [$attr => $amount],
+                            $duration
+                        );
+                        $damage += $amount;
+                    }
+                }
+            }
+
+            // Immortal Wizards
+            if ($attr == 'military_wizards' && $target->race->getPerkValue('immortal_wizards') != 0) {
+                $damage = 0;
+            }
+
+            $target->{$attr} -= $damage;
+            if ($convertAttr !== null) {
+                if (Str::startsWith($convertAttr, 'self_') && !$spellReflected) {
+                    $convertAttr = str_replace('self_', '', $convertAttr);
+                    $converted = $damage;
+                    if (Str::startsWith($convertAttr, 'military_')) {
+                        // Military Conversions
+                        $converted = round($damage * 0.05);
+                    }
+                    $this->queueService->queueResources(
+                        'invasion',
+                        $dominion,
+                        [$convertAttr => $converted],
+                        12
+                    );
+                } else {
+                    $target->{$convertAttr} += $damage;
+                }
+            }
+
+            $totalDamage += $damage;
+            $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
+
+            // Update statistics
+            if (isset($dominion->{"stat_{$spell->key}_damage"})) {
+                // Only count peasants killed by fireball
+                if (!($spell->key == 'fireball' && $attr == 'resource_food')) {
+                    $dominion->{"stat_{$spell->key}_damage"} += $damage;
+                    $target->{"stat_{$spell->key}_damage_received"} += $damage;
+                }
+            }
+        }
+
+        return [
+            'damage' => $totalDamage,
+            'effects' => $damageDealt,
+            'applyBurning' => $applyBurning,
+        ];
     }
 
     /**
