@@ -481,7 +481,6 @@ spellwrights_calling:
     - dark-elf-rework
   perks:
     wizard_guilds_produce_military_unit3: 0.05
-    wizard_guild_mana_production_raw: 5
     invalid_protection: 1
 gaias_blessing:
   name: Gaia's Blessing

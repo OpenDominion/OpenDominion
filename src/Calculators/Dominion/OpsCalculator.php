@@ -440,16 +440,6 @@ class OpsCalculator
     {
         $modifier = 1;
 
-        if ($spellKey == 'lightning_bolt') {
-            // Guilds
-            $wizardGuildReduction = 10;
-            $wizardGuildReductionMax = 50;
-            $modifier -= min(
-                (($target->building_wizard_guild / $this->landCalculator->getTotalLand($target)) * $wizardGuildReduction),
-                ($wizardGuildReductionMax / 100)
-            );
-        }
-
         if ($spellKey !== 'fireball') {
             // Spires
             $modifier -= $this->improvementCalculator->getImprovementMultiplierBonus($target, 'spires', true);
@@ -504,7 +494,7 @@ class OpsCalculator
     }
 
     /*
-     * Returns the raw number of peasants that are protected by wizards and guilds
+     * Returns the raw number of peasants that are protected by wizards
      *
      * @param Dominion $dominion
      * @return int
@@ -515,17 +505,11 @@ class OpsCalculator
 
         // Values
         $peasantsPerWizard = 5;
-        $peasantsPerWizardGuild = 15;
-        $wizardsPerGuild = 6;
 
         // Wizard Protection
         $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
         $rawWizards = $wizardRatio * $this->landCalculator->getTotalLand($dominion);
         $protected += $rawWizards * $peasantsPerWizard;
-        $protected += min(
-            ($dominion->building_wizard_guild * $wizardsPerGuild),
-            $rawWizards
-        ) * $peasantsPerWizardGuild;
 
         return $protected;
     }

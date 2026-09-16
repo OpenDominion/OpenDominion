@@ -1083,6 +1083,10 @@ class TickService
         $tick->resource_food_decay += $this->productionCalculator->getFoodDecay($dominion);
         // Special case for Alchemist Flame
         $tick->improvement_forges += (int)($dominion->building_alchemy * $dominion->getSpellPerkValue('alchemy_improvement_forges_raw'));
+
+        // Wizard Guilds, trained straight into the military rather than queued.
+        // Superseded by Spellwright's Calling, which queues Adepts instead.
+        $tick->military_wizards += $this->productionCalculator->getWizardProduction($dominion);
         // Check for starvation before adjusting food
         $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
 

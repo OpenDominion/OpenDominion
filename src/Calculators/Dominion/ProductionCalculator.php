@@ -495,7 +495,7 @@ class ProductionCalculator
         $mana = 0;
 
         // Values
-        $manaPerWizardGuild = 5;
+        $manaPerWizardGuild = 10;
         $manaPerTower = 25;
 
         // Spells
@@ -515,6 +515,30 @@ class ProductionCalculator
         }
 
         return $mana;
+    }
+
+    /**
+     * Returns the number of wizards trained by the Dominion's Wizard Guilds each hour.
+     *
+     * Fractional wizards are not stored, so a Dominion needs a multiple of 20
+     * Wizard Guilds for the remainder to be worth anything.
+     *
+     * Spells that make Wizard Guilds produce a racial unit instead
+     * (Spellwright's Calling) supersede this and are handled during the tick.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getWizardProduction(Dominion $dominion): int
+    {
+        if ($this->spellCalculator->resolveSpellPerk($dominion, 'wizard_guilds_produce_military_unit3')) {
+            return 0;
+        }
+
+        // Values
+        $wizardsPerWizardGuild = 0.05;
+
+        return (int)rfloor($dominion->building_wizard_guild * $wizardsPerWizardGuild);
     }
 
     /**
