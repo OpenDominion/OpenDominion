@@ -1,6 +1,6 @@
 @extends ('layouts.master')
 
-@section('page-header', 'Chaos League')
+@section('page-header', 'Shadow League')
 
 @section('content')
     <div class="row">
@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <span class="card-title"><i class="ra ra-burning-embers"></i> Chaos Operations</span>
+                            <span class="card-title"><i class="ra ra-burning-embers"></i> Shadow Operations</span>
                         </div>
 
                         @if ($protectionService->isUnderProtection($selectedDominion))
@@ -69,9 +69,9 @@
                                                             value="{{ $spell->key }}"
                                                             class="btn btn-primary btn-block black-op"
                                                             {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || ($selectedDominion->round->start_date->diffInDays(now()) < 3) ? 'disabled' : null }}>
-                                                        {{ $spellHelper->getChaosSpellName($spell) }}
+                                                        {{ $spell->name }}
                                                     </button>
-                                                    <p style="margin: 5px 0;">{{ $spellHelper->getChaosSpellDescription($spell) }}</p>
+                                                    <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                     <small>
                                                         Mana cost: <span class="text-{{ $canCast ? 'success' : 'danger' }}">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
                                                     </small>
@@ -190,7 +190,7 @@
                             </div>
                         @else
                             <div class="card-body">
-                                You are not currently a member of the Chaos League.
+                                You are not currently a member of the Shadow League.
                             </div>
                         @endif
 
@@ -202,24 +202,15 @@
                 <div class="col-md-12">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <span class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Chaos League</span>
+                            <span class="card-title text-purple"><i class="ra ra-fire-shield"></i> The Shadow League</span>
                         </div>
 
                         <div class="card-body">
                             <ul class="text-start" style="padding: 0 30px;">
                                 <li>Enables all war and black operations between members.</li>
-                                <li>War spells between members are now CHAOS spells.</li>
-                                <ul>
-                                    <li>Chaos Fireball - kills 7.5% peasants.</li>
-                                    <li>Chaos Lightning - temporarily reduces castle improvements by  0.3%.</li>
-                                    <li>Chaos Disband - turns 2% of enemy spies into random resources for yourself.</li>
-                                    <li>Chance for critical success, dealing 50% more damage and increasing chance of critical failure.</li>
-                                    <li>Chance for critical failure, dealing damage to yourself.</li>
-                                    <li>Chance of critical success decreases and chance of critical failure increases based on the number of other members in your realm.</li>
-                                </ul>
                                 <li>Gain access to self spell: Delve into Shadow (cannot be used in guard).</li>
                                 <ul>
-                                    <li>Failed CHAOS spells refund 40% of their strength and mana costs.</li>
+                                    <li>Failed war spells against members refund 40% of their strength and mana costs.</li>
                                     <li>Reduces exploration cost based on your wizard mastery.</li>
                                 </ul>
                                 <li>Gain access to friendly spells to use on other members in your realm.</li>
@@ -230,7 +221,7 @@
                                 <form action="{{ route('dominion.government.black-guard.cancel') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" class="btn btn-warning btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
-                                        Remain in Chaos League
+                                        Remain in Shadow League
                                     </button>
                                 </form>
                             @elseif ($isBlackGuardApplicant || $isBlackGuardMember)
@@ -238,7 +229,7 @@
                                     @csrf
                                     <button type="submit" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveBlackGuard ? 'disabled' : null }}>
                                         @if ($isBlackGuardMember)
-                                            Leave Chaos League
+                                            Leave Shadow League
                                         @else
                                             Cancel Application
                                         @endif
@@ -248,7 +239,7 @@
                                 <form action="{{ route('dominion.government.black-guard.join') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
-                                        Request to Join Chaos League
+                                        Request to Join Shadow League
                                     </button>
                                 </form>
                             @endif
@@ -264,24 +255,22 @@
                     <span class="card-title">Information</span>
                 </div>
                 <div class="card-body">
-                    <p>You can perform all war and black operations against other members of the Chaos League.</p>
-                    <p>War spells are empowered in the Chaos League, changing their effects. They also have a 25% chance of critical success, which deals 50% more damage. They also have a chance of critical failure, which deals damage to yourself.</p>
+                    <p>You can perform all war and black operations against other members of the Shadow League.</p>
                     <p>War and black ops cannot be performed until the 4th day of the round.<p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} <b>mana</b> and {{ sprintf("%.4g", $selectedDominion->wizard_strength) }}% <b>wizard strength</b>.</p>
                     <p>You have {{ sprintf("%.4g", $selectedDominion->spy_strength) }}% <b>spy strength</b>.</p>
-                    <p>You have {{ $selectedDominion->chaos }} <b>chaos</b>, unstable magic yields a {{ sprintf("%.2g", $selectedDominion->chaos / 1.5) }}% chance of critical failure.</p>
-                    <p>Joining the Chaos League takes 12 hours and you cannot leave for the first 12 hours after joining. Leaving the Chaos League also requires an additional 12 hours to go into effect.</p>
+                    <p>Joining the Shadow League takes 12 hours and you cannot leave for the first 12 hours after joining. Leaving the Shadow League also requires an additional 12 hours to go into effect.</p>
 
                     @if ($isBlackGuardMember)
-                        <p>You are a member of the <span class="text-purple"><i class="ra ra-fire-shield" title="Chaos League"></i>Chaos League</span>.</p>
+                        <p>You are a member of the <span class="text-purple"><i class="ra ra-fire-shield" title="Shadow League"></i>Shadow League</span>.</p>
                         @if ($hoursBeforeLeaveBlackGuard)
                             <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveBlackGuard }} hours.</p>
                         @endif
                         @if ($isLeavingBlackGuard)
-                            <p>You will leave the Chaos League in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
+                            <p>You will leave the Shadow League in {{ $hoursBeforeLeavingBlackGuard }} hours.</p>
                         @endif
                     @elseif ($isBlackGuardApplicant)
-                        <p>You will become a member of the Chaos League in {{ $hoursBeforeBlackGuardMember }} hours.</p>
+                        <p>You will become a member of the Shadow League in {{ $hoursBeforeBlackGuardMember }} hours.</p>
                     @endif
                 </div>
             </div>

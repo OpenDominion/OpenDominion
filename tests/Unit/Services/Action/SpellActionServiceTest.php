@@ -179,7 +179,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(38826, $this->target->peasants);
     }
 
-    public function testCastSpell_Fireball_MaxWizardGuildProtection()
+    public function testCastSpell_Fireball_WizardGuildsDoNotProtect()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
@@ -200,8 +200,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        // Assert
-        $this->assertEquals(43029, $this->target->peasants);
+        // Assert: Wizard Guilds no longer shield peasants, only the wizards do
+        $this->assertEquals(42602, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_DamageCap()
@@ -255,7 +255,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(49900, $this->target->improvement_walls);
     }
 
-    public function testCastSpell_Lightning_HalfProtection()
+    public function testCastSpell_Lightning_WizardGuildsDoNotProtect()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
@@ -279,9 +279,9 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'lightning_bolt', $this->target);
 
         // Assert
-        $this->assertEquals(0.5, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(99900, $this->target->improvement_keep);
-        $this->assertEquals(49950, $this->target->improvement_walls);
+        $this->assertEquals(1.0, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
+        $this->assertEquals(99800, $this->target->improvement_keep);
+        $this->assertEquals(49900, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_MaxProtection()
@@ -309,9 +309,9 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'lightning_bolt', $this->target);
 
         // Assert
-        $this->assertEquals(0.2, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(99960, $this->target->improvement_keep);
-        $this->assertEquals(49980, $this->target->improvement_walls);
+        $this->assertEquals(0.5, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
+        $this->assertEquals(99900, $this->target->improvement_keep);
+        $this->assertEquals(49950, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_DamageCap()

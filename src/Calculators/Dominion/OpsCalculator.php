@@ -467,7 +467,7 @@ class OpsCalculator
             $modifier += $dominion->hero->getPerkMultiplier("{$spellKey}_damage");
         }
 
-        // Status Effects & Chaos League (multiplicative)
+        // Status Effects (multiplicative)
         $spellModifier = 1;
 
         $spellModifier += $target->getSpellPerkValue('enemy_spell_damage', ['effect']) / 100;
@@ -574,25 +574,6 @@ class OpsCalculator
         $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;
 
         return max(0, $destroyableImprovements - $protectedImprovements);
-    }
-
-    public function getChaosChange(Dominion $dominion, bool $success): float
-    {
-        $realmies = $dominion->realm->dominions()
-            ->where('black_guard_active_at', '<', now())
-            ->where(function ($query) {
-                $query->where('black_guard_inactive_at', null)
-                    ->orWhere('black_guard_inactive_at', '>', now());
-            })
-            ->count();
-
-        if ($success) {
-            // Gain between 25 and 50
-            return min(50, (5 * $realmies) + 20);
-        }
-
-        // Lose between 50 and 100
-        return max(50, 110 - (10 * $realmies));
     }
 
     /**

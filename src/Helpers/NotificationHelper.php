@@ -461,10 +461,6 @@ class NotificationHelper
                         $resultString = "{$data['damageString']} have sunk mysteriously while docked.";
                         break;
 
-                    case 'incite_chaos':
-                        $resultString = 'Enemy spies are causing chaos in our ranks.';
-                        break;
-
                     default:
                         throw new LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented.");
                 }
@@ -513,10 +509,6 @@ class NotificationHelper
 
                     case 'sabotage_boats':
                         $where = 'attempting to sabotage our boats';
-                        break;
-
-                    case 'incite_chaos':
-                        $where = 'attempting to incite chaos';
                         break;
 
                     case 'locate_valuables':

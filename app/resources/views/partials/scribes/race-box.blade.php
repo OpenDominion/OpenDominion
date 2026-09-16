@@ -48,7 +48,7 @@
                         <div class="col-md-8">
                             {{-- Racial Spells --}}
                             @php
-                                $racialSpells = $spellHelper->getSpells($race)->where('races', '!=', [])->where('races', '!=', ['chaos-league']);
+                                $racialSpells = $spellHelper->getSpells($race)->where('races', '!=', []);
                             @endphp
                             <table class="table">
                                 <thead>

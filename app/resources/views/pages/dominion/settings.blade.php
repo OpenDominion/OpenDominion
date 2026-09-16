@@ -39,7 +39,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Chaos League:</label>
+                            <label class="form-label">Shadow League:</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_private" value="private" checked />
                                 <label class="form-check-label" for="black_guard_private">Visible to members only</label>
@@ -48,7 +48,7 @@
                                 <input class="form-check-input" type="radio" name="black_guard_icon" id="black_guard_public" value="public" {{ isset($selectedDominion->settings['black_guard_icon']) && $selectedDominion->settings['black_guard_icon'] == 'public' ? 'checked' : null }} />
                                 <label class="form-check-label" for="black_guard_public">Visible to everyone</label>
                             </div>
-                            <span class="small">Controls whether your Chaos League membership icon is visible to all players or only other members.</span>
+                            <span class="small">Controls whether your Shadow League membership icon is visible to all players or only other members.</span>
                         </div>
                     </div>
                 </div>

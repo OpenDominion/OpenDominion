@@ -244,7 +244,7 @@
                     @if ($selectedDominion->black_guard_active_at !== null)
                         <li class="nav-item {{ Route::is('dominion.black-guard') ? 'active' : null }}">
                             <a href="{{ route('dominion.black-guard') }}" class="nav-link {{ Route::is('dominion.black-guard') ? 'active' : null }}">
-                                <i class="nav-icon ra ra-fire-shield ra-fw"></i> <p>Chaos League</p>
+                                <i class="nav-icon ra ra-fire-shield ra-fw"></i> <p>Shadow League</p>
                             </a>
                         </li>
                     @endif

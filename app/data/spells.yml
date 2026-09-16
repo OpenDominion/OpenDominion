@@ -464,8 +464,6 @@ delve_into_shadow:
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
-  races:
-    - chaos-league
   perks:
     explore_cost_wizard_mastery: 100
     spell_refund: 40

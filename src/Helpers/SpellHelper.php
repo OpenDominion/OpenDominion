@@ -60,7 +60,7 @@ class SpellHelper
     {
         $spells = Cache::rememberForever('game:spells', static fn () => Spell::with('perks')->active()->get())
             ->map(function ($spell) {
-                $spell->racial = ($spell->races !== [] && $spell->races !== ['chaos-league']);
+                $spell->racial = ($spell->races !== []);
                 return $spell;
             });
 
@@ -261,7 +261,7 @@ class SpellHelper
             'wizard_power_defense' => '%+g%% defensive wizard power',
             'wonder_damage' => 'Deals damage to wonders',
             'explore_cost_wizard_mastery' => 'Exploring platinum cost reduced by 1%% per %d Wizard Mastery (max 10%%)',
-            'spell_refund' => 'Failed chaos spells refund %d%% of their strength and mana costs',
+            'spell_refund' => 'Failed war spells against Shadow League members refund %d%% of their strength and mana costs',
             'invalid_royal_guard' => 'Cannot be cast while in the Royal Guard',
             'apply_rejuvenation' => 'Applies Rejuvenation upon expiration',
             'immune_burning' => 'Immune to Burning',
@@ -294,32 +294,15 @@ class SpellHelper
         return implode($separator, $perkStrings);
     }
 
-    public function getChaosSpellName(Spell $spell): string
+    /**
+     * Returns whether a spell can only be cast by Shadow League members.
+     *
+     * @param Spell $spell
+     * @return bool
+     */
+    public function isShadowLeagueSpell(Spell $spell): bool
     {
-        switch ($spell->key) {
-            case 'fireball':
-                return 'Chaos Fireball';
-            case 'lightning_bolt':
-                return 'Chaos Lightning';
-            case 'disband_spies':
-                return 'Chaos Disband';
-            default:
-                return $spell->name;
-        }
-    }
-
-    public function getChaosSpellDescription(Spell $spell): string
-    {
-        switch ($spell->key) {
-            case 'fireball':
-                return 'Kills 7.5% unprotected peasants';
-            case 'lightning_bolt':
-                return 'Temporarily destroys 0.3% science, keep, forges, walls';
-            case 'disband_spies':
-                return 'Turns 2% of spies into random resources for yourself';
-            default:
-                return $this->getSpellDescription($spell);
-        }
+        return $spell->key === 'delve_into_shadow';
     }
 
     public function getSpellRaces(Spell $spell, string $separator = ', '): string

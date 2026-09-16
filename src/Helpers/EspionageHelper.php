@@ -179,13 +179,6 @@ class EspionageHelper
                 'key' => 'sabotage_boats',
                 'attrs' => ['resource_boats'],
                 'percentage' => 2.5,
-            ],
-            [
-                'name' => 'Incite Chaos',
-                'description' => 'Increases critical failure chance by 6-14%',
-                'key' => 'incite_chaos',
-                'attrs' => ['chaos'],
-                'percentage' => 9,
             ]
         ]);
     }

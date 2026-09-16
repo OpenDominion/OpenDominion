@@ -836,14 +836,6 @@ class EspionageActionService
                     $actualDamage = $damage;
                     $target->{$attr} -= $damage;
                     $damage = rfloor($target->{$attr}) - rfloor($target->{$attr} - $damage);
-                } elseif ($attr == 'chaos') {
-                    // Flat, inverted damage
-                    $damage = ($baseDamage * 100);
-                    $bonusDamage = min(rand(2/3 * $damage, 4/3 * $damage), $dominion->{$attr});
-                    $damage += $bonusDamage;
-                    $actualDamage = $damage;
-                    $target->{$attr} += $damage;
-                    $dominion->{$attr} -= $bonusDamage;
                 } else {
                     // Rounded up for all other damage types
                     $damage = rceil($damage);
@@ -891,9 +883,6 @@ class EspionageActionService
             ->sendNotifications($target, 'irregular_dominion');
 
         $verb = 'they lost';
-        if ($operationKey == 'incite_chaos') {
-            $verb = 'causing';
-        }
 
         return [
             'success' => true,
