@@ -448,30 +448,6 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Fireball:</td>
-                                        <td>
-                                            <strong>{{ number_format($opsCalculator->getPeasantVulnerablilityModifier($target) * 100, 2) }}%</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Peasants Protected (Wizards):</td>
-                                        <td>
-                                            <strong>{{ number_format($opsCalculator->getPeasantWizardProtection($target)) }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Peasants Protected (Total):</td>
-                                        <td>
-                                            <strong>{{ number_format($opsCalculator->getPeasantsProtected($target)) }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Peasants Vulnerable:</td>
-                                        <td>
-                                            <strong>{{ number_format($opsCalculator->getPeasantsVulnerable($target)) }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <td>Improvements Vulnerable:</td>
                                         <td>
                                             <strong>{{ number_format($opsCalculator->getImprovementsVulnerable($target)) }}</strong>

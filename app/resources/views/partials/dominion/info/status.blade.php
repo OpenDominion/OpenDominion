@@ -79,6 +79,21 @@
                 </tr>
                 <tr>
                     <td>
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('resolve') }}">
+                            Resolve:
+                        </span>
+                    </td>
+                    <td>
+                        {{ number_format(array_get($data, 'resolve', 0)) }}
+                        @if (array_get($data, 'resolve', 0) > 0)
+                            <small class="text-muted">
+                                ({{ number_format(min(100, array_get($data, 'resolve', 0) / 10), 2) }}%)
+                            </small>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $miscHelper->getGeneralHelpString('spy_mastery') }}">
                             Spy Mastery:
                         </span>

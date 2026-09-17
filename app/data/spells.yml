@@ -82,9 +82,8 @@ fireball:
   cost_mana: 3
   cost_strength: 5
   perks:
-    destroy_peasants: 5
+    destroy_peasants: 2.5
     destroy_resource_food: 2
-    apply_burning: 200
 lightning_bolt:
   name: Lightning Bolt
   category: war
@@ -180,6 +179,7 @@ energy_mirror:
   perks:
     enemy_spell_damage: -15
     enemy_spell_duration: -1
+  active: false
 amplify_magic:
   name: Amplify Magic
   category: self
@@ -782,3 +782,32 @@ mana_burn:
   cost_strength: 5
   perks:
     destroy_resource_mana: 5
+resurrection:
+  name: Resurrection
+  category: self
+  school: necromancy
+  cost_mana: 4
+  cost_strength: 5
+  duration: 12
+  perks:
+    resurrect_peasants: 75
+revive_peasants:
+  name: Revive Peasants
+  category: friendly
+  school: necromancy
+  cost_mana: 2
+  cost_strength: 3
+  cooldown: 3
+  perks:
+    revive_peasants: 2.5
+backlash:
+  name: Backlash
+  category: self
+  school: abjuration
+  cost_mana: 4
+  cost_strength: 5
+  duration: 12
+  perks:
+    requires_resolve: 250
+    backlash: 1
+    resolve_gain: -50

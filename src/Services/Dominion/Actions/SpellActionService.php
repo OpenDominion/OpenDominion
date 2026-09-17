@@ -173,6 +173,16 @@ class SpellActionService
             throw new GameException('You cannot cast this spell while in the Royal Guard');
         }
 
+        $resolveRequired = $spell->getPerkValue('requires_resolve');
+        if ($resolveRequired && $dominion->resolve < $resolveRequired) {
+            throw new GameException(sprintf(
+                'Your dominion has not suffered enough to cast %s, which needs %s resolve and you have %s',
+                $spell->name,
+                number_format($resolveRequired),
+                number_format($dominion->resolve)
+            ));
+        }
+
         if ($this->spellHelper->isShadowLeagueSpell($spell) && !$this->guardMembershipService->isBlackGuardMember($dominion)) {
             throw new GameException('You must be a member of the Shadow League to cast this spell');
         }
@@ -596,6 +606,10 @@ class SpellActionService
             throw new GameException("{$target->name}'s castle is undamaged, your wizards have nothing to repair");
         }
 
+        if ($spell->hasPerk('revive_peasants') && $target->peasants_killed <= 0) {
+            throw new GameException("{$target->name} has no fallen peasants for your wizards to revive");
+        }
+
         if ($this->spellHelper->isInstantSpell($spell)) {
             $result = $this->applyInstantPerks($dominion, $target, $spell);
 
@@ -761,11 +775,6 @@ class SpellActionService
                 'dominion_id' => $target->id,
             ])->delete();
         }
-        $energyMirrorChance = $target->getSpellPerkMultiplier('energy_mirror');
-        if ($energyMirrorChance && random_chance($energyMirrorChance)) {
-            $spellReflected = true;
-            $reflectedBy = $target;
-        }
         if ($spellReflected) {
             $protectedDominion = $target;
             $target = $dominion;
@@ -902,6 +911,13 @@ class SpellActionService
                 $damageDealt = [sprintf('%s %s', number_format($totalDamage), dominion_attr_display('improvement', $totalDamage))];
             }
 
+            // Backlash reflects a share of the damage before the hit hardens resolve
+            $backlashString = '';
+            if (!$spellReflected && $totalDamage > 0) {
+                $backlashString = $this->applyBacklash($dominion, $target, $instantResult['attributes']);
+                $target->resolve += $this->opsCalculator->getResolveGain($target, $mutualWarDeclared);
+            }
+
             $warRewardsString = '';
             if (!$spellReflected && $totalDamage > 0 && (
                 $this->spellHelper->isWarSpell($spell) ||
@@ -982,12 +998,13 @@ class SpellActionService
             } else {
                 return [
                     'success' => true,
-                    'message' => sprintf(
-                        'Your wizards cast the spell successfully, your target lost %s. %s %s',
+                    'message' => trim(sprintf(
+                        'Your wizards cast the spell successfully, your target lost %s. %s %s %s',
                         $damageString,
                         $statusEffectString,
-                        $warRewardsString
-                    ),
+                        $warRewardsString,
+                        $backlashString
+                    )),
                     'damage' => $totalDamage
                 ];
             }
@@ -1185,13 +1202,22 @@ class SpellActionService
     ): array
     {
         $damageDealt = [];
+        $damageByAttribute = [];
         $totalDamage = 0;
         $applyBurning = false;
         $statusEffect = null;
 
         foreach ($spell->perks as $perk) {
             $perksToIgnore = collect(['war_cancels']);
-            if ($perk->key === 'repair_improvements') {
+            if ($perk->key === 'revive_peasants') {
+                $revived = $this->revivePeasants($target, (float)$perk->pivot->value);
+
+                if ($revived > 0) {
+                    $totalDamage += $revived;
+                    $damageDealt[] = sprintf('%s %s', number_format($revived), dominion_attr_display('peasants', $revived));
+                }
+                continue;
+            } elseif ($perk->key === 'repair_improvements') {
                 $repairs = $this->repairImprovements($target, (float)$perk->pivot->value);
 
                 if ($repairs['repaired'] > 0) {
@@ -1238,14 +1264,10 @@ class SpellActionService
             $hostile = $this->spellHelper->isHostileSpell($spell);
 
             $attrValue = $target->{$attr};
-            $peasantsUnprotected = null;
             if ($hostile && $attr == 'peasants') {
-                // Account for peasants protected from Fireball
-                $peasantsUnprotected = $this->opsCalculator->getPeasantsUnprotected($target);
-                if ($peasantsUnprotected == 0) {
+                if ($attrValue == 0) {
                     throw new GameException("Your wizards refused to cast {$spell->name}, since there is nothing left to burn.");
                 }
-                $attrValue = $this->opsCalculator->getPeasantsVulnerable($target);
             } elseif ($hostile && Str::startsWith($attr, 'improvement_')) {
                 $improvementsVulnerable = $this->opsCalculator->getImprovementsVulnerable($target);
                 if ($improvementsVulnerable == 0) {
@@ -1257,12 +1279,9 @@ class SpellActionService
             $baseDamage = $perk->pivot->value / 100;
             $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
 
-            if ($peasantsUnprotected !== null) {
-                // Cap Fireball damage by protection
-                $damage = min($damage, $peasantsUnprotected);
-                if ($damage == $peasantsUnprotected) {
-                    $applyBurning = true;
-                }
+            // Peasants killed can be revived until they grow back on their own
+            if ($hostile && $attr == 'peasants' && $damage > 0) {
+                $target->peasants_killed += $damage;
             }
 
             // Permanent improvement damage can be repaired later
@@ -1319,6 +1338,7 @@ class SpellActionService
             }
 
             $totalDamage += $damage;
+            $damageByAttribute[$attr] = ($damageByAttribute[$attr] ?? 0) + $damage;
             $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
             // Update statistics
@@ -1334,9 +1354,92 @@ class SpellActionService
         return [
             'damage' => $totalDamage,
             'effects' => $damageDealt,
+            'attributes' => $damageByAttribute,
             'applyBurning' => $applyBurning,
             'statusEffect' => $statusEffect,
         ];
+    }
+
+    /**
+     * Reflects a share of an instant spell's damage back at the caster.
+     *
+     * The share comes from the target's resolve, which builds as they are hit.
+     * It does not spare the target anything: the same damage lands on them, the
+     * caster simply pays for it as well. Reflected losses are recorded against
+     * the caster the same way, so their own realm can repair and revive them.
+     *
+     * @param Dominion $dominion The caster, who takes the reflected damage
+     * @param Dominion $target
+     * @param array $damageByAttribute
+     * @return string
+     */
+    protected function applyBacklash(Dominion $dominion, Dominion $target, array $damageByAttribute): string
+    {
+        $multiplier = $this->opsCalculator->getBacklashMultiplier($target);
+
+        if ($multiplier <= 0) {
+            return '';
+        }
+
+        $reflected = [];
+        foreach ($damageByAttribute as $attr => $damage) {
+            $amount = (int)rfloor($damage * $multiplier);
+            $amount = min($amount, (int)$dominion->{$attr});
+
+            if ($amount <= 0) {
+                continue;
+            }
+
+            $dominion->{$attr} -= $amount;
+
+            if ($attr === 'peasants') {
+                $dominion->peasants_killed += $amount;
+            }
+
+            if (Str::startsWith($attr, 'improvement_')) {
+                $improvement = str_replace('improvement_', '', $attr);
+                if (in_array($improvement, static::REPAIRABLE_IMPROVEMENTS, true)) {
+                    $ledger = "improvement_damage_{$improvement}";
+                    $dominion->{$ledger} = (int)$dominion->{$ledger} + $amount;
+                }
+            }
+
+            $reflected[] = sprintf('%s %s', number_format($amount), dominion_attr_display($attr, $amount));
+        }
+
+        if ($reflected === []) {
+            return '';
+        }
+
+        return sprintf('The spell rebounded on your dominion, costing you %s.', generate_sentence_from_array($reflected));
+    }
+
+    /**
+     * Revives a percentage of the peasants Fireball has killed and that have
+     * not yet grown back on their own.
+     *
+     * Capped by the room left under the target's maximum population, so a
+     * dominion that has since lost land cannot be pushed over its own ceiling.
+     *
+     * @param Dominion $target
+     * @param float $percentage
+     * @return int
+     */
+    protected function revivePeasants(Dominion $target, float $percentage): int
+    {
+        $peasantsKilled = (int)$target->peasants_killed;
+
+        if ($peasantsKilled <= 0) {
+            return 0;
+        }
+
+        $roomForPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($target) - $target->peasants);
+        $revived = min($peasantsKilled, (int)rceil($peasantsKilled * $percentage / 100), $roomForPeasants);
+
+        $target->peasants += $revived;
+        $target->peasants_killed -= $revived;
+
+        return $revived;
     }
 
     /**
@@ -1574,12 +1677,6 @@ class SpellActionService
     {
         $damageDealtString = '';
         $warRewardsString = '';
-
-        // Resilience Gains
-        if (in_array($spellKey, ['fireball'])) {
-            $meterGain = $this->opsCalculator->getSpellMeterGain($target, $spellKey);
-            $target->{"{$spellKey}_meter"} += $meterGain;
-        }
 
         // Mastery Gains
         $masteryGain = $this->opsCalculator->getMasteryChange($dominion, $target, 'wizard');

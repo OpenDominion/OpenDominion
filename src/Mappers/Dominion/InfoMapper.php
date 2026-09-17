@@ -87,6 +87,7 @@ class InfoMapper
             'networth' => $this->networthCalculator->getDominionNetworth($dominion),
             'prestige' => $dominion->prestige,
             'resilience' => $dominion->resilience,
+            'resolve' => $dominion->resolve,
             'spy_mastery' => $dominion->spy_mastery,
             'wizard_mastery' => $dominion->wizard_mastery,
 

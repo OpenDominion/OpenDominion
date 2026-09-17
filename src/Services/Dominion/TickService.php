@@ -291,10 +291,13 @@ class TickService
                     'dominions.prestige' => DB::raw('dominions.prestige + dominion_tick.prestige'),
                     'dominions.peasants' => DB::raw('dominions.peasants + dominion_tick.peasants'),
                     'dominions.peasants_last_hour' => DB::raw('dominion_tick.peasants'),
+                    // Peasants that grow back, by any means, are no longer revivable
+                    'dominions.peasants_killed' => DB::raw('GREATEST(0, CAST(dominions.peasants_killed AS SIGNED) - GREATEST(0, dominion_tick.peasants))'),
                     'dominions.morale' => DB::raw('dominions.morale + dominion_tick.morale'),
                     'dominions.spy_strength' => DB::raw('dominions.spy_strength + dominion_tick.spy_strength'),
                     'dominions.wizard_strength' => DB::raw('dominions.wizard_strength + dominion_tick.wizard_strength'),
                     'dominions.resilience' => DB::raw('dominions.resilience + dominion_tick.resilience'),
+                    'dominions.resolve' => DB::raw('GREATEST(0, CAST(dominions.resolve AS SIGNED) + dominion_tick.resolve)'),
                     'dominions.fireball_meter' => DB::raw('dominions.fireball_meter + dominion_tick.fireball_meter'),
                     'dominions.lightning_bolt_meter' => DB::raw('dominions.lightning_bolt_meter + dominion_tick.lightning_bolt_meter'),
                     'dominions.resource_platinum' => DB::raw('dominions.resource_platinum + dominion_tick.resource_platinum'),
@@ -969,6 +972,31 @@ class TickService
             ->delete();
     }
 
+    /**
+     * Returns the number of peasants Resurrection brings back this tick.
+     *
+     * The spell holds a dominion at a share of its maximum population equal to
+     * its raw wizard ratio, so 0.5 wizards per acre holds it at half, up to the
+     * ceiling named by the spell.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    protected function getPeasantsResurrected(Dominion $dominion): int
+    {
+        $maximumPercentage = $dominion->getSpellPerkValue('resurrect_peasants');
+
+        if (!$maximumPercentage) {
+            return 0;
+        }
+
+        $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
+        $percentage = min($wizardRatio, $maximumPercentage / 100);
+        $floor = (int)rfloor($this->populationCalculator->getMaxPeasantPopulation($dominion) * $percentage);
+
+        return max(0, $floor - $dominion->peasants);
+    }
+
     public function precalculateTick(Dominion $dominion, bool|null $saveHistory = false): void
     {
         /** @var Tick $tick */
@@ -1071,10 +1099,18 @@ class TickService
 
         // Population
         $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
+
+        // Resurrection refills peasants up to a share of maximum population
+        // before the hour's own growth is worked out
+        $peasantsResurrected = $this->getPeasantsResurrected($dominion);
+        $dominion->peasants += $peasantsResurrected;
+
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
 
-        $tick->peasants = $populationPeasantGrowth;
+        $tick->peasants = $peasantsResurrected + $populationPeasantGrowth;
         $tick->military_draftees = $drafteesGrowthRate;
+
+        $dominion->peasants -= $peasantsResurrected;
 
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
@@ -1141,6 +1177,7 @@ class TickService
 
         // Resilience
         $tick->resilience += $this->opsCalculator->getResilienceDecay($dominion);
+        $tick->resolve += $this->opsCalculator->getResolveDecay($dominion);
         $tick->fireball_meter += $this->opsCalculator->getSpellMeterDecay($dominion, 'fireball');
         $tick->lightning_bolt_meter += $this->opsCalculator->getSpellMeterDecay($dominion, 'lightning_bolt');
 

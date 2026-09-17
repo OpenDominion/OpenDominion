@@ -436,10 +436,6 @@
                         <table class="table table-sm">
                             @foreach ([
                                 'getSpellDamageMultiplier',
-                                'getPeasantVulnerablilityModifier',
-                                'getPeasantWizardProtection',
-                                'getPeasantsProtected',
-                                'getPeasantsVulnerable',
                                 'getImprovementsVulnerable'
                             ] as $method)
                                 @php

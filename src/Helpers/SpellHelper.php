@@ -235,7 +235,6 @@ class SpellHelper
             'wizard_guild_mana_production_raw' => '%+g mana production from wizard guilds',
 
             // Spy/Wizard related
-            'energy_mirror' => '%d%% chance to reflect incoming offensive spells',
             'enemy_espionage_chance' => '%+g%% chance of causing hostile spy operations to fail',
             'enemy_fireball_damage' => '%+g%% enemy fireball damage',
             'enemy_lightning_bolt_damage' => '%+g%% enemy lightning bolt damage',
@@ -254,6 +253,11 @@ class SpellHelper
             'destroy_peasants' => 'Kills %g%% unprotected peasants',
             'destroy_resource_food' => 'Destroys %g%% crops',
             'destroy_resource_mana' => 'Destroys %g%% mana',
+            'resurrect_peasants' => 'Restores peasants each hour up to %g%% of maximum population, scaled by your wizard ratio',
+            'revive_peasants' => 'Revives %g%% of the peasants killed by Fireball',
+            'requires_resolve' => 'Requires %g resolve to cast',
+            'backlash' => 'Reflects a share of incoming instant spell damage back at the caster, based on your resolve',
+            'resolve_gain' => '%+g%% resolve gained while active',
             'destroy_improvement_science' => 'Destroys %g%% science',
             'destroy_improvement_keep' => 'Destroys %g%% keep',
             'destroy_improvement_forges' => 'Destroys %g%% forges',

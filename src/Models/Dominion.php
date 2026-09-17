@@ -25,6 +25,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $prestige
  * @property int $peasants
  * @property int $peasants_last_hour
+ * @property int $peasants_killed
  * @property int $draft_rate
  * @property int $morale
  * @property int $valor
@@ -35,6 +36,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $spy_mastery
  * @property int $wizard_mastery
  * @property int $resilience
+ * @property int $resolve
  * @property int $fireball_meter
  * @property int $lightning_bolt_meter
  * @property bool $daily_platinum
@@ -144,6 +146,7 @@ class Dominion extends AbstractModel
         'prestige' => 'integer',
         'peasants' => 'integer',
         'peasants_last_hour' => 'integer',
+        'peasants_killed' => 'integer',
         'draft_rate' => 'integer',
         'morale' => 'integer',
         'valor' => 'integer',
@@ -154,6 +157,7 @@ class Dominion extends AbstractModel
         'spy_mastery' => 'integer',
         'wizard_mastery' => 'integer',
         'resilience' => 'integer',
+        'resolve' => 'integer',
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
         'daily_actions' => 'integer',

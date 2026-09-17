@@ -20,6 +20,8 @@ class OpsCalculator
      * @var float Base amount of resilience lost each hour
      */
     protected const RESILIENCE_DECAY = -20;
+    protected const RESOLVE_DECAY = -20;
+    protected const RESOLVE_DECAY_PEACETIME = -40;
     protected const FIREBALL_METER_DECAY = -4;
     protected const LIGHTNING_BOLT_METER_DECAY = -4;
 
@@ -27,6 +29,12 @@ class OpsCalculator
      * @var float Base amount of resilience gained per op
      */
     protected const RESILIENCE_GAIN = 10;
+    protected const RESOLVE_GAIN = 10;
+
+    /**
+     * @var int Resolve at which reflected damage reaches its maximum
+     */
+    protected const RESOLVE_FOR_FULL_BACKLASH = 1000;
     protected const FIREBALL_METER_GAIN = 10;
     protected const LIGHTNING_BOLT_METER_GAIN = 10;
 
@@ -301,6 +309,86 @@ class OpsCalculator
     public function getArchmageLosses(Dominion $dominion, Dominion $target, string $type): float
     {
         return $this->getWizardLosses($dominion, $target, $type) / 10;
+    }
+
+    /**
+     * Returns the amount of resolve gained by a Dominion that has just been hit
+     * by an instant spell.
+     *
+     * Resolve builds from being focused. A dominion whose realm has agreed to
+     * the war gains it more slowly, and so does one already reflecting damage.
+     *
+     * @param Dominion $dominion
+     * @param bool $mutualWar
+     * @return int
+     */
+    public function getResolveGain(Dominion $dominion, bool $mutualWar = false): int
+    {
+        $resolve = static::RESOLVE_GAIN;
+
+        // A war both realms declared is not a grief
+        if ($mutualWar) {
+            $resolve /= 2;
+        }
+
+        // Reflecting damage slows how fast more resolve builds
+        $resolve *= (1 + $dominion->getSpellPerkMultiplier('resolve_gain'));
+
+        $resolve = (int)rfloor($resolve);
+
+        if ($dominion->resolve + $resolve > 2000) {
+            return max(0, 2000 - $dominion->resolve);
+        }
+
+        return $resolve;
+    }
+
+    /**
+     * Returns the Dominion's hourly resolve decay.
+     *
+     * Resolve holds while a realm is at war and fades faster once the fighting
+     * is over, so it answers a campaign rather than carrying between them.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getResolveDecay(Dominion $dominion): int
+    {
+        $decay = $this->isRealmAtWar($dominion->realm)
+            ? static::RESOLVE_DECAY
+            : static::RESOLVE_DECAY_PEACETIME;
+
+        return max($decay, -$dominion->resolve);
+    }
+
+    /**
+     * Returns whether a realm is engaged in any war.
+     *
+     * @param Realm $realm
+     * @return bool
+     */
+    protected function isRealmAtWar(Realm $realm): bool
+    {
+        return (
+            $this->governmentService->getWarsEngaged($realm->warsOutgoing)->isNotEmpty() ||
+            $this->governmentService->getWarsEngaged($realm->warsIncoming)->isNotEmpty()
+        );
+    }
+
+    /**
+     * Returns the share of an instant spell's damage that is reflected back at
+     * the caster, from the target's resolve.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getBacklashMultiplier(Dominion $dominion): float
+    {
+        if (!$dominion->getSpellPerkValue('backlash')) {
+            return 0;
+        }
+
+        return min(1, $dominion->resolve / static::RESOLVE_FOR_FULL_BACKLASH);
     }
 
     /**

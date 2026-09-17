@@ -151,11 +151,10 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(41456, $this->target->peasants);
     }
 
-    public function testCastSpell_Fireball_MaxWizardProtection()
+    public function testCastSpell_Fireball_WizardsDoNotProtect()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
-        $opsCalculator = app(OpsCalculator::class);
         $populationCalculator = app(PopulationCalculator::class);
 
         // Arrange
@@ -168,15 +167,12 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->target->military_wizards = 3300;
         $this->target->peasants = $populationCalculator->getMaxPeasantPopulation($this->target);
         $this->assertEquals(39219, $this->target->peasants);
-        $this->assertEquals(0.5, $opsCalculator->getPeasantVulnerablilityModifier($this->target));
-        // $this->assertEquals(39287, $opsCalculator->getPeasantsProtected($this->target));
-        // $this->assertEquals(9822, $opsCalculator->getPeasantsUnprotected($this->target));
 
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        // Assert
-        $this->assertEquals(38826, $this->target->peasants);
+        // Assert: 2.5% of current peasants, whatever the target's wizards
+        $this->assertEquals(38238, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_WizardGuildsDoNotProtect()
@@ -200,11 +196,11 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        // Assert: Wizard Guilds no longer shield peasants, only the wizards do
-        $this->assertEquals(42602, $this->target->peasants);
+        // Assert: 2.5% of current peasants, nothing shields them
+        $this->assertEquals(42377, $this->target->peasants);
     }
 
-    public function testCastSpell_Fireball_DamageCap()
+    public function testCastSpell_Fireball_NothingLeftToBurn()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
@@ -217,7 +213,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->dominion->resource_mana = 100000;
         $this->dominion->military_wizards = 5000;
         $this->target->military_wizards = 0;
-        $this->target->peasants = 21260;
+        $this->target->peasants = 0;
 
         // Act
         $this->expectException(GameException::class);
@@ -367,7 +363,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->target->refresh();
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
-        $this->assertEquals(39330, $this->target->peasants);
+        $this->assertEquals(39383, $this->target->peasants);
 
         // Wizard Academy + Burning Fireball
         $wizardAcademy = Wonder::where('key', 'wizard_academy')->first();
@@ -379,7 +375,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->target->refresh();
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
-        $this->assertEquals(38267, $this->target->peasants);
+        $this->assertEquals(38398, $this->target->peasants);
     }
 
     public function testCastSpell_DailyXp_UnderCap_AwardsRawXp()
