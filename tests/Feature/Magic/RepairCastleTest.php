@@ -65,6 +65,8 @@ class RepairCastleTest extends AbstractBrowserKitTestCase
             Race::where('name', 'Dark Elf')->firstOrFail(),
             $this->dominion->realm
         );
+        $this->realmmate->land_plain = 8000;
+        $this->realmmate->save();
 
         $this->dominion->realm->magister_dominion_id = $this->dominion->id;
         $this->dominion->realm->save();

@@ -93,6 +93,14 @@ class InstantSpellsTest extends AbstractBrowserKitTestCase
         return $spell->fresh('perks');
     }
 
+    protected function tearDown(): void
+    {
+        // The spells created here only exist inside this test's transaction
+        Cache::forget('game:spells');
+
+        parent::tearDown();
+    }
+
     public function testInstantSpellsAreRecognizedByDuration(): void
     {
         $this->assertTrue(
@@ -139,8 +147,6 @@ class InstantSpellsTest extends AbstractBrowserKitTestCase
         ]);
 
         $this->dominion->resource_mana = 100000;
-        $this->dominion->realm->magister_dominion_id = $this->dominion->id;
-        $this->dominion->realm->save();
         $this->realmmate->peasants = 10000;
         $this->realmmate->military_draftees = 0;
         $this->realmmate->save();
@@ -159,10 +165,8 @@ class InstantSpellsTest extends AbstractBrowserKitTestCase
     public function testDurationFriendlySpellStillLasts(): void
     {
         $this->dominion->resource_mana = 100000;
-        $this->dominion->realm->magister_dominion_id = $this->dominion->id;
-        $this->dominion->realm->save();
 
-        $this->spellActionService->castSpell($this->dominion, 'arcane_ward', $this->realmmate);
+        $this->spellActionService->castSpell($this->dominion, 'illumination', $this->realmmate);
 
         $activeSpell = DominionSpell::where('dominion_id', $this->realmmate->id)->first();
         $this->assertNotNull($activeSpell, 'A duration friendly spell should still be stored');

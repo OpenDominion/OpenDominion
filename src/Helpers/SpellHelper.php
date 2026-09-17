@@ -253,6 +253,7 @@ class SpellHelper
             'destroy_peasants' => 'Kills %g%% unprotected peasants',
             'destroy_resource_food' => 'Destroys %g%% crops',
             'destroy_resource_mana' => 'Destroys %g%% mana',
+            'temporary_damage' => 'Damage is restored after %g hours and cannot be repaired',
             'resurrect_peasants' => 'Restores peasants each hour up to %g%% of maximum population, scaled by your wizard ratio',
             'revive_peasants' => 'Revives %g%% of the peasants killed by Fireball',
             'friendly_spell_cost' => '%+g%% mana cost for friendly spells cast by the target',

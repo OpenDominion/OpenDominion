@@ -68,6 +68,7 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
             Race::where('name', 'Human')->firstOrFail(),
             $this->target->realm
         );
+        $this->courtMage->land_plain = 8000;
         $this->courtMage->resource_mana = 100000;
         $this->courtMage->save();
 

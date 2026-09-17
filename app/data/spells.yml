@@ -622,6 +622,7 @@ arcane_ward:
   cooldown: 3
   perks:
     enemy_spell_chance: 5
+  active: false
 illumination:
   name: Illumination
   category: friendly
@@ -821,3 +822,13 @@ silence:
   cooldown: 6
   perks:
     friendly_spell_cost: 25
+lightning_strike:
+  name: Lightning Strike
+  category: war
+  school: evocation
+  cost_mana: 3.25
+  cost_strength: 5
+  perks:
+    destroy_improvement_forges: 1
+    destroy_improvement_walls: 1
+    temporary_damage: 12

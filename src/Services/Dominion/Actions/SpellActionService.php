@@ -583,23 +583,17 @@ class SpellActionService
      */
     protected function castFriendlySpell(Dominion $dominion, Spell $spell, Dominion $target): array
     {
-        if (!$dominion->isMagister() && !$dominion->isMage()) {
-            $blackGuard = $this->guardMembershipService->isBlackGuardMember($dominion) && $this->guardMembershipService->isBlackGuardMember($target);
-            if (!$blackGuard) {
-                throw new GameException('Only the Grand Magister, Court Mage, or Shadow League members can cast friendly spells');
-            }
-        }
-
-        if ($dominion->id == $target->id) {
-            throw new GameException('You cannot cast friendly spells on yourself');
-        }
-
         if ($dominion->realm_id !== $target->realm_id) {
             throw new GameException('You cannot cast friendly spells on dominions outside of your realm');
         }
 
         if ($target->user_id == null) {
             throw new GameException('You cannot cast friendly spells on bots');
+        }
+
+        // Undoing damage reaches only as far as an attack does
+        if ($this->isRecoverySpell($spell) && !$this->rangeCalculator->isInRange($dominion, $target)) {
+            throw new GameException("{$target->name} is too far outside your range for your wizards to help them");
         }
 
         if ($spell->hasPerk('repair_improvements') && $this->getRepairableDamage($target) <= 0) {
@@ -610,21 +604,25 @@ class SpellActionService
             throw new GameException("{$target->name} has no fallen peasants for your wizards to revive");
         }
 
+        $castOnSelf = ($dominion->id === $target->id);
+
         if ($this->spellHelper->isInstantSpell($spell)) {
             $result = $this->applyInstantPerks($dominion, $target, $spell);
 
             // Inform target that they received a friendly spell
-            $this->notificationService
-                ->queueNotification('received_friendly_spell', [
-                    'sourceDominionId' => $dominion->id,
-                    'spellKey' => $spell->key,
-                    'spellName' => $spell->name,
-                ])
-                ->sendNotifications($target, 'irregular_dominion');
+            if (!$castOnSelf) {
+                $this->notificationService
+                    ->queueNotification('received_friendly_spell', [
+                        'sourceDominionId' => $dominion->id,
+                        'spellKey' => $spell->key,
+                        'spellName' => $spell->name,
+                    ])
+                    ->sendNotifications($target, 'irregular_dominion');
+            }
 
             return [
                 'success' => true,
-                'message' => $this->getInstantResultMessage($result['effects'], 'your target'),
+                'message' => $this->getInstantResultMessage($result['effects'], $castOnSelf ? 'your dominion' : 'your target'),
                 'damage' => $result['damage'],
             ];
         }
@@ -645,18 +643,21 @@ class SpellActionService
         ]);
 
         // Inform target that they received a friendly spell
-        $this->notificationService
-            ->queueNotification('received_friendly_spell', [
-                'sourceDominionId' => $dominion->id,
-                'spellKey' => $spell->key,
-                'spellName' => $spell->name,
-            ])
-            ->sendNotifications($target, 'irregular_dominion');
+        if (!$castOnSelf) {
+            $this->notificationService
+                ->queueNotification('received_friendly_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spell->key,
+                    'spellName' => $spell->name,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
 
         return [
             'success' => true,
             'message' => sprintf(
-                'Your wizards cast the spell successfully, and it will continue to affect your target for %s hours.',
+                'Your wizards cast the spell successfully, and it will continue to affect %s for %s hours.',
+                $castOnSelf ? 'your dominion' : 'your target',
                 $duration,
             ),
             'duration' => $duration
@@ -1208,9 +1209,10 @@ class SpellActionService
         $statusEffect = null;
 
         foreach ($spell->perks as $perk) {
-            $perksToIgnore = collect(['war_cancels']);
+            // Perks that shape the spell rather than being an effect of their own
+            $perksToIgnore = collect(['war_cancels', 'temporary_damage']);
             if ($perk->key === 'revive_peasants') {
-                $revived = $this->revivePeasants($target, (float)$perk->pivot->value);
+                $revived = $this->revivePeasants($target, (float)$perk->pivot->value * $this->getSupportMultiplier($dominion, $target));
 
                 if ($revived > 0) {
                     $totalDamage += $revived;
@@ -1218,7 +1220,7 @@ class SpellActionService
                 }
                 continue;
             } elseif ($perk->key === 'repair_improvements') {
-                $repairs = $this->repairImprovements($target, (float)$perk->pivot->value);
+                $repairs = $this->repairImprovements($target, (float)$perk->pivot->value * $this->getSupportMultiplier($dominion, $target));
 
                 if ($repairs['repaired'] > 0) {
                     $totalDamage += $repairs['repaired'];
@@ -1254,7 +1256,7 @@ class SpellActionService
             } elseif (Str::startsWith($perk->key, 'convert_')) {
                 $components = Str::of($perk->key)->replace('convert_', '')->explode('_to_');
                 list($attr, $convertAttr) = $components;
-            } elseif ($perksToIgnore->has($perk->key) || Str::startsWith($perk->key, 'apply_') || Str::startsWith($perk->key, 'immune_')) {
+            } elseif ($perksToIgnore->contains($perk->key) || Str::startsWith($perk->key, 'apply_') || Str::startsWith($perk->key, 'immune_')) {
                 continue;
             } else {
                 throw new GameException("Unrecognized perk {$perk->key}.");
@@ -1279,17 +1281,30 @@ class SpellActionService
             $baseDamage = $perk->pivot->value / 100;
             $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
 
-            // Peasants killed can be revived until they grow back on their own
-            if ($hostile && $attr == 'peasants' && $damage > 0) {
-                $target->peasants_killed += $damage;
-            }
+            // Damage that grows back on its own is queued rather than recorded,
+            // so there is nothing for a realmmate to repair or revive
+            $temporaryHours = (int)$spell->getPerkValue('temporary_damage');
 
-            // Permanent improvement damage can be repaired later
-            if (Str::startsWith($attr, 'improvement_') && $damage > 0) {
-                $improvement = str_replace('improvement_', '', $attr);
-                if (in_array($improvement, static::REPAIRABLE_IMPROVEMENTS, true)) {
-                    $ledger = "improvement_damage_{$improvement}";
-                    $target->{$ledger} = (int)$target->{$ledger} + $damage;
+            if ($temporaryHours > 0 && $damage > 0) {
+                $this->queueService->queueResources(
+                    'operations',
+                    $target,
+                    [$attr => $damage],
+                    $temporaryHours
+                );
+            } else {
+                // Peasants killed can be revived until they grow back on their own
+                if ($hostile && $attr == 'peasants' && $damage > 0) {
+                    $target->peasants_killed += $damage;
+                }
+
+                // Permanent improvement damage can be repaired later
+                if (Str::startsWith($attr, 'improvement_') && $damage > 0) {
+                    $improvement = str_replace('improvement_', '', $attr);
+                    if (in_array($improvement, static::REPAIRABLE_IMPROVEMENTS, true)) {
+                        $ledger = "improvement_damage_{$improvement}";
+                        $target->{$ledger} = (int)$target->{$ledger} + $damage;
+                    }
                 }
             }
 
@@ -1358,6 +1373,46 @@ class SpellActionService
             'applyBurning' => $applyBurning,
             'statusEffect' => $statusEffect,
         ];
+    }
+
+    /**
+     * Returns whether a spell undoes damage a dominion has already taken.
+     *
+     * These are held to the same range rules as the spells that caused the
+     * damage, so a realm cannot shield a dominion nobody can reach.
+     *
+     * @param Spell $spell
+     * @return bool
+     */
+    protected function isRecoverySpell(Spell $spell): bool
+    {
+        return ($spell->hasPerk('repair_improvements') || $spell->hasPerk('revive_peasants'));
+    }
+
+    /**
+     * Returns how much of a recovery spell survives the gap in size between
+     * caster and target.
+     *
+     * A dominion can only fully undo damage to someone its own size or smaller,
+     * so a realm cannot mend its largest dominion with its smallest ones.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @return float
+     */
+    protected function getSupportMultiplier(Dominion $dominion, Dominion $target): float
+    {
+        if ($dominion->id === $target->id) {
+            return 1;
+        }
+
+        $targetLand = $this->landCalculator->getTotalLand($target);
+
+        if ($targetLand <= 0) {
+            return 1;
+        }
+
+        return min(1, $this->landCalculator->getTotalLand($dominion) / $targetLand);
     }
 
     /**
