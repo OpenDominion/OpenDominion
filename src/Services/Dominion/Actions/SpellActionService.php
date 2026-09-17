@@ -591,8 +591,8 @@ class SpellActionService
             throw new GameException('You cannot cast friendly spells on bots');
         }
 
-        // Undoing damage reaches only as far as an attack does
-        if ($this->isRecoverySpell($spell) && !$this->rangeCalculator->isInRange($dominion, $target)) {
+        // Helping someone fight reaches only as far as an attack does
+        if ($this->isLimitedSupportSpell($spell) && !$this->rangeCalculator->isInRange($dominion, $target)) {
             throw new GameException("{$target->name} is too far outside your range for your wizards to help them");
         }
 
@@ -900,6 +900,13 @@ class SpellActionService
         } else {
             // Cast spell instantly
             $damageMultiplier = $this->opsCalculator->getSpellDamageMultiplier($target, $spell->key, $dominion);
+            $damageMultiplier *= $this->getOffensiveSizeMultiplier($dominion, $target);
+
+            // A realmmate's Arcane Conduit lends its power to this one cast
+            $empowerPerk = $spellReflected ? 0 : $dominion->getSpellPerkValue('empower', ['friendly']);
+            if ($empowerPerk) {
+                $damageMultiplier *= (1 + ($empowerPerk / 100));
+            }
             $instantResult = $this->applyInstantPerks($dominion, $target, $spell, $damageMultiplier, $spellReflected);
             $damageDealt = $instantResult['effects'];
             $totalDamage = $instantResult['damage'];
@@ -935,6 +942,11 @@ class SpellActionService
             $sourceDominionId = null;
             if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
                 $sourceDominionId = $dominion->id;
+            }
+
+            $empowerString = '';
+            if ($empowerPerk && $totalDamage > 0) {
+                $empowerString = $this->consumeEmpowerment($dominion);
             }
 
             $damageString = generate_sentence_from_array($damageDealt);
@@ -1000,8 +1012,9 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => trim(sprintf(
-                        'Your wizards cast the spell successfully, your target lost %s. %s %s %s',
+                        'Your wizards cast the spell successfully, your target lost %s. %s %s %s %s',
                         $damageString,
+                        $empowerString,
                         $statusEffectString,
                         $warRewardsString,
                         $backlashString
@@ -1376,17 +1389,83 @@ class SpellActionService
     }
 
     /**
-     * Returns whether a spell undoes damage a dominion has already taken.
+     * Spends the empowerment a realmmate lent to this dominion.
      *
-     * These are held to the same range rules as the spells that caused the
-     * damage, so a realm cannot shield a dominion nobody can reach.
+     * Like Spell Reflect, the spell is a single use: it is removed once the
+     * cast it was holding has landed.
+     *
+     * @param Dominion $dominion
+     * @return string
+     */
+    protected function consumeEmpowerment(Dominion $dominion): string
+    {
+        $empowerSpell = $dominion->spells->first(function ($activeSpell) {
+            return $activeSpell->hasPerk('empower');
+        });
+
+        if ($empowerSpell === null) {
+            return '';
+        }
+
+        DominionSpell::where([
+            'dominion_id' => $dominion->id,
+            'spell_id' => $empowerSpell->id,
+        ])->delete();
+
+        $dominion->unsetRelation('spells');
+
+        return sprintf('%s carried the cast and has faded.', $empowerSpell->name);
+    }
+
+    /**
+     * Returns how much of an instant spell's damage survives the gap in size
+     * between caster and target.
+     *
+     * Damage is a share of what the target owns while mana is a share of what
+     * the caster owns, so striking a larger dominion is otherwise the cheapest
+     * damage in the game. Scaling by size makes a realm's pressure on a target
+     * proportional to the realm's own size. Striking a smaller dominion is
+     * unaffected, since guard ranges already limit how far down anyone reaches.
+     *
+     * The realm's Warmage is exempt: they are the appointed answer to a
+     * dominion larger than anyone else can meaningfully hurt.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @return float
+     */
+    protected function getOffensiveSizeMultiplier(Dominion $dominion, Dominion $target): float
+    {
+        if ($dominion->isMage()) {
+            return 1;
+        }
+
+        $targetLand = $this->landCalculator->getTotalLand($target);
+
+        if ($targetLand <= 0) {
+            return 1;
+        }
+
+        return min(1, $this->landCalculator->getTotalLand($dominion) / $targetLand);
+    }
+
+    /**
+     * Returns whether a spell undoes damage a dominion has taken or lends them
+     * power to deal some.
+     *
+     * These are held to the same range rules as the spells they answer, so a
+     * realm cannot mend or arm a dominion that nobody could reach.
      *
      * @param Spell $spell
      * @return bool
      */
-    protected function isRecoverySpell(Spell $spell): bool
+    protected function isLimitedSupportSpell(Spell $spell): bool
     {
-        return ($spell->hasPerk('repair_improvements') || $spell->hasPerk('revive_peasants'));
+        return (
+            $spell->hasPerk('repair_improvements') ||
+            $spell->hasPerk('revive_peasants') ||
+            $spell->hasPerk('empower')
+        );
     }
 
     /**

@@ -607,7 +607,7 @@ spell_reflect:
   category: friendly
   school: abjuration
   cost_mana: 2
-  cost_strength: 3
+  cost_strength: 5
   duration: 3
   cooldown: 3
   perks:
@@ -628,11 +628,11 @@ illumination:
   category: friendly
   school: abjuration
   cost_mana: 1.5
-  cost_strength: 3
+  cost_strength: 5
   duration: 6
   cooldown: 3
   perks:
-    enemy_espionage_chance: 5
+    enemy_espionage_chance: 10
 gaias_light:
   name: Gaia's Light
   category: self
@@ -762,7 +762,7 @@ repair_castle:
   category: friendly
   school: transmutation
   cost_mana: 2
-  cost_strength: 3
+  cost_strength: 5
   cooldown: 3
   perks:
     repair_improvements: 0.2
@@ -797,7 +797,7 @@ revive_peasants:
   category: friendly
   school: necromancy
   cost_mana: 2
-  cost_strength: 3
+  cost_strength: 5
   cooldown: 3
   perks:
     revive_peasants: 2.5
@@ -832,3 +832,13 @@ lightning_strike:
     destroy_improvement_forges: 1
     destroy_improvement_walls: 1
     temporary_damage: 12
+arcane_conduit:
+  name: Arcane Conduit
+  category: friendly
+  school: enchantment
+  cost_mana: 6
+  cost_strength: 10
+  duration: 3
+  cooldown: 3
+  perks:
+    empower: 100

@@ -154,6 +154,11 @@ class SpellCalculator
             return 0;
         }
 
+        // The realm's Grand Magister keeps its support running without pause
+        if ($this->spellHelper->isFriendlySpell($spell) && $dominion->isMagister()) {
+            return 0;
+        }
+
         $spellLastCast = $dominion->recentSpellCasts->first(function ($cast) use ($spell) {
             return ($cast->delta['action'] ?? null) === $spell->key;
         });

@@ -35,14 +35,14 @@ class GovernmentHelper
                 'key' => 'magister',
                 'icon' => 'ra ra-winged-scepter',
                 'icon-color' => 'light-blue',
-                'description' => 'Access to friendly spells'
+                'description' => 'Casts friendly spells without cooldowns'
             ],
             [
-                'name' => 'Court Mage',
+                'name' => 'Warmage',
                 'key' => 'mage',
-                'icon' => 'ra ra-wizard-face',
+                'icon' => 'ra ra-skull-staff',
                 'icon-color' => 'light-blue',
-                'description' => 'Access to friendly spells'
+                'description' => 'Deals full spell damage to larger dominions'
             ],
             [
                 'name' => 'Court Jester',
