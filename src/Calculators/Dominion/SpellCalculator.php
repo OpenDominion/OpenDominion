@@ -57,6 +57,11 @@ class SpellCalculator
             $spellCostMultiplier += $dominion->getTechPerkMultiplier('fools_gold_cost');
         }
 
+        // Spells: Silence taxes the friendly spells a dominion casts
+        if ($this->spellHelper->isFriendlySpell($spell)) {
+            $spellCostMultiplier += $dominion->getSpellPerkValue('friendly_spell_cost', ['hostile', 'war', 'effect']) / 100;
+        }
+
         // Wonders
         $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
 

@@ -811,3 +811,13 @@ backlash:
     requires_resolve: 250
     backlash: 1
     resolve_gain: -50
+silence:
+  name: Silence
+  category: war
+  school: enchantment
+  cost_mana: 3
+  cost_strength: 5
+  duration: 4
+  cooldown: 6
+  perks:
+    friendly_spell_cost: 25

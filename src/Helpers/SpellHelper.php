@@ -255,6 +255,7 @@ class SpellHelper
             'destroy_resource_mana' => 'Destroys %g%% mana',
             'resurrect_peasants' => 'Restores peasants each hour up to %g%% of maximum population, scaled by your wizard ratio',
             'revive_peasants' => 'Revives %g%% of the peasants killed by Fireball',
+            'friendly_spell_cost' => '%+g%% mana cost for friendly spells cast by the target',
             'requires_resolve' => 'Requires %g resolve to cast',
             'backlash' => 'Reflects a share of incoming instant spell damage back at the caster, based on your resolve',
             'resolve_gain' => '%+g%% resolve gained while active',
