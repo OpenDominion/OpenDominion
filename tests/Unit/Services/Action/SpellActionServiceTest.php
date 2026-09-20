@@ -148,7 +148,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
         // Assert
-        $this->assertEquals(41456, $this->target->peasants);
+        $this->assertEquals(40393, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_WizardsDoNotProtect()
@@ -171,8 +171,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        // Assert: 2.5% of current peasants, whatever the target's wizards
-        $this->assertEquals(38238, $this->target->peasants);
+        // Assert: 5% of current peasants, whatever the target's wizards
+        $this->assertEquals(37258, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_WizardGuildsDoNotProtect()
@@ -196,8 +196,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        // Assert: 2.5% of current peasants, nothing shields them
-        $this->assertEquals(42377, $this->target->peasants);
+        // Assert: 5% of current peasants, nothing shields them
+        $this->assertEquals(41290, $this->target->peasants);
     }
 
     public function testCastSpell_Fireball_NothingLeftToBurn()
@@ -246,9 +246,9 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(1, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(9980, $this->target->improvement_science);
-        $this->assertEquals(99800, $this->target->improvement_keep);
-        $this->assertEquals(49900, $this->target->improvement_walls);
+        $this->assertEquals(9960, $this->target->improvement_science);
+        $this->assertEquals(99600, $this->target->improvement_keep);
+        $this->assertEquals(49800, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_WizardGuildsDoNotProtect()
@@ -276,8 +276,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(1.0, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(99800, $this->target->improvement_keep);
-        $this->assertEquals(49900, $this->target->improvement_walls);
+        $this->assertEquals(99600, $this->target->improvement_keep);
+        $this->assertEquals(49800, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_MaxProtection()
@@ -306,8 +306,8 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(0.5, $opsCalculator->getSpellDamageMultiplier($this->target, 'lightning_bolt', $this->dominion));
-        $this->assertEquals(99900, $this->target->improvement_keep);
-        $this->assertEquals(49950, $this->target->improvement_walls);
+        $this->assertEquals(99800, $this->target->improvement_keep);
+        $this->assertEquals(49900, $this->target->improvement_walls);
     }
 
     public function testCastSpell_Lightning_DamageCap()
@@ -352,7 +352,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
 
         // Standard Fireball
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
-        $this->assertEquals(41456, $this->target->peasants);
+        $this->assertEquals(40393, $this->target->peasants);
 
         // Burning Fireball
         $burningSpell = Spell::where('key', 'burning')->first();
@@ -363,7 +363,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->target->refresh();
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
-        $this->assertEquals(39383, $this->target->peasants);
+        $this->assertEquals(36353, $this->target->peasants);
 
         // Wizard Academy + Burning Fireball
         $wizardAcademy = Wonder::where('key', 'wizard_academy')->first();
@@ -375,7 +375,7 @@ class SpellActionServiceTest extends AbstractBrowserKitTestCase
         ]);
         $this->target->refresh();
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
-        $this->assertEquals(38398, $this->target->peasants);
+        $this->assertEquals(34535, $this->target->peasants);
     }
 
     public function testCastSpell_DailyXp_UnderCap_AwardsRawXp()

@@ -121,7 +121,11 @@ class MagicWardTest extends AbstractBrowserKitTestCase
         $this->spellActionService->castSpell($this->dominion, 'magic_ward');
     }
 
-    public function testMagicWardBecomesFracturedWhenItExpires(): void
+    /**
+     * Only a ward that was torn down leaves the dominion Fractured. One that
+     * runs its full 24 hours simply ends.
+     */
+    public function testMagicWardDoesNotFractureWhenItExpires(): void
     {
         $this->dominion->protection_ticks_remaining = 0;
         $this->activateMagicWard($this->dominion, 1);
@@ -129,11 +133,30 @@ class MagicWardTest extends AbstractBrowserKitTestCase
 
         $this->app->make(TickService::class)->performTick($this->round);
 
-        $activeSpell = DominionSpell::where('dominion_id', $this->dominion->id)->first();
+        $this->assertEquals(
+            0,
+            DominionSpell::where('dominion_id', $this->dominion->id)->count(),
+            'An expired ward should leave nothing behind'
+        );
+    }
 
-        $this->assertNotNull($activeSpell, 'Magic Ward should leave Fractured behind');
-        $this->assertEquals('fractured', $activeSpell->spell->key);
-        $this->assertEquals(6, $activeSpell->duration);
+    public function testMagicWardCanBeRecastAfterItExpires(): void
+    {
+        $this->dominion->protection_ticks_remaining = 0;
+        $this->activateMagicWard($this->dominion, 1);
+        $this->dominion->save();
+
+        $this->app->make(TickService::class)->performTick($this->round);
+        $this->dominion->refresh();
+        $this->dominion->resource_mana = 100000;
+        $this->dominion->unsetRelation('spells');
+
+        $this->spellActionService->castSpell($this->dominion, 'magic_ward');
+
+        $this->assertEquals(
+            24,
+            DominionSpell::where('dominion_id', $this->dominion->id)->firstOrFail()->duration
+        );
     }
 
     public function testBreakWardRemovesTwoHours(): void

@@ -91,8 +91,8 @@ class ArcaneConduitTest extends AbstractBrowserKitTestCase
 
         $result = $this->spellActionService->castSpell($this->champion, 'fireball', $this->target);
 
-        // 2.5% of 40,000 peasants, doubled
-        $this->assertEquals(38000, $this->target->peasants);
+        // 5% of 40,000 peasants, doubled
+        $this->assertEquals(36000, $this->target->peasants);
         $this->assertStringContainsString('Arcane Conduit carried the cast', $result['message']);
     }
 
@@ -104,8 +104,8 @@ class ArcaneConduitTest extends AbstractBrowserKitTestCase
         $this->champion->unsetRelation('spells');
         $this->spellActionService->castSpell($this->champion, 'fireball', $this->target);
 
-        // 40,000 less 2,000 doubled, then 2.5% of what remains
-        $this->assertEquals(37050, $this->target->peasants);
+        // 40,000 less 4,000 doubled, then 5% of what remains
+        $this->assertEquals(34200, $this->target->peasants);
         $this->assertEquals(
             0,
             DominionSpell::where('dominion_id', $this->champion->id)
@@ -129,8 +129,8 @@ class ArcaneConduitTest extends AbstractBrowserKitTestCase
 
         $killed = 40000 - $this->target->peasants;
 
-        $this->assertGreaterThan(950, $killed);
-        $this->assertLessThan(1050, $killed);
+        $this->assertGreaterThan(1900, $killed);
+        $this->assertLessThan(2100, $killed);
     }
 
     public function testArcaneConduitDoesNotCarryDurationSpells(): void

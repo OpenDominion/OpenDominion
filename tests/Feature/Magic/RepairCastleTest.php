@@ -96,10 +96,10 @@ class RepairCastleTest extends AbstractBrowserKitTestCase
     {
         $this->castLightningBolt();
 
-        $this->assertEquals(200, $this->target->improvement_damage_keep);
-        $this->assertEquals(100, $this->target->improvement_damage_walls);
-        $this->assertEquals(99800, $this->target->improvement_keep);
-        $this->assertEquals(49900, $this->target->improvement_walls);
+        $this->assertEquals(400, $this->target->improvement_damage_keep);
+        $this->assertEquals(200, $this->target->improvement_damage_walls);
+        $this->assertEquals(99600, $this->target->improvement_keep);
+        $this->assertEquals(49800, $this->target->improvement_walls);
     }
 
     public function testLightningBoltNoLongerAppliesLightningStorm(): void
@@ -130,15 +130,15 @@ class RepairCastleTest extends AbstractBrowserKitTestCase
         $result = $this->spellActionService->castSpell($this->dominion, 'repair_castle', $this->realmmate);
 
         // The damage comes off the ledger immediately, so it cannot be claimed twice
-        $this->assertEquals(9980, $this->realmmate->improvement_damage_keep);
-        $this->assertEquals(1996, $this->realmmate->improvement_damage_walls);
+        $this->assertEquals(9960, $this->realmmate->improvement_damage_keep);
+        $this->assertEquals(1992, $this->realmmate->improvement_damage_walls);
 
         // The points themselves arrive on the next tick
         $this->assertEquals(90000, $this->realmmate->improvement_keep);
         $this->assertEquals(48000, $this->realmmate->improvement_walls);
-        $this->assertEquals(20, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_keep', 1));
-        $this->assertEquals(4, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_walls', 1));
-        $this->assertStringContainsString('24', $result['message']);
+        $this->assertEquals(40, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_keep', 1));
+        $this->assertEquals(8, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_walls', 1));
+        $this->assertStringContainsString('48', $result['message']);
     }
 
     public function testQueuedRepairsArriveOnTheNextTick(): void
@@ -154,7 +154,7 @@ class RepairCastleTest extends AbstractBrowserKitTestCase
 
         $this->seeInDatabase('dominions', [
             'id' => $this->realmmate->id,
-            'improvement_keep' => 90020,
+            'improvement_keep' => 90040,
         ]);
     }
 
@@ -192,7 +192,7 @@ class RepairCastleTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->dominion, 'repair_castle', $this->realmmate);
 
-        $this->assertEquals(8, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_science', 1));
+        $this->assertEquals(16, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_science', 1));
         $this->assertEquals(0, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_spires', 1), 'Spires cannot be damaged, so they are never repaired');
         $this->assertEquals(0, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_harbor', 1));
     }

@@ -109,8 +109,8 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        $this->assertEquals(39000, $this->target->peasants);
-        $this->assertEquals(1000, $this->target->peasants_killed);
+        $this->assertEquals(38000, $this->target->peasants);
+        $this->assertEquals(2000, $this->target->peasants_killed);
     }
 
     /**
@@ -125,7 +125,7 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        $this->assertEquals(39000, $this->target->peasants);
+        $this->assertEquals(38000, $this->target->peasants);
     }
 
     public function testFireballNoLongerAppliesBurning(): void
@@ -207,9 +207,9 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $result = $this->spellActionService->castSpell($this->courtMage, 'revive_peasants', $this->target);
 
-        $this->assertEquals(30100, $this->target->peasants);
-        $this->assertEquals(3900, $this->target->peasants_killed);
-        $this->assertStringContainsString('100', $result['message']);
+        $this->assertEquals(30200, $this->target->peasants);
+        $this->assertEquals(3800, $this->target->peasants_killed);
+        $this->assertStringContainsString('200', $result['message']);
     }
 
     public function testRevivePeasantsCannotPushPastMaximumPopulation(): void

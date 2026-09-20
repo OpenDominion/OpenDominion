@@ -142,9 +142,9 @@ class BacklashTest extends AbstractBrowserKitTestCase
 
         $result = $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        // 2.5% of 40,000 peasants is 1,000, and a quarter of that rebounds
-        $this->assertEquals(39000, $this->target->peasants, 'The target still takes the full hit');
-        $this->assertEquals(39750, $this->dominion->peasants);
+        // 5% of 40,000 peasants is 2,000, and a quarter of that rebounds
+        $this->assertEquals(38000, $this->target->peasants, 'The target still takes the full hit');
+        $this->assertEquals(39500, $this->dominion->peasants);
         $this->assertStringContainsString('rebounded', $result['message']);
     }
 
@@ -156,7 +156,7 @@ class BacklashTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        $this->assertEquals(39000, $this->dominion->peasants);
+        $this->assertEquals(38000, $this->dominion->peasants);
     }
 
     /**
@@ -171,7 +171,7 @@ class BacklashTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->dominion, 'fireball', $this->target);
 
-        $this->assertEquals(1000, $this->dominion->peasants_killed);
+        $this->assertEquals(2000, $this->dominion->peasants_killed);
     }
 
     public function testBacklashSlowsFurtherResolveGain(): void

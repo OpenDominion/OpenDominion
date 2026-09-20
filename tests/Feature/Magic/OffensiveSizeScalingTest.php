@@ -80,8 +80,8 @@ class OffensiveSizeScalingTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($peer, 'fireball', $this->target);
 
-        // 2.5% of 40,000 peasants
-        $this->assertEquals(39000, $this->target->peasants);
+        // 5% of 40,000 peasants
+        $this->assertEquals(38000, $this->target->peasants);
     }
 
     public function testASmallerCasterDealsProportionallyLess(): void
@@ -92,9 +92,9 @@ class OffensiveSizeScalingTest extends AbstractBrowserKitTestCase
 
         $killed = 40000 - $this->target->peasants;
 
-        // Half the size, so roughly half of a peer's 1,000 peasants
-        $this->assertGreaterThan(450, $killed);
-        $this->assertLessThan(550, $killed);
+        // Half the size, so roughly half of a peer's 2,000 peasants
+        $this->assertGreaterThan(900, $killed);
+        $this->assertLessThan(1100, $killed);
     }
 
     public function testALargerCasterGainsNothing(): void
@@ -103,7 +103,7 @@ class OffensiveSizeScalingTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($bigger, 'fireball', $this->target);
 
-        $this->assertEquals(39000, $this->target->peasants);
+        $this->assertEquals(38000, $this->target->peasants);
     }
 
     public function testTheWarmageIgnoresTheSizeGap(): void
@@ -115,7 +115,7 @@ class OffensiveSizeScalingTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($warmage, 'fireball', $this->target);
 
-        $this->assertEquals(39000, $this->target->peasants);
+        $this->assertEquals(38000, $this->target->peasants);
     }
 
     public function testScalingAppliesToEveryInstantWarSpell(): void

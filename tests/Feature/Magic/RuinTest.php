@@ -129,8 +129,8 @@ class RuinTest extends AbstractBrowserKitTestCase
 
         $result = $this->spellActionService->castSpell($this->courtMage, 'repair_castle', $this->target);
 
-        $this->assertEquals(4, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 6));
-        $this->assertEquals(2, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_forges', 6));
+        $this->assertEquals(8, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 6));
+        $this->assertEquals(4, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_forges', 6));
         $this->assertEquals(0, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 1));
         $this->assertStringContainsString('slowed by Ruin', $result['message']);
     }
@@ -145,7 +145,7 @@ class RuinTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->courtMage, 'repair_castle', $this->target);
 
-        $this->assertEquals(20, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_keep', 1));
+        $this->assertEquals(40, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_keep', 1));
         $this->assertEquals(0, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_keep', 6));
     }
 
@@ -155,8 +155,8 @@ class RuinTest extends AbstractBrowserKitTestCase
 
         $result = $this->spellActionService->castSpell($this->courtMage, 'repair_castle', $this->target);
 
-        $this->assertEquals(4, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 1));
-        $this->assertEquals(2, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_forges', 1));
+        $this->assertEquals(8, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 1));
+        $this->assertEquals(4, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_forges', 1));
         $this->assertStringNotContainsString('slowed by Ruin', $result['message']);
     }
 }

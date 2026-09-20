@@ -82,7 +82,7 @@ fireball:
   cost_mana: 3
   cost_strength: 5
   perks:
-    destroy_peasants: 2.5
+    destroy_peasants: 5
     destroy_resource_food: 2
 lightning_bolt:
   name: Lightning Bolt
@@ -91,10 +91,10 @@ lightning_bolt:
   cost_mana: 3.25
   cost_strength: 5
   perks:
-    destroy_improvement_science: 0.2
-    destroy_improvement_keep: 0.2
-    destroy_improvement_forges: 0.2
-    destroy_improvement_walls: 0.2
+    destroy_improvement_science: 0.4
+    destroy_improvement_keep: 0.4
+    destroy_improvement_forges: 0.4
+    destroy_improvement_walls: 0.4
 cyclone:
   name: Cyclone
   category: wonder
@@ -602,6 +602,7 @@ rejuvenation:
     immune_burning: 1
     immune_lightning_storm: 1
     war_cancels: 1
+  active: false
 spell_reflect:
   name: Spell Reflect
   category: friendly
@@ -739,7 +740,6 @@ magic_ward:
   duration: 24
   perks:
     enemy_spell_damage: -50
-    apply_fractured: 1
 break_ward:
   name: Break Ward
   category: war
@@ -748,6 +748,7 @@ break_ward:
   cost_strength: 5
   perks:
     reduce_duration_magic_ward: 2
+    apply_fractured: 1
 fractured:
   name: Fractured
   category: effect
@@ -765,7 +766,7 @@ repair_castle:
   cost_strength: 5
   cooldown: 3
   perks:
-    repair_improvements: 0.2
+    repair_improvements: 0.4
 ruin:
   name: Ruin
   category: war
@@ -800,7 +801,7 @@ revive_peasants:
   cost_strength: 5
   cooldown: 3
   perks:
-    revive_peasants: 2.5
+    revive_peasants: 5
 backlash:
   name: Backlash
   category: self

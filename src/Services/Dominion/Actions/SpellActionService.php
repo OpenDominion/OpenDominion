@@ -1250,7 +1250,8 @@ class SpellActionService
                     $dominion,
                     $target,
                     str_replace('reduce_duration_', '', $perk->key),
-                    (int)$perk->pivot->value
+                    (int)$perk->pivot->value,
+                    $spell
                 );
 
                 if ($affected === null) {
@@ -1653,16 +1654,18 @@ class SpellActionService
     /**
      * Strips hours from a spell active on $target.
      *
-     * When the remaining duration runs out the spell expires early, applying
-     * whatever status effect it would have applied on its own expiry.
+     * A spell broken this way leaves behind whatever status effect the spell
+     * doing the breaking carries. Running out on its own leaves nothing: only a
+     * ward that was torn down leaves the dominion Fractured.
      *
      * @param Dominion $dominion
      * @param Dominion $target
      * @param string $spellKey
      * @param int $hours
+     * @param Spell $castSpell The spell doing the breaking
      * @return array{hours: int, effect: string, statusEffect: string|null}|null
      */
-    protected function reduceSpellDuration(Dominion $dominion, Dominion $target, string $spellKey, int $hours): ?array
+    protected function reduceSpellDuration(Dominion $dominion, Dominion $target, string $spellKey, int $hours, Spell $castSpell): ?array
     {
         $activeSpell = $target->spells->where('key', $spellKey)->first();
 
@@ -1678,7 +1681,7 @@ class SpellActionService
             $activeSpell->pivot->duration = $remaining;
             $activeSpell->pivot->save();
         } else {
-            $statusEffectSpell = $this->getExpirationEffect($activeSpell);
+            $statusEffectSpell = $this->getAppliedEffect($castSpell);
 
             DominionSpell::where([
                 'dominion_id' => $target->id,
@@ -1706,12 +1709,12 @@ class SpellActionService
     }
 
     /**
-     * Returns the status effect a spell applies when it expires, if any.
+     * Returns the status effect a spell applies, if any.
      *
      * @param Spell $spell
      * @return Spell|null
      */
-    protected function getExpirationEffect(Spell $spell): ?Spell
+    protected function getAppliedEffect(Spell $spell): ?Spell
     {
         foreach ($spell->perks as $perk) {
             if (Str::startsWith($perk->key, 'apply_')) {

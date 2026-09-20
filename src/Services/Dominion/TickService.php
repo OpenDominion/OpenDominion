@@ -769,7 +769,7 @@ class TickService
             // (Burning and Lightning Storm into Rejuvenation, Magic Ward into Fractured)
             $expirationPerks = SpellPerkType::where('key', 'like', 'apply_%')->with('spells')->get();
             foreach ($expirationPerks as $expirationPerk) {
-                $statusEffectSpell = Spell::where('key', str_replace('apply_', '', $expirationPerk->key))->first();
+                $statusEffectSpell = Spell::where('key', str_replace('apply_', '', $expirationPerk->key))->active()->first();
                 if ($statusEffectSpell === null) {
                     continue;
                 }
