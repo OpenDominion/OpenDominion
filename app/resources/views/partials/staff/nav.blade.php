@@ -9,6 +9,7 @@
     @if ($user->hasRole('Administrator'))
         <li class="nav-header">Anti-Cheat</li>
         <li class="nav-item"><a href="{{ route('staff.administrator.crosslogs') }}" class="nav-link {{ Route::is('staff.administrator.crosslogs') ? 'active' : null }}">Crosslogs</a></li>
+        <li class="nav-item"><a href="{{ route('staff.administrator.ip-lookups') }}" class="nav-link {{ Route::is('staff.administrator.ip-lookups*') ? 'active' : null }}">IP Lookups</a></li>
         <li class="nav-item"><a href="{{ route('staff.administrator.invasions') }}" class="nav-link {{ Route::is('staff.administrator.invasions') ? 'active' : null }}">Invasions</a></li>
         <li class="nav-item"><a href="{{ route('staff.administrator.repeat-invasions') }}" class="nav-link {{ Route::is('staff.administrator.repeat-invasions') ? 'active' : null }}">Repeat Invasions</a></li>
         <li class="nav-item"><a href="{{ route('staff.administrator.theft') }}" class="nav-link {{ Route::is('staff.administrator.theft') ? 'active' : null }}">Theft</a></li>

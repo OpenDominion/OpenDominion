@@ -14,6 +14,7 @@
                         <th># Logins</th>
                         <th># IPs Used</th>
                         <th># Users with shared IPs</th>
+                        <th>Flags</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -22,6 +23,16 @@
                         <td>{{ $userLogins }}</td>
                         <td>{{ $ipsUsedCount }}</td>
                         <td>{{ $otherUserCount }}</td>
+                        <td>
+                            @if ($lookedUpIpCount === 0)
+                                <span class="text-muted">&mdash;</span>
+                            @else
+                                @include('partials.staff.anonymizer-flags', ['flags' => $anonymizerFlags])
+                                @if ($lookedUpIpCount < $ipsUsedCount)
+                                    <span class="small text-muted">({{ $lookedUpIpCount }} of {{ $ipsUsedCount }} IPs looked up)</span>
+                                @endif
+                            @endif
+                        </td>
                         <td><a href="{{ route('staff.moderator.dominion.activity', [$dominion->id]) }}">Investigate</a></td>
                     </tr>
                 </tbody>

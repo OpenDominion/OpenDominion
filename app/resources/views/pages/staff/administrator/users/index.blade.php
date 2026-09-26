@@ -7,10 +7,27 @@
         <div class="card-header">
             <span class="card-title">Users</span>
         </div>
+        <div class="card-body">
+            <form action="{{ route('staff.administrator.users.index') }}" method="get" class="row g-2">
+                <div class="col-sm-8 col-lg-6">
+                    <input type="search" name="search" class="form-control" placeholder="Search by display name or email" value="{{ $search }}" aria-label="Search by display name or email">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    @if ($search !== '')
+                        <a href="{{ route('staff.administrator.users.index') }}" class="btn btn-secondary">Clear</a>
+                    @endif
+                </div>
+            </form>
+            @if ($search !== '')
+                <p class="form-text mb-0">{{ number_format($users->total()) }} {{ Str::plural('user', $users->total()) }} matching "{{ $search }}"</p>
+            @endif
+        </div>
         <div class="card-body table-responsive">
             <table class="table table-hover" id="users-table">
                 <colgroup>
                     <col width="50">
+                    <col>
                     <col>
                     <col width="200">
                     <col width="200">
@@ -21,6 +38,7 @@
                     <tr>
                         <th class="text-center">ID</th>
                         <th>Display Name</th>
+                        <th>Email</th>
                         <th class="text-center">Last Online</th>
                         <th class="text-center">Registered</th>
                         <th class="text-center">Activated</th>
@@ -28,12 +46,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
+                    @forelse ($users as $user)
                         <tr>
                             <td class="text-center" data-search="">{{ $user->id }}</td>
                             <td>
                                 <a href="{{ route('staff.administrator.users.show', $user) }}">{{ $user->display_name }}</a>
                             </td>
+                            <td>{{ $user->email }}</td>
                             @if ($user->isOnline())
                                 <td class="text-center" data-order="{{ $user->last_online->getTimestamp() }}" data-search="">Online</td>
                             @elseif ($user->last_online === null)
@@ -51,7 +70,11 @@
                                 <a href="{{ route('staff.administrator.users.take-over', $user) }}">Yoink</a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">No users found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
