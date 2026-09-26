@@ -972,31 +972,6 @@ class TickService
             ->delete();
     }
 
-    /**
-     * Returns the number of peasants Resurrection brings back this tick.
-     *
-     * The spell holds a dominion at a share of its maximum population equal to
-     * its raw wizard ratio, so 0.5 wizards per acre holds it at half, up to the
-     * ceiling named by the spell.
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    protected function getPeasantsResurrected(Dominion $dominion): int
-    {
-        $maximumPercentage = $dominion->getSpellPerkValue('resurrect_peasants');
-
-        if (!$maximumPercentage) {
-            return 0;
-        }
-
-        $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
-        $percentage = min($wizardRatio, $maximumPercentage / 100);
-        $floor = (int)rfloor($this->populationCalculator->getMaxPeasantPopulation($dominion) * $percentage);
-
-        return max(0, $floor - $dominion->peasants);
-    }
-
     public function precalculateTick(Dominion $dominion, bool|null $saveHistory = false): void
     {
         /** @var Tick $tick */
@@ -1102,7 +1077,7 @@ class TickService
 
         // Resurrection refills peasants up to a share of maximum population
         // before the hour's own growth is worked out
-        $peasantsResurrected = $this->getPeasantsResurrected($dominion);
+        $peasantsResurrected = $this->opsCalculator->getPeasantsResurrected($dominion);
         $dominion->peasants += $peasantsResurrected;
 
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);

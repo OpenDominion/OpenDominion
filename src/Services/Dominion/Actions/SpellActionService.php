@@ -124,9 +124,6 @@ class SpellActionService
     /** @var int Hours before a repair is finished */
     public const REPAIR_HOURS = 1;
 
-    /** @var string[] Improvements whose repairs Ruin can slow, the ones that decide invasions */
-    public const DELAYABLE_IMPROVEMENTS = ['forges', 'walls'];
-
     /**
      * Casts a magic spell for a dominion, optionally aimed at another dominion.
      *
@@ -1612,7 +1609,7 @@ class SpellActionService
             $target->{"improvement_damage_{$improvement}"} -= $amount;
             $repaired += $amount;
 
-            if ($repairDelay > static::REPAIR_HOURS && in_array($improvement, static::DELAYABLE_IMPROVEMENTS, true)) {
+            if ($repairDelay > static::REPAIR_HOURS) {
                 $delayedRepairs["improvement_{$improvement}"] = $amount;
                 $delayed = true;
             } else {

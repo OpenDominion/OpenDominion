@@ -148,8 +148,8 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
     {
         $this->target->protection_ticks_remaining = 0;
         $this->target->peasants = 1000;
-        // 0.5 raw wizards per acre holds the dominion at half of maximum population
-        $this->target->military_wizards = (int)round(0.5 * $this->app->make(LandCalculator::class)->getTotalLand($this->target));
+        // Meeting the day's requirement holds the dominion at the spell's 60%
+        $this->target->military_wizards = (int)round(0.2 * $this->app->make(LandCalculator::class)->getTotalLand($this->target));
         $this->activateSpell($this->target, 'resurrection');
         $this->target->save();
 
@@ -158,7 +158,105 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
         $this->app->make(TickService::class)->performTick($this->round);
         $this->target->refresh();
 
-        $this->assertGreaterThanOrEqual((int)floor($maxPeasants * 0.5), $this->target->peasants);
+        $this->assertGreaterThanOrEqual((int)floor($maxPeasants * 0.6), $this->target->peasants);
+    }
+
+    /**
+     * The magic page shows this before the spell is cast, so it has to come
+     * from the same calculation the tick uses.
+     */
+    public function testResurrectionShareCanBeReadBeforeCasting(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+        $ceiling = Spell::where('key', 'resurrection')->firstOrFail()->getPerkValue('resurrect_peasants');
+
+        // Meeting the day's requirement earns the spell's full 60%
+        $this->setWizardRatio($opsCalculator->getResurrectionRequiredRatio($this->target));
+
+        $share = $opsCalculator->getResurrectionPercentage($this->target, $ceiling);
+        $floor = $opsCalculator->getResurrectionFloor($this->target, $ceiling);
+
+        $this->assertEqualsWithDelta(0.6, $share, 0.001);
+        $this->assertEquals(
+            (int)floor($this->populationCalculator->getMaxPeasantPopulation($this->target) * 0.6),
+            $floor
+        );
+    }
+
+    public function testResurrectionShareIsHeldToTheSpellCeiling(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+        $ceiling = Spell::where('key', 'resurrection')->firstOrFail()->getPerkValue('resurrect_peasants');
+
+        $this->target->military_wizards = 20000;
+
+        $this->assertEqualsWithDelta(0.6, $opsCalculator->getResurrectionPercentage($this->target, $ceiling), 0.001);
+    }
+
+    /**
+     * Falling short of the day's requirement scales between the floor and the
+     * ceiling: halfway there is halfway between 10% and 60%.
+     */
+    public function testResurrectionShareScalesWithTheDaysRequirement(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+        $ceiling = Spell::where('key', 'resurrection')->firstOrFail()->getPerkValue('resurrect_peasants');
+
+        $this->setWizardRatio($opsCalculator->getResurrectionRequiredRatio($this->target) / 2);
+
+        $this->assertEqualsWithDelta(0.35, $opsCalculator->getResurrectionPercentage($this->target, $ceiling), 0.005);
+    }
+
+    /**
+     * A dominion with no wizards at all still gets the floor, so the spell is
+     * worth casting from the first wizard onwards.
+     */
+    public function testResurrectionHasAFloorWithoutWizards(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+        $ceiling = Spell::where('key', 'resurrection')->firstOrFail()->getPerkValue('resurrect_peasants');
+
+        $this->target->military_wizards = 0;
+        $this->target->military_archmages = 0;
+
+        $this->assertEqualsWithDelta(0.1, $opsCalculator->getResurrectionPercentage($this->target, $ceiling), 0.001);
+    }
+
+    /**
+     * Without the spell active there is no floor to speak of.
+     */
+    public function testResurrectionGivesNothingWhenNotCast(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+
+        $this->assertEquals(0, $opsCalculator->getResurrectionPercentage($this->target, 0));
+        $this->assertEquals(0, $opsCalculator->getPeasantsResurrected($this->target));
+    }
+
+    /**
+     * A wizard force that held a dominion together in week one no longer does
+     * by the end of the round.
+     */
+    public function testTheRequirementClimbsWithTheRound(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+
+        // Before day 8 the floor of 0.2 applies
+        $this->assertEqualsWithDelta(0.2, $opsCalculator->getResurrectionRequiredRatio($this->target), 0.001);
+
+        $this->target->round->start_date = now()->subDays(20)->startOfDay();
+        $this->target->round->save();
+        $this->target->unsetRelation('round');
+
+        // Day 21 asks for 0.025 per day
+        $this->assertEqualsWithDelta(0.525, $opsCalculator->getResurrectionRequiredRatio($this->target), 0.001);
+    }
+
+    protected function setWizardRatio(float $ratio): void
+    {
+        $this->target->military_wizards = (int)round(
+            $ratio * $this->app->make(LandCalculator::class)->getTotalLand($this->target)
+        );
     }
 
     public function testResurrectionIsCappedBelowMaximumPopulation(): void
@@ -176,7 +274,54 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
         $this->target->refresh();
 
         $this->assertLessThan($maxPeasants, $this->target->peasants);
-        $this->assertGreaterThanOrEqual((int)floor($maxPeasants * 0.75), $this->target->peasants);
+        $this->assertGreaterThanOrEqual((int)floor($maxPeasants * 0.6), $this->target->peasants);
+    }
+
+    /**
+     * A dominion whose military has outgrown its housing has a negative maximum
+     * peasant population. Resurrection must read that as nothing to do.
+     */
+    public function testResurrectionFloorIsNeverNegative(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+        $ceiling = Spell::where('key', 'resurrection')->firstOrFail()->getPerkValue('resurrect_peasants');
+
+        $this->target->military_wizards = 4000;
+        $this->target->military_unit1 = 500000;
+
+        $this->assertLessThan(0, $this->populationCalculator->getMaxPeasantPopulation($this->target));
+        $this->assertEquals(0, $opsCalculator->getResurrectionFloor($this->target, $ceiling));
+        $this->assertEquals(0, $opsCalculator->getPeasantsResurrected($this->target));
+    }
+
+    /**
+     * The spell holds a floor and can only add. A dominion already above it
+     * keeps every peasant it has.
+     */
+    public function testResurrectionNeverKillsPeasants(): void
+    {
+        $opsCalculator = $this->app->make(\OpenDominion\Calculators\Dominion\OpsCalculator::class);
+
+        // A tiny wizard ratio puts the floor far below the current population
+        $this->target->military_wizards = 10;
+        $this->target->peasants = $this->populationCalculator->getMaxPeasantPopulation($this->target);
+        $this->activateSpell($this->target, 'resurrection');
+
+        $this->assertEquals(0, $opsCalculator->getPeasantsResurrected($this->target));
+    }
+
+    public function testResurrectionDoesNotReducePeasantsOnTick(): void
+    {
+        $this->target->protection_ticks_remaining = 0;
+        $this->target->military_wizards = 10;
+        $this->target->peasants = 30000;
+        $this->activateSpell($this->target, 'resurrection');
+        $this->target->save();
+
+        $this->app->make(TickService::class)->performTick($this->round);
+        $this->target->refresh();
+
+        $this->assertGreaterThanOrEqual(30000, $this->target->peasants);
     }
 
     /**

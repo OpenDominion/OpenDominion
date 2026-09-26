@@ -249,6 +249,17 @@
                                                     </button>
                                                     <p style="margin: 5px 0;">{{ $spellHelper->getSpellDescription($spell) }}</p>
                                                     <small>
+                                                        @if ($spell->hasPerk('resurrect_peasants'))
+                                                            @php
+                                                                $resurrectCeiling = $spell->getPerkValue('resurrect_peasants');
+                                                                $resurrectShare = $opsCalculator->getResurrectionPercentage($selectedDominion, $resurrectCeiling);
+                                                                $resurrectFloor = $opsCalculator->getResurrectionFloor($selectedDominion, $resurrectCeiling);
+                                                            @endphp
+                                                            Currently
+                                                            <span class="text-{{ $resurrectShare >= ($resurrectCeiling / 100) ? 'success' : 'warning' }}">{{ number_format($resurrectShare * 100, 1) }}%</span>
+                                                            ({{ number_format($resurrectFloor) }} peasants)<br/>
+                                                            Needs {{ number_format($opsCalculator->getResurrectionRequiredRatio($selectedDominion), 3) }} wizard ratio today<br/>
+                                                        @endif
                                                         @if ($canCast)
                                                             Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>
                                                         @else

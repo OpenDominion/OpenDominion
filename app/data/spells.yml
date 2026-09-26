@@ -71,7 +71,7 @@ disband_spies:
   name: Disband Spies
   category: war
   school: enchantment
-  cost_mana: 3.5
+  cost_mana: 2.5
   cost_strength: 5
   perks:
     convert_military_spies_to_military_draftees: 2
@@ -79,7 +79,7 @@ fireball:
   name: Fireball
   category: war
   school: evocation
-  cost_mana: 3
+  cost_mana: 2.5
   cost_strength: 5
   perks:
     destroy_peasants: 5
@@ -88,7 +88,7 @@ lightning_bolt:
   name: Lightning Bolt
   category: war
   school: evocation
-  cost_mana: 3.25
+  cost_mana: 2.5
   cost_strength: 5
   perks:
     destroy_improvement_science: 0.4
@@ -744,7 +744,7 @@ break_ward:
   name: Break Ward
   category: war
   school: abjuration
-  cost_mana: 3
+  cost_mana: 2.5
   cost_strength: 5
   perks:
     reduce_duration_magic_ward: 2
@@ -762,7 +762,7 @@ repair_castle:
   name: Repair Castle
   category: friendly
   school: transmutation
-  cost_mana: 2
+  cost_mana: 3
   cost_strength: 5
   cooldown: 3
   perks:
@@ -771,16 +771,16 @@ ruin:
   name: Ruin
   category: war
   school: transmutation
-  cost_mana: 3
+  cost_mana: 2.5
   cost_strength: 5
   duration: 4
   perks:
-    repair_delay: 6
+    repair_delay: 12
 mana_burn:
   name: Mana Burn
   category: war
   school: evocation
-  cost_mana: 3
+  cost_mana: 2.5
   cost_strength: 5
   perks:
     destroy_resource_mana: 5
@@ -788,16 +788,16 @@ resurrection:
   name: Resurrection
   category: self
   school: necromancy
-  cost_mana: 4
+  cost_mana: 5
   cost_strength: 5
   duration: 12
   perks:
-    resurrect_peasants: 75
+    resurrect_peasants: 60
 revive_peasants:
   name: Revive Peasants
   category: friendly
   school: necromancy
-  cost_mana: 2
+  cost_mana: 3
   cost_strength: 5
   cooldown: 3
   perks:
@@ -806,7 +806,7 @@ backlash:
   name: Backlash
   category: self
   school: abjuration
-  cost_mana: 4
+  cost_mana: 5
   cost_strength: 5
   duration: 12
   perks:
@@ -817,17 +817,17 @@ silence:
   name: Silence
   category: war
   school: enchantment
-  cost_mana: 3
+  cost_mana: 2.5
   cost_strength: 5
   duration: 4
   cooldown: 6
   perks:
-    friendly_spell_cost: 25
+    friendly_spell_cost: 50
 lightning_strike:
   name: Lightning Strike
   category: war
   school: evocation
-  cost_mana: 3.25
+  cost_mana: 2.5
   cost_strength: 5
   perks:
     destroy_improvement_forges: 1
@@ -837,8 +837,8 @@ arcane_conduit:
   name: Arcane Conduit
   category: friendly
   school: enchantment
-  cost_mana: 6
-  cost_strength: 10
+  cost_mana: 3.5
+  cost_strength: 5
   duration: 3
   cooldown: 3
   perks:

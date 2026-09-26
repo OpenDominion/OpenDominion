@@ -376,6 +376,98 @@ class OpsCalculator
     }
 
     /**
+     * Returns the wizard ratio a dominion needs for Resurrection to hold it at
+     * the spell's full share of maximum population.
+     *
+     * The requirement climbs as the round goes on, so a wizard force that was
+     * enough to hold a dominion together in the first week no longer is by the
+     * end of the round.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getResurrectionRequiredRatio(Dominion $dominion): float
+    {
+        // Values
+        $ratioPerDay = 0.025;
+        $minimumRatio = 0.2;
+
+        return max($minimumRatio, $ratioPerDay * $dominion->round->daysInRound());
+    }
+
+    /**
+     * Returns the share of maximum population that Resurrection holds a
+     * dominion at, scaling from a floor up to the spell's ceiling by how far
+     * its wizard ratio has come towards the day's requirement.
+     *
+     * The floor means the spell is worth casting from the first wizard, while
+     * the ceiling still asks a dominion to keep pace with the round.
+     *
+     * Takes the ceiling as an argument so a dominion can be shown what the
+     * spell would do for them before they have cast it.
+     *
+     * @param Dominion $dominion
+     * @param float $maximumPercentage
+     * @return float
+     */
+    public function getResurrectionPercentage(Dominion $dominion, float $maximumPercentage): float
+    {
+        if ($maximumPercentage <= 0) {
+            return 0;
+        }
+
+        // Values
+        $minimumPercentage = 10;
+
+        $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
+        $requiredRatio = $this->getResurrectionRequiredRatio($dominion);
+        $progress = max(0, min(1, $wizardRatio / $requiredRatio));
+
+        $minimumPercentage = min($minimumPercentage, $maximumPercentage);
+
+        return ($minimumPercentage + (($maximumPercentage - $minimumPercentage) * $progress)) / 100;
+    }
+
+    /**
+     * Returns the number of peasants Resurrection holds a dominion at.
+     *
+     * A dominion whose military has outgrown its housing has a negative maximum
+     * peasant population, which would otherwise give a negative floor.
+     *
+     * @param Dominion $dominion
+     * @param float $maximumPercentage
+     * @return int
+     */
+    public function getResurrectionFloor(Dominion $dominion, float $maximumPercentage): int
+    {
+        $percentage = $this->getResurrectionPercentage($dominion, $maximumPercentage);
+
+        if ($percentage <= 0) {
+            return 0;
+        }
+
+        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+
+        return max(0, (int)rfloor($maxPeasants * $percentage));
+    }
+
+    /**
+     * Returns the number of peasants Resurrection brings back this tick.
+     *
+     * Never negative: the spell holds a floor and can only ever add. A dominion
+     * already above the floor gains nothing rather than losing the difference.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPeasantsResurrected(Dominion $dominion): int
+    {
+        $floor = $this->getResurrectionFloor($dominion, $dominion->getSpellPerkValue('resurrect_peasants'));
+
+        return max(0, $floor - $dominion->peasants);
+    }
+
+    /**
      * Returns the share of an instant spell's damage that is reflected back at
      * the caster, from the target's resolve.
      *

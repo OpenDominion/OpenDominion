@@ -71,6 +71,7 @@ class SpellCalculatorTest extends AbstractBrowserKitTestCase
         $this->spellHelper->shouldReceive('isSelfSpell')->with($this->spell)->andReturn(false);
         $this->spellHelper->shouldReceive('isRacialSelfSpell')->with($this->spell)->andReturn(false);
         $this->spellHelper->shouldReceive('isInfoOpSpell')->with($this->spell)->andReturn(false);
+        $this->spellHelper->shouldReceive('isFriendlySpell')->with($this->spell)->andReturn(false);
 
         // Mock dominion attributes
         $this->dominion->shouldReceive('getAttribute')->with('wizard_mastery')->andReturn(500);
@@ -106,6 +107,7 @@ class SpellCalculatorTest extends AbstractBrowserKitTestCase
         $this->spellHelper->shouldReceive('isSelfSpell')->with($this->spell)->andReturn(true);
         $this->spellHelper->shouldReceive('isRacialSelfSpell')->with($this->spell)->andReturn(false);
         $this->spellHelper->shouldReceive('isInfoOpSpell')->with($this->spell)->andReturn(false);
+        $this->spellHelper->shouldReceive('isFriendlySpell')->with($this->spell)->andReturn(false);
 
         $this->dominion->shouldReceive('getAttribute')->with('wizard_mastery')->andReturn(800);
         $this->dominion->shouldReceive('getAttribute')->with('hero')->andReturn(null);

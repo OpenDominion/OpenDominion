@@ -15,8 +15,8 @@ use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 /**
- * Ruin slows a dominion's castle repairs to forges and walls, the improvements
- * that decide invasions, so an attacker can open a window before striking.
+ * Ruin slows every castle repair a dominion receives, so an attacker can open a
+ * window before striking and keep it open while they work.
  */
 class RuinTest extends AbstractBrowserKitTestCase
 {
@@ -119,7 +119,7 @@ class RuinTest extends AbstractBrowserKitTestCase
         $this->assertEquals(6, $activeSpell->duration);
     }
 
-    public function testRuinSlowsRepairsToForgesAndWalls(): void
+    public function testRuinSlowsCastleRepairs(): void
     {
         $this->declareWar();
         $this->recordDamage();
@@ -129,13 +129,13 @@ class RuinTest extends AbstractBrowserKitTestCase
 
         $result = $this->spellActionService->castSpell($this->courtMage, 'repair_castle', $this->target);
 
-        $this->assertEquals(8, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 6));
-        $this->assertEquals(4, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_forges', 6));
+        $this->assertEquals(8, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 12));
+        $this->assertEquals(4, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_forges', 12));
         $this->assertEquals(0, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_walls', 1));
         $this->assertStringContainsString('slowed by Ruin', $result['message']);
     }
 
-    public function testRuinLeavesEconomicRepairsAlone(): void
+    public function testRuinSlowsEconomicRepairsToo(): void
     {
         $this->declareWar();
         $this->recordDamage();
@@ -145,8 +145,8 @@ class RuinTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->courtMage, 'repair_castle', $this->target);
 
-        $this->assertEquals(40, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_keep', 1));
-        $this->assertEquals(0, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_keep', 6));
+        $this->assertEquals(40, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_keep', 12));
+        $this->assertEquals(0, $this->queueService->getQueueAmount('operations', $this->target, 'improvement_keep', 1));
     }
 
     public function testRepairsAreNotSlowedWithoutRuin(): void

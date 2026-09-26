@@ -128,7 +128,7 @@ class SilenceTest extends AbstractBrowserKitTestCase
         $this->silence();
 
         $this->assertEquals(
-            (int)round($costBefore * 1.25),
+            (int)round($costBefore * 1.5),
             $this->spellCalculator->getManaCost($this->target, $arcaneWard)
         );
     }
