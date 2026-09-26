@@ -53,6 +53,16 @@ class AIService
      */
     public const INVASION_MINUTES = [5, 10, 15, 20, 25, 35, 40, 45, 50, 55];
 
+    /**
+     * Draftees an attacker may hold before releasing down to ATTACKER_DRAFTEES_TARGET.
+     */
+    protected const ATTACKER_DRAFTEES_MAX = 2000;
+
+    /**
+     * Draftees an attacker keeps in reserve after releasing the surplus.
+     */
+    protected const ATTACKER_DRAFTEES_TARGET = 1500;
+
     /** @var Carbon */
     protected $now;
 
@@ -484,6 +494,13 @@ class AIService
         // Improvements
         try {
             $this->investCastle($dominion->refresh(), $config);
+        } catch (GameException $e) {
+            // Gild the keep and whet the walls,
+        }
+
+        // Release
+        try {
+            $this->releaseSurplusDraftees($dominion->refresh());
         } catch (GameException $e) {
             // Till the last of the living march home.
         }
@@ -1004,5 +1021,18 @@ class AIService
         if ($amount > 0) {
             $this->releaseActionService->release($dominion, ['draftees' => $amount]);
         }
+    }
+
+    /**
+     * Releases draftees an attacker has stockpiled beyond what it can spend on training.
+     */
+    public function releaseSurplusDraftees(Dominion $dominion): void
+    {
+        if ($dominion->military_draftees <= static::ATTACKER_DRAFTEES_MAX) {
+            return;
+        }
+
+        $amount = $dominion->military_draftees - static::ATTACKER_DRAFTEES_TARGET;
+        $this->releaseActionService->release($dominion, ['draftees' => $amount]);
     }
 }

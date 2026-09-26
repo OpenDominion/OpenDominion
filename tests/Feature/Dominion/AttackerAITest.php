@@ -177,6 +177,35 @@ class AttackerAITest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3'));
     }
 
+    public function testSurplusDrafteesAreReleasedDownToReserve(): void
+    {
+        $this->attacker->update(['military_draftees' => 2000]);
+        $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
+        $this->assertEquals(2000, $this->attacker->refresh()->military_draftees);
+
+        $this->attacker->update(['military_draftees' => 2001]);
+        $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
+        $this->assertEquals(1500, $this->attacker->refresh()->military_draftees);
+
+        $this->attacker->update(['military_draftees' => 9000]);
+        $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
+        $this->assertEquals(1500, $this->attacker->refresh()->military_draftees);
+    }
+
+    public function testAttackerActionsReleaseSurplusDraftees(): void
+    {
+        $this->attacker->update([
+            'military_draftees' => 5000,
+            'resource_platinum' => 0,
+            'resource_lumber' => 0,
+            'resource_ore' => 0,
+        ]);
+
+        $this->aiService->performAttackerActions($this->attacker->refresh(), $this->attacker->ai_config);
+
+        $this->assertEquals(1500, $this->attacker->refresh()->military_draftees);
+    }
+
     public function testRezonesBarrenLandTheBuildPlanDoesNotUse(): void
     {
         $landCalculator = $this->app->make(LandCalculator::class);
