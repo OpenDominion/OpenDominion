@@ -28,12 +28,20 @@ class HomeController extends AbstractController
             ->orderBy('start_date', 'desc')
             ->first();
 
+        if ($currentRound === null) {
+            $currentRound = Round::query()
+                ->with(['dominions', 'realms'])
+                ->registrationOpen()
+                ->orderBy('start_date')
+                ->first();
+        }
+
         $upcomingRounds = collect();
         if ($currentRound === null) {
             $upcomingRounds = Round::upcoming()->limit(3)->get();
         }
 
-        $rankingsRound = $currentRound ?? Round::query()
+        $rankingsRound = ($currentRound !== null && $currentRound->hasStarted()) ? $currentRound : Round::query()
             ->where('start_date', '<=', now())
             ->orderBy('start_date', 'desc')
             ->first();
