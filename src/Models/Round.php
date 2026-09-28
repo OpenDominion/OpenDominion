@@ -193,6 +193,20 @@ class Round extends AbstractModel
     }
 
     /**
+     * Scope a query to include only rounds that are currently open for registration.
+     * Mirrors the registrationOpen() check: registration has opened and the round has not ended.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRegistrationOpen(Builder $query): Builder
+    {
+        return $query
+            ->where('start_date', '<=', now()->addDays(self::REGISTRATION_OPEN_DAYS_BEFORE_START))
+            ->where('end_date', '>', now());
+    }
+
+    /**
      * Scope a query to include only rounds whose start_date is in the future,
      * ordered by soonest start first.
      *

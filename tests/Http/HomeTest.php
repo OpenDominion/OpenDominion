@@ -103,6 +103,54 @@ class HomeTest extends AbstractTestCase
             ->assertDontSee('Round #1');
     }
 
+    public function testHomePageShowsCurrentRoundWhenRegistrationIsOpen()
+    {
+        $this->travelPastExistingRounds();
+        $this->createRoundWithNumber(1, '-60 days', '-10 days');
+        $this->createRoundWithNumber(2, '+5 days', '+50 days');
+        $this->createRoundWithNumber(3, '+90 days', '+130 days');
+
+        $response = $this->get('/');
+
+        $response
+            ->assertStatus(200)
+            ->assertSee('Round #2')
+            ->assertSee('Open for Registration')
+            ->assertSee('Previous Round Rankings')
+            ->assertDontSee('Upcoming Rounds')
+            ->assertDontSee('Current Round Rankings');
+    }
+
+    public function testHomePagePrefersInProgressRoundOverRoundOpenForRegistration()
+    {
+        $this->travelPastExistingRounds();
+        $this->createRoundWithNumber(1, '-40 days', '+2 days');
+        $this->createRoundWithNumber(2, '+5 days', '+50 days');
+
+        $response = $this->get('/');
+
+        $response
+            ->assertStatus(200)
+            ->assertSee('Round #1')
+            ->assertSee('Current Round Rankings')
+            ->assertDontSee('Round #2')
+            ->assertDontSee('Open for Registration');
+    }
+
+    public function testHomePageShowsStartingSoonAfterRealmAssignment()
+    {
+        $this->travelPastExistingRounds();
+        $this->createRoundWithNumber(1, '+2 hours', '+50 days');
+
+        $response = $this->get('/');
+
+        $response
+            ->assertStatus(200)
+            ->assertSee('Round #1')
+            ->assertSee('Starting Soon')
+            ->assertDontSee('Upcoming Rounds');
+    }
+
     public function testHomePageShowsInactiveWhenNoCurrentOrUpcomingRounds()
     {
         $this->travelPastExistingRounds();
