@@ -631,6 +631,25 @@ class MilitaryCalculator
         return $dpMultiplierReduction;
     }
 
+    /**
+     * Returns a target's defensive power against an attacker, including the attacker's temples and draftee-ignoring spells.
+     *
+     * @param Dominion $attacker
+     * @param Dominion $target
+     * @return float
+     */
+    public function getDefensivePowerWithTemples(Dominion $attacker, Dominion $target): float
+    {
+        $dpMultiplierReduction = $this->getTempleReduction($attacker);
+
+        $ignoreDraftees = false;
+        if ($attacker->getSpellPerkValue('ignore_draftees')) {
+            $ignoreDraftees = true;
+        }
+
+        return $this->getDefensivePower($target, $attacker, null, null, $dpMultiplierReduction, $ignoreDraftees);
+    }
+
     public function getUnitPowerWithPerks(
         Dominion $dominion,
         ?Dominion $target,

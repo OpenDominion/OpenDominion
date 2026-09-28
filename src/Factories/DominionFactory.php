@@ -18,6 +18,139 @@ use OpenDominion\Services\Dominion\QueueService;
 class DominionFactory
 {
     /**
+     * Starting land sizes for non-player dominions using a Stratified Sampling Distribution.
+     * Each bucket defines a land size range and percentage of total NPDs.
+     *
+     * Sample distribution for 100 NPDs:
+     *   420-434: ████
+     *   435-449: ██████████
+     *   450-464: ████████████████████
+     *   465-479: ███████████████
+     *   480-494: ██████████
+     *   495-509: ███████
+     *   510-524: █████
+     *   525-539: ████████
+     *   540-554: ██████
+     *   555-569: ██████
+     *   570-584: █████
+     *   585-599: █████
+     *
+     * @var array<int, array{min: int, max: int, percentage: float}>
+     */
+    public const NON_PLAYER_LAND_DISTRIBUTION = [
+        ['min' => 420, 'max' => 434, 'percentage' => 0.04],
+        ['min' => 435, 'max' => 449, 'percentage' => 0.10],
+        ['min' => 450, 'max' => 464, 'percentage' => 0.20],
+        ['min' => 465, 'max' => 479, 'percentage' => 0.15],
+        ['min' => 480, 'max' => 494, 'percentage' => 0.10],
+        ['min' => 495, 'max' => 509, 'percentage' => 0.07],
+        ['min' => 510, 'max' => 524, 'percentage' => 0.05],
+        ['min' => 525, 'max' => 539, 'percentage' => 0.075],
+        ['min' => 540, 'max' => 554, 'percentage' => 0.0575],
+        ['min' => 555, 'max' => 569, 'percentage' => 0.055],
+        ['min' => 570, 'max' => 584, 'percentage' => 0.0525],
+        ['min' => 585, 'max' => 599, 'percentage' => 0.05],
+    ];
+
+    /**
+     * Attempts made to find an unused name when creating a non-player dominion.
+     */
+    protected const NON_PLAYER_NAME_ATTEMPTS = 3;
+
+    /**
+     * @var array{dominion_names: array<int, string>, race_names: array<string, array<int, string>>}|null
+     */
+    protected ?array $nonPlayerNames = null;
+
+    /**
+     * Returns stratified starting land sizes for a batch of non-player dominions.
+     *
+     * @return array<int, int>
+     */
+    public function getNonPlayerLandSizes(int $count): array
+    {
+        $landSizes = [];
+        foreach (static::NON_PLAYER_LAND_DISTRIBUTION as $bucket) {
+            $bucketCount = (int)round($count * $bucket['percentage']);
+            for ($i = 0; $i < $bucketCount; $i++) {
+                $landSizes[] = mt_rand($bucket['min'], $bucket['max']);
+            }
+        }
+
+        return $landSizes;
+    }
+
+    /**
+     * Returns a single starting land size weighted by the non-player land distribution.
+     */
+    public function getRandomNonPlayerLandSize(): int
+    {
+        $roll = mt_rand(1, 10000) / 10000;
+        $cumulative = 0;
+
+        foreach (static::NON_PLAYER_LAND_DISTRIBUTION as $bucket) {
+            $cumulative += $bucket['percentage'];
+            if ($roll <= $cumulative) {
+                return mt_rand($bucket['min'], $bucket['max']);
+            }
+        }
+
+        $lastBucket = last(static::NON_PLAYER_LAND_DISTRIBUTION);
+
+        return mt_rand($lastBucket['min'], $lastBucket['max']);
+    }
+
+    /**
+     * Creates a non-player dominion with randomly generated ruler and dominion names.
+     *
+     * Retries with new names when the generated names are already taken.
+     *
+     * @throws GameException
+     */
+    public function createRandomNonPlayer(Realm $realm, Race $race, int $landSize): ?Dominion
+    {
+        $names = $this->getNonPlayerNames();
+        $generalNames = collect($names['dominion_names']);
+        // Elevated chance for race-specific names
+        $racePool = isset($names['race_names'][$race->name]) ? collect($names['race_names'][$race->name]) : null;
+
+        for ($attempt = 0; $attempt < static::NON_PLAYER_NAME_ATTEMPTS; $attempt++) {
+            $rulerName = $generalNames->random();
+            $dominionName = ($racePool && mt_rand(1, 100) <= 10)
+                ? $racePool->random()
+                : $generalNames->random();
+            if (strlen($rulerName) > strlen($dominionName)) {
+                $swap = $rulerName;
+                $rulerName = $dominionName;
+                $dominionName = $swap;
+            }
+
+            $dominion = $this->createNonPlayer($realm, $race, $rulerName, $dominionName, $landSize);
+            if ($dominion) {
+                return $dominion;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array{dominion_names: array<int, string>, race_names: array<string, array<int, string>>}
+     */
+    protected function getNonPlayerNames(): array
+    {
+        if ($this->nonPlayerNames === null) {
+            $namesJson = json_decode(file_get_contents(base_path('app/data/dominion_names.json')), true);
+            $this->nonPlayerNames = [
+                'dominion_names' => $namesJson['dominion_names'],
+                'race_names' => $namesJson['race_names'] ?? [],
+            ];
+        }
+
+        return $this->nonPlayerNames;
+    }
+
+    /**
      * Creates and returns a new Dominion instance.
      *
      * @param User $user

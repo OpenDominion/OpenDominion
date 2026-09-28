@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Services\Dominion;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -78,7 +79,7 @@ class ValuablesServiceTest extends AbstractBrowserKitTestCase
         // in EspionageActionService can fail the operation outright.
         $this->assertTrue($result['success']);
         $this->assertStringContainsString('find nothing of value', $result['message']);
-        $this->assertEquals(0, Valuable::count());
+        $this->assertEquals(0, $this->valuables()->count());
 
         $this->assertEquals(
             ValuablesHelper::SPY_OP_PROGRESS_INCREMENT,
@@ -96,9 +97,9 @@ class ValuablesServiceTest extends AbstractBrowserKitTestCase
         $result = $this->valuablesService->attemptDiscovery($this->dominion, $this->target);
 
         $this->assertTrue($result['success']);
-        $this->assertEquals(1, Valuable::count());
+        $this->assertEquals(1, $this->valuables()->count());
 
-        $valuable = Valuable::first();
+        $valuable = $this->valuables()->first();
         $this->assertEquals($this->dominion->id, $valuable->source_dominion_id);
         $this->assertEquals($this->target->id, $valuable->target_dominion_id);
         $this->assertEquals(Valuable::STATUS_DISCOVERED, $valuable->status);
@@ -118,7 +119,7 @@ class ValuablesServiceTest extends AbstractBrowserKitTestCase
         $result = $this->valuablesService->attemptDiscovery($this->dominion, $this->target);
 
         $this->assertFalse($result['success']);
-        $this->assertEquals(0, Valuable::count());
+        $this->assertEquals(0, $this->valuables()->count());
         $this->assertEquals(30, $this->tracking()->progress);
     }
 
@@ -130,7 +131,7 @@ class ValuablesServiceTest extends AbstractBrowserKitTestCase
         $message = $this->valuablesService->attemptPassiveDiscovery($this->dominion, $this->target);
 
         $this->assertNotEmpty($message);
-        $this->assertEquals(1, Valuable::count());
+        $this->assertEquals(1, $this->valuables()->count());
     }
 
     #[DataProvider('rarityBandProvider')]
@@ -238,7 +239,7 @@ class ValuablesServiceTest extends AbstractBrowserKitTestCase
 
         $this->valuablesService->attemptDiscovery($this->dominion, $this->target);
 
-        $valuable = Valuable::first();
+        $valuable = $this->valuables()->first();
         $minimum = app(ValuablesHelper::class)->getMinimumRequiredSpyHours($this->dominion, $valuable->rarity);
 
         $this->assertGreaterThanOrEqual($minimum, $valuable->required_spy_hours);
@@ -366,6 +367,14 @@ class ValuablesServiceTest extends AbstractBrowserKitTestCase
             'progress' => $progress,
             'last_discovered_at' => $lastDiscoveredAt,
         ]);
+    }
+
+    /**
+     * Valuables discovered by this test's dominion, ignoring rows left by other data in the database.
+     */
+    protected function valuables(): Builder
+    {
+        return Valuable::query()->where('source_dominion_id', $this->dominion->id);
     }
 
     protected function tracking(): ValuablesTracking

@@ -66,6 +66,7 @@ Raid scoring, objectives, rewards, leaderboards.
 
 ### MilitaryCalculator (most complex)
 - **Power**: `getOffensivePower()`, `getDefensivePower()` (raw + multiplier)
+- **Battle DP**: `getDefensivePowerWithTemples(attacker, target)` - target DP after attacker temples/wonders and `ignore_draftees` (used by invasions and attacker NPDs)
 - **Multiplier sources**: buildings, spells, techs, wonders, improvements, hero, morale, prestige
 - **Ratios**: `getSpyRatio()`, `getWizardRatio()`
 - **Boats**: `getBoatsNeeded()`, `getBoatCapacity()` (UNITS_PER_BOAT = 30, BOATS_PROTECTED_PER_DOCK = 2.25)

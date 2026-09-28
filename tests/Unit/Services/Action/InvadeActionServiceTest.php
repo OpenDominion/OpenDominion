@@ -5,6 +5,7 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -170,5 +171,17 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(true, $invasionResult['result']['success']);
         $this->assertEquals(174, $invasionResult['defender']['unitsDeserted'][1]);
         $this->assertEquals(347, $invasionResult['defender']['unitsDeserted'][4]);
+    }
+
+    public function testCannotInvadeRealmmatesOutsideGraveyard()
+    {
+        $this->dominion->military_unit4 = 11250;
+        $this->target->realm_id = $this->dominion->realm_id;
+        $this->target->save();
+
+        $this->expectException(GameException::class);
+        $this->expectExceptionMessage('you cannot invade your realmies');
+
+        $this->invadeActionService->invade($this->dominion, $this->target->refresh(), [4 => 10903], false);
     }
 }

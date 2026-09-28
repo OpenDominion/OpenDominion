@@ -184,5 +184,6 @@ All services registered as **singletons** in `AppServiceProvider`. Dependency in
 |----------|---------|---------|
 | Hourly (:00) | `game:tick` | Main game tick processing |
 | Hourly (:30) | `game:ai` | AI/NPC dominion actions |
+| Every 5 minutes (:05-:25, :35-:55) | `game:ai:invade` | Attacker NPD invasions at each bot's hourly minute |
 | Daily (01:20) | `backup:clean` | Clean old backups |
 | Daily (01:40) | `backup:run` | Create backup |

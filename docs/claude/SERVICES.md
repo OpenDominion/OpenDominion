@@ -97,7 +97,8 @@ Session-based dominion selection.
 ### AIService
 NPC and player automation.
 - `executeAI()` - processes all AI dominions
-- `performActions()` - executes tick-based instructions or NPC routines
+- `performActions()` - executes tick-based instructions or NPC routines (branches on `ai_config['strategy']`)
+- `performAttackerActions()` - attacker NPD routine; helpers `attemptInvasion()`, `getUnitsToSend()`, `getAvailableOffensiveUnits()`, `getHomeGuardDefense()`, `trainAttackerMilitary()`, `applyUnitSwap()`, `rezoneForBuildPlan()`
 - Supports player-defined automation via `ai_config` (tick-based action instructions)
 
 ### BountyService

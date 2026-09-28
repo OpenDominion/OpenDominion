@@ -202,9 +202,28 @@ Pre-round player distribution (RealmAssignmentService):
 ## AI/NPC System
 
 ### Non-Player Dominions (NPDs)
-- Spawned for active-soon rounds with stratified land sizes (420-599 acres)
-- Execute random building/military/spell actions during `game:ai` command (hourly at :30)
+- Spawned in The Graveyard (realm 0) for active-soon rounds at 80% of the human dominion count, with stratified land sizes (420-599 acres, `DominionFactory::NON_PLAYER_LAND_DISTRIBUTION`)
+- `DominionFactory::createRandomNonPlayer()` handles name generation/retries; TickService only generates `ai_config` for bots that don't already have one
+- Execute building/military/spell actions during `game:ai` command (hourly at :30), skipped per run by `active_chance`
 - Draft rate optimized (90% max), elite guard activation at land threshold
+- `ai_config['strategy']` selects behaviour; missing = `explorer`
+
+### Explorer NPDs (default)
+- Train the defensive unit up to `AIHelper::getDefenseForNonPlayer(round, totalLandIncoming)`, explore, invest, release draftees
+
+### Attacker NPDs (`strategy = attacker`)
+- Supported races in `AIHelper::ATTACKER_RACE_SETTINGS` (Orc, Spirit); config from `AIHelper::generateAttackerConfig()`
+- Unit pairing: defensive `unit2` → offensive `unit4`, defensive `unit3` → offensive `unit1` (per-race `unit_pairs` overrides)
+- Orc starts unit3/unit1 and swaps to unit2/unit4 at 600 prestige (`unit_swap`, applied once by `AIService::applyUnitSwap()`)
+- Build plan: smithy 18%, docks 30-50 when the offensive unit needs boats, unlimited barracks + one job building (starting homes from spawn are kept)
+- Racial offensive spells live in `attack_spells` and are cast only once the cheap pre-check passes and targets are in range (`AIService::castAttackSpells()`), not kept up hourly
+- Spawned attackers start with 300-350 unit1; another 300-350 unit1 queued in training over hours 4-9 (`AIHelper::getAttackerIncomingOffense()`), smithies topped up to 18%, and races whose offense needs boats also get 36 boats and 20 docks; new buildings are converted from the most common buildings other than homes/docks/smithies so land totals are unchanged (`AIHelper::getAttackerStartingAttributes()`)
+- Hourly order (`game:ai` at :30): unit swap → spells → rezone → construct → train → invest (never explores or releases draftees)
+- Invasions run separately via `game:ai:invade` (every 5 minutes during :05-:25 and :35-:55, `AIService::INVASION_MINUTES`); each attacker attempts once per hour at `AIService::getInvasionMinute()` (CRC32 of dominion id + hour, computed in SQL so each run only loads attackers due in that slot), with no activity roll
+- Defense goal uses home-guard DP (`AIService::getHomeGuardDefense()`: draftees + non-offensive slots + training queue), so offensive units away or at home don't count; offense is trained only once the goal is met
+- Invasion (`AIService::attemptInvasion()`): skipped below 80 morale, at `max_land`, or while units are still returning in the invasion queue; after day 1, a cheap pre-check compares max sendable OP against `getDefenseForNonPlayer()` at `min_range` (75%) of own land as of 12 hours ago (bot goals include troops in training) before loading real targets; targets are bots in the same graveyard realm at ≥ `min_range`, largest first; sends the smallest force with OP > `MilitaryCalculator::getDefensivePowerWithTemples()` (lowest DP-per-OP units first, capped by boats), dry-running 40% / 5:4 / boat rules; one hit per run
+- Same-realm invasions are allowed only in realm 0 (`InvadeActionService`)
+- Spawn manually: `php artisan game:ai:spawn --round= --race= [--count=1] [--type=explorer|attacker] [--land=]`
 
 ### Player Automation
 - Players can define `ai_config` with tick-based action instructions

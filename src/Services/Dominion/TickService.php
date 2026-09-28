@@ -165,88 +165,30 @@ class TickService
         foreach ($rounds as $round) {
             $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
             $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
-            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-            $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')), true);
-            $generalNames = collect($names_json['dominion_names']);
-            $raceNames = $names_json['race_names'] ?? [];
             $races = Race::where('playable', true)->get();
             $realm = $round->realms()->where('number', 0)->first();
 
             // Number of NPDs to spawn (80% of the number of real players)
-            $npdCount = round($round->dominions()->count() * 0.8);
-
-            // Calculate starting land sizes using a Stratified Sampling Distribution
-            // Each bucket defines a land size range and percentage of total NPDs
-            // Sample distribution for 100 NPDs:
-            //   420-434: ████
-            //   435-449: ██████████
-            //   450-464: ████████████████████
-            //   465-479: ███████████████
-            //   480-494: ██████████
-            //   495-509: ███████
-            //   510-524: █████
-            //   525-539: ████████
-            //   540-554: ██████
-            //   555-569: ██████
-            //   570-584: █████
-            //   585-599: █████
-            $stratifiedDistribution = [
-                ['min' => 420, 'max' => 434, 'percentage' => 0.04],
-                ['min' => 435, 'max' => 449, 'percentage' => 0.10],
-                ['min' => 450, 'max' => 464, 'percentage' => 0.20],
-                ['min' => 465, 'max' => 479, 'percentage' => 0.15],
-                ['min' => 480, 'max' => 494, 'percentage' => 0.10],
-                ['min' => 495, 'max' => 509, 'percentage' => 0.07],
-                ['min' => 510, 'max' => 524, 'percentage' => 0.05],
-                ['min' => 525, 'max' => 539, 'percentage' => 0.075],
-                ['min' => 540, 'max' => 554, 'percentage' => 0.0575],
-                ['min' => 555, 'max' => 569, 'percentage' => 0.055],
-                ['min' => 570, 'max' => 584, 'percentage' => 0.0525],
-                ['min' => 585, 'max' => 599, 'percentage' => 0.05],
-            ];
-            $landSizes = [];
-            foreach ($stratifiedDistribution as $bucket) {
-                $bucketCount = (int)round($npdCount * $bucket['percentage']);
-                for ($i = 0; $i < $bucketCount; $i++) {
-                    $landSizes[] = mt_rand($bucket['min'], $bucket['max']);
-                }
-            }
+            $npdCount = round($round->dominions()->human()->count() * 0.8);
 
             // Create NPDs with pre-calculated land sizes
-            foreach ($landSizes as $landSize) {
+            foreach ($dominionFactory->getNonPlayerLandSizes($npdCount) as $landSize) {
                 // Select race
                 if ($realm->alignment != 'neutral') {
                     $race = $races->where('alignment', $realm->alignment)->random();
                 } else {
                     $race = $races->random();
                 }
-                // Build name pool with elevated chance for race-specific names
-                $racePool = isset($raceNames[$race->name]) ? collect($raceNames[$race->name]) : null;
 
-                $dominion = null;
-                $failCount = 0;
-                while ($dominion == null && $failCount < 3) {
-                    $rulerName = $generalNames->random();
-                    $dominionName = ($racePool && mt_rand(1, 100) <= 10)
-                        ? $racePool->random()
-                        : $generalNames->random();
-                    if (strlen($rulerName) > strlen($dominionName)) {
-                        $swap = $rulerName;
-                        $rulerName = $dominionName;
-                        $dominionName = $swap;
-                    }
-                    $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName, $landSize);
-                    if ($dominion) {
-                        // Tick ahead
-                        $this->precalculateTick($dominion);
-                        $this->performTick($round, $dominion);
-                    } else {
-                        $failCount++;
-                    }
+                $dominion = $dominionFactory->createRandomNonPlayer($realm, $race, $landSize);
+                if ($dominion) {
+                    // Tick ahead
+                    $this->precalculateTick($dominion);
+                    $this->performTick($round, $dominion);
                 }
             }
-            // Generate NPD instructions
-            $npds = $round->dominions()->bot()->get();
+            // Generate NPD instructions (bots spawned manually already have them)
+            $npds = $round->dominions()->bot()->whereNull('ai_config')->get();
             foreach ($npds as $npd) {
                 $npd->ai_enabled = true;
                 $npd->ai_config = $aiHelper->generateConfig($npd->race);
