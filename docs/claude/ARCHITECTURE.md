@@ -156,10 +156,11 @@ Every state change records a delta in `dominion_history`:
 
 - **StaffController** - Overview dashboard, audit logs
 - **Administrator/DominionController** - Dominion CRUD, anti-cheat logs
-- **Administrator/UserController** - User CRUD, account takeover capability
+- **Administrator/OriginLookupController** - IP Lookups page with per-round tier counts and round-wide findings for looked-up IPs
+- **Administrator/UserController** - User search (display name/email), user detail (basic info, rating/affinities, origins with IPQS VPN/fraud score), on-demand IPQS origin lookup
 - **Administrator/RaidController** - Full raid CRUD (create/edit raids, objectives, tactics)
 - **Administrator/HeroTournamentController** - Hero tournament CRUD (create/edit/delete tournaments, view participants)
-- **Moderator/DominionController** - Game event viewing, activity logs, dominion locking/unlocking
+- **Moderator/DominionController** - Game event viewing, activity logs, dominion locking/unlocking, combined anonymizer flags across a dominion's looked-up IPs (no IPs or scores exposed)
 
 Role-based access uses Spatie permission middleware (`role:Administrator`, `role:Moderator`). Staff layout is `layouts/staff.blade.php` with a 2-column grid (side nav + content).
 

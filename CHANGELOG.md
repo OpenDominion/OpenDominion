@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Fixed
 - Ops started from the bounty board are now blocked if the bounty was already collected or has expired
+- Overkill when destroying a wonder no longer applies to statistics and rewards
 
 ## [1.51.0] - 2026-07-30
 ### Changed
