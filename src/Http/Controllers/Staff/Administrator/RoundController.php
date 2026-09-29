@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Staff\Administrator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\RoundFactory;
+use OpenDominion\Helpers\RoundPerkHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Round;
@@ -63,10 +64,11 @@ class RoundController extends AbstractController
 
     public function getShow(Round $round)
     {
-        $round->load('league');
+        $round->load(['league', 'perks']);
 
         return view('pages.staff.administrator.rounds.show', [
             'round' => $round,
+            'roundPerkHelper' => app(RoundPerkHelper::class),
         ]);
     }
 
