@@ -853,7 +853,18 @@ class Dominion extends AbstractModel
         return ($this->getWonderPerkValue($key) / 100);
     }
 
-    protected function getRoundPerks() {
+    /**
+     * Active round perks for this dominion. Transient dominions built by the
+     * calculators have no round, so no round perks apply to them.
+     *
+     * @return \Illuminate\Support\Collection<int, RoundPerk>
+     */
+    protected function getRoundPerks(): \Illuminate\Support\Collection
+    {
+        if ($this->round === null) {
+            return collect();
+        }
+
         return $this->round->perks->filter(
             function (RoundPerk $perk) {
                 return $perk->appliesTo($this);
