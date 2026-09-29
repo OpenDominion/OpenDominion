@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+Lycanthrope Garou: +35p (to 1150p)
+Icekin FrostMage: +30p (to 995p)
+
 ### Fixed
 - Ops started from the bounty board are now blocked if the bounty was already collected or has expired
 - Overkill when destroying a wonder no longer applies to statistics and rewards
