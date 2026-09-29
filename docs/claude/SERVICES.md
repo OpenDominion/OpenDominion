@@ -155,6 +155,9 @@ Wonder lifecycle management.
 - Max 6 concurrent wonders
 - Sentient wonders attack top 3 damage-dealing realms
 
+### RoundPerkService
+Admin CRUD for round perks (`create()`, `update()`, `delete()`) and `getPerksForDominion()`, which returns every round perk with a status (active / upcoming / expired / not_applicable) for the Status page.
+
 ### RaidService
 Raid completion and reward distribution.
 - `processCompletedRaids()` - triggered during hourly tick

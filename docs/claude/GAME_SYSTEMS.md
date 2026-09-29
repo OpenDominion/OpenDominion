@@ -146,6 +146,14 @@ Realm-level PvE objectives that grant bonuses:
 - **S-tier** (150,000 power): Day 9 only (city_of_gold, fountain_of_youth, horn_of_plenty)
 - **Tier1** (150,000 power): Day 10+
 
+## Round Perks
+
+Storyline-driven bonuses applied to every dominion in a round, configured per round in the admin UI (Staff → Rounds → show page).
+- Stored in `round_perks`; each row = key + value, optionally limited by race alignment and an inclusive `from_day`/`until_day` window (`Round::daysInRound()`)
+- Calculators add `$dominion->getRoundPerkMultiplier('key')` / `getRoundPerkValue('key')` as an explicit `// Round Perks` line next to the racial bonus
+- Supported keys live in `RoundPerkHelper::getPerkTypes()`; a new perk type = registry entry + calculator call site. Current keys: offense, defense, platinum/food/lumber/mana/ore/gem/tech_production, wartime_platinum_production (flat %, once if the realm has any active incoming/outgoing war), construction_cost, explore_platinum_cost, invest_bonus, max_population, alchemy_platinum_production_raw, farm_food_production_raw, tower_mana_production_raw
+- Status page shows the round description + all perks (wide card) and active perk values under racial perks in the Information card
+
 ## Raid System
 
 Time-bound cooperative objectives with multiple tactic types:

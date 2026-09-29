@@ -249,6 +249,15 @@ return [
     'discord_client_id' => env('DISCORD_CLIENT_ID'),
     'discord_client_secret' => env('DISCORD_CLIENT_SECRET'),
     'discord_bot_token' => env('DISCORD_BOT_TOKEN'),
+
+    /*
+     * Grants realm channel access with a role per realm instead of a member
+     * permission overwrite per player. Roles are visible to every member of the
+     * guild through profiles and member search, which exposes who shares a
+     * realm, so this should stay disabled until Discord obfuscates channels
+     * users cannot view.
+     */
+    'discord_use_roles' => env('DISCORD_USE_ROLES', false),
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID'),
     'ipqs_api_key' => env('IPQS_API_KEY'),
 

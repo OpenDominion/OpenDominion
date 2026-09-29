@@ -94,6 +94,7 @@ class ProductionCalculator
 
         // Building: Alchemy
         $platinumPerAlchemy += $dominion->getSpellPerkValue('platinum_production_raw');
+        $platinumPerAlchemy += $dominion->getRoundPerkValue('alchemy_platinum_production_raw');
         $platinum += ($dominion->building_alchemy * $platinumPerAlchemy);
 
         return $platinum;
@@ -123,6 +124,17 @@ class ProductionCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
+
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('platinum_production');
+
+        $wartimePlatinumProduction = $dominion->getRoundPerkMultiplier('wartime_platinum_production');
+        if ($wartimePlatinumProduction != 0) {
+            $isAtWar = $dominion->realm->warsIncoming()->active()->exists() || $dominion->realm->warsOutgoing()->active()->exists();
+            if ($isAtWar) {
+                $multiplier += $wartimePlatinumProduction;
+            }
+        }
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('platinum_production');
@@ -185,6 +197,9 @@ class ProductionCalculator
         // Techs
         $foodPerDock += $dominion->getTechPerkValue('food_production_docks');
 
+        // Round Perks
+        $foodPerFarm += $dominion->getRoundPerkValue('farm_food_production_raw');
+
         // Building: Farm
         $food += ($dominion->building_farm * $foodPerFarm);
 
@@ -213,6 +228,9 @@ class ProductionCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('food_production');
+
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('food_production');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('food_production');
@@ -403,6 +421,9 @@ class ProductionCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('lumber_production');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('lumber_production');
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('lumber_production');
 
@@ -501,6 +522,9 @@ class ProductionCalculator
         // Spells
         $manaPerWizardGuild += $this->spellCalculator->resolveSpellPerk($dominion, 'wizard_guild_mana_production_raw');
 
+        // Round Perks
+        $manaPerTower += $dominion->getRoundPerkValue('tower_mana_production_raw');
+
         // Buildings: Tower + Wizard Guild
         $mana += ($dominion->building_tower * $manaPerTower);
         $mana += ($dominion->building_wizard_guild * $manaPerWizardGuild);
@@ -557,6 +581,9 @@ class ProductionCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('mana_production');
+
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('mana_production');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('mana_production');
@@ -680,6 +707,9 @@ class ProductionCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('ore_production');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('ore_production');
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('ore_production');
 
@@ -745,6 +775,9 @@ class ProductionCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
+
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('gem_production');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('gem_production');
@@ -824,6 +857,9 @@ class ProductionCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('tech_production');
+
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('tech_production');
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('tech_production');

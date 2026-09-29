@@ -38,6 +38,7 @@ class ExplorationCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->dominionMock = m::mock(Dominion::class);
+        $this->dominionMock->shouldReceive('getRoundPerkMultiplier', 'getRoundPerkValue')->andReturn(0.0)->byDefault();
         $this->raceMock = m::mock(Race::class);
 
         $this->sut = m::mock(ExplorationCalculator::class, [
