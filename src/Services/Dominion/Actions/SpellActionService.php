@@ -613,6 +613,7 @@ class SpellActionService
                         'sourceDominionId' => $dominion->id,
                         'spellKey' => $spell->key,
                         'spellName' => $spell->name,
+                        'restored' => $result['restored'],
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
             }
@@ -1201,7 +1202,7 @@ class SpellActionService
      * @param Spell $spell
      * @param float $damageMultiplier
      * @param bool $spellReflected
-     * @return array{damage: int, effects: array, applyBurning: bool}
+     * @return array{damage: int, effects: array, attributes: array<string, int>, restored: array{peasants?: int, improvements?: int}, applyBurning: bool, statusEffect: ?string}
      * @throws GameException
      */
     protected function applyInstantPerks(
@@ -1214,6 +1215,7 @@ class SpellActionService
     {
         $damageDealt = [];
         $damageByAttribute = [];
+        $restored = [];
         $totalDamage = 0;
         $applyBurning = false;
         $statusEffect = null;
@@ -1226,6 +1228,7 @@ class SpellActionService
 
                 if ($revived > 0) {
                     $totalDamage += $revived;
+                    $restored['peasants'] = $revived;
                     $damageDealt[] = sprintf('%s %s', number_format($revived), dominion_attr_display('peasants', $revived));
                 }
                 continue;
@@ -1234,6 +1237,7 @@ class SpellActionService
 
                 if ($repairs['repaired'] > 0) {
                     $totalDamage += $repairs['repaired'];
+                    $restored['improvements'] = $repairs['repaired'];
                     $damageDealt[] = sprintf(
                         '%s %s underway%s',
                         number_format($repairs['repaired']),
@@ -1381,6 +1385,7 @@ class SpellActionService
             'damage' => $totalDamage,
             'effects' => $damageDealt,
             'attributes' => $damageByAttribute,
+            'restored' => $restored,
             'applyBurning' => $applyBurning,
             'statusEffect' => $statusEffect,
         ];

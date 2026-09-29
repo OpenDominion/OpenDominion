@@ -773,11 +773,20 @@ class NotificationHelper
             case 'irregular_dominion.received_friendly_spell':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
 
+                $restoredParts = [];
+                if (!empty($data['restored']['peasants'])) {
+                    $restoredParts[] = sprintf('reviving %s peasants', number_format($data['restored']['peasants']));
+                }
+                if (!empty($data['restored']['improvements'])) {
+                    $restoredParts[] = sprintf('repairing %s improvement points', number_format($data['restored']['improvements']));
+                }
+
                 return sprintf(
-                    '%s (%s) has cast %s on our dominion.',
+                    '%s (%s) has cast %s on our dominion%s.',
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
-                    $data['spellName']
+                    $data['spellName'],
+                    $restoredParts === [] ? '' : ', ' . generate_sentence_from_array($restoredParts)
                 );
 
             case 'irregular_dominion.valuable_purchased':

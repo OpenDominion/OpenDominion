@@ -3,15 +3,18 @@
 namespace OpenDominion\Tests\Feature\Magic;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
+use OpenDominion\Notifications\WebNotification;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -355,6 +358,38 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
         $this->assertEquals(30200, $this->target->peasants);
         $this->assertEquals(3800, $this->target->peasants_killed);
         $this->assertStringContainsString('200', $result['message']);
+    }
+
+    public function testRevivePeasantsNotifiesTheTargetOfTheAmountRevived(): void
+    {
+        $this->target->peasants = 30000;
+        $this->target->peasants_killed = 4000;
+        $this->target->save();
+
+        $this->spellActionService->castSpell($this->courtMage, 'revive_peasants', $this->target);
+
+        Notification::assertSentTo($this->target, WebNotification::class, function (WebNotification $notification, array $channels, Dominion $notifiable) {
+            $payload = $notification->toArray($notifiable);
+
+            return $payload['type'] === 'received_friendly_spell'
+                && $payload['data']['restored'] === ['peasants' => 200]
+                && str_ends_with($payload['message'], 'has cast Revive Peasants on our dominion, reviving 200 peasants.');
+        });
+    }
+
+    public function testRevivePeasantsNotificationOmitsAmountsFromOlderNotifications(): void
+    {
+        $message = $this->app->make(NotificationHelper::class)->getNotificationMessage(
+            'irregular_dominion',
+            'received_friendly_spell',
+            [
+                'sourceDominionId' => $this->courtMage->id,
+                'spellKey' => 'revive_peasants',
+                'spellName' => 'Revive Peasants',
+            ]
+        );
+
+        $this->assertStringEndsWith('has cast Revive Peasants on our dominion.', $message);
     }
 
     public function testRevivePeasantsCannotPushPastMaximumPopulation(): void

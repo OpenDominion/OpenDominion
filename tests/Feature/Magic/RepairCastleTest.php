@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Feature\Magic;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
@@ -10,6 +11,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
+use OpenDominion\Notifications\WebNotification;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\TickService;
@@ -139,6 +141,36 @@ class RepairCastleTest extends AbstractBrowserKitTestCase
         $this->assertEquals(40, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_keep', 1));
         $this->assertEquals(8, $this->queueService->getQueueAmount('operations', $this->realmmate, 'improvement_walls', 1));
         $this->assertStringContainsString('48', $result['message']);
+    }
+
+    public function testRepairCastleNotifiesTheTargetOfTheAmountRepaired(): void
+    {
+        $this->realmmate->improvement_keep = 90000;
+        $this->realmmate->improvement_damage_keep = 10000;
+        $this->realmmate->improvement_walls = 48000;
+        $this->realmmate->improvement_damage_walls = 2000;
+        $this->realmmate->save();
+
+        $this->spellActionService->castSpell($this->dominion, 'repair_castle', $this->realmmate);
+
+        Notification::assertSentTo($this->realmmate, WebNotification::class, function (WebNotification $notification, array $channels, Dominion $notifiable) {
+            $payload = $notification->toArray($notifiable);
+
+            return $payload['type'] === 'received_friendly_spell'
+                && $payload['data']['restored'] === ['improvements' => 48]
+                && str_ends_with($payload['message'], 'has cast Repair Castle on our dominion, repairing 48 improvement points.');
+        });
+    }
+
+    public function testRepairCastleCastOnSelfSendsNoNotification(): void
+    {
+        $this->dominion->improvement_keep = 90000;
+        $this->dominion->improvement_damage_keep = 10000;
+        $this->dominion->save();
+
+        $this->spellActionService->castSpell($this->dominion, 'repair_castle', $this->dominion);
+
+        Notification::assertNotSentTo($this->dominion, WebNotification::class);
     }
 
     public function testQueuedRepairsArriveOnTheNextTick(): void
