@@ -626,15 +626,17 @@ class EspionageActionService
             }
         }
 
-        // Limit to percentage of target's *unprotected* stockpile.
-        // Protection equals the target's raw production for the resource — every
-        // building / unit / peasant that produces the resource also defends an
-        // equal amount of it.
+        // Limit to percentage of target's full stockpile, but never take the
+        // target below its protected floor. Protection equals the target's raw
+        // production for the resource — every building / unit / peasant that
+        // produces the resource guarantees an equal amount of it is left behind.
         $maxTarget = true;
+        $maxUnprotected = PHP_INT_MAX;
         if ($constraints['target_amount'] > 0) {
+            $stockpile       = $target->{'resource_' . $resource};
             $protectedAmount = $this->getRawProductionForResource($target, $resource);
-            $unprotected     = max(0, $target->{'resource_' . $resource} - $protectedAmount);
-            $maxTarget       = $unprotected * $constraints['target_amount'] / 100;
+            $maxTarget       = $stockpile * $constraints['target_amount'] / 100;
+            $maxUnprotected  = max(0, rfloor($stockpile - $protectedAmount));
         }
 
         // Limit to percentage of dominion's raw production, with a per-acre
@@ -671,7 +673,9 @@ class EspionageActionService
         $relativeSize = $selfLand > 0 ? min(1.0, $targetLand / $selfLand) : 1.0;
         $sizePenalty  = max($relativeSize ** 4.5, 0.01);
 
-        return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier * $sizePenalty);
+        $amountStolen = round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier * $sizePenalty);
+
+        return min($amountStolen, $maxUnprotected);
     }
 
     protected function getRawProductionForResource(Dominion $dominion, string $resource): float

@@ -117,7 +117,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $mockRandomChance = true;
 
         // Arrange: target's raw platinum production exceeds its stockpile, so the
-        // unprotected portion is zero and the target_amount ceiling collapses to 0.
+        // protected floor covers the whole stockpile and nothing can be taken.
         $this->dominion->military_spies = 100000;
         $this->target->military_spies = 0;
         $this->target->resource_platinum = 1000;       // tiny stockpile
@@ -311,7 +311,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertLessThan($spiesBefore, $this->dominion->military_spies);
     }
 
-    public function testStealLumber_PartialProtection_SubtractsRawProductionFromCeiling()
+    public function testStealLumber_LargeStockpile_ProtectionDoesNotReducePercentage()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
@@ -320,7 +320,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         // attacker plenty of lumber production (so maxDominion is huge) and
         // setting the target stockpile high enough that 5% << everything else.
         $this->dominion->military_spies = 100000;
-        $this->dominion->building_lumberyard = 20000; // huge maxDominion (>> maxTarget)
+        $this->dominion->building_lumberyard = 20000;
         $this->target->military_spies = 0;
         $this->target->building_lumberyard = 0;
         $this->target->building_forest_haven = 0;
@@ -331,9 +331,9 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService->performOperation($this->dominion, 'steal_lumber', $this->target);
         $unprotectedStolen = $this->dominion->resource_lumber - $unprotectedBefore;
 
-        // Protected: 100 target lumberyards -> 5000 raw production
-        // maxTarget = (10,000,000 - 5,000) * 5% = 499,750
-        // Difference = 250 lumber (× same multipliers/size penalty).
+        // Protected: 100 target lumberyards -> 5,000 raw production. The
+        // percentage still applies to the full stockpile, and the floor
+        // (5,000 left behind) is nowhere near binding.
         $this->dominion->spy_strength = 100;
         $this->target->resource_lumber = 10000000;
         $this->target->building_lumberyard = 100;
@@ -342,11 +342,31 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService->performOperation($this->dominion, 'steal_lumber', $this->target);
         $protectedStolen = $this->dominion->resource_lumber - $protectedBefore;
 
-        // Protection reduces theft by 50/lumberyard × 5% = 2.5 lumber per
-        // building. Allow tiny rounding slack on the 250-lumber gap.
-        $diff = $unprotectedStolen - $protectedStolen;
-        $this->assertGreaterThan(240, $diff);
-        $this->assertLessThan(260, $diff);
+        $this->assertGreaterThan(0, $unprotectedStolen);
+        $this->assertEquals($unprotectedStolen, $protectedStolen);
+    }
+
+    public function testStealLumber_PartialProtection_LeavesRawProductionAsFloor()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        // Target has 100,000 lumber and 1,950 lumberyards -> 97,500 raw
+        // production. 5% of the full stockpile is 5,000, but the target must
+        // keep at least 97,500, so only 2,500 can be taken.
+        $this->dominion->military_spies = 100000;
+        $this->dominion->building_lumberyard = 20000;
+        $this->target->military_spies = 0;
+        $this->target->building_lumberyard = 1950;
+        $this->target->building_forest_haven = 0;
+        $this->target->resource_lumber = 100000;
+
+        $lumberBefore = $this->dominion->resource_lumber;
+        $this->espionageActionService->performOperation($this->dominion, 'steal_lumber', $this->target);
+        $stolen = $this->dominion->resource_lumber - $lumberBefore;
+
+        $this->assertEquals(2500, $stolen);
+        $this->assertEquals(97500, $this->target->resource_lumber);
     }
 
     public function testStealOre_AttackerProductionExceedsFloor_UsesProductionCap()
