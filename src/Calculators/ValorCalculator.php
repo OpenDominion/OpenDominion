@@ -17,6 +17,17 @@ class ValorCalculator
     protected const FIXED_VALOR_LAND_CONQUERED = 1500;
     protected const FIXED_VALOR_BOUNTIES = 1500;
 
+    /**
+     * The only ranking keys fixed valor reads.
+     *
+     * @var array<int, string>
+     */
+    protected const FIXED_VALOR_KEYS = [
+        'largest-dominions',
+        'total-land-conquered',
+        'bounties-collected',
+    ];
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -136,13 +147,38 @@ class ValorCalculator
 
     public function calculateFixedValor(Round $round, Collection $dominions)
     {
+        // Totals span the whole round, so they are aggregated in SQL rather
+        // than summed over a hydrated collection of every ranking row.
+        $totals = DailyRanking::query()
+            ->where('round_id', $round->id)
+            ->where('realm_number', '!=', 0)
+            ->whereIn('key', self::FIXED_VALOR_KEYS)
+            ->selectRaw('`key`, SUM(`value`) as total')
+            ->groupBy('key')
+            ->pluck('total', 'key');
+
+        $totalLand = (int)$totals->get('largest-dominions', 0);
+        $totalLandConquered = (int)$totals->get('total-land-conquered', 0);
+        $totalBounties = (int)$totals->get('bounties-collected', 0);
+
+        // The realm_number filter here is deliberate and differs from
+        // calculateBreakdown(), which fetches its per-dominion rows unfiltered.
+        // A dominion whose rows were recorded in realm 0 has always scored
+        // nothing for land rank, land conquered and bounties. Do not "align"
+        // the two methods - ValorCalculatorTest pins this.
+        //
+        // Indexed once by dominion and key, instead of re-filtering the whole
+        // collection inside the loop below.
         $rankings = DailyRanking::query()
             ->where('round_id', $round->id)
             ->where('realm_number', '!=', 0)
-            ->get();
-        $totalLand = $rankings->where('key', 'largest-dominions')->sum('value');
-        $totalLandConquered = $rankings->where('key', 'total-land-conquered')->sum('value');
-        $totalBounties = $rankings->where('key', 'bounties-collected')->sum('value');
+            ->whereIn('dominion_id', $dominions->pluck('id'))
+            ->whereIn('key', self::FIXED_VALOR_KEYS)
+            ->get(['dominion_id', 'key', 'rank', 'value'])
+            ->groupBy('dominion_id')
+            ->map(static function ($rows) {
+                return $rows->keyBy('key');
+            });
 
         $fixedValor = [];
         foreach ($dominions as $dominion) {
@@ -150,10 +186,12 @@ class ValorCalculator
                 $fixedValor[$dominion->id] = 0;
             }
             $totalValor = 0;
-            $domRankings = $rankings->where('dominion_id', $dominion->id);
-            $landRank = $domRankings->where('key', 'largest-dominions')->pluck('rank')->first() ?? 0;
-            $landConquered = $domRankings->where('key', 'total-land-conquered')->pluck('value')->first() ?? 0;
-            $bounties = $domRankings->where('key', 'bounties-collected')->pluck('value')->first() ?? 0;
+            $domRankings = $rankings->get($dominion->id);
+            // ?? 0 covers both a missing row and a NULL rank, which is what the
+            // previous ->pluck('rank')->first() ?? 0 did.
+            $landRank = $domRankings?->get('largest-dominions')?->rank ?? 0;
+            $landConquered = $domRankings?->get('total-land-conquered')?->value ?? 0;
+            $bounties = $domRankings?->get('bounties-collected')?->value ?? 0;
 
             $totalValor += $this->getFixedValorLandRank($landRank);
             // TODO: Pass in land total instead?
@@ -217,12 +255,18 @@ class ValorCalculator
 
     public function calculateBonusValor(Round $round, Collection $dominions)
     {
-        $valor = Valor::where('round_id', $round->id)->get();
+        // Summed per dominion in SQL rather than by re-filtering a collection
+        // of the round's entire valor history once per dominion.
+        $totals = Valor::query()
+            ->where('round_id', $round->id)
+            ->whereIn('dominion_id', $dominions->pluck('id'))
+            ->selectRaw('dominion_id, SUM(amount) as total')
+            ->groupBy('dominion_id')
+            ->pluck('total', 'dominion_id');
 
         $bonusValor = [];
         foreach ($dominions as $dominion) {
-            $individualValor = $valor->where('dominion_id', $dominion->id)->sum('amount');
-            $bonusValor[$dominion->id] = $individualValor;
+            $bonusValor[$dominion->id] = (float)$totals->get($dominion->id, 0);
         }
 
         return $bonusValor;

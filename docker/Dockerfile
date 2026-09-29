@@ -1,6 +1,10 @@
 FROM node:18 AS node
 
-FROM php:8.5-apache
+# Everything shared by the runtime image and the benchmarking image. Split into
+# stages rather than a second Dockerfile because a standalone file doing
+# `FROM opendominion-app` would depend on build ordering, which Compose does not
+# guarantee between services.
+FROM php:8.5-apache AS base
 
 # System dependencies for PHP extensions and tooling
 RUN apt-get update && apt-get install -y \
@@ -48,3 +52,24 @@ WORKDIR /var/www/html
 EXPOSE 80
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Profiling image, used only by the benchmark service.
+#
+# excimer is a sampling profiler: near-zero overhead, answers "where does wall
+# time go". xdebug answers "how many times was this called", but slows
+# execution by 10-50x, so benchmark.ini leaves it switched off and it is opted
+# into per run with XDEBUG_MODE=profile.
+#
+# Deliberately NOT the last stage: a bare `docker build -f docker/Dockerfile .`
+# builds whichever stage comes last, and that must be the runtime image. Anything
+# wanting this one asks for it by name with `--target benchmark`.
+FROM base AS benchmark
+
+RUN pecl install excimer xdebug \
+ && docker-php-ext-enable excimer xdebug
+
+COPY docker/benchmark.ini /usr/local/etc/php/conf.d/zz-benchmark.ini
+
+# The image the app service runs, and the default for any consumer that does not
+# name a target. Identical to what this Dockerfile produced before it was split.
+FROM base AS app

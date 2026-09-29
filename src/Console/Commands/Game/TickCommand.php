@@ -3,6 +3,7 @@
 namespace OpenDominion\Console\Commands\Game;
 
 use Illuminate\Console\Command;
+use Laravel\Pulse\Facades\Pulse;
 use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Jobs\DailyRankingsAndStatsJob;
 use OpenDominion\Services\Dominion\TickService;
@@ -33,8 +34,18 @@ class TickCommand extends Command implements CommandInterface
      */
     public function handle(): void
     {
-        DailyRankingsAndStatsJob::dispatch();
-        $this->tickService->tickHourly();
-        $this->tickService->tickDaily();
+        // Pulse inspects every query to decide whether to record it, and the
+        // tick issues tens of thousands - profiled at ~7% of its PHP time for
+        // telemetry about a scheduled command nobody browses in the dashboard.
+        // Only this command is affected; web requests keep recording.
+        Pulse::stopRecording();
+
+        try {
+            DailyRankingsAndStatsJob::dispatch();
+            $this->tickService->tickHourly();
+            $this->tickService->tickDaily();
+        } finally {
+            Pulse::startRecording();
+        }
     }
 }
