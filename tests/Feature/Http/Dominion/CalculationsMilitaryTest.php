@@ -79,6 +79,32 @@ class CalculationsMilitaryTest extends AbstractTestCase
         $this->assertStringNotContainsString('checked', $matches[0]);
     }
 
+    public function testDefenseCalculatorApiReturnsResult(): void
+    {
+        $dominion = $this->createVampireDominion(Race::where('key', 'human')->firstOrFail());
+
+        $response = $this->getJson(route('api.calculator.defense', [
+            'race' => $dominion->race_id,
+            'calc' => ['land' => 500, 'unit2' => 1000],
+        ]));
+
+        $response->assertOk();
+        $response->assertJsonPath('result', 'success');
+    }
+
+    public function testOffenseCalculatorApiReturnsResult(): void
+    {
+        $dominion = $this->createVampireDominion(Race::where('key', 'human')->firstOrFail());
+
+        $response = $this->getJson(route('api.calculator.offense', [
+            'race' => $dominion->race_id,
+            'calc' => ['land' => 500, 'unit4' => 1000, 'target_race' => $dominion->race_id],
+        ]));
+
+        $response->assertOk();
+        $response->assertJsonPath('result', 'success');
+    }
+
     protected function createVampireDominion(?Race $race = null): Dominion
     {
         $user = $this->createAndImpersonateUser();
