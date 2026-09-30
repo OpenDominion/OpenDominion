@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
+use OpenDominion\Mappers\GameEventMapper;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\ProtectionService;
@@ -21,7 +22,8 @@ class RoundController extends AbstractController
     public function __construct(
         private LandCalculator $landCalculator,
         private NetworthCalculator $networthCalculator,
-        private ProtectionService $protectionService
+        private ProtectionService $protectionService,
+        private GameEventMapper $gameEventMapper
     ) {
     }
 
@@ -55,7 +57,6 @@ class RoundController extends AbstractController
                     'land' => $this->landCalculator->getTotalLand($dominion),
                     'networth' => $this->networthCalculator->getDominionNetworth($dominion),
                     'in_protection' => $this->protectionService->isUnderProtection($dominion),
-                    'locked' => $dominion->locked_at !== null,
                 ];
             })
             ->values();
@@ -78,26 +79,28 @@ class RoundController extends AbstractController
             ], 422);
         }
 
+        $types = $this->parseEventTypes($request->query('type'));
+        if ($types === false) {
+            return response()->json([
+                'error' => 'invalid_parameter',
+                'message' => 'The "type" parameter must be one or more of: ' . implode(', ', GameEventMapper::PUBLIC_TYPES) . '.',
+            ], 422);
+        }
+
         $query = GameEvent::query()
+            ->with($this->gameEventMapper->getEagerLoads())
             ->where('round_id', $round->id)
+            ->whereIn('type', $types)
             ->orderByDesc('created_at');
 
         if ($since !== null) {
             $query->where('created_at', '>=', $since);
         }
 
-        $events = $query->limit($limit)->get()->map(function (GameEvent $event) {
-            return [
-                'id' => $event->id,
-                'type' => $event->type,
-                'source_type' => $event->source_type,
-                'source_id' => $event->source_id,
-                'target_type' => $event->target_type,
-                'target_id' => $event->target_id,
-                'data' => $event->data,
-                'created_at' => $event->created_at?->toIso8601String(),
-            ];
-        })->values();
+        $events = $query->limit($limit)
+            ->get()
+            ->map(fn (GameEvent $event) => $this->gameEventMapper->mapPublic($event))
+            ->values();
 
         return response()->json($events);
     }
@@ -114,11 +117,37 @@ class RoundController extends AbstractController
                 'key' => $round->league->key,
                 'description' => $round->league->description,
             ] : null,
-            'start_date' => $round->start_date?->toIso8601String(),
-            'end_date' => $round->end_date?->toIso8601String(),
+            'start_date' => $round->start_date?->toIso8601ZuluString(),
+            'end_date' => $round->end_date?->toIso8601ZuluString(),
             'has_started' => $round->hasStarted(),
             'has_ended' => $round->hasEnded(),
         ];
+    }
+
+    /**
+     * Returns every public event type when no filter is requested, false when
+     * any requested type is not public, or the requested types when valid.
+     * Accepts a comma-separated list.
+     *
+     * @return string[]|false
+     */
+    private function parseEventTypes(mixed $value): array|false
+    {
+        if ($value === null || $value === '') {
+            return GameEventMapper::PUBLIC_TYPES;
+        }
+
+        if (!is_string($value)) {
+            return false;
+        }
+
+        $types = array_values(array_unique(array_map('trim', explode(',', $value))));
+
+        if (array_diff($types, GameEventMapper::PUBLIC_TYPES) !== []) {
+            return false;
+        }
+
+        return $types;
     }
 
     /**

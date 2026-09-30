@@ -17,13 +17,15 @@ src/                          # Main application code (namespace: OpenDominion\)
     Actions/                  # Action cost/limit calculators (6)
   Helpers/                    # 20 domain utility classes (perk descriptions, building maps, etc.)
   Factories/                  # Entity creation (DominionFactory, RealmFactory, RoundFactory)
-  Mappers/Dominion/           # InfoMapper - transforms dominion data for display/API
+  Mappers/Dominion/           # InfoMapper - transforms dominion data for display and stored info ops
+  Mappers/                    # GameEventMapper - public API representation of game events
   Http/
-    Controllers/              # 57 controllers
+    Controllers/              # 61 controllers
       Dominion/               # Game action controllers (one per feature)
       Staff/                  # Admin/moderator controllers
       Auth/                   # Authentication controllers
-    Middleware/               # 9 middleware classes
+      Api/V1/                 # Public read-only API (RoundController, OpCenterController)
+    Middleware/               # 10 middleware classes
     Requests/                 # 35+ form request validation classes
   Console/Commands/           # Artisan commands (game:tick, game:ai, game:data:sync, etc.)
   Events/                     # Laravel events (DominionSaved, InfoOpCreating, User*)
@@ -144,11 +146,20 @@ Every state change records a delta in `dominion_history`:
 - **Management**: settings, automation, journals, protection
 - **Lifecycle**: abandon, restart
 
-### API Routes (prefix: `/v1`, middleware: `api` + `auth`)
-- `GET /v1/pbbg` - Public game info
-- `GET /v1/dominion/invasion` - Invasion calculation
-- `GET /v1/calculator/defense|offense` - Battle calculators
-- `GET /v1/user/feedback` - Player endorsements
+### API Routes (`app/routes/api.php`, prefix: `/api/v1`)
+- No auth, `throttle:60,1`: `GET /v1/pbbg` (public game info), `POST /v1/bugsnag`, `GET /v1/time` (server time for the in-game ticker)
+- `api` + `auth` (session): `GET /v1/dominion/invasion` (invasion calculation, also `dominionselected`), `GET /v1/calculator/defense|offense` (battle calculators), `GET /v1/user/feedback` (player endorsements)
+
+### Public Read-Only API (prefix: `/v1`, controllers in `src/Http/Controllers/Api/V1/`)
+- `GET /v1/rounds`, `/v1/rounds/{round}/dominions`, `/v1/rounds/{round}/events` - No auth, `throttle:60,1` (`RoundController`)
+- `GET /v1/dominions/me`, `/v1/dominions/me/op-center`, `/v1/dominions/me/op-center/{target}`, `/v1/dominions/me/op-center/{target}/{type}` (history of one op type) - `apikey` middleware (`DominionApiKey`, `X-API-Key` header or Bearer), `throttle:60,1` (`OpCenterController`). `me` returns a `links` block with URLs for the round endpoints.
+- Op-center payloads are built by `InfoOpAssemblerService` from the stored info op snapshots (which `InfoMapper` produced when the op was cast), formatted like the Op Center's Copy Ops JSON but keyed by the stored op type (`clear_sight`, `barracks_spy`, ...) rather than Copy Ops' short names. Every type key is present, `null` when missing; revelation casters are obfuscated. `op-center` defaults to `max_age_hours=12`; `{target}` and `{target}/{type}` default to 0 (no limit). `{type}` returns full history (all `latest` values), `limit` default 100 / max 500.
+- Every V1 error is `{"error": code, "message": ...}`. `src/Exceptions/Handler.php` renders `ModelNotFoundException` (unknown `{round}`/`{target}`) as 404 `not_found` and `ThrottleRequestsException` as 429 `rate_limited` for routes named `api.rounds.*` / `api.dominions.*`, so model class names never leak.
+- All V1 timestamps use `toIso8601ZuluString()` (e.g. `2026-09-30T11:45:00Z`).
+- Throttling is keyed per IP (no session on these routes) and the counter is shared by every throttled API route, including `/v1/time`. V1 feature tests disable `ThrottleRequests`.
+- `/v1/rounds/{round}/events` output is built by `src/Mappers/GameEventMapper.php`: a whitelist that exposes only what the Town Crier shows per event type (mirrors `partials/dominion/game-event.blade.php`). Only types in `GameEventMapper::PUBLIC_TYPES` are returned (sentient wonder attacks, `wonder_invasion`, are excluded); `?type=` filters by one or more of them. Stored `data` is never passed through; morph types are returned as snake-cased basenames (`realm_war`). When adding an event type or changing what the Town Crier displays, update the mapper, its test, and the docs page.
+- `roundstarted` middleware (`ApiRoundStarted`) is applied per route to every V1 endpoint except `/v1/rounds` and `/v1/dominions/me`: before the round's `start_date` they return 403 `round_not_started`. The round comes from the `{round}` parameter or the API key's dominion. Add it to any new V1 endpoint that exposes in-round data.
+- Public docs page at `/api-docs` (route `api-docs`, `HomeController@getApiDocsPage`, view `pages/api-docs.blade.php`), no auth required. Linked only from the API Key card on the dominion settings page. `ApiDocsPageTest` fails if a V1 route is added without being documented there — update the page when adding or changing endpoints.
 
 ### Staff Routes (prefix: `/staff`, middleware: `auth` + `role:Developer|Administrator|Moderator`)
 

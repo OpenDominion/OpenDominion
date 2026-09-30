@@ -12,6 +12,8 @@ use OpenDominion\Services\Dominion\InfoOpAssemblerService;
 class OpCenterController extends AbstractController
 {
     private const DEFAULT_MAX_AGE_HOURS = 12;
+    private const DEFAULT_HISTORY_LIMIT = 100;
+    private const MAX_HISTORY_LIMIT = 500;
 
     public function __construct(private InfoOpAssemblerService $assembler)
     {
@@ -32,7 +34,14 @@ class OpCenterController extends AbstractController
             'round' => [
                 'id' => $dominion->round->id,
                 'number' => $dominion->round->number,
-                'ends_at' => $dominion->round->end_date?->toIso8601String(),
+                'name' => $dominion->round->name,
+                'start_date' => $dominion->round->start_date?->toIso8601ZuluString(),
+                'end_date' => $dominion->round->end_date?->toIso8601ZuluString(),
+            ],
+            'links' => [
+                'rounds' => route('api.rounds.index'),
+                'round_dominions' => route('api.rounds.dominions', $dominion->round),
+                'round_events' => route('api.rounds.events', $dominion->round),
             ],
         ]);
     }
@@ -40,20 +49,20 @@ class OpCenterController extends AbstractController
     public function ops(Request $request): JsonResponse
     {
         $dominion = $this->getApiDominion();
-        $maxAgeHours = $this->resolveMaxAgeHours($request);
+        $maxAgeHours = $this->resolveMaxAgeHours($request, self::DEFAULT_MAX_AGE_HOURS);
 
         $query = $dominion->realm->infoOps()
             ->with(['targetDominion.race', 'targetDominion.realm'])
             ->where('type', '!=', 'clairvoyance')
             ->where('latest', true);
 
-        if ($maxAgeHours !== null) {
+        if ($maxAgeHours > 0) {
             $query->where('created_at', '>=', now()->subHours($maxAgeHours));
         }
 
         $grouped = $query->orderByDesc('created_at')->get()->groupBy('target_dominion_id');
 
-        $targets = [];
+        $dominions = [];
         foreach ($grouped as $targetId => $infoOps) {
             $target = $infoOps->first()->targetDominion;
             if ($target === null) {
@@ -61,29 +70,24 @@ class OpCenterController extends AbstractController
             }
 
             $ops = $this->assembler->assembleForTarget($target, $infoOps);
-            if (empty($ops)) {
+            if (array_filter($ops) === []) {
                 continue;
             }
 
-            $targets[(string) $targetId] = $this->targetPayload($target, $ops);
+            $dominions[(string) $targetId] = $this->targetPayload($target, $ops);
         }
 
         return response()->json([
-            'dominion' => [
-                'id' => $dominion->id,
-                'realm' => $dominion->realm->number,
-                'round_id' => $dominion->round_id,
-            ],
-            'generated_at' => now()->toIso8601String(),
+            'generated_at' => now()->toIso8601ZuluString(),
             'max_age_hours' => $maxAgeHours,
-            'targets' => (object) $targets,
+            'dominions' => (object) $dominions,
         ]);
     }
 
     public function opsForTarget(Request $request, Dominion $target): JsonResponse
     {
         $dominion = $this->getApiDominion();
-        $maxAgeHours = $this->resolveMaxAgeHours($request);
+        $maxAgeHours = $this->resolveMaxAgeHours($request, 0);
 
         if ($target->round_id !== $dominion->round_id) {
             return $this->notFound();
@@ -94,7 +98,7 @@ class OpCenterController extends AbstractController
             ->where('type', '!=', 'clairvoyance')
             ->where('latest', true);
 
-        if ($maxAgeHours !== null) {
+        if ($maxAgeHours > 0) {
             $query->where('created_at', '>=', now()->subHours($maxAgeHours));
         }
 
@@ -108,14 +112,54 @@ class OpCenterController extends AbstractController
         $ops = $this->assembler->assembleForTarget($target, $infoOps);
 
         return response()->json([
-            'dominion' => [
-                'id' => $dominion->id,
-                'realm' => $dominion->realm->number,
-                'round_id' => $dominion->round_id,
-            ],
-            'generated_at' => now()->toIso8601String(),
+            'generated_at' => now()->toIso8601ZuluString(),
             'max_age_hours' => $maxAgeHours,
-            'target' => $this->targetPayload($target, $ops),
+            'dominion' => $this->targetPayload($target, $ops),
+        ]);
+    }
+
+    public function opsForTargetByType(Request $request, Dominion $target, string $type): JsonResponse
+    {
+        $dominion = $this->getApiDominion();
+        $maxAgeHours = $this->resolveMaxAgeHours($request, 0);
+        $limit = min(
+            self::MAX_HISTORY_LIMIT,
+            max(1, (int) $request->query('limit', self::DEFAULT_HISTORY_LIMIT))
+        );
+
+        if ($target->round_id !== $dominion->round_id) {
+            return $this->notFound();
+        }
+
+        if (!$this->assembler->isValidType($type)) {
+            return response()->json([
+                'error' => 'invalid_parameter',
+                'message' => 'The op type must be one of: ' . implode(', ', $this->assembler->getTypes()) . '.',
+            ], 422);
+        }
+
+        $query = $dominion->realm->infoOps()
+            ->where('target_dominion_id', $target->id)
+            ->where('type', $type)
+            ->orderByDesc('created_at');
+
+        if ($maxAgeHours > 0) {
+            $query->where('created_at', '>=', now()->subHours($maxAgeHours));
+        }
+
+        $target->loadMissing(['race', 'realm']);
+
+        return response()->json([
+            'generated_at' => now()->toIso8601ZuluString(),
+            'max_age_hours' => $maxAgeHours,
+            'dominion' => [
+                'id' => $target->id,
+                'name' => $target->name,
+                'realm' => $target->realm?->number,
+                'race' => $target->race?->name,
+            ],
+            'type' => $type,
+            'ops' => $this->assembler->assembleHistory($target, $type, $query->limit($limit)->get()),
         ]);
     }
 
@@ -130,18 +174,16 @@ class OpCenterController extends AbstractController
         ];
     }
 
-    private function resolveMaxAgeHours(Request $request): ?int
+    /**
+     * Returns 0 when there is no age limit.
+     */
+    private function resolveMaxAgeHours(Request $request, int $default): int
     {
         if (!$request->has('max_age_hours')) {
-            return self::DEFAULT_MAX_AGE_HOURS;
+            return $default;
         }
 
-        $value = $request->query('max_age_hours');
-        if ($value === '' || $value === '0' || $value === null) {
-            return null;
-        }
-
-        return max(1, (int) $value);
+        return max(0, (int) $request->query('max_age_hours'));
     }
 
     private function getApiDominion(): Dominion

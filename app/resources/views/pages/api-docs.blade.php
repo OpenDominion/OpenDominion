@@ -1,0 +1,408 @@
+@extends('layouts.topnav')
+
+@section('title', 'API Documentation')
+
+@section('content')
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+
+            <div class="card card-primary">
+                <div class="card-header">
+                    <span class="card-title"><i class="fa fa-book"></i> API Documentation</span>
+                </div>
+                <div class="card-body">
+                    <p>
+                        OpenDominion has a read-only JSON API. Base URL: <code>{{ url('/api/v1') }}</code>
+                    </p>
+
+                    <h5 class="fw-bold" id="authentication">Authentication</h5>
+                    <p>
+                        Endpoints under <code>/rounds</code> are public and need no key. Endpoints under
+                        <code>/dominions</code> require a dominion API key, sent as an <code>X-API-Key</code> header
+                        or as <code>Authorization: Bearer &lt;key&gt;</code>.
+                    </p>
+                    <p>
+                        A key belongs to one dominion in one round. Generate it from that dominion's Settings page
+                        while playing. It stops working when the round ends.
+                    </p>
+<pre class="bg-body-tertiary border rounded p-2"><code>curl -H "X-API-Key: YOUR_KEY" {{ route('api.dominions.me') }}</code></pre>
+
+                    <h5 class="fw-bold" id="before-round-start">Before a round starts</h5>
+                    <p>
+                        Until a round's <code>start_date</code>, only <code>/rounds</code> and
+                        <code>/dominions/me</code> work. Every other endpoint returns <code>403</code> with
+                        <code>round_not_started</code>.
+                    </p>
+
+                    <h5 class="fw-bold" id="rate-limits">Rate limits</h5>
+                    <p>
+                        60 requests per minute per IP address, shared across all endpoints. Exceeding the limit
+                        returns <code>429</code> with a <code>Retry-After</code> header.
+                    </p>
+
+                    <h5 class="fw-bold" id="timestamps">Timestamps</h5>
+                    <p>
+                        All timestamps are UTC in ISO 8601 format with a <code>Z</code> suffix, e.g.
+                        <code>2026-09-30T11:45:00Z</code>.
+                    </p>
+
+                    <h5 class="fw-bold" id="errors">Errors</h5>
+                    <p class="mb-1">Errors are returned as <code>{"error": "code", "message": "..."}</code>.</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Error</th>
+                                    <th>Meaning</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>401</td>
+                                    <td><code>missing_api_key</code></td>
+                                    <td>No key was sent.</td>
+                                </tr>
+                                <tr>
+                                    <td>401</td>
+                                    <td><code>invalid_api_key</code></td>
+                                    <td>The key was not recognised (it may have been regenerated or revoked).</td>
+                                </tr>
+                                <tr>
+                                    <td>403</td>
+                                    <td><code>dominion_locked</code></td>
+                                    <td>The dominion is locked.</td>
+                                </tr>
+                                <tr>
+                                    <td>403</td>
+                                    <td><code>round_not_started</code></td>
+                                    <td>
+                                        The round has not started yet. Until it does, only <code>/rounds</code> and
+                                        <code>/dominions/me</code> are available.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>404</td>
+                                    <td><code>not_found</code></td>
+                                    <td>
+                                        No round or dominion exists with the ID in the URL, the dominion is not in
+                                        your round, or your realm has no info ops on it.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>410</td>
+                                    <td><code>round_ended</code></td>
+                                    <td>The dominion's round has ended, so the key no longer works.</td>
+                                </tr>
+                                <tr>
+                                    <td>422</td>
+                                    <td><code>invalid_parameter</code></td>
+                                    <td>
+                                        A parameter is invalid: an unparseable <code>since</code>, an unknown event
+                                        <code>type</code>, or an unknown op type in the Op Archive URL.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>429</td>
+                                    <td><code>rate_limited</code></td>
+                                    <td>Rate limit exceeded; see the <code>Retry-After</code> header.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Round endpoints</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="fw-bold mb-1" id="rounds">Rounds</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds</code></p>
+                    <p>All rounds, newest first.</p>
+<pre class="bg-body-tertiary border rounded p-2"><code>[
+    {
+        "id": 51,
+        "number": 51,
+        "name": "Round 51",
+        "description": null,
+        "league": {"id": 1, "key": "standard", "description": "Standard"},
+        "start_date": "2026-09-01T00:00:00Z",
+        "end_date": "2026-10-18T00:00:00Z",
+        "has_started": true,
+        "has_ended": false
+    }
+]</code></pre>
+
+                    <h5 class="fw-bold mb-1" id="round-dominions">Search</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds/{round}/dominions</code></p>
+                    <p>
+                        Every active dominion in a round. Locked and abandoned dominions are left out.
+                    </p>
+<pre class="bg-body-tertiary border rounded p-2"><code>[
+    {
+        "id": 5678,
+        "name": "Target Dominion",
+        "race": "Nomad",
+        "realm_number": 12,
+        "realm_name": "Their Realm",
+        "land": 250,
+        "networth": 1500,
+        "in_protection": false
+    }
+]</code></pre>
+
+                    <h5 class="fw-bold mb-1" id="round-events">Town Crier</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds/{round}/events</code></p>
+                    <p class="mb-1">A round's Town Crier events, newest first.</p>
+                    <ul>
+                        <li><code>limit</code> (optional, default 100, maximum 500): number of events to return.</li>
+                        <li>
+                            <code>since</code> (optional): ISO 8601 timestamp; only events created at or after it are
+                            returned. An unparseable value returns <code>422</code>.
+                        </li>
+                        <li>
+                            <code>type</code> (optional): only return events of this type. Accepts one type or a
+                            comma-separated list, e.g. <code>?type=war_declared,war_canceled</code>. A type not
+                            listed below returns <code>422</code>.
+                        </li>
+                        <li>
+                            The possible values of <code>type</code> are listed in the table below, along with what
+                            the source and target are and what <code>data</code> holds for each. <code>data</code>
+                            carries what the in-game Town Crier shows for that event; battle reports and other
+                            details are private and are not returned.
+                        </li>
+                    </ul>
+<pre class="bg-body-tertiary border rounded p-2"><code>[
+    {
+        "id": "9d2f6c1e-4b7a-4e0c-8f3a-2b1c5d6e7f80",
+        "type": "invasion",
+        "source_type": "dominion",
+        "source_id": 1234,
+        "target_type": "dominion",
+        "target_id": 5678,
+        "data": {"success": true, "land_lost": 15, "land_gained": 19},
+        "created_at": "2026-09-30T11:45:00Z"
+    }
+]</code></pre>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Source</th>
+                                    <th>Target</th>
+                                    <th><code>data</code></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>invasion</code></td>
+                                    <td>Attacking dominion</td>
+                                    <td>Defending dominion</td>
+                                    <td>
+                                        <code>{"success": true, "land_lost": 15, "land_gained": 19}</code><br>
+                                        <code>land_lost</code> is the land taken from the defender.
+                                        <code>land_gained</code> is what the attacker received, which includes bonus
+                                        land and so can be higher. Both are <code>0</code> when the invasion failed.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>war_declared</code><br><code>war_canceled</code></td>
+                                    <td>Declaring realm</td>
+                                    <td>Realm war</td>
+                                    <td>
+                                        <code>{"source_realm": {"number": 3, "name": "..."}, "target_realm": {"number": 7, "name": "..."}}</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>wonder_spawned</code></td>
+                                    <td>Wonder</td>
+                                    <td>Wonder</td>
+                                    <td><code>{"wonder": "Ivory Tower"}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>wonder_attacked</code></td>
+                                    <td>Attacking dominion</td>
+                                    <td>Round wonder</td>
+                                    <td>
+                                        <code>{"neutral": false, "wonder": "Ivory Tower", "realm_number": 7}</code><br>
+                                        When a neutral wonder is attacked, <code>neutral</code> is <code>true</code>
+                                        and <code>wonder</code>, <code>realm_number</code> and the event's
+                                        <code>target_id</code> are <code>null</code>.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>wonder_destroyed</code></td>
+                                    <td>Round wonder</td>
+                                    <td>Realm that rebuilt it, if any</td>
+                                    <td>
+                                        <code>{"wonder": "Ivory Tower", "rebuilt_by_realm": {"number": 7, "name": "..."}}</code><br>
+                                        <code>rebuilt_by_realm</code> is <code>null</code> when the wonder was not
+                                        rebuilt.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>raid_attacked</code></td>
+                                    <td>Attacking dominion</td>
+                                    <td>Raid tactic</td>
+                                    <td><code>{"tactic": "Storm the Gates"}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>abandoned</code></td>
+                                    <td>Abandoned dominion</td>
+                                    <td><code>null</code></td>
+                                    <td><code>{}</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fa fa-key"></i> Dominion endpoints (API key required)</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="fw-bold mb-1" id="dominions-me">My Dominion</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me</code></p>
+                    <p>
+                        The dominion the key belongs to, its realm and round. <code>links</code> holds ready-made URLs
+                        for the round endpoints, including the ones for the dominion's current round.
+                    </p>
+<pre class="bg-body-tertiary border rounded p-2"><code>{
+    "id": 1234,
+    "name": "My Dominion",
+    "realm": {"id": 56, "number": 7, "name": "My Realm"},
+    "round": {
+        "id": 51,
+        "number": 51,
+        "name": "Round 51",
+        "start_date": "2026-09-01T00:00:00Z",
+        "end_date": "2026-10-18T00:00:00Z"
+    },
+    "links": {
+        "rounds": "{{ url('/api/v1/rounds') }}",
+        "round_dominions": "{{ url('/api/v1/rounds/51/dominions') }}",
+        "round_events": "{{ url('/api/v1/rounds/51/events') }}"
+    }
+}</code></pre>
+
+                    <h5 class="fw-bold mb-1" id="dominions-me-op-center">Op Center</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me/op-center</code></p>
+                    <p class="mb-1">
+                        Your realm's Op Center: the latest info ops gathered by anyone in your realm on every
+                        dominion they have targeted, keyed by that dominion's ID.
+                    </p>
+                    <ul>
+                        <li>
+                            <code>max_age_hours</code> (optional, default 12): only include ops gathered within this
+                            many hours. Send <code>0</code> for no age limit, in which case <code>max_age_hours</code> is
+                            <code>0</code> in the response.
+                        </li>
+                        <li>
+                            Each dominion's <code>ops</code> always has all eight keys:
+                            <code>clear_sight</code>, <code>revelation</code>, <code>castle_spy</code>,
+                            <code>barracks_spy</code>, <code>survey_dominion</code>, <code>land_spy</code>,
+                            <code>vision</code> and <code>disclosure</code>. A type your realm has not gathered (or that is older than
+                            <code>max_age_hours</code>) is <code>null</code>.
+                        </li>
+                        <li>
+                            Each op carries the same fields as the Op Center's Copy Ops export, with a
+                            <code>created_at</code> timestamp. The keys are the in-game spell and espionage
+                            operation keys, where Copy Ops uses shorter names (<code>status</code>,
+                            <code>castle</code>, <code>barracks</code>, <code>survey</code>, <code>land</code>).
+                            The example below is shortened.
+                        </li>
+                    </ul>
+<pre class="bg-body-tertiary border rounded p-2"><code>{
+    "generated_at": "2026-09-30T12:00:00Z",
+    "max_age_hours": 12,
+    "dominions": {
+        "5678": {
+            "id": 5678,
+            "name": "Target Dominion",
+            "realm": 12,
+            "race": "Nomad",
+            "ops": {
+                "clear_sight": {
+                    "land": 250,
+                    "military_unit1": 42,
+                    "race_name": "Nomad",
+                    "realm": 12,
+                    "name": "Target Dominion",
+                    "created_at": "2026-09-30T11:30:00Z"
+                },
+                "revelation": {
+                    "spells": [],
+                    "created_at": "2026-09-30T09:00:00Z"
+                },
+                "castle_spy": {
+                    "created_at": "2026-09-30T10:15:00Z"
+                },
+                "barracks_spy": null,
+                "survey_dominion": null,
+                "land_spy": null,
+                "vision": null,
+                "disclosure": null
+            }
+        }
+    }
+}</code></pre>
+
+                    <h5 class="fw-bold mb-1" id="dominions-me-op-center-target">Dominion Overview</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me/op-center/{target}</code></p>
+                    <p class="mb-1">
+                        The latest op of each type for one dominion. The response has a single
+                        <code>dominion</code> object in place of <code>dominions</code>.
+                    </p>
+                    <ul>
+                        <li>
+                            <code>max_age_hours</code> (optional, default 0): only include ops gathered within this
+                            many hours. <code>0</code> means no age limit, so by default you get the latest op of
+                            each type however old it is.
+                        </li>
+                        <li>
+                            Returns <code>404</code> when your realm has no ops on that dominion within the age
+                            limit.
+                        </li>
+                    </ul>
+
+                    <h5 class="fw-bold mb-1" id="dominions-me-op-center-target-type">Op Archive</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me/op-center/{target}/{type}</code></p>
+                    <p class="mb-1">
+                        The history of one op type for one dominion: every op of that type your realm has gathered
+                        this round, newest first. <code>{type}</code> is one of <code>clear_sight</code>,
+                        <code>revelation</code>, <code>castle_spy</code>, <code>barracks_spy</code>,
+                        <code>survey_dominion</code>, <code>land_spy</code>, <code>vision</code> or
+                        <code>disclosure</code>; anything else returns <code>422</code>.
+                    </p>
+                    <ul>
+                        <li>
+                            <code>max_age_hours</code> (optional, default 0): only include ops gathered within this
+                            many hours. <code>0</code> means no age limit.
+                        </li>
+                        <li><code>limit</code> (optional, default 100, maximum 500): number of ops to return.</li>
+                        <li>
+                            Each entry in <code>ops</code> has the same fields as that type has in the endpoints
+                            above. <code>ops</code> is an empty list when your realm has none.
+                        </li>
+                    </ul>
+<pre class="bg-body-tertiary border rounded p-2 mb-0"><code>{
+    "generated_at": "2026-09-30T12:00:00Z",
+    "max_age_hours": 0,
+    "dominion": {"id": 5678, "name": "Target Dominion", "realm": 12, "race": "Nomad"},
+    "type": "barracks_spy",
+    "ops": [
+        {"created_at": "2026-09-30T10:15:00Z"},
+        {"created_at": "2026-09-29T22:40:00Z"}
+    ]
+}</code></pre>
+                </div>
+            </div>
+
+        </div>
+    </div>
+@endsection

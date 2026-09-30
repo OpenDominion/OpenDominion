@@ -2,10 +2,18 @@
 
 namespace OpenDominion\Tests\Feature\Http\Api\V1;
 
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use OpenDominion\Tests\AbstractTestCase;
 
 class DominionApiKeyMiddlewareTest extends AbstractTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutMiddleware(ThrottleRequests::class);
+    }
+
     public function testMissingApiKeyReturns401(): void
     {
         $this->getJson('/api/v1/dominions/me')
@@ -35,8 +43,22 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
                 'id' => $dominion->id,
                 'name' => $dominion->name,
                 'realm' => ['number' => $dominion->realm->number],
-                'round' => ['id' => $round->id, 'number' => $round->number],
-            ]);
+                'round' => [
+                    'id' => $round->id,
+                    'number' => $round->number,
+                    'name' => $round->name,
+                    'start_date' => $round->start_date->toIso8601ZuluString(),
+                    'end_date' => $round->end_date->toIso8601ZuluString(),
+                ],
+                'links' => [
+                    'rounds' => url('/api/v1/rounds'),
+                    'round_dominions' => url('/api/v1/rounds/' . $round->id . '/dominions'),
+                    'round_events' => url('/api/v1/rounds/' . $round->id . '/events'),
+                ],
+            ])
+            ->assertJsonMissingPath('round.ends_at')
+            ->assertJsonCount(3, 'links')
+            ->assertJsonPath('round.start_date', fn (string $date) => preg_match('/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/', $date) === 1);
     }
 
     public function testBearerTokenFallbackWorks(): void
