@@ -37,10 +37,15 @@ class OpCenterController extends AbstractController
                 'name' => $dominion->round->name,
                 'start_date' => $dominion->round->start_date?->toIso8601ZuluString(),
                 'end_date' => $dominion->round->end_date?->toIso8601ZuluString(),
+                'day' => $dominion->round->isActive() ? $dominion->round->daysInRound() : null,
+                'hour' => $dominion->round->isActive() ? $dominion->round->hoursInDay() : null,
+                'duration_days' => $dominion->round->durationInDays(),
             ],
+            'server_time' => now()->toIso8601ZuluString(),
             'links' => [
                 'rounds' => route('api.rounds.index'),
                 'round_dominions' => route('api.rounds.dominions', $dominion->round),
+                'round_realms' => route('api.rounds.realms', $dominion->round),
                 'round_events' => route('api.rounds.events', $dominion->round),
             ],
         ]);

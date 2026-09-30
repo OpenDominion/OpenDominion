@@ -53,12 +53,46 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
                 'links' => [
                     'rounds' => url('/api/v1/rounds'),
                     'round_dominions' => url('/api/v1/rounds/' . $round->id . '/dominions'),
+                    'round_realms' => url('/api/v1/rounds/' . $round->id . '/realms'),
                     'round_events' => url('/api/v1/rounds/' . $round->id . '/events'),
                 ],
             ])
             ->assertJsonMissingPath('round.ends_at')
-            ->assertJsonCount(3, 'links')
+            ->assertJsonPath('round.day', $round->daysInRound())
+            ->assertJsonPath('round.hour', $round->hoursInDay())
+            ->assertJsonPath('round.duration_days', $round->durationInDays())
+            ->assertJsonPath('server_time', fn (string $time) => preg_match('/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/', $time) === 1)
+            ->assertJsonCount(4, 'links')
             ->assertJsonPath('round.start_date', fn (string $date) => preg_match('/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/', $date) === 1);
+    }
+
+    public function testMeDayAndHourMatchTheGameFooter(): void
+    {
+        $this->travelTo(now()->startOfHour()->addMinutes(20));
+        $round = $this->createRound('-3 days -5 hours', '+40 days');
+        $dominion = $this->createDominion($this->createUser(), $round);
+        $dominion->update(['api_key' => 'clock-key']);
+
+        $this->withHeader('X-API-Key', 'clock-key')
+            ->getJson('/api/v1/dominions/me')
+            ->assertOk()
+            ->assertJsonPath('round.day', 4)
+            ->assertJsonPath('round.hour', 6)
+            ->assertJsonPath('round.duration_days', $round->durationInDays());
+    }
+
+    public function testMeDayAndHourAreNullBeforeRoundStarts(): void
+    {
+        $round = $this->createRound('+2 days', '+49 days');
+        $dominion = $this->createDominion($this->createUser(), $round);
+        $dominion->update(['api_key' => 'early-key']);
+
+        $this->withHeader('X-API-Key', 'early-key')
+            ->getJson('/api/v1/dominions/me')
+            ->assertOk()
+            ->assertJsonPath('round.day', null)
+            ->assertJsonPath('round.hour', null)
+            ->assertJsonPath('round.duration_days', 47);
     }
 
     public function testBearerTokenFallbackWorks(): void

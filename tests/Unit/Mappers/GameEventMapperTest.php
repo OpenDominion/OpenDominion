@@ -39,7 +39,12 @@ class GameEventMapperTest extends AbstractTestCase
         $mapped = $this->mapper->mapPublic($this->makeEvent('invasion', ['result' => ['success' => false]]));
 
         $this->assertSame(
-            ['id', 'type', 'source_type', 'source_id', 'target_type', 'target_id', 'data', 'created_at'],
+            [
+                'id', 'type',
+                'source_type', 'source_id', 'source_name', 'source_realm_number',
+                'target_type', 'target_id', 'target_name', 'target_realm_number',
+                'data', 'created_at',
+            ],
             array_keys($mapped)
         );
     }
@@ -146,7 +151,33 @@ class GameEventMapperTest extends AbstractTestCase
         $mapped = $this->mapper->mapPublic($event);
 
         $this->assertNull($mapped['target_id']);
+        $this->assertNull($mapped['target_name']);
+        $this->assertNull($mapped['target_realm_number']);
         $this->assertSame(['neutral' => true, 'wonder' => null, 'realm_number' => null], $mapped['data']);
+    }
+
+    public function testDominionAndRealmParticipantsIncludeNameAndRealmNumber(): void
+    {
+        $attacker = new Dominion();
+        $attacker->name = 'Attacker';
+        $attacker->setRelation('realm', $this->makeRealm(3, 'Aggressors'));
+        $defender = new Dominion();
+        $defender->name = 'Defender';
+        $defender->setRelation('realm', $this->makeRealm(7, 'Defenders'));
+
+        $invasion = $this->mapper->mapPublic($this->makeEvent('invasion', ['result' => ['success' => false]], $attacker, $defender));
+
+        $this->assertSame('Attacker', $invasion['source_name']);
+        $this->assertSame(3, $invasion['source_realm_number']);
+        $this->assertSame('Defender', $invasion['target_name']);
+        $this->assertSame(7, $invasion['target_realm_number']);
+
+        $war = $this->mapper->mapPublic($this->makeEvent('war_declared', [], $this->makeRealm(3, 'Aggressors'), $this->makeRealmWar()));
+
+        $this->assertSame('Aggressors', $war['source_name']);
+        $this->assertSame(3, $war['source_realm_number']);
+        $this->assertNull($war['target_name'], 'Realm wars are described in data, not by name.');
+        $this->assertNull($war['target_realm_number']);
     }
 
     public function testWonderAttackWithoutNeutralFlagIsTreatedAsNeutral(): void

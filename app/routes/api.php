@@ -33,6 +33,7 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
     $router->group(['prefix' => 'rounds', 'middleware' => ['bindings', 'throttle:60,1'], 'as' => 'rounds.'], static function (Router $router) {
         $router->get('/')->uses('Api\V1\RoundController@index')->name('index');
         $router->get('{round}/dominions')->uses('Api\V1\RoundController@dominions')->name('dominions')->middleware('roundstarted');
+        $router->get('{round}/realms')->uses('Api\V1\RoundController@realms')->name('realms')->middleware('roundstarted');
         $router->get('{round}/events')->uses('Api\V1\RoundController@events')->name('events')->middleware('roundstarted');
     });
 

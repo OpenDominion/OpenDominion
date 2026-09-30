@@ -13,6 +13,7 @@ class ApiDocsPageTest extends AbstractTestCase
     private const ENDPOINT_LABELS = [
         'Rounds',
         'Search',
+        'Realms',
         'Town Crier',
         'My Dominion',
         'Op Center',
@@ -66,7 +67,7 @@ class ApiDocsPageTest extends AbstractTestCase
             ->map(fn (RoutingRoute $route) => Str::after($route->uri(), 'v1'))
             ->values();
 
-        $this->assertCount(7, $endpoints);
+        $this->assertCount(8, $endpoints);
 
         foreach (self::ENDPOINT_LABELS as $label) {
             $this->assertStringContainsString('>' . $label . '</h5>', $html);

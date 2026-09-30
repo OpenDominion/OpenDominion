@@ -5,6 +5,7 @@ namespace OpenDominion\Mappers;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Realm;
@@ -45,11 +46,13 @@ class GameEventMapper
         return [
             'source' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
+                    Dominion::class => ['realm'],
                     RoundWonder::class => ['wonder'],
                 ]);
             },
             'target' => function (MorphTo $morphTo) {
                 $morphTo->morphWith([
+                    Dominion::class => ['realm'],
                     RealmWar::class => ['sourceRealm', 'targetRealm'],
                     RoundWonder::class => ['wonder', 'realm'],
                 ]);
@@ -63,8 +66,12 @@ class GameEventMapper
      *     type: string,
      *     source_type: string|null,
      *     source_id: int|null,
+     *     source_name: string|null,
+     *     source_realm_number: int|null,
      *     target_type: string|null,
      *     target_id: int|null,
+     *     target_name: string|null,
+     *     target_realm_number: int|null,
      *     data: array<string, mixed>|stdClass,
      *     created_at: string|null
      * }
@@ -72,14 +79,21 @@ class GameEventMapper
     public function mapPublic(GameEvent $event): array
     {
         $data = $this->mapPublicData($event);
+        $isNeutralWonderAttack = $this->isNeutralWonderAttack($event);
+        [$sourceName, $sourceRealmNumber] = $this->getParticipantNameAndRealm($event->source);
+        [$targetName, $targetRealmNumber] = $isNeutralWonderAttack ? [null, null] : $this->getParticipantNameAndRealm($event->target);
 
         return [
             'id' => (string) $event->id,
             'type' => $event->type,
             'source_type' => $this->getPublicMorphType($event->source_type),
             'source_id' => $event->source_id,
+            'source_name' => $sourceName,
+            'source_realm_number' => $sourceRealmNumber,
             'target_type' => $this->getPublicMorphType($event->target_type),
-            'target_id' => $this->isNeutralWonderAttack($event) ? null : $event->target_id,
+            'target_id' => $isNeutralWonderAttack ? null : $event->target_id,
+            'target_name' => $targetName,
+            'target_realm_number' => $targetRealmNumber,
             'data' => empty($data) ? new stdClass() : $data,
             'created_at' => $event->created_at?->toIso8601ZuluString(),
         ];
@@ -207,6 +221,26 @@ class GameEventMapper
         return [
             'tactic' => $event->target instanceof RaidObjectiveTactic ? $event->target->name : null,
         ];
+    }
+
+    /**
+     * Name and realm number for a dominion or realm participant, as the Town
+     * Crier prints them. Other participants (wonders, wars, raid tactics) are
+     * described in the event's data instead.
+     *
+     * @return array{0: string|null, 1: int|null}
+     */
+    protected function getParticipantNameAndRealm(mixed $participant): array
+    {
+        if ($participant instanceof Dominion) {
+            return [$participant->name, $participant->realm?->number];
+        }
+
+        if ($participant instanceof Realm) {
+            return [$participant->name, $participant->number];
+        }
+
+        return [null, null];
     }
 
     protected function isNeutralWonderAttack(GameEvent $event): bool

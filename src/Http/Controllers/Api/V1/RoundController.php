@@ -10,8 +10,14 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Mappers\GameEventMapper;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
+use OpenDominion\Models\Realm;
+use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Wonder;
+use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
 
 class RoundController extends AbstractController
@@ -23,7 +29,9 @@ class RoundController extends AbstractController
         private LandCalculator $landCalculator,
         private NetworthCalculator $networthCalculator,
         private ProtectionService $protectionService,
-        private GameEventMapper $gameEventMapper
+        private GameEventMapper $gameEventMapper,
+        private GuardMembershipService $guardMembershipService,
+        private GovernmentService $governmentService
     ) {
     }
 
@@ -57,11 +65,42 @@ class RoundController extends AbstractController
                     'land' => $this->landCalculator->getTotalLand($dominion),
                     'networth' => $this->networthCalculator->getDominionNetworth($dominion),
                     'in_protection' => $this->protectionService->isUnderProtection($dominion),
+                    'guard' => $this->guardName($dominion),
                 ];
             })
             ->values();
 
         return response()->json($dominions);
+    }
+
+    public function realms(Round $round): JsonResponse
+    {
+        $realms = $round->realms()
+            ->with([
+                'wonders',
+                'warsOutgoing' => fn ($query) => $query->active()->with('targetRealm'),
+                'warsIncoming' => fn ($query) => $query->active()->with('sourceRealm'),
+            ])
+            ->orderBy('number')
+            ->get()
+            ->map(function (Realm $realm) {
+                $wars = $realm->warsOutgoing
+                    ->map(fn (RealmWar $war) => $this->warPayload($war, 'outgoing', $war->targetRealm))
+                    ->concat($realm->warsIncoming->map(fn (RealmWar $war) => $this->warPayload($war, 'incoming', $war->sourceRealm)))
+                    ->values();
+
+                return [
+                    'number' => $realm->number,
+                    'name' => $realm->name,
+                    'wonders' => $realm->wonders
+                        ->map(fn (Wonder $wonder) => ['key' => $wonder->key, 'name' => $wonder->name])
+                        ->values(),
+                    'wars' => $wars,
+                ];
+            })
+            ->values();
+
+        return response()->json($realms);
     }
 
     public function events(Request $request, Round $round): JsonResponse
@@ -103,6 +142,49 @@ class RoundController extends AbstractController
             ->values();
 
         return response()->json($events);
+    }
+
+    /**
+     * Matches the guard icon shown for every dominion on the in-game search page.
+     * Black Guard is left out: its icon is only public when the player opts in.
+     */
+    private function guardName(Dominion $dominion): ?string
+    {
+        if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
+            return 'elite';
+        }
+
+        if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
+            return 'royal';
+        }
+
+        return null;
+    }
+
+    /**
+     * A current war as shown on the in-game realm page, from one realm's side.
+     *
+     * @return array{direction: string, realm_number: int|null, realm_name: string|null, status: string, declared_at: string|null, active_at: string|null, inactive_at: string|null}
+     */
+    private function warPayload(RealmWar $war, string $direction, ?Realm $otherRealm): array
+    {
+        if ($war->inactive_at !== null) {
+            $status = 'expiring';
+        } elseif ($this->governmentService->getHoursBeforeWarActive($war) === 0) {
+            $status = 'active';
+        } else {
+            $status = 'pending';
+        }
+
+        return [
+            'direction' => $direction,
+            'realm_number' => $otherRealm?->number,
+            'realm_name' => $otherRealm?->name,
+            'status' => $status,
+            'declared_at' => $war->created_at?->copy()->startOfHour()->toIso8601ZuluString(),
+            'active_at' => $war->active_at?->toIso8601ZuluString(),
+            'inactive_at' => $war->inactive_at?->toIso8601ZuluString(),
+        ];
     }
 
     private function roundPayload(Round $round): array

@@ -27,13 +27,6 @@
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>curl -H "X-API-Key: YOUR_KEY" {{ route('api.dominions.me') }}</code></pre>
 
-                    <h5 class="fw-bold" id="before-round-start">Before a round starts</h5>
-                    <p>
-                        Until a round's <code>start_date</code>, only <code>/rounds</code> and
-                        <code>/dominions/me</code> work. Every other endpoint returns <code>403</code> with
-                        <code>round_not_started</code>.
-                    </p>
-
                     <h5 class="fw-bold" id="rate-limits">Rate limits</h5>
                     <p>
                         60 requests per minute per IP address, shared across all endpoints. Exceeding the limit
@@ -147,9 +140,15 @@
 
                     <h5 class="fw-bold mb-1" id="round-dominions">Search</h5>
                     <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds/{round}/dominions</code></p>
-                    <p>
+                    <p class="mb-1">
                         Every active dominion in a round. Locked and abandoned dominions are left out.
                     </p>
+                    <ul>
+                        <li>
+                            <code>guard</code> is <code>"royal"</code>, <code>"elite"</code> or <code>null</code>.
+                            Black Guard membership is not included.
+                        </li>
+                    </ul>
 <pre class="bg-body-tertiary border rounded p-2"><code>[
     {
         "id": 5678,
@@ -159,7 +158,44 @@
         "realm_name": "Their Realm",
         "land": 250,
         "networth": 1500,
-        "in_protection": false
+        "in_protection": false,
+        "guard": "royal"
+    }
+]</code></pre>
+
+                    <h5 class="fw-bold mb-1" id="round-realms">Realms</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds/{round}/realms</code></p>
+                    <p class="mb-1">Every realm in a round, with the wonders it holds and its current wars.</p>
+                    <ul>
+                        <li><code>wonders</code> lists the wonders the realm holds right now.</li>
+                        <li>
+                            <code>wars</code> lists wars that have not ended, the same ones shown on the in-game realm
+                            page. Each war appears under both realms: <code>direction</code> is
+                            <code>"outgoing"</code> for the realm that declared it and <code>"incoming"</code> for
+                            the other, and <code>realm_number</code> / <code>realm_name</code> are the other realm.
+                        </li>
+                        <li>
+                            <code>status</code> is <code>"pending"</code> (declared, not active until
+                            <code>active_at</code>), <code>"active"</code>, or <code>"expiring"</code> (canceled,
+                            still active until <code>inactive_at</code>).
+                        </li>
+                    </ul>
+<pre class="bg-body-tertiary border rounded p-2"><code>[
+    {
+        "number": 7,
+        "name": "Defenders",
+        "wonders": [{"key": "high_clerics_tower", "name": "High Cleric's Tower"}],
+        "wars": [
+            {
+                "direction": "incoming",
+                "realm_number": 3,
+                "realm_name": "Aggressors",
+                "status": "active",
+                "declared_at": "2026-09-29T10:00:00Z",
+                "active_at": "2026-09-30T10:00:00Z",
+                "inactive_at": null
+            }
+        ]
     }
 ]</code></pre>
 
@@ -178,6 +214,13 @@
                             listed below returns <code>422</code>.
                         </li>
                         <li>
+                            When the source or target is a dominion or a realm, <code>source_name</code> /
+                            <code>target_name</code> and <code>source_realm_number</code> /
+                            <code>target_realm_number</code> give its name and realm number, including for dominions
+                            that have since been abandoned or locked. For any other kind of source or target they are
+                            <code>null</code>, and the table below says where its details are.
+                        </li>
+                        <li>
                             The possible values of <code>type</code> are listed in the table below, along with what
                             the source and target are and what <code>data</code> holds for each. <code>data</code>
                             carries what the in-game Town Crier shows for that event; battle reports and other
@@ -190,8 +233,12 @@
         "type": "invasion",
         "source_type": "dominion",
         "source_id": 1234,
+        "source_name": "Attacker",
+        "source_realm_number": 3,
         "target_type": "dominion",
         "target_id": 5678,
+        "target_name": "Target Dominion",
+        "target_realm_number": 12,
         "data": {"success": true, "land_lost": 15, "land_gained": 19},
         "created_at": "2026-09-30T11:45:00Z"
     }
@@ -214,8 +261,8 @@
                                     <td>
                                         <code>{"success": true, "land_lost": 15, "land_gained": 19}</code><br>
                                         <code>land_lost</code> is the land taken from the defender.
-                                        <code>land_gained</code> is what the attacker received, which includes bonus
-                                        land and so can be higher. Both are <code>0</code> when the invasion failed.
+                                        <code>land_gained</code> is what the attacker will receive. Both are
+                                        <code>0</code> when the invasion failed.
                                     </td>
                                 </tr>
                                 <tr>
@@ -279,7 +326,11 @@
                     <h5 class="fw-bold mb-1" id="dominions-me">My Dominion</h5>
                     <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me</code></p>
                     <p>
-                        The dominion the key belongs to, its realm and round. <code>links</code> holds ready-made URLs
+                        The dominion the key belongs to, its realm and round. <code>round.day</code> and
+                        <code>round.hour</code> are the current round day and hour, the same as the in-game footer
+                        (hour 1 is the first hour of a round day); both are <code>null</code> before the round starts.
+                        <code>round.duration_days</code> is the round's length in days, and <code>server_time</code>
+                        is the server's current time. <code>links</code> holds ready-made URLs
                         for the round endpoints, including the ones for the dominion's current round.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>{
@@ -291,11 +342,16 @@
         "number": 51,
         "name": "Round 51",
         "start_date": "2026-09-01T00:00:00Z",
-        "end_date": "2026-10-18T00:00:00Z"
+        "end_date": "2026-10-18T00:00:00Z",
+        "day": 30,
+        "hour": 12,
+        "duration_days": 47
     },
+    "server_time": "2026-09-30T11:14:08Z",
     "links": {
         "rounds": "{{ url('/api/v1/rounds') }}",
         "round_dominions": "{{ url('/api/v1/rounds/51/dominions') }}",
+        "round_realms": "{{ url('/api/v1/rounds/51/realms') }}",
         "round_events": "{{ url('/api/v1/rounds/51/events') }}"
     }
 }</code></pre>
