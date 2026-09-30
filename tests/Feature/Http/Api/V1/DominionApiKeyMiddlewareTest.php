@@ -189,7 +189,27 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
         ], $response->json('military'));
 
         $this->assertSame(
-            ['platinum_spent' => 51234, 'lumber_spent' => 789, 'mana_spent' => 33, 'ore_spent' => 77, 'gems_spent' => 121],
+            [
+                'platinum_spent' => 51234,
+                'platinum_spent_construction' => 1000,
+                'platinum_spent_exploration' => 200,
+                'platinum_spent_investment' => 30,
+                'platinum_spent_rezoning' => 4,
+                'platinum_spent_training' => 50000,
+                'lumber_spent' => 789,
+                'lumber_spent_construction' => 700,
+                'lumber_spent_investment' => 80,
+                'lumber_spent_training' => 9,
+                'mana_spent' => 33,
+                'mana_spent_investment' => 11,
+                'mana_spent_training' => 22,
+                'ore_spent' => 77,
+                'ore_spent_investment' => 33,
+                'ore_spent_training' => 44,
+                'gems_spent' => 121,
+                'gems_spent_investment' => 55,
+                'gems_spent_training' => 66,
+            ],
             $response->json('statistics')
         );
 

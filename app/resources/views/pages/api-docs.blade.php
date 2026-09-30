@@ -342,7 +342,9 @@
                         The dominion the key belongs to, with its realm, round and current stats.
                         <code>round.day</code> and <code>round.hour</code> are <code>null</code> before the round
                         starts. <code>military</code> includes units returning from invasion but not units in training; strengths and modifiers are
-                        percentages (<code>23.5</code> means +23.5%). <code>statistics</code> are totals for this round.
+                        percentages (<code>23.5</code> means +23.5%). <code>statistics</code> are totals for this round; each
+                        <code>{resource}_spent</code> is the sum of its <code>{resource}_spent_{category}</code>
+                        breakdown.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>{
     "id": 1234,
@@ -385,8 +387,15 @@
         "military": 12000, "jobs": 30000, "employed": 30000
     },
     "statistics": {
-        "platinum_spent": 4200000, "lumber_spent": 310000, "mana_spent": 95000,
-        "ore_spent": 520000, "gems_spent": 180000
+        "platinum_spent": 4200000,
+        "platinum_spent_construction": 1500000, "platinum_spent_exploration": 900000,
+        "platinum_spent_investment": 300000, "platinum_spent_rezoning": 50000,
+        "platinum_spent_training": 1450000,
+        "lumber_spent": 310000,
+        "lumber_spent_construction": 260000, "lumber_spent_investment": 40000, "lumber_spent_training": 10000,
+        "mana_spent": 95000, "mana_spent_investment": 60000, "mana_spent_training": 35000,
+        "ore_spent": 520000, "ore_spent_investment": 120000, "ore_spent_training": 400000,
+        "gems_spent": 180000, "gems_spent_investment": 180000, "gems_spent_training": 0
     },
     "links": {
         "rounds": "{{ url('/api/v1/rounds') }}",

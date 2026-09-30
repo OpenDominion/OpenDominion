@@ -18,6 +18,17 @@ class OpCenterController extends AbstractController
     private const DEFAULT_HISTORY_LIMIT = 100;
     private const MAX_HISTORY_LIMIT = 500;
 
+    /**
+     * Spending categories tracked per resource by stat_total_{resource}_spent_{category}.
+     */
+    private const SPENDING_CATEGORIES = [
+        'platinum' => ['construction', 'exploration', 'investment', 'rezoning', 'training'],
+        'lumber' => ['construction', 'investment', 'training'],
+        'mana' => ['investment', 'training'],
+        'ore' => ['investment', 'training'],
+        'gems' => ['investment', 'training'],
+    ];
+
     public function __construct(
         private InfoOpAssemblerService $assembler,
         private MilitaryCalculator $militaryCalculator,
@@ -152,29 +163,27 @@ class OpCenterController extends AbstractController
     }
 
     /**
-     * Round totals from the dominion's stat_total_* counters. Each *_spent
-     * figure sums that resource's stat_total_{resource}_spent_* columns.
+     * Round totals from the dominion's stat_total_* counters. For each resource,
+     * {resource}_spent is the total and {resource}_spent_{category} the
+     * breakdown, one per stat_total_{resource}_spent_{category} column.
      *
      * @return array<string, int>
      */
     private function statisticsPayload(Dominion $dominion): array
     {
-        return [
-            'platinum_spent' => $dominion->stat_total_platinum_spent_construction
-                + $dominion->stat_total_platinum_spent_exploration
-                + $dominion->stat_total_platinum_spent_investment
-                + $dominion->stat_total_platinum_spent_rezoning
-                + $dominion->stat_total_platinum_spent_training,
-            'lumber_spent' => $dominion->stat_total_lumber_spent_construction
-                + $dominion->stat_total_lumber_spent_investment
-                + $dominion->stat_total_lumber_spent_training,
-            'mana_spent' => $dominion->stat_total_mana_spent_investment
-                + $dominion->stat_total_mana_spent_training,
-            'ore_spent' => $dominion->stat_total_ore_spent_investment
-                + $dominion->stat_total_ore_spent_training,
-            'gems_spent' => $dominion->stat_total_gems_spent_investment
-                + $dominion->stat_total_gems_spent_training,
-        ];
+        $statistics = [];
+
+        foreach (self::SPENDING_CATEGORIES as $resource => $categories) {
+            $breakdown = [];
+            foreach ($categories as $category) {
+                $breakdown["{$resource}_spent_{$category}"] = (int) $dominion->{"stat_total_{$resource}_spent_{$category}"};
+            }
+
+            $statistics["{$resource}_spent"] = array_sum($breakdown);
+            $statistics += $breakdown;
+        }
+
+        return $statistics;
     }
 
     /**
