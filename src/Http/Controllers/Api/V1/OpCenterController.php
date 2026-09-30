@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
+use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\InfoOpAssemblerService;
 use OpenDominion\Services\Dominion\ProtectionService;
 
@@ -32,6 +35,8 @@ class OpCenterController extends AbstractController
 
     public function __construct(
         private InfoOpAssemblerService $assembler,
+        private BuildingHelper $buildingHelper,
+        private LandHelper $landHelper,
         private MilitaryCalculator $militaryCalculator,
         private PopulationCalculator $populationCalculator,
         private ProductionCalculator $productionCalculator,
@@ -64,6 +69,8 @@ class OpCenterController extends AbstractController
             'server_time' => now()->toIso8601ZuluString(),
             'resources' => $this->resourcesPayload($dominion),
             'military' => $this->militaryPayload($dominion),
+            'land' => $this->landPayload($dominion),
+            'buildings' => $this->buildingsPayload($dominion),
             'hourly' => $this->hourlyPayload($dominion),
             'population' => $this->populationPayload($dominion),
             'statistics' => $this->statisticsPayload($dominion),
@@ -128,6 +135,36 @@ class OpCenterController extends AbstractController
                 'defense' => round($this->militaryCalculator->getWizardRatio($dominion, 'defense'), 3),
             ],
         ];
+    }
+
+    /**
+     * Acres of each land type (the dominion's land_* attributes).
+     *
+     * @return array<string, int>
+     */
+    private function landPayload(Dominion $dominion): array
+    {
+        $land = [];
+        foreach ($this->landHelper->getLandTypes() as $landType) {
+            $land[$landType] = (int) $dominion->{"land_{$landType}"};
+        }
+
+        return $land;
+    }
+
+    /**
+     * Constructed buildings of each type (the dominion's building_* attributes).
+     *
+     * @return array<string, int>
+     */
+    private function buildingsPayload(Dominion $dominion): array
+    {
+        $buildings = [];
+        foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
+            $buildings[$buildingType] = (int) $dominion->{"building_{$buildingType}"};
+        }
+
+        return $buildings;
     }
 
     /**
@@ -214,6 +251,21 @@ class OpCenterController extends AbstractController
             return $this->underProtection();
         }
 
+        $realmNumber = $request->query('realm');
+        $realm = null;
+        if ($realmNumber !== null) {
+            $realm = ctype_digit((string) $realmNumber)
+                ? Realm::where('round_id', $dominion->round_id)->where('number', (int) $realmNumber)->first()
+                : null;
+
+            if ($realm === null) {
+                return response()->json([
+                    'error' => 'invalid_parameter',
+                    'message' => 'The "realm" parameter must be the number of a realm in your round.',
+                ], 422);
+            }
+        }
+
         $query = $dominion->realm->infoOps()
             ->with(['targetDominion.race', 'targetDominion.realm'])
             ->where('type', '!=', 'clairvoyance')
@@ -221,6 +273,10 @@ class OpCenterController extends AbstractController
 
         if ($maxAgeHours > 0) {
             $query->where('created_at', '>=', now()->subHours($maxAgeHours));
+        }
+
+        if ($realm !== null) {
+            $query->whereIn('target_dominion_id', Dominion::where('realm_id', $realm->id)->select('id'));
         }
 
         $grouped = $query->orderByDesc('created_at')->get()->groupBy('target_dominion_id');
@@ -243,6 +299,7 @@ class OpCenterController extends AbstractController
         return response()->json([
             'generated_at' => now()->toIso8601ZuluString(),
             'max_age_hours' => $maxAgeHours,
+            'realm' => $realm?->number,
             'dominions' => (object) $dominions,
         ]);
     }

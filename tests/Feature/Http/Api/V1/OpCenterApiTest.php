@@ -56,7 +56,8 @@ class OpCenterApiTest extends AbstractTestCase
 
         $payload = $response->json();
 
-        $this->assertSame(['generated_at', 'max_age_hours', 'dominions'], array_keys($payload));
+        $this->assertSame(['generated_at', 'max_age_hours', 'realm', 'dominions'], array_keys($payload));
+        $this->assertNull($payload['realm']);
         $this->assertArrayHasKey((string) $this->target->id, $payload['dominions']);
 
         $targetPayload = $payload['dominions'][(string) $this->target->id];
@@ -489,6 +490,67 @@ class OpCenterApiTest extends AbstractTestCase
         foreach ($paths as $path) {
             $this->withHeader('X-API-Key', 'scout-key')
                 ->getJson($path)
+                ->assertStatus(422)
+                ->assertJson(['error' => 'invalid_parameter']);
+        }
+    }
+
+    public function testOpCenterCanBeFilteredToOneRealm(): void
+    {
+        $otherTargetRealm = Realm::create([
+            'round_id' => $this->round->id,
+            'alignment' => 'good',
+            'number' => 42,
+            'name' => 'Other Target Realm',
+        ]);
+        $otherTarget = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $otherTargetRealm);
+
+        $this->seedInfoOp('clear_sight', ['land' => 250]);
+        InfoOp::create([
+            'source_realm_id' => $this->scout->realm_id,
+            'source_dominion_id' => $this->scout->id,
+            'target_dominion_id' => $otherTarget->id,
+            'type' => 'clear_sight',
+            'data' => ['land' => 999],
+            'latest' => true,
+        ]);
+
+        $unfiltered = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center')
+            ->assertOk();
+        $this->assertCount(2, (array) $unfiltered->json('dominions'));
+
+        $filtered = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center?realm=42')
+            ->assertOk()
+            ->assertJsonPath('realm', 42);
+        $this->assertSame([$otherTarget->id], array_keys((array) $filtered->json('dominions')));
+
+        $empty = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center?realm=' . $this->scout->realm->number)
+            ->assertOk();
+        $this->assertSame([], (array) $empty->json('dominions'));
+    }
+
+    public function testEmptyRealmParameterMeansNoFilter(): void
+    {
+        $this->seedInfoOp('clear_sight', ['land' => 250]);
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center?realm=')
+            ->assertOk()
+            ->assertJsonPath('realm', null)
+            ->assertJsonPath('dominions.' . $this->target->id . '.ops.clear_sight.land', 250);
+    }
+
+    public function testOpCenterRejectsInvalidOrUnknownRealm(): void
+    {
+        $otherRound = $this->createRound();
+        Realm::create(['round_id' => $otherRound->id, 'alignment' => 'good', 'number' => 77, 'name' => 'Elsewhere']);
+
+        foreach (['abc', '-1', '1.5', '77'] as $realm) {
+            $this->withHeader('X-API-Key', 'scout-key')
+                ->getJson('/api/v1/dominions/me/op-center?realm=' . $realm)
                 ->assertStatus(422)
                 ->assertJson(['error' => 'invalid_parameter']);
         }

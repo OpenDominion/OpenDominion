@@ -384,6 +384,16 @@
         "spy_ratio": {"offense": 0.612, "defense": 0.585},
         "wizard_ratio": {"offense": 0.934, "defense": 0.901}
     },
+    "land": {
+        "plain": 400, "mountain": 350, "swamp": 300, "cavern": 250,
+        "forest": 300, "hill": 450, "water": 450
+    },
+    "buildings": {
+        "home": 250, "alchemy": 120, "farm": 90, "smithy": 60, "masonry": 100,
+        "ore_mine": 80, "gryphon_nest": 150, "tower": 110, "wizard_guild": 40, "temple": 60,
+        "diamond_mine": 200, "school": 70, "lumberyard": 60, "factory": 30,
+        "guard_tower": 150, "shrine": 20, "barracks": 250, "dock": 200
+    },
     "hourly": {
         "production": {
             "platinum": 18500, "food": 6200, "lumber": 900, "mana": 3100,
@@ -429,6 +439,10 @@
                             <code>0</code> in the response.
                         </li>
                         <li>
+                            <code>realm</code> (optional): only include dominions currently in this realm number. An
+                            unknown realm number returns <code>422</code>.
+                        </li>
+                        <li>
                             Each dominion's <code>ops</code> always has all eight keys:
                             <code>clear_sight</code>, <code>revelation</code>, <code>castle_spy</code>,
                             <code>barracks_spy</code>, <code>survey_dominion</code>, <code>land_spy</code>,
@@ -446,6 +460,7 @@
 <pre class="bg-body-tertiary border rounded p-2"><code>{
     "generated_at": "2026-09-30T12:00:00Z",
     "max_age_hours": 12,
+    "realm": null,
     "dominions": {
         "5678": {
             "id": 5678,

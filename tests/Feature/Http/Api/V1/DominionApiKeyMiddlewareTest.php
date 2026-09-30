@@ -6,6 +6,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractTestCase;
 
@@ -150,7 +151,7 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertOk();
 
         $this->assertSame(
-            ['id', 'name', 'realm', 'round', 'server_time', 'resources', 'military', 'hourly', 'population', 'statistics', 'links'],
+            ['id', 'name', 'realm', 'round', 'server_time', 'resources', 'military', 'land', 'buildings', 'hourly', 'population', 'statistics', 'links'],
             array_keys($response->json())
         );
         $this->assertSame([
@@ -212,6 +213,18 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ],
             $response->json('statistics')
         );
+
+        $this->assertSame(
+            ['plain', 'mountain', 'swamp', 'cavern', 'forest', 'hill', 'water'],
+            array_keys($response->json('land'))
+        );
+        foreach ($response->json('land') as $landType => $acres) {
+            $this->assertSame($dominion->{'land_' . $landType}, $acres);
+        }
+        $this->assertSame(app(BuildingHelper::class)->getBuildingTypes(), array_keys($response->json('buildings')));
+        foreach ($response->json('buildings') as $buildingType => $amount) {
+            $this->assertSame($dominion->{'building_' . $buildingType}, $amount);
+        }
 
         $this->assertSame(['production', 'consumption', 'decay', 'net_change'], array_keys($response->json('hourly')));
         $this->assertSame(

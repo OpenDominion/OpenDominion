@@ -92,7 +92,7 @@ class ApiDocsPageTest extends AbstractTestCase
         }
         $this->assertStringNotContainsString('wonder_invasion', $html);
 
-        foreach (['max_age_hours', 'limit', 'since', 'type'] as $parameter) {
+        foreach (['max_age_hours', 'limit', 'since', 'type', 'realm'] as $parameter) {
             $this->assertStringContainsString('<code>' . $parameter . '</code>', $html);
         }
 
