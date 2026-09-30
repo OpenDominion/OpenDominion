@@ -3,6 +3,9 @@
 namespace OpenDominion\Tests\Feature\Http\Api\V1;
 
 use Illuminate\Routing\Middleware\ThrottleRequests;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Tests\AbstractTestCase;
 
 class DominionApiKeyMiddlewareTest extends AbstractTestCase
@@ -93,6 +96,88 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertJsonPath('round.day', null)
             ->assertJsonPath('round.hour', null)
             ->assertJsonPath('round.duration_days', 47);
+    }
+
+    public function testMeIncludesWhitelistedResourcesProductionAndPopulation(): void
+    {
+        $round = $this->createRound();
+        $dominion = $this->createDominion($this->createUser(), $round);
+        $dominion->update([
+            'api_key' => 'stats-key',
+            'resource_platinum' => 123456,
+            'resource_food' => 54321,
+            'resource_boats' => 12.3456,
+            'military_draftees' => 1500,
+            'military_unit1' => 11,
+            'military_unit2' => 22,
+            'military_unit3' => 33,
+            'military_unit4' => 44,
+            'military_spies' => 55,
+            'military_assassins' => 66,
+            'military_wizards' => 77,
+            'military_archmages' => 88,
+            'spy_strength' => 87.456,
+            'wizard_strength' => 100,
+        ]);
+        $dominion = $dominion->fresh();
+
+        $production = app(ProductionCalculator::class);
+        $population = app(PopulationCalculator::class);
+        $military = app(MilitaryCalculator::class);
+
+        $response = $this->withHeader('X-API-Key', 'stats-key')
+            ->getJson('/api/v1/dominions/me')
+            ->assertOk();
+
+        $this->assertSame(
+            ['id', 'name', 'realm', 'round', 'server_time', 'resources', 'military', 'hourly', 'population', 'links'],
+            array_keys($response->json())
+        );
+        $this->assertSame([
+            'platinum' => 123456,
+            'food' => 54321,
+            'lumber' => $dominion->resource_lumber,
+            'mana' => $dominion->resource_mana,
+            'ore' => $dominion->resource_ore,
+            'gems' => $dominion->resource_gems,
+            'tech' => $dominion->resource_tech,
+            'boats' => 12.35,
+        ], $response->json('resources'));
+
+        $this->assertEquals([
+            'draftees' => 1500,
+            'unit1' => 11,
+            'unit2' => 22,
+            'unit3' => 33,
+            'unit4' => 44,
+            'spies' => 55,
+            'assassins' => 66,
+            'wizards' => 77,
+            'archmages' => 88,
+            'spy_strength' => 87.46,
+            'wizard_strength' => 100,
+            'offensive_modifier' => round(($military->getOffensivePowerMultiplier($dominion) - 1) * 100, 3),
+            'defensive_modifier' => round(($military->getDefensivePowerMultiplier($dominion) - 1) * 100, 3),
+        ], $response->json('military'));
+
+        $this->assertSame(['production', 'consumption', 'decay', 'net_change'], array_keys($response->json('hourly')));
+        $this->assertSame(
+            ['platinum', 'food', 'lumber', 'mana', 'ore', 'gems', 'tech', 'boats'],
+            array_keys($response->json('hourly.production'))
+        );
+        $this->assertSame($production->getPlatinumProduction($dominion), $response->json('hourly.production.platinum'));
+        $this->assertSame($production->getFoodNetChange($dominion), $response->json('hourly.net_change.food'));
+        $this->assertSame((int) round($production->getFoodConsumption($dominion)), $response->json('hourly.consumption.food'));
+        $this->assertSame(['food', 'lumber', 'mana'], array_keys($response->json('hourly.decay')));
+
+        $this->assertSame([
+            'total' => $population->getPopulation($dominion),
+            'max' => $population->getMaxPopulation($dominion),
+            'peasants' => $dominion->peasants,
+            'military' => $population->getPopulationMilitary($dominion),
+            'jobs' => $population->getEmploymentJobs($dominion),
+            'employed' => $population->getPopulationEmployed($dominion),
+        ], $response->json('population'));
     }
 
     public function testBearerTokenFallbackWorks(): void

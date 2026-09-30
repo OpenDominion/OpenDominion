@@ -4,6 +4,9 @@ namespace OpenDominion\Http\Controllers\Api\V1;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -15,8 +18,12 @@ class OpCenterController extends AbstractController
     private const DEFAULT_HISTORY_LIMIT = 100;
     private const MAX_HISTORY_LIMIT = 500;
 
-    public function __construct(private InfoOpAssemblerService $assembler)
-    {
+    public function __construct(
+        private InfoOpAssemblerService $assembler,
+        private MilitaryCalculator $militaryCalculator,
+        private PopulationCalculator $populationCalculator,
+        private ProductionCalculator $productionCalculator
+    ) {
     }
 
     public function me(): JsonResponse
@@ -42,6 +49,10 @@ class OpCenterController extends AbstractController
                 'duration_days' => $dominion->round->durationInDays(),
             ],
             'server_time' => now()->toIso8601ZuluString(),
+            'resources' => $this->resourcesPayload($dominion),
+            'military' => $this->militaryPayload($dominion),
+            'hourly' => $this->hourlyPayload($dominion),
+            'population' => $this->populationPayload($dominion),
             'links' => [
                 'rounds' => route('api.rounds.index'),
                 'round_dominions' => route('api.rounds.dominions', $dominion->round),
@@ -49,6 +60,102 @@ class OpCenterController extends AbstractController
                 'round_events' => route('api.rounds.events', $dominion->round),
             ],
         ]);
+    }
+
+    /**
+     * Current stockpiles of the key's own dominion.
+     *
+     * @return array<string, int|float>
+     */
+    private function resourcesPayload(Dominion $dominion): array
+    {
+        return [
+            'platinum' => $dominion->resource_platinum,
+            'food' => $dominion->resource_food,
+            'lumber' => $dominion->resource_lumber,
+            'mana' => $dominion->resource_mana,
+            'ore' => $dominion->resource_ore,
+            'gems' => $dominion->resource_gems,
+            'tech' => $dominion->resource_tech,
+            'boats' => round($dominion->resource_boats, 2),
+        ];
+    }
+
+    /**
+     * Units at home, spy/wizard strength and OP/DP modifiers of the key's own
+     * dominion. Units in training or returning from battle are not included.
+     * Modifiers are percentages, as on the Military advisor (+23.5 means x1.235).
+     *
+     * @return array<string, int|float>
+     */
+    private function militaryPayload(Dominion $dominion): array
+    {
+        return [
+            'draftees' => $dominion->military_draftees,
+            'unit1' => $dominion->military_unit1,
+            'unit2' => $dominion->military_unit2,
+            'unit3' => $dominion->military_unit3,
+            'unit4' => $dominion->military_unit4,
+            'spies' => $dominion->military_spies,
+            'assassins' => $dominion->military_assassins,
+            'wizards' => $dominion->military_wizards,
+            'archmages' => $dominion->military_archmages,
+            'spy_strength' => round($dominion->spy_strength, 2),
+            'wizard_strength' => round($dominion->wizard_strength, 2),
+            'offensive_modifier' => round(($this->militaryCalculator->getOffensivePowerMultiplier($dominion) - 1) * 100, 3),
+            'defensive_modifier' => round(($this->militaryCalculator->getDefensivePowerMultiplier($dominion) - 1) * 100, 3),
+        ];
+    }
+
+    /**
+     * Hourly figures from the Production advisor for the key's own dominion.
+     *
+     * @return array{production: array<string, int|float>, consumption: array<string, int>, decay: array<string, int>, net_change: array<string, int>}
+     */
+    private function hourlyPayload(Dominion $dominion): array
+    {
+        return [
+            'production' => [
+                'platinum' => $this->productionCalculator->getPlatinumProduction($dominion),
+                'food' => $this->productionCalculator->getFoodProduction($dominion),
+                'lumber' => $this->productionCalculator->getLumberProduction($dominion),
+                'mana' => $this->productionCalculator->getManaProduction($dominion),
+                'ore' => $this->productionCalculator->getOreProduction($dominion),
+                'gems' => $this->productionCalculator->getGemProduction($dominion),
+                'tech' => $this->productionCalculator->getTechProduction($dominion),
+                'boats' => round($this->productionCalculator->getBoatProduction($dominion), 2),
+            ],
+            'consumption' => [
+                'food' => (int) round($this->productionCalculator->getFoodConsumption($dominion)),
+            ],
+            'decay' => [
+                'food' => (int) round($this->productionCalculator->getFoodDecay($dominion)),
+                'lumber' => (int) round($this->productionCalculator->getLumberDecay($dominion)),
+                'mana' => (int) round($this->productionCalculator->getManaDecay($dominion)),
+            ],
+            'net_change' => [
+                'food' => $this->productionCalculator->getFoodNetChange($dominion),
+                'lumber' => $this->productionCalculator->getLumberNetChange($dominion),
+                'mana' => $this->productionCalculator->getManaNetChange($dominion),
+            ],
+        ];
+    }
+
+    /**
+     * Population figures from the Production advisor for the key's own dominion.
+     *
+     * @return array<string, int>
+     */
+    private function populationPayload(Dominion $dominion): array
+    {
+        return [
+            'total' => $this->populationCalculator->getPopulation($dominion),
+            'max' => $this->populationCalculator->getMaxPopulation($dominion),
+            'peasants' => $dominion->peasants,
+            'military' => $this->populationCalculator->getPopulationMilitary($dominion),
+            'jobs' => $this->populationCalculator->getEmploymentJobs($dominion),
+            'employed' => $this->populationCalculator->getPopulationEmployed($dominion),
+        ];
     }
 
     public function ops(Request $request): JsonResponse

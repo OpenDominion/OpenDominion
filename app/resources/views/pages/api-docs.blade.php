@@ -330,7 +330,13 @@
                         <code>round.hour</code> are the current round day and hour, the same as the in-game footer
                         (hour 1 is the first hour of a round day); both are <code>null</code> before the round starts.
                         <code>round.duration_days</code> is the round's length in days, and <code>server_time</code>
-                        is the server's current time. <code>links</code> holds ready-made URLs
+                        is the server's current time. <code>resources</code>, <code>military</code>, <code>hourly</code>
+                        and <code>population</code> are your dominion's current figures. <code>military</code> counts
+                        units at home only (not training or returning), and <code>spy_strength</code> /
+                        <code>wizard_strength</code> are percentages. <code>offensive_modifier</code> /
+                        <code>defensive_modifier</code> are the total OP and DP bonuses as percentages, as on the
+                        Military advisor (<code>23.5</code> means +23.5%).
+                        Everything under <code>hourly</code> is per hour. <code>links</code> holds ready-made URLs
                         for the round endpoints, including the ones for the dominion's current round.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>{
@@ -348,6 +354,29 @@
         "duration_days": 47
     },
     "server_time": "2026-09-30T11:14:08Z",
+    "resources": {
+        "platinum": 523000, "food": 180000, "lumber": 41000, "mana": 92000,
+        "ore": 60000, "gems": 15000, "tech": 3400, "boats": 112.5
+    },
+    "military": {
+        "draftees": 2500, "unit1": 0, "unit2": 8000, "unit3": 3200, "unit4": 2100,
+        "spies": 900, "assassins": 300, "wizards": 1400, "archmages": 120,
+        "spy_strength": 100, "wizard_strength": 87.5,
+        "offensive_modifier": 23.5, "defensive_modifier": 17.25
+    },
+    "hourly": {
+        "production": {
+            "platinum": 18500, "food": 6200, "lumber": 900, "mana": 3100,
+            "ore": 1500, "gems": 2400, "tech": 140, "boats": 1.25
+        },
+        "consumption": {"food": 5400},
+        "decay": {"food": 180, "lumber": 410, "mana": 1840},
+        "net_change": {"food": 620, "lumber": 490, "mana": 1260}
+    },
+    "population": {
+        "total": 48000, "max": 52000, "peasants": 36000,
+        "military": 12000, "jobs": 30000, "employed": 30000
+    },
     "links": {
         "rounds": "{{ url('/api/v1/rounds') }}",
         "round_dominions": "{{ url('/api/v1/rounds/51/dominions') }}",
