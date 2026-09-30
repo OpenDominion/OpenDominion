@@ -117,6 +117,14 @@ Manages espionage/magic intelligence results.
 - `hasActiveInfoOp(Realm, Dominion, type)` - checks for valid (non-stale) op
 - Ops become stale after current hour, invalid after 12h
 
+### InfoOpAssemblerService
+Builds the public API's op-center payloads from stored info ops (`/api/v1/dominions/me/op-center*`).
+- `assembleForTarget(Dominion, Collection)` - latest op per type, keyed by stored type (`clear_sight`, `barracks_spy`, ...), `null` for missing types
+- `assembleHistory(Dominion, type, Collection)` - every op of one type, same per-op format
+- `assembleFromAdvisors(Dominion)` - same payload built from live `InfoMapper` data (own dominion / realmies sharing advisors); callers must check `inRealmAndSharesAdvisors()` first
+- `getTypes()` / `isValidType()` - the eight exposed types (clairvoyance excluded)
+- Per-op format mirrors Copy Ops in `op-center/show.blade.php`; revelation casters obfuscated via `SpellHelper::obfuscateInfoOps()`
+
 ### RankingsService
 Daily ranking snapshots by category (land, networth, conquered, explored, etc.).
 
