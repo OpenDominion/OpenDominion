@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use Illuminate\Support\Collection;
 use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 
 /**
@@ -59,6 +60,37 @@ class InfoOpAssemblerService
         }
 
         return $ops;
+    }
+
+    /**
+     * Assembles the same payload as assembleForTarget() from the dominion's
+     * current state instead of stored info ops, the way the in-game realm
+     * advisors Op Center does. Every op's created_at is the current time.
+     * Callers must check advisor sharing first.
+     *
+     * @return array<string, array<string, mixed>|null>
+     */
+    public function assembleFromAdvisors(Dominion $dominion): array
+    {
+        $infoMapper = app(InfoMapper::class);
+        $now = now();
+
+        $advisorOps = collect([
+            'clear_sight' => $infoMapper->mapStatus($dominion, false),
+            'revelation' => $infoMapper->mapSpells($dominion),
+            'castle_spy' => $infoMapper->mapImprovements($dominion),
+            'barracks_spy' => $infoMapper->mapMilitary($dominion, false),
+            'survey_dominion' => $infoMapper->mapBuildings($dominion),
+            'land_spy' => $infoMapper->mapLand($dominion),
+            'vision' => ['techs' => $infoMapper->mapTechs($dominion)],
+            'disclosure' => $infoMapper->mapHeroes($dominion),
+        ])->map(fn (array $data, string $type) => (object) [
+            'type' => $type,
+            'data' => $data,
+            'created_at' => $now,
+        ])->values();
+
+        return $this->assembleForTarget($dominion, $advisorOps);
     }
 
     /**

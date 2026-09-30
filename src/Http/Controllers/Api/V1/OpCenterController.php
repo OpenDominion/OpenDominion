@@ -93,6 +93,10 @@ class OpCenterController extends AbstractController
             return $this->notFound();
         }
 
+        if ($target->realm_id === $dominion->realm_id) {
+            return $this->advisorsForTarget($dominion, $target, $maxAgeHours);
+        }
+
         $query = $dominion->realm->infoOps()
             ->where('target_dominion_id', $target->id)
             ->where('type', '!=', 'clairvoyance')
@@ -131,6 +135,13 @@ class OpCenterController extends AbstractController
             return $this->notFound();
         }
 
+        if ($target->realm_id === $dominion->realm_id) {
+            return response()->json([
+                'error' => 'same_realm',
+                'message' => 'The Op Archive is not available for dominions in your realm. Use /dominions/me/op-center/{target} for their current data.',
+            ], 422);
+        }
+
         if (!$this->assembler->isValidType($type)) {
             return response()->json([
                 'error' => 'invalid_parameter',
@@ -160,6 +171,28 @@ class OpCenterController extends AbstractController
             ],
             'type' => $type,
             'ops' => $this->assembler->assembleHistory($target, $type, $query->limit($limit)->get()),
+        ]);
+    }
+
+    /**
+     * Your own dominion and realmies who share their advisors with you are
+     * returned with their current data, as on the in-game realm advisors page.
+     */
+    private function advisorsForTarget(Dominion $dominion, Dominion $target, int $maxAgeHours): JsonResponse
+    {
+        if (!$dominion->inRealmAndSharesAdvisors($target)) {
+            return response()->json([
+                'error' => 'advisors_not_shared',
+                'message' => 'This dominion has opted not to share their advisors with you.',
+            ], 403);
+        }
+
+        $target->loadMissing(['race', 'realm']);
+
+        return response()->json([
+            'generated_at' => now()->toIso8601ZuluString(),
+            'max_age_hours' => $maxAgeHours,
+            'dominion' => $this->targetPayload($target, $this->assembler->assembleFromAdvisors($target)),
         ]);
     }
 

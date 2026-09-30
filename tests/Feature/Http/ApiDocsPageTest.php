@@ -24,10 +24,12 @@ class ApiDocsPageTest extends AbstractTestCase
         'missing_api_key',
         'invalid_api_key',
         'dominion_locked',
+        'advisors_not_shared',
         'round_not_started',
         'round_ended',
         'not_found',
         'invalid_parameter',
+        'same_realm',
         'rate_limited',
     ];
 

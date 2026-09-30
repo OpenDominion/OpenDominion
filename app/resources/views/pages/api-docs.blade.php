@@ -75,6 +75,11 @@
                                 </tr>
                                 <tr>
                                     <td>403</td>
+                                    <td><code>advisors_not_shared</code></td>
+                                    <td>The realmie you requested does not share their advisors with you.</td>
+                                </tr>
+                                <tr>
+                                    <td>403</td>
                                     <td><code>round_not_started</code></td>
                                     <td>
                                         The round has not started yet. Until it does, only <code>/rounds</code> and
@@ -101,6 +106,11 @@
                                         A parameter is invalid: an unparseable <code>since</code>, an unknown event
                                         <code>type</code>, or an unknown op type in the Op Archive URL.
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td>422</td>
+                                    <td><code>same_realm</code></td>
+                                    <td>The Op Archive was requested for a dominion in your own realm.</td>
                                 </tr>
                                 <tr>
                                     <td>429</td>
@@ -360,13 +370,21 @@
                     </p>
                     <ul>
                         <li>
+                            For your own dominion, or a realmie who shares their advisors with you, the ops are built
+                            from the dominion's current state (as on the in-game realm advisors page) instead of
+                            info ops. All eight types are filled in, each with <code>created_at</code> equal to
+                            <code>generated_at</code>, and <code>max_age_hours</code> has no effect. A realmie who
+                            does not share their advisors with you returns <code>403</code>
+                            <code>advisors_not_shared</code>.
+                        </li>
+                        <li>
                             <code>max_age_hours</code> (optional, default 0): only include ops gathered within this
                             many hours. <code>0</code> means no age limit, so by default you get the latest op of
                             each type however old it is.
                         </li>
                         <li>
                             Returns <code>404</code> when your realm has no ops on that dominion within the age
-                            limit.
+                            limit (other realms only).
                         </li>
                     </ul>
 
@@ -377,7 +395,8 @@
                         this round, newest first. <code>{type}</code> is one of <code>clear_sight</code>,
                         <code>revelation</code>, <code>castle_spy</code>, <code>barracks_spy</code>,
                         <code>survey_dominion</code>, <code>land_spy</code>, <code>vision</code> or
-                        <code>disclosure</code>; anything else returns <code>422</code>.
+                        <code>disclosure</code>; anything else returns <code>422</code>. Not available for your own
+                        dominion or realmies, which return <code>422</code> <code>same_realm</code>.
                     </p>
                     <ul>
                         <li>
