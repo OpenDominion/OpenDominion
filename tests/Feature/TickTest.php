@@ -398,4 +398,21 @@ class TickTest extends AbstractBrowserKitTestCase
         $dominion->update($overrides);
         return $dominion->fresh();
     }
+
+    public function testAbandonmentRevokesApiKey()
+    {
+        $user = $this->createUser();
+        $round = $this->createRound('-7 days');
+        $abandonedDominion = $this->createDominion($user, $round);
+        $pendingDominion = $this->createDominion($this->createUser(), $round);
+        $tickService = app(TickService::class);
+
+        $abandonedDominion->update(['api_key' => 'abandoned-key', 'abandoned_at' => now()->startOfHour()]);
+        $pendingDominion->update(['api_key' => 'pending-key', 'abandoned_at' => now()->addHours(12)->startOfHour()]);
+
+        $tickService->checkForAbandonedDominions($round);
+
+        $this->seeInDatabase('dominions', ['id' => $abandonedDominion->id, 'api_key' => null]);
+        $this->seeInDatabase('dominions', ['id' => $pendingDominion->id, 'api_key' => 'pending-key']);
+    }
 }

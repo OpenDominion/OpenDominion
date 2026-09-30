@@ -206,6 +206,7 @@ class HistoryService
                 'black_guard_active_at',
                 'black_guard_inactive_at',
                 'last_tick_at',
+                'api_key',
                 'hourly_activity',
                 'locked_at',
                 'abandoned_at',

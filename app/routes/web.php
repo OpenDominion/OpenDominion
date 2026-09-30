@@ -9,6 +9,7 @@ $router->get('user-agreement')->uses('HomeController@getUserAgreement')->name('u
 $router->get('about')->uses('HomeController@getAboutPage')->name('about');
 $router->get('terms')->uses('HomeController@getTermsPage')->name('terms');
 $router->get('privacy')->uses('HomeController@getPrivacyPage')->name('privacy');
+$router->get('api-docs')->uses('HomeController@getApiDocsPage')->name('api-docs');
 $router->get('hall-of-fame')->uses('HomeController@getHallOfFame')->name('hall-of-fame');
 $router->get('round/calendar')->uses('RoundController@getCalendar')->name('round.calendar');
 
@@ -316,6 +317,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/rename')->uses('Dominion\MiscController@postRenameDominion')->name('misc.rename');
             $router->get('misc/settings')->uses('Dominion\MiscController@getDominionSettings')->name('misc.settings');
             $router->post('misc/settings')->uses('Dominion\MiscController@postDominionSettings');
+            $router->post('misc/api-key/generate')->uses('Dominion\MiscController@postGenerateApiKey')->name('misc.api-key.generate');
+            $router->post('misc/api-key/revoke')->uses('Dominion\MiscController@postRevokeApiKey')->name('misc.api-key.revoke');
             $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
             $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick');
 

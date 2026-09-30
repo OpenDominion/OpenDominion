@@ -87,6 +87,11 @@ class HomeController extends AbstractController
         return view('pages.about');
     }
 
+    public function getApiDocsPage()
+    {
+        return view('pages.api-docs');
+    }
+
     public function getPrivacyPage()
     {
         return view('pages.privacy');

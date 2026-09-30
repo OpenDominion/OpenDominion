@@ -46,7 +46,19 @@ class SpellHelper
      */
     public function getSpellByKey(string $key): ?Spell
     {
-        return $this->getSpells()->get($key);
+        return $this->getAllSpells()->firstWhere('key', $key);
+    }
+
+    /**
+     * Returns all spells, including inactive ones.
+     *
+     * Inactive spells are needed to display historical data such as old op center results.
+     *
+     * @return Collection
+     */
+    protected function getAllSpells(): Collection
+    {
+        return Cache::rememberForever('game:spells', static fn () => Spell::with('perks')->get());
     }
 
     /**
@@ -58,7 +70,8 @@ class SpellHelper
      */
     public function getSpells(Race|null $race = null, string|null $category = null): Collection
     {
-        $spells = Cache::rememberForever('game:spells', static fn () => Spell::with('perks')->active()->get())
+        $spells = $this->getAllSpells()
+            ->where('active', true)
             ->map(function ($spell) {
                 $spell->racial = ($spell->races !== []);
                 return $spell;
