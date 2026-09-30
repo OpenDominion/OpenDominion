@@ -9,11 +9,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DominionApiKey
 {
-    public function handle(Request $request, Closure $next): Response
+    /**
+     * With $mode "optional" a request without a key continues unauthenticated;
+     * a key that is sent is still validated.
+     */
+    public function handle(Request $request, Closure $next, string $mode = 'required'): Response
     {
         $key = $this->extractKey($request);
 
         if ($key === null || $key === '') {
+            if ($mode === 'optional') {
+                app()->forgetInstance('api.dominion');
+
+                return $next($request);
+            }
+
             return $this->error('missing_api_key', 'Provide an API key via the X-API-Key header.', 401);
         }
 

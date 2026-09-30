@@ -53,6 +53,7 @@ class OpCenterController extends AbstractController
             'military' => $this->militaryPayload($dominion),
             'hourly' => $this->hourlyPayload($dominion),
             'population' => $this->populationPayload($dominion),
+            'statistics' => $this->statisticsPayload($dominion),
             'links' => [
                 'rounds' => route('api.rounds.index'),
                 'round_dominions' => route('api.rounds.dominions', $dominion->round),
@@ -82,8 +83,9 @@ class OpCenterController extends AbstractController
     }
 
     /**
-     * Units at home, spy/wizard strength and OP/DP modifiers of the key's own
-     * dominion. Units in training or returning from battle are not included.
+     * Units, spy/wizard strength and OP/DP modifiers of the key's own dominion.
+     * Units 1-4 include those returning from invasion, as on the status page;
+     * units in training are not included.
      * Modifiers are percentages, as on the Military advisor (+23.5 means x1.235).
      *
      * @return array<string, int|float>
@@ -92,10 +94,10 @@ class OpCenterController extends AbstractController
     {
         return [
             'draftees' => $dominion->military_draftees,
-            'unit1' => $dominion->military_unit1,
-            'unit2' => $dominion->military_unit2,
-            'unit3' => $dominion->military_unit3,
-            'unit4' => $dominion->military_unit4,
+            'unit1' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1),
+            'unit2' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 2),
+            'unit3' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3),
+            'unit4' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4),
             'spies' => $dominion->military_spies,
             'assassins' => $dominion->military_assassins,
             'wizards' => $dominion->military_wizards,
@@ -104,6 +106,14 @@ class OpCenterController extends AbstractController
             'wizard_strength' => round($dominion->wizard_strength, 2),
             'offensive_modifier' => round(($this->militaryCalculator->getOffensivePowerMultiplier($dominion) - 1) * 100, 3),
             'defensive_modifier' => round(($this->militaryCalculator->getDefensivePowerMultiplier($dominion) - 1) * 100, 3),
+            'spy_ratio' => [
+                'offense' => round($this->militaryCalculator->getSpyRatio($dominion, 'offense'), 3),
+                'defense' => round($this->militaryCalculator->getSpyRatio($dominion, 'defense'), 3),
+            ],
+            'wizard_ratio' => [
+                'offense' => round($this->militaryCalculator->getWizardRatio($dominion, 'offense'), 3),
+                'defense' => round($this->militaryCalculator->getWizardRatio($dominion, 'defense'), 3),
+            ],
         ];
     }
 
@@ -138,6 +148,32 @@ class OpCenterController extends AbstractController
                 'lumber' => $this->productionCalculator->getLumberNetChange($dominion),
                 'mana' => $this->productionCalculator->getManaNetChange($dominion),
             ],
+        ];
+    }
+
+    /**
+     * Round totals from the dominion's stat_total_* counters. Each *_spent
+     * figure sums that resource's stat_total_{resource}_spent_* columns.
+     *
+     * @return array<string, int>
+     */
+    private function statisticsPayload(Dominion $dominion): array
+    {
+        return [
+            'platinum_spent' => $dominion->stat_total_platinum_spent_construction
+                + $dominion->stat_total_platinum_spent_exploration
+                + $dominion->stat_total_platinum_spent_investment
+                + $dominion->stat_total_platinum_spent_rezoning
+                + $dominion->stat_total_platinum_spent_training,
+            'lumber_spent' => $dominion->stat_total_lumber_spent_construction
+                + $dominion->stat_total_lumber_spent_investment
+                + $dominion->stat_total_lumber_spent_training,
+            'mana_spent' => $dominion->stat_total_mana_spent_investment
+                + $dominion->stat_total_mana_spent_training,
+            'ore_spent' => $dominion->stat_total_ore_spent_investment
+                + $dominion->stat_total_ore_spent_training,
+            'gems_spent' => $dominion->stat_total_gems_spent_investment
+                + $dominion->stat_total_gems_spent_training,
         ];
     }
 

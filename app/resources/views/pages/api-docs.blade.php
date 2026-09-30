@@ -167,7 +167,12 @@
                     <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds/{round}/realms</code></p>
                     <p class="mb-1">Every realm in a round, with the wonders it holds and its current wars.</p>
                     <ul>
-                        <li><code>wonders</code> lists the wonders the realm holds right now.</li>
+                        <li>
+                            <code>wonders</code> lists the wonders the realm holds right now. <code>power</code> is
+                            rounded (<code>power_is_approximate</code> is <code>true</code>) unless you send an API key
+                            for the holding realm or a realm at war with it, as on the in-game wonders page. The API
+                            key is optional here; an invalid one still returns <code>401</code>.
+                        </li>
                         <li>
                             <code>wars</code> lists wars that have not ended, the same ones shown on the in-game realm
                             page. Each war appears under both realms: <code>direction</code> is
@@ -184,7 +189,15 @@
     {
         "number": 7,
         "name": "Defenders",
-        "wonders": [{"key": "high_clerics_tower", "name": "High Cleric's Tower"}],
+        "wonders": [
+            {
+                "key": "high_clerics_tower",
+                "name": "High Cleric's Tower",
+                "power": 230000,
+                "max_power": 250000,
+                "power_is_approximate": true
+            }
+        ],
         "wars": [
             {
                 "direction": "incoming",
@@ -326,18 +339,10 @@
                     <h5 class="fw-bold mb-1" id="dominions-me">My Dominion</h5>
                     <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me</code></p>
                     <p>
-                        The dominion the key belongs to, its realm and round. <code>round.day</code> and
-                        <code>round.hour</code> are the current round day and hour, the same as the in-game footer
-                        (hour 1 is the first hour of a round day); both are <code>null</code> before the round starts.
-                        <code>round.duration_days</code> is the round's length in days, and <code>server_time</code>
-                        is the server's current time. <code>resources</code>, <code>military</code>, <code>hourly</code>
-                        and <code>population</code> are your dominion's current figures. <code>military</code> counts
-                        units at home only (not training or returning), and <code>spy_strength</code> /
-                        <code>wizard_strength</code> are percentages. <code>offensive_modifier</code> /
-                        <code>defensive_modifier</code> are the total OP and DP bonuses as percentages, as on the
-                        Military advisor (<code>23.5</code> means +23.5%).
-                        Everything under <code>hourly</code> is per hour. <code>links</code> holds ready-made URLs
-                        for the round endpoints, including the ones for the dominion's current round.
+                        The dominion the key belongs to, with its realm, round and current stats.
+                        <code>round.day</code> and <code>round.hour</code> are <code>null</code> before the round
+                        starts. <code>military</code> includes units returning from invasion but not units in training; strengths and modifiers are
+                        percentages (<code>23.5</code> means +23.5%). <code>statistics</code> are totals for this round.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>{
     "id": 1234,
@@ -362,7 +367,9 @@
         "draftees": 2500, "unit1": 0, "unit2": 8000, "unit3": 3200, "unit4": 2100,
         "spies": 900, "assassins": 300, "wizards": 1400, "archmages": 120,
         "spy_strength": 100, "wizard_strength": 87.5,
-        "offensive_modifier": 23.5, "defensive_modifier": 17.25
+        "offensive_modifier": 23.5, "defensive_modifier": 17.25,
+        "spy_ratio": {"offense": 0.612, "defense": 0.585},
+        "wizard_ratio": {"offense": 0.934, "defense": 0.901}
     },
     "hourly": {
         "production": {
@@ -376,6 +383,10 @@
     "population": {
         "total": 48000, "max": 52000, "peasants": 36000,
         "military": 12000, "jobs": 30000, "employed": 30000
+    },
+    "statistics": {
+        "platinum_spent": 4200000, "lumber_spent": 310000, "mana_spent": 95000,
+        "ore_spent": 520000, "gems_spent": 180000
     },
     "links": {
         "rounds": "{{ url('/api/v1/rounds') }}",

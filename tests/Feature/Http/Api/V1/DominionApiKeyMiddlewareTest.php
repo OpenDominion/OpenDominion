@@ -6,6 +6,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractTestCase;
 
 class DominionApiKeyMiddlewareTest extends AbstractTestCase
@@ -118,8 +119,27 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             'military_archmages' => 88,
             'spy_strength' => 87.456,
             'wizard_strength' => 100,
+            'stat_total_platinum_spent_construction' => 1000,
+            'stat_total_platinum_spent_exploration' => 200,
+            'stat_total_platinum_spent_investment' => 30,
+            'stat_total_platinum_spent_rezoning' => 4,
+            'stat_total_platinum_spent_training' => 50000,
+            'stat_total_lumber_spent_construction' => 700,
+            'stat_total_lumber_spent_investment' => 80,
+            'stat_total_lumber_spent_training' => 9,
+            'stat_total_mana_spent_investment' => 11,
+            'stat_total_mana_spent_training' => 22,
+            'stat_total_ore_spent_investment' => 33,
+            'stat_total_ore_spent_training' => 44,
+            'stat_total_gems_spent_investment' => 55,
+            'stat_total_gems_spent_training' => 66,
         ]);
         $dominion = $dominion->fresh();
+
+        $queueService = app(QueueService::class);
+        $queueService->queueResources('invasion', $dominion, ['military_unit2' => 100, 'military_unit4' => 5], 9);
+        $queueService->queueResources('invasion', $dominion, ['military_unit2' => 7], 4);
+        $queueService->queueResources('training', $dominion, ['military_unit1' => 1000], 6);
 
         $production = app(ProductionCalculator::class);
         $population = app(PopulationCalculator::class);
@@ -130,7 +150,7 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertOk();
 
         $this->assertSame(
-            ['id', 'name', 'realm', 'round', 'server_time', 'resources', 'military', 'hourly', 'population', 'links'],
+            ['id', 'name', 'realm', 'round', 'server_time', 'resources', 'military', 'hourly', 'population', 'statistics', 'links'],
             array_keys($response->json())
         );
         $this->assertSame([
@@ -147,9 +167,9 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
         $this->assertEquals([
             'draftees' => 1500,
             'unit1' => 11,
-            'unit2' => 22,
+            'unit2' => 129,
             'unit3' => 33,
-            'unit4' => 44,
+            'unit4' => 49,
             'spies' => 55,
             'assassins' => 66,
             'wizards' => 77,
@@ -158,7 +178,20 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             'wizard_strength' => 100,
             'offensive_modifier' => round(($military->getOffensivePowerMultiplier($dominion) - 1) * 100, 3),
             'defensive_modifier' => round(($military->getDefensivePowerMultiplier($dominion) - 1) * 100, 3),
+            'spy_ratio' => [
+                'offense' => round($military->getSpyRatio($dominion, 'offense'), 3),
+                'defense' => round($military->getSpyRatio($dominion, 'defense'), 3),
+            ],
+            'wizard_ratio' => [
+                'offense' => round($military->getWizardRatio($dominion, 'offense'), 3),
+                'defense' => round($military->getWizardRatio($dominion, 'defense'), 3),
+            ],
         ], $response->json('military'));
+
+        $this->assertSame(
+            ['platinum_spent' => 51234, 'lumber_spent' => 789, 'mana_spent' => 33, 'ore_spent' => 77, 'gems_spent' => 121],
+            $response->json('statistics')
+        );
 
         $this->assertSame(['production', 'consumption', 'decay', 'net_change'], array_keys($response->json('hourly')));
         $this->assertSame(

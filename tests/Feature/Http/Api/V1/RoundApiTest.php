@@ -146,7 +146,10 @@ class RoundApiTest extends AbstractTestCase
         $realms = collect($this->getJson('/api/v1/rounds/' . $round->id . '/realms')->assertOk()->json())->keyBy('number');
 
         $this->assertSame(['number', 'name', 'wonders', 'wars'], array_keys($realms[3]));
-        $this->assertSame([['key' => 'high_clerics_tower', 'name' => $wonder->name]], $realms[7]['wonders']);
+        $this->assertSame(
+            [['key' => 'high_clerics_tower', 'name' => $wonder->name, 'power' => 1, 'max_power' => 1, 'power_is_approximate' => true]],
+            $realms[7]['wonders']
+        );
         $this->assertSame([], $realms[3]['wonders']);
 
         $aggressorWars = collect($realms[3]['wars']);
@@ -168,6 +171,61 @@ class RoundApiTest extends AbstractTestCase
         $this->assertSame('expiring', $expiring['status']);
         $this->assertMatchesRegularExpression('/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/', $expiring['inactive_at']);
         $this->assertSame('incoming', collect($realms[9]['wars'])->firstWhere('realm_number', 7)['direction']);
+    }
+
+    public function testRealmsWonderPowerIsExactOnlyForHolderAndRealmsAtWarWithIt(): void
+    {
+        $round = $this->createRound();
+        $holder = Realm::create(['round_id' => $round->id, 'alignment' => 'good', 'number' => 7, 'name' => 'Holders']);
+        $enemy = Realm::create(['round_id' => $round->id, 'alignment' => 'good', 'number' => 3, 'name' => 'Enemies']);
+        $neutral = Realm::create(['round_id' => $round->id, 'alignment' => 'good', 'number' => 9, 'name' => 'Neutrals']);
+
+        $roundWonder = RoundWonder::create([
+            'round_id' => $round->id,
+            'realm_id' => $holder->id,
+            'wonder_id' => Wonder::where('key', 'high_clerics_tower')->firstOrFail()->id,
+            'power' => 250000,
+        ]);
+        $roundWonder->damage()->create([
+            'realm_id' => $enemy->id,
+            'dominion_id' => $this->createDominion($this->createUser(), $round, null, $enemy)->id,
+            'damage' => 23456,
+        ]);
+        RealmWar::create(['source_realm_id' => $enemy->id, 'target_realm_id' => $holder->id, 'active_at' => now()->subHour()]);
+
+        $keys = [];
+        foreach (['holder' => $holder, 'enemy' => $enemy, 'neutral' => $neutral] as $name => $realm) {
+            $dominion = $this->createDominion($this->createUser(), $round, null, $realm);
+            $dominion->update(['api_key' => 'wonder-' . $name]);
+            $keys[$name] = 'wonder-' . $name;
+        }
+
+        $wonderFor = function (?string $key) use ($round): array {
+            $request = $key === null ? $this : $this->withHeader('X-API-Key', $key);
+            $realms = collect($request->getJson('/api/v1/rounds/' . $round->id . '/realms')->assertOk()->json());
+
+            return $realms->firstWhere('number', 7)['wonders'][0];
+        };
+
+        $exact = ['power' => 226544, 'max_power' => 250000, 'power_is_approximate' => false];
+        $approximate = ['power' => 230000, 'max_power' => 250000, 'power_is_approximate' => true];
+
+        $this->assertSame($exact, collect($wonderFor($keys['holder']))->only(array_keys($exact))->all());
+        $this->assertSame($exact, collect($wonderFor($keys['enemy']))->only(array_keys($exact))->all());
+        $this->assertSame($approximate, collect($wonderFor($keys['neutral']))->only(array_keys($approximate))->all());
+
+        $this->defaultHeaders = [];
+        $this->assertSame($approximate, collect($wonderFor(null))->only(array_keys($approximate))->all());
+    }
+
+    public function testRealmsRejectsAnInvalidApiKey(): void
+    {
+        $round = $this->createRound();
+
+        $this->withHeader('X-API-Key', 'not-a-key')
+            ->getJson('/api/v1/rounds/' . $round->id . '/realms')
+            ->assertStatus(401)
+            ->assertJson(['error' => 'invalid_api_key']);
     }
 
     public function testRealmsIsLockedBeforeRoundStarts(): void

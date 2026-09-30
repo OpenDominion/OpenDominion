@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Mappers\GameEventMapper;
 use OpenDominion\Models\Dominion;
@@ -15,7 +17,7 @@ use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
-use OpenDominion\Models\Wonder;
+use OpenDominion\Models\RoundWonder;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
@@ -31,7 +33,8 @@ class RoundController extends AbstractController
         private ProtectionService $protectionService,
         private GameEventMapper $gameEventMapper,
         private GuardMembershipService $guardMembershipService,
-        private GovernmentService $governmentService
+        private GovernmentService $governmentService,
+        private WonderCalculator $wonderCalculator
     ) {
     }
 
@@ -77,30 +80,36 @@ class RoundController extends AbstractController
     {
         $realms = $round->realms()
             ->with([
-                'wonders',
                 'warsOutgoing' => fn ($query) => $query->active()->with('targetRealm'),
                 'warsIncoming' => fn ($query) => $query->active()->with('sourceRealm'),
             ])
             ->orderBy('number')
+            ->get();
+
+        $viewerRealm = $this->getViewerRealm($round, $realms);
+        $wondersByRealm = $round->wonders()
+            ->with('wonder')
+            ->whereNotNull('realm_id')
             ->get()
-            ->map(function (Realm $realm) {
-                $wars = $realm->warsOutgoing
-                    ->map(fn (RealmWar $war) => $this->warPayload($war, 'outgoing', $war->targetRealm))
-                    ->concat($realm->warsIncoming->map(fn (RealmWar $war) => $this->warPayload($war, 'incoming', $war->sourceRealm)))
-                    ->values();
+            ->groupBy('realm_id');
 
-                return [
-                    'number' => $realm->number,
-                    'name' => $realm->name,
-                    'wonders' => $realm->wonders
-                        ->map(fn (Wonder $wonder) => ['key' => $wonder->key, 'name' => $wonder->name])
-                        ->values(),
-                    'wars' => $wars,
-                ];
-            })
-            ->values();
+        $payload = $realms->map(function (Realm $realm) use ($viewerRealm, $wondersByRealm) {
+            $wars = $realm->warsOutgoing
+                ->map(fn (RealmWar $war) => $this->warPayload($war, 'outgoing', $war->targetRealm))
+                ->concat($realm->warsIncoming->map(fn (RealmWar $war) => $this->warPayload($war, 'incoming', $war->sourceRealm)))
+                ->values();
 
-        return response()->json($realms);
+            return [
+                'number' => $realm->number,
+                'name' => $realm->name,
+                'wonders' => $wondersByRealm->get($realm->id, collect())
+                    ->map(fn (RoundWonder $wonder) => $this->wonderPayload($wonder, $realm, $viewerRealm))
+                    ->values(),
+                'wars' => $wars,
+            ];
+        })->values();
+
+        return response()->json($payload);
     }
 
     public function events(Request $request, Round $round): JsonResponse
@@ -142,6 +151,48 @@ class RoundController extends AbstractController
             ->values();
 
         return response()->json($events);
+    }
+
+    /**
+     * The API key's realm, when a key for this round was sent. Taken from the
+     * already-loaded realms so its wars are available for isAtWar().
+     */
+    private function getViewerRealm(Round $round, Collection $realms): ?Realm
+    {
+        if (!app()->bound('api.dominion')) {
+            return null;
+        }
+
+        $viewer = app('api.dominion');
+        if ($viewer->round_id !== $round->id) {
+            return null;
+        }
+
+        return $realms->firstWhere('id', $viewer->realm_id);
+    }
+
+    /**
+     * Wonder power as on the in-game wonders page: exact for the holder's own
+     * realm and realms at war with the holder, rounded for everyone else.
+     *
+     * @return array{key: string, name: string, power: int, max_power: int, power_is_approximate: bool}
+     */
+    private function wonderPayload(RoundWonder $wonder, Realm $holder, ?Realm $viewerRealm): array
+    {
+        $isExact = $viewerRealm !== null
+            && ($viewerRealm->id === $holder->id || $this->governmentService->isAtWar($viewerRealm, $holder));
+
+        $power = $isExact
+            ? $this->wonderCalculator->getCurrentPower($wonder)
+            : $this->wonderCalculator->getApproximatePower($wonder);
+
+        return [
+            'key' => $wonder->wonder->key,
+            'name' => $wonder->wonder->name,
+            'power' => (int) round($power),
+            'max_power' => (int) $wonder->power,
+            'power_is_approximate' => !$isExact,
+        ];
     }
 
     /**
