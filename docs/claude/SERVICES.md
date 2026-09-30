@@ -97,7 +97,8 @@ Session-based dominion selection.
 ### AIService
 NPC and player automation.
 - `executeAI()` - processes all AI dominions
-- `performActions()` - executes tick-based instructions or NPC routines
+- `performActions()` - executes tick-based instructions or NPC routines (branches on `ai_config['strategy']`)
+- `performAttackerActions()` - attacker NPD routine; helpers `attemptInvasion()`, `getUnitsToSend()`, `getAvailableOffensiveUnits()`, `getHomeGuardDefense()`, `trainAttackerMilitary()`, `applyUnitSwap()`, `rezoneForBuildPlan()`
 - Supports player-defined automation via `ai_config` (tick-based action instructions)
 
 ### BountyService
@@ -153,6 +154,9 @@ Wonder lifecycle management.
 - Tier2 (days 0-8), S-tier (day 9 only), Tier1 (day 10+)
 - Max 6 concurrent wonders
 - Sentient wonders attack top 3 damage-dealing realms
+
+### RoundPerkService
+Admin CRUD for round perks (`create()`, `update()`, `delete()`) and `getPerksForDominion()`, which returns every round perk with a status (active / upcoming / expired / not_applicable) for the Status page.
 
 ### RaidService
 Raid completion and reward distribution.

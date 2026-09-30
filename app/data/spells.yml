@@ -1,6 +1,7 @@
 clear_sight:
   name: Clear Sight
   category: info
+  school: divination
   cost_mana: 0.5
   cost_strength: 2
   perks:
@@ -8,6 +9,7 @@ clear_sight:
 vision:
   name: Vision
   category: info
+  school: divination
   cost_mana: 0.5
   cost_strength: 2
   perks:
@@ -15,6 +17,7 @@ vision:
 revelation:
   name: Revelation
   category: info
+  school: divination
   cost_mana: 1
   cost_strength: 2
   perks:
@@ -22,6 +25,7 @@ revelation:
 disclosure:
   name: Disclosure
   category: info
+  school: divination
   cost_mana: 0.5
   cost_strength: 2
   perks:
@@ -29,6 +33,7 @@ disclosure:
 plague:
   name: Plague
   category: hostile
+  school: necromancy
   cost_mana: 3
   cost_strength: 5
   duration: 8
@@ -37,6 +42,7 @@ plague:
 insect_swarm:
   name: Insect Swarm
   category: hostile
+  school: conjuration
   cost_mana: 3
   cost_strength: 5
   duration: 8
@@ -45,6 +51,7 @@ insect_swarm:
 great_flood:
   name: Great Flood
   category: hostile
+  school: conjuration
   cost_mana: 3
   cost_strength: 5
   duration: 8
@@ -53,6 +60,7 @@ great_flood:
 earthquake:
   name: Earthquake
   category: hostile
+  school: evocation
   cost_mana: 3
   cost_strength: 5
   duration: 8
@@ -62,6 +70,7 @@ earthquake:
 disband_spies:
   name: Disband Spies
   category: war
+  school: enchantment
   cost_mana: 3.5
   cost_strength: 5
   perks:
@@ -69,6 +78,7 @@ disband_spies:
 fireball:
   name: Fireball
   category: war
+  school: evocation
   cost_mana: 3
   cost_strength: 5
   perks:
@@ -78,6 +88,7 @@ fireball:
 lightning_bolt:
   name: Lightning Bolt
   category: war
+  school: evocation
   cost_mana: 3.25
   cost_strength: 5
   perks:
@@ -89,6 +100,7 @@ lightning_bolt:
 cyclone:
   name: Cyclone
   category: wonder
+  school: evocation
   cost_mana: 2
   cost_strength: 5
   perks:
@@ -96,6 +108,7 @@ cyclone:
 gaias_watch:
   name: Gaia's Watch
   category: self
+  school: transmutation
   cost_mana: 2
   cost_strength: 5
   duration: 12
@@ -104,6 +117,7 @@ gaias_watch:
 ares_call:
   name: Ares' Call
   category: self
+  school: abjuration
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -112,6 +126,7 @@ ares_call:
 midas_touch:
   name: Midas Touch
   category: self
+  school: transmutation
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -121,6 +136,7 @@ midas_touch:
 mining_strength:
   name: Mining Strength
   category: self
+  school: transmutation
   cost_mana: 2
   cost_strength: 5
   duration: 12
@@ -129,6 +145,7 @@ mining_strength:
 harmony:
   name: Harmony
   category: self
+  school: enchantment
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -137,6 +154,7 @@ harmony:
 fools_gold:
   name: Fool's Gold
   category: self
+  school: illusion
   cost_mana: 1
   cost_strength: 5
   duration: 10
@@ -147,6 +165,7 @@ fools_gold:
 surreal_perception:
   name: Surreal Perception
   category: self
+  school: divination
   cost_mana: 3
   cost_strength: 5
   duration: 12
@@ -155,6 +174,7 @@ surreal_perception:
 energy_mirror:
   name: Energy Mirror
   category: self
+  school: abjuration
   cost_mana: 4
   cost_strength: 5
   duration: 12
@@ -164,6 +184,7 @@ energy_mirror:
 amplify_magic:
   name: Amplify Magic
   category: self
+  school: transmutation
   cost_mana: 0.5
   cost_strength: 5
   duration: 6
@@ -174,6 +195,7 @@ amplify_magic:
 crusade:
   name: Crusade
   category: self
+  school: enchantment
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -185,6 +207,7 @@ crusade:
 favorable_terrain:
   name: Favorable Terrain
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -195,6 +218,7 @@ favorable_terrain:
 miners_sight:
   name: Miner's Sight
   category: self
+  school: divination
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -207,6 +231,7 @@ miners_sight:
 killing_rage:
   name: Killing Rage
   category: self
+  school: enchantment
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -217,6 +242,7 @@ killing_rage:
 alchemist_flame:
   name: Alchemist Flame
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -228,6 +254,7 @@ alchemist_flame:
 erosion:
   name: Erosion
   category: self
+  school: transmutation
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -239,6 +266,7 @@ erosion:
 blizzard:
   name: Blizzard
   category: self
+  school: evocation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -250,6 +278,7 @@ blizzard:
 alchemist_frost:
   name: Alchemist Frost
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -261,6 +290,7 @@ alchemist_frost:
 arcane_infusion:
   name: Arcane Infusion
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -271,6 +301,7 @@ arcane_infusion:
 mechanical_genius:
   name: Mechanical Genius
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -282,6 +313,7 @@ mechanical_genius:
 bloodrage:
   name: Bloodrage
   category: self
+  school: enchantment
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -293,6 +325,7 @@ bloodrage:
 unholy_ghost:
   name: Unholy Ghost
   category: self
+  school: necromancy
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -305,6 +338,7 @@ unholy_ghost:
 defensive_frenzy:
   name: Defensive Frenzy
   category: self
+  school: enchantment
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -316,6 +350,7 @@ defensive_frenzy:
 frenzy:
   name: Frenzy
   category: self
+  school: enchantment
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -328,6 +363,7 @@ frenzy:
 finders_keepers:
   name: Finders Keepers
   category: self
+  school: divination
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -340,6 +376,7 @@ finders_keepers:
 howling:
   name: Howling
   category: self
+  school: enchantment
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -352,6 +389,7 @@ howling:
 verdant_bloom:
   name: Verdant Bloom
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -362,6 +400,7 @@ verdant_bloom:
 warsong:
   name: Warsong
   category: self
+  school: enchantment
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -373,6 +412,7 @@ warsong:
 regeneration:
   name: Regeneration
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -383,6 +423,7 @@ regeneration:
 parasitic_hunger:
   name: Parasitic Hunger
   category: self
+  school: necromancy
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -396,6 +437,7 @@ parasitic_hunger:
 feral_hunger:
   name: Feral Hunger
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -406,6 +448,7 @@ feral_hunger:
 ascendance:
   name: Ascendance
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -417,6 +460,7 @@ ascendance:
 delve_into_shadow:
   name: Delve into Shadow
   category: self
+  school: illusion
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -429,6 +473,7 @@ delve_into_shadow:
 spellwrights_calling:
   name: Spellwright's Calling
   category: self
+  school: conjuration
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -441,6 +486,7 @@ spellwrights_calling:
 gaias_blessing:
   name: Gaia's Blessing
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -453,6 +499,7 @@ gaias_blessing:
 nightfall:
   name: Nightfall
   category: self
+  school: illusion
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -463,6 +510,7 @@ nightfall:
 planar_focus:
   name: Planar Focus
   category: self
+  school: conjuration
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -474,6 +522,7 @@ planar_focus:
 miasma:
   name: Miasma
   category: war
+  school: necromancy
   cost_mana: 3
   cost_strength: 5
   duration: 8
@@ -486,6 +535,7 @@ miasma:
 necromantic_ritual:
   name: Necromantic Ritual
   category: war
+  school: necromancy
   cost_mana: 5
   cost_strength: 5
   races:
@@ -496,6 +546,7 @@ necromantic_ritual:
 cull_the_weak:
   name: Cull the Weak
   category: self
+  school: necromancy
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -509,6 +560,7 @@ cull_the_weak:
 raise_the_dead:
   name: Raise the Dead
   category: self
+  school: necromancy
   cost_mana: 2
   cost_strength: 5
   duration: 12
@@ -520,6 +572,7 @@ raise_the_dead:
 burning:
   name: Burning
   category: effect
+  school: evocation
   cost_mana: 0
   cost_strength: 0
   duration: 20
@@ -531,6 +584,7 @@ burning:
 lightning_storm:
   name: Lightning Storm
   category: effect
+  school: evocation
   cost_mana: 0
   cost_strength: 0
   duration: 20
@@ -542,6 +596,7 @@ lightning_storm:
 rejuvenation:
   name: Rejuvenation
   category: effect
+  school: abjuration
   cost_mana: 0
   cost_strength: 0
   duration: 48
@@ -554,6 +609,7 @@ rejuvenation:
 spell_reflect:
   name: Spell Reflect
   category: friendly
+  school: abjuration
   cost_mana: 2
   cost_strength: 3
   duration: 3
@@ -563,6 +619,7 @@ spell_reflect:
 arcane_ward:
   name: Arcane Ward
   category: friendly
+  school: abjuration
   cost_mana: 1.5
   cost_strength: 3
   duration: 6
@@ -572,6 +629,7 @@ arcane_ward:
 illumination:
   name: Illumination
   category: friendly
+  school: abjuration
   cost_mana: 1.5
   cost_strength: 3
   duration: 6
@@ -581,6 +639,7 @@ illumination:
 gaias_light:
   name: Gaia's Light
   category: self
+  school: evocation
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -593,6 +652,7 @@ gaias_light:
 gaias_shadow:
   name: Gaia's Shadow
   category: self
+  school: illusion
   cost_mana: 2.5
   cost_strength: 5
   duration: 12
@@ -605,6 +665,7 @@ gaias_shadow:
 death_and_decay:
   name: Death and Decay
   category: self
+  school: necromancy
   cost_mana: 5
   cost_strength: 5
   duration: 6
@@ -619,6 +680,7 @@ death_and_decay:
 feast_of_blood:
   name: Feast of Blood
   category: self
+  school: necromancy
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -630,6 +692,7 @@ feast_of_blood:
 martyrdom:
   name: Martyrdom
   category: effect
+  school: null
   cost_mana: 0
   cost_strength: 0
   duration: 24
@@ -638,6 +701,7 @@ martyrdom:
 infernal_command:
   name: Infernal Command
   category: self
+  school: transmutation
   cost_mana: 5
   cost_strength: 5
   duration: 12
@@ -649,6 +713,7 @@ infernal_command:
 corruption:
   name: Corruption
   category: effect
+  school: necromancy
   cost_mana: 0
   cost_strength: 0
   duration: 12
@@ -660,6 +725,7 @@ corruption:
 satiated_thirst:
   name: Satiated Thirst
   category: effect
+  school: null
   cost_mana: 0
   cost_strength: 0
   duration: 48

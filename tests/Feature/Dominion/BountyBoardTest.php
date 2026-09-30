@@ -30,6 +30,10 @@ class BountyBoardTest extends AbstractTestCase
     {
         parent::setUp();
 
+        // Espionage success is a random roll capped below 100%
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
         $this->withoutMiddleware(PreventRequestForgery::class);
 
         $user = $this->createAndImpersonateUser();
@@ -54,6 +58,14 @@ class BountyBoardTest extends AbstractTestCase
             'protection_ticks_remaining' => 0,
             'land_plain' => 10000,
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        global $mockRandomChance;
+        $mockRandomChance = null;
+
+        parent::tearDown();
     }
 
     /**

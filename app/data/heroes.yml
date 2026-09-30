@@ -1,5 +1,5 @@
 abjuration:
-  name: Abjuration
+  name: Abjuration Spellbook
   level: 6
   type: magic
   icon: ra-book-cover
@@ -7,7 +7,7 @@ abjuration:
     enemy_lightning_bolt_damage: -10
     combat_defense: 1
 divination:
-  name: Divination
+  name: Divination Spellbook
   level: 4
   type: magic
   icon: ra-book-cover
@@ -16,7 +16,7 @@ divination:
     combat_focus: 1
     combat_evasion: 4
 enchantment:
-  name: Enchantment
+  name: Enchantment Spellbook
   level: 2
   type: magic
   icon: ra-book-cover
@@ -24,7 +24,7 @@ enchantment:
     self_spell_strength_cost: -1
     combat_focus: 2
 evocation:
-  name: Evocation
+  name: Evocation Spellbook
   level: 6
   type: magic
   icon: ra-book-cover
@@ -40,7 +40,7 @@ hammer_of_retribution:
     retal_prestige: 5
     combat_counter: 5
 illusion:
-  name: Illusion
+  name: Illusion Spellbook
   level: 2
   type: magic
   icon: ra-book-cover
@@ -90,7 +90,7 @@ scribes_journal:
     tech_production_invasion: 10
     combat_focus: 2
 transmutation:
-  name: Transmutation
+  name: Transmutation Spellbook
   level: 4
   type: magic
   icon: ra-book-cover

@@ -177,6 +177,9 @@ class MilitaryCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('offense');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('offense');
+
         // Techs
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['tech_offense'])) {
@@ -463,6 +466,9 @@ class MilitaryCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('defense');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('defense');
+
         // Techs
         // TODO: add to calc if this is implemented
         $multiplier += $dominion->getTechPerkMultiplier('defense');
@@ -629,6 +635,25 @@ class MilitaryCalculator
         }
 
         return $dpMultiplierReduction;
+    }
+
+    /**
+     * Returns a target's defensive power against an attacker, including the attacker's temples and draftee-ignoring spells.
+     *
+     * @param Dominion $attacker
+     * @param Dominion $target
+     * @return float
+     */
+    public function getDefensivePowerWithTemples(Dominion $attacker, Dominion $target): float
+    {
+        $dpMultiplierReduction = $this->getTempleReduction($attacker);
+
+        $ignoreDraftees = false;
+        if ($attacker->getSpellPerkValue('ignore_draftees')) {
+            $ignoreDraftees = true;
+        }
+
+        return $this->getDefensivePower($target, $attacker, null, null, $dpMultiplierReduction, $ignoreDraftees);
     }
 
     public function getUnitPowerWithPerks(

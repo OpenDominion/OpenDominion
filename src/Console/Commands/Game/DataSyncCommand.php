@@ -241,6 +241,7 @@ class DataSyncCommand extends Command implements CommandInterface
                 ->fill([
                     'name' => $spellData->name,
                     'category' => $spellData->category,
+                    'school' => object_get($spellData, 'school'),
                     'cost_mana' => $spellData->cost_mana,
                     'cost_strength' => $spellData->cost_strength,
                     'duration' => object_get($spellData, 'duration', 0),

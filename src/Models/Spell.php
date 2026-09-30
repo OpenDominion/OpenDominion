@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $key
  * @property string $name
  * @property string $category
+ * @property string|null $school
  * @property float $cost_mana
  * @property float $cost_strength
  * @property int $duration

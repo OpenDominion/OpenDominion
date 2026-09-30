@@ -617,6 +617,7 @@
             <div class="collapse navbar-collapse" id="landing-nav-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a href="{{ route('about') }}" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="{{ route('round.calendar') }}" class="nav-link">Calendar</a></li>
                     <li class="nav-item"><a href="{{ route('user-agreement') }}" class="nav-link">Rules</a></li>
                     <li class="nav-item"><a href="{{ route('scribes.overview') }}" class="nav-link">Scribes</a></li>
                     <li class="nav-item"><a href="{{ route('valhalla.index') }}" class="nav-link">Valhalla</a></li>
@@ -683,8 +684,8 @@
 
                     {{-- Round Status --}}
                     @php
-                        $hasActiveRound = $currentRound !== null && $currentRound->isActive();
-                        $showUpcoming = !$hasActiveRound && $upcomingRounds->isNotEmpty();
+                        $hasActiveRound = ($currentRound !== null);
+                        $showUpcoming = (!$hasActiveRound && $upcomingRounds->isNotEmpty());
                     @endphp
                     <div class="landing-card landing-card-small">
                         <div class="landing-card-header">
@@ -708,11 +709,7 @@
                                         <br>
                                         <small style="color: rgba(232, 224, 212, 0.65);">
                                             {{ $upcomingRound->start_date->format('M j, Y') }} &ndash; {{ $upcomingRound->end_date->format('M j, Y') }}<br>
-                                            @if ($upcomingRound->registrationOpen())
-                                                Registration open now
-                                            @else
-                                                Registration opens in {{ now()->longAbsoluteDiffForHumans($upcomingRound->registrationOpensAt(), 2) }}
-                                            @endif
+                                            Registration opens in {{ now()->longAbsoluteDiffForHumans($upcomingRound->registrationOpensAt(), 2) }}
                                         </small>
                                     </div>
                                 @endforeach
@@ -722,27 +719,27 @@
                             </div>
                         @else
                             <div class="landing-card-body pb-1 text-center">
-                                @if ($currentRound === null || $currentRound->hasEnded())
-                                    <p class="landing-status text-inactive">Inactive</p>
-                                    <p>There is no ongoing round.</p>
-                                    @if ($discordInviteLink = config('app.discord_invite_link'))
-                                        <p>Check the <a href="{{ $discordInviteLink }}" target="_blank" style="color: #afa170;">Discord server</a> for more information.</p>
-                                    @endif
-                                @else
+                                @if ($hasActiveRound)
                                     @if ($currentRound->realmAssignmentDate() > now())
                                         <p class="landing-status text-registration">Open for Registration</p>
                                         <p>Pack deadline in {{ $currentRound->timeUntilRealmAssignment() }}.<br/>
                                         Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
-                                    @elseif ($currentRound->start_date > now())
+                                    @elseif (!$currentRound->hasStarted())
                                         <p class="landing-status text-registration">Starting Soon</p>
                                         <p>Individual registration still open!<br/>
                                         Starts in {{ $currentRound->timeUntilStart() }}, lasts {{ $currentRound->durationInDays() }} days.</p>
                                     @else
                                         <p class="landing-status text-active p-0">Active</p>
                                     @endif
+                                @else
+                                    <p class="landing-status text-inactive">Inactive</p>
+                                    <p>There is no ongoing round.</p>
+                                    @if ($discordInviteLink = config('app.discord_invite_link'))
+                                        <p>Check the <a href="{{ $discordInviteLink }}" target="_blank" style="color: #afa170;">Discord server</a> for more information.</p>
+                                    @endif
                                 @endif
                             </div>
-                            @if ($currentRound !== null && !$currentRound->hasEnded())
+                            @if ($hasActiveRound)
                                 <div class="landing-card-body pt-0 mb-3">
                                     <table>
                                         @if ($currentRound->hasStarted())
@@ -781,8 +778,8 @@
                 <div class="col-lg-6">
                     <div class="landing-card landing-card-tall">
                         <div class="landing-card-header">
-                            @if ($currentRound !== null)
-                                {{ $currentRound->hasStarted() && !$currentRound->hasEnded() ? 'Current' : 'Previous' }} Round Rankings
+                            @if ($rankingsRound !== null)
+                                {{ $rankingsRound->isActive() ? 'Current' : 'Previous' }} Round Rankings
                             @else
                                 Round Rankings
                             @endif

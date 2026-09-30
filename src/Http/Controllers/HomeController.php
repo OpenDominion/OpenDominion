@@ -24,12 +24,24 @@ class HomeController extends AbstractController
 
         $currentRound = Round::query()
             ->with(['dominions', 'realms'])
-            ->orderBy('created_at', 'desc')
+            ->inProgress()
+            ->orderBy('start_date', 'desc')
             ->first();
 
-        $upcomingRounds = Round::upcoming()->limit(3)->get();
+        if ($currentRound === null) {
+            $currentRound = Round::query()
+                ->with(['dominions', 'realms'])
+                ->registrationOpen()
+                ->orderBy('start_date')
+                ->first();
+        }
 
-        $rankingsRound = Round::query()
+        $upcomingRounds = collect();
+        if ($currentRound === null) {
+            $upcomingRounds = Round::upcoming()->limit(3)->get();
+        }
+
+        $rankingsRound = ($currentRound !== null && $currentRound->hasStarted()) ? $currentRound : Round::query()
             ->where('start_date', '<=', now())
             ->orderBy('start_date', 'desc')
             ->first();
@@ -61,6 +73,7 @@ class HomeController extends AbstractController
 
         return view('pages.home', [
             'currentRound' => $currentRound,
+            'rankingsRound' => $rankingsRound,
             'upcomingRounds' => $upcomingRounds,
             'currentRankings' => $currentRankings,
             'playUrl' => $playUrl,

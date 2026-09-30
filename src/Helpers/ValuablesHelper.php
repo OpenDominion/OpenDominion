@@ -24,7 +24,7 @@ class ValuablesHelper
     /** Progress points added to tracking on each failed passive info-op discovery. */
     public const PASSIVE_PROGRESS_INCREMENT = 1;
     /** Chance increase per progress point for Locate Valuables ops. */
-    public const PROGRESS_CHANCE_STEP         = 0.005;
+    public const PROGRESS_CHANCE_STEP         = 0.01;
     /** Chance increase per progress point for passive info-op discovery (lower to keep passive rare). */
     public const PASSIVE_PROGRESS_CHANCE_STEP = 0.0002;
     /** Maximum discovery chance regardless of progress. */

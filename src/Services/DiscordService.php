@@ -12,12 +12,34 @@ use OpenDominion\Models\User;
 class DiscordService
 {
     /**
+     * @var array<int, array{name: string, description: string}> Text channels created for every realm
+     */
+    const TEXT_CHANNELS = [
+        ['name' => 'general', 'description' => 'General discussion for your realm'],
+        ['name' => 'top-op', 'description' => 'Tracking top OP for your realm'],
+        ['name' => 'ops-request', 'description' => 'Info op requests for your realm'],
+        ['name' => 'strategy-advice', 'description' => 'Strategy and advice for your realm'],
+        ['name' => 'war-room', 'description' => 'Coordination of War operations for your realm'],
+    ];
+
+    /**
+     * @var Client
+     */
+    private $client;
+
+    /**
      * @var DiscordHelper
      */
     private $discordHelper;
 
-    public function __construct()
+    /**
+     * DiscordService constructor.
+     *
+     * @param Client|null $client
+     */
+    public function __construct(Client|null $client = null)
     {
+        $this->client = $client ?? new Client();
         $this->discordHelper = app(DiscordHelper::class);
     }
 
@@ -27,7 +49,7 @@ class DiscordService
             return '';
         }
 
-        $client = new Client();
+        $client = $this->client;
 
         $tokenResponse = $client->post(DiscordHelper::BASE_URL . '/oauth2/token', [
             'verify' => false,
@@ -63,7 +85,7 @@ class DiscordService
             return '';
         }
 
-        $client = new Client();
+        $client = $this->client;
 
         $tokenResponse = $client->post(DiscordHelper::BASE_URL . '/oauth2/token', [
             'verify' => false,
@@ -93,7 +115,7 @@ class DiscordService
             return null;
         }
 
-        $client = new Client();
+        $client = $this->client;
         $accessToken = $authResult['access_token'];
 
         $userResponse = $client->get(DiscordHelper::BASE_URL . '/users/@me', [
@@ -119,10 +141,10 @@ class DiscordService
     public function joinDiscordGuild(DiscordUser $discordUser, Realm $realm, string $accessToken): bool
     {
         if (!config('app.discord_client_id')) {
-            return '';
+            return false;
         }
 
-        $client = new Client();
+        $client = $this->client;
         $botToken = $this->discordHelper->getBotToken();
 
         $memberResponse = $client->get(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/members/' . $discordUser->discord_user_id, [
@@ -133,7 +155,10 @@ class DiscordService
 
         $result = json_decode($memberResponse->getBody()->getContents(), true);
 
-        if (isset($result['roles'])) {
+        $isGuildMember = isset($result['roles']);
+        $usesRoles = $this->discordHelper->usesRoles();
+
+        if ($isGuildMember && $usesRoles) {
             $roleResponse = $client->patch(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/members/' . $discordUser->discord_user_id, [
                 'verify' => false,
                 'headers' => ['authorization' => "Bot $botToken"],
@@ -144,19 +169,21 @@ class DiscordService
             ]);
 
             $result = json_decode($roleResponse->getBody()->getContents(), true);
-        } else {
+        } elseif (!$isGuildMember) {
             $joinResponse = $client->put(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/members/' . $discordUser->discord_user_id, [
                 'verify' => false,
                 'headers' => ['authorization' => "Bot $botToken"],
                 'json' => [
                     'access_token' => $accessToken,
-                    'roles' => [
-                        $this->getDiscordRole($realm)
-                    ]
+                    'roles' => $usesRoles ? [$this->getDiscordRole($realm)] : []
                 ]
             ]);
 
             $result = json_decode($joinResponse->getBody()->getContents(), true);
+        }
+
+        if (!$usesRoles) {
+            $this->grantRealmAccess($discordUser, $realm);
         }
 
         $generalResponse = $client->get(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
@@ -184,6 +211,138 @@ class DiscordService
         return true;
     }
 
+    public function grantRealmAccess(DiscordUser $discordUser, Realm $realm): bool
+    {
+        if (!config('app.discord_client_id')) {
+            return false;
+        }
+
+        $botToken = $this->discordHelper->getBotToken();
+
+        $this->client->put(DiscordHelper::BASE_URL . '/channels/' . $this->getDiscordCategory($realm) . '/permissions/' . $discordUser->discord_user_id, [
+            'verify' => false,
+            'headers' => ['authorization' => "Bot $botToken"],
+            'json' => [
+                'type' => 1, // member
+                'allow' => $this->discordHelper->getPermissionsBitwise(),
+                'deny' => '0'
+            ]
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Revokes a user's access to a realm's channels.
+     *
+     * @param DiscordUser $discordUser
+     * @param Realm $realm
+     * @return bool
+     */
+    public function revokeRealmAccess(DiscordUser $discordUser, Realm $realm): bool
+    {
+        if (!config('app.discord_client_id') || $realm->discord_category_id === null) {
+            return false;
+        }
+
+        $botToken = $this->discordHelper->getBotToken();
+
+        $this->client->delete(DiscordHelper::BASE_URL . '/channels/' . $realm->discord_category_id . '/permissions/' . $discordUser->discord_user_id, [
+            'verify' => false,
+            'headers' => ['authorization' => "Bot $botToken"]
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Returns the ID of a realm's Discord category, creating the realm's
+     * channels when they do not exist yet.
+     *
+     * @param Realm $realm
+     * @return string
+     */
+    public function getDiscordCategory(Realm $realm): string
+    {
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
+
+        if ($realm->discord_category_id !== null) {
+            return $realm->discord_category_id;
+        }
+
+        if ($this->discordHelper->usesRoles()) {
+            $this->createDiscordRole($realm);
+
+            return $realm->discord_category_id;
+        }
+
+        return $this->createRealmChannels($realm);
+    }
+
+    /**
+     * Creates a realm's category and channels without a role.
+     *
+     * Nothing is granted on creation: the guild's @everyone role has no
+     * VIEW_CHANNEL permission, so the channels stay hidden until a member
+     * overwrite is added to the category. The channels are created without
+     * overwrites of their own, which keeps them synced to the category so that
+     * later overwrites propagate to them.
+     *
+     * @param Realm $realm
+     * @return string
+     */
+    public function createRealmChannels(Realm $realm): string
+    {
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
+
+        $client = $this->client;
+        $botToken = $this->discordHelper->getBotToken();
+        $realmLabel = $this->discordHelper->getRealmLabel($realm);
+
+        $createRealmCategoryResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
+            'verify' => false,
+            'headers' => ['authorization' => "Bot $botToken"],
+            'json' => [
+                'name' => $realmLabel,
+                'type' => 4
+            ]
+        ]);
+
+        $result = json_decode($createRealmCategoryResponse->getBody()->getContents(), true);
+        $realm->discord_category_id = $result['id'];
+
+        foreach (static::TEXT_CHANNELS as $channel) {
+            $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
+                'verify' => false,
+                'headers' => ['authorization' => "Bot $botToken"],
+                'json' => [
+                    'name' => $channel['name'],
+                    'type' => 0,
+                    'topic' => $channel['description'],
+                    'parent_id' => $realm->discord_category_id
+                ]
+            ]);
+        }
+
+        $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
+            'verify' => false,
+            'headers' => ['authorization' => "Bot $botToken"],
+            'json' => [
+                'name' => 'Voice Chat',
+                'type' => 2,
+                'parent_id' => $realm->discord_category_id
+            ]
+        ]);
+
+        $realm->save();
+
+        return $realm->discord_category_id;
+    }
+
     public function getDiscordGuild(Round $round): string
     {
         if (!config('app.discord_client_id')) {
@@ -203,7 +362,7 @@ class DiscordService
             return '';
         }
 
-        $client = new Client();
+        $client = $this->client;
         $botToken = $this->discordHelper->getBotToken();
 
         $createGuildResponse = $client->post(DiscordHelper::BASE_URL . '/guilds', [
@@ -250,14 +409,15 @@ class DiscordService
             return '';
         }
 
-        $client = new Client();
+        $client = $this->client;
         $botToken = $this->discordHelper->getBotToken();
+        $realmLabel = $this->discordHelper->getRealmLabel($realm);
 
         $createRoleResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/roles', [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'Realm ' . $realm->number,
+                'name' => $realmLabel,
                 'permissions' => '0'
             ]
         ]);
@@ -269,7 +429,7 @@ class DiscordService
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'Realm ' . $realm->number,
+                'name' => $realmLabel,
                 'type' => 4,
                 'permission_overwrites' => [
                     [
@@ -283,21 +443,14 @@ class DiscordService
         $result = json_decode($createRealmCategoryResponse->getBody()->getContents(), true);
         $realm->discord_category_id = $result['id'];
 
-        $channelList = [
-            ['name' => 'general', 'description' => 'General discussion for Realm'],
-            ['name' => 'top-op',  'description' => 'Tracking top OP for Realm'],
-            ['name' => 'ops-request',  'description' => 'Info op requests for Realm'],
-            ['name' => 'strategy-advice', 'description' => 'Strategy and advice for Realm'],
-            ['name' => 'war-room', 'description' => 'Coordination of War operations for Realm'],
-        ];
-        foreach ($channelList as $channel) {
+        foreach (static::TEXT_CHANNELS as $channel) {
             $createTextChannelResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
                 'verify' => false,
                 'headers' => ['authorization' => "Bot $botToken"],
                 'json' => [
                     'name' => $channel['name'],
                     'type' => 0,
-                    'topic' => $channel['description'] . ' ' . $realm->number,
+                    'topic' => $channel['description'],
                     'permission_overwrites' => [
                         [
                             'id' => $realm->discord_role_id,

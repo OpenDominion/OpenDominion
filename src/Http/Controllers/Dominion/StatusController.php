@@ -12,11 +12,13 @@ use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Helpers\RaceHelper;
+use OpenDominion\Helpers\RoundPerkHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\RoundPerkService;
 
 class StatusController extends AbstractDominionController
 {
@@ -41,6 +43,8 @@ class StatusController extends AbstractDominionController
             'queueService' => app(QueueService::class),
             'raceHelper' => app(RaceHelper::class),
             'rangeCalculator' => app(RangeCalculator::class),
+            'roundPerkHelper' => app(RoundPerkHelper::class),
+            'roundPerks' => app(RoundPerkService::class)->getPerksForDominion($selectedDominion),
             'unitHelper' => app(UnitHelper::class),
             'notifications' => $notifications
         ]);

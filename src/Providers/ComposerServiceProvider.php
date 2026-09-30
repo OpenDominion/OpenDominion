@@ -88,8 +88,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
 
             // Show icon for techs
             $techCalculator = app(TechCalculator::class);
-            $techCost = $techCalculator->getTechCost($selectedDominion);
-            $unlockableTechCount = rfloor($selectedDominion->resource_tech / $techCost);
+            $unlockableTechCount = $techCalculator->getUnlockableTechCount($selectedDominion);
             $view->with('unlockableTechCount', $unlockableTechCount);
 
             // Show indicator for temporary tech selection (Planar Gates)

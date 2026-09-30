@@ -31,6 +31,7 @@ use Illuminate\Support\Str;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEvents
  * @property-read \OpenDominion\Models\RoundLeague $league
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Pack[] $packs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\RoundPerk[] $perks
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm[] $realms
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroTournament[] $tournaments
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Forum\Thread[] $forumThreads
@@ -95,6 +96,11 @@ class Round extends AbstractModel
     public function packs()
     {
         return $this->hasMany(Pack::class);
+    }
+
+    public function perks()
+    {
+        return $this->hasMany(RoundPerk::class);
     }
 
     public function raids()
@@ -176,6 +182,34 @@ class Round extends AbstractModel
         return $query
             ->where('start_date', '<', now()->addHours(1))
             ->where('start_date', '>=', now());
+    }
+
+    /**
+     * Scope a query to include only rounds that are currently in progress.
+     * Mirrors the isActive() check: started and not yet ended.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeInProgress(Builder $query): Builder
+    {
+        return $query
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>', now());
+    }
+
+    /**
+     * Scope a query to include only rounds that are currently open for registration.
+     * Mirrors the registrationOpen() check: registration has opened and the round has not ended.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRegistrationOpen(Builder $query): Builder
+    {
+        return $query
+            ->where('start_date', '<=', now()->addDays(self::REGISTRATION_OPEN_DAYS_BEFORE_START))
+            ->where('end_date', '>', now());
     }
 
     /**

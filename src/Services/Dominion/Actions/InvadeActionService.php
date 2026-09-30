@@ -97,8 +97,10 @@ class InvadeActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
-    /** @var array */
-    protected $invasionResult = [
+    /**
+     * Starting state for each invasion. The service is a singleton, so state must be reset per invasion.
+     */
+    protected const INITIAL_INVASION_RESULT = [
         'result' => [],
         'attacker' => [
             'landGained' => 0,
@@ -110,6 +112,9 @@ class InvadeActionService
             'unitsLost' => [],
         ],
     ];
+
+    /** @var array */
+    protected $invasionResult = self::INITIAL_INVASION_RESULT;
 
     // todo: refactor
     /** @var GameEvent */
@@ -171,6 +176,10 @@ class InvadeActionService
      */
     public function invade(Dominion $dominion, Dominion $target, array $units, bool|null $cancel_leave_range): array
     {
+        $this->invasionResult = static::INITIAL_INVASION_RESULT;
+        $this->invasionEvent = null;
+        $this->unitsLost = 0;
+
         $this->guardLockedDominion($dominion);
         $this->guardLockedDominion($target);
         $this->guardActionsDuringTick($dominion, 5);
@@ -196,7 +205,7 @@ class InvadeActionService
                 throw new GameException('Nice try, but you cannot invade cross-round');
             }
 
-            if ($dominion->realm_id === $target->realm_id) {
+            if ($dominion->realm_id === $target->realm_id && $dominion->realm->number != 0) {
                 throw new GameException('Nice try, but you cannot invade your realmies');
             }
 
@@ -1327,7 +1336,7 @@ class InvadeActionService
     {
         $landRatio = $this->invasionResult['result']['range'] / 100;
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
-        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
+        $targetDP = $this->militaryCalculator->getDefensivePowerWithTemples($dominion, $target);
         $this->invasionResult['attacker']['op'] = $attackingForceOP;
         $this->invasionResult['defender']['dp'] = $targetDP;
         $this->invasionResult['result']['success'] = ($attackingForceOP > $targetDP);
@@ -1353,17 +1362,5 @@ class InvadeActionService
         $targetDP = $this->invasionResult['defender']['dp'];
 
         $this->invasionResult['result']['overwhelmed'] = ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
-    }
-
-    protected function getDefensivePowerWithTemples(Dominion $dominion, Dominion $target): float
-    {
-        $dpMultiplierReduction = $this->militaryCalculator->getTempleReduction($dominion);
-
-        $ignoreDraftees = false;
-        if ($dominion->getSpellPerkValue('ignore_draftees')) {
-            $ignoreDraftees = true;
-        }
-
-        return $this->militaryCalculator->getDefensivePower($target, $dominion, null, null, $dpMultiplierReduction, $ignoreDraftees);
     }
 }

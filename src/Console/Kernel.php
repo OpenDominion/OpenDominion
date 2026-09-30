@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('game:tick')->hourlyAt(0);
         $schedule->command('game:ai')->hourlyAt(30);
+        // Minutes must match AIService::INVASION_MINUTES
+        $schedule->command('game:ai:invade')->cron('5-25/5,35-55/5 * * * *')->withoutOverlapping();
 
         if (app()->environment('production')) {
             $schedule->command('queue:monitor default --max=10')->hourlyAt(5);

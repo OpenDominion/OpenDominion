@@ -138,6 +138,12 @@ class HeroBattleService
             $dominionCombatant->save();
         }
 
+        // Rex Lunae grants Cleanse -- without it the curse cannot be answered
+        if ($encounter === 'rex_lunae') {
+            $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['cleanse']);
+            $dominionCombatant->save();
+        }
+
         if ($encounter == 'default') {
             $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
             $nonPlayerStats['name'] = 'Evil Twin';
@@ -412,6 +418,27 @@ class HeroBattleService
                 unset($status['telegraphed_move']);
                 $combatant->update(['status' => $status]);
                 return ['action' => $telegraphedMove, 'target' => null];
+            }
+        }
+
+        // The Hungry Moon: the curse takes hold the turn after it reaches out
+        if (in_array('hungering_moon', $combatant->abilities ?? [])) {
+            $status = $combatant->status ?? [];
+            if (!empty($status['curse_pending'])) {
+                unset($status['curse_pending']);
+                $combatant->update(['status' => $status]);
+                return ['action' => 'hungering_moon', 'target' => null];
+            }
+        }
+
+        // Admiral's Orders: on even turns, fire the queued telegraphed order
+        if (in_array('admirals_orders', $combatant->abilities ?? [])) {
+            $telegraphedOrder = $combatant->status['telegraphed_order'] ?? null;
+            if ($telegraphedOrder !== null && ($combatant->battle->current_turn % 2) === 0) {
+                $status = $combatant->status ?? [];
+                unset($status['telegraphed_order']);
+                $combatant->update(['status' => $status]);
+                return ['action' => $telegraphedOrder, 'target' => null];
             }
         }
 
@@ -1026,6 +1053,185 @@ class HeroBattleService
         ];
     }
 
+    public function processBroadsideAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $attributes = $actionDef['attributes'];
+        $messages = $actionDef['messages'];
+
+        // The volley sweeps the whole quay -- everyone but the Admiral himself is caught in it
+        $volleyDamage = $attributes['volley_damage'];
+        $defenders = $combatant->battle->combatants
+            ->where('hero_id', null)
+            ->where('id', '!=', $combatant->id)
+            ->filter(function ($c) { return $c->current_health > 0; });
+
+        foreach ($defenders as $defender) {
+            $defender->current_health = max(0, $defender->current_health - $volleyDamage);
+            $defender->save();
+        }
+
+        if ($target->current_action === 'defend') {
+            $damage = $attributes['defend_damage'];
+            $description = sprintf($messages['defend'], $combatant->name, $target->name, $damage);
+        } elseif ($target->current_action === 'counter') {
+            $damage = $attributes['counter_damage'];
+            $description = sprintf($messages['counter'], $combatant->name, $target->name, $damage);
+        } else {
+            $damage = $attributes['default_damage'];
+            $description = sprintf($messages['default'], $combatant->name, $target->name, $damage);
+        }
+
+        if ($defenders->isNotEmpty()) {
+            $description .= $messages['defenders'];
+        }
+
+        return [
+            'damage' => $damage,
+            'health' => 0,
+            'description' => $description,
+        ];
+    }
+
+    public function processRallyAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $attributes = $actionDef['attributes'];
+        $messages = $actionDef['messages'];
+
+        if ($target->current_action === 'attack') {
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => sprintf($messages['attack'], $combatant->name, $target->name),
+            ];
+        }
+
+        $defenderCount = $combatant->battle->combatants()
+            ->whereNull('hero_id')
+            ->where('id', '!=', $combatant->id)
+            ->where('current_health', '>', 0)
+            ->count();
+
+        $summonCount = min($attributes['count'], max(0, $attributes['max_defenders'] - $defenderCount));
+
+        if ($summonCount === 0) {
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => sprintf($messages['at_cap'], $combatant->name),
+            ];
+        }
+
+        $enemyStats = $this->heroEncounterHelper->getEnemies()->get($attributes['enemy']);
+        $baseName = $enemyStats['name'];
+
+        for ($i = 0; $i < $summonCount; $i++) {
+            $minionCount = $combatant->battle->combatants()->whereNull('hero_id')->count();
+            $enemyStats['name'] = "{$baseName} #{$minionCount}";
+            $this->createNonPlayerCombatant($combatant->battle, $enemyStats);
+        }
+
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($messages['summon'], $combatant->name),
+        ];
+    }
+
+    public function processChallengeAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $attributes = $actionDef['attributes'];
+        $messages = $actionDef['messages'];
+
+        if ($target->current_action === 'focus') {
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => sprintf($messages['focus'], $target->name, $combatant->name),
+            ];
+        }
+
+        if ($target->current_action === 'attack') {
+            $damage = $attributes['attack_damage'];
+            $description = sprintf($messages['attack'], $target->name, $combatant->name, $damage);
+        } else {
+            $damage = $attributes['default_damage'];
+            $description = sprintf($messages['default'], $combatant->name, $damage);
+        }
+
+        return [
+            'damage' => $damage,
+            'health' => 0,
+            'description' => $description,
+        ];
+    }
+
+    public function processCleanseAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => sprintf($actionDef['messages']['cleanse'], $combatant->name),
+        ];
+    }
+
+    /**
+     * The Hungry Moon takes maximum health rather than dealing damage. It cannot be
+     * healed back -- only prevented, by cleansing on the turn it takes hold.
+     */
+    public function processHungeringMoonAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    {
+        $attributes = $actionDef['attributes'];
+        $messages = $actionDef['messages'];
+
+        if ($target->current_action === 'cleanse') {
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => sprintf($messages['cleansed'], $target->name),
+            ];
+        }
+
+        // Anchor every bite to what the hero began with, so three misses always converts
+        $status = $target->status ?? [];
+        $fullHealth = $status['full_health'] ?? $target->health;
+        $status['full_health'] = $fullHealth;
+        $target->status = $status;
+
+        $loss = (int) ceil($fullHealth * $attributes['max_health_loss_ratio']);
+        $target->health = max(0, $target->health - $loss);
+        if ($target->current_health > $target->health) {
+            $target->current_health = $target->health;
+        }
+
+        $description = sprintf($messages['hit'], $target->name);
+
+        // Nothing left to take -- the hero is converted rather than killed
+        if ($target->health <= 0) {
+            $target->current_health = 0;
+
+            return [
+                'damage' => 0,
+                'health' => 0,
+                'description' => $description . ' ' . sprintf($messages['converted'], $target->name),
+            ];
+        }
+
+        $transformThreshold = (int) ceil($fullHealth * $attributes['transform_threshold_ratio']);
+        if ($target->health <= $transformThreshold && empty($status['turned'])) {
+            $status['turned'] = true;
+            $target->status = $status;
+            $description .= ' ' . sprintf($messages['transformed'], $target->name);
+            $target->name = $attributes['transform_name'];
+            $target->defense = max(0, $target->defense - $attributes['transform_defense_loss']);
+        }
+
+        return [
+            'damage' => 0,
+            'health' => 0,
+            'description' => $description,
+        ];
+    }
+
     public function processPostCombat(HeroCombatant $combatant): string
     {
         if (in_array('dying_light', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
@@ -1348,6 +1554,47 @@ class HeroBattleService
                         'winters_breath' => "{$combatant->name} inhales deeply, drawing the mountain's frigid air into her lungs.",
                     ];
                     $description .= ' ' . ($telegraphMessages[$nextMove] ?? '');
+                }
+            }
+        }
+
+        // The Hungry Moon reaches for the hero a turn before it takes hold. The tell is
+        // free -- it never costs a turn of pressure -- and above the frenzy threshold it
+        // leaves a gap after each curse so the player's limited Cleanse is always ready.
+        if (in_array('hungering_moon', $combatant->abilities ?? []) && $combatant->current_health > 0) {
+            $moonDef = $this->heroHelper->getCombatActions()->get('hungering_moon');
+            $attributes = $moonDef['attributes'];
+            $status = $combatant->status ?? [];
+
+            $frenzied = $combatant->current_health < ($attributes['frenzy_threshold'] ?? 0);
+            $justTook = $combatant->last_action === 'hungering_moon';
+
+            if (empty($status['curse_pending']) && ($frenzied || !$justTook)) {
+                if (random_chance($attributes['telegraph_chance'] ?? 0.5)) {
+                    $status['curse_pending'] = true;
+                    $combatant->update(['status' => $status]);
+                    $description .= ' ' . sprintf($moonDef['messages']['telegraph'], $combatant->name);
+                }
+            }
+        }
+
+        // Admiral's Orders: on odd turns, roll the next order for the following (even) turn
+        if (in_array('admirals_orders', $combatant->abilities ?? []) && $combatant->current_health > 0) {
+            if (($combatant->battle->current_turn % 2) === 1) {
+                $ordersDef = $this->heroHelper->getCombatActions()->get('admirals_orders');
+                $orders = $ordersDef['attributes']['moves'] ?? [];
+                if (!empty($orders)) {
+                    $nextOrder = $orders[array_rand($orders)];
+                    $status = $combatant->status ?? [];
+                    $status['telegraphed_order'] = $nextOrder;
+                    $combatant->update(['status' => $status]);
+
+                    $telegraphMessages = [
+                        'broadside' => "{$combatant->name} raises his hand. Gunports slide open along the side of his ship.",
+                        'rally_the_defenders' => "{$combatant->name} fills his lungs and turns toward his ship.",
+                        'admirals_challenge' => "{$combatant->name} levels his cutlass at you, and the crew begins to jeer.",
+                    ];
+                    $description .= ' ' . ($telegraphMessages[$nextOrder] ?? '');
                 }
             }
         }

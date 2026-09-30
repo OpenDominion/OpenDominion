@@ -389,9 +389,13 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('invasions', 'Staff\Administrator\DominionController@getInvasions')->name('invasions');
         $router->get('theft', 'Staff\Administrator\DominionController@getTheft')->name('theft');
         $router->get('repeat-invasions', 'Staff\Administrator\DominionController@getRepeatInvasions')->name('repeat-invasions');
+        $router->get('ip-lookups', 'Staff\Administrator\OriginLookupController@getIndex')->name('ip-lookups');
+        $router->post('ip-lookups', 'Staff\Administrator\OriginLookupController@postIndex');
+        $router->get('ip-lookups/report', 'Staff\Administrator\OriginLookupController@getReport')->name('ip-lookups.report');
 
         $router->resource('dominions', 'Staff\Administrator\DominionController');
         $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');
+        $router->post('users/{user}/origin-lookup', 'Staff\Administrator\UserController@performOriginLookup')->name('users.origin-lookup');
         $router->resource('users', 'Staff\Administrator\UserController');
 
         // Raids
@@ -428,6 +432,13 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('rounds/{round}', 'Staff\Administrator\RoundController@getShow')->name('rounds.show');
         $router->get('rounds/{round}/edit', 'Staff\Administrator\RoundController@getEdit')->name('rounds.edit');
         $router->post('rounds/{round}/edit', 'Staff\Administrator\RoundController@postEdit');
+
+        // Round Perks
+        $router->get('rounds/{round}/perks/create', 'Staff\Administrator\RoundPerkController@getCreate')->name('rounds.perks.create');
+        $router->post('rounds/{round}/perks/create', 'Staff\Administrator\RoundPerkController@postCreate');
+        $router->get('rounds/{round}/perks/{perk}/edit', 'Staff\Administrator\RoundPerkController@getEdit')->name('rounds.perks.edit');
+        $router->post('rounds/{round}/perks/{perk}/edit', 'Staff\Administrator\RoundPerkController@postEdit');
+        $router->post('rounds/{round}/perks/{perk}/delete', 'Staff\Administrator\RoundPerkController@postDelete')->name('rounds.perks.delete');
 
         // Hero Tournaments
         $router->get('hero-tournaments', 'Staff\Administrator\HeroTournamentController@getIndex')->name('hero-tournaments.index');

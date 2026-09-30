@@ -5,7 +5,7 @@
 - **Pure computation**: Calculators never modify state - they only compute values
 - **Raw + Multiplier pattern**: `getX() = getXRaw() * getXMultiplier()`
 - **Constructor injection**: Dependencies injected via constructor (type-hinted properties)
-- **Perk aggregation**: Most multipliers sum perks from race + spells + techs + wonders + hero + improvements
+- **Perk aggregation**: Most multipliers sum perks from race + round perks + spells + techs + wonders + hero + improvements (round perks only for keys listed in `RoundPerkHelper::getPerkTypes()`)
 - **Tick mode**: `setForTick(true)` excludes next-hour queue resources (prevents double-counting)
 
 ## Dependency Graph
@@ -66,6 +66,7 @@ Raid scoring, objectives, rewards, leaderboards.
 
 ### MilitaryCalculator (most complex)
 - **Power**: `getOffensivePower()`, `getDefensivePower()` (raw + multiplier)
+- **Battle DP**: `getDefensivePowerWithTemples(attacker, target)` - target DP after attacker temples/wonders and `ignore_draftees` (used by invasions and attacker NPDs)
 - **Multiplier sources**: buildings, spells, techs, wonders, improvements, hero, morale, prestige
 - **Ratios**: `getSpyRatio()`, `getWizardRatio()`
 - **Boats**: `getBoatsNeeded()`, `getBoatCapacity()` (UNITS_PER_BOAT = 30, BOATS_PROTECTED_PER_DOCK = 2.25)

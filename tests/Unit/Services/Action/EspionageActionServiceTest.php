@@ -504,8 +504,8 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(1, $this->dominion->stat_espionage_failure);
 
         // Being repelled must not advance discovery progress
-        $this->assertEquals(0, ValuablesTracking::count());
-        $this->assertEquals(0, Valuable::count());
+        $this->assertEquals(0, ValuablesTracking::where('source_dominion_id', $this->dominion->id)->count());
+        $this->assertEquals(0, Valuable::where('source_dominion_id', $this->dominion->id)->count());
     }
 
     public function testLocateValuables_Repelled_StillCostsSpyStrength()

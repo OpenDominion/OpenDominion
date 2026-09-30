@@ -56,6 +56,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->dominion = m::mock(Dominion::class);
+        $this->dominion->shouldReceive('getRoundPerkMultiplier', 'getRoundPerkValue')->andReturn(0.0)->byDefault();
 
         $this->sut = m::mock(PopulationCalculator::class, [
             $this->app->make(BuildingHelper::class),

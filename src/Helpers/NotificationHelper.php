@@ -15,14 +15,34 @@ class NotificationHelper
     /** @var SpellHelper */
     protected $spellHelper;
 
+    /** @var array|null cached notification category map */
+    protected $notificationCategories = null;
+
     public function __construct()
     {
         $this->spellHelper = app(SpellHelper::class);
     }
 
+    /**
+     * Assembles the notification category map, memoized for the lifetime of
+     * this instance.
+     *
+     * Building the map evaluates twelve route() lookups, and
+     * partials/notification-nav.blade.php calls this twice for every unread
+     * notification while rendering the header dropdown. Without the cache a
+     * dominion holding twenty unread notifications costs 480 route() lookups
+     * per page render; with it, twelve per request.
+     *
+     * The helper is resolved fresh per render rather than bound as a
+     * singleton, so the cache cannot outlive the request that built it.
+     */
     public function getNotificationCategories(): array
     {
-        return [
+        if ($this->notificationCategories !== null) {
+            return $this->notificationCategories;
+        }
+
+        return $this->notificationCategories = [
             'general' => $this->getGeneralTypes(),
             'hourly_dominion' => $this->getHourlyDominionTypes(),
             'irregular_dominion' => $this->getIrregularDominionTypes(),

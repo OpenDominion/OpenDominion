@@ -20,6 +20,8 @@
             return $tech->key !== 'tech_7_5' && !in_array($tech->key, $permanentTechKeys);
         });
 
+        $unlockableTechCount = $techCalculator->getUnlockableTechCount($selectedDominion);
+
         $tempTechCooldownHours = 0;
         if ($currentTempTech) {
             $selectedAt = $currentTempTech->pivot->created_at->startOfHour();
@@ -92,7 +94,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary" {{ ($techCalculator->getTechCost($selectedDominion) > $selectedDominion->resource_tech || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
+                        <button type="submit" class="btn btn-primary" {{ ($unlockableTechCount < 1 || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                     </div>
                 </div>
 
@@ -149,7 +151,7 @@
                         </table>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary" {{ ($techCalculator->getTechCost($selectedDominion) > $selectedDominion->resource_tech || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
+                        <button type="submit" class="btn btn-primary" {{ ($unlockableTechCount < 1 || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                     </div>
                 </div>
             </form>
