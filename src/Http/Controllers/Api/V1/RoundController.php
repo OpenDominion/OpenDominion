@@ -58,7 +58,9 @@ class RoundController extends AbstractController
                 $query->whereNull('abandoned_at')->orWhere('abandoned_at', '>', now());
             })
             ->get()
-            ->map(function ($dominion) {
+            ->map(function (Dominion $dominion) use ($round) {
+                $dominion->setRelation('round', $round);
+
                 return [
                     'id' => $dominion->id,
                     'name' => $dominion->name,
@@ -287,10 +289,14 @@ class RoundController extends AbstractController
      * Returns null when no filter is requested, false when the value is unparseable,
      * or a Carbon instance when valid.
      */
-    private function parseSince(?string $value)
+    private function parseSince(mixed $value): Carbon|false|null
     {
         if ($value === null || $value === '') {
             return null;
+        }
+
+        if (!is_string($value)) {
+            return false;
         }
 
         try {

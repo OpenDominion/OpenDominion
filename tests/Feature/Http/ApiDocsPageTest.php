@@ -32,6 +32,7 @@ class ApiDocsPageTest extends AbstractTestCase
         'invalid_parameter',
         'same_realm',
         'rate_limited',
+        'server_error',
     ];
 
     public function testPageIsAccessibleToGuests(): void

@@ -3,7 +3,9 @@
 namespace OpenDominion\Tests\Feature\Http\Api\V1;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Middleware\ThrottleRequests;
+use OpenDominion\Mappers\GameEventMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
@@ -12,6 +14,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Tests\AbstractTestCase;
+use RuntimeException;
 
 class RoundApiTest extends AbstractTestCase
 {
@@ -524,6 +527,60 @@ class RoundApiTest extends AbstractTestCase
 
         $this->getJson('/api/v1/rounds/' . $round->id . '/dominions')->assertOk();
         $this->getJson('/api/v1/rounds/' . $round->id . '/events')->assertOk();
+    }
+
+    public function testArrayQueryParametersAreRejectedAsJson(): void
+    {
+        $round = $this->createRound();
+
+        foreach (['since[]=2026-01-01', 'type[]=invasion', 'limit[]=5', 'since[a]=x'] as $query) {
+            $this->getJson('/api/v1/rounds/' . $round->id . '/events?' . $query)
+                ->assertStatus(422)
+                ->assertJson(['error' => 'invalid_parameter']);
+        }
+    }
+
+    public function testUnexpectedErrorsAreJsonWithoutTraceEvenInDebug(): void
+    {
+        config(['app.debug' => true]);
+        $round = $this->createRound();
+
+        $mapper = $this->createMock(GameEventMapper::class);
+        $mapper->method('getEagerLoads')->willThrowException(new RuntimeException('internal detail'));
+        $this->app->instance(GameEventMapper::class, $mapper);
+
+        $response = $this->getJson('/api/v1/rounds/' . $round->id . '/events')
+            ->assertStatus(500)
+            ->assertExactJson([
+                'error' => 'server_error',
+                'message' => 'An unexpected error occurred.',
+            ]);
+
+        $this->assertStringNotContainsString('internal detail', $response->getContent());
+        $this->assertStringNotContainsString('trace', $response->getContent());
+    }
+
+    public function testDominionsListDoesNotLazyLoadPerDominion(): void
+    {
+        $round = $this->createRound();
+        for ($i = 0; $i < 4; $i++) {
+            $this->createDominion($this->createUser(), $round)->update(['protection_finished' => true]);
+        }
+
+        $lazyLoads = [];
+        Model::preventLazyLoading();
+        Model::handleLazyLoadingViolationUsing(function (Model $model, string $relation) use (&$lazyLoads) {
+            $lazyLoads[] = class_basename($model) . '::' . $relation;
+        });
+
+        try {
+            $this->getJson('/api/v1/rounds/' . $round->id . '/dominions')->assertOk()->assertJsonCount(4);
+        } finally {
+            Model::preventLazyLoading(false);
+            Model::handleLazyLoadingViolationUsing(null);
+        }
+
+        $this->assertSame([], $lazyLoads);
     }
 
     public function testNonexistentRoundReturns404(): void

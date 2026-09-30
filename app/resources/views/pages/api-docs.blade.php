@@ -102,7 +102,8 @@
                                     <td><code>invalid_parameter</code></td>
                                     <td>
                                         A parameter is invalid: an unparseable <code>since</code>, an unknown event
-                                        <code>type</code>, or an unknown op type in the Op Archive URL.
+                                        <code>type</code>, an unknown op type in the Op Archive URL, or a parameter sent
+                                        as an array (e.g. <code>?type[]=invasion</code>).
                                     </td>
                                 </tr>
                                 <tr>
@@ -114,6 +115,11 @@
                                     <td>429</td>
                                     <td><code>rate_limited</code></td>
                                     <td>Rate limit exceeded; see the <code>Retry-After</code> header.</td>
+                                </tr>
+                                <tr>
+                                    <td>500</td>
+                                    <td><code>server_error</code></td>
+                                    <td>An unexpected error on our side.</td>
                                 </tr>
                             </tbody>
                         </table>

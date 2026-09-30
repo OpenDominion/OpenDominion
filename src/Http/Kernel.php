@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'apikey' => \OpenDominion\Http\Middleware\DominionApiKey::class,
         'roundstarted' => \OpenDominion\Http\Middleware\ApiRoundStarted::class,
+        'scalarquery' => \OpenDominion\Http\Middleware\ApiRejectArrayQuery::class,
         'dominionselected' => \OpenDominion\Http\Middleware\DominionSelected::class,
         'updatelastonline' => \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
         'guest' => \OpenDominion\Http\Middleware\RedirectIfAuthenticated::class,

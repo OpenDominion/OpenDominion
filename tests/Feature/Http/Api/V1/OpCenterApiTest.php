@@ -478,6 +478,22 @@ class OpCenterApiTest extends AbstractTestCase
         $this->assertArrayNotHasKey((string) $this->scout->id, (array) $response->json('dominions'));
     }
 
+    public function testArrayQueryParametersAreRejectedAsJson(): void
+    {
+        $paths = [
+            '/api/v1/dominions/me/op-center?max_age_hours[]=1',
+            '/api/v1/dominions/me/op-center/' . $this->target->id . '?max_age_hours[]=1',
+            '/api/v1/dominions/me/op-center/' . $this->target->id . '/clear_sight?limit[]=1',
+        ];
+
+        foreach ($paths as $path) {
+            $this->withHeader('X-API-Key', 'scout-key')
+                ->getJson($path)
+                ->assertStatus(422)
+                ->assertJson(['error' => 'invalid_parameter']);
+        }
+    }
+
     public function testOtherRealmsOpsAreNotIncluded(): void
     {
         // Op sourced from a different realm should not appear.

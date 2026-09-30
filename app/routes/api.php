@@ -30,7 +30,7 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
 
     // Read-only public API: rounds, per-round dominion snapshots, town crier events.
     // Everything except the round list and dominions/me is unavailable until the round starts (roundstarted).
-    $router->group(['prefix' => 'rounds', 'middleware' => ['bindings', 'throttle:60,1'], 'as' => 'rounds.'], static function (Router $router) {
+    $router->group(['prefix' => 'rounds', 'middleware' => ['bindings', 'throttle:60,1', 'scalarquery'], 'as' => 'rounds.'], static function (Router $router) {
         $router->get('/')->uses('Api\V1\RoundController@index')->name('index');
         $router->get('{round}/dominions')->uses('Api\V1\RoundController@dominions')->name('dominions')->middleware('roundstarted');
         $router->get('{round}/realms')->uses('Api\V1\RoundController@realms')->name('realms')->middleware(['apikey:optional', 'roundstarted']);
@@ -38,7 +38,7 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
     });
 
     // Read-only authenticated API: per-dominion op center via X-API-Key header.
-    $router->group(['prefix' => 'dominions', 'middleware' => ['bindings', 'throttle:60,1', 'apikey'], 'as' => 'dominions.'], static function (Router $router) {
+    $router->group(['prefix' => 'dominions', 'middleware' => ['bindings', 'throttle:60,1', 'scalarquery', 'apikey'], 'as' => 'dominions.'], static function (Router $router) {
         $router->get('me')->uses('Api\V1\OpCenterController@me')->name('me');
         $router->get('me/op-center')->uses('Api\V1\OpCenterController@ops')->name('op-center')->middleware('roundstarted');
         $router->get('me/op-center/{target}')->uses('Api\V1\OpCenterController@opsForTarget')->name('op-center.target')->middleware('roundstarted');
