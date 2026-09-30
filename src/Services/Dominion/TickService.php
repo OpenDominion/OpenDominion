@@ -419,6 +419,8 @@ class TickService
     /**
      * Checks for dominions whose abandonment wait period has expired.
      *
+     * Abandoned dominions have their monarch vote cleared and their API key revoked.
+     *
      * @throws Exception|Throwable
      */
     public function checkForAbandonedDominions(Round $round)
@@ -426,7 +428,10 @@ class TickService
         $abandonedDominions = $round->dominions()
             ->where('abandoned_at', now()->startOfHour());
 
-        $abandonedDominions->update(['monarchy_vote_for_dominion_id' => null]);
+        $abandonedDominions->update([
+            'monarchy_vote_for_dominion_id' => null,
+            'api_key' => null,
+        ]);
 
         foreach ($abandonedDominions->get() as $dominion) {
             \OpenDominion\Models\GameEvent::create([

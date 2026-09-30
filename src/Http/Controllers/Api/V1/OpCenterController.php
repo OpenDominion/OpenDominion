@@ -11,6 +11,7 @@ use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\InfoOpAssemblerService;
+use OpenDominion\Services\Dominion\ProtectionService;
 
 class OpCenterController extends AbstractController
 {
@@ -33,7 +34,8 @@ class OpCenterController extends AbstractController
         private InfoOpAssemblerService $assembler,
         private MilitaryCalculator $militaryCalculator,
         private PopulationCalculator $populationCalculator,
-        private ProductionCalculator $productionCalculator
+        private ProductionCalculator $productionCalculator,
+        private ProtectionService $protectionService
     ) {
     }
 
@@ -208,6 +210,10 @@ class OpCenterController extends AbstractController
         $dominion = $this->getApiDominion();
         $maxAgeHours = $this->resolveMaxAgeHours($request, self::DEFAULT_MAX_AGE_HOURS);
 
+        if ($this->isBlockedByProtection($dominion)) {
+            return $this->underProtection();
+        }
+
         $query = $dominion->realm->infoOps()
             ->with(['targetDominion.race', 'targetDominion.realm'])
             ->where('type', '!=', 'clairvoyance')
@@ -254,6 +260,10 @@ class OpCenterController extends AbstractController
             return $this->advisorsForTarget($dominion, $target, $maxAgeHours);
         }
 
+        if ($this->isBlockedByProtection($dominion)) {
+            return $this->underProtection();
+        }
+
         $query = $dominion->realm->infoOps()
             ->where('target_dominion_id', $target->id)
             ->where('type', '!=', 'clairvoyance')
@@ -290,6 +300,10 @@ class OpCenterController extends AbstractController
 
         if ($target->round_id !== $dominion->round_id) {
             return $this->notFound();
+        }
+
+        if ($this->isBlockedByProtection($dominion)) {
+            return $this->underProtection();
         }
 
         if ($target->realm_id === $dominion->realm_id) {
@@ -374,6 +388,23 @@ class OpCenterController extends AbstractController
         }
 
         return max(0, (int) $request->query('max_age_hours'));
+    }
+
+    /**
+     * Dominions in protection cannot use the op center once the round has started,
+     * matching the in-game op center. Realmies are viewed via advisors, which is not gated.
+     */
+    private function isBlockedByProtection(Dominion $dominion): bool
+    {
+        return $this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted();
+    }
+
+    private function underProtection(): JsonResponse
+    {
+        return response()->json([
+            'error' => 'under_protection',
+            'message' => 'Dominions in protection are not allowed access to the op center.',
+        ], 403);
     }
 
     private function getApiDominion(): Dominion

@@ -59,17 +59,22 @@
                                 <tr>
                                     <td>401</td>
                                     <td><code>invalid_api_key</code></td>
-                                    <td>The key was not recognised (it may have been regenerated or revoked).</td>
+                                    <td>The key was not recognised (it may have been regenerated or revoked). Keys are revoked automatically when a dominion is abandoned.</td>
                                 </tr>
                                 <tr>
                                     <td>403</td>
                                     <td><code>dominion_locked</code></td>
-                                    <td>The dominion is locked.</td>
+                                    <td>The dominion is locked or abandoned.</td>
                                 </tr>
                                 <tr>
                                     <td>403</td>
                                     <td><code>advisors_not_shared</code></td>
                                     <td>The realmie you requested does not share their advisors with you.</td>
+                                </tr>
+                                <tr>
+                                    <td>403</td>
+                                    <td><code>under_protection</code></td>
+                                    <td>Your dominion is in protection. Op center data for other realms is unavailable until protection ends; your own dominion and realmies' advisors are still available.</td>
                                 </tr>
                                 <tr>
                                     <td>403</td>

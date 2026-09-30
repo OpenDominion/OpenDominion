@@ -259,6 +259,32 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertJson(['error' => 'dominion_locked']);
     }
 
+    public function testAbandonedDominionReturns403(): void
+    {
+        $user = $this->createUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+        $dominion->update(['api_key' => 'abandoned-key', 'abandoned_at' => now()->subHour()]);
+
+        $this->withHeader('X-API-Key', 'abandoned-key')
+            ->getJson('/api/v1/dominions/me')
+            ->assertStatus(403)
+            ->assertJson(['error' => 'dominion_locked']);
+    }
+
+    public function testPendingAbandonmentCanStillAccessApi(): void
+    {
+        $user = $this->createUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+        $dominion->update(['api_key' => 'pending-abandon-key', 'abandoned_at' => now()->addHours(12)]);
+
+        $this->withHeader('X-API-Key', 'pending-abandon-key')
+            ->getJson('/api/v1/dominions/me')
+            ->assertOk()
+            ->assertJsonPath('id', $dominion->id);
+    }
+
     public function testEndedRoundReturns410(): void
     {
         $user = $this->createUser();

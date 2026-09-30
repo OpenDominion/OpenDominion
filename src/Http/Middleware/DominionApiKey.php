@@ -35,12 +35,12 @@ class DominionApiKey
             return $this->error('invalid_api_key', 'The provided API key was not recognised.', 401);
         }
 
-        if ($dominion->locked_at !== null) {
-            return $this->error('dominion_locked', 'Locked dominions cannot access the API.', 403);
-        }
-
         if ($dominion->round->hasEnded()) {
             return $this->error('round_ended', 'This dominion\'s round has ended; the API key is no longer active.', 410);
+        }
+
+        if ($dominion->isLocked()) {
+            return $this->error('dominion_locked', 'Locked dominions cannot access the API.', 403);
         }
 
         app()->instance('api.dominion', $dominion);

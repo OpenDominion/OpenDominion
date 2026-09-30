@@ -27,7 +27,7 @@ class OpCenterApiTest extends AbstractTestCase
         $this->round = $this->createRound();
         $this->scoutUser = $this->createUser();
         $this->scout = $this->createDominion($this->scoutUser, $this->round);
-        $this->scout->update(['api_key' => 'scout-key']);
+        $this->scout->update(['api_key' => 'scout-key', 'protection_finished' => true]);
 
         // Target in a different realm so we hit the cross-realm code path.
         $targetRealm = Realm::create([
@@ -520,5 +520,75 @@ class OpCenterApiTest extends AbstractTestCase
         }
 
         return $infoOp;
+    }
+
+    public function testProtectedDominionCannotAccessOpCenterList(): void
+    {
+        $this->scout->update(['protection_finished' => false]);
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center')
+            ->assertStatus(403)
+            ->assertExactJson([
+                'error' => 'under_protection',
+                'message' => 'Dominions in protection are not allowed access to the op center.',
+            ]);
+    }
+
+    public function testProtectedDominionCannotAccessOtherRealmTarget(): void
+    {
+        $this->scout->update(['protection_finished' => false]);
+        $this->seedInfoOp('clear_sight', ['name' => 'Hidden']);
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center/' . $this->target->id)
+            ->assertStatus(403)
+            ->assertJson(['error' => 'under_protection']);
+    }
+
+    public function testProtectedDominionCannotAccessOpArchive(): void
+    {
+        $this->scout->update(['protection_finished' => false]);
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center/' . $this->target->id . '/clear_sight')
+            ->assertStatus(403)
+            ->assertJson(['error' => 'under_protection']);
+    }
+
+    public function testProtectedDominionCanStillViewOwnAdvisors(): void
+    {
+        $this->scout->update(['protection_finished' => false]);
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center/' . $this->scout->id)
+            ->assertOk()
+            ->assertJsonPath('dominion.id', $this->scout->id);
+    }
+
+    public function testLateStarterCannotSeeRealmieAdvisorsByDefault(): void
+    {
+        $realmie = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $this->scout->realm);
+        $this->scout->created_at = $this->round->realmAssignmentDate()->addHour();
+        $this->scout->save();
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center/' . $realmie->id)
+            ->assertStatus(403)
+            ->assertJson(['error' => 'advisors_not_shared']);
+    }
+
+    public function testLateStarterCanSeeRealmieAdvisorsWhenExplicitlyShared(): void
+    {
+        $realmie = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $this->scout->realm);
+        $realmie->settings = ['realmadvisors' => [$this->scout->id => true]];
+        $realmie->save();
+        $this->scout->created_at = $this->round->realmAssignmentDate()->addHour();
+        $this->scout->save();
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center/' . $realmie->id)
+            ->assertOk()
+            ->assertJsonPath('dominion.id', $realmie->id);
     }
 }
