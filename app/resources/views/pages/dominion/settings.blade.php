@@ -216,7 +216,7 @@
             <p class="small mb-2">
                 Grants read-only access to your realm's Op Center and this dominion's round info via
                 <code>/api/v1/dominions/me</code>. Send the key in the <code>X-API-Key</code> header.
-                The key stops working when this round ends.
+                The key keeps working after this round ends.
                 <a href="{{ route('api-docs') }}" target="_blank">View API documentation <i class="fa fa-external-link"></i></a>
             </p>
             @if (empty($selectedDominion->api_key))

@@ -49,19 +49,21 @@ class RoundController extends AbstractController
         return response()->json($rounds);
     }
 
+    /**
+     * Every dominion in the round, including locked and abandoned ones.
+     * shares_advisors is only included when an API key for this round is sent.
+     */
     public function dominions(Round $round): JsonResponse
     {
+        $viewer = $this->getViewer($round);
+
         $dominions = $round->dominions()
-            ->with(['realm', 'race'])
-            ->where('locked_at', null)
-            ->where(function ($query) {
-                $query->whereNull('abandoned_at')->orWhere('abandoned_at', '>', now());
-            })
+            ->with($viewer === null ? ['realm', 'race'] : ['realm', 'race', 'user'])
             ->get()
-            ->map(function (Dominion $dominion) use ($round) {
+            ->map(function (Dominion $dominion) use ($round, $viewer) {
                 $dominion->setRelation('round', $round);
 
-                return [
+                $payload = [
                     'id' => $dominion->id,
                     'name' => $dominion->name,
                     'race' => $dominion->race?->name,
@@ -71,7 +73,15 @@ class RoundController extends AbstractController
                     'networth' => $this->networthCalculator->getDominionNetworth($dominion),
                     'in_protection' => $this->protectionService->isUnderProtection($dominion),
                     'guard' => $this->guardName($dominion),
+                    'locked' => $dominion->locked_at !== null,
+                    'abandoned' => $dominion->isAbandoned(),
                 ];
+
+                if ($viewer !== null) {
+                    $payload['shares_advisors'] = $viewer->inRealmAndSharesAdvisors($dominion);
+                }
+
+                return $payload;
             })
             ->values();
 
@@ -161,16 +171,23 @@ class RoundController extends AbstractController
      */
     private function getViewerRealm(Round $round, Collection $realms): ?Realm
     {
+        $viewer = $this->getViewer($round);
+
+        return $viewer === null ? null : $realms->firstWhere('id', $viewer->realm_id);
+    }
+
+    /**
+     * The dominion of the optional API key, when it belongs to this round.
+     */
+    private function getViewer(Round $round): ?Dominion
+    {
         if (!app()->bound('api.dominion')) {
             return null;
         }
 
         $viewer = app('api.dominion');
-        if ($viewer->round_id !== $round->id) {
-            return null;
-        }
 
-        return $realms->firstWhere('id', $viewer->realm_id);
+        return $viewer->round_id === $round->id ? $viewer : null;
     }
 
     /**

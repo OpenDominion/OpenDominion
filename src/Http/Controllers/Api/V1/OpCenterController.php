@@ -4,12 +4,9 @@ namespace OpenDominion\Http\Controllers\Api\V1;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use OpenDominion\Calculators\Dominion\MilitaryCalculator;
-use OpenDominion\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\InfoOp;
+use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\InfoOpAssemblerService;
 use OpenDominion\Services\Dominion\ProtectionService;
 
@@ -19,22 +16,8 @@ class OpCenterController extends AbstractController
     private const DEFAULT_HISTORY_LIMIT = 100;
     private const MAX_HISTORY_LIMIT = 500;
 
-    /**
-     * Spending categories tracked per resource by stat_total_{resource}_spent_{category}.
-     */
-    private const SPENDING_CATEGORIES = [
-        'platinum' => ['construction', 'exploration', 'investment', 'rezoning', 'training'],
-        'lumber' => ['construction', 'investment', 'training'],
-        'mana' => ['investment', 'training'],
-        'ore' => ['investment', 'training'],
-        'gems' => ['investment', 'training'],
-    ];
-
     public function __construct(
         private InfoOpAssemblerService $assembler,
-        private MilitaryCalculator $militaryCalculator,
-        private PopulationCalculator $populationCalculator,
-        private ProductionCalculator $productionCalculator,
         private ProtectionService $protectionService
     ) {
     }
@@ -62,147 +45,15 @@ class OpCenterController extends AbstractController
                 'duration_days' => $dominion->round->durationInDays(),
             ],
             'server_time' => now()->toIso8601ZuluString(),
-            'resources' => $this->resourcesPayload($dominion),
-            'military' => $this->militaryPayload($dominion),
-            'hourly' => $this->hourlyPayload($dominion),
-            'population' => $this->populationPayload($dominion),
-            'statistics' => $this->statisticsPayload($dominion),
             'links' => [
+                'advisors' => route('api.dominions.advisors'),
+                'op_center' => route('api.dominions.op-center'),
                 'rounds' => route('api.rounds.index'),
                 'round_dominions' => route('api.rounds.dominions', $dominion->round),
-                'round_realms' => route('api.rounds.realms', $dominion->round),
                 'round_events' => route('api.rounds.events', $dominion->round),
+                'round_realms' => route('api.rounds.realms', $dominion->round),
             ],
         ]);
-    }
-
-    /**
-     * Current stockpiles of the key's own dominion.
-     *
-     * @return array<string, int|float>
-     */
-    private function resourcesPayload(Dominion $dominion): array
-    {
-        return [
-            'platinum' => $dominion->resource_platinum,
-            'food' => $dominion->resource_food,
-            'lumber' => $dominion->resource_lumber,
-            'mana' => $dominion->resource_mana,
-            'ore' => $dominion->resource_ore,
-            'gems' => $dominion->resource_gems,
-            'tech' => $dominion->resource_tech,
-            'boats' => round($dominion->resource_boats, 2),
-        ];
-    }
-
-    /**
-     * Units, spy/wizard strength and OP/DP modifiers of the key's own dominion.
-     * Units 1-4 include those returning from invasion, as on the status page;
-     * units in training are not included.
-     * Modifiers are percentages, as on the Military advisor (+23.5 means x1.235).
-     *
-     * @return array<string, int|float>
-     */
-    private function militaryPayload(Dominion $dominion): array
-    {
-        return [
-            'draftees' => $dominion->military_draftees,
-            'unit1' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1),
-            'unit2' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 2),
-            'unit3' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3),
-            'unit4' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4),
-            'spies' => $dominion->military_spies,
-            'assassins' => $dominion->military_assassins,
-            'wizards' => $dominion->military_wizards,
-            'archmages' => $dominion->military_archmages,
-            'spy_strength' => round($dominion->spy_strength, 2),
-            'wizard_strength' => round($dominion->wizard_strength, 2),
-            'offensive_modifier' => round(($this->militaryCalculator->getOffensivePowerMultiplier($dominion) - 1) * 100, 3),
-            'defensive_modifier' => round(($this->militaryCalculator->getDefensivePowerMultiplier($dominion) - 1) * 100, 3),
-            'spy_ratio' => [
-                'offense' => round($this->militaryCalculator->getSpyRatio($dominion, 'offense'), 3),
-                'defense' => round($this->militaryCalculator->getSpyRatio($dominion, 'defense'), 3),
-            ],
-            'wizard_ratio' => [
-                'offense' => round($this->militaryCalculator->getWizardRatio($dominion, 'offense'), 3),
-                'defense' => round($this->militaryCalculator->getWizardRatio($dominion, 'defense'), 3),
-            ],
-        ];
-    }
-
-    /**
-     * Hourly figures from the Production advisor for the key's own dominion.
-     *
-     * @return array{production: array<string, int|float>, consumption: array<string, int>, decay: array<string, int>, net_change: array<string, int>}
-     */
-    private function hourlyPayload(Dominion $dominion): array
-    {
-        return [
-            'production' => [
-                'platinum' => $this->productionCalculator->getPlatinumProduction($dominion),
-                'food' => $this->productionCalculator->getFoodProduction($dominion),
-                'lumber' => $this->productionCalculator->getLumberProduction($dominion),
-                'mana' => $this->productionCalculator->getManaProduction($dominion),
-                'ore' => $this->productionCalculator->getOreProduction($dominion),
-                'gems' => $this->productionCalculator->getGemProduction($dominion),
-                'tech' => $this->productionCalculator->getTechProduction($dominion),
-                'boats' => round($this->productionCalculator->getBoatProduction($dominion), 2),
-            ],
-            'consumption' => [
-                'food' => (int) round($this->productionCalculator->getFoodConsumption($dominion)),
-            ],
-            'decay' => [
-                'food' => (int) round($this->productionCalculator->getFoodDecay($dominion)),
-                'lumber' => (int) round($this->productionCalculator->getLumberDecay($dominion)),
-                'mana' => (int) round($this->productionCalculator->getManaDecay($dominion)),
-            ],
-            'net_change' => [
-                'food' => $this->productionCalculator->getFoodNetChange($dominion),
-                'lumber' => $this->productionCalculator->getLumberNetChange($dominion),
-                'mana' => $this->productionCalculator->getManaNetChange($dominion),
-            ],
-        ];
-    }
-
-    /**
-     * Round totals from the dominion's stat_total_* counters. For each resource,
-     * {resource}_spent is the total and {resource}_spent_{category} the
-     * breakdown, one per stat_total_{resource}_spent_{category} column.
-     *
-     * @return array<string, int>
-     */
-    private function statisticsPayload(Dominion $dominion): array
-    {
-        $statistics = [];
-
-        foreach (self::SPENDING_CATEGORIES as $resource => $categories) {
-            $breakdown = [];
-            foreach ($categories as $category) {
-                $breakdown["{$resource}_spent_{$category}"] = (int) $dominion->{"stat_total_{$resource}_spent_{$category}"};
-            }
-
-            $statistics["{$resource}_spent"] = array_sum($breakdown);
-            $statistics += $breakdown;
-        }
-
-        return $statistics;
-    }
-
-    /**
-     * Population figures from the Production advisor for the key's own dominion.
-     *
-     * @return array<string, int>
-     */
-    private function populationPayload(Dominion $dominion): array
-    {
-        return [
-            'total' => $this->populationCalculator->getPopulation($dominion),
-            'max' => $this->populationCalculator->getMaxPopulation($dominion),
-            'peasants' => $dominion->peasants,
-            'military' => $this->populationCalculator->getPopulationMilitary($dominion),
-            'jobs' => $this->populationCalculator->getEmploymentJobs($dominion),
-            'employed' => $this->populationCalculator->getPopulationEmployed($dominion),
-        ];
     }
 
     public function ops(Request $request): JsonResponse
@@ -214,6 +65,21 @@ class OpCenterController extends AbstractController
             return $this->underProtection();
         }
 
+        $realmNumber = $request->query('realm');
+        $realm = null;
+        if ($realmNumber !== null) {
+            $realm = ctype_digit((string) $realmNumber)
+                ? Realm::where('round_id', $dominion->round_id)->where('number', (int) $realmNumber)->first()
+                : null;
+
+            if ($realm === null) {
+                return response()->json([
+                    'error' => 'invalid_parameter',
+                    'message' => 'The "realm" parameter must be the number of a realm in your round.',
+                ], 422);
+            }
+        }
+
         $query = $dominion->realm->infoOps()
             ->with(['targetDominion.race', 'targetDominion.realm'])
             ->where('type', '!=', 'clairvoyance')
@@ -221,6 +87,10 @@ class OpCenterController extends AbstractController
 
         if ($maxAgeHours > 0) {
             $query->where('created_at', '>=', now()->subHours($maxAgeHours));
+        }
+
+        if ($realm !== null) {
+            $query->whereIn('target_dominion_id', Dominion::where('realm_id', $realm->id)->select('id'));
         }
 
         $grouped = $query->orderByDesc('created_at')->get()->groupBy('target_dominion_id');
@@ -243,6 +113,7 @@ class OpCenterController extends AbstractController
         return response()->json([
             'generated_at' => now()->toIso8601ZuluString(),
             'max_age_hours' => $maxAgeHours,
+            'realm' => $realm?->number,
             'dominions' => (object) $dominions,
         ]);
     }
@@ -257,7 +128,7 @@ class OpCenterController extends AbstractController
         }
 
         if ($target->realm_id === $dominion->realm_id) {
-            return $this->advisorsForTarget($dominion, $target, $maxAgeHours);
+            return $this->sameRealm();
         }
 
         if ($this->isBlockedByProtection($dominion)) {
@@ -302,15 +173,12 @@ class OpCenterController extends AbstractController
             return $this->notFound();
         }
 
-        if ($this->isBlockedByProtection($dominion)) {
-            return $this->underProtection();
+        if ($target->realm_id === $dominion->realm_id) {
+            return $this->sameRealm();
         }
 
-        if ($target->realm_id === $dominion->realm_id) {
-            return response()->json([
-                'error' => 'same_realm',
-                'message' => 'The Op Archive is not available for dominions in your realm. Use /dominions/me/op-center/{target} for their current data.',
-            ], 422);
+        if ($this->isBlockedByProtection($dominion)) {
+            return $this->underProtection();
         }
 
         if (!$this->assembler->isValidType($type)) {
@@ -345,28 +213,6 @@ class OpCenterController extends AbstractController
         ]);
     }
 
-    /**
-     * Your own dominion and realmies who share their advisors with you are
-     * returned with their current data, as on the in-game realm advisors page.
-     */
-    private function advisorsForTarget(Dominion $dominion, Dominion $target, int $maxAgeHours): JsonResponse
-    {
-        if (!$dominion->inRealmAndSharesAdvisors($target)) {
-            return response()->json([
-                'error' => 'advisors_not_shared',
-                'message' => 'This dominion has opted not to share their advisors with you.',
-            ], 403);
-        }
-
-        $target->loadMissing(['race', 'realm']);
-
-        return response()->json([
-            'generated_at' => now()->toIso8601ZuluString(),
-            'max_age_hours' => $maxAgeHours,
-            'dominion' => $this->targetPayload($target, $this->assembler->assembleFromAdvisors($target)),
-        ]);
-    }
-
     private function targetPayload(Dominion $target, array $ops): array
     {
         return [
@@ -392,7 +238,7 @@ class OpCenterController extends AbstractController
 
     /**
      * Dominions in protection cannot use the op center once the round has started,
-     * matching the in-game op center. Realmies are viewed via advisors, which is not gated.
+     * matching the in-game op center.
      */
     private function isBlockedByProtection(Dominion $dominion): bool
     {
@@ -405,6 +251,17 @@ class OpCenterController extends AbstractController
             'error' => 'under_protection',
             'message' => 'Dominions in protection are not allowed access to the op center.',
         ], 403);
+    }
+
+    /**
+     * Op center endpoints only serve info ops, which are never gathered on your own realm.
+     */
+    private function sameRealm(): JsonResponse
+    {
+        return response()->json([
+            'error' => 'same_realm',
+            'message' => 'The op center is not available for dominions in your realm. Use /dominions/me/advisors for their current data.',
+        ], 422);
     }
 
     private function getApiDominion(): Dominion

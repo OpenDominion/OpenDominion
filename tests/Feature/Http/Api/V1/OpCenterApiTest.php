@@ -56,7 +56,8 @@ class OpCenterApiTest extends AbstractTestCase
 
         $payload = $response->json();
 
-        $this->assertSame(['generated_at', 'max_age_hours', 'dominions'], array_keys($payload));
+        $this->assertSame(['generated_at', 'max_age_hours', 'realm', 'dominions'], array_keys($payload));
+        $this->assertNull($payload['realm']);
         $this->assertArrayHasKey((string) $this->target->id, $payload['dominions']);
 
         $targetPayload = $payload['dominions'][(string) $this->target->id];
@@ -400,61 +401,21 @@ class OpCenterApiTest extends AbstractTestCase
         }
     }
 
-    public function testOwnDominionReturnsCurrentAdvisorData(): void
-    {
-        $response = $this->withHeader('X-API-Key', 'scout-key')
-            ->getJson('/api/v1/dominions/me/op-center/' . $this->scout->id)
-            ->assertOk();
-
-        $this->assertSame($this->scout->id, $response->json('dominion.id'));
-        $this->assertSame(
-            ['clear_sight', 'revelation', 'castle_spy', 'barracks_spy', 'survey_dominion', 'land_spy', 'vision', 'disclosure'],
-            array_keys($response->json('dominion.ops'))
-        );
-        foreach ($response->json('dominion.ops') as $type => $op) {
-            $this->assertNotNull($op, $type . ' should come from advisors');
-            $this->assertSame($response->json('generated_at'), $op['created_at']);
-        }
-        $this->assertSame($this->scout->name, $response->json('dominion.ops.clear_sight.name'));
-        $this->assertArrayHasKey('techs', $response->json('dominion.ops.vision'));
-        $this->assertArrayHasKey('spells', $response->json('dominion.ops.revelation'));
-    }
-
-    public function testRealmieSharingAdvisorsReturnsCurrentDataNotInfoOps(): void
+    public function testDominionsInOwnRealmAreRejected(): void
     {
         $realmie = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $this->scout->realm);
         $realmie->settings = ['realmadvisors' => [$this->scout->id => true]];
         $realmie->save();
-        InfoOp::create([
-            'source_realm_id' => $this->scout->realm_id,
-            'source_dominion_id' => $this->scout->id,
-            'target_dominion_id' => $realmie->id,
-            'type' => 'clear_sight',
-            'data' => ['name' => 'Stale Snapshot'],
-            'latest' => true,
-        ]);
 
-        $response = $this->withHeader('X-API-Key', 'scout-key')
-            ->getJson('/api/v1/dominions/me/op-center/' . $realmie->id)
-            ->assertOk();
-
-        $this->assertSame($realmie->name, $response->json('dominion.ops.clear_sight.name'));
-        $this->assertNotNull($response->json('dominion.ops.barracks_spy'));
-    }
-
-    public function testRealmieNotSharingAdvisorsReturns403(): void
-    {
-        $realmie = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $this->scout->realm);
-        $realmie->settings = ['realmadvisors' => [$this->scout->id => false]];
-        $realmie->save();
-
-        $this->withHeader('X-API-Key', 'scout-key')
-            ->getJson('/api/v1/dominions/me/op-center/' . $realmie->id)
-            ->assertStatus(403)
-            ->assertExactJson([
-                'error' => 'advisors_not_shared',
-                'message' => 'This dominion has opted not to share their advisors with you.',
-            ]);
+        foreach ([$this->scout->id, $realmie->id] as $dominionId) {
+            $this->withHeader('X-API-Key', 'scout-key')
+                ->getJson('/api/v1/dominions/me/op-center/' . $dominionId)
+                ->assertStatus(422)
+                ->assertExactJson([
+                    'error' => 'same_realm',
+                    'message' => 'The op center is not available for dominions in your realm. Use /dominions/me/advisors for their current data.',
+                ]);
+        }
     }
 
     public function testOpArchiveRejectsDominionsInOwnRealm(): void
@@ -489,6 +450,67 @@ class OpCenterApiTest extends AbstractTestCase
         foreach ($paths as $path) {
             $this->withHeader('X-API-Key', 'scout-key')
                 ->getJson($path)
+                ->assertStatus(422)
+                ->assertJson(['error' => 'invalid_parameter']);
+        }
+    }
+
+    public function testOpCenterCanBeFilteredToOneRealm(): void
+    {
+        $otherTargetRealm = Realm::create([
+            'round_id' => $this->round->id,
+            'alignment' => 'good',
+            'number' => 42,
+            'name' => 'Other Target Realm',
+        ]);
+        $otherTarget = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $otherTargetRealm);
+
+        $this->seedInfoOp('clear_sight', ['land' => 250]);
+        InfoOp::create([
+            'source_realm_id' => $this->scout->realm_id,
+            'source_dominion_id' => $this->scout->id,
+            'target_dominion_id' => $otherTarget->id,
+            'type' => 'clear_sight',
+            'data' => ['land' => 999],
+            'latest' => true,
+        ]);
+
+        $unfiltered = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center')
+            ->assertOk();
+        $this->assertCount(2, (array) $unfiltered->json('dominions'));
+
+        $filtered = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center?realm=42')
+            ->assertOk()
+            ->assertJsonPath('realm', 42);
+        $this->assertSame([$otherTarget->id], array_keys((array) $filtered->json('dominions')));
+
+        $empty = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center?realm=' . $this->scout->realm->number)
+            ->assertOk();
+        $this->assertSame([], (array) $empty->json('dominions'));
+    }
+
+    public function testEmptyRealmParameterMeansNoFilter(): void
+    {
+        $this->seedInfoOp('clear_sight', ['land' => 250]);
+
+        $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center?realm=')
+            ->assertOk()
+            ->assertJsonPath('realm', null)
+            ->assertJsonPath('dominions.' . $this->target->id . '.ops.clear_sight.land', 250);
+    }
+
+    public function testOpCenterRejectsInvalidOrUnknownRealm(): void
+    {
+        $otherRound = $this->createRound();
+        Realm::create(['round_id' => $otherRound->id, 'alignment' => 'good', 'number' => 77, 'name' => 'Elsewhere']);
+
+        foreach (['abc', '-1', '1.5', '77'] as $realm) {
+            $this->withHeader('X-API-Key', 'scout-key')
+                ->getJson('/api/v1/dominions/me/op-center?realm=' . $realm)
                 ->assertStatus(422)
                 ->assertJson(['error' => 'invalid_parameter']);
         }
@@ -572,39 +594,15 @@ class OpCenterApiTest extends AbstractTestCase
             ->assertJson(['error' => 'under_protection']);
     }
 
-    public function testProtectedDominionCanStillViewOwnAdvisors(): void
+    public function testProtectedDominionIsPointedToRealmEndpointForOwnRealm(): void
     {
         $this->scout->update(['protection_finished' => false]);
 
-        $this->withHeader('X-API-Key', 'scout-key')
-            ->getJson('/api/v1/dominions/me/op-center/' . $this->scout->id)
-            ->assertOk()
-            ->assertJsonPath('dominion.id', $this->scout->id);
-    }
-
-    public function testLateStarterCannotSeeRealmieAdvisorsByDefault(): void
-    {
-        $realmie = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $this->scout->realm);
-        $this->scout->created_at = $this->round->realmAssignmentDate()->addHour();
-        $this->scout->save();
-
-        $this->withHeader('X-API-Key', 'scout-key')
-            ->getJson('/api/v1/dominions/me/op-center/' . $realmie->id)
-            ->assertStatus(403)
-            ->assertJson(['error' => 'advisors_not_shared']);
-    }
-
-    public function testLateStarterCanSeeRealmieAdvisorsWhenExplicitlyShared(): void
-    {
-        $realmie = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $this->scout->realm);
-        $realmie->settings = ['realmadvisors' => [$this->scout->id => true]];
-        $realmie->save();
-        $this->scout->created_at = $this->round->realmAssignmentDate()->addHour();
-        $this->scout->save();
-
-        $this->withHeader('X-API-Key', 'scout-key')
-            ->getJson('/api/v1/dominions/me/op-center/' . $realmie->id)
-            ->assertOk()
-            ->assertJsonPath('dominion.id', $realmie->id);
+        foreach (['', '/clear_sight'] as $suffix) {
+            $this->withHeader('X-API-Key', 'scout-key')
+                ->getJson('/api/v1/dominions/me/op-center/' . $this->scout->id . $suffix)
+                ->assertStatus(422)
+                ->assertJson(['error' => 'same_realm']);
+        }
     }
 }

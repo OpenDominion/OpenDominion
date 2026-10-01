@@ -21,7 +21,8 @@ class AISpawnCommand extends Command implements CommandInterface
                              {--race= : Race name or key}
                              {--count=1 : Number of non-player dominions to spawn}
                              {--type=explorer : Bot strategy (explorer or attacker)}
-                             {--land= : Starting land size (defaults to the standard bot distribution)}';
+                             {--land= : Starting land size (defaults to the standard bot distribution)}
+                             {--prestige= : Starting prestige (defaults to the standard starting prestige)}';
 
     /** @var string The console command description. */
     protected $description = 'Spawns non-player dominions of a race in The Graveyard';
@@ -41,6 +42,7 @@ class AISpawnCommand extends Command implements CommandInterface
         $type = $this->option('type');
         $count = (int) $this->option('count');
         $land = $this->option('land');
+        $prestige = $this->option('prestige');
 
         if ($roundId === null || $raceName === null) {
             throw new RuntimeException('Both --round and --race are required');
@@ -56,6 +58,10 @@ class AISpawnCommand extends Command implements CommandInterface
 
         if ($land !== null && (int) $land < 1) {
             throw new RuntimeException('Land must be at least 1');
+        }
+
+        if ($prestige !== null && (!is_numeric($prestige) || (int) $prestige < 0)) {
+            throw new RuntimeException('Prestige must be at least 0');
         }
 
         $race = Race::query()
@@ -93,7 +99,8 @@ class AISpawnCommand extends Command implements CommandInterface
             $landSize = $land !== null ? (int) $land : $dominionFactory->getRandomNonPlayerLandSize();
 
             try {
-                $dominion = $dominionFactory->createRandomNonPlayer($graveyard, $race, $landSize);
+                $specRatio = $type === AIHelper::STRATEGY_ATTACKER ? $aiHelper->getAttackerStartingSpecRatio($race) : null;
+                $dominion = $dominionFactory->createRandomNonPlayer($graveyard, $race, $landSize, $specRatio);
             } catch (GameException $e) {
                 throw new RuntimeException($e->getMessage(), 0, $e);
             }
@@ -103,10 +110,20 @@ class AISpawnCommand extends Command implements CommandInterface
                 continue;
             }
 
+            if ($prestige !== null) {
+                $dominion->update(['prestige' => (int) $prestige]);
+
+                $prestigeCap = max($landSize, 250);
+                if ((int) $prestige > $prestigeCap) {
+                    $this->warn(sprintf('Prestige is capped at land size, %s will start with %d prestige', $dominion->name, $prestigeCap));
+                }
+            }
+
             if ($type === AIHelper::STRATEGY_ATTACKER) {
                 $dominion->update($aiHelper->getAttackerStartingAttributes($dominion));
+                $startingOffense = $aiHelper->getAttackerStartingOffenseUnit($race);
                 foreach ($aiHelper->getAttackerIncomingOffense() as $hours => $amount) {
-                    $queueService->queueResources('training', $dominion, ['military_unit1' => $amount], $hours);
+                    $queueService->queueResources('training', $dominion, ["military_{$startingOffense}" => $amount], $hours);
                 }
             }
 

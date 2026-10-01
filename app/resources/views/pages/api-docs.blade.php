@@ -23,7 +23,7 @@
                     </p>
                     <p>
                         A key belongs to one dominion in one round. Generate it from that dominion's Settings page
-                        while playing. It stops working when the round ends.
+                        while playing. It keeps working after the round ends.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>curl -H "X-API-Key: YOUR_KEY" {{ route('api.dominions.me') }}</code></pre>
 
@@ -68,20 +68,15 @@
                                 </tr>
                                 <tr>
                                     <td>403</td>
-                                    <td><code>advisors_not_shared</code></td>
-                                    <td>The realmie you requested does not share their advisors with you.</td>
-                                </tr>
-                                <tr>
-                                    <td>403</td>
                                     <td><code>under_protection</code></td>
-                                    <td>Your dominion is in protection. Op center data for other realms is unavailable until protection ends; your own dominion and realmies' advisors are still available.</td>
+                                    <td>Your dominion is in protection. The op center endpoints are unavailable until protection ends; <code>/dominions/me</code> and <code>/dominions/me/advisors</code> are still available.</td>
                                 </tr>
                                 <tr>
                                     <td>403</td>
                                     <td><code>round_not_started</code></td>
                                     <td>
-                                        The round has not started yet. Until it does, only <code>/rounds</code> and
-                                        <code>/dominions/me</code> are available.
+                                        The round has not started yet. Until it does, only <code>/rounds</code>,
+                                        <code>/dominions/me</code>, and <code>/dominions/me/advisors</code> are available.
                                     </td>
                                 </tr>
                                 <tr>
@@ -91,11 +86,6 @@
                                         No round or dominion exists with the ID in the URL, the dominion is not in
                                         your round, or your realm has no info ops on it.
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td>410</td>
-                                    <td><code>round_ended</code></td>
-                                    <td>The dominion's round has ended, so the key no longer works.</td>
                                 </tr>
                                 <tr>
                                     <td>422</td>
@@ -109,7 +99,7 @@
                                 <tr>
                                     <td>422</td>
                                     <td><code>same_realm</code></td>
-                                    <td>The Op Archive was requested for a dominion in your own realm.</td>
+                                    <td>An op center endpoint was requested for a dominion in your own realm. Use <code>/dominions/me/advisors</code> for their current data.</td>
                                 </tr>
                                 <tr>
                                     <td>429</td>
@@ -152,12 +142,24 @@
                     <h5 class="fw-bold mb-1" id="round-dominions">Search</h5>
                     <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds/{round}/dominions</code></p>
                     <p class="mb-1">
-                        Every active dominion in a round. Locked and abandoned dominions are left out.
+                        Every dominion in a round, including locked and abandoned ones.
                     </p>
                     <ul>
                         <li>
-                            <code>guard</code> is <code>"royal"</code>, <code>"elite"</code> or <code>null</code>.
+                            <code>guard</code> is <code>"royal"</code>, <code>"elite"</code>, or <code>null</code>.
                             Black Guard membership is not included.
+                        </li>
+                        <li>
+                            <code>locked</code> is <code>true</code> when the dominion has been locked by an
+                            administrator. <code>abandoned</code> is <code>true</code> once an abandonment has taken
+                            effect; a pending abandonment is still <code>false</code>.
+                        </li>
+                        <li>
+                            <code>shares_advisors</code> is only included when you send an API key for a dominion in
+                            this round. It is <code>true</code> for your own dominion and for realmies whose advisors
+                            you can view in <a href="#dominions-me-advisors">Realm Advisors</a>, and <code>false</code> for
+                            everyone else. The API key is optional here; an invalid one still returns
+                            <code>401</code>.
                         </li>
                     </ul>
 <pre class="bg-body-tertiary border rounded p-2"><code>[
@@ -170,7 +172,10 @@
         "land": 250,
         "networth": 1500,
         "in_protection": false,
-        "guard": "royal"
+        "guard": "royal",
+        "locked": false,
+        "abandoned": false,
+        "shares_advisors": false
     }
 ]</code></pre>
 
@@ -310,7 +315,7 @@
                                     <td>
                                         <code>{"neutral": false, "wonder": "Ivory Tower", "realm_number": 7}</code><br>
                                         When a neutral wonder is attacked, <code>neutral</code> is <code>true</code>
-                                        and <code>wonder</code>, <code>realm_number</code> and the event's
+                                        and <code>wonder</code>, <code>realm_number</code>, and the event's
                                         <code>target_id</code> are <code>null</code>.
                                     </td>
                                 </tr>
@@ -350,12 +355,9 @@
                     <h5 class="fw-bold mb-1" id="dominions-me">My Dominion</h5>
                     <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me</code></p>
                     <p>
-                        The dominion the key belongs to, with its realm, round and current stats.
-                        <code>round.day</code> and <code>round.hour</code> are <code>null</code> before the round
-                        starts. <code>military</code> includes units returning from invasion but not units in training; strengths and modifiers are
-                        percentages (<code>23.5</code> means +23.5%). <code>statistics</code> are totals for this round; each
-                        <code>{resource}_spent</code> is the sum of its <code>{resource}_spent_{category}</code>
-                        breakdown.
+                        The dominion the key belongs to, with its realm and round. <code>round.day</code> and
+                        <code>round.hour</code> are <code>null</code> before the round starts. Current stats for your
+                        dominion are in <a href="#dominions-me-advisors">Realm Advisors</a>.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>{
     "id": 1234,
@@ -372,47 +374,130 @@
         "duration_days": 47
     },
     "server_time": "2026-09-30T11:14:08Z",
-    "resources": {
-        "platinum": 523000, "food": 180000, "lumber": 41000, "mana": 92000,
-        "ore": 60000, "gems": 15000, "tech": 3400, "boats": 112.5
-    },
-    "military": {
-        "draftees": 2500, "unit1": 0, "unit2": 8000, "unit3": 3200, "unit4": 2100,
-        "spies": 900, "assassins": 300, "wizards": 1400, "archmages": 120,
-        "spy_strength": 100, "wizard_strength": 87.5,
-        "offensive_modifier": 23.5, "defensive_modifier": 17.25,
-        "spy_ratio": {"offense": 0.612, "defense": 0.585},
-        "wizard_ratio": {"offense": 0.934, "defense": 0.901}
-    },
-    "hourly": {
-        "production": {
-            "platinum": 18500, "food": 6200, "lumber": 900, "mana": 3100,
-            "ore": 1500, "gems": 2400, "tech": 140, "boats": 1.25
-        },
-        "consumption": {"food": 5400},
-        "decay": {"food": 180, "lumber": 410, "mana": 1840},
-        "net_change": {"food": 620, "lumber": 490, "mana": 1260}
-    },
-    "population": {
-        "total": 48000, "max": 52000, "peasants": 36000,
-        "military": 12000, "jobs": 30000, "employed": 30000
-    },
-    "statistics": {
-        "platinum_spent": 4200000,
-        "platinum_spent_construction": 1500000, "platinum_spent_exploration": 900000,
-        "platinum_spent_investment": 300000, "platinum_spent_rezoning": 50000,
-        "platinum_spent_training": 1450000,
-        "lumber_spent": 310000,
-        "lumber_spent_construction": 260000, "lumber_spent_investment": 40000, "lumber_spent_training": 10000,
-        "mana_spent": 95000, "mana_spent_investment": 60000, "mana_spent_training": 35000,
-        "ore_spent": 520000, "ore_spent_investment": 120000, "ore_spent_training": 400000,
-        "gems_spent": 180000, "gems_spent_investment": 180000, "gems_spent_training": 0
-    },
     "links": {
+        "advisors": "{{ url('/api/v1/dominions/me/advisors') }}",
+        "op_center": "{{ url('/api/v1/dominions/me/op-center') }}",
         "rounds": "{{ url('/api/v1/rounds') }}",
         "round_dominions": "{{ url('/api/v1/rounds/51/dominions') }}",
-        "round_realms": "{{ url('/api/v1/rounds/51/realms') }}",
-        "round_events": "{{ url('/api/v1/rounds/51/events') }}"
+        "round_events": "{{ url('/api/v1/rounds/51/events') }}",
+        "round_realms": "{{ url('/api/v1/rounds/51/realms') }}"
+    }
+}</code></pre>
+
+                    <h5 class="fw-bold mb-1" id="dominions-me-advisors">Realm Advisors</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me/advisors</code></p>
+                    <p class="mb-1">
+                        Current data for your own dominion and every realmie who shares their advisors with you, as
+                        on the in-game realm advisors pages, keyed by dominion ID with your own dominion first.
+                        Available while you are in protection and before the round starts.
+                    </p>
+                    <ul>
+                        <li>
+                            Realmies who do not share their advisors with you are left out. Dominions that join
+                            after realm assignment do not see realmies' advisors unless a realmie shares with them
+                            explicitly.
+                        </li>
+                        <li>
+                            <code>ops</code> has the same eight keys and fields as the
+                            <a href="#dominions-me-op-center">Op Center</a>, built from the dominion's current state
+                            instead of info ops: every type is filled in, each with <code>created_at</code> equal to
+                            <code>generated_at</code>. The example below shortens it.
+                        </li>
+                        <li>
+                            <code>returning</code> lists resources and prestige returning from invasion, as on the
+                            Military page: each key is a resource (<code>platinum</code>, <code>prestige</code>,
+                            <code>tech</code>, <code>boats</code>, ...) mapping hours until arrival to the amount. It is
+                            <code>{}</code> when nothing is returning. Returning units are in
+                            <code>ops.barracks_spy</code> and incoming land in <code>ops.land_spy</code>.
+                        </li>
+                        <li>
+                            <code>military</code> counts units at home only. Units returning from invasion or in
+                            training are listed under <code>barracks_spy</code> in <code>ops</code> instead.
+                        </li>
+                        <li>
+                            The draft rate, strengths, and modifiers in <code>military</code> are percentages
+                            (<code>23.5</code> means +23.5%).
+                        </li>
+                        <li>
+                            <code>land</code> has the acres of each land type, then <code>discounted_land</code>
+                            (acres that can be rebuilt at a discount) and <code>barren_land</code> (acres neither
+                            built nor under construction).
+                        </li>
+                        <li>
+                            <code>statistics</code> are totals for this round; each <code>{resource}_spent</code> is
+                            the sum of its <code>{resource}_spent_{category}</code> breakdown.
+                            <code>land_conquered</code>, <code>land_explored</code>, <code>land_lost</code>, and
+                            <code>highest_land_achieved</code> match the Statistics advisor.
+                        </li>
+                    </ul>
+<pre class="bg-body-tertiary border rounded p-2"><code>{
+    "generated_at": "2026-09-30T12:00:00Z",
+    "realm": {"id": 56, "number": 7, "name": "My Realm"},
+    "dominions": {
+        "1234": {
+            "id": 1234,
+            "name": "My Dominion",
+            "race": "Human",
+            "ops": {
+                "clear_sight": {"name": "My Dominion", "land": 2950, "created_at": "2026-09-30T12:00:00Z"},
+                "revelation": {"spells": [], "created_at": "2026-09-30T12:00:00Z"},
+                ...
+            },
+            "resources": {
+                "platinum": 523000, "food": 180000, "lumber": 41000, "mana": 92000,
+                "ore": 60000, "gems": 15000, "tech": 3400, "boats": 112.5
+            },
+            "returning": {
+                "platinum": {"9": 42000},
+                "prestige": {"12": 35},
+                "tech": {"9": 1800, "4": 600}
+            },
+            "military": {
+                "draft_rate": 10, "draftees": 2500, "unit1": 0, "unit2": 8000, "unit3": 3200, "unit4": 2100,
+                "spies": 900, "assassins": 300, "wizards": 1400, "archmages": 120,
+                "spy_strength": 100, "wizard_strength": 87.5,
+                "offensive_modifier": 23.5, "defensive_modifier": 17.25,
+                "spy_ratio": {"offense": 0.612, "defense": 0.585},
+                "wizard_ratio": {"offense": 0.934, "defense": 0.901}
+            },
+            "land": {
+                "plain": 400, "mountain": 350, "swamp": 300, "cavern": 250,
+                "forest": 300, "hill": 450, "water": 450,
+                "discounted_land": 40, "barren_land": 25
+            },
+            "buildings": {
+                "home": 250, "alchemy": 120, "farm": 90, "smithy": 60, "masonry": 100,
+                "ore_mine": 80, "gryphon_nest": 150, "tower": 110, "wizard_guild": 40, "temple": 60,
+                "diamond_mine": 200, "school": 70, "lumberyard": 60, "factory": 30,
+                "guard_tower": 150, "shrine": 20, "barracks": 250, "dock": 200
+            },
+            "hourly": {
+                "production": {
+                    "platinum": 18500, "food": 6200, "lumber": 900, "mana": 3100,
+                    "ore": 1500, "gems": 2400, "tech": 140, "boats": 1.25
+                },
+                "consumption": {"food": 5400},
+                "decay": {"food": 180, "lumber": 410, "mana": 1840},
+                "net_change": {"food": 620, "lumber": 490, "mana": 1260}
+            },
+            "population": {
+                "total": 48000, "max": 52000, "peasants": 36000,
+                "military": 12000, "jobs": 30000, "employed": 30000
+            },
+            "statistics": {
+                "platinum_spent": 4200000,
+                "platinum_spent_construction": 1500000, "platinum_spent_exploration": 900000,
+                "platinum_spent_investment": 300000, "platinum_spent_rezoning": 50000,
+                "platinum_spent_training": 1450000,
+                "lumber_spent": 310000,
+                "lumber_spent_construction": 260000, "lumber_spent_investment": 40000, "lumber_spent_training": 10000,
+                "mana_spent": 95000, "mana_spent_investment": 60000, "mana_spent_training": 35000,
+                "ore_spent": 520000, "ore_spent_investment": 120000, "ore_spent_training": 400000,
+                "gems_spent": 180000, "gems_spent_investment": 180000, "gems_spent_training": 0,
+                "land_conquered": 1200, "land_explored": 1050, "land_lost": 150,
+                "highest_land_achieved": 2600
+            }
+        }
     }
 }</code></pre>
 
@@ -429,10 +514,14 @@
                             <code>0</code> in the response.
                         </li>
                         <li>
+                            <code>realm</code> (optional): only include dominions currently in this realm number. An
+                            unknown realm number returns <code>422</code>.
+                        </li>
+                        <li>
                             Each dominion's <code>ops</code> always has all eight keys:
                             <code>clear_sight</code>, <code>revelation</code>, <code>castle_spy</code>,
                             <code>barracks_spy</code>, <code>survey_dominion</code>, <code>land_spy</code>,
-                            <code>vision</code> and <code>disclosure</code>. A type your realm has not gathered (or that is older than
+                            <code>vision</code>, and <code>disclosure</code>. A type your realm has not gathered (or that is older than
                             <code>max_age_hours</code>) is <code>null</code>.
                         </li>
                         <li>
@@ -446,6 +535,7 @@
 <pre class="bg-body-tertiary border rounded p-2"><code>{
     "generated_at": "2026-09-30T12:00:00Z",
     "max_age_hours": 12,
+    "realm": null,
     "dominions": {
         "5678": {
             "id": 5678,
@@ -486,12 +576,8 @@
                     </p>
                     <ul>
                         <li>
-                            For your own dominion, or a realmie who shares their advisors with you, the ops are built
-                            from the dominion's current state (as on the in-game realm advisors page) instead of
-                            info ops. All eight types are filled in, each with <code>created_at</code> equal to
-                            <code>generated_at</code>, and <code>max_age_hours</code> has no effect. A realmie who
-                            does not share their advisors with you returns <code>403</code>
-                            <code>advisors_not_shared</code>.
+                            Not available for your own dominion or realmies, which return <code>422</code>
+                            <code>same_realm</code>; use <a href="#dominions-me-advisors">Realm Advisors</a> for them.
                         </li>
                         <li>
                             <code>max_age_hours</code> (optional, default 0): only include ops gathered within this
@@ -500,7 +586,7 @@
                         </li>
                         <li>
                             Returns <code>404</code> when your realm has no ops on that dominion within the age
-                            limit (other realms only).
+                            limit.
                         </li>
                     </ul>
 
@@ -510,7 +596,7 @@
                         The history of one op type for one dominion: every op of that type your realm has gathered
                         this round, newest first. <code>{type}</code> is one of <code>clear_sight</code>,
                         <code>revelation</code>, <code>castle_spy</code>, <code>barracks_spy</code>,
-                        <code>survey_dominion</code>, <code>land_spy</code>, <code>vision</code> or
+                        <code>survey_dominion</code>, <code>land_spy</code>, <code>vision</code>, or
                         <code>disclosure</code>; anything else returns <code>422</code>. Not available for your own
                         dominion or realmies, which return <code>422</code> <code>same_realm</code>.
                     </p>

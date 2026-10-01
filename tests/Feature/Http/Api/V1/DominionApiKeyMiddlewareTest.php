@@ -3,10 +3,6 @@
 namespace OpenDominion\Tests\Feature\Http\Api\V1;
 
 use Illuminate\Routing\Middleware\ThrottleRequests;
-use OpenDominion\Calculators\Dominion\MilitaryCalculator;
-use OpenDominion\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Calculators\Dominion\ProductionCalculator;
-use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractTestCase;
 
 class DominionApiKeyMiddlewareTest extends AbstractTestCase
@@ -55,10 +51,12 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
                     'end_date' => $round->end_date->toIso8601ZuluString(),
                 ],
                 'links' => [
+                    'advisors' => url('/api/v1/dominions/me/advisors'),
+                    'op_center' => url('/api/v1/dominions/me/op-center'),
                     'rounds' => url('/api/v1/rounds'),
                     'round_dominions' => url('/api/v1/rounds/' . $round->id . '/dominions'),
-                    'round_realms' => url('/api/v1/rounds/' . $round->id . '/realms'),
                     'round_events' => url('/api/v1/rounds/' . $round->id . '/events'),
+                    'round_realms' => url('/api/v1/rounds/' . $round->id . '/realms'),
                 ],
             ])
             ->assertJsonMissingPath('round.ends_at')
@@ -66,7 +64,7 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertJsonPath('round.hour', $round->hoursInDay())
             ->assertJsonPath('round.duration_days', $round->durationInDays())
             ->assertJsonPath('server_time', fn (string $time) => preg_match('/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/', $time) === 1)
-            ->assertJsonCount(4, 'links')
+            ->assertJsonCount(6, 'links')
             ->assertJsonPath('round.start_date', fn (string $date) => preg_match('/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/', $date) === 1);
     }
 
@@ -99,138 +97,20 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertJsonPath('round.duration_days', 47);
     }
 
-    public function testMeIncludesWhitelistedResourcesProductionAndPopulation(): void
+    public function testMeOnlyContainsIdentityAndLinks(): void
     {
-        $round = $this->createRound();
-        $dominion = $this->createDominion($this->createUser(), $round);
-        $dominion->update([
-            'api_key' => 'stats-key',
-            'resource_platinum' => 123456,
-            'resource_food' => 54321,
-            'resource_boats' => 12.3456,
-            'military_draftees' => 1500,
-            'military_unit1' => 11,
-            'military_unit2' => 22,
-            'military_unit3' => 33,
-            'military_unit4' => 44,
-            'military_spies' => 55,
-            'military_assassins' => 66,
-            'military_wizards' => 77,
-            'military_archmages' => 88,
-            'spy_strength' => 87.456,
-            'wizard_strength' => 100,
-            'stat_total_platinum_spent_construction' => 1000,
-            'stat_total_platinum_spent_exploration' => 200,
-            'stat_total_platinum_spent_investment' => 30,
-            'stat_total_platinum_spent_rezoning' => 4,
-            'stat_total_platinum_spent_training' => 50000,
-            'stat_total_lumber_spent_construction' => 700,
-            'stat_total_lumber_spent_investment' => 80,
-            'stat_total_lumber_spent_training' => 9,
-            'stat_total_mana_spent_investment' => 11,
-            'stat_total_mana_spent_training' => 22,
-            'stat_total_ore_spent_investment' => 33,
-            'stat_total_ore_spent_training' => 44,
-            'stat_total_gems_spent_investment' => 55,
-            'stat_total_gems_spent_training' => 66,
-        ]);
-        $dominion = $dominion->fresh();
+        $dominion = $this->createDominion($this->createUser(), $this->createRound());
+        $dominion->update(['api_key' => 'slim-key']);
 
-        $queueService = app(QueueService::class);
-        $queueService->queueResources('invasion', $dominion, ['military_unit2' => 100, 'military_unit4' => 5], 9);
-        $queueService->queueResources('invasion', $dominion, ['military_unit2' => 7], 4);
-        $queueService->queueResources('training', $dominion, ['military_unit1' => 1000], 6);
-
-        $production = app(ProductionCalculator::class);
-        $population = app(PopulationCalculator::class);
-        $military = app(MilitaryCalculator::class);
-
-        $response = $this->withHeader('X-API-Key', 'stats-key')
+        $response = $this->withHeader('X-API-Key', 'slim-key')
             ->getJson('/api/v1/dominions/me')
             ->assertOk();
 
+        $this->assertSame(['id', 'name', 'realm', 'round', 'server_time', 'links'], array_keys($response->json()));
         $this->assertSame(
-            ['id', 'name', 'realm', 'round', 'server_time', 'resources', 'military', 'hourly', 'population', 'statistics', 'links'],
-            array_keys($response->json())
+            ['advisors', 'op_center', 'rounds', 'round_dominions', 'round_events', 'round_realms'],
+            array_keys($response->json('links'))
         );
-        $this->assertSame([
-            'platinum' => 123456,
-            'food' => 54321,
-            'lumber' => $dominion->resource_lumber,
-            'mana' => $dominion->resource_mana,
-            'ore' => $dominion->resource_ore,
-            'gems' => $dominion->resource_gems,
-            'tech' => $dominion->resource_tech,
-            'boats' => 12.35,
-        ], $response->json('resources'));
-
-        $this->assertEquals([
-            'draftees' => 1500,
-            'unit1' => 11,
-            'unit2' => 129,
-            'unit3' => 33,
-            'unit4' => 49,
-            'spies' => 55,
-            'assassins' => 66,
-            'wizards' => 77,
-            'archmages' => 88,
-            'spy_strength' => 87.46,
-            'wizard_strength' => 100,
-            'offensive_modifier' => round(($military->getOffensivePowerMultiplier($dominion) - 1) * 100, 3),
-            'defensive_modifier' => round(($military->getDefensivePowerMultiplier($dominion) - 1) * 100, 3),
-            'spy_ratio' => [
-                'offense' => round($military->getSpyRatio($dominion, 'offense'), 3),
-                'defense' => round($military->getSpyRatio($dominion, 'defense'), 3),
-            ],
-            'wizard_ratio' => [
-                'offense' => round($military->getWizardRatio($dominion, 'offense'), 3),
-                'defense' => round($military->getWizardRatio($dominion, 'defense'), 3),
-            ],
-        ], $response->json('military'));
-
-        $this->assertSame(
-            [
-                'platinum_spent' => 51234,
-                'platinum_spent_construction' => 1000,
-                'platinum_spent_exploration' => 200,
-                'platinum_spent_investment' => 30,
-                'platinum_spent_rezoning' => 4,
-                'platinum_spent_training' => 50000,
-                'lumber_spent' => 789,
-                'lumber_spent_construction' => 700,
-                'lumber_spent_investment' => 80,
-                'lumber_spent_training' => 9,
-                'mana_spent' => 33,
-                'mana_spent_investment' => 11,
-                'mana_spent_training' => 22,
-                'ore_spent' => 77,
-                'ore_spent_investment' => 33,
-                'ore_spent_training' => 44,
-                'gems_spent' => 121,
-                'gems_spent_investment' => 55,
-                'gems_spent_training' => 66,
-            ],
-            $response->json('statistics')
-        );
-
-        $this->assertSame(['production', 'consumption', 'decay', 'net_change'], array_keys($response->json('hourly')));
-        $this->assertSame(
-            ['platinum', 'food', 'lumber', 'mana', 'ore', 'gems', 'tech', 'boats'],
-            array_keys($response->json('hourly.production'))
-        );
-        $this->assertSame($production->getPlatinumProduction($dominion), $response->json('hourly.production.platinum'));
-        $this->assertSame($production->getFoodNetChange($dominion), $response->json('hourly.net_change.food'));
-        $this->assertSame((int) round($production->getFoodConsumption($dominion)), $response->json('hourly.consumption.food'));
-        $this->assertSame(['food', 'lumber', 'mana'], array_keys($response->json('hourly.decay')));
-
-        $this->assertSame([
-            'total' => $population->getPopulation($dominion),
-            'max' => $population->getMaxPopulation($dominion),
-            'peasants' => $dominion->peasants,
-            'military' => $population->getPopulationMilitary($dominion),
-            'jobs' => $population->getEmploymentJobs($dominion),
-            'employed' => $population->getPopulationEmployed($dominion),
-        ], $response->json('population'));
     }
 
     public function testBearerTokenFallbackWorks(): void
@@ -285,16 +165,35 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertJsonPath('id', $dominion->id);
     }
 
-    public function testEndedRoundReturns410(): void
+    public function testApiKeyKeepsWorkingAfterRoundEnds(): void
     {
-        $user = $this->createUser();
         $round = $this->createRound('-30 days', '-1 day');
-        $dominion = $this->createDominion($user, $round);
-        $dominion->update(['api_key' => 'ended-round-key']);
+        $dominion = $this->createDominion($this->createUser(), $round);
+        $dominion->update(['api_key' => 'ended-round-key', 'protection_finished' => true]);
 
-        $this->withHeader('X-API-Key', 'ended-round-key')
+        $paths = [
+            '/api/v1/dominions/me',
+            '/api/v1/dominions/me/advisors',
+            '/api/v1/dominions/me/op-center',
+            '/api/v1/rounds/' . $round->id . '/dominions',
+        ];
+
+        foreach ($paths as $path) {
+            $this->withHeader('X-API-Key', 'ended-round-key')
+                ->getJson($path)
+                ->assertOk();
+        }
+    }
+
+    public function testLockedDominionInEndedRoundReturns403(): void
+    {
+        $round = $this->createRound('-30 days', '-1 day');
+        $dominion = $this->createDominion($this->createUser(), $round);
+        $dominion->update(['api_key' => 'ended-locked-key', 'locked_at' => now()]);
+
+        $this->withHeader('X-API-Key', 'ended-locked-key')
             ->getJson('/api/v1/dominions/me')
-            ->assertStatus(410)
-            ->assertJson(['error' => 'round_ended']);
+            ->assertStatus(403)
+            ->assertJson(['error' => 'dominion_locked']);
     }
 }

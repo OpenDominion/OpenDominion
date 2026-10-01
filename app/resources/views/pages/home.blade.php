@@ -692,7 +692,7 @@
                             @if ($showUpcoming)
                                 <i class="fa fa-calendar-days fa-fw me-2"></i> Upcoming Rounds
                             @elseif ($hasActiveRound)
-                                <i class="fa fa-shield-halved fa-fw me-2"></i> Round #{{ $currentRound->number }}
+                                <i class="fa fa-shield-halved fa-fw me-2"></i> {{ $currentRound->name }}
                             @else
                                 <i class="fa fa-shield-halved fa-fw me-2"></i> Current Round
                             @endif
