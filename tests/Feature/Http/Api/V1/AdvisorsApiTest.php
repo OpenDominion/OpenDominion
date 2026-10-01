@@ -4,6 +4,7 @@ namespace OpenDominion\Tests\Feature\Http\Api\V1;
 
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Testing\TestResponse;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
@@ -54,9 +55,10 @@ class AdvisorsApiTest extends AbstractTestCase
 
         $entry = $response->json('dominions.' . $this->dominion->id);
         $this->assertSame(
-            ['id', 'name', 'race', 'ops', 'resources', 'military', 'land', 'buildings', 'hourly', 'population', 'statistics'],
+            ['id', 'name', 'race', 'ops', 'resources', 'returning', 'military', 'land', 'buildings', 'hourly', 'population', 'statistics'],
             array_keys($entry)
         );
+        $this->assertStringContainsString('"returning":{}', $response->getContent());
         $this->assertSame($this->dominion->id, $entry['id']);
         $this->assertSame($this->dominion->race->name, $entry['race']);
         $this->assertSame(self::OP_TYPES, array_keys($entry['ops']));
@@ -75,6 +77,7 @@ class AdvisorsApiTest extends AbstractTestCase
             'resource_platinum' => 123456,
             'resource_food' => 54321,
             'resource_boats' => 12.3456,
+            'draft_rate' => 35,
             'military_draftees' => 1500,
             'military_unit1' => 11,
             'military_unit2' => 22,
@@ -100,7 +103,12 @@ class AdvisorsApiTest extends AbstractTestCase
             'stat_total_ore_spent_training' => 44,
             'stat_total_gems_spent_investment' => 55,
             'stat_total_gems_spent_training' => 66,
+            'stat_total_land_conquered' => 120,
+            'stat_total_land_explored' => 340,
+            'stat_total_land_lost' => 56,
+            'discounted_land' => 25,
         ]);
+        Dominion::whereKey($this->dominion->id)->update(['highest_land_achieved' => 789]);
         $dominion = $this->dominion->fresh();
 
         $queueService = app(QueueService::class);
@@ -126,11 +134,12 @@ class AdvisorsApiTest extends AbstractTestCase
         ], $entry['resources']);
 
         $this->assertEquals([
+            'draft_rate' => 35,
             'draftees' => 1500,
             'unit1' => 11,
-            'unit2' => 129,
+            'unit2' => 22,
             'unit3' => 33,
-            'unit4' => 49,
+            'unit4' => 44,
             'spies' => 55,
             'assassins' => 66,
             'wizards' => 77,
@@ -148,6 +157,8 @@ class AdvisorsApiTest extends AbstractTestCase
                 'defense' => round($military->getWizardRatio($dominion, 'defense'), 3),
             ],
         ], $entry['military']);
+        $this->assertSame(100, $entry['ops']['barracks_spy']['units']['returning']['unit2'][9]);
+        $this->assertSame(1000, $entry['ops']['barracks_spy']['units']['training']['unit1'][6]);
 
         $this->assertSame(
             [
@@ -170,14 +181,21 @@ class AdvisorsApiTest extends AbstractTestCase
                 'gems_spent' => 121,
                 'gems_spent_investment' => 55,
                 'gems_spent_training' => 66,
+                'land_conquered' => 120,
+                'land_explored' => 340,
+                'land_lost' => 56,
+                'highest_land_achieved' => 789,
             ],
             $entry['statistics']
         );
 
-        $this->assertSame(['plain', 'mountain', 'swamp', 'cavern', 'forest', 'hill', 'water'], array_keys($entry['land']));
-        foreach ($entry['land'] as $landType => $acres) {
-            $this->assertSame($dominion->{'land_' . $landType}, $acres);
+        $landTypes = ['plain', 'mountain', 'swamp', 'cavern', 'forest', 'hill', 'water'];
+        $this->assertSame([...$landTypes, 'discounted_land', 'barren_land'], array_keys($entry['land']));
+        foreach ($landTypes as $landType) {
+            $this->assertSame($dominion->{'land_' . $landType}, $entry['land'][$landType]);
         }
+        $this->assertSame(25, $entry['land']['discounted_land']);
+        $this->assertSame(app(LandCalculator::class)->getTotalBarrenLand($dominion), $entry['land']['barren_land']);
         $this->assertSame(app(BuildingHelper::class)->getBuildingTypes(), array_keys($entry['buildings']));
         foreach ($entry['buildings'] as $buildingType => $amount) {
             $this->assertSame($dominion->{'building_' . $buildingType}, $amount);
@@ -201,6 +219,28 @@ class AdvisorsApiTest extends AbstractTestCase
             'jobs' => $population->getEmploymentJobs($dominion),
             'employed' => $population->getPopulationEmployed($dominion),
         ], $entry['population']);
+    }
+
+    public function testReturningListsResourcesAndPrestigeFromInvasionByHour(): void
+    {
+        $queueService = app(QueueService::class);
+        $queueService->queueResources('invasion', $this->dominion, ['resource_platinum' => 5000, 'prestige' => 20], 12);
+        $queueService->queueResources('invasion', $this->dominion, ['resource_platinum' => 300, 'resource_tech' => 450], 4);
+        $queueService->queueResources('invasion', $this->dominion, ['military_unit2' => 100, 'land_plain' => 40, 'discounted_land' => 40], 12);
+        $queueService->queueResources('exploration', $this->dominion, ['land_plain' => 60], 12);
+
+        $response = $this->getAdvisors();
+        $returning = $response->json('dominions.' . $this->dominion->id . '.returning');
+
+        $this->assertEquals([
+            'platinum' => [12 => 5000, 4 => 300],
+            'prestige' => [12 => 20],
+            'tech' => [4 => 450],
+        ], $returning);
+        $this->assertSame(
+            $this->dominion->fresh()->resource_platinum,
+            $response->json('dominions.' . $this->dominion->id . '.resources.platinum')
+        );
     }
 
     public function testRealmieSharingAdvisorsIsListedWithCurrentDataNotInfoOps(): void

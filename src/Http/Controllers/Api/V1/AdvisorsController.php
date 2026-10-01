@@ -3,12 +3,14 @@
 namespace OpenDominion\Http\Controllers\Api\V1;
 
 use Illuminate\Http\JsonResponse;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Controllers\AbstractController;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\InfoOpAssemblerService;
 
@@ -27,8 +29,10 @@ class AdvisorsController extends AbstractController
 
     public function __construct(
         private InfoOpAssemblerService $assembler,
+        private InfoMapper $infoMapper,
         private BuildingHelper $buildingHelper,
         private LandHelper $landHelper,
+        private LandCalculator $landCalculator,
         private MilitaryCalculator $militaryCalculator,
         private PopulationCalculator $populationCalculator,
         private ProductionCalculator $productionCalculator
@@ -79,6 +83,7 @@ class AdvisorsController extends AbstractController
             'race' => $dominion->race?->name,
             'ops' => $this->assembler->assembleFromAdvisors($dominion),
             'resources' => $this->resourcesPayload($dominion),
+            'returning' => $this->returningPayload($dominion),
             'military' => $this->militaryPayload($dominion),
             'land' => $this->landPayload($dominion),
             'buildings' => $this->buildingsPayload($dominion),
@@ -108,9 +113,20 @@ class AdvisorsController extends AbstractController
     }
 
     /**
-     * Units, spy/wizard strength and OP/DP modifiers.
-     * Units 1-4 include those returning from invasion, as on the status page;
-     * units in training are not included.
+     * Resources and prestige returning from invasion, keyed by resource and then
+     * by hours until arrival, as on the Military page. Returning units are in the
+     * barracks_spy op and incoming land in the land_spy op.
+     *
+     * @return object
+     */
+    private function returningPayload(Dominion $dominion): object
+    {
+        return (object) $this->infoMapper->mapResources($dominion)['incoming'];
+    }
+
+    /**
+     * Units at home, draft rate, spy/wizard strength and OP/DP modifiers.
+     * Returning and training units are only in the barracks_spy op.
      * Modifiers are percentages, as on the Military advisor (+23.5 means x1.235).
      *
      * @return array<string, int|float|array<string, float>>
@@ -118,11 +134,12 @@ class AdvisorsController extends AbstractController
     private function militaryPayload(Dominion $dominion): array
     {
         return [
+            'draft_rate' => $dominion->draft_rate,
             'draftees' => $dominion->military_draftees,
-            'unit1' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1),
-            'unit2' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 2),
-            'unit3' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3),
-            'unit4' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4),
+            'unit1' => $dominion->military_unit1,
+            'unit2' => $dominion->military_unit2,
+            'unit3' => $dominion->military_unit3,
+            'unit4' => $dominion->military_unit4,
             'spies' => $dominion->military_spies,
             'assassins' => $dominion->military_assassins,
             'wizards' => $dominion->military_wizards,
@@ -143,7 +160,9 @@ class AdvisorsController extends AbstractController
     }
 
     /**
-     * Acres of each land type (the dominion's land_* attributes).
+     * Acres of each land type (the dominion's land_* attributes), followed by
+     * discounted_land (acres that can be rebuilt at a discount) and barren_land
+     * (acres neither built nor under construction, as on the Land advisor).
      *
      * @return array<string, int>
      */
@@ -153,6 +172,9 @@ class AdvisorsController extends AbstractController
         foreach ($this->landHelper->getLandTypes() as $landType) {
             $land[$landType] = (int) $dominion->{"land_{$landType}"};
         }
+
+        $land['discounted_land'] = (int) $dominion->discounted_land;
+        $land['barren_land'] = $this->landCalculator->getTotalBarrenLand($dominion);
 
         return $land;
     }
@@ -227,6 +249,7 @@ class AdvisorsController extends AbstractController
      * Round totals from the dominion's stat_total_* counters. For each resource,
      * {resource}_spent is the total and {resource}_spent_{category} the
      * breakdown, one per stat_total_{resource}_spent_{category} column.
+     * Land totals and highest_land_achieved follow, as on the Statistics advisor.
      *
      * @return array<string, int>
      */
@@ -243,6 +266,11 @@ class AdvisorsController extends AbstractController
             $statistics["{$resource}_spent"] = array_sum($breakdown);
             $statistics += $breakdown;
         }
+
+        $statistics['land_conquered'] = (int) $dominion->stat_total_land_conquered;
+        $statistics['land_explored'] = (int) $dominion->stat_total_land_explored;
+        $statistics['land_lost'] = (int) $dominion->stat_total_land_lost;
+        $statistics['highest_land_achieved'] = (int) $dominion->highest_land_achieved;
 
         return $statistics;
     }

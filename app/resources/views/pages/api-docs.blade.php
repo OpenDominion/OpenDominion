@@ -76,7 +76,7 @@
                                     <td><code>round_not_started</code></td>
                                     <td>
                                         The round has not started yet. Until it does, only <code>/rounds</code>,
-                                        <code>/dominions/me</code> and <code>/dominions/me/advisors</code> are available.
+                                        <code>/dominions/me</code>, and <code>/dominions/me/advisors</code> are available.
                                     </td>
                                 </tr>
                                 <tr>
@@ -146,7 +146,7 @@
                     </p>
                     <ul>
                         <li>
-                            <code>guard</code> is <code>"royal"</code>, <code>"elite"</code> or <code>null</code>.
+                            <code>guard</code> is <code>"royal"</code>, <code>"elite"</code>, or <code>null</code>.
                             Black Guard membership is not included.
                         </li>
                         <li>
@@ -315,7 +315,7 @@
                                     <td>
                                         <code>{"neutral": false, "wonder": "Ivory Tower", "realm_number": 7}</code><br>
                                         When a neutral wonder is attacked, <code>neutral</code> is <code>true</code>
-                                        and <code>wonder</code>, <code>realm_number</code> and the event's
+                                        and <code>wonder</code>, <code>realm_number</code>, and the event's
                                         <code>target_id</code> are <code>null</code>.
                                     </td>
                                 </tr>
@@ -404,12 +404,30 @@
                             <code>generated_at</code>. The example below shortens it.
                         </li>
                         <li>
-                            <code>military</code> includes units returning from invasion but not units in training;
-                            strengths and modifiers are percentages (<code>23.5</code> means +23.5%).
+                            <code>returning</code> lists resources and prestige returning from invasion, as on the
+                            Military page: each key is a resource (<code>platinum</code>, <code>prestige</code>,
+                            <code>tech</code>, <code>boats</code>, ...) mapping hours until arrival to the amount. It is
+                            <code>{}</code> when nothing is returning. Returning units are in
+                            <code>ops.barracks_spy</code> and incoming land in <code>ops.land_spy</code>.
+                        </li>
+                        <li>
+                            <code>military</code> counts units at home only. Units returning from invasion or in
+                            training are listed under <code>barracks_spy</code> in <code>ops</code> instead.
+                        </li>
+                        <li>
+                            The draft rate, strengths, and modifiers in <code>military</code> are percentages
+                            (<code>23.5</code> means +23.5%).
+                        </li>
+                        <li>
+                            <code>land</code> has the acres of each land type, then <code>discounted_land</code>
+                            (acres that can be rebuilt at a discount) and <code>barren_land</code> (acres neither
+                            built nor under construction).
                         </li>
                         <li>
                             <code>statistics</code> are totals for this round; each <code>{resource}_spent</code> is
                             the sum of its <code>{resource}_spent_{category}</code> breakdown.
+                            <code>land_conquered</code>, <code>land_explored</code>, <code>land_lost</code>, and
+                            <code>highest_land_achieved</code> match the Statistics advisor.
                         </li>
                     </ul>
 <pre class="bg-body-tertiary border rounded p-2"><code>{
@@ -429,8 +447,13 @@
                 "platinum": 523000, "food": 180000, "lumber": 41000, "mana": 92000,
                 "ore": 60000, "gems": 15000, "tech": 3400, "boats": 112.5
             },
+            "returning": {
+                "platinum": {"9": 42000},
+                "prestige": {"12": 35},
+                "tech": {"9": 1800, "4": 600}
+            },
             "military": {
-                "draftees": 2500, "unit1": 0, "unit2": 8000, "unit3": 3200, "unit4": 2100,
+                "draft_rate": 10, "draftees": 2500, "unit1": 0, "unit2": 8000, "unit3": 3200, "unit4": 2100,
                 "spies": 900, "assassins": 300, "wizards": 1400, "archmages": 120,
                 "spy_strength": 100, "wizard_strength": 87.5,
                 "offensive_modifier": 23.5, "defensive_modifier": 17.25,
@@ -439,7 +462,8 @@
             },
             "land": {
                 "plain": 400, "mountain": 350, "swamp": 300, "cavern": 250,
-                "forest": 300, "hill": 450, "water": 450
+                "forest": 300, "hill": 450, "water": 450,
+                "discounted_land": 40, "barren_land": 25
             },
             "buildings": {
                 "home": 250, "alchemy": 120, "farm": 90, "smithy": 60, "masonry": 100,
@@ -469,7 +493,9 @@
                 "lumber_spent_construction": 260000, "lumber_spent_investment": 40000, "lumber_spent_training": 10000,
                 "mana_spent": 95000, "mana_spent_investment": 60000, "mana_spent_training": 35000,
                 "ore_spent": 520000, "ore_spent_investment": 120000, "ore_spent_training": 400000,
-                "gems_spent": 180000, "gems_spent_investment": 180000, "gems_spent_training": 0
+                "gems_spent": 180000, "gems_spent_investment": 180000, "gems_spent_training": 0,
+                "land_conquered": 1200, "land_explored": 1050, "land_lost": 150,
+                "highest_land_achieved": 2600
             }
         }
     }
@@ -495,7 +521,7 @@
                             Each dominion's <code>ops</code> always has all eight keys:
                             <code>clear_sight</code>, <code>revelation</code>, <code>castle_spy</code>,
                             <code>barracks_spy</code>, <code>survey_dominion</code>, <code>land_spy</code>,
-                            <code>vision</code> and <code>disclosure</code>. A type your realm has not gathered (or that is older than
+                            <code>vision</code>, and <code>disclosure</code>. A type your realm has not gathered (or that is older than
                             <code>max_age_hours</code>) is <code>null</code>.
                         </li>
                         <li>
@@ -570,7 +596,7 @@
                         The history of one op type for one dominion: every op of that type your realm has gathered
                         this round, newest first. <code>{type}</code> is one of <code>clear_sight</code>,
                         <code>revelation</code>, <code>castle_spy</code>, <code>barracks_spy</code>,
-                        <code>survey_dominion</code>, <code>land_spy</code>, <code>vision</code> or
+                        <code>survey_dominion</code>, <code>land_spy</code>, <code>vision</code>, or
                         <code>disclosure</code>; anything else returns <code>422</code>. Not available for your own
                         dominion or realmies, which return <code>422</code> <code>same_realm</code>.
                     </p>
