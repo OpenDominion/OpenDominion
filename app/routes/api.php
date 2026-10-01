@@ -37,9 +37,10 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
         $router->get('{round}/events')->uses('Api\V1\RoundController@events')->name('events')->middleware('roundstarted');
     });
 
-    // Read-only authenticated API: per-dominion op center via X-API-Key header.
+    // Read-only authenticated API: own dominion, realm advisors and op center via X-API-Key header.
     $router->group(['prefix' => 'dominions', 'middleware' => ['bindings', 'throttle:60,1', 'scalarquery', 'apikey'], 'as' => 'dominions.'], static function (Router $router) {
         $router->get('me')->uses('Api\V1\OpCenterController@me')->name('me');
+        $router->get('me/realm')->uses('Api\V1\RealmController@index')->name('realm');
         $router->get('me/op-center')->uses('Api\V1\OpCenterController@ops')->name('op-center')->middleware('roundstarted');
         $router->get('me/op-center/{target}')->uses('Api\V1\OpCenterController@opsForTarget')->name('op-center.target')->middleware('roundstarted');
         $router->get('me/op-center/{target}/{type}')->uses('Api\V1\OpCenterController@opsForTargetByType')->name('op-center.target.type')->middleware('roundstarted');
