@@ -12,7 +12,7 @@ use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\InfoOpAssemblerService;
 
-class RealmController extends AbstractController
+class AdvisorsController extends AbstractController
 {
     /**
      * Spending categories tracked per resource by stat_total_{resource}_spent_{category}.

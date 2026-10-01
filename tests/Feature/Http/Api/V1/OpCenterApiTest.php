@@ -413,7 +413,7 @@ class OpCenterApiTest extends AbstractTestCase
                 ->assertStatus(422)
                 ->assertExactJson([
                     'error' => 'same_realm',
-                    'message' => 'The op center is not available for dominions in your realm. Use /dominions/me/realm for their current data.',
+                    'message' => 'The op center is not available for dominions in your realm. Use /dominions/me/advisors for their current data.',
                 ]);
         }
     }

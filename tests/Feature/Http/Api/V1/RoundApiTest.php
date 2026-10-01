@@ -88,9 +88,11 @@ class RoundApiTest extends AbstractTestCase
         $this->assertSame($dominion->realm->number, $entry['realm_number']);
         $this->assertIsInt($entry['land']);
         $this->assertSame(
-            ['id', 'name', 'race', 'realm_number', 'realm_name', 'land', 'networth', 'in_protection', 'guard'],
+            ['id', 'name', 'race', 'realm_number', 'realm_name', 'land', 'networth', 'in_protection', 'guard', 'locked', 'abandoned'],
             array_keys($entry)
         );
+        $this->assertFalse($entry['locked']);
+        $this->assertFalse($entry['abandoned']);
     }
 
     public function testDominionsListShowsRoyalAndEliteGuardButNotBlackGuard(): void
@@ -240,7 +242,7 @@ class RoundApiTest extends AbstractTestCase
             ->assertJson(['error' => 'round_not_started']);
     }
 
-    public function testDominionsListExcludesLockedAndAbandonedDominions(): void
+    public function testDominionsListIncludesLockedAndAbandonedDominionsWithFlags(): void
     {
         $round = $this->createRound();
         $active = $this->createDominion($this->createUser(), $round);
@@ -248,13 +250,82 @@ class RoundApiTest extends AbstractTestCase
         $locked->update(['locked_at' => now()]);
         $abandoned = $this->createDominion($this->createUser(), $round);
         $abandoned->update(['abandoned_at' => now()->subDay()]);
+        $pendingAbandonment = $this->createDominion($this->createUser(), $round);
+        $pendingAbandonment->update(['abandoned_at' => now()->addHours(5)]);
 
-        $ids = collect($this->getJson('/api/v1/rounds/' . $round->id . '/dominions')->json())
-            ->pluck('id')->all();
+        $entries = collect($this->getJson('/api/v1/rounds/' . $round->id . '/dominions')->assertOk()->json())
+            ->keyBy('id')
+            ->map(fn (array $entry) => ['locked' => $entry['locked'], 'abandoned' => $entry['abandoned']]);
 
-        $this->assertContains($active->id, $ids);
-        $this->assertNotContains($locked->id, $ids);
-        $this->assertNotContains($abandoned->id, $ids);
+        $this->assertSame(['locked' => false, 'abandoned' => false], $entries[$active->id]);
+        $this->assertSame(['locked' => true, 'abandoned' => false], $entries[$locked->id]);
+        $this->assertSame(['locked' => false, 'abandoned' => true], $entries[$abandoned->id]);
+        $this->assertSame(['locked' => false, 'abandoned' => false], $entries[$pendingAbandonment->id]);
+    }
+
+    public function testDominionsListOmitsSharesAdvisorsWithoutApiKey(): void
+    {
+        $round = $this->createRound();
+        $this->createDominion($this->createUser(), $round);
+
+        foreach ($this->getJson('/api/v1/rounds/' . $round->id . '/dominions')->assertOk()->json() as $entry) {
+            $this->assertArrayNotHasKey('shares_advisors', $entry);
+        }
+    }
+
+    public function testDominionsListShowsSharesAdvisorsForApiKey(): void
+    {
+        $round = $this->createRound();
+        $viewer = $this->createDominion($this->createUser(), $round);
+        $viewer->update(['api_key' => 'search-key']);
+        $sharing = $this->createDominion($this->createUser(), $round, null, $viewer->realm);
+        $sharing->settings = ['realmadvisors' => [$viewer->id => true]];
+        $sharing->save();
+        $notSharing = $this->createDominion($this->createUser(), $round, null, $viewer->realm);
+        $notSharing->settings = ['realmadvisors' => [$viewer->id => false]];
+        $notSharing->save();
+        $otherRealm = Realm::create(['round_id' => $round->id, 'alignment' => 'good', 'number' => 99, 'name' => 'Elsewhere']);
+        $outsider = $this->createDominion($this->createUser(), $round, null, $otherRealm);
+
+        $sharesAdvisors = collect(
+            $this->withHeader('X-API-Key', 'search-key')
+                ->getJson('/api/v1/rounds/' . $round->id . '/dominions')
+                ->assertOk()
+                ->json()
+        )->pluck('shares_advisors', 'id');
+
+        $this->assertTrue($sharesAdvisors[$viewer->id]);
+        $this->assertTrue($sharesAdvisors[$sharing->id]);
+        $this->assertFalse($sharesAdvisors[$notSharing->id]);
+        $this->assertFalse($sharesAdvisors[$outsider->id]);
+    }
+
+    public function testDominionsListOmitsSharesAdvisorsForApiKeyFromAnotherRound(): void
+    {
+        $round = $this->createRound();
+        $this->createDominion($this->createUser(), $round);
+        $otherRoundDominion = $this->createDominion($this->createUser(), $this->createRound());
+        $otherRoundDominion->update(['api_key' => 'other-round-key']);
+
+        $entries = $this->withHeader('X-API-Key', 'other-round-key')
+            ->getJson('/api/v1/rounds/' . $round->id . '/dominions')
+            ->assertOk()
+            ->json();
+
+        $this->assertNotEmpty($entries);
+        foreach ($entries as $entry) {
+            $this->assertArrayNotHasKey('shares_advisors', $entry);
+        }
+    }
+
+    public function testDominionsListRejectsAnInvalidApiKey(): void
+    {
+        $round = $this->createRound();
+
+        $this->withHeader('X-API-Key', 'not-a-key')
+            ->getJson('/api/v1/rounds/' . $round->id . '/dominions')
+            ->assertStatus(401)
+            ->assertJson(['error' => 'invalid_api_key']);
     }
 
     public function testEventsRespectsLimit(): void
@@ -382,16 +453,13 @@ class RoundApiTest extends AbstractTestCase
         $this->assertStringContainsString('"data":{}', $response->getContent());
     }
 
-    public function testEventNamesDominionsThatNoLongerAppearInSearch(): void
+    public function testEventNamesAbandonedDominions(): void
     {
         $round = $this->createRound();
         $dominion = $this->createDominion($this->createUser(), $round);
         $dominion->update(['abandoned_at' => now()->subHour()]);
 
         $event = $this->createEventOfType($round, $dominion, 'abandoned');
-
-        $search = collect($this->getJson('/api/v1/rounds/' . $round->id . '/dominions')->assertOk()->json());
-        $this->assertNull($search->firstWhere('id', $dominion->id));
 
         $entry = collect($this->getJson('/api/v1/rounds/' . $round->id . '/events')->assertOk()->json())
             ->firstWhere('id', (string) $event->id);
@@ -566,6 +634,7 @@ class RoundApiTest extends AbstractTestCase
         for ($i = 0; $i < 4; $i++) {
             $this->createDominion($this->createUser(), $round)->update(['protection_finished' => true]);
         }
+        Dominion::where('round_id', $round->id)->first()->update(['api_key' => 'lazy-key']);
 
         $lazyLoads = [];
         Model::preventLazyLoading();
@@ -575,6 +644,10 @@ class RoundApiTest extends AbstractTestCase
 
         try {
             $this->getJson('/api/v1/rounds/' . $round->id . '/dominions')->assertOk()->assertJsonCount(4);
+            $this->withHeader('X-API-Key', 'lazy-key')
+                ->getJson('/api/v1/rounds/' . $round->id . '/dominions')
+                ->assertOk()
+                ->assertJsonCount(4);
         } finally {
             Model::preventLazyLoading(false);
             Model::handleLazyLoadingViolationUsing(null);

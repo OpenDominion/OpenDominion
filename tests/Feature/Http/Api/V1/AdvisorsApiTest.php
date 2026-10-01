@@ -15,7 +15,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractTestCase;
 
-class RealmApiTest extends AbstractTestCase
+class AdvisorsApiTest extends AbstractTestCase
 {
     private const OP_TYPES = ['clear_sight', 'revelation', 'castle_spy', 'barracks_spy', 'survey_dominion', 'land_spy', 'vision', 'disclosure'];
 
@@ -30,19 +30,19 @@ class RealmApiTest extends AbstractTestCase
 
         $this->round = $this->createRound();
         $this->dominion = $this->createDominion($this->createUser(), $this->round);
-        $this->dominion->update(['api_key' => 'realm-key', 'protection_finished' => true]);
+        $this->dominion->update(['api_key' => 'advisors-key', 'protection_finished' => true]);
     }
 
     public function testRequiresApiKey(): void
     {
-        $this->getJson('/api/v1/dominions/me/realm')
+        $this->getJson('/api/v1/dominions/me/advisors')
             ->assertStatus(401)
             ->assertJson(['error' => 'missing_api_key']);
     }
 
     public function testOwnDominionIsListedWithRealmAndAdvisorOps(): void
     {
-        $response = $this->getRealm();
+        $response = $this->getAdvisors();
 
         $this->assertSame(['generated_at', 'realm', 'dominions'], array_keys($response->json()));
         $this->assertSame([
@@ -112,7 +112,7 @@ class RealmApiTest extends AbstractTestCase
         $population = app(PopulationCalculator::class);
         $military = app(MilitaryCalculator::class);
 
-        $entry = $this->getRealm()->json('dominions.' . $dominion->id);
+        $entry = $this->getAdvisors()->json('dominions.' . $dominion->id);
 
         $this->assertSame([
             'platinum' => 123456,
@@ -217,7 +217,7 @@ class RealmApiTest extends AbstractTestCase
             'latest' => true,
         ]);
 
-        $response = $this->getRealm();
+        $response = $this->getAdvisors();
 
         $this->assertSame(
             [$this->dominion->id, $realmie->id],
@@ -236,7 +236,7 @@ class RealmApiTest extends AbstractTestCase
         $this->dominion->save();
 
         $response = $this->withHeader('X-API-Key', 'newcomer-key')
-            ->getJson('/api/v1/dominions/me/realm')
+            ->getJson('/api/v1/dominions/me/advisors')
             ->assertOk();
 
         $this->assertSame(
@@ -251,7 +251,7 @@ class RealmApiTest extends AbstractTestCase
         $realmie->settings = ['realmadvisors' => [$this->dominion->id => false]];
         $realmie->save();
 
-        $this->assertArrayNotHasKey((string) $realmie->id, $this->getRealm()->json('dominions'));
+        $this->assertArrayNotHasKey((string) $realmie->id, $this->getAdvisors()->json('dominions'));
     }
 
     public function testDominionsInOtherRealmsAreOmitted(): void
@@ -268,7 +268,7 @@ class RealmApiTest extends AbstractTestCase
 
         $this->assertSame(
             [$this->dominion->id],
-            array_map('intval', array_keys($this->getRealm()->json('dominions')))
+            array_map('intval', array_keys($this->getAdvisors()->json('dominions')))
         );
     }
 
@@ -278,7 +278,7 @@ class RealmApiTest extends AbstractTestCase
         $this->dominion->created_at = $this->round->realmAssignmentDate()->addHour();
         $this->dominion->save();
 
-        $this->assertArrayNotHasKey((string) $realmie->id, $this->getRealm()->json('dominions'));
+        $this->assertArrayNotHasKey((string) $realmie->id, $this->getAdvisors()->json('dominions'));
     }
 
     public function testLateStarterCanSeeRealmieAdvisorsWhenExplicitlyShared(): void
@@ -289,21 +289,21 @@ class RealmApiTest extends AbstractTestCase
         $this->dominion->created_at = $this->round->realmAssignmentDate()->addHour();
         $this->dominion->save();
 
-        $this->getRealm()->assertJsonPath('dominions.' . $realmie->id . '.id', $realmie->id);
+        $this->getAdvisors()->assertJsonPath('dominions.' . $realmie->id . '.id', $realmie->id);
     }
 
     public function testAvailableWhileInProtection(): void
     {
         $this->dominion->update(['protection_finished' => false]);
 
-        $this->getRealm()->assertJsonPath('dominions.' . $this->dominion->id . '.id', $this->dominion->id);
+        $this->getAdvisors()->assertJsonPath('dominions.' . $this->dominion->id . '.id', $this->dominion->id);
     }
 
     public function testAvailableBeforeRoundStarts(): void
     {
         $this->round->update(['start_date' => now()->addDays(2)]);
 
-        $this->getRealm()->assertJsonPath('dominions.' . $this->dominion->id . '.id', $this->dominion->id);
+        $this->getAdvisors()->assertJsonPath('dominions.' . $this->dominion->id . '.id', $this->dominion->id);
     }
 
     private function createRealmie(): Dominion
@@ -311,10 +311,10 @@ class RealmApiTest extends AbstractTestCase
         return $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $this->dominion->realm);
     }
 
-    private function getRealm(): TestResponse
+    private function getAdvisors(): TestResponse
     {
-        return $this->withHeader('X-API-Key', 'realm-key')
-            ->getJson('/api/v1/dominions/me/realm')
+        return $this->withHeader('X-API-Key', 'advisors-key')
+            ->getJson('/api/v1/dominions/me/advisors')
             ->assertOk();
     }
 }

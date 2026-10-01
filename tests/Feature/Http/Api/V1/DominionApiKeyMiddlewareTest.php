@@ -51,12 +51,12 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
                     'end_date' => $round->end_date->toIso8601ZuluString(),
                 ],
                 'links' => [
-                    'realm' => url('/api/v1/dominions/me/realm'),
+                    'advisors' => url('/api/v1/dominions/me/advisors'),
                     'op_center' => url('/api/v1/dominions/me/op-center'),
                     'rounds' => url('/api/v1/rounds'),
                     'round_dominions' => url('/api/v1/rounds/' . $round->id . '/dominions'),
-                    'round_realms' => url('/api/v1/rounds/' . $round->id . '/realms'),
                     'round_events' => url('/api/v1/rounds/' . $round->id . '/events'),
+                    'round_realms' => url('/api/v1/rounds/' . $round->id . '/realms'),
                 ],
             ])
             ->assertJsonMissingPath('round.ends_at')
@@ -107,6 +107,10 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertOk();
 
         $this->assertSame(['id', 'name', 'realm', 'round', 'server_time', 'links'], array_keys($response->json()));
+        $this->assertSame(
+            ['advisors', 'op_center', 'rounds', 'round_dominions', 'round_events', 'round_realms'],
+            array_keys($response->json('links'))
+        );
     }
 
     public function testBearerTokenFallbackWorks(): void
@@ -161,16 +165,35 @@ class DominionApiKeyMiddlewareTest extends AbstractTestCase
             ->assertJsonPath('id', $dominion->id);
     }
 
-    public function testEndedRoundReturns410(): void
+    public function testApiKeyKeepsWorkingAfterRoundEnds(): void
     {
-        $user = $this->createUser();
         $round = $this->createRound('-30 days', '-1 day');
-        $dominion = $this->createDominion($user, $round);
-        $dominion->update(['api_key' => 'ended-round-key']);
+        $dominion = $this->createDominion($this->createUser(), $round);
+        $dominion->update(['api_key' => 'ended-round-key', 'protection_finished' => true]);
 
-        $this->withHeader('X-API-Key', 'ended-round-key')
+        $paths = [
+            '/api/v1/dominions/me',
+            '/api/v1/dominions/me/advisors',
+            '/api/v1/dominions/me/op-center',
+            '/api/v1/rounds/' . $round->id . '/dominions',
+        ];
+
+        foreach ($paths as $path) {
+            $this->withHeader('X-API-Key', 'ended-round-key')
+                ->getJson($path)
+                ->assertOk();
+        }
+    }
+
+    public function testLockedDominionInEndedRoundReturns403(): void
+    {
+        $round = $this->createRound('-30 days', '-1 day');
+        $dominion = $this->createDominion($this->createUser(), $round);
+        $dominion->update(['api_key' => 'ended-locked-key', 'locked_at' => now()]);
+
+        $this->withHeader('X-API-Key', 'ended-locked-key')
             ->getJson('/api/v1/dominions/me')
-            ->assertStatus(410)
-            ->assertJson(['error' => 'round_ended']);
+            ->assertStatus(403)
+            ->assertJson(['error' => 'dominion_locked']);
     }
 }

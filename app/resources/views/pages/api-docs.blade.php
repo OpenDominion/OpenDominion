@@ -23,7 +23,7 @@
                     </p>
                     <p>
                         A key belongs to one dominion in one round. Generate it from that dominion's Settings page
-                        while playing. It stops working when the round ends.
+                        while playing. It keeps working after the round ends.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>curl -H "X-API-Key: YOUR_KEY" {{ route('api.dominions.me') }}</code></pre>
 
@@ -69,14 +69,14 @@
                                 <tr>
                                     <td>403</td>
                                     <td><code>under_protection</code></td>
-                                    <td>Your dominion is in protection. The op center endpoints are unavailable until protection ends; <code>/dominions/me</code> and <code>/dominions/me/realm</code> are still available.</td>
+                                    <td>Your dominion is in protection. The op center endpoints are unavailable until protection ends; <code>/dominions/me</code> and <code>/dominions/me/advisors</code> are still available.</td>
                                 </tr>
                                 <tr>
                                     <td>403</td>
                                     <td><code>round_not_started</code></td>
                                     <td>
                                         The round has not started yet. Until it does, only <code>/rounds</code>,
-                                        <code>/dominions/me</code> and <code>/dominions/me/realm</code> are available.
+                                        <code>/dominions/me</code> and <code>/dominions/me/advisors</code> are available.
                                     </td>
                                 </tr>
                                 <tr>
@@ -86,11 +86,6 @@
                                         No round or dominion exists with the ID in the URL, the dominion is not in
                                         your round, or your realm has no info ops on it.
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td>410</td>
-                                    <td><code>round_ended</code></td>
-                                    <td>The dominion's round has ended, so the key no longer works.</td>
                                 </tr>
                                 <tr>
                                     <td>422</td>
@@ -104,7 +99,7 @@
                                 <tr>
                                     <td>422</td>
                                     <td><code>same_realm</code></td>
-                                    <td>An op center endpoint was requested for a dominion in your own realm. Use <code>/dominions/me/realm</code> for their current data.</td>
+                                    <td>An op center endpoint was requested for a dominion in your own realm. Use <code>/dominions/me/advisors</code> for their current data.</td>
                                 </tr>
                                 <tr>
                                     <td>429</td>
@@ -147,12 +142,24 @@
                     <h5 class="fw-bold mb-1" id="round-dominions">Search</h5>
                     <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/rounds/{round}/dominions</code></p>
                     <p class="mb-1">
-                        Every active dominion in a round. Locked and abandoned dominions are left out.
+                        Every dominion in a round, including locked and abandoned ones.
                     </p>
                     <ul>
                         <li>
                             <code>guard</code> is <code>"royal"</code>, <code>"elite"</code> or <code>null</code>.
                             Black Guard membership is not included.
+                        </li>
+                        <li>
+                            <code>locked</code> is <code>true</code> when the dominion has been locked by an
+                            administrator. <code>abandoned</code> is <code>true</code> once an abandonment has taken
+                            effect; a pending abandonment is still <code>false</code>.
+                        </li>
+                        <li>
+                            <code>shares_advisors</code> is only included when you send an API key for a dominion in
+                            this round. It is <code>true</code> for your own dominion and for realmies whose advisors
+                            you can view in <a href="#dominions-me-advisors">Realm Advisors</a>, and <code>false</code> for
+                            everyone else. The API key is optional here; an invalid one still returns
+                            <code>401</code>.
                         </li>
                     </ul>
 <pre class="bg-body-tertiary border rounded p-2"><code>[
@@ -165,7 +172,10 @@
         "land": 250,
         "networth": 1500,
         "in_protection": false,
-        "guard": "royal"
+        "guard": "royal",
+        "locked": false,
+        "abandoned": false,
+        "shares_advisors": false
     }
 ]</code></pre>
 
@@ -347,7 +357,7 @@
                     <p>
                         The dominion the key belongs to, with its realm and round. <code>round.day</code> and
                         <code>round.hour</code> are <code>null</code> before the round starts. Current stats for your
-                        dominion are in <a href="#dominions-me-realm">My Realm</a>.
+                        dominion are in <a href="#dominions-me-advisors">Realm Advisors</a>.
                     </p>
 <pre class="bg-body-tertiary border rounded p-2"><code>{
     "id": 1234,
@@ -365,17 +375,17 @@
     },
     "server_time": "2026-09-30T11:14:08Z",
     "links": {
-        "realm": "{{ url('/api/v1/dominions/me/realm') }}",
+        "advisors": "{{ url('/api/v1/dominions/me/advisors') }}",
         "op_center": "{{ url('/api/v1/dominions/me/op-center') }}",
         "rounds": "{{ url('/api/v1/rounds') }}",
         "round_dominions": "{{ url('/api/v1/rounds/51/dominions') }}",
-        "round_realms": "{{ url('/api/v1/rounds/51/realms') }}",
-        "round_events": "{{ url('/api/v1/rounds/51/events') }}"
+        "round_events": "{{ url('/api/v1/rounds/51/events') }}",
+        "round_realms": "{{ url('/api/v1/rounds/51/realms') }}"
     }
 }</code></pre>
 
-                    <h5 class="fw-bold mb-1" id="dominions-me-realm">My Realm</h5>
-                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me/realm</code></p>
+                    <h5 class="fw-bold mb-1" id="dominions-me-advisors">Realm Advisors</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me/advisors</code></p>
                     <p class="mb-1">
                         Current data for your own dominion and every realmie who shares their advisors with you, as
                         on the in-game realm advisors pages, keyed by dominion ID with your own dominion first.
@@ -541,7 +551,7 @@
                     <ul>
                         <li>
                             Not available for your own dominion or realmies, which return <code>422</code>
-                            <code>same_realm</code>; use <a href="#dominions-me-realm">My Realm</a> for them.
+                            <code>same_realm</code>; use <a href="#dominions-me-advisors">Realm Advisors</a> for them.
                         </li>
                         <li>
                             <code>max_age_hours</code> (optional, default 0): only include ops gathered within this

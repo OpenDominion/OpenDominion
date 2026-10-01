@@ -46,12 +46,12 @@ class OpCenterController extends AbstractController
             ],
             'server_time' => now()->toIso8601ZuluString(),
             'links' => [
-                'realm' => route('api.dominions.realm'),
+                'advisors' => route('api.dominions.advisors'),
                 'op_center' => route('api.dominions.op-center'),
                 'rounds' => route('api.rounds.index'),
                 'round_dominions' => route('api.rounds.dominions', $dominion->round),
-                'round_realms' => route('api.rounds.realms', $dominion->round),
                 'round_events' => route('api.rounds.events', $dominion->round),
+                'round_realms' => route('api.rounds.realms', $dominion->round),
             ],
         ]);
     }
@@ -260,7 +260,7 @@ class OpCenterController extends AbstractController
     {
         return response()->json([
             'error' => 'same_realm',
-            'message' => 'The op center is not available for dominions in your realm. Use /dominions/me/realm for their current data.',
+            'message' => 'The op center is not available for dominions in your realm. Use /dominions/me/advisors for their current data.',
         ], 422);
     }
 

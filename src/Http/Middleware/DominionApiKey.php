@@ -11,7 +11,8 @@ class DominionApiKey
 {
     /**
      * With $mode "optional" a request without a key continues unauthenticated;
-     * a key that is sent is still validated.
+     * a key that is sent is still validated. Keys keep working after their
+     * round ends, so Dominion::isLocked() (which includes round end) is not used.
      */
     public function handle(Request $request, Closure $next, string $mode = 'required'): Response
     {
@@ -35,11 +36,7 @@ class DominionApiKey
             return $this->error('invalid_api_key', 'The provided API key was not recognised.', 401);
         }
 
-        if ($dominion->round->hasEnded()) {
-            return $this->error('round_ended', 'This dominion\'s round has ended; the API key is no longer active.', 410);
-        }
-
-        if ($dominion->isLocked()) {
+        if ($dominion->locked_at !== null || $dominion->isAbandoned()) {
             return $this->error('dominion_locked', 'Locked dominions cannot access the API.', 403);
         }
 
