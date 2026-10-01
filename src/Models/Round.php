@@ -31,6 +31,7 @@ use Illuminate\Support\Str;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEvents
  * @property-read \OpenDominion\Models\RoundLeague $league
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Pack[] $packs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\RoundPerk[] $perks
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm[] $realms
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\HeroTournament[] $tournaments
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Forum\Thread[] $forumThreads
@@ -95,6 +96,11 @@ class Round extends AbstractModel
     public function packs()
     {
         return $this->hasMany(Pack::class);
+    }
+
+    public function perks()
+    {
+        return $this->hasMany(RoundPerk::class);
     }
 
     public function raids()

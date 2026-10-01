@@ -144,6 +144,9 @@ class ImprovementCalculator
         $multiplier += $dominion->race->getPerkMultiplier('invest_bonus');
         $multiplier += $dominion->race->getPerkMultiplier("invest_bonus_{$resource}");
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('invest_bonus');
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier("invest_bonus_{$improvementType}");
 

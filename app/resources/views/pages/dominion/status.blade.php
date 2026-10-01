@@ -78,6 +78,28 @@
                             </tbody>
                         </table>
 
+                        @php
+                            $activeRoundPerks = $roundPerks->where('status', \OpenDominion\Services\RoundPerkService::STATUS_ACTIVE)->pluck('perk');
+                        @endphp
+                        @if ($activeRoundPerks->isNotEmpty())
+                            <table class="table table-sm mb-2">
+                                <thead>
+                                    <tr>
+                                        <th>Round Perks</th>
+                                        <th class="text-end">Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($activeRoundPerks as $perk)
+                                        <tr>
+                                            <td>{{ $roundPerkHelper->getPerkLabel($perk) }}</td>
+                                            <td class="text-end">{!! $roundPerkHelper->getPerkValueHtml($perk) !!}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
+
                         <div class="text-center">
                             <a href="{{ route('dominion.advisors.rankings') }}">My Rankings</a>
                         </div>
@@ -219,6 +241,12 @@
         @else
             <div class="col-sm-12 col-md-3">
                 @include('partials.dominion.join-discord')
+            </div>
+        @endif
+
+        @if ($roundPerks->isNotEmpty())
+            <div class="col-sm-12 col-md-9">
+                @include('partials.dominion.round-perks')
             </div>
         @endif
     </div>

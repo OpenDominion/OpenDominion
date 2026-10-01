@@ -96,6 +96,9 @@ class ConstructionCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('construction_cost');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('construction_cost');
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('construction_cost');
         $multiplier += $dominion->getTechPerkMultiplier('construction_platinum_cost');

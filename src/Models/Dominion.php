@@ -841,6 +841,62 @@ class Dominion extends AbstractModel
         return ($this->getWonderPerkValue($key) / 100);
     }
 
+    /**
+     * Active round perks for this dominion. Transient dominions built by the
+     * calculators have no round, so no round perks apply to them.
+     *
+     * @return \Illuminate\Support\Collection<int, RoundPerk>
+     */
+    protected function getRoundPerks(): \Illuminate\Support\Collection
+    {
+        if ($this->round === null) {
+            return collect();
+        }
+
+        return $this->round->perks->filter(
+            function (RoundPerk $perk) {
+                return $perk->appliesTo($this);
+            }
+        );
+    }
+
+    /**
+     * Sum of all active round perks with the given key.
+     *
+     * @param string $key
+     * @return float
+     */
+    public function getRoundPerkValue(string $key): float
+    {
+        return (float)$this->getRoundPerks()->where('key', $key)->sum(
+            function (RoundPerk $perk) {
+                return (float)$perk->value;
+            }
+        );
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getRoundPerkMultiplier(string $key): float
+    {
+        return ($this->getRoundPerkValue($key) / 100);
+    }
+
+    /**
+     * Returns the comma-delimited parts of the first active round perk with a compound value.
+     *
+     * @param string $key
+     * @return string[]|null
+     */
+    public function getRoundPerkValueParts(string $key): ?array
+    {
+        $perk = $this->getRoundPerks()->firstWhere('key', $key);
+
+        return $perk?->getValueParts();
+    }
+
     public function getSetting(string $key)
     {
         if (!Arr::has($this->settings, $key)) {

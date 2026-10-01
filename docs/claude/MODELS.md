@@ -29,7 +29,7 @@ User ──has many──→ Dominion ──belongs to──→ Round
 - **Key methods**: `isStaff()`, `isOnline()` (5min), `isInactive()` (72h), `getSetting()`, `getAffinity()`, `hasKnownAffinities()` (complete, non-zero profile), `getEffectiveRating()` (uses 1000 for unrated users)
 
 ### Round (`rounds`)
-- **Relations**: dominions (through Realm), realms, packs, raids, tournaments, wonders, gameEvents, wars (through Realm), league
+- **Relations**: dominions (through Realm), realms, packs, perks (RoundPerk), raids, tournaments, wonders, gameEvents, wars (through Realm), league
 - **Scopes**: `active()`, `activeSoon()`, `readyForAssignment()`
 - **Key methods**: `graveyard()` (realm #0), `hasStarted()`, `hasEnded()`, `getTick()`, `daysInRound()`, `hasOffensiveActionsDisabled()`
 
@@ -46,7 +46,7 @@ User ──has many──→ Dominion ──belongs to──→ Round
 - **Key methods**:
   - State: `isLocked()`, `isAbandoned()`, `isActive()`, `isBuildingPhase()`
   - Court: `isMonarch()`, `isGeneral()`, `isSpymaster()`, `isMagister()`, `isMage()`, `isJester()`, `isCourtMember()`
-  - Perks: `getSpellPerkValue()`, `getTechPerkValue()`, `getWonderPerkValue()` (aggregate active perks)
+  - Perks: `getSpellPerkValue()`, `getTechPerkValue()`, `getWonderPerkValue()`, `getRoundPerkValue()`/`getRoundPerkMultiplier()`/`getRoundPerkValueParts()` (aggregate active perks)
   - Abandonment: `requestAbandonment()`, `resetAbandonment()`, `cancelAbandonment()`
 - **History**: Custom `save()` records deltas via HistoryService
 
@@ -73,6 +73,11 @@ All follow the same pattern: Entity ←btm→ PerkType via Perk pivot (with `val
 | Wonder | wonder_perks | wonder_perk_types | prestige, spy_losses |
 
 Hero upgrades use embedded `HeroUpgradePerk` (key/value) instead of the btm pattern.
+
+### RoundPerk (`round_perks`)
+Round-wide perks configured by admins (no perk-type table; `key` is a plain string whitelisted by `RoundPerkHelper::getPerkTypes()`).
+- **Fields**: round_id, key, value (string; numeric or comma-delimited compound), alignment (nullable = everyone), from_day/until_day (nullable, inclusive), name (groups perks into a storyline event), description
+- **Key methods**: `isActiveOnDay()`, `matchesAlignment()`, `appliesTo(Dominion)`, `getValueParts()`
 
 ## Game State Models
 

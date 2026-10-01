@@ -3,6 +3,9 @@
 <script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/select2/select2.min.js') }}"></script>
 
+{{-- 3rd party CDN hosted scripts --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ClientJS/0.2.1/client.base.min.js"></script>
+
 {{-- Vite compiled JS (Bootstrap 5, app scripts) --}}
 @vite(['app/resources/js/app.js'])
 

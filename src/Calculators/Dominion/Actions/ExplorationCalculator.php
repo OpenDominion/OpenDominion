@@ -66,6 +66,9 @@ class ExplorationCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('explore_platinum_cost');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('explore_platinum_cost');
+
         // Techs
         $techBonus = $dominion->getTechPerkMultiplier('explore_platinum_cost');
         $excludedRaces = ['firewalker', 'goblin', 'kobold', 'lycanthrope', 'vampire'];

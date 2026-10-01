@@ -82,7 +82,7 @@ class HomeTest extends AbstractTestCase
 
         $response
             ->assertStatus(200)
-            ->assertSee('Round #1')
+            ->assertSee('Testing Round 1')
             ->assertSee('Current Round Rankings')
             ->assertDontSee('Upcoming Rounds')
             ->assertDontSee('Previous Round Rankings');
@@ -100,7 +100,7 @@ class HomeTest extends AbstractTestCase
             ->assertStatus(200)
             ->assertSee('Upcoming Rounds')
             ->assertSee('Previous Round Rankings')
-            ->assertDontSee('Round #1');
+            ->assertDontSee('Testing Round 1');
     }
 
     public function testHomePageShowsCurrentRoundWhenRegistrationIsOpen()
@@ -114,7 +114,7 @@ class HomeTest extends AbstractTestCase
 
         $response
             ->assertStatus(200)
-            ->assertSee('Round #2')
+            ->assertSee('Testing Round 2')
             ->assertSee('Open for Registration')
             ->assertSee('Previous Round Rankings')
             ->assertDontSee('Upcoming Rounds')
@@ -131,9 +131,9 @@ class HomeTest extends AbstractTestCase
 
         $response
             ->assertStatus(200)
-            ->assertSee('Round #1')
+            ->assertSee('Testing Round 1')
             ->assertSee('Current Round Rankings')
-            ->assertDontSee('Round #2')
+            ->assertDontSee('Testing Round 2')
             ->assertDontSee('Open for Registration');
     }
 
@@ -146,7 +146,7 @@ class HomeTest extends AbstractTestCase
 
         $response
             ->assertStatus(200)
-            ->assertSee('Round #1')
+            ->assertSee('Testing Round 1')
             ->assertSee('Starting Soon')
             ->assertDontSee('Upcoming Rounds');
     }

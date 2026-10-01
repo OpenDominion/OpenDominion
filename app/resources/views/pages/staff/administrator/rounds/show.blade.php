@@ -52,4 +52,56 @@
             </dl>
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Round Perks</span>
+            <div class="float-end">
+                <a href="{{ route('staff.administrator.rounds.perks.create', $round) }}" class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus"></i> Add Perk
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            @if ($round->perks->isEmpty())
+                <p class="p-3 mb-0 text-muted">No perks for this round.</p>
+            @else
+                <table class="table table-sm table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Perk</th>
+                            <th>Value</th>
+                            <th>Conditions</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($round->perks->sortBy(['name', 'id']) as $perk)
+                            <tr>
+                                <td>
+                                    {{ $perk->name ?: '—' }}
+                                    @if ($perk->description)
+                                        <br><small class="text-muted">{{ $perk->description }}</small>
+                                    @endif
+                                </td>
+                                <td>{{ $roundPerkHelper->getPerkLabel($perk) }} <small class="text-muted">({{ $perk->key }})</small></td>
+                                <td>{!! $roundPerkHelper->getPerkValueHtml($perk) !!}</td>
+                                <td>{{ implode(', ', $roundPerkHelper->getPerkConditions($perk)) ?: 'Always' }}</td>
+                                <td class="text-end text-nowrap">
+                                    <a href="{{ route('staff.administrator.rounds.perks.edit', [$round, $perk]) }}" class="btn btn-secondary btn-sm">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('staff.administrator.rounds.perks.delete', [$round, $perk]) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this perk?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
+    </div>
 @endsection

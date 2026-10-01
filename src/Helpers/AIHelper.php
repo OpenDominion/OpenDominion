@@ -39,11 +39,17 @@ class AIHelper
      * military: fixed starting defensive unit (randomized when omitted)
      * unit_pairs: race-specific overrides for ATTACKER_UNIT_PAIRS
      * unit_swap: switches the unit composition once prestige reaches a threshold
+     * starting_offense: offensive unit given at spawn (defaults to unit1)
+     * starting_spec_ratio: share of starting defense in spec units, 0 for elites only (randomized when omitted)
+     * housing: unlimited building that absorbs leftover land, home or barracks (defaults to barracks)
+     * lumberyard_percentage: overrides the default lumberyard build percentage, also applied at spawn
      */
     protected const ATTACKER_RACE_SETTINGS = [
         'Orc' => [
             'attack_spells' => ['bloodrage'],
             'military' => 'unit3',
+            'starting_spec_ratio' => 0,
+            'lumberyard_percentage' => 0.12,
             'unit_swap' => [
                 'prestige' => 600,
                 'military' => 'unit2',
@@ -52,6 +58,13 @@ class AIHelper
         ],
         'Spirit' => [
             'attack_spells' => ['unholy_ghost'],
+        ],
+        'Vampire' => [
+            'attack_spells' => ['feast_of_blood'],
+            'military' => 'unit2',
+            'starting_offense' => 'unit4',
+            'starting_spec_ratio' => 0,
+            'housing' => 'home',
         ],
     ];
 
@@ -232,8 +245,10 @@ class AIHelper
      */
     public function getAttackerStartingAttributes(Dominion $dominion): array
     {
+        $startingOffense = $this->getAttackerStartingOffenseUnit($dominion->race);
         $attributes = [
-            'military_unit1' => mt_rand(300, 350),
+            'military_unit1' => 0,
+            "military_{$startingOffense}" => mt_rand(300, 350),
         ];
 
         $landTypesByBuilding = $this->landHelper->getLandTypesByBuildingType($dominion->race);
@@ -251,6 +266,12 @@ class AIHelper
 
         $smithyTarget = (int) rceil(self::ATTACKER_SMITHY_PERCENTAGE * array_sum($land));
         $this->convertBuildings($buildings, $land, $landTypesByBuilding, 'smithy', $smithyTarget - $buildings['smithy']);
+
+        $lumberyardPercentage = $this->getAttackerLumberyardPercentage($dominion->race);
+        if ($lumberyardPercentage !== null) {
+            $lumberyardTarget = (int) rceil($lumberyardPercentage * array_sum($land));
+            $this->convertBuildings($buildings, $land, $landTypesByBuilding, 'lumberyard', $lumberyardTarget - $buildings['lumberyard']);
+        }
 
         foreach ($buildings as $building => $amount) {
             if ($amount !== (int) $dominion->{"building_{$building}"}) {
@@ -275,7 +296,7 @@ class AIHelper
      */
     protected function convertBuildings(array &$buildings, array &$land, array $landTypesByBuilding, string $targetBuilding, int $amount): void
     {
-        $protectedBuildings = ['home', 'dock', 'smithy'];
+        $protectedBuildings = ['home', 'dock', 'smithy', 'lumberyard'];
 
         while ($amount > 0) {
             $source = collect($buildings)
@@ -298,7 +319,7 @@ class AIHelper
     }
 
     /**
-     * Returns additional unit1 queued in training for a newly spawned attacker, keyed by hours until arrival.
+     * Returns additional starting offensive units queued in training for a newly spawned attacker, keyed by hours until arrival.
      *
      * @return array<int, int>
      */
@@ -325,6 +346,30 @@ class AIHelper
     public function getAttackerAttackSpells(Race $race): array
     {
         return self::ATTACKER_RACE_SETTINGS[$race->name]['attack_spells'] ?? [];
+    }
+
+    /**
+     * Returns the offensive unit a newly spawned attacker starts with.
+     */
+    public function getAttackerStartingOffenseUnit(Race $race): string
+    {
+        return self::ATTACKER_RACE_SETTINGS[$race->name]['starting_offense'] ?? 'unit1';
+    }
+
+    /**
+     * Returns the share of a newly spawned attacker's defense in spec units, or null for a random split.
+     */
+    public function getAttackerStartingSpecRatio(Race $race): ?float
+    {
+        return self::ATTACKER_RACE_SETTINGS[$race->name]['starting_spec_ratio'] ?? null;
+    }
+
+    /**
+     * Returns the lumberyard percentage an attacker builds toward, or null to keep the default instructions.
+     */
+    public function getAttackerLumberyardPercentage(Race $race): ?float
+    {
+        return self::ATTACKER_RACE_SETTINGS[$race->name]['lumberyard_percentage'] ?? null;
     }
 
     public function attackerNeedsBoats(Race $race): bool
@@ -408,7 +453,21 @@ class AIHelper
             $config['unit_swap'] = $settings['unit_swap'];
         }
 
-        $units = $race->units;
+        if (isset($settings['lumberyard_percentage'])) {
+            foreach ($config['build'] as $index => $command) {
+                if ($command['building'] === 'lumberyard') {
+                    $config['build'][$index]['amount'] = $settings['lumberyard_percentage'];
+                }
+            }
+        }
+
+        $trainedSlots = collect([
+            $config['military'][0]['unit'],
+            $config['offense'],
+            $config['unit_swap']['military'] ?? null,
+            $config['unit_swap']['offense'] ?? null,
+        ])->filter()->map(fn (string $unit) => (int) str_replace('unit', '', $unit))->unique()->all();
+        $units = $race->units->filter(fn (Unit $unit) => in_array($unit->slot, $trainedSlots));
 
         $config['build'][] = [
             'land_type' => 'swamp',
@@ -444,9 +503,10 @@ class AIHelper
             'amount' => mt_rand(50, 150)
         ];
 
+        $housing = $settings['housing'] ?? 'barracks';
         $config['build'][] = [
-            'land_type' => 'hill',
-            'building' => 'barracks',
+            'land_type' => $housing === 'home' ? $race->home_land_type : 'hill',
+            'building' => $housing,
             'amount' => -1
         ];
 

@@ -70,7 +70,47 @@ class AIHelperTest extends AbstractBrowserKitTestCase
         $this->assertFalse($build->has('home'));
         $this->assertEquals(['land_type' => 'hill', 'building' => 'barracks', 'amount' => -1], $build['barracks']);
         $this->assertEquals(0.08, $build['farm']['amount']);
+        $this->assertEquals(0.12, $build['lumberyard']['amount']);
+        $this->assertEquals(0.05, $build['tower']['amount']);
         $this->assertFalse($build->has('ore_mine'));
+    }
+
+    public function testVampireAttackerConfig(): void
+    {
+        $vampire = Race::where('name', 'Vampire')->firstOrFail();
+
+        $config = $this->aiHelper->generateAttackerConfig($vampire);
+
+        $this->assertEquals(AIHelper::STRATEGY_ATTACKER, $config['strategy']);
+        $this->assertEquals('unit2', $config['military'][0]['unit']);
+        $this->assertEquals('unit4', $config['offense']);
+        $this->assertArrayNotHasKey('unit_swap', $config);
+        $this->assertEquals(['feast_of_blood'], $config['attack_spells']);
+        $this->assertNotContains('feast_of_blood', $config['spells']);
+
+        $build = collect($config['build'])->keyBy('building');
+        $this->assertEquals(['land_type' => 'swamp', 'building' => 'home', 'amount' => -1], $build['home']);
+        $this->assertFalse($build->has('barracks'));
+        $this->assertFalse($build->has('ore_mine'));
+        $this->assertFalse($build->has('dock'));
+        $this->assertEquals(0.05, $build['tower']['amount']);
+        $this->assertEquals(0.035, $build['lumberyard']['amount']);
+        $this->assertEquals(0.18, $build['smithy']['amount']);
+    }
+
+    public function testAttackerStartingSettings(): void
+    {
+        $orc = Race::where('name', 'Orc')->firstOrFail();
+        $spirit = Race::where('name', 'Spirit')->firstOrFail();
+        $vampire = Race::where('name', 'Vampire')->firstOrFail();
+
+        $this->assertEquals('unit1', $this->aiHelper->getAttackerStartingOffenseUnit($orc));
+        $this->assertEquals('unit4', $this->aiHelper->getAttackerStartingOffenseUnit($vampire));
+        $this->assertEquals(0, $this->aiHelper->getAttackerStartingSpecRatio($orc));
+        $this->assertEquals(0, $this->aiHelper->getAttackerStartingSpecRatio($vampire));
+        $this->assertNull($this->aiHelper->getAttackerStartingSpecRatio($spirit));
+        $this->assertEquals(0.12, $this->aiHelper->getAttackerLumberyardPercentage($orc));
+        $this->assertNull($this->aiHelper->getAttackerLumberyardPercentage($vampire));
     }
 
     public function testSpiritAttackerConfig(): void
@@ -96,6 +136,8 @@ class AIHelperTest extends AbstractBrowserKitTestCase
         $this->assertFalse($build->has('dock'));
         $this->assertEquals(0.09, $build['tower']['amount']);
         $this->assertEquals(0.18, $build['smithy']['amount']);
+        $this->assertEquals(0.035, $build['lumberyard']['amount']);
+        $this->assertEquals('hill', $build['barracks']['land_type']);
     }
 
     public function testAttackerConfigRejectsUnsupportedRace(): void

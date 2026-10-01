@@ -177,6 +177,9 @@ class MilitaryCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('offense');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('offense');
+
         // Techs
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['tech_offense'])) {
@@ -462,6 +465,9 @@ class MilitaryCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('defense');
+
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('defense');
 
         // Techs
         // TODO: add to calc if this is implemented

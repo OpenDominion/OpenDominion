@@ -277,6 +277,30 @@ class AttackerAITest extends AbstractBrowserKitTestCase
         $this->assertTrue($spellCalculator->isSpellActive($this->attacker->refresh(), 'bloodrage'));
     }
 
+    public function testVampireCastsFeastOfBloodAndSendsBloodreavers(): void
+    {
+        $vampire = Race::where('name', 'Vampire')->firstOrFail();
+        $attacker = $this->createBot($vampire, 1000, [
+            'military_unit3' => 8000,
+            'military_unit4' => 10000,
+        ]);
+        $attacker->update([
+            'ai_enabled' => true,
+            'ai_config' => $this->aiHelper->generateAttackerConfig($vampire),
+        ]);
+
+        $this->assertTrue($this->aiService->attemptInvasion($attacker, $attacker->ai_config));
+
+        $invasion = GameEvent::where('type', 'invasion')
+            ->where('source_id', $attacker->id)
+            ->first();
+        $this->assertNotNull($invasion);
+        $this->assertTrue($invasion->data['result']['success']);
+        $this->assertEquals([4], array_keys(array_filter($invasion->data['attacker']['unitsSent'])));
+        $this->assertTrue($this->app->make(SpellCalculator::class)->isSpellActive($attacker->refresh(), 'feast_of_blood'));
+        $this->assertEquals(8000, $attacker->military_unit3);
+    }
+
     public function testAttackerSkipsTargetsItCannotBreak(): void
     {
         $this->target->update(['military_unit2' => 50000]);

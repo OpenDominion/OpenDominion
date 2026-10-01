@@ -107,7 +107,7 @@ class DominionFactory
      *
      * @throws GameException
      */
-    public function createRandomNonPlayer(Realm $realm, Race $race, int $landSize): ?Dominion
+    public function createRandomNonPlayer(Realm $realm, Race $race, int $landSize, ?float $specRatio = null): ?Dominion
     {
         $names = $this->getNonPlayerNames();
         $generalNames = collect($names['dominion_names']);
@@ -125,7 +125,7 @@ class DominionFactory
                 $dominionName = $swap;
             }
 
-            $dominion = $this->createNonPlayer($realm, $race, $rulerName, $dominionName, $landSize);
+            $dominion = $this->createNonPlayer($realm, $race, $rulerName, $dominionName, $landSize, $specRatio);
             if ($dominion) {
                 return $dominion;
             }
@@ -617,6 +617,8 @@ class DominionFactory
      * @param Race $race
      * @param string $rulerName
      * @param string $dominionName
+     * @param int $landSize
+     * @param float|null $specRatio Share of defense in spec units, randomized when null
      * @return Dominion
      * @throws GameException
      */
@@ -625,7 +627,8 @@ class DominionFactory
         Race $race,
         string $rulerName,
         string $dominionName,
-        int $landSize
+        int $landSize,
+        ?float $specRatio = null
     ): ?Dominion {
         $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
@@ -715,9 +718,11 @@ class DominionFactory
         ]);
 
         // Generate Military
-        $specRatio = 1;
-        if (random_chance(0.85)) {
-            $specRatio = mt_rand(50, 75) / 100;
+        if ($specRatio === null) {
+            $specRatio = 1;
+            if (random_chance(0.85)) {
+                $specRatio = mt_rand(50, 75) / 100;
+            }
         }
 
         $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
@@ -830,7 +835,7 @@ class DominionFactory
         ];
 
         $landAvailable = $landSize - array_sum($startingBuildings);
-        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead', 'Vampire'];
+        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Orc', 'Spirit', 'Sylvan', 'Undead', 'Vampire'];
         $landBasedRaces = ['Gnome', 'Icekin', 'Nox', 'Sylvan', 'Wood Elf'];
 
         // Ore Mines
