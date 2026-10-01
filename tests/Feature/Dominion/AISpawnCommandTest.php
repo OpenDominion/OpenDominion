@@ -70,6 +70,46 @@ class AISpawnCommandTest extends AbstractBrowserKitTestCase
         $this->assertLessThanOrEqual(350, $incomingUnit1);
     }
 
+    public function testOrcAttackersSpawnWithoutSpecDefenseOrOreMines(): void
+    {
+        Artisan::call('game:ai:spawn', ['--race' => 'Orc', '--type' => 'attacker', '--round' => $this->round->id, '--land' => 500]);
+
+        $bot = $this->graveyard->dominions()->firstOrFail();
+        $queueService = $this->app->make(QueueService::class);
+        $this->assertEquals(0, $bot->military_unit2);
+        $this->assertEquals(0, $queueService->getTrainingQueueTotalByResource($bot, 'military_unit2'));
+        $this->assertGreaterThan(0, $bot->military_unit3);
+        $this->assertEquals(0, $bot->building_ore_mine);
+        $this->assertEquals(0, $bot->land_mountain);
+        $this->assertEquals(60, $bot->building_lumberyard);
+    }
+
+    public function testSpawnsVampireAttackersWithElitesOnly(): void
+    {
+        Artisan::call('game:ai:spawn', ['--race' => 'Vampire', '--type' => 'attacker', '--round' => $this->round->id, '--land' => 500]);
+
+        $bot = $this->graveyard->dominions()->firstOrFail();
+        $this->assertEquals('Vampire', $bot->race->name);
+        $this->assertEquals(AIHelper::STRATEGY_ATTACKER, $bot->ai_config['strategy']);
+        $this->assertEquals('unit4', $bot->ai_config['offense']);
+        $this->assertEquals(0, $bot->military_unit1);
+        $this->assertEquals(0, $bot->military_unit2);
+        $this->assertGreaterThan(0, $bot->military_unit3);
+        $this->assertGreaterThanOrEqual(300, $bot->military_unit4);
+        $this->assertLessThanOrEqual(350, $bot->military_unit4);
+        $this->assertEquals(0, $bot->building_dock);
+        $this->assertEquals(0, $bot->resource_boats);
+        $this->assertEquals(500, $this->app->make(LandCalculator::class)->getTotalLand($bot));
+
+        $queueService = $this->app->make(QueueService::class);
+        $this->assertEquals(0, $queueService->getTrainingQueueTotalByResource($bot, 'military_unit1'));
+        $this->assertEquals(0, $queueService->getTrainingQueueTotalByResource($bot, 'military_unit2'));
+        $this->assertGreaterThan(0, $queueService->getTrainingQueueTotalByResource($bot, 'military_unit3'));
+        $incomingUnit4 = $queueService->getTrainingQueueTotalByResource($bot, 'military_unit4');
+        $this->assertGreaterThanOrEqual(300, $incomingUnit4);
+        $this->assertLessThanOrEqual(350, $incomingUnit4);
+    }
+
     public function testAttackerStartingDocksKeepTotalLand(): void
     {
         Artisan::call('game:ai:spawn', ['--race' => 'Orc', '--type' => 'attacker', '--round' => $this->round->id, '--land' => 500]);
@@ -93,6 +133,41 @@ class AISpawnCommandTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, $bot->building_dock);
         $this->assertEquals(0, $bot->resource_boats);
         $this->assertGreaterThanOrEqual(rceil(AIHelper::ATTACKER_SMITHY_PERCENTAGE * $this->app->make(LandCalculator::class)->getTotalLand($bot)), $bot->building_smithy);
+    }
+
+    public function testSpawnsWithPrestige(): void
+    {
+        Artisan::call('game:ai:spawn', ['--race' => 'Orc', '--type' => 'attacker', '--round' => $this->round->id, '--land' => 700, '--prestige' => 650]);
+
+        $bot = $this->graveyard->dominions()->firstOrFail();
+        $this->assertEquals(650, $bot->prestige);
+    }
+
+    public function testPrestigeIsCappedAtLandSize(): void
+    {
+        Artisan::call('game:ai:spawn', ['--race' => 'Orc', '--type' => 'attacker', '--round' => $this->round->id, '--land' => 500, '--prestige' => 650]);
+
+        $this->assertStringContainsString('Prestige is capped at land size', Artisan::output());
+        $this->assertEquals(500, $this->graveyard->dominions()->firstOrFail()->prestige);
+    }
+
+    public function testSpawnsWithDefaultPrestige(): void
+    {
+        Artisan::call('game:ai:spawn', ['--race' => 'Human', '--round' => $this->round->id]);
+
+        $this->assertEquals(250, $this->graveyard->dominions()->firstOrFail()->prestige);
+    }
+
+    public function testRejectsInvalidPrestige(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Prestige must be at least 0');
+
+        try {
+            Artisan::call('game:ai:spawn', ['--race' => 'Orc', '--round' => $this->round->id, '--prestige' => -5]);
+        } finally {
+            $this->assertEquals(0, $this->graveyard->dominions()->count());
+        }
     }
 
     public function testRejectsUnsupportedAttackerRace(): void
