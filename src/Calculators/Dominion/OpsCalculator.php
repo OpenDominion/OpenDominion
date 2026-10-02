@@ -332,7 +332,14 @@ class OpsCalculator
         }
 
         // Reflecting damage slows how fast more resolve builds
-        $resolve *= (1 + $dominion->getSpellPerkMultiplier('resolve_gain'));
+        $resolveMultiplier = 1 + $dominion->getSpellPerkMultiplier('resolve_gain');
+
+        // Heroes
+        if ($dominion->hero !== null) {
+            $resolveMultiplier += $dominion->hero->getPerkMultiplier('resolve_gain');
+        }
+
+        $resolve *= $resolveMultiplier;
 
         $resolve = (int)rfloor($resolve);
 
@@ -627,6 +634,12 @@ class OpsCalculator
 
         // Spells
         $modifier += $target->getSpellPerkValue('enemy_spell_damage', ['self', 'friendly', 'hostile', 'war']) / 100;
+        if ($dominion !== null && $dominion->hero !== null && $dominion->hero->getPerkValue('magic_ward_penetration')) {
+            $magicWard = $target->spells->where('key', 'magic_ward')->first();
+            if ($magicWard !== null) {
+                $modifier -= $magicWard->getPerkValue('enemy_spell_damage') / 100 * $dominion->hero->getPerkMultiplier('magic_ward_penetration');
+            }
+        }
         if ($this->spellCalculator->isSpellActive($target, 'energy_mirror')) {
             if ($target->hero !== null && $target->hero->getPerkValue('improved_energy_mirror')) {
                 $modifier -= $target->hero->getPerkMultiplier('improved_energy_mirror');

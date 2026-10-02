@@ -34,7 +34,7 @@ class ValuablesService
         }
 
         $tracking = $this->getOrCreateTracking($attacker, $target);
-        $chance = $this->progressiveChance(ValuablesHelper::PASSIVE_DISCOVERY_CHANCE, $tracking->progress, ValuablesHelper::PASSIVE_PROGRESS_CHANCE_STEP);
+        $chance = $this->getPassiveDiscoveryChance($attacker, $tracking->progress, $agent);
 
         if (!random_chance($chance)) {
             $tracking->increment('progress', ValuablesHelper::PASSIVE_PROGRESS_INCREMENT);
@@ -53,6 +53,21 @@ class ValuablesService
             $agent,
             $phrase
         );
+    }
+
+    /**
+     * Returns the chance of a passive discovery on an info op. Info spells
+     * (cast by wizards) benefit from the attacker's hero.
+     */
+    public function getPassiveDiscoveryChance(Dominion $attacker, int $progress, string $agent = 'spies'): float
+    {
+        $chance = $this->progressiveChance(ValuablesHelper::PASSIVE_DISCOVERY_CHANCE, $progress, ValuablesHelper::PASSIVE_PROGRESS_CHANCE_STEP);
+
+        if ($agent === 'wizards' && $attacker->hero !== null) {
+            $chance *= (1 + $attacker->hero->getPerkMultiplier('info_spell_valuables_chance'));
+        }
+
+        return min(ValuablesHelper::MAX_DISCOVERY_CHANCE, $chance);
     }
 
     /**

@@ -116,17 +116,6 @@
                                                 <div class="col-6 text-center">
                                                     <i class="hero-icon ra ra-fw {{ $heroHelper->getClassIcon($hero->class) }}" title="Current Class: {{ $heroHelper->getClassDisplayName($hero->class) }}" data-bs-toggle="tooltip"></i>
                                                 </div>
-                                                @if (isset($upgrades[0]))
-                                                    @foreach ($upgrades[0]->where('type', 'directive') as $upgrade)
-                                                        <div class="col-6 text-center">
-                                                            {!! $heroHelper->getUpgradeIcon($upgrade) !!}
-                                                        </div>
-                                                    @endforeach
-                                                @else
-                                                    <div class="col-6 text-center">
-                                                        {!! $heroHelper->getLockIcon(0) !!}
-                                                    </div>
-                                                @endif
                                                 @if (isset($upgrades[1]))
                                                     @foreach ($upgrades[1] as $upgrade)
                                                         <div class="col-6 text-center">
@@ -169,6 +158,17 @@
                                                 @else
                                                     <div class="col-6 text-center">
                                                         {!! $heroHelper->getLockIcon(6) !!}
+                                                    </div>
+                                                @endif
+                                                @if (isset($upgrades[8]))
+                                                    @foreach ($upgrades[8] as $upgrade)
+                                                        <div class="col-6 text-center">
+                                                            {!! $heroHelper->getUpgradeIcon($upgrade) !!}
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div class="col-6 text-center">
+                                                        {!! $heroHelper->getLockIcon(8) !!}
                                                     </div>
                                                 @endif
                                             </div>

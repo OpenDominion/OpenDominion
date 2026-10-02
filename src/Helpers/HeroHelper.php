@@ -180,14 +180,28 @@ class HeroHelper
             'xp_from_ops_penalty' => 'Experience cannot be gained from magic and espionage',
 
             // Magic
+            'arcane_conduit_mana_cost' => '%+g%% Arcane Conduit mana cost',
+            'break_ward_duration_reduction' => 'Break Ward removes %g%% more duration',
             'enemy_lightning_bolt_damage' => '%+g%% enemy lightning bolt damage',
             'enemy_spy_losses' => '%+g%% enemy spy losses on failed operations',
             'espionage_fails_hide_identity' => 'Failed spy ops no longer reveal your identity',
             'exchange_mana' => 'Mana can be converted into other resources',
             'fireball_damage' => '%+g%% fireball damage',
+            'fireball_damage_resource_food' => '%+g%% food destroyed by Fireball',
+            'hostile_spell_duration' => 'Black Op spells you cast last %g hours longer',
             'improved_energy_mirror' => '%+g%% additional damage reduction from Energy Mirror',
             'info_spell_cost' => '%+g%% cost of info spells',
+            'info_spell_valuables_chance' => '%+g%% chance to discover valuables with info spells',
+            'lightning_bolt_damage_improvement_keep' => '%+g%% Lightning Bolt damage to Keep',
+            'magic_ward_duration' => '%+g hours Magic Ward duration',
+            'magic_ward_mana_absorption' => 'While Magic Ward is active, gain %g%% of the mana spent on war spells cast at you',
+            'magic_ward_penetration' => '%g%% of enemy Magic Ward damage reduction ignored',
+            'mana_burn_strength_cost' => '%+g%% Mana Burn wizard strength cost',
+            'repair_castle_mana_cost' => '%+g%% Repair Castle mana cost',
+            'resolve_gain' => '%+g%% Resolve gains',
+            'revive_peasants_mana_cost' => '%+g%% Revive Peasants mana cost',
             'self_spell_strength_cost' => '%+g wizard strength cost of self spells',
+            'silence_strength_cost' => '%+g%% Silence wizard strength cost',
             'spell_fails_hide_identity' => 'Failed spells no longer reveal your identity',
 
             // Items
@@ -1120,7 +1134,7 @@ class HeroHelper
     public function getUpgradeIcon(HeroUpgrade $upgrade)
     {
         return sprintf(
-            '<i class="hero-icon ra ra-fw %s" title="Level %s: %s<br>(%s)" data-toggle="tooltip"></i>',
+            '<i class="hero-icon ra ra-fw %s" title="Level %s: %s<br>(%s)" data-bs-toggle="tooltip"></i>',
             $upgrade->icon,
             $upgrade->level,
             $upgrade->name,
@@ -1131,7 +1145,7 @@ class HeroHelper
     public function getLockIcon(int $level)
     {
         return sprintf(
-            '<i class="hero-icon ra ra-rw ra-padlock" title="Level %s: Locked" data-toggle="tooltip"></i>',
+            '<i class="hero-icon ra ra-rw ra-padlock" title="Level %s: Locked" data-bs-toggle="tooltip"></i>',
             $level
         );
     }

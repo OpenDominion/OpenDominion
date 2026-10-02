@@ -17,7 +17,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 /**
  * Magic Ward halves incoming war spell damage for 24 hours. It leaves the
- * dominion Fractured when it ends, which blocks a recast for 6 hours. Break
+ * dominion Fractured when it ends, which blocks a recast for 12 hours. Break
  * Ward strips 2 hours from it and can end it early.
  */
 class MagicWardTest extends AbstractBrowserKitTestCase
@@ -110,13 +110,13 @@ class MagicWardTest extends AbstractBrowserKitTestCase
         DominionSpell::create([
             'dominion_id' => $this->dominion->id,
             'spell_id' => $fractured->id,
-            'duration' => 6,
+            'duration' => 12,
             'cast_by_dominion_id' => $this->dominion->id,
         ]);
         $this->dominion->unsetRelation('spells');
 
         $this->expectException(GameException::class);
-        $this->expectExceptionMessage('Your dominion is Fractured and cannot cast Magic Ward for another 6 hours');
+        $this->expectExceptionMessage('Your dominion is Fractured and cannot cast Magic Ward for another 12 hours');
 
         $this->spellActionService->castSpell($this->dominion, 'magic_ward');
     }
@@ -181,7 +181,7 @@ class MagicWardTest extends AbstractBrowserKitTestCase
 
         $activeSpell = DominionSpell::where('dominion_id', $this->target->id)->firstOrFail();
         $this->assertEquals('fractured', $activeSpell->spell->key);
-        $this->assertEquals(6, $activeSpell->duration);
+        $this->assertEquals(12, $activeSpell->duration);
         $this->assertStringContainsString('You inflicted Fractured', $result['message']);
     }
 

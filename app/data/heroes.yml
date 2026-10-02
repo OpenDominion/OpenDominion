@@ -178,3 +178,89 @@ lead_from_the_shadows:
   perks:
     xp_from_ops_bonus: 100
     combat_health: 5
+nullification:
+  name: Nullification
+  level: 8
+  type: magic
+  icon: ra-broken-shield
+  perks:
+    break_ward_duration_reduction: 50
+conflagration:
+  name: Conflagration
+  level: 8
+  type: magic
+  icon: ra-fire-symbol
+  perks:
+    fireball_damage_resource_food: 100
+fulmination:
+  name: Fulmination
+  level: 8
+  type: magic
+  icon: ra-lightning-bolt
+  perks:
+    lightning_bolt_damage_improvement_keep: 50
+malediction:
+  name: Malediction
+  level: 8
+  type: magic
+  icon: ra-death-skull
+  perks:
+    hostile_spell_duration: 2
+suppression:
+  name: Suppression
+  level: 8
+  type: magic
+  icon: ra-interdiction
+  perks:
+    silence_strength_cost: -1
+    mana_burn_strength_cost: -1
+augmentation:
+  name: Augmentation
+  level: 8
+  type: magic
+  icon: ra-mighty-force
+  perks:
+    arcane_conduit_mana_cost: -25
+restoration:
+  name: Restoration
+  level: 8
+  type: magic
+  icon: ra-health-increase
+  perks:
+    revive_peasants_mana_cost: -25
+    repair_castle_mana_cost: -25
+retaliation:
+  name: Retaliation
+  level: 8
+  type: magic
+  icon: ra-shield-reflect
+  perks:
+    resolve_gain: 20
+fortification:
+  name: Fortification
+  level: 8
+  type: magic
+  icon: ra-tower
+  perks:
+    magic_ward_duration: 6
+penetration:
+  name: Penetration
+  level: 8
+  type: magic
+  icon: ra-spear-head
+  perks:
+    magic_ward_penetration: 50
+perception:
+  name: Perception
+  level: 8
+  type: magic
+  icon: ra-crystal-ball
+  perks:
+    info_spell_valuables_chance: 100
+absorption:
+  name: Absorption
+  level: 8
+  type: magic
+  icon: ra-magic-shield
+  perks:
+    magic_ward_mana_absorption: 5

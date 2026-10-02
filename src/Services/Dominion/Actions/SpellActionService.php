@@ -774,6 +774,20 @@ class SpellActionService
                 'dominion_id' => $target->id,
             ])->delete();
         }
+
+        // Absorption: a warded target's hero recovers some of the mana spent against it
+        if (
+            !$spellReflected &&
+            $this->spellHelper->isWarSpell($spell) &&
+            $target->hero !== null &&
+            $target->hero->getPerkValue('magic_ward_mana_absorption') &&
+            $this->spellCalculator->isSpellActive($target, 'magic_ward')
+        ) {
+            $target->resource_mana += rfloor(
+                $this->spellCalculator->getManaCost($dominion, $spell) * $target->hero->getPerkMultiplier('magic_ward_mana_absorption')
+            );
+        }
+
         if ($spellReflected) {
             $protectedDominion = $target;
             $target = $dominion;
@@ -794,6 +808,9 @@ class SpellActionService
             $duration += $target->getSpellPerkValue('enemy_spell_duration');
             if ($target->hero !== null && $target->hero->getPerkValue('enemy_spell_duration')) {
                 $duration += $target->hero->getPerkValue('enemy_spell_duration');
+            }
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue('hostile_spell_duration')) {
+                $duration += $dominion->hero->getPerkValue('hostile_spell_duration');
             }
 
             $activeSpell = $target->spells->find($spell->id);
@@ -1247,11 +1264,16 @@ class SpellActionService
                 }
                 continue;
             } elseif (Str::startsWith($perk->key, 'reduce_duration_')) {
+                $hours = (int)$perk->pivot->value;
+                if ($dominion->hero !== null && $dominion->hero->getPerkValue("{$spell->key}_duration_reduction")) {
+                    $hours = (int)rfloor($hours * (1 + $dominion->hero->getPerkMultiplier("{$spell->key}_duration_reduction")));
+                }
+
                 $affected = $this->reduceSpellDuration(
                     $dominion,
                     $target,
                     str_replace('reduce_duration_', '', $perk->key),
-                    (int)$perk->pivot->value,
+                    $hours,
                     $spell
                 );
 
@@ -1294,7 +1316,11 @@ class SpellActionService
 
             // Cap damage reduction at 80%
             $baseDamage = $perk->pivot->value / 100;
-            $damage = rceil($attrValue * $baseDamage * $damageMultiplier);
+            $attributeMultiplier = 1;
+            if ($dominion->hero !== null && $dominion->hero->getPerkValue("{$spell->key}_damage_{$attr}")) {
+                $attributeMultiplier += $dominion->hero->getPerkMultiplier("{$spell->key}_damage_{$attr}");
+            }
+            $damage = rceil($attrValue * $baseDamage * $damageMultiplier * $attributeMultiplier);
 
             // Damage that grows back on its own is queued rather than recorded,
             // so there is nothing for a realmmate to repair or revive

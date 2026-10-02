@@ -187,7 +187,19 @@ hero, investment, exploration, espionage, magic, invasion
 - Processed during hourly tick
 
 ### Upgrades
-40+ hero upgrades with level/class requirements, granting permanent perk bonuses.
+40+ hero upgrades with level/class requirements, granting permanent perk bonuses. One upgrade can be unlocked per slot: level 1 (doctrine), levels 2/4/6/8, plus level 0 directives for advanced classes (`HeroCalculator::getUnlockableUpgradeCount()` caps at level 8).
+
+Level 8 magic upgrades are read from the caster's hero in `SpellActionService`:
+- `{spell}_duration_reduction` — % more hours removed by a spell's `reduce_duration_*` perk (Nullification → Break Ward)
+- `{spell}_damage_{attr}` — % more damage to one attribute, applied after the spell damage multiplier and its 80% cap (Conflagration → Fireball food, Fulmination → Lightning Bolt keep)
+- `hostile_spell_duration` — extra hours on hostile/black op duration spells cast (Malediction)
+- `{spell}_mana_cost` — % mana cost of one spell, additive with other cost modifiers in `SpellCalculator::getManaCost()` (Augmentation → Arcane Conduit, Restoration → Revive Peasants/Repair Castle)
+- `{spell}_strength_cost` — flat wizard strength cost change for one spell in `SpellCalculator::getStrengthCost()` (Suppression → Silence/Mana Burn)
+- `resolve_gain` — % Resolve gained per hit, additive with Backlash's penalty in `OpsCalculator::getResolveGain()` (Retaliation)
+- `{spell}_duration` — flat hours added to a self spell in `SpellCalculator::getSpellDuration()` (Fortification → Magic Ward)
+- `magic_ward_penetration` — % of the target's Magic Ward reduction ignored in `OpsCalculator::getSpellDamageMultiplier()` (Penetration)
+- `info_spell_valuables_chance` — % passive valuables discovery chance on info spells in `ValuablesService::getPassiveDiscoveryChance()` (Perception)
+- `magic_ward_mana_absorption` — defender with Magic Ward gains % of the caster's mana cost on successful war spells (Absorption)
 
 ## Realm Assignment Algorithm
 

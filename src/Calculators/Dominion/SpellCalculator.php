@@ -66,10 +66,11 @@ class SpellCalculator
         $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
 
         // Heroes
-        if ($this->spellHelper->isInfoOpSpell($spell)) {
-            if ($dominion->hero !== null) {
+        if ($dominion->hero !== null) {
+            if ($this->spellHelper->isInfoOpSpell($spell)) {
                 $spellCostMultiplier += $dominion->hero->getPerkMultiplier('info_spell_cost');
             }
+            $spellCostMultiplier += $dominion->hero->getPerkMultiplier("{$spell->key}_mana_cost");
         }
 
         // Mastery
@@ -100,8 +101,11 @@ class SpellCalculator
         $strengthCost = $spell->cost_strength;
 
         // Heroes
-        if ($dominion->hero !== null && $this->spellHelper->isSelfSpell($spell)) {
-            $strengthCost += $dominion->hero->getPerkValue('self_spell_strength_cost');
+        if ($dominion->hero !== null) {
+            if ($this->spellHelper->isSelfSpell($spell)) {
+                $strengthCost += $dominion->hero->getPerkValue('self_spell_strength_cost');
+            }
+            $strengthCost += $dominion->hero->getPerkValue("{$spell->key}_strength_cost");
         }
 
         return $strengthCost;
@@ -249,6 +253,11 @@ class SpellCalculator
             if ($this->spellHelper->isSelfSpell($spell) && !$spell->cooldown) {
                 $duration = round($duration * (1 + $dominion->getSpellPerkValue('self_spell_duration') / 100));
             }
+        }
+
+        // Heroes
+        if ($dominion->hero !== null) {
+            $duration += $dominion->hero->getPerkValue("{$spell->key}_duration");
         }
 
         return $duration;

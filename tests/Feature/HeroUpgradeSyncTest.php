@@ -16,10 +16,20 @@ class HeroUpgradeSyncTest extends AbstractTestCase
         return Yaml::parse(file_get_contents(base_path('app/data/heroes.yml')));
     }
 
+    /**
+     * Magic upgrades keyed by a spell school are that school's spellbook.
+     * Other magic upgrades (e.g. level 8 upgrades) have their own names.
+     */
     public function testEveryMagicUpgradeIsNamedAfterItsSpellbook(): void
     {
+        $spellSchools = collect(Yaml::parse(file_get_contents(base_path('app/data/spells.yml'))))
+            ->pluck('school')
+            ->filter()
+            ->unique()
+            ->all();
+
         foreach ($this->getHeroUpgradeData() as $upgradeKey => $upgradeData) {
-            if ($upgradeData['type'] !== 'magic') {
+            if ($upgradeData['type'] !== 'magic' || !in_array($upgradeKey, $spellSchools, true)) {
                 continue;
             }
 

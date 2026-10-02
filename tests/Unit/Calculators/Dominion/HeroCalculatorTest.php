@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
+use OpenDominion\Models\HeroHeroUpgrade;
+use OpenDominion\Models\HeroUpgrade;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -364,5 +366,52 @@ class HeroCalculatorTest extends AbstractBrowserKitTestCase
                 "Hero with {$testCase['xp']} XP should need {$testCase['expectedNext']} XP for next level"
             );
         }
+    }
+
+    public function testGetUnlockableUpgradeCount_LevelEightUnlocksAnotherUpgrade()
+    {
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 3500, // Level 7
+            'class_data' => []
+        ]);
+
+        // Doctrine plus levels 2, 4, 6
+        $this->assertEquals(4, $this->heroCalculator->getUnlockableUpgradeCount($hero));
+
+        $hero->experience = 4250; // Level 8
+        $this->assertEquals(5, $this->heroCalculator->getUnlockableUpgradeCount($hero));
+
+        $hero->experience = 10000; // Level 12, capped at level 8
+        $this->assertEquals(5, $this->heroCalculator->getUnlockableUpgradeCount($hero));
+    }
+
+    public function testCanUnlockUpgrade_LevelEightUpgrade()
+    {
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'alchemist',
+            'experience' => 3500, // Level 7
+            'class_data' => []
+        ]);
+        $nullification = HeroUpgrade::where('key', 'nullification')->firstOrFail();
+        $malediction = HeroUpgrade::where('key', 'malediction')->firstOrFail();
+
+        $this->assertFalse($this->heroCalculator->canUnlockUpgrade($hero, $nullification));
+
+        $hero->experience = 4250; // Level 8
+        $this->assertTrue($this->heroCalculator->canUnlockUpgrade($hero, $nullification));
+
+        HeroHeroUpgrade::create([
+            'hero_id' => $hero->id,
+            'hero_upgrade_id' => $nullification->id,
+        ]);
+        $hero->load('upgrades');
+
+        $this->assertFalse($this->heroCalculator->canUnlockUpgrade($hero, $malediction));
+        $this->assertEquals(4, $this->heroCalculator->getUnlockableUpgradeCount($hero));
     }
 }

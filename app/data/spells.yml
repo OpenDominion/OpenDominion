@@ -577,6 +577,7 @@ burning:
     apply_rejuvenation: 1
     immune_lightning_storm: 1
     war_extends: 1
+  active: false
 lightning_storm:
   name: Lightning Storm
   category: effect
@@ -589,6 +590,7 @@ lightning_storm:
     apply_rejuvenation: 1
     immune_burning: 1
     war_extends: 1
+  active: false
 rejuvenation:
   name: Rejuvenation
   category: effect
@@ -607,7 +609,7 @@ spell_reflect:
   name: Spell Reflect
   category: friendly
   school: abjuration
-  cost_mana: 2
+  cost_mana: 3
   cost_strength: 5
   duration: 3
   cooldown: 3
@@ -755,14 +757,14 @@ fractured:
   school: abjuration
   cost_mana: 0
   cost_strength: 0
-  duration: 6
+  duration: 12
   perks:
     blocks_magic_ward: 1
 repair_castle:
   name: Repair Castle
   category: friendly
   school: transmutation
-  cost_mana: 3
+  cost_mana: 2.5
   cost_strength: 5
   cooldown: 3
   perks:
@@ -797,11 +799,11 @@ revive_peasants:
   name: Revive Peasants
   category: friendly
   school: necromancy
-  cost_mana: 3
+  cost_mana: 2.5
   cost_strength: 5
   cooldown: 3
   perks:
-    revive_peasants: 5
+    revive_peasants: 2.5
 backlash:
   name: Backlash
   category: self
