@@ -141,10 +141,12 @@ class SpellCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetStrengthCostWithHero()
     {
         $this->spell->shouldReceive('getAttribute')->with('cost_strength')->andReturn(25.0);
+        $this->spell->shouldReceive('getAttribute')->with('key')->andReturn('test_spell');
 
         // Test with hero affecting self spell cost
         $mockHero = m::mock(Hero::class);
         $mockHero->shouldReceive('getPerkValue')->with('self_spell_strength_cost')->andReturn(-5.0);
+        $mockHero->shouldReceive('getPerkValue')->with('test_spell_strength_cost')->andReturn(0.0);
         $this->dominion->shouldReceive('getAttribute')->with('hero')->andReturn($mockHero);
         $this->spellHelper->shouldReceive('isSelfSpell')->with($this->spell)->andReturn(true);
 
@@ -245,6 +247,7 @@ class SpellCalculatorTest extends AbstractBrowserKitTestCase
 
         // Test without Amplify Magic
         $this->sut->shouldReceive('isSpellActive')->with($this->dominion, 'amplify_magic')->andReturn(false);
+        $this->dominion->shouldReceive('getAttribute')->with('hero')->andReturn(null);
         $this->spellHelper->shouldReceive('isSelfSpell')->with($this->spell)->andReturn(true);
 
         $result = $this->sut->getSpellDuration($this->dominion, $this->spell);
@@ -258,6 +261,7 @@ class SpellCalculatorTest extends AbstractBrowserKitTestCase
 
         // Test with Amplify Magic affecting self spell duration
         $this->sut->shouldReceive('isSpellActive')->with($this->dominion, 'amplify_magic')->andReturn(true);
+        $this->dominion->shouldReceive('getAttribute')->with('hero')->andReturn(null);
         $this->spellHelper->shouldReceive('isSelfSpell')->with($this->spell)->andReturn(true);
         $this->dominion->shouldReceive('getSpellPerkValue')->with('self_spell_duration')->andReturn(50); // +50%
 
