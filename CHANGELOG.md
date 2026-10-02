@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Locate Valuables removed
 - Theft now based on total resource amount (was unprotected amount)
+- Incoming military on bots at round start will now be split evenly between hours 4-9 and 10-12
 - Lycanthrope Garou: +35p (to 1150p)
 - Icekin FrostMage: +30p (to 995p)
 
