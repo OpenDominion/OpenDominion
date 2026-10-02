@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
@@ -157,6 +158,16 @@ class RoundPerkTest extends AbstractTestCase
         $this->createPerk(['key' => 'tech_production', 'value' => '10']);
 
         $this->assertEqualsWithDelta($baseline + 0.10, $productionCalculator->getTechProductionMultiplier($this->goodDominion), 0.0001);
+    }
+
+    public function testHeroExperienceMultiplierIncludesRoundPerk(): void
+    {
+        $heroCalculator = app(HeroCalculator::class);
+        $baseline = $heroCalculator->getExperienceMultiplier($this->goodDominion);
+
+        $this->createPerk(['key' => 'hero_experience', 'value' => '15']);
+
+        $this->assertEqualsWithDelta($baseline + 0.15, $heroCalculator->getExperienceMultiplier($this->goodDominion), 0.0001);
     }
 
     public function testWartimePlatinumPerkOnlyAppliesWhileAtWar(): void

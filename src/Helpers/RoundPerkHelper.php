@@ -39,6 +39,9 @@ class RoundPerkHelper
             // Population
             'max_population' => ['label' => 'Max population', 'unit' => '%', 'negativeBenefit' => false],
 
+            // Heroes
+            'hero_experience' => ['label' => 'Hero experience gains', 'unit' => '%', 'negativeBenefit' => false],
+
             // Buildings
             'alchemy_platinum_production_raw' => ['label' => 'Platinum per alchemy', 'unit' => '', 'negativeBenefit' => false],
             'farm_food_production_raw' => ['label' => 'Food per farm', 'unit' => '', 'negativeBenefit' => false],
