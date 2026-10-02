@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Changed
-Lycanthrope Garou: +35p (to 1150p)
-Icekin FrostMage: +30p (to 995p)
+- Locate Valuables removed
+- Theft now based on total resource amount (was unprotected amount)
+- Lycanthrope Garou: +35p (to 1150p)
+- Icekin FrostMage: +30p (to 995p)
 
 ### Fixed
 - Ops started from the bounty board are now blocked if the bounty was already collected or has expired
