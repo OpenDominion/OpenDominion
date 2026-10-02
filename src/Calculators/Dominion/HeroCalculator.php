@@ -125,6 +125,9 @@ class HeroCalculator
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('hero_experience');
 
+        // Round Perks
+        $multiplier += $dominion->getRoundPerkMultiplier('hero_experience');
+
         return $multiplier;
     }
 
