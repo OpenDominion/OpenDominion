@@ -51,7 +51,7 @@ class WizardGuildTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * Fractional wizards are not stored, so guilds only pay out per full 20.
+     * Fractional wizards are not stored, so guilds only pay out per full 16.
      */
     public function testWizardProductionRoundsDownToWholeWizards(): void
     {
@@ -61,11 +61,11 @@ class WizardGuildTest extends AbstractBrowserKitTestCase
         $expectations = [
             [0, 0],
             [1, 0],
-            [19, 0],
-            [20, 1],
-            [39, 1],
-            [40, 2],
-            [250, 12],
+            [15, 0],
+            [16, 1],
+            [31, 1],
+            [32, 2],
+            [250, 15],
         ];
 
         foreach ($expectations as [$guilds, $expected]) {

@@ -24,7 +24,7 @@ class WizardGuildTickTest extends AbstractBrowserKitTestCase
         $queueService = app(QueueService::class);
 
         $dominion->protection_ticks_remaining = 0;
-        $dominion->building_wizard_guild = 40;
+        $dominion->building_wizard_guild = 32;
         $dominion->military_wizards = 100;
         $dominion->save();
 
@@ -42,7 +42,7 @@ class WizardGuildTickTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function testWizardGuildsBelowTwentyTrainNothing(): void
+    public function testWizardGuildsBelowSixteenTrainNothing(): void
     {
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
@@ -50,7 +50,7 @@ class WizardGuildTickTest extends AbstractBrowserKitTestCase
         $tickService = app(TickService::class);
 
         $dominion->protection_ticks_remaining = 0;
-        $dominion->building_wizard_guild = 19;
+        $dominion->building_wizard_guild = 15;
         $dominion->military_wizards = 100;
         $dominion->save();
 

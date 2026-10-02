@@ -544,7 +544,7 @@ class ProductionCalculator
     /**
      * Returns the number of wizards trained by the Dominion's Wizard Guilds each hour.
      *
-     * Fractional wizards are not stored, so a Dominion needs a multiple of 20
+     * Fractional wizards are not stored, so a Dominion needs a multiple of 16
      * Wizard Guilds for the remainder to be worth anything.
      *
      * Spells that make Wizard Guilds produce a racial unit instead
@@ -560,7 +560,7 @@ class ProductionCalculator
         }
 
         // Values
-        $wizardsPerWizardGuild = 0.05;
+        $wizardsPerWizardGuild = 0.0625;
 
         return (int)rfloor($dominion->building_wizard_guild * $wizardsPerWizardGuild);
     }
