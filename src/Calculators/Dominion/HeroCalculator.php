@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
-use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroUpgrade;
 
 class HeroCalculator
@@ -482,125 +481,6 @@ class HeroCalculator
         }
 
         return $combatStats;
-    }
-
-    public function getCombatStat(HeroCombatant $combatant, string $stat): int
-    {
-        $multiplier = 1;
-
-        // Frozen: attack, counter, and recover are reduced to 0 while frozen
-        if (!empty($combatant->status['frozen']) && in_array($stat, ['attack', 'counter', 'recover'])) {
-            return 0;
-        }
-
-        if (in_array('last_stand', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
-            $multiplier = 1.1;
-        }
-
-        if ($stat == 'attack') {
-            // Enrage
-            if (in_array('enrage', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
-                return round($combatant->attack * $multiplier) + 10;
-            }
-        }
-
-        if ($stat == 'defense') {
-            // Rally
-            if (in_array('rally', $combatant->abilities ?? []) && $combatant->current_health <= 40) {
-                return round($combatant->defense * $multiplier) + 5;
-            }
-            // Arcane Shield
-            if (in_array('arcane_shield', $combatant->abilities ?? [])) {
-                return round($combatant->defense * $multiplier) + 10;
-            }
-            // Weakened
-            if (in_array('weakened', $combatant->abilities ?? [])) {
-                return round($combatant->defense * $multiplier) - 15;
-            }
-            // Undying Legion
-            if (in_array('undying_legion', $combatant->abilities ?? [])) {
-                $livingMinions = $combatant->battle->combatants
-                    ->where('id', '!=', $combatant->id)
-                    ->where('hero_id', null)
-                    ->where('current_health', '>', 0)
-                    ->count();
-                if ($livingMinions > 0) {
-                    return 999;
-                }
-            }
-            // Frostbite: each stack permanently reduces defense by 1 for this battle
-            $frostbiteStacks = (int) ($combatant->status['frostbite'] ?? 0);
-            if ($frostbiteStacks > 0) {
-                return max(0, round($combatant->defense * $multiplier) - $frostbiteStacks);
-            }
-        }
-
-        if ($stat == 'recover') {
-            // Mending
-            if (in_array('mending', $combatant->abilities ?? []) && $combatant->has_focus) {
-                return round($combatant->recover * $multiplier) + round($combatant->focus * $multiplier);
-            }
-        }
-
-        if ($stat == 'counter') {
-            // Retribution
-            if (in_array('retribution', $combatant->abilities ?? [])) {
-                return round($combatant->counter * $multiplier) + 15;
-            }
-        }
-
-        return round($combatant->{$stat} * $multiplier);
-    }
-
-    public function calculateCombatDamage(HeroCombatant $combatant, HeroCombatant $target, array $actionDef, bool $counterAttack = false): int
-    {
-        $baseDamage = $this->getCombatStat($combatant, 'attack');
-        $baseDefense = $this->getCombatStat($target, 'defense');
-        $defendModifier = $actionDef['attributes']['defend'] ?? 0;
-        $bonusDamage = $actionDef['attributes']['bonus_damage'] ?? 0;
-
-        if ($combatant->current_action == 'counter') {
-            $baseDamage += $this->getCombatStat($combatant, 'counter');
-        } elseif ($combatant->has_focus) {
-            $baseDamage += $this->getCombatStat($combatant, 'focus');
-        }
-
-        // Add bonus damage
-        $baseDamage += $bonusDamage;
-
-        if ($target->current_action == 'recover') {
-            $baseDefense -= 5;
-        }
-
-        // Wide open while the curse is being cast
-        if ($target->current_action == 'hungering_moon') {
-            $moonDef = $this->heroHelper->getCombatActions()->get('hungering_moon');
-            $baseDefense -= $moonDef['attributes']['casting_vulnerability'] ?? 0;
-        }
-
-        if ($target->current_action == 'defend') {
-            $baseDefense *= 2;
-            $baseDefense += $defendModifier;
-        }
-
-        $damage = max(0, $baseDamage - $baseDefense);
-
-        return round($damage);
-    }
-
-    public function calculateCombatEvade(HeroCombatant $target, array $actionDef): bool
-    {
-        $evaded = $actionDef['attributes']['evade'] ?? null;
-        if ($evaded !== null) {
-            return $evaded;
-        }
-
-        return mt_rand(0, 100) < $this->getCombatStat($target, 'evasion');
-    }
-
-    public function calculateCombatHeal(HeroCombatant $combatant): int
-    {
-        return $this->getCombatStat($combatant, 'recover');
     }
 
     public function calculateRatingChange(float $currentRating, float $opponentRating, float $result): int

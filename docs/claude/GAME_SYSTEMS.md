@@ -182,9 +182,10 @@ hero, investment, exploration, espionage, magic, invasion
 - Multiplied by: shrines, racial perks, wonder bonuses
 
 ### Combat
-- 1v1 turn-based battles with time bank (2h default)
+- Simultaneous-turn battles between teams (1v1 PvP, team PvP, co-op PvE vs encounters) with per-player time banks (2h default)
 - Tournaments with bracket elimination
-- Processed during hourly tick
+- Processed during hourly tick and whenever a player queues an action
+- Engine details: see [HERO_COMBAT.md](HERO_COMBAT.md)
 
 ### Upgrades
 40+ hero upgrades with level/class requirements, granting permanent perk bonuses.

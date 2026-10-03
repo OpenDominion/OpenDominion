@@ -9,9 +9,9 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\RaidHelper;
+use OpenDominion\HeroCombat\Engine\BattleState;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
-use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\RaidContribution;
 use OpenDominion\Models\RaidObjective;
 use OpenDominion\Models\RaidObjectiveTactic;
@@ -168,11 +168,10 @@ class RaidActionService
             throw new GameException('You must have a hero to perform this action');
         }
 
-        // Check if any battle for this objective has been completed
         $objectiveTacticIds = $tactic->objective->tactics->pluck('id');
         $objectiveBattles = $dominion->hero->battles->whereIn('raid_tactic_id', $objectiveTacticIds);
         foreach ($objectiveBattles->where('finished', true) as $finishedBattle) {
-            if ($finishedBattle->winner && $finishedBattle->winner->dominion_id == $dominion->id) {
+            if ($finishedBattle->hasWinningDominion($dominion->id)) {
                 throw new GameException('You have already completed this objective');
             }
         }
@@ -181,74 +180,17 @@ class RaidActionService
             throw new GameException('You already have a battle in progress for this objective');
         }
 
-        $heroBattleService = app(HeroBattleService::class);
-        $heroBattle = HeroBattle::create([
-            'round_id' => $dominion->round_id,
-            'raid_tactic_id' => $tactic->id,
-            'pvp' => false,
-        ]);
-        $dominionCombatant = $heroBattleService->createCombatant($heroBattle, $dominion->hero);
-
-        $heroEncounterHelper = app(\OpenDominion\Helpers\HeroEncounterHelper::class);
-        $encounterDefinitions = $heroEncounterHelper->getEncounters();
-        $enemyDefinitions = $heroEncounterHelper->getEnemies();
-
-        $encounterKey = $tactic->attributes['encounter'];
-        $encounter = $encounterDefinitions->get($encounterKey);
-
-        // Count prior realm wins for this tactic (Realm Wounds)
         $priorWins = RaidContribution::where('raid_tactic_id', $tactic->id)
             ->where('realm_id', $dominion->realm_id)
             ->count();
 
-        // HP reduction: 10% per win, capped at 50%
-        $hpMultiplier = max(0.5, 1 - ($priorWins * 0.1));
-
-        // Evasion reduction: 10% per win, capped at 50%
-        $evadeMultiplier = max(0.5, 1 - ($priorWins * 0.1));
-
-        // Summon interval: base 4, +1 per 2 win, capped at +5
-        $summonInterval = 4 + $priorWins;
-
-        // Inject special abilities for the Planewalker encounter
-        if ($encounterKey == 'planewalker') {
-            if ($this->heroCalculator->heroHasClass($dominion->hero, 'infiltrator')) {
-                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['shadow_strike']);
-            }
-            if ($this->heroCalculator->heroHasClass($dominion->hero, 'sorcerer')) {
-                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['great_flood']);
-            }
-            if ($this->heroCalculator->heroHasClass($dominion->hero, 'engineer')) {
-                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['demolish']);
-            }
-            $dominionCombatant->save();
-        }
-
-        // Rex Lunae grants Cleanse -- without it the curse cannot be answered
-        if ($encounterKey == 'rex_lunae') {
-            $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['cleanse']);
-            $dominionCombatant->save();
-        }
-
-        foreach ($encounter['enemies'] as $enemy) {
-            $enemyStats = $enemyDefinitions->get($enemy['key']);
-            $enemyStats['name'] = $enemy['name'];
-
-            if ($encounterKey == 'planewalker' && $enemy['key'] == 'planewalker' && $priorWins > 0) {
-                $enemyStats['health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
-                $enemyStats['evasion'] = max(1, (int) round($enemyStats['evasion'] * $evadeMultiplier));
-                $enemyStats['status'] = array_merge($enemyStats['status'] ?? [], [
-                    'summon_interval' => $summonInterval,
-                ]);
-            }
-
-            if ($encounterKey == 'dreadsoul_skullkeeper' && $enemy['key'] == 'dreadsoul' && $priorWins > 0) {
-                $hpMultiplier = max(0.5, 1 - ($priorWins * 0.02));
-                $enemyStats['health'] = max(1, (int) round($enemyStats['health'] * $hpMultiplier));
-            }
-
-            $heroBattleService->createNonPlayerCombatant($heroBattle, $enemyStats);
-        }
+        app(HeroBattleService::class)->createEncounterBattle(
+            $tactic->attributes['encounter'],
+            [$dominion],
+            BattleState::MODE_RAID,
+            $tactic,
+            $priorWins,
+        );
 
         return [
             'message' => 'The battle begins!',

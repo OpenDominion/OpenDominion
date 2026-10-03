@@ -176,6 +176,7 @@ return [
         // OpenDominion\Providers\BroadcastServiceProvider::class,
         OpenDominion\Providers\ComposerServiceProvider::class,
         OpenDominion\Providers\EventServiceProvider::class,
+        OpenDominion\Providers\HeroCombatServiceProvider::class,
         OpenDominion\Providers\RouteServiceProvider::class,
 
     ],

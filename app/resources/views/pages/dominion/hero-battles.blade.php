@@ -11,121 +11,51 @@
                     <span class="card-title"><i class="ra ra-axe"></i> Active Battles</span>
                 </div>
                 <div class="card-body">
-                    @php $playerCombatant = null; @endphp
                     @foreach ($activeBattles as $battle)
+                        @php $view = $battlePresenter->present($battle, $hero->id); @endphp
                         <form action="{{ route('dominion.heroes.battles') }}" method="post" role="form">
                             @csrf
+                            @if ($view->viewer)
+                                <input type="hidden" name="combatant" value="{{ $view->viewer->id }}">
+                            @endif
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        @foreach ($battle->combatants as $combatant)
-                                            @php $combatantTooltip = $heroHelper->getSpecialAbilitiesTooltip($combatant); @endphp
-                                            @if ($combatant->hero_id == $hero->id)
-                                                @php $playerCombatant = $combatant; @endphp
-                                                <input type="hidden" name="combatant" value="{{ $combatant->id }}">
-                                            @endif
-                                            <div class="col-sm-6">
-                                                <table class="table table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th colspan=2 class="text-center">
-                                                                {{ $combatant->name }}
-                                                                @if ($combatant->hero_id == $hero->id)
-                                                                    (you)
-                                                                @endif
-                                                                @if ($combatantTooltip)
-                                                                    <i class="fa fa-question-circle" title="{!! $combatantTooltip !!}" data-bs-toggle="tooltip"></i>
-                                                                @endif
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($heroCalculator->getBaseCombatStats($combatant->level) as $stat => $value)
-                                                            <tr>
-                                                                <td>
-                                                                    <span class="{{ $stat == 'focus' && $combatant->has_focus ? 'text-green' : null }} {{ in_array($stat, ['focus', 'counter', 'recover']) && $stat == $combatant->last_action ? 'text-warning' : null }}" data-bs-toggle="tooltip" title="{{ $heroHelper->getCombatStatTooltip($stat) }}">
-                                                                        {{ ucwords($stat) }}
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    @if ($stat == 'health')
-                                                                        {{ $combatant->current_health }}
-                                                                        @if ($combatant->shield > 0)
-                                                                            + <span class="text-aqua">{{ $combatant->shield }}</span>
-                                                                        @endif
-                                                                        /
-                                                                    @endif
-                                                                    <span class="{{ $combatant->hero_id !== null && $heroCalculator->getCombatStat($combatant, $stat) != $value ? 'text-green' : null }}">
-                                                                        {{ $heroCalculator->getCombatStat($combatant, $stat) }}
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                        @if (!empty($combatant->status['frozen']))
-                                                            <tr>
-                                                                <td><span class="text-info" data-bs-toggle="tooltip" title="Attack, counter, and recover are reduced to 0 this turn.">Frozen</span></td>
-                                                                <td><i class="fa fa-snowflake text-info"></i></td>
-                                                            </tr>
-                                                        @elseif (!empty($combatant->status['frozen_pending']))
-                                                            <tr>
-                                                                <td><span class="text-warning" data-bs-toggle="tooltip" title="Will be frozen next turn.">Freezing</span></td>
-                                                                <td><i class="fa fa-snowflake text-warning"></i></td>
-                                                            </tr>
-                                                        @endif
-                                                        <tr>
-                                                            <td><span data-bs-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
-                                                            <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
-                                                        </tr>
-                                                    </tbody>
-                                                    @if ($battle->combatants->count() > 2 && $playerCombatant->id !== $combatant->id && !$battle->finished)
-                                                        <tfoot>
-                                                            @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
-                                                                @if ($actionData['type'] == 'hostile')
-                                                                    <tr>
-                                                                        <td colspan=2>
-                                                                            @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0 || $combatant->current_health <= 0)
-                                                                                <a class="btn btn-block btn-secondary disabled mb-1" aria-disabled="true" tabindex="-1">
-                                                                                    {{ $actionData['name'] }}
-                                                                                </a>
-                                                                            @else
-                                                                                <a class="btn btn-block btn-primary mb-1"
-                                                                                    href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$combatant->id, 'action'=>$actionKey]) }}">
-                                                                                    {{ $actionData['name'] }}
-                                                                                </a>
-                                                                            @endif
-                                                                        </td>
-                                                                    </tr>
-                                                                @endif
-                                                            @endforeach
-                                                        </tfoot>
-                                                    @endif
-                                                </table>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                    @foreach ($view->sides() as $side)
+                                        <h5 class="mb-2">{{ $side['label'] }}</h5>
+                                        <div class="row">
+                                            @foreach ($side['combatants'] as $combatant)
+                                                @include('partials.dominion.hero-combatant', ['view' => $view, 'combatant' => $combatant])
+                                            @endforeach
+                                        </div>
+                                    @endforeach
                                     <div class="row">
                                         <div class="col-sm-12">
                                             @if ($battle->finished)
                                                 <div class="text-center">
-                                                    @if ($battle->winner == null)
+                                                    @if ($battle->isDraw())
                                                         <h4>Draw!</h4>
                                                     @else
-                                                        <h4>{{ $battle->winner->name }} wins!</h4>
+                                                        <h4>{{ $battle->winnerLabel() }} {{ $battle->winningCombatants()->whereNotNull('hero_id')->count() > 1 ? 'win' : 'wins' }}!</h4>
                                                     @endif
                                                 </div>
-                                            @else
+                                            @elseif ($view->viewer)
                                                 <div class="row mb-3">
                                                     <div class="col-sm-6">
                                                         <label class="form-label">
                                                             Actions in queue
                                                         </label>
                                                         <table class="table-sm">
-                                                            @foreach ($playerCombatant->actions ?? [] as $idx => $action)
+                                                            @foreach ($view->queue() as $idx => $queued)
                                                                 <tr>
-                                                                    <td>{{ $battle->current_turn + $idx }}</td>
-                                                                    <td>{{ ucwords($action['action']) }}</td>
+                                                                    <td>{{ $queued['turn'] }}</td>
                                                                     <td>
-                                                                        <a href="{{ route('dominion.heroes.battles.action.delete', ['combatant'=>$playerCombatant->id, 'action'=>$idx]) }}">
+                                                                        {{ $queued['ability'] }}
+                                                                        @if ($queued['target'])
+                                                                            <small class="text-muted">&rarr; {{ $queued['target'] }}</small>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="{{ route('dominion.heroes.battles.action.delete', ['combatant'=>$view->viewer->id, 'action'=>$idx]) }}">
                                                                             <i class="fa fa-trash text-danger"></i>
                                                                         </a>
                                                                     </td>
@@ -138,21 +68,40 @@
                                                             Perform/Queue an action
                                                         </label>
                                                         <div>
-                                                            @foreach ($heroHelper->getAvailableCombatActions($playerCombatant) as $actionKey => $actionData)
-                                                                @if (!$heroHelper->canUseCombatAction($playerCombatant, $actionKey) || $playerCombatant->time_bank <= 0)
-                                                                    <a class="btn btn-block btn-secondary disabled mb-1" aria-disabled="true" tabindex="-1">
-                                                                        {{ $actionData['name'] }}
+                                                            @foreach ($view->abilities() as $ability)
+                                                                @php
+                                                                    $label = $ability['name'];
+                                                                    if ($ability['cooldown'] > 0) {
+                                                                        $label .= " ({$ability['cooldown']})";
+                                                                    }
+                                                                    if ($ability['charges'] !== null) {
+                                                                        $label .= " [{$ability['charges']}]";
+                                                                    }
+                                                                    $targets = $ability['needsTarget'] ? $view->targetsFor($ability['key']) : [];
+                                                                @endphp
+                                                                @if (!$ability['usable'] || ($ability['needsTarget'] && count($targets) == 0))
+                                                                    <a class="btn btn-block btn-secondary disabled mb-1" aria-disabled="true" tabindex="-1" title="{{ $ability['description'] }}">
+                                                                        {{ $label }}
                                                                     </a>
-                                                                @elseif ($actionData['type'] == 'hostile')
-                                                                    @if ($battle->combatants->count() == 2)
-                                                                        @php $target = $battle->combatants->where('id', '!=', $playerCombatant->id)->first(); @endphp
-                                                                        <a class="btn btn-block btn-primary mb-1" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$target->id, 'action'=>$actionKey]) }}">
-                                                                            {{ $actionData['name'] }}
-                                                                        </a>
-                                                                    @endif
-                                                                @elseif ($actionData['type'] == 'self')
-                                                                    <a class="btn btn-block btn-primary mb-1" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$playerCombatant->id, 'target'=>$playerCombatant->id, 'action'=>$actionKey]) }}">
-                                                                        {{ $actionData['name'] }}
+                                                                @elseif ($ability['needsTarget'] && count($targets) > 1)
+                                                                    <div class="dropdown mb-1">
+                                                                        <button class="btn btn-block btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $ability['description'] }}">
+                                                                            {{ $label }}
+                                                                        </button>
+                                                                        <ul class="dropdown-menu w-100">
+                                                                            @foreach ($targets as $target)
+                                                                                <li>
+                                                                                    <a class="dropdown-item" href="{{ route('dominion.heroes.battles.action', ['combatant'=>$view->viewer->id, 'target'=>$target->id, 'action'=>$ability['key']]) }}">
+                                                                                        {{ $target->name }} <small class="text-muted">({{ $target->currentHealth }} hp)</small>
+                                                                                    </a>
+                                                                                </li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                    </div>
+                                                                @else
+                                                                    <a class="btn btn-block btn-primary mb-1" title="{{ $ability['description'] }}"
+                                                                        href="{{ route('dominion.heroes.battles.action', ['combatant'=>$view->viewer->id, 'target'=>$targets[0]->id ?? null, 'action'=>$ability['key']]) }}">
+                                                                        {{ $label }}
                                                                     </a>
                                                                 @endif
                                                             @endforeach
@@ -165,8 +114,8 @@
                                                             Strategy <small>(for turns taken while offline)</small>
                                                         </label>
                                                         <select name="strategy" class="form-select">
-                                                            @foreach ($heroHelper->getCombatStrategies()->where('type', 'basic') as $key => $strategy)
-                                                                <option value="{{ $key }}" {{ $playerCombatant->strategy == $key ? 'selected' : null }}>{{ $strategy['name'] }}</option>
+                                                            @foreach ($view->strategies() as $key => $strategyName)
+                                                                <option value="{{ $key }}" {{ $view->viewer->ai == $key ? 'selected' : null }}>{{ $strategyName }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -174,7 +123,7 @@
                                                 <div class="row mb-3">
                                                     <div class="col-sm-9">
                                                         <div class="form-check">
-                                                            <input type="checkbox" id="automated" name="automated" class="form-check-input" {{ $playerCombatant->automated != false ? 'checked' : null }}>
+                                                            <input type="checkbox" id="automated" name="automated" class="form-check-input" {{ $view->viewer->automated ? 'checked' : null }}>
                                                             <label for="automated" class="form-check-label">
                                                                 Automate all of my turns
                                                             </label>
@@ -188,26 +137,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="max-height: {{ $battle->combatants->count() > 2 ? '645px' : '272px' }}; overflow-y: scroll;">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Combat Log</th>
-                                            </tr>
-                                        </thead>
-                                        @foreach ($battle->actions->sortByDesc('turn')->groupBy('turn') as $turn => $actions)
-                                            <tr><td>Turn {{ $turn }}</td></tr>
-                                            <tr><td>
-                                                @foreach ($actions->where('action', '!=', 'status') as $action)
-                                                    @php $actionDef = $heroHelper->getCombatActions()->get($action->action); @endphp
-                                                    {{ $action->combatant->name }} selected {{ $actionDef['name'] ?? ucwords($action->action) }}.<br/>
-                                                @endforeach
-                                                @foreach ($actions->where('description', '!=', '') as $action)
-                                                    {{ $action->description }}<br/>
-                                                @endforeach
-                                            </td></tr>
-                                        @endforeach
-                                    </table>
+                                <div class="col-md-6" style="max-height: {{ count($view->battle->combatants()) > 2 ? '645px' : '272px' }}; overflow-y: scroll;">
+                                    @include('partials.dominion.hero-combat-log', ['view' => $view, 'battle' => $battle])
                                 </div>
                             </div>
                         </form>
@@ -237,20 +168,20 @@
                                 @foreach ($inactiveBattles as $battle)
                                     <tr>
                                         <td>
-                                            @if ($battle->winner !== null && $battle->winner->hero_id == $hero->id)
-                                                Win
-                                            @elseif ($battle->winner == null)
+                                            @if ($battle->isDraw())
                                                 Draw
+                                            @elseif ($battle->isWinner($battle->combatants->firstWhere('hero_id', $hero->id)))
+                                                Win
                                             @else
                                                 Loss
                                             @endif
                                         </td>
                                         <td>
                                             <a href="{{ route('dominion.heroes.battles.report', ['battle'=>$battle->id]) }}">
-                                                {{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}
+                                                {{ $battle->matchupLabel() }}
                                             </a>
                                         </td>
-                                        <td>{{ $battle->winner ? $battle->winner->name : '--' }}</td>
+                                        <td>{{ $battle->winnerLabel() ?? '--' }}</td>
                                         <td>{{ $battle->created_at }}</td>
                                     </tr>
                                 @endforeach

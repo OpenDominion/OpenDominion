@@ -116,13 +116,13 @@
                                             <th>Winner</th>
                                         </tr>
                                     </thead>
-                                    @foreach ($tournament->battles->sortBy([['pivot.round_number', 'desc'], ['finished', 'desc'], ['winner', 'desc']]) as $battle)
+                                    @foreach ($tournament->battles->sortBy([['pivot.round_number', 'desc'], ['finished', 'desc'], ['winning_team', 'desc']]) as $battle)
                                         <tr>
                                             <td>{{ $battle->pivot->round_number }}</td>
-                                            <td>{{ implode(' vs ', $battle->combatants->pluck('name')->toArray()) }}</td>
+                                            <td>{{ $battle->matchupLabel() }}</td>
                                             <td>
-                                                @if ($battle->winner)
-                                                    {{ $battle->winner->name }}
+                                                @if ($battle->winnerLabel())
+                                                    {{ $battle->winnerLabel() }}
                                                 @elseif ($battle->finished)
                                                     <span class="text-muted">Draw</span>
                                                 @else

@@ -466,8 +466,8 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'hero',
             'name' => 'Test Hero Action',
             'attributes' => [
-                'name' => 'Ancient Dragon',
-                'encounter' => 'dragonkin',
+                'name' => 'Admiral Varos',
+                'encounter' => 'admiral_varos',
                 'points_awarded' => 400,
             ],
         ]);
@@ -481,6 +481,54 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertStringContainsString('The battle begins!', $result['message']);
         $this->assertArrayHasKey('redirect', $result);
         $this->assertStringContainsString('/dominion/heroes/battles', $result['redirect']);
+
+        $battle = $hero->battles()->firstOrFail();
+        $this->assertEquals('raid', $battle->mode);
+        $this->assertEquals($tactic->id, $battle->raid_tactic_id);
+        $this->assertEquals('admiral_varos', $battle->encounter_key);
+        $this->assertEquals(1, $battle->combatants->where('team', 2)->count());
+    }
+
+    public function testHeroTactic_WinningTheBattleRecordsContribution()
+    {
+        // Arrange
+        $hero = Hero::create([
+            'dominion_id' => $this->dominion->id,
+            'name' => 'Test Hero',
+            'experience' => 1000,
+            'class' => 'alchemist',
+        ]);
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'hero',
+            'name' => 'Test Hero Action',
+            'attributes' => [
+                'name' => 'Admiral Varos',
+                'encounter' => 'admiral_varos',
+                'points_awarded' => 400,
+            ],
+        ]);
+        $this->raidActionService->performAction($this->dominion, $tactic, []);
+        $battle = $hero->battles()->firstOrFail();
+        $varos = $battle->combatants->firstWhere('team', 2);
+        $varos->update(['current_health' => 1, 'evasion' => 0]);
+        $battle->combatants->firstWhere('team', 1)->update([
+            'actions' => [['ability' => 'attack', 'target' => $varos->id]],
+        ]);
+
+        // Act
+        app(\OpenDominion\Services\Dominion\HeroBattleService::class)->processTurn($battle->fresh());
+
+        // Assert
+        $battle->refresh();
+        $this->assertTrue($battle->finished);
+        $this->assertEquals(1, $battle->winning_team);
+        $this->assertTrue($battle->hasWinningDominion($this->dominion->id));
+        $this->assertEquals(1, RaidContribution::where('raid_tactic_id', $tactic->id)->where('dominion_id', $this->dominion->id)->count());
+
+        $this->expectException(GameException::class);
+        $this->expectExceptionMessage('You have already completed this objective');
+        $this->raidActionService->performAction($this->dominion->fresh(), $tactic, []);
     }
 
     public function testPerformAction_HeroTactic_NoHero()

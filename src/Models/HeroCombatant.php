@@ -2,8 +2,6 @@
 
 namespace OpenDominion\Models;
 
-use OpenDominion\Calculators\Dominion\HeroCalculator;
-
 /**
  * OpenDominion\Models\HeroCombatant
  *
@@ -11,6 +9,8 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property int $hero_battle_id
  * @property int $hero_id
  * @property int $dominion_id
+ * @property int $team
+ * @property string|null $template_key
  * @property string $name
  * @property int $level
  * @property int $health
@@ -20,17 +20,17 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
  * @property int $focus
  * @property int $counter
  * @property int $recover
- * @property int $shield
  * @property int $current_health
- * @property bool $has_focus
- * @property array|null $actions
+ * @property array|null $actions queued actions: [{ability, target}]
  * @property string|null $last_action
  * @property \Illuminate\Support\Carbon|null $last_action_at
  * @property int $time_bank
  * @property bool|null $automated
  * @property string|null $strategy
- * @property array|null $abilities
- * @property array|null $status
+ * @property array|null $abilities active ability keys
+ * @property array|null $effects effect instances (see EffectInstance::toArray)
+ * @property array|null $cooldowns ability key => turn on which it is usable again
+ * @property array|null $charges ability key => charges remaining
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\HeroBattle $battle
@@ -46,7 +46,10 @@ class HeroCombatant extends AbstractModel
     protected $casts = [
         'actions' => 'array',
         'abilities' => 'array',
-        'status' => 'array',
+        'effects' => 'array',
+        'cooldowns' => 'array',
+        'charges' => 'array',
+        'automated' => 'boolean',
         'last_action_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -65,6 +68,11 @@ class HeroCombatant extends AbstractModel
     public function dominion()
     {
         return $this->belongsTo(Dominion::class);
+    }
+
+    public function isHuman(): bool
+    {
+        return $this->hero_id !== null;
     }
 
     public function isReady()

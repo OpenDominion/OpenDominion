@@ -5,8 +5,9 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
-use OpenDominion\Helpers\HeroEncounterHelper;
 use OpenDominion\Helpers\HeroHelper;
+use OpenDominion\HeroCombat\Presentation\BattlePresenter;
+use OpenDominion\HeroCombat\Registry\CombatRegistry;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroCreateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\HeroUpgradeActionRequest;
 use OpenDominion\Models\Hero;
@@ -145,23 +146,26 @@ class HeroController extends AbstractDominionController
         }
 
         $activeBattles = $hero->battles()
-            ->with('combatants', 'winner', 'actions.combatant')
+            ->with('combatants', 'actions.combatant')
             ->active()
             ->orderByDesc('created_at')
             ->get();
         $inactiveBattles = $hero->battles()
-            ->with('combatants', 'winner', 'actions.combatant')
+            ->with('combatants')
             ->inactive()
             ->orderByDesc('created_at')
             ->get();
 
         if ($activeBattles->isEmpty() && $inactiveBattles->isNotEmpty()) {
-            $activeBattles = collect([$inactiveBattles->first()]);
+            $activeBattles = collect([$inactiveBattles->first()->load('actions.combatant')]);
         }
+
+        $battlePresenter = app(BattlePresenter::class);
 
         return view('pages.dominion.hero-battles', compact(
             'activeBattles',
             'inactiveBattles',
+            'battlePresenter',
             'heroCalculator',
             'heroHelper',
             'hero',
@@ -182,8 +186,11 @@ class HeroController extends AbstractDominionController
             return redirect()->route('dominion.heroes.battles');
         }
 
+        $view = app(BattlePresenter::class)->present($battle, $hero->id);
+
         return view('pages.dominion.hero-battle-report', compact(
             'battle',
+            'view',
             'heroCalculator',
             'heroHelper',
         ));
@@ -236,7 +243,7 @@ class HeroController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $actionDisplay = $heroHelper->getCombatActions()->get($action)['name'];
+        $actionDisplay = app(CombatRegistry::class)->ability($action)->name();
         if ($turnProcessed) {
             $request->session()->flash('alert-success', "{$combatant->name} performed {$actionDisplay}!");
         } else {
@@ -271,16 +278,17 @@ class HeroController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $heroCalculator = app(HeroCalculator::class);
-        $heroEncounterHelper = app(HeroEncounterHelper::class);
         $heroHelper = app(HeroHelper::class);
 
         if ($dominion->hero === null) {
             return redirect()->route('dominion.heroes');
         }
 
+        $encounters = collect(app(CombatRegistry::class)->encounters())->except('default');
+
         return view('pages.dominion.hero-battle-practice', compact(
+            'encounters',
             'heroCalculator',
-            'heroEncounterHelper',
             'heroHelper',
         ));
     }
