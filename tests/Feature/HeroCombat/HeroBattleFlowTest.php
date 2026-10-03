@@ -227,7 +227,7 @@ class HeroBattleFlowTest extends AbstractBrowserKitTestCase
 
         $result = app(\OpenDominion\HeroCombat\Persistence\BattleReplayer::class)->replay($battle);
 
-        $this->assertGreaterThan(4, $result['turns']);
+        $this->assertEquals($battle->current_turn, $result['turns'], 'Every stored turn is replayed');
         $this->assertSame([], $result['mismatches']);
         $this->assertEquals($battle->winning_team, $result['battle']->state->winningTeam);
 

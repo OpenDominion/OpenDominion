@@ -169,6 +169,24 @@ final class Battle
         $target->currentHealth = max(0, min($health, $this->maxHealth($target)));
     }
 
+    /**
+     * Brings a downed combatant back. Optionally lowers its maximum health (a new, weaker body).
+     */
+    public function revive(CombatantState $target, int $health, ?int $maxHealth = null): void
+    {
+        if ($maxHealth !== null) {
+            $target->baseStats[Stat::Health->value] = $maxHealth;
+        }
+
+        $target->currentHealth = max(1, min($health, $this->maxHealth($target)));
+        $target->deathProcessed = false;
+
+        $this->event(new BattleEvent(EventType::Revived, [
+            'target' => $target->id,
+            'health' => $target->currentHealth,
+        ]));
+    }
+
     public function say(?CombatantState $actor, string $text): void
     {
         $this->log->line($this->state->turn, $actor?->id, $text);

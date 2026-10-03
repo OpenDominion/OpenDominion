@@ -466,8 +466,8 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
             'type' => 'hero',
             'name' => 'Test Hero Action',
             'attributes' => [
-                'name' => 'Admiral Varos',
-                'encounter' => 'admiral_varos',
+                'name' => 'Ancient Dragon',
+                'encounter' => 'dragonkin',
                 'points_awarded' => 400,
             ],
         ]);
@@ -485,8 +485,8 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $battle = $hero->battles()->firstOrFail();
         $this->assertEquals('raid', $battle->mode);
         $this->assertEquals($tactic->id, $battle->raid_tactic_id);
-        $this->assertEquals('admiral_varos', $battle->encounter_key);
-        $this->assertEquals(1, $battle->combatants->where('team', 2)->count());
+        $this->assertEquals('dragonkin', $battle->encounter_key);
+        $this->assertEquals(3, $battle->combatants->where('team', 2)->count());
     }
 
     public function testHeroTactic_WinningTheBattleRecordsContribution()

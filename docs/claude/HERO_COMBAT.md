@@ -156,9 +156,26 @@ optional `playerGrants()` (class-conditional abilities), a `VictoryCondition`, a
 script hook, and an optional victory line. Keys must match the `encounter` attribute raids use on
 their `RaidObjectiveTactic` rows.
 
-Ported so far: `default` (Evil Twin), `admiral_varos`, `heart_of_ice`, `lich_king`. To see the
-rest of the original definitions, use `src/Helpers/HeroEncounterHelper.php` and
-`HeroHelper::getCombatActions()` in git history before the `feature/hero-combat-v2` branch.
+All 18 original encounters are ported:
+
+| Key | Mechanics |
+|---|---|
+| `default` (Evil Twin) | copies the leader's stats |
+| `rabid_bunny`, `dragonkin`, `gate_warden`, `rebel_corsair`, `rebel_admiral` | stat blocks; Blade Flurry, Enrage |
+| `fallen_kings` | `undying`: revive at half health 5 turns after falling |
+| `eternal_guardian` | `undying_legion` (999 defense while minions live), `necromancy` cadence → `summon_skeleton` |
+| `nightbringer` | `nightfall` cadence → `darkness` (stacking `shrouded` evasion); cultists' `dying_light` strips it |
+| `lich_king` | `tome_of_power` phase cycle, `power_source` → `severed` |
+| `planewalker_golems`, `planewalker` | golems: Fortify + Hardiness; `void_rift` cadence (interval scales with realm wins), `wounded_retreat`, class grants (Shadow Strike / Great Flood / Demolish), victory line |
+| `wraith` | `soul_rend_charge` → forced `soul_rend` (+85 damage, +70 defense if defending) |
+| `dreadsoul_skullkeeper` | orcs' `soul_tribute` → `empowered`; health scales with realm wins |
+| `dream_of_thessadrash` | `aspect_shift` chain: Veil → Shadow → Maw |
+| `heart_of_ice` | `snow_witch_curse` telegraph, `frostbite`, Freezing → Frozen |
+| `admiral_varos` | `admirals_orders` telegraph, capped summons |
+| `rex_lunae` | `hungering_moon_curse` telegraph → `hungering_moon` (`moonstruck` max-health loss, turns then converts); Cleanse granted |
+
+The old unused "story" encounters (wolf, bandit, imp, cultist) were never reachable and were
+not ported.
 
 ## Recipes
 
@@ -172,6 +189,10 @@ rest of the original definitions, use `src/Helpers/HeroEncounterHelper.php` and
 **Add a passive**: extend `AbstractPassive` (or `AbstractStatPassive` for flat stat bonuses, optionally gated to low health). Give it to an enemy through `EnemyTemplate::effects()`, or to a class through `HeroClassLoadouts`.
 
 **Add a telegraphed boss move set**: extend `Effects/Boss/AbstractTelegraph`, list `moves()` and `tells()` (tells must not name the counter-play), and add the move abilities extending `Abilities/Boss/AbstractBossMove`. Put the telegraph in the boss template's `effects()`.
+
+**Add a scheduled boss action** (summon every N turns, recurring buff): extend `Effects/Boss/AbstractCadence` with `abilityKey()`, `defaultInterval()`, `warning()` and optionally `shouldFire()`. It fires on turns 1, 1+N, …, warns at the end of the turn before, and accepts `data.interval` for scaling. Summons can extend `Abilities/Boss/AbstractSummon`.
+
+**Add a death trigger**: override `onDeath` (the dying combatant's own effects; see `AspectShift`, `SoulTribute`, `WoundedRetreat`, `Undying`) or `onAnyDeath` (everyone else's effects).
 
 **Add a phase-cycling boss**: extend `Effects/Boss/AbstractPhaseCycle` with `phases()` (self effects plus an ally aura per phase) and `turnsPerPhase()`.
 
