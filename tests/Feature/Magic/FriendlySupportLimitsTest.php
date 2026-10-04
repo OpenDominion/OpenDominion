@@ -118,19 +118,35 @@ class FriendlySupportLimitsTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * Only the spells that undo damage are limited. Wards and the like remain
-     * available to the whole realm.
+     * Range applies to every friendly spell, not only the ones that undo
+     * damage, so wards cannot be lent across the realm either.
      */
-    public function testOtherFriendlySpellsIgnoreRangeAndSize(): void
+    public function testWardsAreRangeLimitedToo(): void
     {
         $tiny = $this->createRealmmate(2000);
 
-        $this->spellActionService->castSpell($tiny, 'illumination', $this->target);
+        foreach (['illumination', 'spell_reflect'] as $spellKey) {
+            try {
+                $this->spellActionService->castSpell($tiny, $spellKey, $this->target);
+                $this->fail("{$spellKey} should be refused outside range");
+            } catch (GameException $e) {
+                $this->assertStringContainsString('too far outside your range', $e->getMessage());
+            }
+        }
+
+        $this->assertEquals(0, DominionSpell::where('dominion_id', $this->target->id)->count());
+    }
+
+    public function testWardsReachRealmmatesInRange(): void
+    {
+        $peer = $this->createRealmmate(8000);
+
+        $this->spellActionService->castSpell($peer, 'spell_reflect', $this->target);
 
         $this->assertEquals(
             1,
             DominionSpell::where('dominion_id', $this->target->id)
-                ->where('spell_id', Spell::where('key', 'illumination')->firstOrFail()->id)
+                ->where('spell_id', Spell::where('key', 'spell_reflect')->firstOrFail()->id)
                 ->count()
         );
     }

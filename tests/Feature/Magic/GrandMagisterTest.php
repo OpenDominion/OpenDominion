@@ -96,6 +96,23 @@ class GrandMagisterTest extends AbstractBrowserKitTestCase
     }
 
     /**
+     * Spell Reflect stays on its cooldown even for the Grand Magister, so one
+     * dominion cannot keep a realmmate permanently reflected.
+     */
+    public function testTheGrandMagisterStillWaitsOnSpellReflect(): void
+    {
+        $this->appointGrandMagister($this->dominion);
+
+        $this->spellActionService->castSpell($this->dominion, 'spell_reflect', $this->realmmate);
+        $this->dominion->unsetRelation('recentSpellCasts');
+
+        $this->assertEquals(
+            6,
+            $this->spellCalculator->getSpellCooldown($this->dominion, Spell::where('key', 'spell_reflect')->firstOrFail())
+        );
+    }
+
+    /**
      * Once the champion has spent the charge, the Grand Magister can hand them
      * another immediately. Anyone else waits out the cooldown.
      */

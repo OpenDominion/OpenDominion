@@ -267,7 +267,7 @@
                     <p>The monarch of a realm may appoint fellow dominions to their royal court, who are then granted access to special perks and responsibilities.</p>
                     <p>The <b>General</b> has the power to cancel and declare wars.</p>
                     <p>The <b>Spymaster</b> can post recurring and black op bounties.</p>
-                    <p>The <b>Grand Magister</b> casts friendly spells without cooldowns. The <b>Warmage</b> deals full spell damage to dominions larger than themselves.</p>
+                    <p>The <b>Grand Magister</b> casts most friendly spells without cooldowns. The <b>Warmage</b> deals full spell damage to dominions larger than themselves.</p>
                     <p>The <b>Jester</b> can change the realm name and message.</p>
                     <p>Appointments can only be changed once every five days. Bonuses do not apply during protection.</p>
                 </div>

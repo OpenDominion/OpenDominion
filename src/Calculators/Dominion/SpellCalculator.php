@@ -158,8 +158,8 @@ class SpellCalculator
             return 0;
         }
 
-        // The realm's Grand Magister keeps its support running without pause
-        if ($this->spellHelper->isFriendlySpell($spell) && $dominion->isMagister()) {
+        // The realm's Grand Magister keeps its support running without pause, except for reflection
+        if ($this->spellHelper->isFriendlySpell($spell) && !$spell->hasPerk('spell_reflect') && $dominion->isMagister()) {
             return 0;
         }
 

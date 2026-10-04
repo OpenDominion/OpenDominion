@@ -612,7 +612,7 @@ spell_reflect:
   cost_mana: 3
   cost_strength: 5
   duration: 3
-  cooldown: 3
+  cooldown: 6
   perks:
     spell_reflect: 1
 arcane_ward:

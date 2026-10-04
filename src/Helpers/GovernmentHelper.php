@@ -35,7 +35,7 @@ class GovernmentHelper
                 'key' => 'magister',
                 'icon' => 'ra ra-winged-scepter',
                 'icon-color' => 'light-blue',
-                'description' => 'Casts friendly spells without cooldowns'
+                'description' => 'Casts most friendly spells without cooldowns'
             ],
             [
                 'name' => 'Warmage',

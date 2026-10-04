@@ -589,7 +589,7 @@ class SpellActionService
         }
 
         // Helping someone fight reaches only as far as an attack does
-        if ($this->isLimitedSupportSpell($spell) && !$this->rangeCalculator->isInRange($dominion, $target)) {
+        if (!$this->rangeCalculator->isInRange($dominion, $target)) {
             throw new GameException("{$target->name} is too far outside your range for your wizards to help them");
         }
 
@@ -1476,25 +1476,6 @@ class SpellActionService
         }
 
         return min(1, $this->landCalculator->getTotalLand($dominion) / $targetLand);
-    }
-
-    /**
-     * Returns whether a spell undoes damage a dominion has taken or lends them
-     * power to deal some.
-     *
-     * These are held to the same range rules as the spells they answer, so a
-     * realm cannot mend or arm a dominion that nobody could reach.
-     *
-     * @param Spell $spell
-     * @return bool
-     */
-    protected function isLimitedSupportSpell(Spell $spell): bool
-    {
-        return (
-            $spell->hasPerk('repair_improvements') ||
-            $spell->hasPerk('revive_peasants') ||
-            $spell->hasPerk('empower')
-        );
     }
 
     /**

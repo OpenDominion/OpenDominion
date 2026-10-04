@@ -53,6 +53,8 @@ class FriendlySpellAccessTest extends AbstractBrowserKitTestCase
             Race::where('name', 'Human')->firstOrFail(),
             $this->dominion->realm
         );
+        $this->realmmate->land_plain = 8000;
+        $this->realmmate->save();
 
         $strangerUser = $this->createUser();
         $this->stranger = $this->createDominionWithLegacyStats($strangerUser, $this->round, Race::where('name', 'Dark Elf')->firstOrFail());
