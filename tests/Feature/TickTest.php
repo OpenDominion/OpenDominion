@@ -415,10 +415,10 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->seeInDatabase('dominions', ['id' => $abandonedDominion->id, 'api_key' => null]);
         $this->seeInDatabase('dominions', ['id' => $pendingDominion->id, 'api_key' => 'pending-key']);
     }
+
     protected function nextTickHour(\OpenDominion\Models\Round $round): \Illuminate\Support\Carbon
     {
         $previous = \OpenDominion\Models\RoundTickRun::where('round_id', $round->id)->orderByDesc('tick_at')->first();
         return $previous ? $previous->tick_at->copy()->addHour() : now()->startOfHour();
     }
-
 }

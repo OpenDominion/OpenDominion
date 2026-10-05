@@ -33,7 +33,8 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
     protected function prepareDominion(): Dominion
     {
         $dominion = $this->createDominionWithLegacyStats(
-            $this->createUser(), $this->createRound('-7 days'),
+            $this->createUser(),
+            $this->createRound('-7 days'),
             Race::where('key', 'dark-elf-rework')->firstOrFail()
         );
         $dominion->update([
@@ -197,6 +198,7 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
         $hours = app(TickService::class)->getDueTickHours($dominion->round, $hour->copy()->addHours(2));
         $this->assertEquals([$hour, $hour->copy()->addHour(), $hour->copy()->addHours(2)], $hours);
     }
+
     public function testCompletedLaterHourMakesAnOlderRequestANoop(): void
     {
         $dominion = $this->prepareDominion();
@@ -230,7 +232,6 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
         $tick->recoverHourlyTicks();
         $this->assertSame(0, RoundTickRun::where('round_id', $dominion->round_id)->count());
     }
-
 }
 
 class FaultInjectingTickService extends TickService

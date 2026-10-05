@@ -183,7 +183,8 @@ class TickService
     {
         app(RoundSetupService::class)->run($round, $operation, function (Round $lockedRound) use ($operation, $callback): void {
             $this->notificationService->withDeferredDelivery(
-                "round-setup:{$lockedRound->id}:{$operation}", now(),
+                "round-setup:{$lockedRound->id}:{$operation}",
+                now(),
                 fn () => $callback($lockedRound)
             );
         });

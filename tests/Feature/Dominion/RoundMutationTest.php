@@ -145,6 +145,7 @@ class RoundMutationTest extends AbstractBrowserKitTestCase
 
         $this->assertFalse((bool) $dominion->ai_enabled);
     }
+
     public function testReadOnlyRequestDoesNotHoldRoundTransaction(): void
     {
         $request = Request::create('/dominion/status', 'GET');
@@ -271,5 +272,4 @@ class RoundMutationTest extends AbstractBrowserKitTestCase
         $this->assertSame($selectedDominion->hourly_activity, $dominion->fresh()->hourly_activity);
         $this->assertSame($prediction, $dominion->tick->fresh()->getAttributes());
     }
-
 }
