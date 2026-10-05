@@ -7,7 +7,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\TickService;
@@ -387,6 +389,36 @@ class TickTest extends AbstractBrowserKitTestCase
         // 0.1 RP per acre of total land.
         $expected = $landCalculator->getTotalLand($dominion) * 0.1;
         $this->assertEquals($expected, $productionCalculator->getTechProductionRaw($dominion));
+    }
+
+    /**
+     * Spells with an apply_ perk that isn't an expiration effect (e.g. Feast of Blood) must not convert on expiry.
+     */
+    public function testExpiringFeastOfBloodDoesNotApplySatiatedThirst()
+    {
+        $user = $this->createUser();
+        $round = $this->createRound('-7 days');
+        $dominion = $this->createDominionWithLegacyStats($user, $round, Race::where('key', 'vampire')->firstOrFail());
+        $dominion->update(['protection_ticks_remaining' => 0]);
+
+        $feastOfBlood = Spell::where('key', 'feast_of_blood')->firstOrFail();
+        $satiatedThirst = Spell::where('key', 'satiated_thirst')->firstOrFail();
+        DominionSpell::create([
+            'dominion_id' => $dominion->id,
+            'spell_id' => $feastOfBlood->id,
+            'duration' => 1,
+        ]);
+
+        app(TickService::class)->performTick($round);
+
+        $this->dontSeeInDatabase('dominion_spells', [
+            'dominion_id' => $dominion->id,
+            'spell_id' => $satiatedThirst->id,
+        ]);
+        $this->dontSeeInDatabase('dominion_spells', [
+            'dominion_id' => $dominion->id,
+            'spell_id' => $feastOfBlood->id,
+        ]);
     }
 
     private function preparePlanewalkerDominion(array $overrides)

@@ -713,7 +713,7 @@ class TickService
     {
         DB::transaction(function () use ($dominionIds) {
             // Convert expiring spells into the status effect they leave behind
-            // (Burning and Lightning Storm into Rejuvenation, Magic Ward into Fractured)
+            // (Burning and Lightning Storm into Rejuvenation)
             $expirationPerks = SpellPerkType::where('key', 'like', 'apply_%')->with('spells')->get();
             foreach ($expirationPerks as $expirationPerk) {
                 $statusEffectSpell = Spell::where('key', str_replace('apply_', '', $expirationPerk->key))->active()->first();
@@ -722,7 +722,7 @@ class TickService
                 }
 
                 $expiringSpellIds = $expirationPerk->spells
-                    ->where('category', '!=', 'war')
+                    ->whereIn('key', ['burning', 'lightning_storm'])
                     ->pluck('id');
                 if ($expiringSpellIds->isEmpty()) {
                     continue;
