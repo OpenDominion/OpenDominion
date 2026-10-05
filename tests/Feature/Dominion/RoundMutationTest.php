@@ -306,6 +306,7 @@ class RoundMutationTest extends AbstractBrowserKitTestCase
         $this->assertSame(24, $dominion->fresh()->protection_ticks_remaining);
         $this->assertSame($historyCount, $dominion->history()->count());
     }
+
     public function testCurrentCheckpointAllowsAnOrdinaryAction(): void
     {
         $user = $this->createAndImpersonateUser();
