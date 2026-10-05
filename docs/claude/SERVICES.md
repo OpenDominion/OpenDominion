@@ -46,13 +46,13 @@ Key invasion rules enforced:
 ### TickService - Game Engine
 - `tickHourly()` processes due hours, then receipt-protected realm assignment/NPD setup; `recoverHourlyTicks(true)` limits recovery to existing ledger rounds.
 - `performTick(Round, ?Dominion, ?Carbon): bool` locks and commits a complete round/hour, returning false for completed/older ledger hours. Single-dominion protection ticks use a shared round lock and exclusive dominion lock.
-- `getDueTickHours()` orders recovery and clamps it before round end; registration rejects gaps and earlier unfinished hours.
+- `getDueTickHours()` orders recovery and clamps it before round end; registration rejects gaps and earlier unfinished hours. Recovery isolates failures per round and excludes fully completed ended rounds.
 - `recordTickHistory()` records the consumed prediction before replacement; `precalculateTick(..., stateIsFresh)` supports batch-loaded state. `isProcessingTick()` suppresses redundant `DominionSaved` recalculations during the batch.
-- Tick maintenance, daily round tasks, and outbox writes share the round transaction. Scheduled-tick delivery is left to the background sweeper; single-dominion ticks still in protection write transactional web notifications for undo, with no email. See GAME_SYSTEMS.md for recovery and rollout requirements.
+- Tick maintenance, daily round tasks, and outbox writes share the round transaction. All tick web notifications commit in the game transaction; only eligible email is left to the background sweeper. Protection web notifications remain undoable. See GAME_SYSTEMS.md for recovery and rollout requirements.
 
 ### RoundMutationService
 - `run(Round|int, callback, checkCurrent=true)` holds a shared round lock and passes a fresh round to the callback.
-- `runForDominion(Dominion, callback, checkCurrent=true)` additionally locks the actor and refreshes the caller's instance before validation.
+- `runForDominion(Dominion, callback, checkCurrent=true, loadGameRelations=false)` locks the actor and refreshes the instance before validation; HTTP mutations can load game relations once and reuse that model.
 - `assertRoundCurrent()` blocks active-round mutations when ledger hours are pending or overdue, including protection actions. No-ledger bootstrap and inactive rounds are allowed.
 - Used by `CoordinateRoundMutation` before dominion selection/validation, AI actions/invasions, manual protection, and protection imports. Read-only activity writes pass `checkCurrent=false`.
 
@@ -103,7 +103,7 @@ Validates invasion rules (separate from InvadeActionService which executes them)
 Session-based dominion selection.
 - `selectUserDominion()` / `getUserSelectedDominion()` / `unsetUserSelectedDominion()`
 - `tryAutoSelectDominionForAuthUser()` - auto-selects if user has only one active dominion
-- `forgetSelectedDominion()` clears the request cache after mutation locking; hourly activity updates refresh and save quietly within a short `RoundMutationService` transaction, without recalculating pending predictions.
+- `useLockedDominion()` adopts the refreshed actor and records activity under the existing lock; `forgetSelectedDominion()` clears the request cache; hourly activity updates refresh and save quietly within a short `RoundMutationService` transaction, without recalculating pending predictions.
 
 ### AIService
 NPC and player automation.
@@ -160,10 +160,10 @@ Sophisticated pre-round realm assignment algorithm.
 
 ### NotificationService
 - `queueNotification()` buffers events; ordinary `sendNotifications()` honors user settings.
-- `persistQueuedNotifications()` writes an idempotent outbox batch in the game transaction, including event time and protection email eligibility; `withDeferredDelivery()` applies this behavior to maintenance/setup notification calls.
-- Scheduled tick/setup code does not dispatch jobs inline. Single-dominion ticks still in protection use synchronous transactional web notifications so undo can remove them; their email remains disabled. `game:notifications:deliver` dispatches due rows every minute through `dispatchOutboxNotifications()`; `DeliverNotificationOutbox` calls `deliverOutboxNotification()`.
-- Web delivery and its receipt commit together. Email uses a separate receipt and is at least once across transport/process failures. Protection eligibility at both event and delivery time is required except for realm assignment; current notification preferences still apply.
-- Channels: WebNotification, HourlyEmailDigest, IrregularDominionEmail. Outbox categories: hourly_dominion, irregular_dominion, irregular_realm.
+- `persistQueuedNotifications()` writes web notifications in the caller's game transaction and creates an outbox row only for event-time eligible email. `withDeferredDelivery()` applies this behavior to maintenance/setup calls.
+- `game:notifications:deliver` sends due email directly every minute with a row limit and a budget between sends. It applies a dedicated SMTP socket timeout and retries failures after five minutes; it requires no queue worker. `deliverOutboxNotification()` locks only the email batch during transport.
+- Web writes roll back with game changes and are deduplicated by the tick/setup receipt. Email is at least once across transport/process failures; current preferences/protection are checked again at delivery.
+- Channels: WebNotification, HourlyEmailDigest, IrregularDominionEmail. Email outbox categories: hourly_dominion, irregular_dominion, irregular_realm.
 
 ### GameEventService
 Town Crier event retrieval.

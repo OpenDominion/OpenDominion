@@ -10,10 +10,8 @@ class NotificationOutbox extends AbstractModel
 
     protected $casts = [
         'payload' => 'array',
-        'email_allowed' => 'boolean',
         'event_at' => 'datetime',
         'available_at' => 'datetime',
-        'web_delivered_at' => 'datetime',
         'delivered_at' => 'datetime',
     ];
 

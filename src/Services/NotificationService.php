@@ -3,15 +3,12 @@
 namespace OpenDominion\Services;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Bus\Dispatcher;
 use OpenDominion\Helpers\NotificationHelper;
-use OpenDominion\Jobs\DeliverNotificationOutbox;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\NotificationOutbox;
 use OpenDominion\Notifications\HourlyEmailDigestNotification;
 use OpenDominion\Notifications\IrregularDominionEmailNotification;
 use OpenDominion\Notifications\WebNotification;
-use Throwable;
 
 class NotificationService
 {
@@ -52,7 +49,7 @@ class NotificationService
     }
 
     /**
-     * Persist notifications emitted by hourly maintenance for the delivery command.
+     * Write maintenance web notifications with the game transaction and defer email.
      */
     public function withDeferredDelivery(string $operationKey, Carbon $eventAt, callable $callback): mixed
     {
@@ -79,87 +76,62 @@ class NotificationService
     }
 
     /**
-     * Persist the buffered events in the same transaction as their game changes.
-     * Reusing an operation key preserves the original payload.
+     * Write web notifications and eligible email batches in the game transaction.
+     * The caller's tick ledger deduplicates the game operation and its web writes.
      */
     public function persistQueuedNotifications(Dominion $dominion, string $category, string $operationKey, ?Carbon $eventAt = null): ?int
     {
         try {
-            if (empty($this->notifications) || $dominion->user_id === null) {
+            if (empty($this->notifications) || $dominion->user === null) {
                 return null;
             }
             if (!in_array($category, ['hourly_dominion', 'irregular_dominion', 'irregular_realm'], true)) {
                 throw new \InvalidArgumentException('Unsupported notification outbox category.');
             }
 
-            return NotificationOutbox::query()->firstOrCreate([
-                'operation_key' => $operationKey,
-                'dominion_id' => $dominion->id,
-                'category' => $category,
-            ], [
-                'payload' => $this->notifications,
-                'email_allowed' => $dominion->protection_finished,
-                'event_at' => $eventAt ?? now(),
-                'available_at' => now(),
-            ])->id;
+            $emails = [];
+            foreach ($this->notifications as $type => $data) {
+                if (($dominion->protection_finished || $type === 'realm_assignment')
+                    && $this->notificationEnabled($dominion, $category, $type, 'email')) {
+                    $emails[$type] = $data;
+                }
+            }
+
+            $outbox = null;
+            if ($emails !== []) {
+                $outbox = NotificationOutbox::query()->firstOrCreate([
+                    'operation_key' => $operationKey,
+                    'dominion_id' => $dominion->id,
+                    'category' => $category,
+                ], [
+                    'payload' => $emails,
+                    'event_at' => $eventAt ?? now(),
+                    'available_at' => now(),
+                ]);
+                if (!$outbox->wasRecentlyCreated) {
+                    return $outbox->id;
+                }
+            }
+
+            foreach ($this->notifications as $type => $data) {
+                if ($this->notificationEnabled($dominion, $category, $type, 'ingame')) {
+                    $dominion->notify(new WebNotification($category, $type, $data));
+                }
+            }
+
+            return $outbox?->id;
         } finally {
             $this->resetQueuedNotifications();
         }
     }
 
     /**
-     * Queue committed batches. The recovery command covers crashes and queue outages.
-     *
-     * @param int[] $ids
-     */
-    public function dispatchOutboxNotifications(array $ids): void
-    {
-        $dispatch = function () use ($ids): void {
-            foreach (array_unique($ids) as $id) {
-                try {
-                    NotificationOutbox::query()->whereKey($id)->whereNull('delivered_at')
-                        ->update(['available_at' => now()->addMinutes(5)]);
-                    app(Dispatcher::class)->dispatch(new DeliverNotificationOutbox($id));
-                } catch (Throwable $exception) {
-                    report($exception);
-                }
-            }
-        };
-
-        $connection = (new NotificationOutbox)->getConnection();
-        if ($connection->transactionLevel() > 0) {
-            $connection->afterCommit($dispatch);
-        } else {
-            $dispatch();
-        }
-    }
-
-    /**
-     * Web notifications and their receipt commit together. Email delivery is at
-     * least once: a process crash after the mail server accepts it can repeat it.
-     * Only this outbox row is locked during delivery, never the game tick.
+     * Email delivery is at least once: a crash after the mail server accepts it
+     * can repeat it. Only the outbox row is locked, never the game tick.
      */
     public function deliverOutboxNotification(int $id): void
     {
-        $connection = (new NotificationOutbox)->getConnection();
-        $connection->transaction(function () use ($id): void {
-            $outbox = NotificationOutbox::query()->lockForUpdate()->find($id);
-            if ($outbox === null || $outbox->web_delivered_at !== null || $outbox->delivered_at !== null) {
-                return;
-            }
-            $dominion = $outbox->dominion;
-            if ($dominion !== null && $dominion->user !== null) {
-                foreach ($outbox->payload as $type => $data) {
-                    if ($this->notificationEnabled($dominion, $outbox->category, $type, 'ingame')) {
-                        $dominion->notify(new WebNotification($outbox->category, $type, $data));
-                    }
-                }
-            }
-            $outbox->web_delivered_at = now();
-            $outbox->save();
-        });
-
-        $connection->transaction(function () use ($id): void {
+        (new NotificationOutbox)->getConnection()->transaction(function () use ($id): void {
             $outbox = NotificationOutbox::query()->lockForUpdate()->find($id);
             if ($outbox === null || $outbox->delivered_at !== null) {
                 return;
@@ -168,7 +140,7 @@ class NotificationService
             $emails = [];
             if ($dominion !== null && $dominion->user !== null) {
                 foreach ($outbox->payload as $type => $data) {
-                    if ((!$outbox->email_allowed || !$dominion->protection_finished) && $type !== 'realm_assignment') {
+                    if (!$dominion->protection_finished && $type !== 'realm_assignment') {
                         continue;
                     }
                     if ($this->notificationEnabled($dominion, $outbox->category, $type, 'email')) {

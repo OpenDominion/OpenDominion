@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -23,6 +24,7 @@ use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\RoundMutationService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\PackService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -320,10 +322,21 @@ class MiscController extends AbstractDominionController
         return redirect()->route('dominion.status');
     }
 
-    public function getTickDominion(Request $request) {
-        return app(RoundMutationService::class)->runForDominion($this->getSelectedDominion(), function () use ($request) {
-            return $this->performTickDominion($request);
-        });
+    public function getTickDominion(Request $request): RedirectResponse
+    {
+        return $this->withProtectionMutation($request, fn () => $this->performTickDominion($request));
+    }
+
+    protected function withProtectionMutation(Request $request, callable $callback): RedirectResponse
+    {
+        try {
+            return app(RoundMutationService::class)->runForDominion($this->getSelectedDominion(), function (Dominion $dominion) use ($callback) {
+                app(SelectorService::class)->useLockedDominion($dominion);
+                return $callback();
+            }, loadGameRelations: true);
+        } catch (GameException $exception) {
+            return redirect()->back()->withInput($request->all())->withErrors([$exception->getMessage()]);
+        }
     }
 
     protected function performTickDominion(Request $request) {
@@ -423,10 +436,9 @@ class MiscController extends AbstractDominionController
         return redirect()->back();
     }
 
-    public function getUndoTickDominion(Request $request) {
-        return app(RoundMutationService::class)->runForDominion($this->getSelectedDominion(), function () use ($request) {
-            return $this->performUndoTickDominion($request);
-        });
+    public function getUndoTickDominion(Request $request): RedirectResponse
+    {
+        return $this->withProtectionMutation($request, fn () => $this->performUndoTickDominion($request));
     }
 
     protected function performUndoTickDominion(Request $request) {

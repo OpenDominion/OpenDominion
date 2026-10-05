@@ -72,18 +72,40 @@ class SelectorService
             $activity = $this->selectedDominion->hourly_activity;
             if (!$activity || (isset($activity[$index]) && $activity[$index] === '0')) {
                 app(RoundMutationService::class)->runForDominion($this->selectedDominion, function (Dominion $dominion): void {
-                    $index = (int) $dominion->round->getTick();
-                    $activity = $dominion->hourly_activity ?: str_repeat('0', 47 * 24);
-                    if ($index >= 0 && $index < strlen($activity) && $activity[$index] === '0') {
-                        $activity[$index] = '1';
-                        $dominion->hourly_activity = $activity;
-                        $dominion->saveQuietly();
-                    }
+                    $this->recordHourlyActivity($dominion);
                 }, false);
             }
         }
 
         return $this->selectedDominion;
+    }
+
+    /**
+     * Reuse the model already refreshed under the mutation transaction's locks.
+     */
+    public function useLockedDominion(Dominion $dominion): void
+    {
+        if ((int) session(self::SESSION_NAME) !== $dominion->id) {
+            throw new LogicException('Locked dominion does not match the current selection.');
+        }
+
+        $this->selectedDominion = $dominion;
+        $this->recordHourlyActivity($dominion);
+    }
+
+    protected function recordHourlyActivity(Dominion $dominion): void
+    {
+        if (!$dominion->round->isActive()) {
+            return;
+        }
+
+        $index = (int) $dominion->round->getTick();
+        $activity = $dominion->hourly_activity ?: str_repeat('0', 47 * 24);
+        if ($index >= 0 && $index < strlen($activity) && $activity[$index] === '0') {
+            $activity[$index] = '1';
+            $dominion->hourly_activity = $activity;
+            $dominion->saveQuietly();
+        }
     }
 
     public function forgetSelectedDominion(): void

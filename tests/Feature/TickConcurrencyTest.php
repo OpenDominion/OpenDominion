@@ -43,6 +43,9 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         $this->round = $this->createRound('-7 days');
         $this->realm = $this->createRealm($this->round);
         $this->user = $this->createUser(null, ['email' => Str::uuid() . '@tick-concurrency.invalid']);
+        $this->user->update(['settings' => [
+            'notifications' => ['hourly_dominion' => ['construction_completed' => ['ingame' => true, 'email' => true]]],
+        ]]);
         $this->dominion = $this->createDominionWithLegacyStats($this->user, $this->round, null, $this->realm);
         $this->dominion->update(['resource_food' => 999999, 'resource_mana' => 999999]);
         app(QueueService::class)->queueResources('construction', $this->dominion, ['building_home' => 10], 1);
@@ -65,6 +68,7 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
                     foreach (['notification_outbox', 'dominion_history', 'dominion_tick', 'dominion_queue', 'dominion_spells'] as $table) {
                         DB::table($table)->where('dominion_id', $this->dominion->id)->delete();
                     }
+                    $this->dominion->notifications()->delete();
                     Dominion::query()->whereKey($this->dominion->id)->delete();
                 }
                 $this->realm?->delete();
@@ -237,6 +241,7 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         $this->assertSame(1, $run->attempts);
         $this->assertSame(1, $this->dominion->history()->where('event', 'tick')->count());
         $this->assertSame(1, NotificationOutbox::query()->where('dominion_id', $this->dominion->id)->count());
+        $this->assertSame(1, $this->dominion->notifications()->count());
         $this->assertSame(20, $this->dominion->fresh()->building_home);
         $this->assertFalse($this->dominion->queues()->where('source', 'construction')->exists());
     }
@@ -247,6 +252,7 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         foreach (['dominion_tick', 'dominion_queue', 'dominion_history', 'notification_outbox'] as $table) {
             $snapshot[$table] = DB::table($table)->where('dominion_id', $this->dominion->id)->get()->toJson();
         }
+        $snapshot['notifications'] = $this->dominion->notifications()->orderBy('id')->get()->toJson();
         return $snapshot;
     }
 }

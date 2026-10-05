@@ -198,7 +198,17 @@ class RoundMutationTest extends AbstractBrowserKitTestCase
         $this->app->instance(TickService::class, $tick);
 
         $url = route('dominion.misc.tick', ['expected_protection_ticks_remaining' => 30]);
-        $this->get($url);
+        $connection = $dominion->getConnection();
+        $connection->flushQueryLog();
+        $connection->enableQueryLog();
+        try {
+            $this->get($url);
+            $queries = collect($connection->getQueryLog())->pluck('query');
+        } finally {
+            $connection->disableQueryLog();
+        }
+        $this->assertCount(1, $queries->filter(fn ($sql) => str_contains($sql, '`rounds`') && str_contains($sql, 'lock in share mode')));
+        $this->assertCount(1, $queries->filter(fn ($sql) => str_contains($sql, '`dominions`') && str_contains($sql, 'for update')));
 
         $this->assertSame(29, $dominion->fresh()->protection_ticks_remaining, json_encode(session()->get('errors')?->all()));
 
@@ -271,5 +281,129 @@ class RoundMutationTest extends AbstractBrowserKitTestCase
         $this->assertSame('1', $selectedDominion->hourly_activity[(int) $round->getTick()]);
         $this->assertSame($selectedDominion->hourly_activity, $dominion->fresh()->hourly_activity);
         $this->assertSame($prediction, $dominion->tick->fresh()->getAttributes());
+    }
+    public function testPendingTickAllowsJournalAndNotificationRequests(): void
+    {
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound('-2 days');
+        $dominion = $this->createAndSelectDominionWithLegacyStats($user, $round);
+        $prediction = $dominion->tick->getAttributes();
+        $notification = $dominion->notifications()->create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'type' => 'test',
+            'data' => ['message' => 'test'],
+        ]);
+        RoundTickRun::query()->create(['round_id' => $round->id, 'tick_at' => now()->startOfHour()]);
+
+        $this->post(route('dominion.journal.create'), ['content' => 'Waiting for the next hour.']);
+
+        $this->assertFalse(session()->has('errors'));
+        $this->assertSame('Waiting for the next hour.', $dominion->journals()->sole()->content);
+
+        $this->post(route('dominion.misc.clear-notifications'));
+
+        $this->assertFalse(session()->has('errors'));
+        $this->assertNotNull($notification->fresh()->read_at);
+        $this->assertSame($prediction, $dominion->tick->fresh()->getAttributes());
+    }
+
+    public function testPendingTickBlocksGameAndCommunicationRoutesWithGameSideEffects(): void
+    {
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound('-2 days');
+        $dominion = $this->createAndSelectDominionWithLegacyStats($user, $round);
+        RoundTickRun::query()->create(['round_id' => $round->id, 'tick_at' => now()->startOfHour()]);
+
+        foreach ([
+            [route('dominion.military.change-draft-rate'), ['draft_rate' => 73]],
+            [route('dominion.forum.create'), ['title' => 'Test', 'body' => 'Test']],
+            [route('dominion.council.create'), ['title' => 'Test', 'body' => 'Test']],
+        ] as [$url, $parameters]) {
+            session()->forget('errors');
+            $this->post($url, $parameters);
+            $this->assertStringContainsString('collecting taxes', session('errors')->first());
+        }
+
+        $this->assertSame($dominion->draft_rate, $dominion->fresh()->draft_rate);
+        $this->assertSame(0, $round->forumThreads()->count());
+        $this->assertSame(0, $dominion->realm->councilThreads()->count());
+    }
+
+    public function testMutationReusesLockedModelAndLoadsGameRelationsOnce(): void
+    {
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound('+2 days');
+        $dominion = $this->createAndSelectDominionWithLegacyStats($user, $round);
+        $selector = app(SelectorService::class);
+        $staleDominion = $selector->getUserSelectedDominion();
+        Dominion::query()->whereKey($dominion->id)->update(['resource_platinum' => 123]);
+        $request = Request::create('/dominion/' . $dominion->id . '/test', 'POST');
+        $route = (new Route('POST', 'dominion/{dominion}/test', fn () => null))->bind($request);
+        $route->setParameter('dominion', $staleDominion);
+        $request->setRouteResolver(fn () => $route);
+        $connection = $dominion->getConnection();
+        $connection->flushQueryLog();
+        $connection->enableQueryLog();
+
+        try {
+            $response = app(CoordinateRoundMutation::class)->handle($request, function () use ($selector, $route, $staleDominion) {
+                $lockedDominion = $selector->getUserSelectedDominion();
+                $this->assertNotSame($staleDominion, $lockedDominion);
+                $this->assertSame($lockedDominion, $route->parameter('dominion'));
+                $this->assertSame(123, $lockedDominion->resource_platinum);
+                foreach (['round', 'race', 'realm', 'hero', 'queues', 'spells', 'techs'] as $relation) {
+                    $this->assertTrue($lockedDominion->relationLoaded($relation), $relation);
+                }
+                return response('updated');
+            });
+            $queries = collect($connection->getQueryLog())->pluck('query');
+        } finally {
+            $connection->disableQueryLog();
+        }
+
+        $this->assertSame('updated', $response->getContent());
+        $this->assertCount(1, $queries->filter(fn ($sql) => str_starts_with($sql, 'select * from `dominions`')));
+        $this->assertCount(1, $queries->filter(fn ($sql) => str_starts_with($sql, 'select * from `rounds`')));
+        $this->assertCount(1, $queries->filter(fn ($sql) => str_starts_with($sql, 'select * from `realms`')));
+    }
+
+    public function testProtectionRequestDuringRecoveryRedirectsWithoutAdvancing(): void
+    {
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound('-2 days');
+        $dominion = $this->createAndSelectDominionWithLegacyStats($user, $round);
+        Dominion::query()->whereKey($dominion->id)->update(['protection_ticks_remaining' => 30, 'protection_finished' => false]);
+        RoundTickRun::query()->create(['round_id' => $round->id, 'tick_at' => now()->startOfHour()]);
+
+        foreach (['dominion.misc.tick', 'dominion.misc.undo-tick'] as $route) {
+            session()->forget('errors');
+            $this->get(route($route));
+            $this->assertResponseStatus(302);
+            $this->assertStringContainsString('collecting taxes', session('errors')->first());
+            $this->assertSame(30, $dominion->fresh()->protection_ticks_remaining);
+        }
+    }
+
+    public function testForumFlagGetCannotRunDuringPendingTick(): void
+    {
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound('-2 days');
+        $dominion = $this->createAndSelectDominionWithLegacyStats($user, $round);
+        $thread = app(\OpenDominion\Services\ForumService::class)->createThread($dominion, 'Discussion', 'A forum post.');
+        $post = app(\OpenDominion\Services\ForumService::class)->postReply($dominion, $thread, 'A reply.');
+        RoundTickRun::query()->create(['round_id' => $round->id, 'tick_at' => now()->startOfHour()]);
+
+        foreach ([
+            route('dominion.forum.flag.thread', $thread),
+            route('dominion.forum.flag.post', $post),
+        ] as $url) {
+            session()->forget('errors');
+            $this->get($url);
+            $this->assertResponseStatus(302);
+            $this->assertStringContainsString('collecting taxes', session('errors')->first());
+        }
+
+        $this->assertNull($thread->fresh()->flagged_by);
+        $this->assertNull($post->fresh()->flagged_by);
     }
 }

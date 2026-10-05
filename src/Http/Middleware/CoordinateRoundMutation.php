@@ -29,7 +29,7 @@ class CoordinateRoundMutation
             $round = $request->route('round');
             if ($round instanceof Round) {
                 return $this->mutations->run($round, function (Round $lockedRound) use ($request, $next) {
-                    $this->refreshRouteModels($request);
+                    $this->refreshRouteModels($request, $lockedRound);
                     $request->route()->setParameter('round', $lockedRound);
                     return $this->handleMutationRequest($request, $next);
                 });
@@ -43,17 +43,16 @@ class CoordinateRoundMutation
                 return $next($request);
             }
 
-            $dominion = Dominion::query()->find($dominionId);
+            $dominion = Dominion::query()->find($dominionId, ['id', 'round_id']);
             if ($dominion === null) {
                 return $next($request);
             }
 
             return $this->mutations->runForDominion($dominion, function (Dominion $lockedDominion) use ($request, $next) {
-                $this->refreshRouteModels($request);
-                $this->selector->forgetSelectedDominion();
-                $this->selector->getUserSelectedDominion()->setRelation('round', $lockedDominion->round);
+                $this->refreshRouteModels($request, $lockedDominion->round, $lockedDominion);
+                $this->selector->useLockedDominion($lockedDominion);
                 return $this->handleMutationRequest($request, $next);
-            });
+            }, loadGameRelations: true);
         } catch (HttpResponseException $exception) {
             return $exception->getResponse();
         } catch (GameException $exception) {
@@ -71,10 +70,14 @@ class CoordinateRoundMutation
         return $response;
     }
 
-    protected function refreshRouteModels(Request $request): void
+    protected function refreshRouteModels(Request $request, Round $round, ?Dominion $dominion = null): void
     {
-        foreach ($request->route()->parameters() as $parameter) {
-            if ($parameter instanceof Model) {
+        foreach ($request->route()->parameters() as $name => $parameter) {
+            if ($parameter instanceof Round && $parameter->is($round)) {
+                $request->route()->setParameter($name, $round);
+            } elseif ($parameter instanceof Dominion && $dominion !== null && $parameter->is($dominion)) {
+                $request->route()->setParameter($name, $dominion);
+            } elseif ($parameter instanceof Model) {
                 $parameter->refresh();
             }
         }

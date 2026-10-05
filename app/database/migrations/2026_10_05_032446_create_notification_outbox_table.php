@@ -13,10 +13,8 @@ return new class extends Migration {
             $table->unsignedInteger('dominion_id');
             $table->string('category', 40);
             $table->json('payload');
-            $table->boolean('email_allowed')->default(true);
             $table->timestamp('event_at');
             $table->timestamp('available_at');
-            $table->timestamp('web_delivered_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->timestamps();
             $table->unique(['operation_key', 'dominion_id', 'category'], 'notification_outbox_operation_unique');

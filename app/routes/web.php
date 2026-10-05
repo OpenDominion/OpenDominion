@@ -201,7 +201,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Calculations
             $router->get('calculations')->uses('Dominion\CalculationsController@getGeneral')->name('calculations');
-            $router->post('calculations')->uses('Dominion\CalculationsController@postGeneral');
+            $router->post('calculations')->uses('Dominion\CalculationsController@postGeneral')->withoutMiddleware('roundmutation');
             $router->get('calculations/military')->uses('Dominion\CalculationsController@getMilitary')->name('calculations.military');
 
             // Magic
@@ -250,10 +250,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('forum/{thread}/reply')->uses('Dominion\ForumController@postReply')->name('forum.reply');
             $router->get('forum/{thread}/delete')->uses('Dominion\ForumController@getDeleteThread')->name('forum.delete.thread');
             $router->post('forum/{thread}/delete')->uses('Dominion\ForumController@postDeleteThread');
-            $router->get('forum/{thread}/flag')->uses('Dominion\ForumController@getFlagThread')->name('forum.flag.thread');
+            $router->get('forum/{thread}/flag')->uses('Dominion\ForumController@getFlagThread')->name('forum.flag.thread')->defaults('mutates_round', true);
             $router->get('forum/post/{post}/delete')->uses('Dominion\ForumController@getDeletePost')->name('forum.delete.post');
             $router->post('forum/post/{post}/delete')->uses('Dominion\ForumController@postDeletePost');
-            $router->get('forum/post/{post}/flag')->uses('Dominion\ForumController@getFlagPost')->name('forum.flag.post');
+            $router->get('forum/post/{post}/flag')->uses('Dominion\ForumController@getFlagPost')->name('forum.flag.post')->defaults('mutates_round', true);
 
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
@@ -285,10 +285,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Journal
             $router->get('journal/{id?}')->uses('Dominion\JournalController@getJournal')->name('journal');
-            $router->post('journal')->uses('Dominion\JournalController@postCreate')->name('journal.create');
-            $router->post('journal/{journal}')->uses('Dominion\JournalController@postUpdate')->name('journal.update');
+            $router->post('journal')->uses('Dominion\JournalController@postCreate')->name('journal.create')->withoutMiddleware('roundmutation');
+            $router->post('journal/{journal}')->uses('Dominion\JournalController@postUpdate')->name('journal.update')->withoutMiddleware('roundmutation');
             $router->get('journal/{journal}/delete')->uses('Dominion\JournalController@getDelete')->name('journal.delete');
-            $router->post('journal/{journal}/delete')->uses('Dominion\JournalController@postDelete');
+            $router->post('journal/{journal}/delete')->uses('Dominion\JournalController@postDelete')->withoutMiddleware('roundmutation');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
@@ -308,10 +308,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('misc/abandon')->uses('Dominion\MiscController@getAbandonDominion')->name('misc.abandon');
             $router->post('misc/abandon')->uses('Dominion\MiscController@postAbandonDominion');
             $router->post('misc/abandon/cancel')->uses('Dominion\MiscController@postCancelAbandonDominion')->name('misc.abandon.cancel');
-            $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
+            $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications')->withoutMiddleware('roundmutation');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
             $router->post('misc/join-pack')->uses('Dominion\MiscController@postJoinPack')->name('misc.join-pack');
-            $router->post('misc/report')->uses('Dominion\MiscController@postReport')->name('misc.report');
+            $router->post('misc/report')->uses('Dominion\MiscController@postReport')->name('misc.report')->withoutMiddleware('roundmutation');
             $router->get('misc/restart')->uses('Dominion\MiscController@getRestartDominion')->name('misc.restart');
             $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion');
             $router->post('misc/rename')->uses('Dominion\MiscController@postRenameDominion')->name('misc.rename');
@@ -319,15 +319,15 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/settings')->uses('Dominion\MiscController@postDominionSettings');
             $router->post('misc/api-key/generate')->uses('Dominion\MiscController@postGenerateApiKey')->name('misc.api-key.generate');
             $router->post('misc/api-key/revoke')->uses('Dominion\MiscController@postRevokeApiKey')->name('misc.api-key.revoke');
-            $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick')->defaults('mutates_round', true);
-            $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick')->defaults('mutates_round', true);
+            $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick')->defaults('mutates_round', true)->withoutMiddleware('roundmutation');
+            $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick')->defaults('mutates_round', true)->withoutMiddleware('roundmutation');
 
             // Protection
             // todo: move pack/restart/rename/tick
             $router->get('protection/buildings')->uses('Dominion\ProtectionController@getBuildings')->name('protection.buildings');
             $router->post('protection/buildings')->uses('Dominion\ProtectionController@postBuildings');
             $router->get('protection/import-log')->uses('Dominion\ProtectionController@getImportLog')->name('protection.import-log');
-            $router->post('protection/import-log')->uses('Dominion\ProtectionController@postImportLog');
+            $router->post('protection/import-log')->uses('Dominion\ProtectionController@postImportLog')->withoutMiddleware('roundmutation');
             $router->post('automation/protection')->uses('Dominion\ProtectionController@postAutomateProtection')->name('protection.automate');
 
             // Debug

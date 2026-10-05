@@ -10,6 +10,36 @@ use RuntimeException;
 
 class RoundSetupServiceTest extends AbstractTestCase
 {
+    public function testHourlyProcessingContinuesIndependentSetupAfterFailures(): void
+    {
+        $first = $this->createRound('+95 hours 30 minutes');
+        $second = $this->createRound('+95 hours 30 minutes');
+        $starting = $this->createRound('+30 minutes');
+        $failure = new RuntimeException('Broken old round');
+        $tick = \Mockery::mock(\OpenDominion\Services\Dominion\TickService::class)
+            ->makePartial()->shouldAllowMockingProtectedMethods();
+        $tick->shouldReceive('recoverHourlyTicks')->once()->with(false)->andThrow($failure);
+        $tick->shouldReceive('performRoundSetup')->byDefault()->andReturnNull();
+        $tick->shouldReceive('performRoundSetup')->once()
+            ->withArgs(fn ($round, $operation) => $round->id === $first->id && $operation === RoundSetupService::REALM_ASSIGNMENT)
+            ->andThrow(new RuntimeException('Broken assignment'));
+        $tick->shouldReceive('performRoundSetup')->once()
+            ->withArgs(fn ($round, $operation) => $round->id === $second->id && $operation === RoundSetupService::REALM_ASSIGNMENT)
+            ->andReturnNull();
+        $tick->shouldReceive('performRoundSetup')->once()
+            ->withArgs(fn ($round, $operation) => $round->id === $starting->id && $operation === RoundSetupService::NON_PLAYER_GENERATION)
+            ->andReturnNull();
+
+        try {
+            $tick->tickHourly();
+            $this->fail('Expected failures to be reported after independent setup phases run.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('round recovery', $exception->getMessage());
+            $this->assertStringContainsString('realm assignment for round ' . $first->id, $exception->getMessage());
+            $this->assertSame($failure, $exception->getPrevious());
+        }
+    }
+
     public function testCompletedSetupIsNotRepeated(): void
     {
         $round = $this->createRound('+2 days');

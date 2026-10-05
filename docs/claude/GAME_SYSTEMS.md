@@ -18,7 +18,7 @@ The game tick (`php artisan game:tick`) runs at :00. Each round/hour commits as 
       durations and queue hours for the same locked dominion set.
    d. Apply special spell effects and racial unit production.
    e. Record the consumed prediction in history before calculating its replacement.
-      Delete expired spells/completed queues and persist notification outbox rows.
+      Delete expired spells/completed queues, write web notifications, and persist eligible email batches.
    f. Reload queues/spells in batches; calculate the next prediction and networth.
    g. Expire wars, clear abandoned dominions' votes/API keys, process hero battles,
       tournaments, raid rewards, valuables, and daily round tasks.
@@ -27,14 +27,15 @@ The game tick (`php artisan game:tick`) runs at :00. Each round/hour commits as 
    row with attempt/error details. Restore logical clock and calculator modes.
 ```
 
-`DominionSaved` skips per-save recalculation while `isProcessingTick()` is true; the tick explicitly recalculates after its batch changes. The guard is cleared before round maintenance, so maintenance saves still refresh affected predictions. Scheduled tick/setup transactions persist notifications without dispatching delivery jobs inline. Single-dominion ticks still in protection write web notifications in their transaction so undo can remove them; protection email remains disabled.
+`DominionSaved` skips per-save recalculation while `isProcessingTick()` is true; the tick explicitly recalculates after its batch changes. The guard is cleared before round maintenance, so maintenance saves still refresh affected predictions. Tick/setup transactions write web notifications immediately and persist only eligible email for later delivery. Protection uses the same path, so undo removes its web notifications; protection email remains disabled.
 
 ### Recovery and Setup
 
 - `game:tick --recover` runs every minute in the background. `recoverHourlyTicks(true)` handles only rounds already present in the ledger; it does not run pre-round setup or daily rankings jobs.
+- Each round recovers independently. A failed hour stops that round; other rounds still run before the command reports failure. Fully completed ended rounds are excluded from polling, while pending or missing final hours remain eligible.
 - `getDueTickHours()` starts at the earliest pending hour or the hour after the latest completion. Hours run in order under their original logical clock, including after round end; the final due hour is clamped to the hour containing `end_date - 1 second`.
 - The main hourly command can bootstrap rounds without a ledger at the current due hour. It does not reconstruct all pre-deployment hours.
-- Realm assignment and NPD generation use `RoundSetupService` receipts, unique per round/operation. Each callback receives the freshly locked round; setup changes, deferred notifications, and the receipt commit together. Replays skip completed setup.
+- Realm assignment and NPD generation use `RoundSetupService` receipts, unique per round/operation. Each callback receives the freshly locked round; setup changes, deferred notifications, and the receipt commit together. Replays skip completed setup. The main hourly command attempts independent setup phases even when recovery or another setup fails, then reports all failed phases.
 
 ### Daily Tasks
 
@@ -46,7 +47,7 @@ Each dominion has a `dominion_tick` row containing the next hour's changes. It i
 
 ### Mutation Coordination and Rollout
 
-`RoundMutationService` acquires a shared round lock before an exclusive actor-dominion lock and reloads state before validation. This permits actions on different dominions concurrently while excluding a whole-round tick. HTTP mutations, explicitly marked GET mutations, AI actions/invasions, and protection actions participate. Active rounds with pending/overdue ledger hours reject mutations, including protection changes; a round with no ledger remains available during bootstrap. Read-only pages do not hold a request-wide transaction; hourly activity tracking uses a short coordinated quiet save, preserving pending predictions during recovery.
+`RoundMutationService` acquires a shared round lock before an exclusive actor-dominion lock and reloads state before validation. This permits actions on different dominions concurrently while excluding a whole-round tick. Game mutations, explicitly marked GET mutations, AI actions/invasions, and protection actions participate. Journal writes, notification clearing, report submission, calculation previews and protection-log parsing bypass the request-wide lock. Forum/council writes retain it because their guards can reassign graveyard dominions. Manual protection routes use their controller transaction as the sole boundary. Active rounds with pending/overdue ledger hours reject mutations, including protection changes; a round with no ledger remains available during bootstrap. Read-only pages do not hold a request-wide transaction; hourly activity tracking uses a short coordinated quiet save, preserving pending predictions during recovery.
 
 Apply the `notification_outbox`, `round_tick_runs`, and `round_setup_runs` migrations before activating this code. Stop/drain old scheduler and game/queue workers before starting the new version; old workers do not honor the new locks/receipts and must not overlap new workers. During deployment between hours, use `--recover` only for existing ledger rounds and let the next scheduled :00 command bootstrap others. Do not manually run the main `game:tick` mid-hour during activation: new tick/setup receipts cannot recognize work already completed by legacy workers. Setup windows and rankings/statistics remain separate from hourly ledger recovery. Scheduler cache locks reduce overlap; database locks and unique receipts enforce correctness.
 
@@ -85,14 +86,14 @@ Persistent records displayed in Town Crier:
 
 ## Notification System
 
-`NotificationService::queueNotification()` buffers events. Ordinary actions use `sendNotifications()`; scheduled ticks and setup instead persist `NotificationOutbox` rows in their game transaction. `withDeferredDelivery()` routes maintenance/setup calls to `sendNotifications()` into that same outbox.
+`NotificationService::queueNotification()` buffers events. Ordinary actions use `sendNotifications()`. Tick/setup calls to `persistQueuedNotifications()` write web notifications in the same game transaction and store only email that is enabled and eligible at event time. `withDeferredDelivery()` applies this behavior to maintenance/setup calls. Web-only events create no outbox row or background job. The tick/setup receipt protects web writes from replay, and protection undo removes its transactional notifications.
 
-The background `game:notifications:deliver` command runs every minute and dispatches due batches (default limit 100); `DeliverNotificationOutbox` delivers them. Scheduled ticks perform no inline delivery, including with a synchronous queue driver. A single-dominion tick still in protection writes only its in-game notifications synchronously in the game transaction; these roll back on failure and are removed by protection undo. A tick that finishes protection uses the outbox. Failed submissions/deliveries become eligible for later recovery through `available_at`.
+The background `game:notifications:deliver` command sends due email batches directly, independently of the configured queue driver. Defaults: at most 100 rows per run and a 30-second budget checked before starting each delivery. SMTP uses a separate mailer with a socket timeout of `MAIL_OUTBOX_SMTP_TIMEOUT` (default 10 seconds); other configured transports retain their settings. The budget is not a hard deadline for an in-flight send. Failed sends become eligible again after five minutes; the command reports failure after handling the remaining rows within its budget.
 
-- Unique `(operation_key, dominion_id, category)` preserves the original payload on replay.
-- Web notifications and `web_delivered_at` commit together under the outbox row lock, preventing duplicate web delivery.
-- Email and the final receipt use a separate transaction. Email is at least once: a crash after mail-server acceptance but before receipt commit can repeat it.
-- `email_allowed` records protection eligibility when the event occurred; delivery also checks current protection and user preferences. `realm_assignment` is the protection exception. Hourly email displays `event_at`, not its delayed delivery time.
+- Unique `(operation_key, dominion_id, category)` preserves an email batch on replay.
+- Delivery checks current protection and email preferences again. `realm_assignment` remains the protection exception; opting in later does not create email for older events.
+- Email delivery is at least once: a crash after mail-server acceptance but before `delivered_at` commits can repeat it. Web notifications never wait for email and are not replayed by the delivery command.
+- Hourly email displays `event_at`, not its delayed delivery time.
 
 ### Channels
 - **WebNotification** - In-game notification display

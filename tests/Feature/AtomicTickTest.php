@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundTickRun;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -28,6 +29,8 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
         Bus::fake();
+        Notification::swap(new ChannelManager($this->app));
+        config(['mail.default' => 'array']);
     }
 
     protected function prepareDominion(): Dominion
@@ -51,6 +54,7 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
         foreach (['dominion_tick', 'dominion_queue', 'dominion_spells', 'dominion_history', 'notification_outbox'] as $table) {
             $snapshot[$table] = DB::table($table)->where('dominion_id', $dominion->id)->get()->toJson();
         }
+        $snapshot['notifications'] = $dominion->notifications()->orderBy('id')->get()->toJson();
         return $snapshot;
     }
 
@@ -66,6 +70,11 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
         $tick = new FaultInjectingTickService();
         $this->app->instance(TickService::class, $tick);
         $tick->failAt = $stage;
+        $dominion->user->update(['settings' => [
+            'notifications' => ['hourly_dominion' => ['training_completed' => ['ingame' => true, 'email' => true]]],
+        ]]);
+        app(QueueService::class)->queueResources('training', $dominion, ['military_unit3' => 7], 1);
+        $tick->precalculateTick($dominion);
         $before = $this->snapshot($dominion);
         $hour = now()->startOfHour();
         try {
@@ -82,6 +91,8 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
         $tick->failAt = null;
         $this->assertTrue($tick->performTick($dominion->round, null, $hour));
         $this->assertSame(3, (int) DB::table('dominion_queue')->where('dominion_id', $dominion->id)->where('resource', 'military_unit3')->where('hours', 12)->value('amount'));
+        $this->assertSame(1, $dominion->notifications()->count());
+        $this->assertSame(1, DB::table('notification_outbox')->where('dominion_id', $dominion->id)->count());
         $after = $this->snapshot($dominion);
         $this->assertFalse($tick->performTick($dominion->round, null, $hour));
         $this->assertSame($after, $this->snapshot($dominion));
@@ -90,7 +101,6 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
 
     public function testProtectionNotificationsRollBackWithFailureAndDisappearOnUndo(): void
     {
-        Notification::swap(new ChannelManager($this->app));
         $dominion = $this->prepareDominion();
         $dominion->update(['protection_finished' => false]);
         $dominion->user->update(['settings' => [
@@ -221,6 +231,58 @@ class AtomicTickTest extends AbstractBrowserKitTestCase
         $this->assertEquals([$hour], app(TickService::class)->getDueTickHours($round, $hour->copy()->addHours(3)));
     }
 
+    public function testBrokenEndedRoundDoesNotBlockHealthyRoundRecovery(): void
+    {
+        $broken = $this->prepareDominion();
+        $healthy = $this->prepareDominion();
+        $hour = now()->startOfHour();
+        $broken->round->update(['end_date' => $hour->copy()->subHour()]);
+        $failedHour = $hour->copy()->subHours(2);
+        RoundTickRun::create(['round_id' => $broken->round_id, 'tick_at' => $failedHour]);
+        RoundTickRun::create(['round_id' => $healthy->round_id, 'tick_at' => $hour]);
+        DB::table('dominion_tick')->where('dominion_id', $broken->id)->delete();
+        $tick = new RecoveryTestTickService();
+        $tick->roundIds = [$broken->round_id, $healthy->round_id];
+        $this->app->instance(TickService::class, $tick);
+
+        try {
+            $tick->recoverHourlyTicks();
+            $this->fail('Expected recovery to report the failed round after processing healthy rounds.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Hourly tick recovery failed for rounds: ' . $broken->round_id, $exception->getMessage());
+            $this->assertInstanceOf(\LogicException::class, $exception->getPrevious());
+        }
+
+        $this->assertNull(RoundTickRun::where('round_id', $broken->round_id)->sole()->completed_at);
+        $this->assertSame(1, RoundTickRun::where('round_id', $broken->round_id)->count());
+        $this->assertNotNull(RoundTickRun::where('round_id', $healthy->round_id)->sole()->completed_at);
+        $this->assertSame(3, (int) $healthy->queues()->where('resource', 'military_unit3')->where('hours', 12)->value('amount'));
+    }
+
+    public function testRecoverySkipsFinishedRoundsButFindsUnregisteredFinalHour(): void
+    {
+        $finished = $this->prepareDominion();
+        $unfinished = $this->prepareDominion();
+        $end = now()->startOfHour()->subHour()->addMinutes(15);
+        $finalHour = $end->copy()->subSecond()->startOfHour();
+        foreach ([$finished, $unfinished] as $dominion) {
+            $dominion->round->update(['end_date' => $end]);
+        }
+        RoundTickRun::create(['round_id' => $finished->round_id, 'tick_at' => $finalHour, 'completed_at' => $finalHour]);
+        $previousHour = $finalHour->copy()->subHour();
+        RoundTickRun::create(['round_id' => $unfinished->round_id, 'tick_at' => $previousHour, 'completed_at' => $previousHour]);
+        $tick = new RecoveryTestTickService();
+        $tick->roundIds = [$finished->round_id, $unfinished->round_id];
+        $this->app->instance(TickService::class, $tick);
+        $tick->recoverHourlyTicks();
+
+        $this->assertSame([$unfinished->round_id], $tick->visitedRoundIds);
+        $this->assertNotNull(RoundTickRun::where('round_id', $unfinished->round_id)->where('tick_at', $finalHour)->sole()->completed_at);
+        $tick->visitedRoundIds = [];
+        $tick->recoverHourlyTicks();
+        $this->assertSame([], $tick->visitedRoundIds);
+    }
+
     public function testRecoveryCommandDoesNotBootstrapAnUnregisteredRoundMidHour(): void
     {
         $dominion = $this->prepareDominion();
@@ -269,5 +331,21 @@ class FaultInjectingTickService extends TickService
         if ($this->failAt === $stage) {
             throw new RuntimeException('Injected ' . $stage);
         }
+    }
+}
+
+class RecoveryTestTickService extends TickService
+{
+    public array $roundIds = [];
+
+    public array $visitedRoundIds = [];
+
+    public function getDueTickHours(Round $round, Carbon $dueAt): array
+    {
+        if (!in_array($round->id, $this->roundIds, true)) {
+            return [];
+        }
+        $this->visitedRoundIds[] = $round->id;
+        return parent::getDueTickHours($round, $dueAt);
     }
 }

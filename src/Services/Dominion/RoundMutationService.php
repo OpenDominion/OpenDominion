@@ -20,7 +20,7 @@ class RoundMutationService
         return (new Round())->getConnection()->transaction(function () use ($roundId, $callback, $checkCurrent) {
             $lockedRound = Round::query()->whereKey($roundId)->sharedLock()->firstOrFail();
             if ($checkCurrent) {
-                $this->assertRoundCurrent($roundId);
+                $this->assertRoundCurrent($lockedRound);
             }
 
             return $callback($lockedRound);
@@ -30,35 +30,35 @@ class RoundMutationService
     /**
      * Refreshes the caller's instance after locking so validation never uses a stale snapshot.
      */
-    public function runForDominion(Dominion $dominion, callable $callback, bool $checkCurrent = true): mixed
+    public function runForDominion(Dominion $dominion, callable $callback, bool $checkCurrent = true, bool $loadGameRelations = false): mixed
     {
-        return $this->run((int) $dominion->round_id, function (Round $round) use ($dominion, $callback, $checkCurrent) {
-            $freshDominion = Dominion::query()->whereKey($dominion->id)->lockForUpdate()->firstOrFail();
+        return $this->run((int) $dominion->round_id, function (Round $round) use ($dominion, $callback, $loadGameRelations) {
+            $query = Dominion::query()->whereKey($dominion->id)->lockForUpdate();
+            if ($loadGameRelations) {
+                $query->with(Dominion::query()->withGameRelations()->getEagerLoads())->withCachedRace();
+            }
+            $freshDominion = $query->firstOrFail();
             $dominion->setRawAttributes($freshDominion->getAttributes(), true);
-            $dominion->unsetRelations();
+            $dominion->setRelations($freshDominion->getRelations());
             $dominion->setRelation('round', $round);
 
-            if ($checkCurrent) {
-                $this->assertRoundCurrent($round->id);
-            }
-
             return $callback($dominion);
-        }, false);
+        }, $checkCurrent);
     }
 
     /**
      * Failed or overdue hourly ticks must be recovered before ordinary gameplay continues.
      * A round with no tick ledger yet remains available during deployment/bootstrap.
      */
-    public function assertRoundCurrent(int $roundId): void
+    public function assertRoundCurrent(Round|int $round): void
     {
-        $round = Round::query()->findOrFail($roundId);
+        $round = $round instanceof Round ? $round : Round::query()->findOrFail($round);
         if (!$round->isActive()) {
             return;
         }
 
         $hour = now()->startOfHour();
-        $runs = RoundTickRun::query()->where('round_id', $roundId)->where('tick_at', '<=', $hour);
+        $runs = RoundTickRun::query()->where('round_id', $round->id)->where('tick_at', '<=', $hour);
         if ((clone $runs)->whereNull('completed_at')->exists()) {
             throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
         }

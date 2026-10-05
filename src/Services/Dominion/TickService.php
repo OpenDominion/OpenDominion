@@ -128,52 +128,75 @@ class TickService
     {
         Log::debug('Hourly tick started');
 
-        $this->recoverHourlyTicks(false);
+        $failures = [];
+        try {
+            $this->recoverHourlyTicks(false);
+        } catch (Throwable $exception) {
+            $failures['round recovery'] = $exception;
+        }
 
         // Realm Assignment
         $rounds = Round::readyForAssignment()->get();
         foreach ($rounds as $round) {
-            $this->performRoundSetup($round, RoundSetupService::REALM_ASSIGNMENT, function (Round $lockedRound): void {
-                app(\OpenDominion\Services\RealmAssignmentService::class)->assignRealms($lockedRound);
-            });
+            try {
+                $this->performRoundSetup($round, RoundSetupService::REALM_ASSIGNMENT, function (Round $lockedRound): void {
+                    app(\OpenDominion\Services\RealmAssignmentService::class)->assignRealms($lockedRound);
+                });
+            } catch (Throwable $exception) {
+                $failures["realm assignment for round {$round->id}"] = $exception;
+                Log::error('Round setup failed', ['round_id' => $round->id, 'exception' => $exception]);
+            }
         }
 
         // Generate Non-Player Dominions
         $rounds = Round::activeSoon()->get();
         foreach ($rounds as $round) {
-            $this->performRoundSetup($round, RoundSetupService::NON_PLAYER_GENERATION, function (Round $round): void {
-                $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
-                $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
-                $races = Race::where('playable', true)->get();
-                $realm = $round->realms()->where('number', 0)->first();
+            try {
+                $this->performRoundSetup($round, RoundSetupService::NON_PLAYER_GENERATION, function (Round $round): void {
+                    $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
+                    $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
+                    $races = Race::where('playable', true)->get();
+                    $realm = $round->realms()->where('number', 0)->first();
 
-                // Number of NPDs to spawn (80% of the number of real players)
-                $npdCount = round($round->dominions()->human()->count() * 0.8);
+                    // Number of NPDs to spawn (80% of the number of real players)
+                    $npdCount = round($round->dominions()->human()->count() * 0.8);
 
-                // Create NPDs with pre-calculated land sizes
-                foreach ($dominionFactory->getNonPlayerLandSizes($npdCount) as $landSize) {
-                    // Select race
-                    if ($realm->alignment != 'neutral') {
-                        $race = $races->where('alignment', $realm->alignment)->random();
-                    } else {
-                        $race = $races->random();
+                    // Create NPDs with pre-calculated land sizes
+                    foreach ($dominionFactory->getNonPlayerLandSizes($npdCount) as $landSize) {
+                        // Select race
+                        if ($realm->alignment != 'neutral') {
+                            $race = $races->where('alignment', $realm->alignment)->random();
+                        } else {
+                            $race = $races->random();
+                        }
+
+                        $dominion = $dominionFactory->createRandomNonPlayer($realm, $race, $landSize);
+                        if ($dominion) {
+                            // Tick ahead
+                            $this->precalculateTick($dominion);
+                            $this->performTick($round, $dominion);
+                        }
                     }
-
-                    $dominion = $dominionFactory->createRandomNonPlayer($realm, $race, $landSize);
-                    if ($dominion) {
-                        // Tick ahead
-                        $this->precalculateTick($dominion);
-                        $this->performTick($round, $dominion);
+                    // Generate NPD instructions (bots spawned manually already have them)
+                    $npds = $round->dominions()->bot()->whereNull('ai_config')->get();
+                    foreach ($npds as $npd) {
+                        $npd->ai_enabled = true;
+                        $npd->ai_config = $aiHelper->generateConfig($npd->race);
+                        $npd->save();
                     }
-                }
-                // Generate NPD instructions (bots spawned manually already have them)
-                $npds = $round->dominions()->bot()->whereNull('ai_config')->get();
-                foreach ($npds as $npd) {
-                    $npd->ai_enabled = true;
-                    $npd->ai_config = $aiHelper->generateConfig($npd->race);
-                    $npd->save();
-                }
-            });
+                });
+            } catch (Throwable $exception) {
+                $failures["non-player generation for round {$round->id}"] = $exception;
+                Log::error('Round setup failed', ['round_id' => $round->id, 'exception' => $exception]);
+            }
+        }
+
+        if ($failures !== []) {
+            throw new \RuntimeException(
+                'Hourly processing failed: ' . implode(', ', array_keys($failures)),
+                0,
+                reset($failures)
+            );
         }
 
         Log::debug('Hourly tick finished');
@@ -196,21 +219,44 @@ class TickService
      */
     public function recoverHourlyTicks(bool $existingOnly = true): void
     {
-        $activeRounds = Round::where('start_date', '<=', now()->subHour())
-            ->where(function ($query): void {
-                $query->where('end_date', '>', now())
-                    ->orWhereIn('id', RoundTickRun::query()->select('round_id'));
+        $now = now();
+        $rounds = Round::where('start_date', '<=', $now->copy()->subHour())
+            ->where(function ($query) use ($now): void {
+                $query->where('end_date', '>', $now)
+                    ->orWhereIn('id', RoundTickRun::query()->select('round_id')->whereNull('completed_at'))
+                    ->orWhere(function ($query): void {
+                        $query->whereIn('id', RoundTickRun::query()->select('round_id'))
+                            ->whereNotExists(
+                                RoundTickRun::query()->selectRaw('1')
+                                    ->whereColumn('round_id', 'rounds.id')
+                                    ->whereNotNull('completed_at')
+                                    ->whereRaw("tick_at >= DATE_FORMAT(DATE_SUB(rounds.end_date, INTERVAL 1 SECOND), '%Y-%m-%d %H:00:00')")
+                            );
+                    });
             });
         if ($existingOnly) {
-            $activeRounds->whereIn('id', RoundTickRun::query()->select('round_id'));
+            $rounds->whereIn('id', RoundTickRun::query()->select('round_id'));
         }
-        $activeRounds = $activeRounds->get();
 
-        $dueAt = now()->startOfHour();
-        foreach ($activeRounds as $round) {
-            foreach ($this->getDueTickHours($round, $dueAt) as $tickAt) {
-                $this->performTick($round, null, $tickAt);
+        $dueAt = $now->copy()->startOfHour();
+        $failures = [];
+        foreach ($rounds->orderBy('id')->get() as $round) {
+            try {
+                foreach ($this->getDueTickHours($round, $dueAt) as $tickAt) {
+                    $this->performTick($round, null, $tickAt);
+                }
+            } catch (Throwable $exception) {
+                $failures[$round->id] = $exception;
+                Log::error('Round recovery failed', ['round_id' => $round->id, 'exception' => $exception]);
             }
+        }
+
+        if ($failures !== []) {
+            throw new \RuntimeException(
+                'Hourly tick recovery failed for rounds: ' . implode(', ', array_keys($failures)),
+                0,
+                reset($failures)
+            );
         }
     }
 
@@ -335,12 +381,7 @@ class TickService
                         $this->recordTickHistory($current, $current->tick);
                         $this->cleanupActiveSpells($current);
                         $this->cleanupQueues($current);
-                        if ($dominion !== null && !$current->protection_finished) {
-                            // Protection has no hourly email; transactional web notifications remain undoable.
-                            $this->notificationService->sendNotifications($current, 'hourly_dominion');
-                        } else {
-                            $this->notificationService->persistQueuedNotifications($current, 'hourly_dominion', $operationKey, $tickAt);
-                        }
+                        $this->notificationService->persistQueuedNotifications($current, 'hourly_dominion', $operationKey, $tickAt);
                     }
                     $dominions->load(['queues', 'spells.perks']);
                     foreach ($dominions as $current) {
@@ -788,20 +829,6 @@ class TickService
         }
 
         return true;
-    }
-
-    /**
-     * Does a daily tick on all active dominions and rounds.
-     *
-     * @throws Exception|Throwable
-     */
-    public function tickDaily(): void
-    {
-        foreach (Round::active()->get() as $round) {
-            foreach ($this->getDueTickHours($round, now()->startOfHour()) as $tickAt) {
-                $this->performTick($round, null, $tickAt);
-            }
-        }
     }
 
     protected function performDailyRoundTasks(Round $round): void

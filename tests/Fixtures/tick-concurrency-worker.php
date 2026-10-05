@@ -5,7 +5,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Notification;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundTickRun;
@@ -31,7 +30,7 @@ config([
 ]);
 DB::purge('tick_concurrency');
 Bus::fake();
-Notification::fake();
+config(['mail.default' => 'array']);
 
 function announce(string $stage, array $data = []): void
 {

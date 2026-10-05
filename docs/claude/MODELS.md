@@ -99,10 +99,10 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 - Inserted only after the setup callback succeeds, in the same transaction. Failed setup leaves no receipt.
 
 ### NotificationOutbox (`notification_outbox`)
-- Unique `(operation_key, dominion_id, category)` preserves a notification batch across replay; pending index on `(delivered_at, available_at, id)` supports recovery.
-- **Fields/casts**: payload (array), email_allowed (boolean; event-time protection eligibility), event_at/available_at/web_delivered_at/delivered_at (datetime), plus operation_key, dominion_id, category, timestamps.
+- Unique `(operation_key, dominion_id, category)` preserves an eligible email batch across replay; pending index on `(delivered_at, available_at, id)` supports recovery.
+- **Fields/casts**: payload (array; event-time eligible email types only), event_at/available_at/delivered_at (datetime), plus operation_key, dominion_id, category, timestamps.
 - **Relation**: dominion (`belongsTo`); missing dominions/users are safely skipped by delivery.
-- Web notification writes and web_delivered_at are atomic. delivered_at follows email delivery; a transport success followed by process failure can repeat email, not committed web notifications.
+- Web notifications commit directly with game changes. delivered_at follows email delivery; a transport success followed by process failure can repeat email, not committed web notifications.
 
 ### Dominion\Queue (`dominion_queue`)
 - Fields: dominion_id, source, resource, hours, amount

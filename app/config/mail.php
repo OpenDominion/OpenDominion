@@ -15,6 +15,8 @@ return [
 
     'default' => env('MAIL_MAILER', 'smtp'),
 
+    'outbox_smtp_timeout' => (float) env('MAIL_OUTBOX_SMTP_TIMEOUT', 10),
+
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations

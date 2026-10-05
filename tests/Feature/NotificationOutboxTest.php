@@ -5,12 +5,12 @@ namespace OpenDominion\Tests\Feature;
 use Carbon\Carbon;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Mail\MailManager;
 use Illuminate\Notifications\Events\NotificationSending;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Mockery;
-use OpenDominion\Jobs\DeliverNotificationOutbox;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\NotificationOutbox;
 use OpenDominion\Notifications\HourlyEmailDigestNotification;
@@ -35,46 +35,54 @@ class NotificationOutboxTest extends AbstractTestCase
 
     public function testRepeatedOperationPreservesPayloadAndClearsBuffer(): void
     {
+        $this->enableEmail();
         $id = $this->persistBatch();
+        $before = $this->dominion->notifications()->count();
         $this->service->queueNotification('exploration_completed', ['land_plain' => 999]);
         $secondId = $this->service->persistQueuedNotifications($this->dominion, 'hourly_dominion', 'test-hour');
 
         $this->assertSame($id, $secondId);
+        $this->assertSame($before, $this->dominion->notifications()->count());
         $this->assertSame(['exploration_completed' => ['land_plain' => 10]], NotificationOutbox::findOrFail($id)->payload);
         $this->assertNull($this->service->persistQueuedNotifications($this->dominion, 'hourly_dominion', 'next-hour'));
     }
 
-    public function testRollbackRemovesOutboxAndDispatchAndDoesNotLeakBuffer(): void
+    public function testRollbackRemovesWebAndEmailAndDoesNotLeakBuffer(): void
     {
+        $this->enableEmail();
         Bus::fake();
+        $before = $this->dominion->notifications()->count();
         $connection = $this->dominion->getConnection();
         $connection->beginTransaction();
         $id = $this->persistBatch();
-        $this->service->dispatchOutboxNotifications([$id]);
+        $this->assertSame($before + 1, $this->dominion->notifications()->count());
         Bus::assertNothingDispatched();
         $connection->rollBack();
 
+        $this->assertSame($before, $this->dominion->notifications()->count());
         $this->assertNull(NotificationOutbox::find($id));
         Bus::assertNothingDispatched();
         $this->assertNull($this->service->persistQueuedNotifications($this->dominion, 'hourly_dominion', 'next-hour'));
     }
 
-    public function testDeliveryCreatesWebNotificationOnlyOnce(): void
+    public function testEmailReplayDoesNotDuplicateWebNotification(): void
     {
-        $id = $this->persistBatch();
+        $this->enableEmail();
         $before = $this->dominion->notifications()->count();
+        $id = $this->persistBatch();
+        $this->assertSame($before + 1, $this->dominion->notifications()->count());
         $this->service->deliverOutboxNotification($id);
         $this->service->deliverOutboxNotification($id);
-
         $this->assertSame($before + 1, $this->dominion->notifications()->count());
         $this->assertNotNull(NotificationOutbox::findOrFail($id)->delivered_at);
     }
 
-    public function testMailFailurePreservesWebReceiptAndCanBeRetried(): void
+    public function testMailFailurePreservesWebNotificationAndCanBeRetried(): void
     {
+        $this->assertTrue($this->dominion->getConnection()->getPdo()->inTransaction());
         $this->enableEmail();
-        $id = $this->persistBatch();
         $before = $this->dominion->notifications()->count();
+        $id = $this->persistBatch();
         $fail = true;
         $attempts = 0;
         Event::listen(NotificationSending::class, function (NotificationSending $event) use (&$fail, &$attempts): void {
@@ -85,21 +93,21 @@ class NotificationOutboxTest extends AbstractTestCase
                 }
             }
         });
+        $handler = Mockery::mock(ExceptionHandler::class);
+        $handler->shouldReceive('report')->once();
+        $this->app->instance(ExceptionHandler::class, $handler);
 
-        try {
-            (new DeliverNotificationOutbox($id))->handle($this->service);
-            $this->fail('Expected mail delivery failure.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('Mail transport unavailable', $exception->getMessage());
-        }
+        $this->artisan('game:notifications:deliver')->assertFailed();
         $outbox = NotificationOutbox::findOrFail($id);
-        $this->assertNotNull($outbox->web_delivered_at);
         $this->assertNull($outbox->delivered_at);
         $this->assertTrue($outbox->available_at->isFuture());
         $this->assertSame($before + 1, $this->dominion->notifications()->count());
+        $this->artisan('game:notifications:deliver')->assertSuccessful();
+        $this->assertSame(1, $attempts);
 
         $fail = false;
-        $this->service->deliverOutboxNotification($id);
+        $outbox->update(['available_at' => now()->subMinute()]);
+        $this->artisan('game:notifications:deliver')->assertSuccessful();
         $this->service->deliverOutboxNotification($id);
         $this->assertSame(2, $attempts);
         $this->assertSame($before + 1, $this->dominion->notifications()->count());
@@ -123,19 +131,15 @@ class NotificationOutboxTest extends AbstractTestCase
     public function testProtectedEventsRemainIneligibleForEmailAfterProtectionEnds(): void
     {
         $this->enableEmail();
-        Notification::fake();
+        $before = $this->dominion->notifications()->count();
         $this->dominion->getConnection()->transaction(function (): void {
             $this->dominion->update(['protection_finished' => false]);
-            $this->persistBatch();
+            $this->assertNull($this->persistBatch());
             $this->dominion->update(['protection_finished' => true]);
         });
 
-        $outbox = NotificationOutbox::where('operation_key', 'test-hour')->firstOrFail();
-        $this->assertFalse($outbox->email_allowed);
-        $this->service->deliverOutboxNotification($outbox->id);
-        Notification::assertNotSentTo($this->dominion, HourlyEmailDigestNotification::class);
-        Notification::assertSentToTimes($this->dominion, \OpenDominion\Notifications\WebNotification::class, 1);
-        $this->assertNotNull($outbox->fresh()->delivered_at);
+        $this->assertSame($before + 1, $this->dominion->notifications()->count());
+        $this->assertSame(0, NotificationOutbox::where('dominion_id', $this->dominion->id)->count());
     }
 
     public function testRealmAssignmentCanStillEmailDuringProtection(): void
@@ -145,42 +149,45 @@ class NotificationOutboxTest extends AbstractTestCase
         $this->dominion->user->update(['settings' => [
             'notifications' => ['irregular_dominion' => ['realm_assignment' => ['email' => true]]],
         ]]);
-        $this->service->queueNotification('realm_assignment', ['realm_number' => 1]);
+        $this->service->queueNotification('realm_assignment', ['realmNumber' => 1]);
         $id = $this->service->persistQueuedNotifications($this->dominion, 'irregular_dominion', 'assignment');
-        $this->assertFalse(NotificationOutbox::findOrFail($id)->email_allowed);
         $this->service->deliverOutboxNotification($id);
         Notification::assertSentTo($this->dominion, \OpenDominion\Notifications\IrregularDominionEmailNotification::class);
     }
 
-    public function testRecoveryCommandQueuesPendingBatches(): void
+    public function testDeliveryCommandHonorsBatchLimitWithoutQueueJobs(): void
     {
+        $this->enableEmail();
+        $first = $this->persistBatch();
+        $second = $this->persistBatch(null, 'next-hour');
+        Notification::fake();
         Bus::fake();
-        $id = $this->persistBatch();
+        $this->artisan('game:notifications:deliver', ['--limit' => 1])->assertSuccessful();
+        $this->assertNotNull(NotificationOutbox::findOrFail($first)->delivered_at);
+        $this->assertNull(NotificationOutbox::findOrFail($second)->delivered_at);
         $this->artisan('game:notifications:deliver')->assertSuccessful();
-        Bus::assertDispatched(DeliverNotificationOutbox::class, fn ($job) => $job->outboxId === $id);
-        Bus::assertDispatchedTimes(DeliverNotificationOutbox::class, 1);
-        $this->artisan('game:notifications:deliver')->assertSuccessful();
-        Bus::assertDispatchedTimes(DeliverNotificationOutbox::class, 1);
+        Notification::assertSentToTimes($this->dominion, HourlyEmailDigestNotification::class, 2);
+        Bus::assertNothingDispatched();
     }
 
-    public function testQueueFailureDoesNotEscapeCommittedTick(): void
+    public function testUnavailableQueueDoesNotAffectTickOrEmailDelivery(): void
     {
-        $id = $this->persistBatch();
+        $this->enableEmail();
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher->shouldReceive('dispatch')->once()->andThrow(new RuntimeException('Queue unavailable'));
+        $dispatcher->shouldReceive('dispatch')->andThrow(new RuntimeException('Queue unavailable'));
         $this->app->instance(Dispatcher::class, $dispatcher);
-        $handler = Mockery::mock(ExceptionHandler::class);
-        $handler->shouldReceive('report')->once();
-        $this->app->instance(ExceptionHandler::class, $handler);
-
-        $this->dominion->getConnection()->transaction(function () use ($id): void {
-            $this->service->dispatchOutboxNotifications([$id]);
+        $id = $this->dominion->getConnection()->transaction(function (): int {
+            return $this->persistBatch();
         });
         $this->assertNull(NotificationOutbox::findOrFail($id)->delivered_at);
+        $this->artisan('game:notifications:deliver')->assertSuccessful();
+        $this->assertNotNull(NotificationOutbox::findOrFail($id)->delivered_at);
     }
 
     public function testMaintenanceScopeDefersSeparateBatchesAndResetsOnFailure(): void
     {
+        $this->enableEmail();
+        $before = $this->dominion->notifications()->count();
         config(['queue.default' => 'sync']);
         Bus::fake();
         $connection = $this->dominion->getConnection();
@@ -195,6 +202,7 @@ class NotificationOutboxTest extends AbstractTestCase
         });
         Bus::assertNothingDispatched();
         $this->assertSame(2, NotificationOutbox::where('operation_key', 'like', 'maintenance:%')->count());
+        $this->assertSame($before + 2, $this->dominion->notifications()->count());
 
         try {
             $this->service->withDeferredDelivery('failed', now(), function (): void {
@@ -223,10 +231,68 @@ class NotificationOutboxTest extends AbstractTestCase
         });
     }
 
-    protected function persistBatch(?Carbon $eventAt = null): int
+    public function testDefaultPreferencesWriteWebImmediatelyWithoutOutbox(): void
+    {
+        $before = $this->dominion->notifications()->count();
+        $this->assertNull($this->persistBatch());
+        $this->assertSame($before + 1, $this->dominion->notifications()->count());
+        $this->assertSame(0, NotificationOutbox::where('dominion_id', $this->dominion->id)->count());
+    }
+
+    public function testEmailPayloadFiltersEventPreferencesAndHonorsLaterOptOut(): void
+    {
+        $this->enableEmail();
+        $this->service->queueNotification('training_completed', ['military_unit1' => 5]);
+        $id = $this->persistBatch();
+        $this->assertSame(['exploration_completed' => ['land_plain' => 10]], NotificationOutbox::findOrFail($id)->payload);
+        $this->dominion->user->update(['settings' => [
+            'notifications' => ['hourly_dominion' => [
+                'exploration_completed' => ['email' => false],
+                'training_completed' => ['email' => true],
+            ]],
+        ]]);
+        Notification::fake();
+        $this->service->deliverOutboxNotification($id);
+        Notification::assertNothingSent();
+        $this->assertNotNull(NotificationOutbox::findOrFail($id)->delivered_at);
+    }
+
+    public function testCommandStopsStartingRowsAfterTimeBudget(): void
+    {
+        $this->enableEmail();
+        $first = $this->persistBatch();
+        $second = $this->persistBatch(null, 'next-hour');
+        $service = Mockery::mock(NotificationService::class);
+        $service->shouldReceive('deliverOutboxNotification')->once()->with($first)->andReturnUsing(function () use ($first): void {
+            NotificationOutbox::whereKey($first)->update(['delivered_at' => now()]);
+            usleep(1_100_000);
+        });
+        $this->app->instance(NotificationService::class, $service);
+        $this->artisan('game:notifications:deliver', ['--max-seconds' => 1])->assertSuccessful();
+        $this->assertNull(NotificationOutbox::findOrFail($second)->delivered_at);
+    }
+
+    public function testCommandBoundsOnlyItsOwnSmtpTransportAndRestoresDefault(): void
+    {
+        $this->enableEmail();
+        $id = $this->persistBatch();
+        config(['mail.default' => 'smtp', 'mail.outbox_smtp_timeout' => 7]);
+        $originalTimeout = config('mail.mailers.smtp.timeout');
+        $service = Mockery::mock(NotificationService::class);
+        $service->shouldReceive('deliverOutboxNotification')->once()->with($id)->andReturnUsing(function (): void {
+            $transport = app(MailManager::class)->mailer()->getSymfonyTransport();
+            $this->assertSame(7.0, $transport->getStream()->getTimeout());
+        });
+        $this->app->instance(NotificationService::class, $service);
+        $this->artisan('game:notifications:deliver')->assertSuccessful();
+        $this->assertSame('smtp', config('mail.default'));
+        $this->assertSame($originalTimeout, config('mail.mailers.smtp.timeout'));
+    }
+
+    protected function persistBatch(?Carbon $eventAt = null, string $operationKey = 'test-hour'): ?int
     {
         $this->service->queueNotification('exploration_completed', ['land_plain' => 10]);
-        return $this->service->persistQueuedNotifications($this->dominion, 'hourly_dominion', 'test-hour', $eventAt);
+        return $this->service->persistQueuedNotifications($this->dominion, 'hourly_dominion', $operationKey, $eventAt);
     }
 
     protected function enableEmail(): void
