@@ -282,6 +282,7 @@ class RoundMutationTest extends AbstractBrowserKitTestCase
         $this->assertSame($selectedDominion->hourly_activity, $dominion->fresh()->hourly_activity);
         $this->assertSame($prediction, $dominion->tick->fresh()->getAttributes());
     }
+
     public function testPendingTickAllowsJournalAndNotificationRequests(): void
     {
         $user = $this->createAndImpersonateUser();
