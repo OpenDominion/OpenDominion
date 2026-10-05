@@ -12,10 +12,11 @@ return new class extends Migration {
             $table->unsignedInteger('round_id');
             $table->dateTime('tick_at');
             $table->dateTime('completed_at')->nullable();
+            $table->dateTime('maintenance_completed_at')->nullable();
             $table->unsignedInteger('attempts')->default(0);
             $table->text('last_error')->nullable();
             $table->timestamps();
-            $table->unique(['round_id', 'tick_at']);
+            $table->unique('round_id');
             $table->foreign('round_id')->references('id')->on('rounds')->onDelete('cascade');
         });
     }

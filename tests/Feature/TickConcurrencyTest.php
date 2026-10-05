@@ -85,63 +85,99 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
     {
         $before = $this->dominion->resource_platinum;
         $production = $this->dominion->tick->resource_platinum;
-        DB::beginTransaction();
-        Round::query()->whereKey($this->round->id)->sharedLock()->firstOrFail();
-        $first = $this->startWorker('tick');
+        $first = $this->startWorker('tick-hold');
         $second = $this->startWorker('tick');
         $this->releaseWorker($first);
+        $this->awaitStage($first, 'locked');
         $this->releaseWorker($second);
-        $this->awaitRoundLock($first, 'for update');
-        $this->awaitRoundLock($second, 'for update');
+        $this->awaitDatabaseLock($second, 'round_tick_runs');
         $this->assertSame($before, $this->dominion->fresh()->resource_platinum);
-        DB::commit();
+        $this->releaseWorker($first);
 
-        $applied = [$this->finishWorker($first)['applied'], $this->finishWorker($second)['applied']];
-        sort($applied);
-        $this->assertSame([false, true], $applied);
+        $this->assertTrue($this->finishWorker($first)['applied']);
+        $this->assertFalse($this->finishWorker($second)['applied']);
         $this->assertSame($before + $production, $this->dominion->fresh()->resource_platinum);
         $this->assertSingleCommittedHour();
     }
 
-    public function testPlayerActionHoldsTheRoundUntilItsChangesAreCommitted(): void
+    public function testPlayerRoundRecordUpdateCommitsWhileTickHoldsItsCheckpoint(): void
+    {
+        $before = $this->dominion->resource_platinum;
+        $tick = $this->startWorker('tick-hold');
+        $this->releaseWorker($tick);
+        $this->awaitStage($tick, 'locked');
+        $action = $this->startWorker('round-record-update');
+        $this->releaseWorker($action);
+        $this->finishWorker($action);
+
+        $this->assertSame(321, (int) $this->round->fresh()->largest_hit);
+        $this->assertSame($before, $this->dominion->fresh()->resource_platinum);
+        $this->assertNull(RoundTickRun::query()->where('round_id', $this->round->id)->value('completed_at'));
+        $this->releaseWorker($tick);
+        $this->assertTrue($this->finishWorker($tick)['applied']);
+        $this->assertSingleCommittedHour();
+    }
+
+    public function testPlayerActionCanUpdateRoundWhileTickWaitsForItsDominion(): void
     {
         $before = $this->dominion->resource_platinum;
         $production = $this->dominion->tick->resource_platinum;
-        $action = $this->startWorker('action-hold');
+        $action = $this->startWorker('action-hold-before-round-update');
         $this->releaseWorker($action);
         $this->awaitStage($action, 'locked');
         $tick = $this->startWorker('tick');
         $this->releaseWorker($tick);
-        $this->awaitRoundLock($tick, 'for update');
-        $this->assertSame($before, $this->dominion->fresh()->resource_platinum);
-        $this->assertNull(RoundTickRun::query()->where('round_id', $this->round->id)->value('completed_at'));
+        $this->awaitDatabaseLock($tick, 'dominions', 'for update');
         $this->releaseWorker($action);
 
         $this->assertSame($before, $this->finishWorker($action)['observed_platinum']);
         $this->assertTrue($this->finishWorker($tick)['applied']);
+        $this->assertSame(321, (int) $this->round->fresh()->largest_hit);
         $this->assertSame($before + 17 + $production, $this->dominion->fresh()->resource_platinum);
         $this->assertSingleCommittedHour();
     }
 
-    public function testPlayerActionWaitsForTickAndRefreshesItsStaleModel(): void
+    public function testOlderWorkerResumingAfterNewerHourDoesNotApplyProduction(): void
     {
         $before = $this->dominion->resource_platinum;
         $production = $this->dominion->tick->resource_platinum;
-        $action = $this->startWorker('action');
-        $tick = $this->startWorker('tick-hold');
-        $this->releaseWorker($tick);
-        $this->awaitStage($tick, 'locked');
-        $this->releaseWorker($action);
-        $this->awaitRoundLock($action, 'lock in share mode');
-        $this->assertSame($before, $this->dominion->fresh()->resource_platinum);
-        $this->releaseWorker($tick);
+        $older = $this->startWorker('tick-hold-after-registration');
+        $this->releaseWorker($older);
+        $this->awaitStage($older, 'registered');
+        $newerHour = now()->addHour();
+        $newer = $this->startWorker('tick', $newerHour);
+        $this->releaseWorker($newer);
+        $this->assertTrue($this->finishWorker($newer)['applied']);
+        $afterNewer = $this->snapshot();
+        $this->releaseWorker($older);
 
-        $this->assertTrue($this->finishWorker($tick)['applied']);
-        $result = $this->finishWorker($action);
-        $this->assertSame($before, $result['initial_platinum']);
-        $this->assertSame($before + $production, $result['observed_platinum']);
-        $this->assertSame($before + $production + 17, $this->dominion->fresh()->resource_platinum);
+        $this->assertFalse($this->finishWorker($older)['applied']);
+        $this->assertSame($afterNewer, $this->snapshot());
+        $this->assertSame($before + $production, $this->dominion->fresh()->resource_platinum);
+        $run = RoundTickRun::query()->where('round_id', $this->round->id)->sole();
+        $this->assertTrue($run->tick_at->equalTo($newerHour));
         $this->assertSingleCommittedHour();
+    }
+
+    public function testFirstPageReadSkipsActivityWriteWhileDominionIsLocked(): void
+    {
+        $this->dominion->update(['hourly_activity' => null]);
+        DB::beginTransaction();
+        Dominion::query()->whereKey($this->dominion->id)->lockForUpdate()->firstOrFail();
+        $reader = $this->startWorker('selector-read');
+        $this->releaseWorker($reader);
+        $result = $this->finishWorker($reader);
+
+        $this->assertSame($this->dominion->id, $result['dominion_id']);
+        $this->assertNull($result['hourly_activity']);
+        $this->assertNull($this->dominion->fresh()->hourly_activity);
+        DB::commit();
+
+        $retry = $this->startWorker('selector-read');
+        $this->releaseWorker($retry);
+        $result = $this->finishWorker($retry);
+        $this->assertSame('1', $result['hourly_activity'][$this->round->getTick()]);
+        $this->assertSame($result['hourly_activity'], $this->dominion->fresh()->hourly_activity);
     }
 
     public function testProcessFailureAfterCommitDoesNotReapplyTheHour(): void
@@ -161,7 +197,7 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         $this->assertSame($beforeRetry, $this->snapshot());
     }
 
-    protected function startWorker(string $mode): int
+    protected function startWorker(string $mode, ?Carbon $hour = null): int
     {
         $input = new InputStream();
         $connection = DB::connection()->getConfig();
@@ -169,7 +205,7 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         $process = new Process([
             PHP_BINARY, base_path('tests/Fixtures/tick-concurrency-worker.php'),
             $mode, (string) $this->round->id, (string) $this->dominion->id,
-            now()->toDateTimeString(),
+            ($hour ?? now())->toDateTimeString(),
         ], base_path(), [
             'APP_ENV' => 'testing',
             'OD_TEST_DATABASE_CONFIG' => json_encode($connection, JSON_THROW_ON_ERROR),
@@ -205,7 +241,7 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         $this->fail("Worker did not reach {$stage}: " . $process->getOutput() . $process->getErrorOutput());
     }
 
-    protected function awaitRoundLock(int $index, string $lockClause): void
+    protected function awaitDatabaseLock(int $index, string $table, string $lockClause = ''): void
     {
         $connectionId = $this->awaitStage($index, 'ready')['connection_id'];
         $this->awaitStage($index, 'attempting');
@@ -213,17 +249,17 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         do {
             foreach (DB::select('SHOW FULL PROCESSLIST') as $process) {
                 $sql = strtolower($process->Info ?? '');
-                if ((int) $process->Id === $connectionId && str_contains($sql, 'from `rounds`') && str_contains($sql, $lockClause)) {
+                if ((int) $process->Id === $connectionId && str_contains($sql, "`{$table}`") && str_contains($sql, $lockClause)) {
                     $this->assertTrue($this->workers[$index]['process']->isRunning());
                     return;
                 }
             }
             if (!$this->workers[$index]['process']->isRunning()) {
-                $this->fail('Worker finished without waiting for the round lock: ' . $this->workers[$index]['process']->getOutput());
+                $this->fail("Worker finished without waiting for {$table}: " . $this->workers[$index]['process']->getOutput() . $this->workers[$index]['process']->getErrorOutput());
             }
             usleep(1000);
         } while (microtime(true) < $deadline);
-        $this->fail('Worker did not wait for the expected round lock.');
+        $this->fail("Worker did not wait for the expected {$table} lock.");
     }
 
     protected function finishWorker(int $index): array
@@ -252,6 +288,7 @@ class TickConcurrencyTest extends AbstractBrowserKitTestCase
         foreach (['dominion_tick', 'dominion_queue', 'dominion_history', 'notification_outbox'] as $table) {
             $snapshot[$table] = DB::table($table)->where('dominion_id', $this->dominion->id)->get()->toJson();
         }
+        $snapshot['checkpoint'] = RoundTickRun::query()->where('round_id', $this->round->id)->get()->toJson();
         $snapshot['notifications'] = $this->dominion->notifications()->orderBy('id')->get()->toJson();
         return $snapshot;
     }

@@ -124,15 +124,25 @@ class TickService
      *
      * @throws Exception|Throwable
      */
-    public function tickHourly()
+    public function tickHourly(): void
     {
         Log::debug('Hourly tick started');
 
         $failures = [];
-        try {
-            $this->recoverHourlyTicks(false);
-        } catch (Throwable $exception) {
-            $failures['round recovery'] = $exception;
+        $tickAt = now()->startOfHour();
+        foreach (Round::active()->orderBy('id')->get() as $round) {
+            try {
+                $this->performTick($round, null, $tickAt);
+            } catch (Throwable $exception) {
+                $failures["production for round {$round->id}"] = $exception;
+                continue;
+            }
+
+            try {
+                $this->performRoundMaintenance($round, $tickAt);
+            } catch (Throwable $exception) {
+                $failures["maintenance for round {$round->id}"] = $exception;
+            }
         }
 
         // Realm Assignment
@@ -213,97 +223,39 @@ class TickService
         });
     }
 
-    /**
-     * Recover registered rounds in hour order. New rounds bootstrap only from
-     * the hourly command, so deploying between ticks cannot replay a legacy hour.
-     */
-    public function recoverHourlyTicks(bool $existingOnly = true): void
-    {
-        $now = now();
-        $rounds = Round::where('start_date', '<=', $now->copy()->subHour())
-            ->where(function ($query) use ($now): void {
-                $query->where('end_date', '>', $now)
-                    ->orWhereIn('id', RoundTickRun::query()->select('round_id')->whereNull('completed_at'))
-                    ->orWhere(function ($query): void {
-                        $query->whereIn('id', RoundTickRun::query()->select('round_id'))
-                            ->whereNotExists(
-                                RoundTickRun::query()->selectRaw('1')
-                                    ->whereColumn('round_id', 'rounds.id')
-                                    ->whereNotNull('completed_at')
-                                    ->whereRaw("tick_at >= DATE_FORMAT(DATE_SUB(rounds.end_date, INTERVAL 1 SECOND), '%Y-%m-%d %H:00:00')")
-                            );
-                    });
-            });
-        if ($existingOnly) {
-            $rounds->whereIn('id', RoundTickRun::query()->select('round_id'));
-        }
-
-        $dueAt = $now->copy()->startOfHour();
-        $failures = [];
-        foreach ($rounds->orderBy('id')->get() as $round) {
-            try {
-                foreach ($this->getDueTickHours($round, $dueAt) as $tickAt) {
-                    $this->performTick($round, null, $tickAt);
-                }
-            } catch (Throwable $exception) {
-                $failures[$round->id] = $exception;
-                Log::error('Round recovery failed', ['round_id' => $round->id, 'exception' => $exception]);
-            }
-        }
-
-        if ($failures !== []) {
-            throw new \RuntimeException(
-                'Hourly tick recovery failed for rounds: ' . implode(', ', array_keys($failures)),
-                0,
-                reset($failures)
-            );
-        }
-    }
-
     public function isProcessingTick(): bool
     {
         return $this->processingTick;
     }
 
-    /** @return array<Carbon> */
-    public function getDueTickHours(Round $round, Carbon $dueAt): array
-    {
-        $finalHour = $round->end_date->copy()->subSecond()->startOfHour();
-        $dueAt = $dueAt->copy()->min($finalHour);
-        $pending = RoundTickRun::where('round_id', $round->id)
-            ->whereNull('completed_at')->orderBy('tick_at')->first();
-        $latest = RoundTickRun::where('round_id', $round->id)
-            ->whereNotNull('completed_at')->orderByDesc('tick_at')->first();
-        $next = $pending?->tick_at ?? ($latest ? $latest->tick_at->addHour() : $dueAt->copy());
-        $hours = [];
-        for ($hour = $next->copy(); $hour->lte($dueAt); $hour->addHour()) {
-            $hours[] = $hour->copy();
-        }
-        return $hours;
-    }
-
     protected function registerRoundTick(Round $round, Carbon $tickAt): ?RoundTickRun
     {
-        return DB::transaction(function () use ($round, $tickAt): ?RoundTickRun {
-            Round::whereKey($round->id)->lockForUpdate()->firstOrFail();
-            $latest = RoundTickRun::where('round_id', $round->id)->orderByDesc('tick_at')->first();
-            if ($latest !== null) {
-                if ($latest->tick_at->gt($tickAt)) {
-                    return null;
-                }
-                if ($latest->tick_at->equalTo($tickAt)) {
-                    return $latest;
-                }
-                if ($latest->completed_at === null || !$latest->tick_at->copy()->addHour()->equalTo($tickAt)) {
-                    throw new \LogicException('Earlier round hours must complete before this tick.');
-                }
+        $checkpoint = RoundTickRun::query()->firstOrCreate(
+            ['round_id' => $round->id],
+            ['tick_at' => $tickAt]
+        );
+
+        return DB::transaction(function () use ($checkpoint, $tickAt): ?RoundTickRun {
+            $run = RoundTickRun::query()->whereKey($checkpoint->id)->lockForUpdate()->firstOrFail();
+            if ($run->tick_at->gt($tickAt)) {
+                return null;
             }
-            return RoundTickRun::create(['round_id' => $round->id, 'tick_at' => $tickAt]);
-        });
+            if ($run->tick_at->lt($tickAt)) {
+                $run->update([
+                    'tick_at' => $tickAt,
+                    'completed_at' => null,
+                    'maintenance_completed_at' => null,
+                    'attempts' => 0,
+                    'last_error' => null,
+                ]);
+            }
+
+            return $run;
+        }, 5);
     }
 
     /**
-     * Scheduled hours have a durable identity. Protection uses the caller's
+     * The latest scheduled hour has a durable checkpoint. Protection uses the caller's
      * locked transaction and may advance several steps in one wall-clock hour.
      */
     public function performTick(Round $round, ?Dominion $dominion = null, ?Carbon $tickAt = null): bool
@@ -316,7 +268,7 @@ class TickService
         if ($dominion === null && $run === null) {
             return false;
         }
-        $operationKey = $run ? "round-tick:{$run->id}" : 'protection:' . (string)\Illuminate\Support\Str::uuid();
+        $operationKey = $run ? "round-tick:{$round->id}:{$tickAt->format('Y-m-d-H')}" : 'protection:' . (string)\Illuminate\Support\Str::uuid();
         $started = microtime(true);
         $previousNow = $this->now;
         $previousProcessing = $this->processingTick;
@@ -328,16 +280,10 @@ class TickService
                     $attempt++;
                     $this->notificationService->resetQueuedNotifications();
                     $this->now = $tickAt->copy();
-                    $lockedRoundQuery = Round::whereKey($round->id);
-                    $lockedRound = ($dominion === null ? $lockedRoundQuery->lockForUpdate() : $lockedRoundQuery->sharedLock())->firstOrFail();
                     if ($run !== null) {
                         $freshRun = RoundTickRun::whereKey($run->id)->lockForUpdate()->firstOrFail();
-                        if ($freshRun->completed_at !== null) {
+                        if (!$freshRun->tick_at->equalTo($tickAt) || $freshRun->completed_at !== null) {
                             return false;
-                        }
-                        $earlier = RoundTickRun::where('round_id', $round->id)->where('tick_at', '<', $tickAt)->orderByDesc('tick_at')->first();
-                        if ($earlier && ($earlier->completed_at === null || !$earlier->tick_at->copy()->addHour()->equalTo($tickAt))) {
-                            throw new \LogicException('Earlier round hours must complete before this tick.');
                         }
                     }
                     $query = Dominion::where('round_id', $round->id)->orderBy('id');
@@ -350,12 +296,18 @@ class TickService
                         $query->whereKey($dominion->id);
                     }
                     $dominionIds = $query->lockForUpdate()->pluck('id')->all();
-                    $tickCount = Tick::whereIn('dominion_id', $dominionIds)->count();
-                    if ($tickCount !== count($dominionIds)) {
-                        throw new \LogicException('A dominion is missing its precalculated tick.');
+                    $currentRound = Round::whereKey($round->id)->firstOrFail();
+                    $missingPredictions = Dominion::whereIn('id', $dominionIds)->whereDoesntHave('tick')->get();
+                    foreach ($missingPredictions as $current) {
+                        $current->setRelation('round', $currentRound);
+                        $this->precalculateTick($current);
+                        Log::warning('Rebuilt missing dominion tick prediction', [
+                            'round_id' => $round->id, 'dominion_id' => $current->id,
+                            'tick_at' => $tickAt->toIso8601String(),
+                        ]);
                     }
                     $this->processingTick = true;
-                    if ($dominion === null && $lockedRound->start_date->hour === $tickAt->hour) {
+                    if ($dominion === null && $currentRound->start_date->hour === $tickAt->hour) {
                         Dominion::whereIn('id', $dominionIds)->update([
                             'daily_platinum' => false,
                             'daily_land' => false,
@@ -370,7 +322,7 @@ class TickService
                         'techs.perks', 'hero.upgrades', 'realm.wonders.perks', 'tick', 'user',
                     ])->get();
                     foreach ($dominions as $current) {
-                        $current->setRelation('round', $lockedRound);
+                        $current->setRelation('round', $currentRound);
                     }
                     $this->performRaceUnitProduction($dominions);
                     foreach ($dominions as $current) {
@@ -390,15 +342,6 @@ class TickService
                     }
                     $this->processingTick = false;
                     if ($run !== null) {
-                        $this->notificationService->withDeferredDelivery($operationKey, $tickAt, function () use ($lockedRound): void {
-                            $this->expireWars($lockedRound);
-                            $this->checkForAbandonedDominions($lockedRound);
-                            $this->heroBattleService->processBattles($lockedRound);
-                            $this->heroTournamentService->processTournaments($lockedRound);
-                            $this->raidService->processCompletedRaids($lockedRound);
-                            $this->valuablesService->processValuables($lockedRound);
-                            $this->performDailyRoundTasks($lockedRound);
-                        });
                         RoundTickRun::whereKey($run->id)->update([
                             'completed_at' => $tickAt,
                             'attempts' => DB::raw('attempts + ' . $attempt),
@@ -419,7 +362,7 @@ class TickService
             return $applied;
         } catch (Throwable $exception) {
             if ($run !== null) {
-                RoundTickRun::whereKey($run->id)->whereNull('completed_at')->update([
+                RoundTickRun::whereKey($run->id)->where('tick_at', $tickAt)->whereNull('completed_at')->update([
                     'attempts' => DB::raw('attempts + ' . $attempt),
                     'last_error' => substr($exception->getMessage(), 0, 4000),
                 ]);
@@ -434,6 +377,50 @@ class TickService
             $this->now = $previousNow;
             $this->notificationService->resetQueuedNotifications();
             $this->setCalculatorsForTick(false);
+        }
+    }
+
+    /**
+     * Maintenance commits independently so its failure cannot undo production.
+     * The checkpoint permits retries without repeating completed maintenance.
+     */
+    public function performRoundMaintenance(Round $round, Carbon $tickAt): bool
+    {
+        $tickAt = $tickAt->copy()->startOfHour();
+        $operationKey = "round-maintenance:{$round->id}:{$tickAt->format('Y-m-d-H')}";
+
+        try {
+            return Carbon::withTestNow($tickAt, function () use ($round, $tickAt, $operationKey): bool {
+                return DB::transaction(function () use ($round, $tickAt, $operationKey): bool {
+                    $run = RoundTickRun::query()->where('round_id', $round->id)->lockForUpdate()->first();
+                    if ($run === null || !$run->tick_at->equalTo($tickAt) || $run->completed_at === null || $run->maintenance_completed_at !== null) {
+                        return false;
+                    }
+
+                    $currentRound = Round::query()->whereKey($round->id)->firstOrFail();
+                    $this->notificationService->withDeferredDelivery($operationKey, $tickAt, function () use ($currentRound): void {
+                        $this->expireWars($currentRound);
+                        $this->checkForAbandonedDominions($currentRound);
+                        $this->heroBattleService->processBattles($currentRound);
+                        $this->heroTournamentService->processTournaments($currentRound);
+                        $this->raidService->processCompletedRaids($currentRound);
+                        $this->valuablesService->processValuables($currentRound);
+                        $this->performDailyRoundTasks($currentRound);
+                    });
+                    $run->update(['maintenance_completed_at' => $tickAt, 'last_error' => null]);
+
+                    return true;
+                }, 5);
+            });
+        } catch (Throwable $exception) {
+            RoundTickRun::query()->where('round_id', $round->id)->where('tick_at', $tickAt)
+                ->whereNotNull('completed_at')->whereNull('maintenance_completed_at')
+                ->update(['last_error' => substr('Maintenance: ' . $exception->getMessage(), 0, 4000)]);
+            Log::error('Round maintenance failed', [
+                'round_id' => $round->id, 'tick_at' => $tickAt->toIso8601String(),
+                'exception' => $exception,
+            ]);
+            throw $exception;
         }
     }
 

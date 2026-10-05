@@ -261,11 +261,7 @@ class AIService
 
         foreach ($dominions as $dominion) {
             try {
-                app(RoundMutationService::class)->runForDominion($dominion, function (Dominion $dominion): void {
-                    if ($dominion->locked_at === null && $dominion->ai_enabled) {
-                        $this->attemptInvasion($dominion, $dominion->ai_config);
-                    }
-                });
+                $this->attemptInvasion($dominion, $dominion->ai_config);
             } catch (Exception $e) {
                 continue;
             }
@@ -287,17 +283,7 @@ class AIService
         return '-' . $datetime->copy()->startOfHour()->timestamp;
     }
 
-    public function performActions(Dominion $dominion): void
-    {
-        app(RoundMutationService::class)->runForDominion($dominion, function (Dominion $dominion): void {
-            if ($dominion->locked_at !== null || !$dominion->ai_enabled) {
-                return;
-            }
-            $this->performLockedActions($dominion);
-        });
-    }
-
-    protected function performLockedActions(Dominion $dominion): void
+    public function performActions(Dominion $dominion)
     {
         $actionsTaken = 0;
         $config = $dominion->ai_config;

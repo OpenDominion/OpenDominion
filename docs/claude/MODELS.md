@@ -88,10 +88,11 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 - **Casts**: starvation_casualties (array), expiring_spells (array)
 
 ### RoundTickRun (`round_tick_runs`)
-- Unique `(round_id, tick_at)` identifies a scheduled round/hour; foreign key to `rounds` cascades on round deletion.
-- **Fields**: round_id, tick_at, completed_at (nullable), attempts, last_error (nullable), timestamps.
-- **Casts**: tick_at/completed_at (datetime), attempts (integer).
-- Registered before tick application; game changes and completion commit together. Pending rows retain failure details for ordered recovery. `completed_at` stores the logical tick timestamp.
+- One checkpoint per round (`round_id` unique), with a cascading foreign key to `rounds`.
+- **Fields**: round_id, tick_at, completed_at, maintenance_completed_at, attempts, last_error, timestamps. Completion/error fields are nullable.
+- **Casts**: tick_at/completed_at/maintenance_completed_at (datetime), attempts (integer).
+- `tick_at` identifies the latest attempted hour. Newer attempts replace previous checkpoint state; earlier errors remain in logs. Older workers skip, and an equal completed hour never reapplies production.
+- Production and `completed_at` commit together. Separate maintenance effects commit with `maintenance_completed_at`. Player actions do not lock this row or check its freshness.
 
 ### RoundSetupRun (`round_setup_runs`)
 - Unique `(round_id, operation)` records completion of realm assignment or NPD generation; foreign key to `rounds` cascades on round deletion.

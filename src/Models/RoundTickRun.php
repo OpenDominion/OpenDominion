@@ -7,6 +7,7 @@ class RoundTickRun extends AbstractModel
     protected $casts = [
         'tick_at' => 'datetime',
         'completed_at' => 'datetime',
+        'maintenance_completed_at' => 'datetime',
         'attempts' => 'integer',
     ];
 }

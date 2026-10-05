@@ -62,7 +62,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
     // Round Register
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
-    $router->post('round/{round}/register')->uses('RoundController@postRegister')->middleware('roundmutation');
+    $router->post('round/{round}/register')->uses('RoundController@postRegister');
 
     // Message Board
     $router->get('message-board')->uses('MessageBoardController@getIndex')->name('message-board');
@@ -88,7 +88,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
         // Dominion
-        $router->group(['middleware' => ['roundmutation', 'dominionselected', 'updatelastonline']], static function (Router $router) {
+        $router->group(['middleware' => ['dominionselected', 'updatelastonline']], static function (Router $router) {
 
             $router->get('/')->uses('Dominion\IndexController@getIndex');
 
@@ -161,17 +161,17 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('heroes/class/{class}')->uses('Dominion\HeroController@postChangeClass');
             $router->get('heroes/battles')->uses('Dominion\HeroController@getBattles')->name('heroes.battles');
             $router->post('heroes/battles')->uses('Dominion\HeroController@postBattles');
-            $router->get('heroes/battles/action')->uses('Dominion\HeroController@getAddCombatAction')->name('heroes.battles.action')->defaults('mutates_round', true);
-            $router->get('heroes/battles/action/delete')->uses('Dominion\HeroController@getDeleteCombatAction')->name('heroes.battles.action.delete')->defaults('mutates_round', true);
+            $router->get('heroes/battles/action')->uses('Dominion\HeroController@getAddCombatAction')->name('heroes.battles.action');
+            $router->get('heroes/battles/action/delete')->uses('Dominion\HeroController@getDeleteCombatAction')->name('heroes.battles.action.delete');
             $router->get('heroes/battles/practice')->uses('Dominion\HeroController@getPracticeBattle')->name('heroes.battles.practice');
             $router->post('heroes/battles/practice')->uses('Dominion\HeroController@postPracticeBattle');
-            $router->get('heroes/battles/queue')->uses('Dominion\HeroController@getJoinQueue')->name('heroes.battles.queue')->defaults('mutates_round', true);
-            $router->get('heroes/battles/dequeue')->uses('Dominion\HeroController@getLeaveQueue')->name('heroes.battles.dequeue')->defaults('mutates_round', true);
+            $router->get('heroes/battles/queue')->uses('Dominion\HeroController@getJoinQueue')->name('heroes.battles.queue');
+            $router->get('heroes/battles/dequeue')->uses('Dominion\HeroController@getLeaveQueue')->name('heroes.battles.dequeue');
             $router->get('heroes/battles/leaderboard')->uses('Dominion\HeroController@getLeaderboard')->name('heroes.battles.leaderboard');
             $router->get('heroes/battles/report/{battle}')->uses('Dominion\HeroController@getBattleReport')->name('heroes.battles.report');
             $router->get('heroes/tournaments')->uses('Dominion\HeroController@getTournaments')->name('heroes.tournaments');
-            $router->get('heroes/tournaments/{tournament}/join')->uses('Dominion\HeroController@getJoinTournament')->name('heroes.tournaments.join')->defaults('mutates_round', true);
-            $router->get('heroes/tournaments/{tournament}/leave')->uses('Dominion\HeroController@getLeaveTournament')->name('heroes.tournaments.leave')->defaults('mutates_round', true);
+            $router->get('heroes/tournaments/{tournament}/join')->uses('Dominion\HeroController@getJoinTournament')->name('heroes.tournaments.join');
+            $router->get('heroes/tournaments/{tournament}/leave')->uses('Dominion\HeroController@getLeaveTournament')->name('heroes.tournaments.leave');
 
             // Raids
             $router->get('raids')->uses('Dominion\RaidController@getRaids')->name('raids');
@@ -201,7 +201,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Calculations
             $router->get('calculations')->uses('Dominion\CalculationsController@getGeneral')->name('calculations');
-            $router->post('calculations')->uses('Dominion\CalculationsController@postGeneral')->withoutMiddleware('roundmutation');
+            $router->post('calculations')->uses('Dominion\CalculationsController@postGeneral');
             $router->get('calculations/military')->uses('Dominion\CalculationsController@getMilitary')->name('calculations.military');
 
             // Magic
@@ -250,10 +250,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('forum/{thread}/reply')->uses('Dominion\ForumController@postReply')->name('forum.reply');
             $router->get('forum/{thread}/delete')->uses('Dominion\ForumController@getDeleteThread')->name('forum.delete.thread');
             $router->post('forum/{thread}/delete')->uses('Dominion\ForumController@postDeleteThread');
-            $router->get('forum/{thread}/flag')->uses('Dominion\ForumController@getFlagThread')->name('forum.flag.thread')->defaults('mutates_round', true);
+            $router->get('forum/{thread}/flag')->uses('Dominion\ForumController@getFlagThread')->name('forum.flag.thread');
             $router->get('forum/post/{post}/delete')->uses('Dominion\ForumController@getDeletePost')->name('forum.delete.post');
             $router->post('forum/post/{post}/delete')->uses('Dominion\ForumController@postDeletePost');
-            $router->get('forum/post/{post}/flag')->uses('Dominion\ForumController@getFlagPost')->name('forum.flag.post')->defaults('mutates_round', true);
+            $router->get('forum/post/{post}/flag')->uses('Dominion\ForumController@getFlagPost')->name('forum.flag.post');
 
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
@@ -263,9 +263,9 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Bounty Board
             $router->get('bounty-board')->uses('Dominion\BountyController@getBountyBoard')->name('bounty-board');
-            $router->get('bounty-board/observe/{target}')->uses('Dominion\BountyController@getToggleObservation')->name('bounty-board.observe')->defaults('mutates_round', true);
-            $router->get('bounty-board/{target}/{type}')->uses('Dominion\BountyController@getCreateBounty')->name('bounty-board.create')->defaults('mutates_round', true);
-            $router->get('bounty-board/{target}/{type}/delete')->uses('Dominion\BountyController@getDeleteBounty')->name('bounty-board.delete')->defaults('mutates_round', true);
+            $router->get('bounty-board/observe/{target}')->uses('Dominion\BountyController@getToggleObservation')->name('bounty-board.observe');
+            $router->get('bounty-board/{target}/{type}')->uses('Dominion\BountyController@getCreateBounty')->name('bounty-board.create');
+            $router->get('bounty-board/{target}/{type}/delete')->uses('Dominion\BountyController@getDeleteBounty')->name('bounty-board.delete');
 
             // Government
             $router->get('government')->uses('Dominion\GovernmentController@getIndex')->name('government');
@@ -285,10 +285,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Journal
             $router->get('journal/{id?}')->uses('Dominion\JournalController@getJournal')->name('journal');
-            $router->post('journal')->uses('Dominion\JournalController@postCreate')->name('journal.create')->withoutMiddleware('roundmutation');
-            $router->post('journal/{journal}')->uses('Dominion\JournalController@postUpdate')->name('journal.update')->withoutMiddleware('roundmutation');
+            $router->post('journal')->uses('Dominion\JournalController@postCreate')->name('journal.create');
+            $router->post('journal/{journal}')->uses('Dominion\JournalController@postUpdate')->name('journal.update');
             $router->get('journal/{journal}/delete')->uses('Dominion\JournalController@getDelete')->name('journal.delete');
-            $router->post('journal/{journal}/delete')->uses('Dominion\JournalController@postDelete')->withoutMiddleware('roundmutation');
+            $router->post('journal/{journal}/delete')->uses('Dominion\JournalController@postDelete');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
@@ -308,10 +308,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('misc/abandon')->uses('Dominion\MiscController@getAbandonDominion')->name('misc.abandon');
             $router->post('misc/abandon')->uses('Dominion\MiscController@postAbandonDominion');
             $router->post('misc/abandon/cancel')->uses('Dominion\MiscController@postCancelAbandonDominion')->name('misc.abandon.cancel');
-            $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications')->withoutMiddleware('roundmutation');
+            $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
             $router->post('misc/join-pack')->uses('Dominion\MiscController@postJoinPack')->name('misc.join-pack');
-            $router->post('misc/report')->uses('Dominion\MiscController@postReport')->name('misc.report')->withoutMiddleware('roundmutation');
+            $router->post('misc/report')->uses('Dominion\MiscController@postReport')->name('misc.report');
             $router->get('misc/restart')->uses('Dominion\MiscController@getRestartDominion')->name('misc.restart');
             $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion');
             $router->post('misc/rename')->uses('Dominion\MiscController@postRenameDominion')->name('misc.rename');
@@ -319,15 +319,15 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/settings')->uses('Dominion\MiscController@postDominionSettings');
             $router->post('misc/api-key/generate')->uses('Dominion\MiscController@postGenerateApiKey')->name('misc.api-key.generate');
             $router->post('misc/api-key/revoke')->uses('Dominion\MiscController@postRevokeApiKey')->name('misc.api-key.revoke');
-            $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick')->defaults('mutates_round', true)->withoutMiddleware('roundmutation');
-            $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick')->defaults('mutates_round', true)->withoutMiddleware('roundmutation');
+            $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
+            $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick');
 
             // Protection
             // todo: move pack/restart/rename/tick
             $router->get('protection/buildings')->uses('Dominion\ProtectionController@getBuildings')->name('protection.buildings');
             $router->post('protection/buildings')->uses('Dominion\ProtectionController@postBuildings');
             $router->get('protection/import-log')->uses('Dominion\ProtectionController@getImportLog')->name('protection.import-log');
-            $router->post('protection/import-log')->uses('Dominion\ProtectionController@postImportLog')->withoutMiddleware('roundmutation');
+            $router->post('protection/import-log')->uses('Dominion\ProtectionController@postImportLog');
             $router->post('automation/protection')->uses('Dominion\ProtectionController@postAutomateProtection')->name('protection.automate');
 
             // Debug

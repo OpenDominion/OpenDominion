@@ -15,10 +15,14 @@ class RoundSetupServiceTest extends AbstractTestCase
         $first = $this->createRound('+95 hours 30 minutes');
         $second = $this->createRound('+95 hours 30 minutes');
         $starting = $this->createRound('+30 minutes');
-        $failure = new RuntimeException('Broken old round');
+        $broken = $this->createRound('-7 days');
+        $failure = new RuntimeException('Broken active round');
         $tick = \Mockery::mock(\OpenDominion\Services\Dominion\TickService::class)
             ->makePartial()->shouldAllowMockingProtectedMethods();
-        $tick->shouldReceive('recoverHourlyTicks')->once()->with(false)->andThrow($failure);
+        $tick->shouldReceive('performTick')->byDefault()->andReturn(false);
+        $tick->shouldReceive('performRoundMaintenance')->byDefault()->andReturn(false);
+        $tick->shouldReceive('performTick')->once()
+            ->withArgs(fn ($round) => $round->id === $broken->id)->andThrow($failure);
         $tick->shouldReceive('performRoundSetup')->byDefault()->andReturnNull();
         $tick->shouldReceive('performRoundSetup')->once()
             ->withArgs(fn ($round, $operation) => $round->id === $first->id && $operation === RoundSetupService::REALM_ASSIGNMENT)
@@ -34,7 +38,7 @@ class RoundSetupServiceTest extends AbstractTestCase
             $tick->tickHourly();
             $this->fail('Expected failures to be reported after independent setup phases run.');
         } catch (RuntimeException $exception) {
-            $this->assertStringContainsString('round recovery', $exception->getMessage());
+            $this->assertStringContainsString('production for round ' . $broken->id, $exception->getMessage());
             $this->assertStringContainsString('realm assignment for round ' . $first->id, $exception->getMessage());
             $this->assertSame($failure, $exception->getPrevious());
         }

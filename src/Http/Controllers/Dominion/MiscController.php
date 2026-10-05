@@ -23,7 +23,6 @@ use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use OpenDominion\Services\Dominion\RoundMutationService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\PackService;
@@ -329,11 +328,16 @@ class MiscController extends AbstractDominionController
 
     protected function withProtectionMutation(Request $request, callable $callback): RedirectResponse
     {
+        $dominionId = $this->getSelectedDominion()->id;
+
         try {
-            return app(RoundMutationService::class)->runForDominion($this->getSelectedDominion(), function (Dominion $dominion) use ($callback) {
+            return DB::transaction(function () use ($callback, $dominionId): RedirectResponse {
+                $dominion = Dominion::query()->whereKey($dominionId)
+                    ->lockForUpdate()->firstOrFail();
+                $dominion->load(Dominion::query()->withGameRelations()->getEagerLoads());
                 app(SelectorService::class)->useLockedDominion($dominion);
                 return $callback();
-            }, loadGameRelations: true);
+            });
         } catch (GameException $exception) {
             return redirect()->back()->withInput($request->all())->withErrors([$exception->getMessage()]);
         }

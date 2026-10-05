@@ -71,13 +71,30 @@ class SelectorService
             $index = (int) $this->selectedDominion->round->getTick();
             $activity = $this->selectedDominion->hourly_activity;
             if (!$activity || (isset($activity[$index]) && $activity[$index] === '0')) {
-                app(RoundMutationService::class)->runForDominion($this->selectedDominion, function (Dominion $dominion): void {
-                    $this->recordHourlyActivity($dominion);
-                }, false);
+                $this->tryRecordHourlyActivity($this->selectedDominion);
             }
         }
 
         return $this->selectedDominion;
+    }
+
+    /**
+     * Activity is best effort: page reads must not wait for a dominion's tick.
+     */
+    protected function tryRecordHourlyActivity(Dominion $dominion): void
+    {
+        $dominion->getConnection()->transaction(function () use ($dominion): void {
+            $lockedDominion = Dominion::query()->whereKey($dominion->id)
+                ->lock('for update skip locked')->first();
+            if ($lockedDominion === null) {
+                return;
+            }
+
+            $lockedDominion->setRelation('round', $dominion->round);
+            $this->recordHourlyActivity($lockedDominion);
+            $dominion->hourly_activity = $lockedDominion->hourly_activity;
+            $dominion->syncOriginalAttribute('hourly_activity');
+        });
     }
 
     /**

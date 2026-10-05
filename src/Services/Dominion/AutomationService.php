@@ -107,7 +107,10 @@ class AutomationService
 
     public function processLog(Dominion $dominion, array $protection): void
     {
-        $error = app(RoundMutationService::class)->runForDominion($dominion, function (Dominion $dominion) use ($protection): ?GameException {
+        $error = DB::transaction(function () use ($dominion, $protection): ?GameException {
+            $freshDominion = Dominion::query()->whereKey($dominion->id)->lockForUpdate()->firstOrFail();
+            $dominion->setRawAttributes($freshDominion->getAttributes(), true);
+            $dominion->setRelations([]);
             try {
                 $this->processLockedLog($dominion, $protection);
             } catch (GameException $exception) {

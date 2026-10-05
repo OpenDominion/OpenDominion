@@ -44,17 +44,12 @@ Key invasion rules enforced:
 ## Domain Services (`src/Services/Dominion/`)
 
 ### TickService - Game Engine
-- `tickHourly()` processes due hours, then receipt-protected realm assignment/NPD setup; `recoverHourlyTicks(true)` limits recovery to existing ledger rounds.
-- `performTick(Round, ?Dominion, ?Carbon): bool` locks and commits a complete round/hour, returning false for completed/older ledger hours. Single-dominion protection ticks use a shared round lock and exclusive dominion lock.
-- `getDueTickHours()` orders recovery and clamps it before round end; registration rejects gaps and earlier unfinished hours. Recovery isolates failures per round and excludes fully completed ended rounds.
-- `recordTickHistory()` records the consumed prediction before replacement; `precalculateTick(..., stateIsFresh)` supports batch-loaded state. `isProcessingTick()` suppresses redundant `DominionSaved` recalculations during the batch.
-- Tick maintenance, daily round tasks, and outbox writes share the round transaction. All tick web notifications commit in the game transaction; only eligible email is left to the background sweeper. Protection web notifications remain undoable. See GAME_SYSTEMS.md for recovery and rollout requirements.
-
-### RoundMutationService
-- `run(Round|int, callback, checkCurrent=true)` holds a shared round lock and passes a fresh round to the callback.
-- `runForDominion(Dominion, callback, checkCurrent=true, loadGameRelations=false)` locks the actor and refreshes the instance before validation; HTTP mutations can load game relations once and reuse that model.
-- `assertRoundCurrent()` blocks active-round mutations when ledger hours are pending or overdue, including protection actions. No-ledger bootstrap and inactive rounds are allowed.
-- Used by `CoordinateRoundMutation` before dominion selection/validation, AI actions/invasions, manual protection, and protection imports. Read-only activity writes pass `checkCurrent=false`.
+- `tickHourly()` attempts the current scheduled hour for active rounds, separate maintenance, then receipt-protected setup. It reports failures after trying independent rounds/phases.
+- `performTick(Round, ?Dominion, ?Carbon): bool` atomically applies production, units, history, cleanup, predictions and notifications. Scheduled calls lock a per-round checkpoint; protection calls use an individual dominion transaction.
+- Duplicate/older requests do not reapply production. Missed hours are not reconstructed, and failed checkpoints do not block ordinary gameplay or later hours.
+- Missing predictions are regenerated from locked state before progression. `recordTickHistory()` records the consumed prediction before replacement; batch eager loading avoids repeated reads and calculations.
+- Round maintenance has its own transaction and completion marker, so it can retry within the same hour without undoing or repeating production.
+- Tick web notifications commit with game changes; eligible email is delivered separately. See GAME_SYSTEMS.md for concurrency limits and rollout requirements.
 
 ### QueueService
 Manages deferred resource delivery queues.
@@ -103,7 +98,7 @@ Validates invasion rules (separate from InvadeActionService which executes them)
 Session-based dominion selection.
 - `selectUserDominion()` / `getUserSelectedDominion()` / `unsetUserSelectedDominion()`
 - `tryAutoSelectDominionForAuthUser()` - auto-selects if user has only one active dominion
-- `useLockedDominion()` adopts the refreshed actor and records activity under the existing lock; `forgetSelectedDominion()` clears the request cache; hourly activity updates refresh and save quietly within a short `RoundMutationService` transaction, without recalculating pending predictions.
+- Hourly activity uses a short, quiet `SKIP LOCKED` update; busy dominions are skipped so page reads continue and predictions remain unchanged.
 
 ### AIService
 NPC and player automation.
@@ -111,10 +106,9 @@ NPC and player automation.
 - `performActions()` - executes tick-based instructions or NPC routines (branches on `ai_config['strategy']`)
 - `performAttackerActions()` - attacker NPD routine; helpers `attemptInvasion()`, `getUnitsToSend()`, `getAvailableOffensiveUnits()`, `getHomeGuardDefense()`, `trainAttackerMilitary()`, `applyUnitSwap()`, `rezoneForBuildPlan()`
 - Supports player-defined automation via `ai_config` (tick-based action instructions)
-- `performActions()` and scheduled invasion callbacks acquire round/dominion locks and reload the actor, including enabled/locked state, before acting.
 
 ### AutomationService
-- `processLog()` coordinates protection imports with `RoundMutationService`; each imported hour has a transaction encompassing actions, protection counters, and its tick.
+- `processLog()` locks the protection dominion; each imported hour has a transaction encompassing actions, protection counters, and its tick.
 - Expected game errors retain completed hours and roll back the failing hour. Manual advance/undo coordination lives in `MiscController`.
 
 ### BountyService

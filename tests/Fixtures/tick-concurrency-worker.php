@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Event;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundTickRun;
-use OpenDominion\Services\Dominion\RoundMutationService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -51,7 +51,6 @@ function awaitRelease(): void
 Carbon::setTestNow(Carbon::parse($hour));
 $round = Round::findOrFail((int) $roundId);
 $dominion = Dominion::findOrFail((int) $dominionId);
-$initialPlatinum = $dominion->resource_platinum;
 
 if ($mode === 'tick-hold') {
     $app->instance(TickService::class, new class extends TickService {
@@ -60,6 +59,18 @@ if ($mode === 'tick-hold') {
             parent::applyTickChanges($dominionIds);
             announce('locked');
             awaitRelease();
+        }
+    });
+}
+
+if ($mode === 'tick-hold-after-registration') {
+    $app->instance(TickService::class, new class extends TickService {
+        protected function registerRoundTick(Round $round, Carbon $tickAt): ?RoundTickRun
+        {
+            $run = parent::registerRoundTick($round, $tickAt);
+            announce('registered');
+            awaitRelease();
+            return $run;
         }
     });
 }
@@ -80,18 +91,30 @@ announce('attempting');
 if (str_starts_with($mode, 'tick')) {
     $applied = app(TickService::class)->performTick($round, null, Carbon::parse($hour));
     announce('done', ['applied' => $applied]);
-} elseif (in_array($mode, ['action', 'action-hold'], true)) {
-    $observedPlatinum = app(RoundMutationService::class)->runForDominion($dominion, function (Dominion $lockedDominion) use ($mode): int {
+} elseif ($mode === 'selector-read') {
+    session([SelectorService::SESSION_NAME => $dominion->id]);
+    $selected = app(SelectorService::class)->getUserSelectedDominion();
+    announce('done', ['dominion_id' => $selected->id, 'hourly_activity' => $selected->hourly_activity]);
+} elseif ($mode === 'round-record-update') {
+    DB::transaction(function () use ($round): void {
+        $round->largest_hit = 321;
+        $round->save();
+    });
+    announce('done');
+} elseif ($mode === 'action-hold-before-round-update') {
+    $observedPlatinum = DB::transaction(function () use ($dominion): int {
+        $lockedDominion = Dominion::query()->whereKey($dominion->id)->lockForUpdate()->firstOrFail();
         $observedPlatinum = $lockedDominion->resource_platinum;
-        if ($mode === 'action-hold') {
-            announce('locked');
-            awaitRelease();
-        }
+        announce('locked');
+        awaitRelease();
+        $round = Round::findOrFail($lockedDominion->round_id);
+        $round->largest_hit = 321;
+        $round->save();
         $lockedDominion->resource_platinum += 17;
         $lockedDominion->save();
         return $observedPlatinum;
     });
-    announce('done', ['initial_platinum' => $initialPlatinum, 'observed_platinum' => $observedPlatinum]);
+    announce('done', ['observed_platinum' => $observedPlatinum]);
 } else {
     throw new InvalidArgumentException('Unknown concurrency worker mode.');
 }
