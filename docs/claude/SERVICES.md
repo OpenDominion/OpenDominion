@@ -44,7 +44,17 @@ Key invasion rules enforced:
 ## Domain Services (`src/Services/Dominion/`)
 
 ### TickService - Game Engine
-The hourly heartbeat. See GAME_SYSTEMS.md for full details.
+- `tickHourly()` processes due hours, then receipt-protected realm assignment/NPD setup; `recoverHourlyTicks(true)` limits recovery to existing ledger rounds.
+- `performTick(Round, ?Dominion, ?Carbon): bool` locks and commits a complete round/hour, returning false for completed/older ledger hours. Single-dominion protection ticks use a shared round lock and exclusive dominion lock.
+- `getDueTickHours()` orders recovery and clamps it before round end; registration rejects gaps and earlier unfinished hours.
+- `recordTickHistory()` records the consumed prediction before replacement; `precalculateTick(..., stateIsFresh)` supports batch-loaded state. `isProcessingTick()` suppresses redundant `DominionSaved` recalculations during the batch.
+- Tick maintenance, daily round tasks, and outbox writes share the round transaction. Scheduled-tick delivery is left to the background sweeper; single-dominion ticks still in protection write transactional web notifications for undo, with no email. See GAME_SYSTEMS.md for recovery and rollout requirements.
+
+### RoundMutationService
+- `run(Round|int, callback, checkCurrent=true)` holds a shared round lock and passes a fresh round to the callback.
+- `runForDominion(Dominion, callback, checkCurrent=true)` additionally locks the actor and refreshes the caller's instance before validation.
+- `assertRoundCurrent()` blocks active-round mutations when ledger hours are pending or overdue, including protection actions. No-ledger bootstrap and inactive rounds are allowed.
+- Used by `CoordinateRoundMutation` before dominion selection/validation, AI actions/invasions, manual protection, and protection imports. Read-only activity writes pass `checkCurrent=false`.
 
 ### QueueService
 Manages deferred resource delivery queues.
@@ -93,6 +103,7 @@ Validates invasion rules (separate from InvadeActionService which executes them)
 Session-based dominion selection.
 - `selectUserDominion()` / `getUserSelectedDominion()` / `unsetUserSelectedDominion()`
 - `tryAutoSelectDominionForAuthUser()` - auto-selects if user has only one active dominion
+- `forgetSelectedDominion()` clears the request cache after mutation locking; hourly activity updates refresh and save quietly within a short `RoundMutationService` transaction, without recalculating pending predictions.
 
 ### AIService
 NPC and player automation.
@@ -100,6 +111,11 @@ NPC and player automation.
 - `performActions()` - executes tick-based instructions or NPC routines (branches on `ai_config['strategy']`)
 - `performAttackerActions()` - attacker NPD routine; helpers `attemptInvasion()`, `getUnitsToSend()`, `getAvailableOffensiveUnits()`, `getHomeGuardDefense()`, `trainAttackerMilitary()`, `applyUnitSwap()`, `rezoneForBuildPlan()`
 - Supports player-defined automation via `ai_config` (tick-based action instructions)
+- `performActions()` and scheduled invasion callbacks acquire round/dominion locks and reload the actor, including enabled/locked state, before acting.
+
+### AutomationService
+- `processLog()` coordinates protection imports with `RoundMutationService`; each imported hour has a transaction encompassing actions, protection counters, and its tick.
+- Expected game errors retain completed hours and roll back the failing hour. Manual advance/undo coordination lives in `MiscController`.
 
 ### BountyService
 Realm bounty board system.
@@ -130,6 +146,10 @@ Daily ranking snapshots by category (land, networth, conquered, explored, etc.).
 
 ## Top-Level Services (`src/Services/`)
 
+### RoundSetupService
+- `run(Round, operation, callback): bool` takes an exclusive round lock, passes a fresh round to the callback, and atomically commits its completion receipt. Completed operations return false; failed operations roll back and remain retryable.
+- `REALM_ASSIGNMENT` / `NON_PLAYER_GENERATION` identify the two hourly setup phases; unique `(round_id, operation)` receipts prevent duplicate setup. No automatic transaction retry.
+
 ### RealmAssignmentService (largest service)
 Sophisticated pre-round realm assignment algorithm.
 - Constants: `MAX_PACKS_PER_REALM` = 3, `MAX_PACKED_PLAYERS_PER_REALM` = 8, realms 8-14
@@ -139,11 +159,11 @@ Sophisticated pre-round realm assignment algorithm.
 - Optimization: 50 iterations of random solo-player swapping
 
 ### NotificationService
-Two-phase: queue then send.
-- `queueNotification(type, data)` - buffers in memory
-- `sendNotifications(Dominion, category)` - dispatches based on user settings
-- Channels: WebNotification (in-game), HourlyEmailDigest, IrregularDominionEmail
-- Categories: general, hourly_dominion, irregular_dominion, irregular_realm
+- `queueNotification()` buffers events; ordinary `sendNotifications()` honors user settings.
+- `persistQueuedNotifications()` writes an idempotent outbox batch in the game transaction, including event time and protection email eligibility; `withDeferredDelivery()` applies this behavior to maintenance/setup notification calls.
+- Scheduled tick/setup code does not dispatch jobs inline. Single-dominion ticks still in protection use synchronous transactional web notifications so undo can remove them; their email remains disabled. `game:notifications:deliver` dispatches due rows every minute through `dispatchOutboxNotifications()`; `DeliverNotificationOutbox` calls `deliverOutboxNotification()`.
+- Web delivery and its receipt commit together. Email uses a separate receipt and is at least once across transport/process failures. Protection eligibility at both event and delivery time is required except for realm assignment; current notification preferences still apply.
+- Channels: WebNotification, HourlyEmailDigest, IrregularDominionEmail. Outbox categories: hourly_dominion, irregular_dominion, irregular_realm.
 
 ### GameEventService
 Town Crier event retrieval.

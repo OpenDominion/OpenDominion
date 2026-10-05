@@ -22,6 +22,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\RoundMutationService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\PackService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -320,11 +321,24 @@ class MiscController extends AbstractDominionController
     }
 
     public function getTickDominion(Request $request) {
+        return app(RoundMutationService::class)->runForDominion($this->getSelectedDominion(), function () use ($request) {
+            return $this->performTickDominion($request);
+        });
+    }
+
+    protected function performTickDominion(Request $request) {
         $dominion = $this->getSelectedDominion();
 
         $tickService = app(TickService::class);
 
         try {
+            if ($request->has('expected_protection_ticks_remaining') &&
+                (!is_scalar($request->query('expected_protection_ticks_remaining')) ||
+                    (string) $request->query('expected_protection_ticks_remaining') !== (string) $dominion->protection_ticks_remaining)
+            ) {
+                throw new GameException('Your protection state has changed. Refresh the page before advancing or undoing another tick.');
+            }
+
             $this->guardLockedDominion($dominion, true);
 
             if ($dominion->isBuildingPhase()) {
@@ -410,12 +424,25 @@ class MiscController extends AbstractDominionController
     }
 
     public function getUndoTickDominion(Request $request) {
+        return app(RoundMutationService::class)->runForDominion($this->getSelectedDominion(), function () use ($request) {
+            return $this->performUndoTickDominion($request);
+        });
+    }
+
+    protected function performUndoTickDominion(Request $request) {
         $dominion = $this->getSelectedDominion();
 
         $protectionService = app(ProtectionService::class);
         $tickService = app(TickService::class);
 
         try {
+            if ($request->has('expected_protection_ticks_remaining') &&
+                (!is_scalar($request->query('expected_protection_ticks_remaining')) ||
+                    (string) $request->query('expected_protection_ticks_remaining') !== (string) $dominion->protection_ticks_remaining)
+            ) {
+                throw new GameException('Your protection state has changed. Refresh the page before advancing or undoing another tick.');
+            }
+
             $this->guardLockedDominion($dominion);
 
             if (!$protectionService->isUnderProtection($dominion)) {

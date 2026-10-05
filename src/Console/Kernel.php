@@ -15,7 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('game:tick')->hourlyAt(0);
+        $schedule->command('game:tick')->hourlyAt(0)->withoutOverlapping(120)->onOneServer();
+        $schedule->command('game:tick --recover')->everyMinute()->withoutOverlapping(10)->onOneServer()->runInBackground();
+        $schedule->command('game:notifications:deliver')->everyMinute()->withoutOverlapping(10)->onOneServer()->runInBackground();
         $schedule->command('game:ai')->hourlyAt(30);
         // Minutes must match AIService::INVASION_MINUTES
         $schedule->command('game:ai:invade')->cron('5-25/5,35-55/5 * * * *')->withoutOverlapping();

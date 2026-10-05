@@ -10,7 +10,7 @@ use OpenDominion\Services\Dominion\TickService;
 class TickCommand extends Command implements CommandInterface
 {
     /** @var string The name and signature of the console command. */
-    protected $signature = 'game:tick';
+    protected $signature = 'game:tick {--recover : Retry due hours for rounds already using the tick ledger}';
 
     /** @var string The console command description. */
     protected $description = 'Ticks the game';
@@ -33,8 +33,12 @@ class TickCommand extends Command implements CommandInterface
      */
     public function handle(): void
     {
+        if ($this->option('recover')) {
+            $this->tickService->recoverHourlyTicks();
+            return;
+        }
+
         DailyRankingsAndStatsJob::dispatch();
         $this->tickService->tickHourly();
-        $this->tickService->tickDaily();
     }
 }

@@ -84,8 +84,25 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 ### Dominion\Tick (`dominion_tick`)
 - Pre-calculated snapshot of next hour's changes (resources, military, land, etc.)
 - Created/updated by `TickService::precalculateTick()`
-- Applied during `TickService::performTick()` via batch SQL updates
+- Applied during `TickService::performTick()` via batch SQL updates; the consumed row is recorded in history before its next prediction replaces it
 - **Casts**: starvation_casualties (array), expiring_spells (array)
+
+### RoundTickRun (`round_tick_runs`)
+- Unique `(round_id, tick_at)` identifies a scheduled round/hour; foreign key to `rounds` cascades on round deletion.
+- **Fields**: round_id, tick_at, completed_at (nullable), attempts, last_error (nullable), timestamps.
+- **Casts**: tick_at/completed_at (datetime), attempts (integer).
+- Registered before tick application; game changes and completion commit together. Pending rows retain failure details for ordered recovery. `completed_at` stores the logical tick timestamp.
+
+### RoundSetupRun (`round_setup_runs`)
+- Unique `(round_id, operation)` records completion of realm assignment or NPD generation; foreign key to `rounds` cascades on round deletion.
+- **Fields**: round_id, operation, completed_at, timestamps; completed_at casts to datetime.
+- Inserted only after the setup callback succeeds, in the same transaction. Failed setup leaves no receipt.
+
+### NotificationOutbox (`notification_outbox`)
+- Unique `(operation_key, dominion_id, category)` preserves a notification batch across replay; pending index on `(delivered_at, available_at, id)` supports recovery.
+- **Fields/casts**: payload (array), email_allowed (boolean; event-time protection eligibility), event_at/available_at/web_delivered_at/delivered_at (datetime), plus operation_key, dominion_id, category, timestamps.
+- **Relation**: dominion (`belongsTo`); missing dominions/users are safely skipped by delivery.
+- Web notification writes and web_delivered_at are atomic. delivered_at follows email delivery; a transport success followed by process failure can repeat email, not committed web notifications.
 
 ### Dominion\Queue (`dominion_queue`)
 - Fields: dominion_id, source, resource, hours, amount

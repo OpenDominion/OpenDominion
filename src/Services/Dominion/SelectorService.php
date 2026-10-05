@@ -67,33 +67,28 @@ class SelectorService
             $this->selectedDominion = Dominion::withGameRelations()->findOrFail($dominionId);
         }
 
-        // Track hourly access activity
-        // TODO: Swap 47 with actual round length
-        if ($this->selectedDominion && $this->selectedDominion->round->isActive()) {
-            // Generate 1128 bit string of 0s
-            if (!$this->selectedDominion->hourly_activity) {
-                $roundBinary = '';
-                $dayBinary = '';
-                foreach(range(1, 24) as $n) {
-                    $dayBinary .= '0';
-                }
-                foreach(range(1, 47) as $n) {
-                    $roundBinary .= $dayBinary;
-                }
-                $this->selectedDominion->hourly_activity = $roundBinary;
-            }
-
-            // Set bit for this day/hour to 1
+        if ($this->selectedDominion->round->isActive()) {
             $index = (int) $this->selectedDominion->round->getTick();
-            $hourlyActivity = $this->selectedDominion->hourly_activity;
-            if ($hourlyActivity !== null && is_string($hourlyActivity) && $index >= 0 && $index < strlen($hourlyActivity) && $hourlyActivity[$index] === '0') {
-                $hourlyActivity[$index] = '1';
-                $this->selectedDominion->hourly_activity = $hourlyActivity;
-                $this->selectedDominion->save();
+            $activity = $this->selectedDominion->hourly_activity;
+            if (!$activity || (isset($activity[$index]) && $activity[$index] === '0')) {
+                app(RoundMutationService::class)->runForDominion($this->selectedDominion, function (Dominion $dominion): void {
+                    $index = (int) $dominion->round->getTick();
+                    $activity = $dominion->hourly_activity ?: str_repeat('0', 47 * 24);
+                    if ($index >= 0 && $index < strlen($activity) && $activity[$index] === '0') {
+                        $activity[$index] = '1';
+                        $dominion->hourly_activity = $activity;
+                        $dominion->saveQuietly();
+                    }
+                }, false);
             }
         }
 
         return $this->selectedDominion;
+    }
+
+    public function forgetSelectedDominion(): void
+    {
+        $this->selectedDominion = null;
     }
 
     /**

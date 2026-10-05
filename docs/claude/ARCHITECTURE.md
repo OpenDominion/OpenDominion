@@ -5,7 +5,7 @@
 ```
 src/                          # Main application code (namespace: OpenDominion\)
   Application.php             # Custom Laravel Application class
-  Models/                     # 67 Eloquent models
+  Models/                     # Eloquent models, including tick/setup receipts and notification outbox
   Services/                   # Business logic layer
     Dominion/                 # Dominion-specific services
       Actions/                # 18 action service classes (one per game action)
@@ -70,8 +70,7 @@ tests/                        # PHPUnit tests
 ```
 HTTP Request
   → Kernel middleware (CSRF, session, auth)
-  → Custom middleware (UpdateUserLastOnline, ShareSelectedDominion)
-  → Route middleware (auth, dominionselected, role:*)
+  → Route middleware (auth, roundmutation, dominionselected, updatelastonline, role:*)
   → FormRequest validation (e.g., InvadeActionRequest)
   → Controller (orchestration only)
   → Service (business logic, DB transactions)
@@ -94,6 +93,17 @@ Every game action follows this structure:
 6. Records history via `HistoryService::record()`
 7. Queues notifications via `NotificationService`
 8. Returns `['message' => '...', 'alert-type' => 'success']` or throws `GameException`
+
+### Round Transactions and Recovery
+
+- `CoordinateRoundMutation` (`src/Http/Middleware/`) wraps unsafe dominion requests and GET routes marked `mutates_round`; round registration is also wrapped. It locks through `RoundMutationService` before reloading selected/bound models and running downstream validation. Rendered HTTP errors (status >= 400) roll back the transaction.
+- Lock order is round, then actor dominion. Actions/AI/protection use a shared round lock; whole-round ticks and pre-round setup use an exclusive round lock. Safe read-only requests bypass the long transaction; selector activity writes have a short lock scope and suppress model events to preserve pending predictions.
+- `RoundTickRun` identifies `(round_id, tick_at)`. `TickService` registers an hour, then atomically applies deltas, consumed history, cleanup, predictions, maintenance, daily round tasks, notifications, and completion. Failed attempts leave a pending receipt for ordered recovery.
+- `DominionSaved` skips recalculation while tick batch processing is active. The tick reloads volatile relations in batches and explicitly updates predictions/networth; calculator modes and logical time are restored on exit.
+- `RoundSetupService` commits setup changes with a unique `(round_id, operation)` completion receipt. Realm assignment and NPD generation can be retried without duplicating completed setup.
+- `NotificationOutbox` is written in scheduled tick/setup transactions; its delivery happens only through the background sweeper. Single-dominion ticks still in protection write transactional web notifications directly for undo, with email disabled. Web receipts are transactional; email delivery is at least once. Scheduled ticks never wait for notification transport.
+
+Migration and activation order matters: create all three ledger/outbox tables first, drain old scheduler/game/queue workers, then activate the new workers together. The minute recovery command only processes existing ledger rounds; leave no-ledger rounds for the next scheduled hourly bootstrap. Do not manually invoke the main `game:tick` mid-hour during rollout: new tick/setup receipts cannot recognize legacy completion. Setup windows and reporting jobs are not replayed by `--recover`. See GAME_SYSTEMS.md for the complete flow and deployment caveats.
 
 ### Calculator Pattern (Raw + Multiplier)
 Most calculations separate base values from multipliers:
@@ -193,13 +203,15 @@ YAML/JSON files in app/data/
 
 ## Service Registration
 
-All services registered as **singletons** in `AppServiceProvider`. Dependency injection via constructors throughout. No static calls or service locator pattern (except rare `app()` calls for late binding in calculators).
+Most game services/calculators are registered as **singletons** in `AppServiceProvider`; helpers such as `RoundMutationService` and `RoundSetupService` resolve through the container without explicit singleton bindings. Both constructor injection and `app()` resolution are used. Tick processing restores mutable clock/calculator state after each operation.
 
 ## Scheduled Tasks (Console Kernel)
 
 | Schedule | Command | Purpose |
 |----------|---------|---------|
-| Hourly (:00) | `game:tick` | Main game tick processing |
+| Hourly (:00) | `game:tick` | Dispatch rankings/stats job, then tick/bootstrap and receipt-protected setup; no overlap, one server |
+| Every minute (background) | `game:tick --recover` | Ordered catch-up for existing ledger rounds, including unfinished ended rounds |
+| Every minute (background) | `game:notifications:deliver` | Dispatch committed outbox batches independently of game ticks |
 | Hourly (:30) | `game:ai` | AI/NPC dominion actions |
 | Every 5 minutes (:05-:25, :35-:55) | `game:ai:invade` | Attacker NPD invasions at each bot's hourly minute |
 | Daily (01:20) | `backup:clean` | Clean old backups |

@@ -105,7 +105,25 @@ class AutomationService
         $this->trainActionService = app(TrainActionService::class);
     }
 
-    public function processLog(Dominion $dominion, array $protection)
+    public function processLog(Dominion $dominion, array $protection): void
+    {
+        $error = app(RoundMutationService::class)->runForDominion($dominion, function (Dominion $dominion) use ($protection): ?GameException {
+            try {
+                $this->processLockedLog($dominion, $protection);
+            } catch (GameException $exception) {
+                $dominion->refresh();
+                return $exception;
+            }
+
+            return null;
+        });
+
+        if ($error !== null) {
+            throw $error;
+        }
+    }
+
+    protected function processLockedLog(Dominion $dominion, array $protection): void
     {
         try {
             $currentHour = $dominion->protection_ticks - $dominion->protection_ticks_remaining + 1;
