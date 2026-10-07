@@ -720,6 +720,33 @@ class NotificationHelper
                         $resultString = "{$data['damageString']} died in their sleep, but arose from the dead and departed our lands.";
                         break;
 
+                    case 'break_ward':
+                        if (empty($data['damageString'])) {
+                            $resultString = 'A dark force has assailed our wards, but found nothing to break.';
+                        } else {
+                            $resultString = "A dark force has assailed our wards, stripping away {$data['damageString']}.";
+                        }
+                        if (!empty($data['statusEffect'])) {
+                            $resultString .= " Our wards have been left {$data['statusEffect']}.";
+                        }
+                        break;
+
+                    case 'ruin':
+                        $resultString = 'A curse of ruin has settled over our lands, slowing the repair of our improvements.';
+                        break;
+
+                    case 'mana_burn':
+                        $resultString = "Arcane flames have scorched our towers, burning away {$data['damageString']}.";
+                        break;
+
+                    case 'silence':
+                        $resultString = 'A magical silence has fallen over our towers, making friendly spells more costly to cast.';
+                        break;
+
+                    case 'lightning_strike':
+                        $resultString = "A bolt of lightning has struck our dominion, destroying {$data['damageString']}.";
+                        break;
+
                     default:
                         throw new LogicException("Received hostile spell notification for operation key {$data['spellKey']} not yet implemented.");
                 }

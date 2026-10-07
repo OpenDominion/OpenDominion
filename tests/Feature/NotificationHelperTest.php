@@ -5,6 +5,7 @@ namespace OpenDominion\Tests\Feature;
 use Mockery;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Tests\AbstractTestCase;
+use Symfony\Component\Yaml\Yaml;
 
 class NotificationHelperTest extends AbstractTestCase
 {
@@ -92,6 +93,55 @@ class NotificationHelperTest extends AbstractTestCase
         $this->assertSame(
             ['email' => false, 'ingame' => true],
             $settings['hourly_dominion']['exploration_completed']
+        );
+    }
+
+    /**
+     * Every hostile and war spell sends a received_hostile_spell notification
+     * to its target, so each one needs a message or the cast throws.
+     */
+    public function testEveryHostileSpellHasReceivedNotificationMessage(): void
+    {
+        $spells = Yaml::parseFile(base_path('app/data/spells.yml'));
+
+        foreach ($spells as $key => $spell) {
+            if (!in_array($spell['category'], ['hostile', 'war'], true)) {
+                continue;
+            }
+
+            $message = $this->notificationHelper->getNotificationMessage('irregular_dominion', 'received_hostile_spell', [
+                'sourceDominionId' => null,
+                'spellKey' => $key,
+                'spellName' => $spell['name'],
+                'damageString' => '100 mana',
+                'statusEffect' => null,
+            ]);
+
+            $this->assertNotEmpty($message, "Missing received_hostile_spell message for {$key}");
+        }
+    }
+
+    public function testBreakWardNotificationWithoutWardAndWithStatusEffect(): void
+    {
+        $data = [
+            'sourceDominionId' => null,
+            'spellKey' => 'break_ward',
+            'spellName' => 'Break Ward',
+            'damageString' => '',
+            'statusEffect' => null,
+        ];
+
+        $this->assertSame(
+            'A dark force has assailed our wards, but found nothing to break.',
+            $this->notificationHelper->getNotificationMessage('irregular_dominion', 'received_hostile_spell', $data)
+        );
+
+        $data['damageString'] = '2 hours of Magic Ward';
+        $data['statusEffect'] = 'Fractured';
+
+        $this->assertSame(
+            'A dark force has assailed our wards, stripping away 2 hours of Magic Ward. Our wards have been left Fractured.',
+            $this->notificationHelper->getNotificationMessage('irregular_dominion', 'received_hostile_spell', $data)
         );
     }
 }
