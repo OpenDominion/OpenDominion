@@ -1651,13 +1651,7 @@ class SpellActionService
      */
     protected function getRepairableDamage(Dominion $dominion): int
     {
-        $damage = 0;
-
-        foreach (static::REPAIRABLE_IMPROVEMENTS as $improvement) {
-            $damage += (int)$dominion->{"improvement_damage_{$improvement}"};
-        }
-
-        return $damage;
+        return $this->opsCalculator->getImprovementsRepairable($dominion);
     }
 
     /**

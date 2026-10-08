@@ -610,7 +610,7 @@ spell_reflect:
   category: friendly
   school: abjuration
   cost_mana: 3
-  cost_strength: 5
+  cost_strength: 4
   duration: 3
   cooldown: 6
   perks:
@@ -631,7 +631,7 @@ illumination:
   category: friendly
   school: abjuration
   cost_mana: 1.5
-  cost_strength: 5
+  cost_strength: 4
   duration: 6
   cooldown: 3
   perks:
@@ -765,7 +765,7 @@ repair_castle:
   category: friendly
   school: transmutation
   cost_mana: 2.5
-  cost_strength: 5
+  cost_strength: 4
   cooldown: 3
   perks:
     repair_improvements: 0.4
@@ -800,10 +800,10 @@ revive_peasants:
   category: friendly
   school: necromancy
   cost_mana: 2.5
-  cost_strength: 5
+  cost_strength: 4
   cooldown: 3
   perks:
-    revive_peasants: 2.5
+    revive_peasants: 3.5
 backlash:
   name: Backlash
   category: self
@@ -840,7 +840,7 @@ arcane_conduit:
   category: friendly
   school: enchantment
   cost_mana: 3.5
-  cost_strength: 5
+  cost_strength: 4
   duration: 3
   cooldown: 3
   perks:

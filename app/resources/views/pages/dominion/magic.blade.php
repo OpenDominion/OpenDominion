@@ -258,7 +258,7 @@
                                                             Currently
                                                             <span class="text-{{ $resurrectShare >= ($resurrectCeiling / 100) ? 'success' : 'warning' }}">{{ number_format($resurrectShare * 100, 1) }}%</span>
                                                             ({{ number_format($resurrectFloor) }} peasants)<br/>
-                                                            Needs {{ number_format($opsCalculator->getResurrectionRequiredRatio($selectedDominion), 3) }} wizard ratio today<br/>
+                                                            Caps at {{ number_format($opsCalculator->getResurrectionRequiredRatio($selectedDominion), 3) }} wizard ratio today<br/>
                                                         @endif
                                                         @if ($canCast)
                                                             Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell)) }}</span><br/>

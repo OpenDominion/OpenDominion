@@ -102,8 +102,8 @@ class FriendlySpellAccessTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($this->dominion, 'revive_peasants', $this->dominion);
 
-        $this->assertEquals(30100, $this->dominion->peasants);
-        $this->assertEquals(3900, $this->dominion->peasants_killed);
+        $this->assertEquals(30140, $this->dominion->peasants);
+        $this->assertEquals(3860, $this->dominion->peasants_killed);
     }
 
     public function testFriendlySpellsStillCannotLeaveTheRealm(): void

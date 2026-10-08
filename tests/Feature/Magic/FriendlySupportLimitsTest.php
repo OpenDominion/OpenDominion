@@ -73,8 +73,8 @@ class FriendlySupportLimitsTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($peer, 'revive_peasants', $this->target);
 
-        // 2.5% of 4,000 peasants on record
-        $this->assertEquals(3900, $this->target->peasants_killed);
+        // 3.5% of 4,000 peasants on record
+        $this->assertEquals(3860, $this->target->peasants_killed);
     }
 
     public function testASmallerRealmmateRestoresProportionallyLess(): void
@@ -83,12 +83,12 @@ class FriendlySupportLimitsTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($smaller, 'revive_peasants', $this->target);
 
-        // Half the size, so roughly half of a peer's 100 peasants. Total land
+        // Half the size, so roughly half of a peer's 140 peasants. Total land
         // includes the starting land of the other types, so it is not exact.
         $revived = 4000 - $this->target->peasants_killed;
 
-        $this->assertGreaterThan(45, $revived);
-        $this->assertLessThan(55, $revived);
+        $this->assertGreaterThan(65, $revived);
+        $this->assertLessThan(75, $revived);
     }
 
     public function testABiggerRealmmateIsNoMoreEffective(): void
@@ -97,7 +97,7 @@ class FriendlySupportLimitsTest extends AbstractBrowserKitTestCase
 
         $this->spellActionService->castSpell($bigger, 'revive_peasants', $this->target);
 
-        $this->assertEquals(3900, $this->target->peasants_killed);
+        $this->assertEquals(3860, $this->target->peasants_killed);
     }
 
     public function testARealmmateOutsideRangeCannotHelp(): void
@@ -114,7 +114,7 @@ class FriendlySupportLimitsTest extends AbstractBrowserKitTestCase
     {
         $this->spellActionService->castSpell($this->target, 'revive_peasants', $this->target);
 
-        $this->assertEquals(3900, $this->target->peasants_killed);
+        $this->assertEquals(3860, $this->target->peasants_killed);
     }
 
     /**

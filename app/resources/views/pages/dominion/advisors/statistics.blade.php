@@ -443,26 +443,32 @@
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Vulnerability</th>
+                                        <th colspan="2">Spell Damage</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Improvements Vulnerable:</td>
+                                        <td>Peasants Revivable:</td>
                                         <td>
-                                            <strong>{{ number_format($opsCalculator->getImprovementsVulnerable($target)) }}</strong>
+                                            <strong>{{ number_format($target->peasants_killed) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Lightning Damage Reduction:</td>
+                                        <td>Improvements Repairable:</td>
                                         <td>
-                                            <strong>{{ number_format((1 - $opsCalculator->getSpellDamageMultiplier($target, 'lightning_bolt')) * 100, 2) }}%</strong>
+                                            <strong>{{ number_format($opsCalculator->getImprovementsRepairable($target)) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Spell Damage Reduction:</td>
                                         <td>
                                             <strong>{{ number_format((1 - $opsCalculator->getSpellDamageMultiplier($target)) * 100, 2) }}%</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lightning Damage Reduction:</td>
+                                        <td>
+                                            <strong>{{ number_format((1 - $opsCalculator->getSpellDamageMultiplier($target, 'lightning_bolt')) * 100, 2) }}%</strong>
                                         </td>
                                     </tr>
                                 </tbody>

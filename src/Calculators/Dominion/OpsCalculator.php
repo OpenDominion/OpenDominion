@@ -5,6 +5,7 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
+use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 
@@ -767,6 +768,23 @@ class OpsCalculator
         $destroyableImprovements = $currentImprovements - $dominion->improvement_spires - $dominion->improvement_harbor;
 
         return max(0, $destroyableImprovements - $protectedImprovements);
+    }
+
+    /**
+     * Returns the total castle damage on record that Repair Castle can restore.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getImprovementsRepairable(Dominion $dominion): int
+    {
+        $damage = 0;
+
+        foreach (SpellActionService::REPAIRABLE_IMPROVEMENTS as $improvement) {
+            $damage += (int)$dominion->{"improvement_damage_{$improvement}"};
+        }
+
+        return $damage;
     }
 
     /**

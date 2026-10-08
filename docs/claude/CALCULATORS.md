@@ -102,6 +102,7 @@ Espionage/magic success rates and losses.
 - Resilience: `getResilienceGain()`, `getResilienceDecay()` (max 2000)
 - Spell meters: `getSpellMeterGain()`, `getSpellMeterDecay()` (fireball, lightning_bolt)
 - Mastery: `getMasteryChange()` (scales -500 to +500)
+- Recovery: `getImprovementsRepairable()` (sum of `improvement_damage_*` ledgers Repair Castle can restore)
 
 ### CasualtiesCalculator
 Unit losses from combat and starvation.

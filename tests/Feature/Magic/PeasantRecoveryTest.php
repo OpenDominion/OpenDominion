@@ -355,9 +355,9 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $result = $this->spellActionService->castSpell($this->courtMage, 'revive_peasants', $this->target);
 
-        $this->assertEquals(30100, $this->target->peasants);
-        $this->assertEquals(3900, $this->target->peasants_killed);
-        $this->assertStringContainsString('100', $result['message']);
+        $this->assertEquals(30140, $this->target->peasants);
+        $this->assertEquals(3860, $this->target->peasants_killed);
+        $this->assertStringContainsString('140', $result['message']);
     }
 
     public function testRevivePeasantsNotifiesTheTargetOfTheAmountRevived(): void
@@ -372,8 +372,8 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
             $payload = $notification->toArray($notifiable);
 
             return $payload['type'] === 'received_friendly_spell'
-                && $payload['data']['restored'] === ['peasants' => 100]
-                && str_ends_with($payload['message'], 'has cast Revive Peasants on our dominion, reviving 100 peasants.');
+                && $payload['data']['restored'] === ['peasants' => 140]
+                && str_ends_with($payload['message'], 'has cast Revive Peasants on our dominion, reviving 140 peasants.');
         });
     }
 
