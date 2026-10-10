@@ -35,6 +35,5 @@ class TickCommand extends Command implements CommandInterface
     {
         DailyRankingsAndStatsJob::dispatch();
         $this->tickService->tickHourly();
-        $this->tickService->tickDaily();
     }
 }

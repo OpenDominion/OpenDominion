@@ -105,7 +105,28 @@ class AutomationService
         $this->trainActionService = app(TrainActionService::class);
     }
 
-    public function processLog(Dominion $dominion, array $protection)
+    public function processLog(Dominion $dominion, array $protection): void
+    {
+        $error = DB::transaction(function () use ($dominion, $protection): ?GameException {
+            $freshDominion = Dominion::query()->whereKey($dominion->id)->lockForUpdate()->firstOrFail();
+            $dominion->setRawAttributes($freshDominion->getAttributes(), true);
+            $dominion->setRelations([]);
+            try {
+                $this->processLockedLog($dominion, $protection);
+            } catch (GameException $exception) {
+                $dominion->refresh();
+                return $exception;
+            }
+
+            return null;
+        });
+
+        if ($error !== null) {
+            throw $error;
+        }
+    }
+
+    protected function processLockedLog(Dominion $dominion, array $protection): void
     {
         try {
             $currentHour = $dominion->protection_ticks - $dominion->protection_ticks_remaining + 1;

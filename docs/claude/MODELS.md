@@ -84,8 +84,26 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 ### Dominion\Tick (`dominion_tick`)
 - Pre-calculated snapshot of next hour's changes (resources, military, land, etc.)
 - Created/updated by `TickService::precalculateTick()`
-- Applied during `TickService::performTick()` via batch SQL updates
+- Applied during `TickService::performTick()` via batch SQL updates; the consumed row is recorded in history before its next prediction replaces it
 - **Casts**: starvation_casualties (array), expiring_spells (array)
+
+### RoundTickRun (`round_tick_runs`)
+- One checkpoint per round (`round_id` unique), with a cascading foreign key to `rounds`.
+- **Fields**: round_id, tick_at, completed_at, maintenance_completed_at, attempts, last_error, timestamps. Completion/error fields are nullable.
+- **Casts**: tick_at/completed_at/maintenance_completed_at (datetime), attempts (integer).
+- `tick_at` identifies the latest attempted hour. Newer attempts replace previous checkpoint state; earlier errors remain in logs. Older workers skip, and an equal completed hour never reapplies production.
+- Production and `completed_at` commit together. Separate maintenance effects commit with `maintenance_completed_at`. Player actions do not lock this row or check its freshness.
+
+### RoundSetupRun (`round_setup_runs`)
+- Unique `(round_id, operation)` records completion of realm assignment or NPD generation; foreign key to `rounds` cascades on round deletion.
+- **Fields**: round_id, operation, completed_at, timestamps; completed_at casts to datetime.
+- Inserted only after the setup callback succeeds, in the same transaction. Failed setup leaves no receipt.
+
+### NotificationOutbox (`notification_outbox`)
+- Unique `(operation_key, dominion_id, category)` preserves an eligible email batch across replay; pending index on `(delivered_at, available_at, id)` supports recovery.
+- **Fields/casts**: payload (array; event-time eligible email types only), event_at/available_at/delivered_at (datetime), plus operation_key, dominion_id, category, timestamps.
+- **Relation**: dominion (`belongsTo`); missing dominions/users are safely skipped by delivery.
+- Web notifications commit directly with game changes. delivered_at follows email delivery; a transport success followed by process failure can repeat email, not committed web notifications.
 
 ### Dominion\Queue (`dominion_queue`)
 - Fields: dominion_id, source, resource, hours, amount

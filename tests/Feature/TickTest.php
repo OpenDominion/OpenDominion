@@ -32,11 +32,11 @@ class TickTest extends AbstractBrowserKitTestCase
         $dominion->save();
 
         // Test +6 morale below 80
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
         $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 77]);
 
         // Test +3 morale above 80
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
         $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 83]);
     }
 
@@ -61,21 +61,21 @@ class TickTest extends AbstractBrowserKitTestCase
         $queueService->queueResources('construction', $dominion, ['building_home' => 10], 3);
 
         // Test queue hours 3 -> 2
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 0, 'building_home' => 0])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain', 'hours' => 2, 'amount' => 10])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home', 'hours' => 2, 'amount' => 10]);
 
         // Test queue hours 2 -> 1
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 5, 'building_home' => 0])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain', 'hours' => 1, 'amount' => 10])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home', 'hours' => 1, 'amount' => 10]);
 
         // Test queues get processed on hour 0
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 15, 'building_home' => 10])
             ->dontSeeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain'])
@@ -110,7 +110,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $queueService->queueResources('exploration', $dominion, ['land_plain' => 10], 3);
         $queueService->queueResources('construction', $dominion, ['building_home' => 10], 3);
 
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
 
         $this
             ->seeInDatabase('dominions', [
@@ -143,7 +143,7 @@ class TickTest extends AbstractBrowserKitTestCase
         // Manually precalculate when queuing for next hour
         $tickService->precalculateTick($dominion);
 
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
 
         $this->seeInDatabase('dominions', [
             'id' => $dominion->id,
@@ -212,7 +212,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->assertTrue($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
         $this->assertEquals(floor($platToBeAdded * 1.1), $productionCalculator->getPlatinumProduction($dominion2));
 
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
         $dominion1->refresh();
         $dominion2->refresh();
 
@@ -268,7 +268,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->assertEquals(-308, $productionCalculator->getFoodNetChange($dominion));
 
         $tickService->precalculateTick($dominion);
-        $tickService->performTick($round);
+        $tickService->performTick($round, null, $this->nextTickHour($round));
         $dominion->refresh();
 
         // 27487 food - 308 net change = 27179 food
@@ -414,5 +414,11 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $this->seeInDatabase('dominions', ['id' => $abandonedDominion->id, 'api_key' => null]);
         $this->seeInDatabase('dominions', ['id' => $pendingDominion->id, 'api_key' => 'pending-key']);
+    }
+
+    protected function nextTickHour(\OpenDominion\Models\Round $round): \Illuminate\Support\Carbon
+    {
+        $previous = \OpenDominion\Models\RoundTickRun::where('round_id', $round->id)->orderByDesc('tick_at')->first();
+        return $previous ? $previous->tick_at->copy()->addHour() : now()->startOfHour();
     }
 }

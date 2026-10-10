@@ -2,50 +2,39 @@
 
 ## Hourly Tick System
 
-The game tick (`php artisan game:tick`) runs every hour and is the core game engine.
+The game tick (`php artisan game:tick`) runs at :00. Production for a round commits atomically. `RoundTickRun` stores the latest attempted hour and prevents duplicate application. Source: `src/Services/Dominion/TickService.php` and `src/Console/Kernel.php`.
 
-### Tick Flow (TickService::tickHourly)
+### Production (`TickService::performTick`)
 
-```
-1. Reset daily bonuses (platinum/land/actions) if round start hour
-2. For each active round:
-   a. performTick() — batch SQL updates from dominion_tick table:
-      - Resources: platinum, food, lumber, mana, ore, gems, tech, boats
-      - Military: draftees, units 1-4, spies, assassins, wizards, archmages
-      - Land: plain, mountain, swamp, cavern, forest, hill, water
-      - Buildings: 16+ types (home, farm, smithy, tower, etc.)
-      - Status: prestige, morale, spy_strength, wizard_strength, resilience
-      - Meters: fireball_meter, lightning_bolt_meter
-      - Stats: production stats, networth, highest_land_achieved
-   b. Decrement spell durations by 1
-   c. Decrement queue hours by 1
-   d. For each dominion:
-      - performSpellEffects() — special spell conversions (burning→rejuvenation, cull the weak, etc.)
-      - cleanupActiveSpells() — delete expired spells, queue notifications
-      - cleanupQueues() — apply completed queue resources, queue notifications
-      - precalculateTick() — compute next hour's dominion_tick values + save history
-      - sendNotifications() — dispatch all queued notifications
-3. Expire wars exceeding 120h
-4. Check abandoned dominions (move to graveyard)
-5. Process hero battles (HeroBattleService)
-6. Process hero tournaments (HeroTournamentService)
-7. Process completed raids (RaidService)
-8. Assign realms for rounds ready for assignment
-9. Spawn NPDs for active-soon rounds
-```
+1. Create or advance the round's checkpoint under its own row lock. Older requests are skipped; advancing to a newer hour resets its completion markers.
+2. Lock and recheck the checkpoint, then lock eligible dominions in ID order. Read the business `rounds` row without a lock. Eligibility uses protection, account locks and abandonment at the requested hour.
+3. Rebuild any missing prediction from the locked dominion before advancing resources or timers.
+4. In one transaction, reset daily allowances when due, apply predicted resources, decrement spell/queue timers, produce spell/racial units, record consumed predictions, clean completed queues/spells, persist notifications, calculate the next prediction/networth, and mark production complete.
+5. Roll back the entire production transaction on failure. Record failure details only if the checkpoint still belongs to that incomplete attempt. Restore logical time and calculator modes on every exit.
 
-### Daily Tasks (within tick, at round start hour)
-- Move inactive dominions to graveyard (3+ days old, 3+ days offline)
-- Spawn wonders every 3 days
-- Update active player counts for realms/raids
-- Update daily rankings
-- Update Valor rankings
+`DominionSaved` suppresses intermediate recalculation while the batch runs. Relations are loaded in batches, and history records the prediction actually applied. Web notifications commit with production; eligible email enters the outbox. Protection uses an individual dominion transaction, can advance multiple steps per wall-clock hour, and does not use scheduled checkpoints.
 
-### Pre-calculation System
-Each dominion has a `dominion_tick` record that stores projected changes for the next hour.
-- Created/updated after every action and after each tick
-- Used for batch SQL updates during tick (performance: one UPDATE per column, not per dominion)
-- Transaction with 5-retry pessimistic locking
+### Maintenance and Scheduling
+
+`tickHourly()` attempts the current hour for each active round. It does not reconstruct missed scheduler hours, replay ended rounds, or block gameplay because a checkpoint is failed or overdue. A later hour can proceed after an earlier failure. The checkpoint retains only the latest attempt; logs retain earlier errors. Same-hour reruns skip completed production.
+
+After production commits, round maintenance runs in a separate transaction: wars, abandonment, hero battles/tournaments, raids, valuables and daily round tasks. Its `maintenance_completed_at` marker commits with those effects. A same-hour rerun can retry failed maintenance without repeating production or completed maintenance. A newer hour supersedes unfinished older maintenance. Maintenance failure cannot roll back production.
+
+Failures are isolated between rounds and setup phases, then reported by the command. Realm assignment and NPD generation use `RoundSetupService` receipts, unique per round/operation, so repeated commands do not duplicate completed setup.
+
+### Daily Tasks and Predictions
+
+Daily allowances reset in the production transaction. At the round start hour, maintenance moves inactive dominions to the graveyard, spawns wonders every three days, and updates realm/raid active-player counts. `DailyRankingsAndStatsJob` remains separately dispatched before `tickHourly()`.
+
+Each dominion has a `dominion_tick` prediction refreshed after actions and ticks. `precalculateTick()` works on a clone, refreshes volatile relations and restores calculator modes in `finally`. Batch callers can pass `stateIsFresh=true` to reuse relations already loaded together.
+
+### Gameplay and Rollout
+
+Normal player/AI actions retain their existing transaction boundaries. They do not acquire a new shared round lock or an actor lock at request entry, and failed checkpoints do not reject actions. Writes touching dominions currently being ticked can still wait for database locks. This change does not redesign existing action-to-action concurrency or stale validation.
+
+Hourly activity recording uses a short transaction with `FOR UPDATE SKIP LOCKED` and a quiet save. If the dominion is busy, the page continues and a later request can record activity; this bookkeeping does not recalculate predictions. Protection advance/undo and imports lock only their own dominion.
+
+Apply the `notification_outbox`, `round_tick_runs`, and `round_setup_runs` migrations before activation. Drain old scheduler/game/queue workers so old and new code cannot overlap. Let the next scheduled :00 command initialize checkpoints: new records cannot identify work already completed by legacy workers. Use a shared scheduler cache across servers. Database checkpoint locks enforce duplicate protection independently of scheduler locks.
 
 ## Queue System
 
@@ -57,9 +46,9 @@ Resources are queued with a delivery delay (typically 12 hours).
 | exploration | Land types | 12 | Land added to dominion |
 | training | Unit types, spies, wizards, etc. | 12 (9 for basic) | Units added to military |
 | invasion | Land, units, resources returning | 12 (9-12 by unit perk) | Land/units/resources return |
-| operations | Spell/spy operation tracking | varies | NOT auto-dequeued |
+| operations | Spell/spy operation tracking | varies | No completion notification |
 
-Each tick: hours decrement by 1. When hours reach 0, resources are applied and queue row deleted.
+Each tick applies the incoming resources already included in the consumed prediction, decrements hours, then deletes completed queue rows. Cleanup does not apply the resources a second time.
 
 ## Event System
 
@@ -67,7 +56,7 @@ Each tick: hours decrement by 1. When hours reach 0, resources are applied and q
 
 | Event | Listeners | Trigger |
 |-------|-----------|---------|
-| `DominionSavedEvent` | `DominionSaved` → recalc networth + precalculate tick | Any dominion save |
+| `DominionSavedEvent` | `DominionSaved` → recalc networth + precalculate tick, unless tick batch processing is active | Any dominion save |
 | `InfoOpCreatingEvent` | `InfoOpCreating` → marks previous ops as non-latest | New info op created |
 | `UserRegisteredEvent` | `SetUserDefaultSettings`, `SendUserRegistrationNotification` | User registration |
 | `UserLoggedInEvent` | `ActivitySubscriber` | Login |
@@ -82,9 +71,14 @@ Persistent records displayed in Town Crier:
 
 ## Notification System
 
-Two-phase delivery via NotificationService:
-1. **Queue phase**: `queueNotification(type, data)` buffers in memory during action processing
-2. **Send phase**: `sendNotifications(Dominion, category)` dispatches all queued notifications
+`NotificationService::queueNotification()` buffers events. Ordinary actions use `sendNotifications()`. Tick/setup calls to `persistQueuedNotifications()` write web notifications in the same game transaction and store only email that is enabled and eligible at event time. `withDeferredDelivery()` applies this behavior to maintenance/setup calls. Web-only events create no outbox row or background job. The tick/setup receipt protects web writes from replay, and protection undo removes its transactional notifications.
+
+The background `game:notifications:deliver` command sends due email batches directly, independently of the configured queue driver. Defaults: at most 100 rows per run and a 30-second budget checked before starting each delivery. SMTP uses a separate mailer with a socket timeout of `MAIL_OUTBOX_SMTP_TIMEOUT` (default 10 seconds); other configured transports retain their settings. The budget is not a hard deadline for an in-flight send. Failed sends become eligible again after five minutes; the command reports failure after handling the remaining rows within its budget.
+
+- Unique `(operation_key, dominion_id, category)` preserves an email batch on replay.
+- Delivery checks current protection and email preferences again. `realm_assignment` remains the protection exception; opting in later does not create email for older events.
+- Email delivery is at least once: a crash after mail-server acceptance but before `delivered_at` commits can repeat it. Web notifications never wait for email and are not replayed by the delivery command.
+- Hourly email displays `event_at`, not its delayed delivery time.
 
 ### Channels
 - **WebNotification** - In-game notification display
@@ -128,6 +122,9 @@ New dominions start in protection:
 - Cannot attack or perform hostile actions
 - Can leave protection after 24h (`WAIT_PERIOD_DURATION_IN_HOURS`)
 - Daily bonuses available during protection (platinum, land, automated actions)
+- `MiscController` holds an exclusive lock on the protection dominion across manual counter changes and `performTick()` or `revertTick()`; it does not lock the round or a scheduled checkpoint.
+- Protection links carry optional `expected_protection_ticks_remaining`, checked after locking to reject stale/repeated clicks. Clients omitting it remain supported; it is a counter check, not a permanent operation ID.
+- `AutomationService::processLog()` coordinates the import and keeps each hour atomic. Expected game errors preserve completed hours, roll back the failed hour, and refresh the dominion for recovery.
 
 ## Wonder System
 

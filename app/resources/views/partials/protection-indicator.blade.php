@@ -3,7 +3,7 @@
         <div class="row g-2 align-items-center">
             <div class="col-2 text-center text-sm-start">
                 @if ($selectedDominion->protection_ticks_remaining <= $selectedDominion->protection_ticks)
-                    <a href="{{ route('dominion.misc.undo-tick') }}" class="btn btn-sm btn-danger py-0 disable-after-click">
+                    <a href="{{ route('dominion.misc.undo-tick', ['expected_protection_ticks_remaining' => $selectedDominion->protection_ticks_remaining]) }}" class="btn btn-sm btn-danger py-0 disable-after-click">
                         &laquo; Undo
                     </a>
                 @else
@@ -22,7 +22,7 @@
             </div>
             <div class="col-2 text-center text-sm-end">
                 @if (!$selectedDominion->protection_finished)
-                    <a href="{{ route('dominion.misc.tick') }}" class="btn btn-sm btn-primary py-0 disable-after-click">
+                    <a href="{{ route('dominion.misc.tick', ['expected_protection_ticks_remaining' => $selectedDominion->protection_ticks_remaining]) }}" class="btn btn-sm btn-primary py-0 disable-after-click">
                         @if ($selectedDominion->protection_ticks_remaining == 0)
                             Confirm
                         @else

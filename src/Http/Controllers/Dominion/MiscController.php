@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -22,6 +23,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\AutomationService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\PackService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -319,12 +321,41 @@ class MiscController extends AbstractDominionController
         return redirect()->route('dominion.status');
     }
 
-    public function getTickDominion(Request $request) {
+    public function getTickDominion(Request $request): RedirectResponse
+    {
+        return $this->withProtectionMutation($request, fn () => $this->performTickDominion($request));
+    }
+
+    protected function withProtectionMutation(Request $request, callable $callback): RedirectResponse
+    {
+        $dominionId = $this->getSelectedDominion()->id;
+
+        try {
+            return DB::transaction(function () use ($callback, $dominionId): RedirectResponse {
+                $dominion = Dominion::query()->whereKey($dominionId)
+                    ->lockForUpdate()->firstOrFail();
+                $dominion->load(Dominion::query()->withGameRelations()->getEagerLoads());
+                app(SelectorService::class)->useLockedDominion($dominion);
+                return $callback();
+            });
+        } catch (GameException $exception) {
+            return redirect()->back()->withInput($request->all())->withErrors([$exception->getMessage()]);
+        }
+    }
+
+    protected function performTickDominion(Request $request) {
         $dominion = $this->getSelectedDominion();
 
         $tickService = app(TickService::class);
 
         try {
+            if ($request->has('expected_protection_ticks_remaining') &&
+                (!is_scalar($request->query('expected_protection_ticks_remaining')) ||
+                    (string) $request->query('expected_protection_ticks_remaining') !== (string) $dominion->protection_ticks_remaining)
+            ) {
+                throw new GameException('Your protection state has changed. Refresh the page before advancing or undoing another tick.');
+            }
+
             $this->guardLockedDominion($dominion, true);
 
             if ($dominion->isBuildingPhase()) {
@@ -409,13 +440,25 @@ class MiscController extends AbstractDominionController
         return redirect()->back();
     }
 
-    public function getUndoTickDominion(Request $request) {
+    public function getUndoTickDominion(Request $request): RedirectResponse
+    {
+        return $this->withProtectionMutation($request, fn () => $this->performUndoTickDominion($request));
+    }
+
+    protected function performUndoTickDominion(Request $request) {
         $dominion = $this->getSelectedDominion();
 
         $protectionService = app(ProtectionService::class);
         $tickService = app(TickService::class);
 
         try {
+            if ($request->has('expected_protection_ticks_remaining') &&
+                (!is_scalar($request->query('expected_protection_ticks_remaining')) ||
+                    (string) $request->query('expected_protection_ticks_remaining') !== (string) $dominion->protection_ticks_remaining)
+            ) {
+                throw new GameException('Your protection state has changed. Refresh the page before advancing or undoing another tick.');
+            }
+
             $this->guardLockedDominion($dominion);
 
             if (!$protectionService->isUnderProtection($dominion)) {

@@ -18,6 +18,10 @@ class DominionSaved
      */
     public function handle(DominionSavedEvent $event)
     {
+        if (app(TickService::class)->isProcessingTick()) {
+            return;
+        }
+
         // Work on a clone so the caller's in-memory model isn't affected by
         // the relation reloads + attribute mutations performed inside
         // NetworthCalculator and TickService::precalculateTick. The clone

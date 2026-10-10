@@ -44,7 +44,12 @@ Key invasion rules enforced:
 ## Domain Services (`src/Services/Dominion/`)
 
 ### TickService - Game Engine
-The hourly heartbeat. See GAME_SYSTEMS.md for full details.
+- `tickHourly()` attempts the current scheduled hour for active rounds, separate maintenance, then receipt-protected setup. It reports failures after trying independent rounds/phases.
+- `performTick(Round, ?Dominion, ?Carbon): bool` atomically applies production, units, history, cleanup, predictions and notifications. Scheduled calls lock a per-round checkpoint; protection calls use an individual dominion transaction.
+- Duplicate/older requests do not reapply production. Missed hours are not reconstructed, and failed checkpoints do not block ordinary gameplay or later hours.
+- Missing predictions are regenerated from locked state before progression. `recordTickHistory()` records the consumed prediction before replacement; batch eager loading avoids repeated reads and calculations.
+- Round maintenance has its own transaction and completion marker, so it can retry within the same hour without undoing or repeating production.
+- Tick web notifications commit with game changes; eligible email is delivered separately. See GAME_SYSTEMS.md for concurrency limits and rollout requirements.
 
 ### QueueService
 Manages deferred resource delivery queues.
@@ -93,6 +98,7 @@ Validates invasion rules (separate from InvadeActionService which executes them)
 Session-based dominion selection.
 - `selectUserDominion()` / `getUserSelectedDominion()` / `unsetUserSelectedDominion()`
 - `tryAutoSelectDominionForAuthUser()` - auto-selects if user has only one active dominion
+- Hourly activity uses a short, quiet `SKIP LOCKED` update; busy dominions are skipped so page reads continue and predictions remain unchanged.
 
 ### AIService
 NPC and player automation.
@@ -100,6 +106,10 @@ NPC and player automation.
 - `performActions()` - executes tick-based instructions or NPC routines (branches on `ai_config['strategy']`)
 - `performAttackerActions()` - attacker NPD routine; helpers `attemptInvasion()`, `getUnitsToSend()`, `getAvailableOffensiveUnits()`, `getHomeGuardDefense()`, `trainAttackerMilitary()`, `applyUnitSwap()`, `rezoneForBuildPlan()`
 - Supports player-defined automation via `ai_config` (tick-based action instructions)
+
+### AutomationService
+- `processLog()` locks the protection dominion; each imported hour has a transaction encompassing actions, protection counters, and its tick.
+- Expected game errors retain completed hours and roll back the failing hour. Manual advance/undo coordination lives in `MiscController`.
 
 ### BountyService
 Realm bounty board system.
@@ -133,6 +143,10 @@ Daily ranking snapshots by category (land, networth, conquered, explored, etc.).
 
 ## Top-Level Services (`src/Services/`)
 
+### RoundSetupService
+- `run(Round, operation, callback): bool` takes an exclusive round lock, passes a fresh round to the callback, and atomically commits its completion receipt. Completed operations return false; failed operations roll back and remain retryable.
+- `REALM_ASSIGNMENT` / `NON_PLAYER_GENERATION` identify the two hourly setup phases; unique `(round_id, operation)` receipts prevent duplicate setup. No automatic transaction retry.
+
 ### RealmAssignmentService (largest service)
 Sophisticated pre-round realm assignment algorithm.
 - Constants: `MAX_PACKS_PER_REALM` = 3, `MAX_PACKED_PLAYERS_PER_REALM` = 8, realms 8-14
@@ -142,11 +156,11 @@ Sophisticated pre-round realm assignment algorithm.
 - Optimization: 50 iterations of random solo-player swapping
 
 ### NotificationService
-Two-phase: queue then send.
-- `queueNotification(type, data)` - buffers in memory
-- `sendNotifications(Dominion, category)` - dispatches based on user settings
-- Channels: WebNotification (in-game), HourlyEmailDigest, IrregularDominionEmail
-- Categories: general, hourly_dominion, irregular_dominion, irregular_realm
+- `queueNotification()` buffers events; ordinary `sendNotifications()` honors user settings.
+- `persistQueuedNotifications()` writes web notifications in the caller's game transaction and creates an outbox row only for event-time eligible email. `withDeferredDelivery()` applies this behavior to maintenance/setup calls.
+- `game:notifications:deliver` sends due email directly every minute with a row limit and a budget between sends. It applies a dedicated SMTP socket timeout and retries failures after five minutes; it requires no queue worker. `deliverOutboxNotification()` locks only the email batch during transport.
+- Web writes roll back with game changes and are deduplicated by the tick/setup receipt. Email is at least once across transport/process failures; current preferences/protection are checked again at delivery.
+- Channels: WebNotification, HourlyEmailDigest, IrregularDominionEmail. Email outbox categories: hourly_dominion, irregular_dominion, irregular_realm.
 
 ### GameEventService
 Town Crier event retrieval.

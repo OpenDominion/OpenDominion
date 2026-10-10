@@ -29,11 +29,11 @@ class HourlyEmailDigestNotification extends Notification implements ShouldQueue
      *
      * @param array $notifications
      */
-    public function __construct(array $notifications)
+    public function __construct(array $notifications, ?Carbon $eventAt = null)
     {
         $this->notificationHelper = app(NotificationHelper::class);
         $this->notifications = $notifications;
-        $this->now = now();
+        $this->now = $eventAt?->copy() ?? now();
     }
 
     /**

@@ -5,7 +5,7 @@
 ```
 src/                          # Main application code (namespace: OpenDominion\)
   Application.php             # Custom Laravel Application class
-  Models/                     # 67 Eloquent models
+  Models/                     # Eloquent models, including tick/setup receipts and notification outbox
   Services/                   # Business logic layer
     Dominion/                 # Dominion-specific services
       Actions/                # 18 action service classes (one per game action)
@@ -71,8 +71,7 @@ tests/                        # PHPUnit tests
 ```
 HTTP Request
   → Kernel middleware (CSRF, session, auth)
-  → Custom middleware (UpdateUserLastOnline, ShareSelectedDominion)
-  → Route middleware (auth, dominionselected, role:*)
+  → Route middleware (auth, dominionselected, updatelastonline, role:*)
   → FormRequest validation (e.g., InvadeActionRequest)
   → Controller (orchestration only)
   → Service (business logic, DB transactions)
@@ -95,6 +94,18 @@ Every game action follows this structure:
 6. Records history via `HistoryService::record()`
 7. Queues notifications via `NotificationService`
 8. Returns `['message' => '...', 'alert-type' => 'success']` or throws `GameException`
+
+### Atomic Production and Tick Checkpoints
+
+- `RoundTickRun` is one checkpoint per round. Tick workers lock this row before selecting and locking eligible dominions. It is separate from the mutable business `rounds` row; player actions do not acquire checkpoint locks.
+- Production, spell/racial units, consumed history, queue cleanup, predictions, web/email records and production completion commit together. Missing predictions are rebuilt before any resource or timer changes.
+- Maintenance runs afterward in its own transaction with a separate completion marker. Its failure cannot undo production. Older requests are skipped, same-hour requests are deduplicated, and later scheduled hours proceed without reconstructing missed hours.
+- Normal HTTP/AI actions retain their existing transaction boundaries. Protection advance/undo/imports lock their own dominion. Quiet activity tracking uses `SKIP LOCKED` so bookkeeping does not delay reads or overwrite predictions.
+- `DominionSaved` suppresses recalculation during batch production. The tick restores calculator modes and logical time after processing.
+- `RoundSetupService` commits realm assignment or NPD generation with a unique completion receipt.
+- Web notifications commit with game changes. Only eligible email uses `NotificationOutbox`; the independent background command applies a batch budget and dedicated SMTP timeout. Email delivery is at least once.
+
+Apply all three new tables and drain old workers before activation. Initialize checkpoints with the next scheduled hourly command; they cannot recognize work already completed by legacy code. See GAME_SYSTEMS.md for execution and rollout details.
 
 ### Calculator Pattern (Raw + Multiplier)
 Most calculations separate base values from multipliers:
@@ -194,13 +205,14 @@ YAML/JSON files in app/data/
 
 ## Service Registration
 
-All services registered as **singletons** in `AppServiceProvider`. Dependency injection via constructors throughout. No static calls or service locator pattern (except rare `app()` calls for late binding in calculators).
+Most game services/calculators are registered as **singletons** in `AppServiceProvider`; helpers such as `RoundSetupService` resolve through the container without explicit singleton bindings. Both constructor injection and `app()` resolution are used. Tick processing restores mutable clock/calculator state after each operation.
 
 ## Scheduled Tasks (Console Kernel)
 
 | Schedule | Command | Purpose |
 |----------|---------|---------|
-| Hourly (:00) | `game:tick` | Main game tick processing |
+| Hourly (:00) | `game:tick` | Dispatch rankings/stats; current-hour production, separate maintenance, and setup; no overlap, one server |
+| Every minute (background) | `game:notifications:deliver` | Deliver committed email batches independently of game ticks |
 | Hourly (:30) | `game:ai` | AI/NPC dominion actions |
 | Every 5 minutes (:05-:25, :35-:55) | `game:ai:invade` | Attacker NPD invasions at each bot's hourly minute |
 | Daily (01:20) | `backup:clean` | Clean old backups |
