@@ -6,8 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use OpenDominion\HeroCombat\Content\Abilities;
 use OpenDominion\HeroCombat\Content\Ai\WeightedStrategy;
 use OpenDominion\HeroCombat\Content\Effects;
-use OpenDominion\HeroCombat\Content\Enemies;
 use OpenDominion\HeroCombat\Content\Encounters;
+use OpenDominion\HeroCombat\Content\Enemies;
 use OpenDominion\HeroCombat\Registry\CombatRegistry;
 
 /**

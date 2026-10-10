@@ -6,8 +6,8 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\HeroCombat\Contracts\Ability;
 use OpenDominion\HeroCombat\Contracts\AiStrategy;
 use OpenDominion\HeroCombat\Contracts\Effect;
-use OpenDominion\HeroCombat\Contracts\EnemyTemplate;
 use OpenDominion\HeroCombat\Contracts\Encounter;
+use OpenDominion\HeroCombat\Contracts\EnemyTemplate;
 
 /**
  * Explicit key => definition lookup for all combat content. Content is registered in

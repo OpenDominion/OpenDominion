@@ -6,8 +6,8 @@ use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\BattleState;
 use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\EncounterContext;
-use OpenDominion\HeroCombat\Engine\Random\RandomSource;
 use OpenDominion\HeroCombat\Engine\InMemorySpawner;
+use OpenDominion\HeroCombat\Engine\Random\RandomSource;
 use OpenDominion\HeroCombat\Registry\CombatRegistry;
 use OpenDominion\Providers\HeroCombatServiceProvider;
 

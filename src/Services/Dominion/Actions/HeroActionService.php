@@ -7,9 +7,9 @@ use LogicException;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\HeroCombat\Engine\ActionValidator;
 use OpenDominion\HeroCombat\Registry\CombatRegistry;
-use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\DominionTech;
@@ -18,8 +18,8 @@ use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroHeroUpgrade;
 use OpenDominion\Models\HeroUpgrade;
 use OpenDominion\Models\Spell;
-use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\HeroBattleService;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class HeroActionService
