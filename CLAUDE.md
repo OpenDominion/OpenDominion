@@ -383,4 +383,5 @@ For detailed technical documentation derived from source code analysis, see `doc
 - **[SERVICES.md](docs/claude/SERVICES.md)** - All 40+ service classes: 18 action services (with validation rules), domain services (TickService, QueueService, GovernmentService, etc.), top-level services (RealmAssignment, Notifications, etc.)
 - **[CALCULATORS.md](docs/claude/CALCULATORS.md)** - All 23 calculator classes with dependency graph, public methods, key constants/formulas, production values, combat mechanics
 - **[GAME_SYSTEMS.md](docs/claude/GAME_SYSTEMS.md)** - Tick system flow, queue processing, event/notification system, guard tiers, war lifecycle, protection, wonder tiers, raid structure, hero combat, realm assignment algorithm, AI/NPC system
+- **[HERO_COMBAT.md](docs/claude/HERO_COMBAT.md)** - Hero battle engine (`src/HeroCombat`): turn pipeline, teams, effects/stacking/tags, hook reference, damage pipeline, persistence, replays, recipes for adding abilities/effects/encounters
 - **[FRONTEND.md](docs/claude/FRONTEND.md)** - Frontend stack, Vite/Bootstrap 5 setup, build commands, asset pipeline, theme/skin details

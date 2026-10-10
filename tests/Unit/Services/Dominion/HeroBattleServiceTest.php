@@ -3,102 +3,69 @@
 namespace OpenDominion\Tests\Unit\Services\Dominion;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use OpenDominion\Helpers\HeroEncounterHelper;
-use OpenDominion\Helpers\HeroHelper;
+use OpenDominion\HeroCombat\Engine\ActionValidator;
+use OpenDominion\HeroCombat\Engine\Battle;
+use OpenDominion\HeroCombat\Engine\Effects\Hook;
+use OpenDominion\HeroCombat\Engine\IntentDecider;
+use OpenDominion\HeroCombat\Engine\Random\SeededRandomSource;
+use OpenDominion\HeroCombat\Registry\CombatRegistry;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
-use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroBattleAction;
-use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\Race;
-use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\Unit\HeroCombat\Support\BattleBuilder;
+use OpenDominion\Tests\Unit\HeroCombat\Support\BuildsBattles;
 
+/**
+ * Admiral Varos: telegraphed orders, reactive outcomes and a capped summon.
+ */
 class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 {
+    use BuildsBattles;
     use DatabaseTransactions;
 
-    /** @var HeroBattleService */
-    protected $heroBattleService;
-
-    /** @var HeroHelper */
-    protected $heroHelper;
-
-    /** @var HeroEncounterHelper */
-    protected $heroEncounterHelper;
-
-    /** @var Round */
-    protected $round;
-
-    /** @var Dominion */
-    protected $dominion;
-
-    /** @var HeroBattle */
-    protected $battle;
-
-    /** @var HeroCombatant */
-    protected $player;
-
-    /** @var HeroCombatant */
-    protected $varos;
+    protected Battle $battle;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $user = $this->createAndImpersonateUser();
-        $this->round = $this->createRound('-3 days midnight');
-        $this->dominion = $this->createDominionWithLegacyStats($user, $this->round, Race::where('name', 'Human')->firstOrFail());
-
-        Hero::create([
-            'dominion_id' => $this->dominion->id,
-            'name' => 'Test Hero',
-            'class' => 'blacksmith',
-            'experience' => 2000,
-            'class_data' => [],
-        ]);
-        $this->dominion->refresh();
-
-        $this->heroBattleService = $this->app->make(HeroBattleService::class);
-        $this->heroHelper = $this->app->make(HeroHelper::class);
-        $this->heroEncounterHelper = $this->app->make(HeroEncounterHelper::class);
-
-        $this->battle = HeroBattle::create(['round_id' => $this->round->id, 'pvp' => false]);
-        $this->player = $this->heroBattleService->createCombatant($this->battle, $this->dominion->hero);
-        $this->varos = $this->heroBattleService->createNonPlayerCombatant(
-            $this->battle,
-            $this->heroEncounterHelper->getEnemies()->get('admiral_varos')
-        );
+        $this->battle = BattleBuilder::make('admiral_varos')
+            ->withRegistry($this->app->make(CombatRegistry::class))
+            ->withRoster()
+            ->hero('Player')
+            ->build();
     }
 
-    /**
-     * Add n Aurelis Defenders to the battle.
-     *
-     * @return \Illuminate\Support\Collection<int, HeroCombatant>
-     */
-    protected function addDefenders(int $count)
+    protected function addDefenders(int $count): array
     {
-        $defenders = collect();
+        $defenders = [];
         for ($i = 0; $i < $count; $i++) {
-            $defenders->push($this->heroBattleService->createNonPlayerCombatant(
-                $this->battle,
-                $this->heroEncounterHelper->getEnemies()->get('aurelis_defender')
-            ));
+            $defenders[] = $this->battle->summon('aurelis_defender', 2, 'Aurelis Defender #' . ($i + 1));
         }
 
         return $defenders;
     }
 
-    protected function actionDef(string $key): array
+    protected function countDefenders(): int
     {
-        return $this->heroHelper->getCombatActions()->get($key);
+        return count($this->battle->withTemplate('aurelis_defender'));
     }
 
-    /** Re-read Varos with fresh relations so battle.combatants is current. */
-    protected function freshVaros(): HeroCombatant
+    protected function varos(): \OpenDominion\HeroCombat\Engine\CombatantState
     {
-        return HeroCombatant::with('battle.combatants')->find($this->varos->id);
+        return $this->named($this->battle, 'Admiral Varos');
+    }
+
+    protected function playerHealthLost(callable $action): int
+    {
+        $player = $this->named($this->battle, 'Player');
+        $before = $player->currentHealth;
+        $action();
+
+        return $before - $player->currentHealth;
     }
 
     // ------------------------------------------------------------------
@@ -107,113 +74,75 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
     public function testBroadside_PlayerDefends_TakesReducedDamage()
     {
-        // Arrange
-        $this->player->current_action = 'defend';
+        $this->declare($this->battle, 'Player', 'defend');
 
-        // Act
-        $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('broadside')
-        );
+        $text = '';
+        $damage = $this->playerHealthLost(function () use (&$text) {
+            $text = $this->perform($this->battle, 'Admiral Varos', 'broadside', 'Player');
+        });
 
-        // Assert
-        $this->assertEquals(15, $result['damage']);
-        $this->assertStringContainsString('drops behind the stonework', $result['description']);
+        $this->assertEquals(15, $damage);
+        $this->assertStringContainsString('drops behind the stonework', $text);
     }
 
     public function testBroadside_PlayerCounters_TakesFullVolley()
     {
-        // Arrange - Counter is the trap: strong against blade_flurry, worst here
-        $this->player->current_action = 'counter';
+        // Counter is the trap: strong against blade_flurry, worst here
+        $this->declare($this->battle, 'Player', 'counter');
 
-        // Act
-        $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('broadside')
-        );
+        $text = '';
+        $damage = $this->playerHealthLost(function () use (&$text) {
+            $text = $this->perform($this->battle, 'Admiral Varos', 'broadside', 'Player');
+        });
 
-        // Assert
-        $this->assertEquals(45, $result['damage']);
-        $this->assertStringContainsString('a blade that never comes', $result['description']);
+        $this->assertEquals(45, $damage);
+        $this->assertStringContainsString('a blade that never comes', $text);
     }
 
     public function testBroadside_PlayerAttacks_TakesDefaultDamage()
     {
-        // Arrange
-        $this->player->current_action = 'attack';
+        $this->declare($this->battle, 'Player', 'attack');
 
-        // Act
-        $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('broadside')
-        );
+        $damage = $this->playerHealthLost(function () {
+            $this->perform($this->battle, 'Admiral Varos', 'broadside', 'Player');
+        });
 
-        // Assert
-        $this->assertEquals(30, $result['damage']);
+        $this->assertEquals(30, $damage);
     }
 
     public function testBroadside_KillsEveryDefenderButNotVaros()
     {
-        // Arrange - a full quay
         $defenders = $this->addDefenders(2);
-        $this->player->current_action = 'defend';
-        $varosHealthBefore = $this->varos->current_health;
+        $this->declare($this->battle, 'Player', 'defend');
+        $varosHealthBefore = $this->varos()->currentHealth;
 
-        // Act
-        $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('broadside')
-        );
+        $text = $this->perform($this->battle, 'Admiral Varos', 'broadside', 'Player');
 
-        // Assert - the volley clears the board in one shot
         foreach ($defenders as $defender) {
-            $this->assertEquals(0, $defender->refresh()->current_health, 'Broadside should one-shot a defender');
+            $this->assertEquals(0, $defender->currentHealth, 'Broadside should one-shot a defender');
         }
-        $this->varos->refresh();
-        $this->assertEquals($varosHealthBefore, $this->varos->current_health, 'Varos stands behind his own volley');
-        $this->assertStringContainsString('do not discriminate', $result['description']);
+        $this->assertEquals($varosHealthBefore, $this->varos()->currentHealth, 'Varos stands behind his own volley');
+        $this->assertStringContainsString('do not discriminate', $text);
     }
 
     public function testBroadside_NoDefenders_OmitsDefenderMessage()
     {
-        // Arrange
-        $this->player->current_action = 'defend';
+        $this->declare($this->battle, 'Player', 'defend');
 
-        // Act
-        $result = $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('broadside')
-        );
+        $text = $this->perform($this->battle, 'Admiral Varos', 'broadside', 'Player');
 
-        // Assert
-        $this->assertStringNotContainsString('do not discriminate', $result['description']);
+        $this->assertStringNotContainsString('do not discriminate', $text);
     }
 
     public function testBroadside_ClearedQuayAllowsRallyToRefill()
     {
-        // Arrange - board is full, then the guns clear it
         $this->addDefenders(2);
-        $this->player->current_action = 'defend';
-        $this->heroBattleService->processBroadsideAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('broadside')
-        );
+        $this->declare($this->battle, 'Player', 'defend');
+        $this->perform($this->battle, 'Admiral Varos', 'broadside', 'Player');
         $this->assertEquals(0, $this->countDefenders());
 
-        // Act - Varos rallies again
-        $this->heroBattleService->processRallyAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('rally_the_defenders')
-        );
+        $this->perform($this->battle, 'Admiral Varos', 'rally_the_defenders', 'Player');
 
-        // Assert
         $this->assertEquals(1, $this->countDefenders());
     }
 
@@ -223,101 +152,57 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
     public function testRally_PlayerAttacks_SummonsNothing()
     {
-        // Arrange
-        $this->player->current_action = 'attack';
+        $this->declare($this->battle, 'Player', 'attack');
 
-        // Act
-        $result = $this->heroBattleService->processRallyAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('rally_the_defenders')
-        );
+        $text = $this->perform($this->battle, 'Admiral Varos', 'rally_the_defenders', 'Player');
 
-        // Assert
         $this->assertEquals(0, $this->countDefenders());
-        $this->assertStringContainsString('silences him', $result['description']);
+        $this->assertStringContainsString('silences him', $text);
     }
 
     public function testRally_PlayerDefends_SummonsOneDefender()
     {
-        // Arrange
-        $this->player->current_action = 'defend';
+        $this->declare($this->battle, 'Player', 'defend');
 
-        // Act
-        $result = $this->heroBattleService->processRallyAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('rally_the_defenders')
-        );
+        $text = $this->perform($this->battle, 'Admiral Varos', 'rally_the_defenders', 'Player');
 
-        // Assert - one at a time, never a partial count
         $this->assertEquals(1, $this->countDefenders());
-        $this->assertStringContainsString('a defender rushes to his aid', $result['description']);
+        $this->assertStringContainsString('a defender rushes to his aid', $text);
+        $this->assertEquals(2, $this->battle->withTemplate('aurelis_defender')[0]->team, 'Summons join the summoner\'s team');
     }
 
     public function testRally_RepeatedCalls_FillToCapOneAtATime()
     {
-        // Arrange
-        $this->player->current_action = 'defend';
+        $this->declare($this->battle, 'Player', 'defend');
 
-        // Act - three calls against a cap of two
         for ($i = 0; $i < 3; $i++) {
-            $this->heroBattleService->processRallyAction(
-                $this->freshVaros(),
-                $this->player,
-                $this->actionDef('rally_the_defenders')
-            );
+            $this->perform($this->battle, 'Admiral Varos', 'rally_the_defenders', 'Player');
         }
 
-        // Assert
         $this->assertEquals(2, $this->countDefenders());
     }
 
     public function testRally_AtCap_SummonsNothing()
     {
-        // Arrange
         $this->addDefenders(2);
-        $this->player->current_action = 'defend';
+        $this->declare($this->battle, 'Player', 'defend');
 
-        // Act
-        $result = $this->heroBattleService->processRallyAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('rally_the_defenders')
-        );
+        $text = $this->perform($this->battle, 'Admiral Varos', 'rally_the_defenders', 'Player');
 
-        // Assert
         $this->assertEquals(2, $this->countDefenders());
-        $this->assertStringContainsString('no more defenders answer', $result['description']);
+        $this->assertStringContainsString('no more defenders answer', $text);
     }
 
     public function testRally_DeadDefendersDoNotCountTowardCap()
     {
-        // Arrange - board is full but all are dead
-        $defenders = $this->addDefenders(2);
-        foreach ($defenders as $defender) {
-            $defender->update(['current_health' => 0]);
+        foreach ($this->addDefenders(2) as $defender) {
+            $defender->currentHealth = 0;
         }
-        $this->player->current_action = 'defend';
+        $this->declare($this->battle, 'Player', 'defend');
 
-        // Act
-        $this->heroBattleService->processRallyAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('rally_the_defenders')
-        );
+        $this->perform($this->battle, 'Admiral Varos', 'rally_the_defenders', 'Player');
 
-        // Assert - a fresh defender arrives
         $this->assertEquals(1, $this->countDefenders());
-    }
-
-    protected function countDefenders(): int
-    {
-        return HeroCombatant::where('hero_battle_id', $this->battle->id)
-            ->whereNull('hero_id')
-            ->where('id', '!=', $this->varos->id)
-            ->where('current_health', '>', 0)
-            ->count();
     }
 
     // ------------------------------------------------------------------
@@ -326,153 +211,150 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
     public function testChallenge_PlayerFocuses_Negated()
     {
-        // Arrange
-        $this->player->current_action = 'focus';
+        $this->declare($this->battle, 'Player', 'focus');
 
-        // Act
-        $result = $this->heroBattleService->processChallengeAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('admirals_challenge')
-        );
+        $text = '';
+        $damage = $this->playerHealthLost(function () use (&$text) {
+            $text = $this->perform($this->battle, 'Admiral Varos', 'admirals_challenge', 'Player');
+        });
 
-        // Assert
-        $this->assertEquals(0, $result['damage']);
-        $this->assertStringContainsString('goes unanswered', $result['description']);
+        $this->assertEquals(0, $damage);
+        $this->assertStringContainsString('goes unanswered', $text);
     }
 
     public function testChallenge_PlayerAttacks_TakesTheBait()
     {
-        // Arrange
-        $this->player->current_action = 'attack';
+        $this->declare($this->battle, 'Player', 'attack');
 
-        // Act
-        $result = $this->heroBattleService->processChallengeAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('admirals_challenge')
-        );
+        $text = '';
+        $damage = $this->playerHealthLost(function () use (&$text) {
+            $text = $this->perform($this->battle, 'Admiral Varos', 'admirals_challenge', 'Player');
+        });
 
-        // Assert
-        $this->assertEquals(45, $result['damage']);
-        $this->assertStringContainsString('takes the bait', $result['description']);
+        $this->assertEquals(45, $damage);
+        $this->assertStringContainsString('takes the bait', $text);
     }
 
     public function testChallenge_PlayerDefends_TakesDefaultDamage()
     {
-        // Arrange
-        $this->player->current_action = 'defend';
+        $this->declare($this->battle, 'Player', 'defend');
 
-        // Act
-        $result = $this->heroBattleService->processChallengeAction(
-            $this->freshVaros(),
-            $this->player,
-            $this->actionDef('admirals_challenge')
-        );
+        $damage = $this->playerHealthLost(function () {
+            $this->perform($this->battle, 'Admiral Varos', 'admirals_challenge', 'Player');
+        });
 
-        // Assert
-        $this->assertEquals(25, $result['damage']);
+        $this->assertEquals(25, $damage);
     }
 
     // ------------------------------------------------------------------
     // Telegraph cycle
     // ------------------------------------------------------------------
 
-    public function testProcessStatus_OddTurn_TelegraphsAnOrder()
+    protected function orders(): \OpenDominion\HeroCombat\Engine\Effects\EffectInstance
     {
-        // Arrange
-        $this->battle->update(['current_turn' => 1]);
+        return $this->battle->effects->find($this->varos(), 'admirals_orders');
+    }
 
-        // Act
-        $this->heroBattleService->processStatus($this->freshVaros());
+    protected function decideVaros(): string
+    {
+        return (new IntentDecider($this->battle, new ActionValidator($this->battle)))->decide($this->varos())->abilityKey;
+    }
 
-        // Assert
-        $this->varos->refresh();
+    public function testTelegraph_OddTurnEnd_TelegraphsAnOrder()
+    {
+        $this->battle->state->turn = 1;
+
+        $this->battle->dispatcher->runEverywhere(Hook::TurnEnd, $this->battle);
+
         $this->assertContains(
-            $this->varos->status['telegraphed_order'],
+            $this->orders()->data['pending'],
             ['broadside', 'rally_the_defenders', 'admirals_challenge']
         );
     }
 
     public function testDetermineAction_EvenTurn_FiresTelegraphedOrder()
     {
-        // Arrange
-        $this->battle->update(['current_turn' => 2]);
-        $this->varos->update(['status' => ['telegraphed_order' => 'broadside']]);
+        $this->battle->state->turn = 2;
+        $this->orders()->data['pending'] = 'broadside';
 
-        // Act
-        $action = $this->heroBattleService->determineAction($this->freshVaros());
+        $action = $this->decideVaros();
 
-        // Assert - order fires and is cleared so it cannot repeat
-        $this->assertEquals('broadside', $action['action']);
-        $this->varos->refresh();
-        $this->assertArrayNotHasKey('telegraphed_order', $this->varos->status ?? []);
+        // Order fires and is cleared so it cannot repeat
+        $this->assertEquals('broadside', $action);
+        $this->assertArrayNotHasKey('pending', $this->orders()->data);
     }
 
     public function testDetermineAction_OddTurn_DoesNotFireTelegraphedOrder()
     {
-        // Arrange
-        $this->battle->update(['current_turn' => 3]);
-        $this->varos->update(['status' => ['telegraphed_order' => 'broadside']]);
+        $this->battle->state->turn = 3;
+        $this->orders()->data['pending'] = 'broadside';
 
-        // Act
-        $action = $this->heroBattleService->determineAction($this->freshVaros());
+        $action = $this->decideVaros();
 
-        // Assert - free turn, order stays queued for the even turn
-        $this->assertNotEquals('broadside', $action['action']);
-        $this->varos->refresh();
-        $this->assertEquals('broadside', $this->varos->status['telegraphed_order']);
+        // Free turn, order stays queued for the even turn
+        $this->assertNotEquals('broadside', $action);
+        $this->assertEquals('broadside', $this->orders()->data['pending']);
     }
 
     public function testProcessTurn_DrivesTelegraphThenFiresOrder()
     {
-        // Arrange - queue several turns so processTurn chains through them
-        $this->player->update(['actions' => [
-            ['action' => 'defend', 'target' => null],
-            ['action' => 'defend', 'target' => null],
-            ['action' => 'defend', 'target' => null],
-            ['action' => 'defend', 'target' => null],
-        ]]);
-        $varosHealthBefore = $this->varos->current_health;
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound('-3 days midnight');
+        $dominion = $this->createDominionWithLegacyStats($user, $round, Race::where('name', 'Human')->firstOrFail());
+        Hero::create([
+            'dominion_id' => $dominion->id,
+            'name' => 'Test Hero',
+            'class' => 'blacksmith',
+            'experience' => 2000,
+            'class_data' => [],
+        ]);
+        $dominion->refresh();
 
-        // Act - run the real turn loop
-        $this->heroBattleService->processTurn($this->battle->fresh());
+        $heroBattleService = $this->app->make(HeroBattleService::class);
+        $heroBattle = $heroBattleService->createPracticeBattle($dominion, 'admiral_varos');
+        $player = $heroBattle->combatants()->where('dominion_id', $dominion->id)->firstOrFail();
+        $varos = $heroBattle->combatants()->where('template_key', 'admiral_varos')->firstOrFail();
+        $player->update(['actions' => array_fill(0, 4, ['ability' => 'defend', 'target' => null])]);
+        $varosHealthBefore = $varos->current_health;
 
-        // Assert - an order fired through the live loop
-        $rows = HeroBattleAction::where('hero_battle_id', $this->battle->id)->get();
+        $heroBattleService->processTurn($heroBattle->fresh());
+
+        // An order fired through the live loop
+        $rows = HeroBattleAction::where('hero_battle_id', $heroBattle->id)->get();
         $orders = ['broadside', 'rally_the_defenders', 'admirals_challenge'];
         $this->assertNotEmpty(
             array_intersect($rows->pluck('action')->all(), $orders),
             'Expected a telegraphed order to fire on an even turn'
         );
 
-        // Assert - the player was warned first, in flavour text only
+        // The player was warned first, in flavour text only
         $log = $rows->pluck('description')->implode(' ');
         $tells = ['Gunports slide open', 'turns toward his ship', 'crew begins to jeer'];
         $this->assertTrue(
-            collect($tells)->contains(function ($tell) use ($log) { return str_contains($log, $tell); }),
+            collect($tells)->contains(fn ($tell) => str_contains($log, $tell)),
             'Expected a telegraph tell in the combat log'
         );
 
-        // Assert - Varos never damages himself with his own volley
-        $this->varos->refresh();
-        $this->assertLessThanOrEqual($varosHealthBefore, $this->varos->current_health);
-        $this->assertGreaterThan(0, $this->varos->current_health);
+        // Varos never damages himself with his own volley
+        $varos->refresh();
+        $this->assertLessThanOrEqual($varosHealthBefore, $varos->current_health);
+        $this->assertGreaterThan(0, $varos->current_health);
     }
 
     public function testTelegraphTells_DoNotNameTheirCounterMove()
     {
-        // Arrange - roll telegraphs across many odd turns to sample all three
+        // Roll telegraphs across many odd turns to sample all three
         $log = '';
         for ($i = 0; $i < 30; $i++) {
-            $this->battle->update(['current_turn' => 1]);
-            $this->varos->update(['status' => null]);
-            $this->heroBattleService->processStatus($this->freshVaros());
-            $log .= HeroBattleAction::where('hero_battle_id', $this->battle->id)
-                ->where('action', 'status')->pluck('description')->implode(' ');
+            $this->battle->state->turn = 1;
+            $this->battle->random = new SeededRandomSource($i);
+            unset($this->orders()->data['pending']);
+            $this->battle->dispatcher->runEverywhere(Hook::TurnEnd, $this->battle);
+            $log .= ' ' . $this->battle->log->text();
+            $this->battle->log->flush();
         }
 
-        // Assert - the tells stay pure flavour; the player must learn them
+        // The tells stay pure flavour; the player must learn them
         foreach (['Defend', 'Attack', 'Focus', 'Counter', 'Recover'] as $actionName) {
             $this->assertStringNotContainsString($actionName, $log);
         }
@@ -480,10 +362,12 @@ class HeroBattleServiceTest extends AbstractBrowserKitTestCase
 
     public function testEncounter_AdmiralVarosIsRegistered()
     {
-        // Assert - the key referenced by Round51RaidSeeder resolves
-        $encounter = $this->heroEncounterHelper->getEncounters()->get('admiral_varos');
-        $this->assertNotNull($encounter);
-        $this->assertNotNull($this->heroEncounterHelper->getEnemies()->get($encounter['enemies'][0]['key']));
-        $this->assertNotNull($this->heroEncounterHelper->getEnemies()->get('aurelis_defender'));
+        // The key referenced by Round51RaidSeeder resolves
+        $registry = $this->app->make(CombatRegistry::class);
+        $encounter = $registry->encounter('admiral_varos');
+        $roster = $encounter->roster(new \OpenDominion\HeroCombat\Engine\EncounterContext());
+
+        $this->assertNotNull($registry->enemy($roster[0]['template']));
+        $this->assertNotNull($registry->enemy('aurelis_defender'));
     }
 }

@@ -121,7 +121,7 @@ Castle improvement effectiveness.
 - Coefficients: science/keep (4000), spires/harbor (5000), forges/walls (7500)
 
 ### HeroCalculator
-Hero XP and perk computation.
+Hero XP and perk computation. (Battle stats and damage live in the hero combat engine: `HeroCombat/Engine/Stats/StatCalculator` and `Damage/DamageResolver`.)
 - `getExperienceGain()` from invasions, exploration, spying, magic
 - `getHeroPerkMultiplier()`, `getPassiveBonus()`
 - `INACTIVE_CLASS_PENALTY` = 0.5, `CLASS_CHANGE_COOLDOWN_HOURS` = 96

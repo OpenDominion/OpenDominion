@@ -107,9 +107,12 @@ Realm bounty board system.
 - Daily limits: 8 RP reward collections, 8 XP-only collections
 - Rewards: 10 tech + 10 XP (if successful op), otherwise just XP
 
-### HeroBattleService / HeroTournamentService
-Turn-based 1v1 hero combat and multi-player tournaments.
-- `DEFAULT_TIME_BANK` = 2h, `DEFAULT_STRATEGY` = 'balanced'
+### HeroBattleService / HeroBattleOutcomeService / HeroTournamentService
+Entry points for hero combat; the rules live in `src/HeroCombat` (see [HERO_COMBAT.md](HERO_COMBAT.md)).
+- `createBattle()` (1v1 PvP), `createTeamBattle()`, `createPracticeBattle()`, `createEncounterBattle()` (PvE, used by raids)
+- `processTurn()` locks the battle row, advances the engine while everyone is ready, persists, and finalizes outcomes
+- `HeroBattleOutcomeService::finalize()` - per-team W/L/D, Elo vs opposing team average, tournament standings, raid contributions
+- Time bank 2h (`CombatantFactory::DEFAULT_TIME_BANK`), default strategy 'balanced'
 - Processed during hourly tick
 
 ### InfoOpService

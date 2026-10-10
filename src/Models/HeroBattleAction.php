@@ -2,20 +2,19 @@
 
 namespace OpenDominion\Models;
 
-use OpenDominion\Calculators\Dominion\HeroCalculator;
-
 /**
  * OpenDominion\Models\HeroBattleAction
  *
  * @property int $id
  * @property int $hero_battle_id
- * @property int $combatant_id
+ * @property int|null $combatant_id
  * @property int|null $target_combatant_id
  * @property int $turn
  * @property string $action
  * @property int $damage
  * @property int $health
  * @property string $description
+ * @property array|null $events structured BattleEvent payloads
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\HeroBattle $battle
@@ -29,6 +28,7 @@ use OpenDominion\Calculators\Dominion\HeroCalculator;
 class HeroBattleAction extends AbstractModel
 {
     protected $casts = [
+        'events' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

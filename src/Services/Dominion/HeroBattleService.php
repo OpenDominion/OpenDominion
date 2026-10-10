@@ -2,52 +2,49 @@
 
 namespace OpenDominion\Services\Dominion;
 
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
-use OpenDominion\Calculators\RaidCalculator;
 use OpenDominion\Exceptions\GameException;
-use OpenDominion\Helpers\HeroEncounterHelper;
-use OpenDominion\Helpers\HeroHelper;
+use OpenDominion\HeroCombat\Content\Loadouts\HeroClassLoadouts;
+use OpenDominion\HeroCombat\Engine\Battle;
+use OpenDominion\HeroCombat\Engine\BattleEngine;
+use OpenDominion\HeroCombat\Engine\BattleState;
+use OpenDominion\HeroCombat\Engine\EncounterContext;
+use OpenDominion\HeroCombat\Engine\Random\SeededRandomSource;
+use OpenDominion\HeroCombat\Persistence\BattleRepository;
+use OpenDominion\HeroCombat\Persistence\CombatantFactory;
+use OpenDominion\HeroCombat\Registry\CombatRegistry;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Hero;
 use OpenDominion\Models\HeroBattle;
-use OpenDominion\Models\HeroBattleAction;
 use OpenDominion\Models\HeroBattleQueue;
-use OpenDominion\Models\HeroCombatant;
-use OpenDominion\Models\RaidContribution;
+use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Round;
-use OpenDominion\Services\Dominion\HistoryService;
-use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\NotificationService;
 
+/**
+ * Application-facing entry point for hero battles: creating them, matchmaking, and
+ * advancing turns. The rules themselves live in src/HeroCombat.
+ */
 class HeroBattleService
 {
-    /** @var HeroCalculator */
-    protected $heroCalculator;
+    public const PLAYER_TEAM = 1;
+    public const ENEMY_TEAM = 2;
 
-    /** @var HeroEncounterHelper */
-    protected $heroEncounterHelper;
-
-    /** @var HeroHelper */
-    protected $heroHelper;
-
-    /** @var ProtectionService */
-    protected $protectionService;
-
-    /**
-     * HeroBattleService constructor.
-     */
-    public function __construct()
-    {
-        $this->heroCalculator = app(HeroCalculator::class);
-        $this->heroEncounterHelper = app(HeroEncounterHelper::class);
-        $this->heroHelper = app(HeroHelper::class);
-        $this->protectionService = app(ProtectionService::class);
+    public function __construct(
+        protected CombatRegistry $registry,
+        protected BattleRepository $repository,
+        protected CombatantFactory $combatantFactory,
+        protected HeroClassLoadouts $loadouts,
+        protected HeroCalculator $heroCalculator,
+        protected HeroBattleOutcomeService $outcomeService,
+        protected ProtectionService $protectionService,
+        protected BattleEngine $engine = new BattleEngine(),
+    ) {
     }
 
-    public const DEFAULT_TIME_BANK = 2 * 60 * 60;
-    public const DEFAULT_STRATEGY = 'balanced';
-
+    /**
+     * A 1v1 PvP battle.
+     */
     public function createBattle(Dominion $challenger, Dominion $opponent): HeroBattle
     {
         if ($challenger->round_id !== $opponent->round_id) {
@@ -58,62 +55,57 @@ class HeroBattleService
             throw new GameException('You cannot challenge yourself');
         }
 
-        $challengerHero = $challenger->heroes()->first();
-        if ($challengerHero === null) {
+        if ($challenger->hero === null) {
             throw new GameException('Challenger must have a hero to battle');
         }
 
-        $opponentHero = $opponent->heroes()->first();
-        if ($opponentHero === null) {
+        if ($opponent->hero === null) {
             throw new GameException('Opponent must have a hero to battle');
         }
 
-        $heroBattle = HeroBattle::create(['round_id' => $challenger->round_id]);
-        $challengerCombatant = $this->createCombatant($heroBattle, $challengerHero);
-        $opponentCombatant = $this->createCombatant($heroBattle, $opponentHero);
+        return $this->createTeamBattle([[$challenger], [$opponent]]);
+    }
 
-        // Send Notifications
+    /**
+     * A PvP battle between teams of dominions; team numbers follow array order.
+     *
+     * @param array<int, Dominion[]> $teams
+     */
+    public function createTeamBattle(array $teams): HeroBattle
+    {
+        $dominions = array_merge(...$teams);
+
+        $heroBattle = DB::transaction(function () use ($teams, $dominions) {
+            $heroBattle = $this->newBattle($dominions[0]->round_id, BattleState::MODE_PVP);
+            $battle = $this->repository->load($heroBattle);
+
+            foreach (array_values($teams) as $index => $members) {
+                foreach ($members as $dominion) {
+                    $this->combatantFactory->addHero($battle, $dominion->hero, $index + 1);
+                }
+            }
+
+            $this->repository->persist($battle, $heroBattle);
+
+            return $heroBattle;
+        });
+
         $notificationService = app(NotificationService::class);
-        $notificationService->queueNotification('hero_battle', ['status' => 'started']);
-        $notificationService->sendNotifications($challengerHero->dominion, 'irregular_dominion');
-        $notificationService->queueNotification('hero_battle', ['status' => 'started']);
-        $notificationService->sendNotifications($opponentHero->dominion, 'irregular_dominion');
+        foreach ($dominions as $dominion) {
+            $notificationService->queueNotification('hero_battle', ['status' => 'started']);
+            $notificationService->sendNotifications($dominion, 'irregular_dominion');
+        }
 
         return $heroBattle;
     }
 
-    public function createCombatant(HeroBattle $heroBattle, Hero $hero): HeroCombatant
-    {
-        $combatStats = $this->heroCalculator->getHeroCombatStats($hero);
-        $combatActions = $this->heroHelper->getCombatActions();
-        $classAbilities = $combatActions->where('class', $hero->class)->keys();
-
-        return HeroCombatant::create([
-            'hero_battle_id' => $heroBattle->id,
-            'hero_id' => $hero->id,
-            'dominion_id' => $hero->dominion_id,
-            'name' => $hero->name,
-            'health' => $combatStats['health'],
-            'attack' => $combatStats['attack'],
-            'defense' => $combatStats['defense'],
-            'evasion' => $combatStats['evasion'],
-            'focus' => $combatStats['focus'],
-            'counter' => $combatStats['counter'],
-            'recover' => $combatStats['recover'],
-            'current_health' => $combatStats['health'],
-            'time_bank' => self::DEFAULT_TIME_BANK,
-            'strategy' => self::DEFAULT_STRATEGY,
-            //'abilities' => $classAbilities->toArray(),
-        ]);
-    }
-
-    public function createPracticeBattle(Dominion $dominion, string $encounter = 'default'): HeroBattle
+    public function createPracticeBattle(Dominion $dominion, ?string $encounterKey = null): HeroBattle
     {
         if ($this->protectionService->isUnderProtection($dominion)) {
             throw new GameException('You cannot battle while under protection');
         }
 
-        if ($dominion->hero == null) {
+        if ($dominion->hero === null) {
             throw new GameException('You must have a hero to practice');
         }
 
@@ -121,70 +113,56 @@ class HeroBattleService
             throw new GameException('You already have a battle in progress');
         }
 
-        $heroBattle = HeroBattle::create(['round_id' => $dominion->round_id, 'pvp' => false]);
-        $dominionCombatant = $this->createCombatant($heroBattle, $dominion->hero);
-
-        // Inject special abilities for the Planewalker encounter
-        if ($encounter === 'planewalker') {
-            if ($this->heroCalculator->heroHasClass($dominion->hero, 'infiltrator')) {
-                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['shadow_strike']);
-            }
-            if ($this->heroCalculator->heroHasClass($dominion->hero, 'sorcerer')) {
-                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['great_flood']);
-            }
-            if ($this->heroCalculator->heroHasClass($dominion->hero, 'engineer')) {
-                $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['demolish']);
-            }
-            $dominionCombatant->save();
-        }
-
-        // Rex Lunae grants Cleanse -- without it the curse cannot be answered
-        if ($encounter === 'rex_lunae') {
-            $dominionCombatant->abilities = array_merge($dominionCombatant->abilities ?? [], ['cleanse']);
-            $dominionCombatant->save();
-        }
-
-        if ($encounter == 'default') {
-            $nonPlayerStats = $this->heroCalculator->getHeroCombatStats($dominion->hero);
-            $nonPlayerStats['name'] = 'Evil Twin';
-            $this->createNonPlayerCombatant($heroBattle, $nonPlayerStats);
-        } else {
-            $encounterDefinitions = $this->heroEncounterHelper->getEncounters();
-            $enemyDefinitions = $this->heroEncounterHelper->getEnemies();
-
-            $encounter = $encounterDefinitions->get($encounter);
-            foreach ($encounter['enemies'] as $enemy) {
-                $enemyStats = $enemyDefinitions->get($enemy['key']);
-                $enemyStats['name'] = $enemy['name'];
-                $this->createNonPlayerCombatant($heroBattle, $enemyStats);
-            }
-        }
-
-        return $heroBattle;
+        return $this->createEncounterBattle($encounterKey ?? 'default', [$dominion], BattleState::MODE_PRACTICE);
     }
 
-    public function createNonPlayerCombatant(HeroBattle $heroBattle, array $combatStats): HeroCombatant
-    {
-        return HeroCombatant::create([
-            'hero_battle_id' => $heroBattle->id,
-            'hero_id' => null,
-            'dominion_id' => null,
-            'name' => $combatStats['name'],
-            'health' => $combatStats['health'],
-            'attack' => $combatStats['attack'],
-            'defense' => $combatStats['defense'],
-            'evasion' => $combatStats['evasion'],
-            'focus' => $combatStats['focus'],
-            'counter' => $combatStats['counter'],
-            'recover' => $combatStats['recover'],
-            'shield' => $combatStats['shield'] ?? 0,
-            'current_health' => $combatStats['health'],
-            'time_bank' => 0,
-            'automated' => true,
-            'strategy' => $combatStats['strategy'] ?? self::DEFAULT_STRATEGY,
-            'abilities' => $combatStats['abilities'] ?? null,
-            'status' => $combatStats['status'] ?? null,
-        ]);
+    /**
+     * A PvE battle: the dominions' heroes (team 1) against an encounter's roster (team 2).
+     *
+     * @param Dominion[] $dominions
+     */
+    public function createEncounterBattle(
+        string $encounterKey,
+        array $dominions,
+        string $mode,
+        ?RaidObjectiveTactic $tactic = null,
+        int $priorWins = 0,
+    ): HeroBattle {
+        if (!$this->registry->hasEncounter($encounterKey)) {
+            throw new GameException('This encounter is not available.');
+        }
+
+        $encounter = $this->registry->encounter($encounterKey);
+
+        return DB::transaction(function () use ($encounter, $dominions, $mode, $tactic, $priorWins) {
+            $heroBattle = $this->newBattle($dominions[0]->round_id, $mode, $encounter->key(), $tactic);
+            $battle = $this->repository->load($heroBattle);
+
+            foreach ($dominions as $dominion) {
+                $combatant = $this->combatantFactory->addHero($battle, $dominion->hero, self::PLAYER_TEAM);
+                $grants = $encounter->playerGrants($combatant, $this->combatantFactory->heroClasses($dominion->hero));
+                $combatant->abilities = $this->loadouts->withGrants($combatant->abilities, $grants);
+            }
+
+            $context = new EncounterContext(
+                priorWins: $priorWins,
+                leaderStats: $this->heroCalculator->getHeroCombatStats($dominions[0]->hero),
+            );
+
+            foreach ($encounter->roster($context) as $entry) {
+                $battle->spawn(
+                    $this->registry->enemy($entry['template']),
+                    self::ENEMY_TEAM,
+                    $entry['name'] ?? null,
+                    $entry['stats'] ?? [],
+                    $entry['effects'] ?? [],
+                );
+            }
+
+            $this->repository->persist($battle, $heroBattle);
+
+            return $heroBattle;
+        });
     }
 
     public function joinQueue(Dominion $dominion): ?HeroBattle
@@ -212,13 +190,14 @@ class HeroBattleService
             HeroBattleQueue::create([
                 'hero_id' => $dominion->hero->id,
                 'level' => $this->heroCalculator->getHeroLevel($dominion->hero),
-                'rating' => $dominion->hero->combat_rating
+                'rating' => $dominion->hero->combat_rating,
             ]);
             return null;
-        } else {
-            HeroBattleQueue::where('hero_id', $opponent->hero->id)->delete();
-            return $this->createBattle($dominion, $opponent->hero->dominion);
         }
+
+        HeroBattleQueue::where('hero_id', $opponent->hero->id)->delete();
+
+        return $this->createBattle($dominion, $opponent->hero->dominion);
     }
 
     public function leaveQueue(Dominion $dominion): void
@@ -248,6 +227,10 @@ class HeroBattleService
         }
     }
 
+    /**
+     * Spends time banks for humans who have not chosen an action, and switches anyone out
+     * of time to automated play.
+     */
     public function checkTime(HeroBattle $heroBattle): void
     {
         foreach ($heroBattle->combatants as $combatant) {
@@ -262,1470 +245,63 @@ class HeroBattleService
         $heroBattle->save();
     }
 
+    /**
+     * Resolves turns for as long as every living combatant is ready.
+     *
+     * @return bool whether at least one turn was resolved
+     */
     public function processTurn(HeroBattle $heroBattle): bool
     {
         if ($heroBattle->finished) {
             return false;
         }
 
-        $livingCombatants = $heroBattle->combatants->where('current_health', '>', '0');
-
-        // Eject if not all combatants are ready
-        foreach ($livingCombatants as $combatant) {
-            if (!$combatant->isReady()) {
+        return DB::transaction(function () use ($heroBattle) {
+            $locked = $this->repository->lock($heroBattle);
+            if ($locked->finished) {
                 return false;
             }
-        }
 
-        // Determine which action to take via queue or automated strategy
-        foreach ($livingCombatants as $combatant) {
-            $nextAction = $this->determineAction($combatant);
-            $combatant->current_action = $nextAction['action'];
-            $combatant->current_target = $nextAction['target'];
-        }
-
-        // Fortify resolves before damage regardless of combatant order
-        $livingCombatants = $livingCombatants->sortBy(function ($combatant) {
-            return $combatant->current_action === 'fortify' ? 0 : 1;
-        });
-
-        // Perform the actions and persist results
-        foreach ($livingCombatants as $combatant) {
-            $actionDefinitions = $this->heroHelper->getAvailableCombatActions($combatant);
-            $actionDef = $actionDefinitions->get($combatant->current_action);
-
-            if ($combatant->current_target !== null) {
-                // Use specified target
-                $target = $livingCombatants->where('id', $combatant->current_target)->first();
-            } elseif ($actionDef['type'] == 'hostile') {
-                // Attack a random opponent
-                $target = $livingCombatants->where('hero_id', '!=', $combatant->hero_id)->random();
-            } else {
-                // Default to self
-                $target = $combatant;
-            }
-
-            $result = $this->processAction($combatant, $target, $actionDef);
-
-            $combatant->current_health += $result['health'];
-            if ($target->shield > 0) {
-                $shield_damage = min($target->shield, $result['damage']);
-                $target->shield -= $shield_damage;
-                $result['damage'] -= $shield_damage;
-            }
-            $target->current_health -= $result['damage'];
-
-            $result['description'] .= $this->processPostCombat($combatant);
-            $result['description'] .= $this->processPostCombat($target);
-
-            // Soul Rend kill message
-            if ($combatant->current_action == 'soul_rend' && $target->current_health <= 0) {
-                $result['description'] .= " {$combatant->name} rips out the heart of {$target->name} and devours their soul!";
-            }
-
-            $action = HeroBattleAction::create([
-                'hero_battle_id' => $heroBattle->id,
-                'combatant_id' => $combatant->id,
-                'target_combatant_id' => $target->id,
-                'turn' => $heroBattle->current_turn,
-                'action' => $combatant->current_action,
-                'damage' => $result['damage'],
-                'health' => $result['health'],
-                'description' => $result['description']
-            ]);
-        }
-
-        // Prepare combatants for next turn
-        foreach ($livingCombatants as $combatant) {
-            if ($combatant->current_health > $combatant->health) {
-                $combatant->current_health = $combatant->health;
-            }
-            $combatant->last_action = $combatant->current_action;
-            unset($combatant->current_action);
-            unset($combatant->current_target);
-            $combatant->save();
-        }
-
-        foreach ($heroBattle->combatants as $combatant) {
-            // Refresh combatant from database to get latest status updates
-            $combatant->refresh();
-            $this->processStatus($combatant);
-        }
-
-        // Wounded retreat: check after all actions and heals have resolved
-        $retreatedBoss = $heroBattle->combatants
-            ->where('hero_id', null)
-            ->first(function ($c) {
-                return $c->current_health <= 0 && in_array('wounded_retreat', $c->abilities ?? []);
+            $battle = $this->repository->load($locked);
+            $turns = $this->engine->advance($battle, function (Battle $battle) {
+                $battle->random = SeededRandomSource::forTurn($battle->state->seed, $battle->turn());
             });
 
-        if ($retreatedBoss !== null) {
-            $minions = $heroBattle->combatants
-                ->where('hero_id', null)
-                ->where('id', '!=', $retreatedBoss->id)
-                ->filter(function ($c) { return $c->current_health > 0; });
-
-            if ($minions->isNotEmpty()) {
-                foreach ($minions as $minion) {
-                    $minion->current_health = 0;
-                    $minion->save();
-                }
-                HeroBattleAction::create([
-                    'hero_battle_id' => $heroBattle->id,
-                    'combatant_id' => $retreatedBoss->id,
-                    'target_combatant_id' => null,
-                    'turn' => $heroBattle->current_turn,
-                    'action' => 'status',
-                    'damage' => 0,
-                    'health' => 0,
-                    'description' => 'Without their master, the Void Constructs crumble and collapse!',
-                ]);
-            }
-        }
-
-        // Reload combatants so newly-spawned forms (e.g. aspect_shift) are seen by the win check
-        $heroBattle->load('combatants');
-
-        $livingCombatants = $heroBattle->combatants->where('current_health', '>', '0');
-        if ($livingCombatants->count() == 0) {
-            // Everyone was eliminated (draw)
-            $this->setWinner($heroBattle, null);
-        } elseif ($livingCombatants->where('hero_id', '!=', null)->count() == 0) {
-            // All players eliminated, but NPC remains
-            $this->setWinner($heroBattle, $livingCombatants->first());
-        } elseif ($livingCombatants->count() == 1) {
-            // A single player remains
-            $this->setWinner($heroBattle, $livingCombatants->first());
-        }
-
-        if (!$heroBattle->finished) {
-            $heroBattle->increment('current_turn');
-            if ($heroBattle->allReady()) {
-                $this->processTurn($heroBattle);
-            }
-        }
-
-        return true;
-    }
-
-    public function determineAction(HeroCombatant $combatant): array
-    {
-        // Snow Witch's Curse: on even turns, fire the queued telegraphed move
-        if (in_array('snow_witch_curse', $combatant->abilities ?? [])) {
-            $telegraphedMove = $combatant->status['telegraphed_move'] ?? null;
-            if ($telegraphedMove !== null && ($combatant->battle->current_turn % 2) === 0) {
-                $status = $combatant->status ?? [];
-                unset($status['telegraphed_move']);
-                $combatant->update(['status' => $status]);
-                return ['action' => $telegraphedMove, 'target' => null];
-            }
-        }
-
-        // The Hungry Moon: the curse takes hold the turn after it reaches out
-        if (in_array('hungering_moon', $combatant->abilities ?? [])) {
-            $status = $combatant->status ?? [];
-            if (!empty($status['curse_pending'])) {
-                unset($status['curse_pending']);
-                $combatant->update(['status' => $status]);
-                return ['action' => 'hungering_moon', 'target' => null];
-            }
-        }
-
-        // Admiral's Orders: on even turns, fire the queued telegraphed order
-        if (in_array('admirals_orders', $combatant->abilities ?? [])) {
-            $telegraphedOrder = $combatant->status['telegraphed_order'] ?? null;
-            if ($telegraphedOrder !== null && ($combatant->battle->current_turn % 2) === 0) {
-                $status = $combatant->status ?? [];
-                unset($status['telegraphed_order']);
-                $combatant->update(['status' => $status]);
-                return ['action' => $telegraphedOrder, 'target' => null];
-            }
-        }
-
-        $queuedActions = $combatant->actions ?? [];
-
-        if (count($queuedActions) > 0) {
-            $limitedActions = $this->heroHelper->getLimitedCombatActions();
-            $nextAction = array_shift($queuedActions);
-            $combatant->actions = $queuedActions;
-            if (!$limitedActions->contains($nextAction['action']) || $nextAction['action'] != $combatant->last_action) {
-                return $nextAction;
-            }
-        }
-
-        // Darkness
-        if (in_array('darkness', $combatant->abilities ?? []) && $combatant->evasion < 100) {
-            $actionDef = $this->heroHelper->getCombatActions()->get('darkness');
-            if ((($combatant->battle->current_turn - 1) % $actionDef['attributes']['turns']) == 0) {
-                return ['action' => 'darkness', 'target' => null];
-            }
-        }
-
-        // Summoning
-        if (in_array('summon_skeleton', $combatant->abilities ?? [])) {
-            $actionDef = $this->heroHelper->getCombatActions()->get('summon_skeleton');
-            if ((($combatant->battle->current_turn - 1) % $actionDef['attributes']['turns']) == 0) {
-                return ['action' => 'summon_skeleton', 'target' => null];
-            }
-        }
-
-        // Golem Summoning
-        if (in_array('summon_golem', $combatant->abilities ?? [])) {
-            $actionDef = $this->heroHelper->getCombatActions()->get('summon_golem');
-            $interval = ($combatant->status['summon_interval'] ?? null) ?? $actionDef['attributes']['turns'];
-            if ((($combatant->battle->current_turn - 1) % $interval) == 0) {
-                return ['action' => 'summon_golem', 'target' => null];
-            }
-        }
-
-        // Soul Rend - fire charged attack
-        if (in_array('soul_rend', $combatant->abilities ?? [])) {
-            $status = $combatant->status ?? [];
-            if (!empty($status['soul_rend_charging'])) {
-                unset($status['soul_rend_charging']);
-                $combatant->update(['status' => $status]);
-                return ['action' => 'soul_rend', 'target' => null];
-            }
-        }
-
-        $strategies = $this->heroHelper->getCombatStrategies();
-        $strategy = $strategies->get($combatant->strategy) ?? $strategies->get('balanced');
-        $options = collect($strategy['options']);
-
-        if ($combatant->has_focus) {
-            $options->forget('focus');
-        }
-        if ($combatant->shield > 0) {
-            $options->forget('fortify');
-        }
-        if ($combatant->health < ($combatant->current_health + $combatant->recover)) {
-            $options->forget('recover');
-        }
-        if ($combatant->current_health <= 40 && isset($options['recover'])) {
-            $options->forget('focus');
-            $options['recover'] = $options['attack'] * 2;
-        }
-
-        $action = $this->randomAction($options, $combatant->last_action);
-
-        // Upgrade attack to crushing_blow if ability is active
-        if ($action == 'attack' && in_array('crushing_blow', $combatant->abilities ?? [])) {
-            $action = 'crushing_blow';
-        }
-
-        return ['action' => $action, 'target' => null];
-    }
-
-    public function randomAction(Collection $options, string|null $last_action): string
-    {
-        $limitedActions = $this->heroHelper->getLimitedCombatActions();
-
-        foreach ($limitedActions as $action) {
-            if ($action == $last_action) {
-                $options->forget($action);
-            }
-        }
-
-        return random_choice_weighted($options->toArray());
-    }
-
-    public function spendFocus(HeroCombatant $combatant): void
-    {
-        if (in_array('channeling', $combatant->abilities ?? []) && $combatant->has_focus) {
-            if ($combatant->hero !== null) {
-                $combatStats = $this->heroCalculator->getHeroCombatStats($combatant->hero);
-                $combatant->focus = $combatStats['focus'];
-            }
-        }
-
-        $combatant->has_focus = false;
-    }
-
-    public function spendAbility(HeroCombatant $combatant, string $ability): void
-    {
-        $abilities = $combatant->abilities ?? [];
-
-        if ($key = in_array($ability, $abilities)) {
-            $index = array_search($ability, $abilities);
-            unset($abilities[$index]);
-            $combatant->abilities = $abilities;
-        }
-    }
-
-    public function processAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        if ($actionDef === null) {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => ''
-            ];
-        }
-
-        $processorMethod = 'process' . ucfirst($actionDef['processor']) . 'Action';
-
-        return $this->$processorMethod($combatant, $target, $actionDef);
-    }
-
-    public function processAttackAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $damage = $this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef);
-        $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
-        $evadeMultiplier = 0.5;
-        if (in_array('elusive', $target->abilities ?? []) && !$combatant->has_focus) {
-            $evadeMultiplier = 0;
-        }
-        $this->spendFocus($combatant);
-        $health = 0;
-        $countered = false;
-
-        if ($target->current_action == 'counter') {
-            $countered = true;
-            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
-            $health -= $counterDamage;
-        }
-
-        $messages = $actionDef['messages'];
-
-        if ($damage > 0 && $evaded) {
-            $damageEvaded = $damage;
-            $damage = round($damage * $evadeMultiplier);
-            if ($countered) {
-                $description = sprintf(
-                    $messages['evaded_countered'],
-                    $combatant->name,
-                    $damageEvaded,
-                    $target->name,
-                    $damage,
-                    $target->name,
-                    $counterDamage
-                );
-            } else {
-                $description = sprintf(
-                    $messages['evaded'],
-                    $combatant->name,
-                    $damageEvaded,
-                    $target->name,
-                    $damage
-                );
-            }
-        } else {
-            if ($countered) {
-                $description = sprintf(
-                    $messages['countered'],
-                    $combatant->name,
-                    $damage,
-                    $target->name,
-                    $counterDamage
-                );
-            } else {
-                $description = sprintf(
-                    $messages['hit'],
-                    $combatant->name,
-                    $damage,
-                    $target->name
-                );
-            }
-        }
-
-        if (in_array('lifesteal', $combatant->abilities ?? []) && $damage > 0) {
-            $healing = round($damage / 2);
-            $health += $healing;
-            $description .= sprintf(' %s heals for %s health.', $combatant->name, $healing);
-        }
-
-        // Frostbite: landed non-zero damage on a hero-owned target adds a Frostbite stack
-        if (in_array('frostbite', $combatant->abilities ?? []) && $damage > 0 && $target->hero_id !== null) {
-            $status = $target->status ?? [];
-            $status['frostbite'] = (int) ($status['frostbite'] ?? 0) + 1;
-            $target->status = $status;
-            $description .= sprintf(' Frostbite creeps into %s (stack %s).', $target->name, $status['frostbite']);
-        }
-
-        return [
-            'damage' => $damage,
-            'health' => $health,
-            'description' => $description
-        ];
-    }
-
-    public function processDefendAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => sprintf($actionDef['messages']['defend'], $combatant->name)
-        ];
-    }
-
-    public function processFocusAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        if (in_array('channeling', $combatant->abilities ?? []) && $combatant->has_focus) {
-            if ($combatant->hero !== null) {
-                $combatStats = $this->heroCalculator->getHeroCombatStats($combatant->hero);
-                $combatant->focus += $combatStats['focus'];
-            }
-        }
-
-        $combatant->has_focus = true;
-
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => sprintf($actionDef['messages']['focus'], $combatant->name)
-        ];
-    }
-
-    public function processCounterAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => sprintf($actionDef['messages']['counter'], $combatant->name)
-        ];
-    }
-
-    public function processRecoverAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $health = $this->heroCalculator->calculateCombatHeal($combatant);
-
-        if (in_array('mending', $combatant->abilities ?? [])) {
-            $this->spendFocus($combatant);
-        }
-
-        return [
-            'damage' => 0,
-            'health' => $health,
-            'description' => sprintf($actionDef['messages']['recover'], $combatant->name, $health)
-        ];
-    }
-
-    public function processStatAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $stat = $actionDef['attributes']['stat'];
-        $value = $actionDef['attributes']['value'];
-
-        if ($actionDef['type'] == 'self') {
-            if ($stat == 'shield' && $combatant->shield > 0) {
-                $value = $value - $combatant->shield;
-            }
-            $combatant->increment($stat, $value);
-            $description = sprintf($actionDef['messages']['stat'], $combatant->name);
-        } else {
-            if ($value < 0 && $target->{$stat} <= 5) {
-                $description = "{$combatant->name} uses {$actionDef['name']}, but it has no effect.";
-            } else {
-                $target->increment($stat, $value);
-                $description = sprintf($actionDef['messages']['stat'], $combatant->name, $target->name);
-            }
-        }
-
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => $description
-        ];
-    }
-
-    public function processVolatileAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $successChance = $actionDef['attributes']['success_chance'] ?? 1;
-        $attackBonus = $actionDef['attributes']['attack_bonus'] ?? 1;
-        $isSuccess = mt_rand(1, 100) <= ($successChance * 100);
-
-        $evadeMultiplier = 0.5;
-        if (in_array('elusive', $target->abilities ?? []) && !$combatant->has_focus) {
-            $evadeMultiplier = 0;
-        }
-
-        $health = 0;
-        $damage = 0;
-        $countered = false;
-
-        if ($target->current_action == 'counter') {
-            $countered = true;
-            $counterDamage = $this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef);
-            $health -= $counterDamage;
-        }
-
-        $messages = $actionDef['messages'];
-
-        if ($isSuccess) {
-            // Success - deal bonus damage to target
-            $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackBonus);
-            $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
-            $this->spendFocus($combatant);
-
-            if ($damage > 0 && $evaded) {
-                $damageEvaded = $damage;
-                $damage = round($damage * $evadeMultiplier);
-                if ($countered) {
-                    $description = sprintf(
-                        $messages['success_evaded_countered'],
-                        $combatant->name,
-                        $target->name,
-                        $damage,
-                        $target->name,
-                        $counterDamage
-                    );
-                } else {
-                    $description = sprintf(
-                        $messages['success_evaded'],
-                        $combatant->name,
-                        $target->name,
-                        $damage
-                    );
-                }
-            } else {
-                if ($countered) {
-                    $description = sprintf(
-                        $messages['success_countered'],
-                        $combatant->name,
-                        $damage,
-                        $target->name,
-                        $counterDamage
-                    );
-                } else {
-                    $description = sprintf(
-                        $messages['success'],
-                        $combatant->name,
-                        $damage,
-                        $target->name
-                    );
-                }
-            }
-        } else {
-            // Backfire - damage to self instead
-            $backfireDamage = $this->heroCalculator->calculateCombatDamage($combatant, $combatant, $actionDef);
-            $health -= $backfireDamage;
-            $damage = 0;
-
-            if ($countered) {
-                $description = sprintf(
-                    $messages['backfire_countered'],
-                    $combatant->name,
-                    $combatant->name,
-                    $backfireDamage,
-                    $target->name,
-                    $counterDamage
-                );
-            } else {
-                $description = sprintf(
-                    $messages['backfire'],
-                    $combatant->name,
-                    $combatant->name,
-                    $backfireDamage
-                );
-            }
-        }
-
-        return [
-            'damage' => $damage,
-            'health' => $health,
-            'description' => $description
-        ];
-    }
-
-    public function processFlurryAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $attackCount = $actionDef['attributes']['attacks'] ?? 1;
-        $damageMultiplier = $actionDef['attributes']['multiplier'] ?? 1;
-
-        $damage = round($this->heroCalculator->calculateCombatDamage($combatant, $target, $actionDef) * $attackCount * $damageMultiplier);
-        $evaded = $this->heroCalculator->calculateCombatEvade($target, $actionDef);
-        $evadeMultiplier = 0.5;
-        if (in_array('elusive', $target->abilities ?? []) && !$combatant->has_focus) {
-            $evadeMultiplier = 0;
-        }
-        $this->spendFocus($combatant);
-        $health = 0;
-        $countered = false;
-
-        if ($target->current_action == 'counter') {
-            $countered = true;
-            $counterDamage = round($this->heroCalculator->calculateCombatDamage($target, $combatant, $actionDef) * $attackCount);
-            $health -= $counterDamage;
-        }
-
-        $messages = $actionDef['messages'];
-
-        if ($damage > 0 && $evaded) {
-            $damageEvaded = $damage;
-            $damage = round($damage * $evadeMultiplier);
-            if ($countered) {
-                $description = sprintf(
-                    $messages['evaded_countered'],
-                    $combatant->name,
-                    $attackCount,
-                    $damageEvaded,
-                    $target->name,
-                    $damage,
-                    $target->name,
-                    $attackCount,
-                    $counterDamage
-                );
-            } else {
-                $description = sprintf(
-                    $messages['evaded'],
-                    $combatant->name,
-                    $attackCount,
-                    $damageEvaded,
-                    $target->name,
-                    $damage
-                );
-            }
-        } else {
-            if ($countered) {
-                $description = sprintf(
-                    $messages['countered'],
-                    $combatant->name,
-                    $attackCount,
-                    $damage,
-                    $target->name,
-                    $attackCount,
-                    $counterDamage
-                );
-            } else {
-                $description = sprintf(
-                    $messages['hit'],
-                    $combatant->name,
-                    $attackCount,
-                    $damage,
-                    $target->name
-                );
-            }
-        }
-
-        return [
-            'damage' => $damage,
-            'health' => $health,
-            'description' => $description
-        ];
-    }
-
-    public function processAoeAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $multiplier = $actionDef['attributes']['multiplier'] ?? 1.0;
-        $bypassHardiness = $actionDef['attributes']['bypass_hardiness'] ?? false;
-
-        // Flat damage from attacker only — ignores all enemy defense, evasion, and shield
-        $baseDamage = $this->heroCalculator->getCombatStat($combatant, 'attack');
-        if ($combatant->has_focus) {
-            $baseDamage += $this->heroCalculator->getCombatStat($combatant, 'focus');
-        }
-        $this->spendFocus($combatant);
-
-        $damage = (int) round($baseDamage * $multiplier);
-
-        // Target all living enemy combatants (NPCs)
-        $enemies = $combatant->battle->combatants
-            ->where('hero_id', null)
-            ->filter(function ($c) { return $c->current_health > 0; });
-
-        if ($enemies->isEmpty()) {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => sprintf($actionDef['messages']['no_targets'], $combatant->name),
-            ];
-        }
-
-        foreach ($enemies as $enemy) {
-            if ($bypassHardiness) {
-                // Pre-spend hardiness so processPostCombat() won't trigger revival
-                $this->spendAbility($enemy, 'hardiness');
+            if ($turns === 0) {
+                return false;
             }
 
-            // Apply identical flat damage to every target (bypasses defense, shield, fortify)
-            $enemy->current_health = max(0, $enemy->current_health - $damage);
-            $enemy->save();
-        }
+            $this->repository->persist($battle, $locked);
 
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => sprintf($actionDef['messages']['hit'], $combatant->name, $damage),
-        ];
-    }
+            if ($battle->state->finished) {
+                $this->outcomeService->finalize($locked->fresh());
+            }
 
-    public function processBloodrendAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $attributes = $actionDef['attributes'];
-        $messages = $actionDef['messages'];
+            $heroBattle->refresh();
 
-        if ($target->current_action === 'defend') {
-            $damage = $attributes['defend_damage'];
-            $healing = (int) round($damage / 2);
-            $description = sprintf($messages['defend'], $combatant->name, $target->name, $damage, $healing);
-        } elseif ($target->current_action === 'attack') {
-            $damage = $attributes['attack_damage'];
-            $healing = $damage;
-            $description = sprintf($messages['attack'], $combatant->name, $target->name, $damage, $healing);
-        } else {
-            $damage = $attributes['default_damage'];
-            $healing = $damage;
-            $description = sprintf($messages['default'], $combatant->name, $target->name, $damage, $healing);
-        }
-
-        return [
-            'damage' => $damage,
-            'health' => $healing,
-            'description' => $description,
-        ];
-    }
-
-    public function processFrostGripAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $attributes = $actionDef['attributes'];
-        $messages = $actionDef['messages'];
-
-        if ($target->current_action === 'focus') {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => sprintf($messages['focus'], $target->name),
-            ];
-        }
-
-        $status = $target->status ?? [];
-        $status['frozen_pending'] = true;
-
-        if ($target->current_action === 'recover') {
-            $stacks = $attributes['recover_frostbite_stacks'];
-            $status['frostbite'] = (int) ($status['frostbite'] ?? 0) + $stacks;
-            $target->status = $status;
-            $description = sprintf($messages['recover'], $target->name, $target->name);
-        } else {
-            $target->status = $status;
-            $description = sprintf($messages['default'], $target->name, $target->name);
-        }
-
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => $description,
-        ];
-    }
-
-    public function processWintersBreathAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $attributes = $actionDef['attributes'];
-        $messages = $actionDef['messages'];
-
-        if ($target->current_action === 'attack') {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => sprintf($messages['attack'], $target->name, $combatant->name),
-            ];
-        }
-
-        if ($target->current_action === 'defend') {
-            $damage = $attributes['defend_damage'];
-            $description = sprintf($messages['defend'], $combatant->name, $target->name, $damage);
-        } else {
-            $damage = $attributes['default_damage'];
-            $description = sprintf($messages['default'], $combatant->name, $damage, $target->name);
-        }
-
-        return [
-            'damage' => $damage,
-            'health' => 0,
-            'description' => $description,
-        ];
-    }
-
-    public function processSummonAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $message = $actionDef['messages']['summon'];
-        $enemy = $actionDef['attributes']['enemy'] ?? 'imp';
-        $enemies = $this->heroEncounterHelper->getEnemies();
-        $enemyStats = $enemies->get($enemy);
-
-        $minionCount = $combatant->battle->combatants->where('hero_id', null)->count();
-        $enemyStats['name'] .= " #{$minionCount}";
-        $this->createNonPlayerCombatant($combatant->battle, $enemyStats);
-
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => sprintf($message, $combatant->name)
-        ];
-    }
-
-    public function processBroadsideAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $attributes = $actionDef['attributes'];
-        $messages = $actionDef['messages'];
-
-        // The volley sweeps the whole quay -- everyone but the Admiral himself is caught in it
-        $volleyDamage = $attributes['volley_damage'];
-        $defenders = $combatant->battle->combatants
-            ->where('hero_id', null)
-            ->where('id', '!=', $combatant->id)
-            ->filter(function ($c) { return $c->current_health > 0; });
-
-        foreach ($defenders as $defender) {
-            $defender->current_health = max(0, $defender->current_health - $volleyDamage);
-            $defender->save();
-        }
-
-        if ($target->current_action === 'defend') {
-            $damage = $attributes['defend_damage'];
-            $description = sprintf($messages['defend'], $combatant->name, $target->name, $damage);
-        } elseif ($target->current_action === 'counter') {
-            $damage = $attributes['counter_damage'];
-            $description = sprintf($messages['counter'], $combatant->name, $target->name, $damage);
-        } else {
-            $damage = $attributes['default_damage'];
-            $description = sprintf($messages['default'], $combatant->name, $target->name, $damage);
-        }
-
-        if ($defenders->isNotEmpty()) {
-            $description .= $messages['defenders'];
-        }
-
-        return [
-            'damage' => $damage,
-            'health' => 0,
-            'description' => $description,
-        ];
-    }
-
-    public function processRallyAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $attributes = $actionDef['attributes'];
-        $messages = $actionDef['messages'];
-
-        if ($target->current_action === 'attack') {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => sprintf($messages['attack'], $combatant->name, $target->name),
-            ];
-        }
-
-        $defenderCount = $combatant->battle->combatants()
-            ->whereNull('hero_id')
-            ->where('id', '!=', $combatant->id)
-            ->where('current_health', '>', 0)
-            ->count();
-
-        $summonCount = min($attributes['count'], max(0, $attributes['max_defenders'] - $defenderCount));
-
-        if ($summonCount === 0) {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => sprintf($messages['at_cap'], $combatant->name),
-            ];
-        }
-
-        $enemyStats = $this->heroEncounterHelper->getEnemies()->get($attributes['enemy']);
-        $baseName = $enemyStats['name'];
-
-        for ($i = 0; $i < $summonCount; $i++) {
-            $minionCount = $combatant->battle->combatants()->whereNull('hero_id')->count();
-            $enemyStats['name'] = "{$baseName} #{$minionCount}";
-            $this->createNonPlayerCombatant($combatant->battle, $enemyStats);
-        }
-
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => sprintf($messages['summon'], $combatant->name),
-        ];
-    }
-
-    public function processChallengeAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        $attributes = $actionDef['attributes'];
-        $messages = $actionDef['messages'];
-
-        if ($target->current_action === 'focus') {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => sprintf($messages['focus'], $target->name, $combatant->name),
-            ];
-        }
-
-        if ($target->current_action === 'attack') {
-            $damage = $attributes['attack_damage'];
-            $description = sprintf($messages['attack'], $target->name, $combatant->name, $damage);
-        } else {
-            $damage = $attributes['default_damage'];
-            $description = sprintf($messages['default'], $combatant->name, $damage);
-        }
-
-        return [
-            'damage' => $damage,
-            'health' => 0,
-            'description' => $description,
-        ];
-    }
-
-    public function processCleanseAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
-    {
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => sprintf($actionDef['messages']['cleanse'], $combatant->name),
-        ];
+            return true;
+        });
     }
 
     /**
-     * The Hungry Moon takes maximum health rather than dealing damage. It cannot be
-     * healed back -- only prevented, by cleansing on the turn it takes hold.
+     * Engine view of a battle, for validation and display. Not locked; do not persist.
      */
-    public function processHungeringMoonAction(HeroCombatant $combatant, HeroCombatant $target, array $actionDef): array
+    public function loadBattle(HeroBattle $heroBattle): Battle
     {
-        $attributes = $actionDef['attributes'];
-        $messages = $actionDef['messages'];
-
-        if ($target->current_action === 'cleanse') {
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => sprintf($messages['cleansed'], $target->name),
-            ];
-        }
-
-        // Anchor every bite to what the hero began with, so three misses always converts
-        $status = $target->status ?? [];
-        $fullHealth = $status['full_health'] ?? $target->health;
-        $status['full_health'] = $fullHealth;
-        $target->status = $status;
-
-        $loss = (int) ceil($fullHealth * $attributes['max_health_loss_ratio']);
-        $target->health = max(0, $target->health - $loss);
-        if ($target->current_health > $target->health) {
-            $target->current_health = $target->health;
-        }
-
-        $description = sprintf($messages['hit'], $target->name);
-
-        // Nothing left to take -- the hero is converted rather than killed
-        if ($target->health <= 0) {
-            $target->current_health = 0;
-
-            return [
-                'damage' => 0,
-                'health' => 0,
-                'description' => $description . ' ' . sprintf($messages['converted'], $target->name),
-            ];
-        }
-
-        $transformThreshold = (int) ceil($fullHealth * $attributes['transform_threshold_ratio']);
-        if ($target->health <= $transformThreshold && empty($status['turned'])) {
-            $status['turned'] = true;
-            $target->status = $status;
-            $description .= ' ' . sprintf($messages['transformed'], $target->name);
-            $target->name = $attributes['transform_name'];
-            $target->defense = max(0, $target->defense - $attributes['transform_defense_loss']);
-        }
-
-        return [
-            'damage' => 0,
-            'health' => 0,
-            'description' => $description,
-        ];
+        return $this->repository->load($heroBattle);
     }
 
-    public function processPostCombat(HeroCombatant $combatant): string
+    protected function newBattle(int $roundId, string $mode, ?string $encounterKey = null, ?RaidObjectiveTactic $tactic = null): HeroBattle
     {
-        if (in_array('dying_light', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
-            $this->spendAbility($combatant, 'dying_light');
-
-            // Find the Nightbringer in this battle
-            $nightbringer = $combatant->battle->combatants
-                ->where('name', 'The Nightbringer')
-                ->first();
-
-            if ($nightbringer) {
-                // Reduce Nightbringer's evasion to 0
-                $nightbringer->evasion = 0;
-                $nightbringer->save();
-                return " {$combatant->name} explodes in a blast of light, exposing the Nightbringer!";
-            }
-
-            return " {$combatant->name} explodes in a blast of light.";
-        }
-
-        if (in_array('hardiness', $combatant->abilities ?? []) && $combatant->current_health < 1) {
-            $combatant->current_health = 1;
-            $this->spendAbility($combatant, 'hardiness');
-            return " {$combatant->name} clings to life with 1 health.";
-        }
-
-        // Soul tribute: when this combatant dies, empowers the specified ally
-        if (in_array('soul_tribute', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
-            $this->spendAbility($combatant, 'soul_tribute');
-
-            $status = $combatant->status ?? [];
-            $soulTributeConfig = $status['soul_tribute'] ?? null;
-
-            if ($soulTributeConfig) {
-                $targetName = $soulTributeConfig['target_name'] ?? null;
-                $statIncreases = $soulTributeConfig['stat_increases'] ?? [];
-
-                if ($targetName && !empty($statIncreases)) {
-                    $target = $combatant->battle->combatants
-                        ->where('name', $targetName)
-                        ->first();
-
-                    if ($target !== null && $target->current_health > 0) {
-                        $changes = [];
-                        foreach ($statIncreases as $stat => $increase) {
-                            $target->$stat += $increase;
-                            $changes[] = "{$stat} +{$increase}";
-                        }
-                        $target->save();
-
-                        if (!empty($changes)) {
-                            $changesString = implode(', ', $changes);
-                            return " As {$combatant->name} falls, dark tendrils stream from the body into {$targetName} ({$changesString}). He grows stronger.";
-                        }
-                    }
-                }
-            }
-        }
-
-        // Aspect shift: when this combatant dies, a new form takes its place
-        if (in_array('aspect_shift', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
-            $this->spendAbility($combatant, 'aspect_shift');
-
-            $status = $combatant->status ?? [];
-            $aspectShiftConfig = $status['aspect_shift'] ?? null;
-
-            if ($aspectShiftConfig) {
-                $nextForm = $aspectShiftConfig['next_form'] ?? null;
-                $nextName = $aspectShiftConfig['name'] ?? null;
-
-                if ($nextForm) {
-                    $enemies = $this->heroEncounterHelper->getEnemies();
-                    $enemyStats = $enemies->get($nextForm);
-
-                    if ($enemyStats !== null) {
-                        if ($nextName) {
-                            $enemyStats['name'] = $nextName;
-                        }
-                        $this->createNonPlayerCombatant($combatant->battle, $enemyStats);
-
-                        return " {$combatant->name} begins to shift form, transforming into {$enemyStats['name']}!";
-                    }
-                }
-            }
-        }
-
-        // Power source: when this combatant dies, weakens the specified target
-        if (in_array('power_source', $combatant->abilities ?? []) && $combatant->current_health <= 0) {
-            $this->spendAbility($combatant, 'power_source');
-
-            $status = $combatant->status ?? [];
-            $powerSourceConfig = $status['power_source'] ?? null;
-
-            if ($powerSourceConfig) {
-                $targetName = $powerSourceConfig['target_name'] ?? null;
-                $statReductions = $powerSourceConfig['stat_reductions'] ?? [];
-
-                if ($targetName && !empty($statReductions)) {
-                    $target = $combatant->battle->combatants
-                        ->where('name', $targetName)
-                        ->first();
-
-                    if ($target !== null) {
-                        $changes = [];
-                        foreach ($statReductions as $stat => $reduction) {
-                            $oldValue = $target->$stat;
-                            $target->$stat = max(0, $oldValue - $reduction);
-                            $changes[] = "{$stat} -{$reduction}";
-                        }
-                        $target->save();
-
-                        if (!empty($changes)) {
-                            $changesString = implode(', ', $changes);
-                            return " {$combatant->name} crumbles to dust, severing its connection to {$targetName} ({$changesString})!";
-                        }
-                    }
-                }
-            }
-        }
-
-        return '';
-    }
-
-    /**
-     * Apply abilities for a phase-cycling ability
-     *
-     * @param HeroCombatant $combatant The combatant with the phase-cycling ability
-     * @param string $cyclerAbility The key of the phase-cycling ability
-     * @param array $phaseDef The phase definition from ability attributes
-     * @return string Phase transition message
-     */
-    protected function applyPhaseAbilities(HeroCombatant $combatant, string $cyclerAbility, array $phaseDef): string
-    {
-        $message = '';
-
-        // Update combatant's own abilities
-        if (isset($phaseDef['self_abilities'])) {
-            $status = $combatant->status ?? [];
-
-            // Store base abilities on first phase change
-            if (!isset($status['base_abilities'])) {
-                $status['base_abilities'] = $combatant->abilities ?? [];
-                $combatant->status = $status;
-            }
-
-            // Merge base abilities with phase abilities
-            $combatant->abilities = array_unique(array_merge(
-                $status['base_abilities'],
-                $phaseDef['self_abilities']
-            ));
-            $combatant->save();
-
-            if (isset($phaseDef['message'])) {
-                $message = sprintf($phaseDef['message'], $combatant->name);
-            }
-        }
-
-        // Update allied NPC abilities
-        if (isset($phaseDef['ally_abilities'])) {
-            $allies = $combatant->battle->combatants
-                ->where('id', '!=', $combatant->id)
-                ->where('hero_id', null)
-                ->where('current_health', '>', 0);
-
-            foreach ($allies as $ally) {
-                $allyStatus = $ally->status ?? [];
-                if (!isset($allyStatus['base_abilities'])) {
-                    $allyStatus['base_abilities'] = $ally->abilities ?? [];
-                }
-
-                $ally->abilities = array_unique(array_merge(
-                    $allyStatus['base_abilities'],
-                    $phaseDef['ally_abilities']
-                ));
-                $ally->status = $allyStatus;
-                $ally->save();
-            }
-        }
-
-        return $message;
-    }
-
-    public function processStatus(HeroCombatant $combatant): void
-    {
-        $damage = 0;
-        $health = 0;
-        $description = '';
-
-        // Frozen state machine: promote pending → active at end of the turn Frost Grip landed,
-        // then clear active at end of the frozen turn.
-        if (isset($combatant->status['frozen_pending']) || isset($combatant->status['frozen'])) {
-            $status = $combatant->status ?? [];
-            if (isset($status['frozen_pending'])) {
-                unset($status['frozen_pending']);
-                $status['frozen'] = true;
-            } elseif (isset($status['frozen'])) {
-                unset($status['frozen']);
-            }
-            $combatant->update(['status' => $status]);
-        }
-
-        if (in_array('undying', $combatant->abilities ?? [])) {
-            if ($combatant->current_health <= 0) {
-                $status = $combatant->status ?? [];
-                if (!isset($status['undying'])) {
-                    $status['undying'] = 5;
-                    $description = "{$combatant->name} will return from the dead in {$status['undying']} turns.";
-                } else {
-                    $status['undying'] -= 1;
-                    if ($status['undying'] == 0) {
-                        unset($status['undying']);
-                        $health = round($combatant->health / 2);
-                        $combatant->update(['current_health' => $health, 'health' => $health, 'has_focus' => false]);
-                        $description = "{$combatant->name} has returned to life.";
-                    } else {
-                        $description = "{$combatant->name} will return from the dead in {$status['undying']} turns.";
-                    }
-                }
-                $combatant->update(['status' => $status]);
-            }
-        }
-
-        // Darkness
-        if (in_array('darkness', $combatant->abilities ?? []) && $combatant->evasion < 100) {
-            $actionDef = $this->heroHelper->getCombatActions()->get('darkness');
-            if (($combatant->battle->current_turn % $actionDef['attributes']['turns']) == 0) {
-                $description = "Darkness surrounds {$combatant->name}.";
-            }
-        }
-
-        // Summoning
-        if (in_array('summon_skeleton', $combatant->abilities ?? [])) {
-            $actionDef = $this->heroHelper->getCombatActions()->get('summon_skeleton');
-            if (($combatant->battle->current_turn % $actionDef['attributes']['turns']) == 0) {
-                $description = "A summoning circle begins to glow around {$combatant->name}.";
-            }
-        }
-
-        // Golem Summoning
-        if (in_array('summon_golem', $combatant->abilities ?? [])) {
-            $actionDef = $this->heroHelper->getCombatActions()->get('summon_golem');
-            $interval = ($combatant->status['summon_interval'] ?? null) ?? $actionDef['attributes']['turns'];
-            if (($combatant->battle->current_turn % $interval) == 0) {
-                $description = "A void rift begins to tear open near {$combatant->name}.";
-            }
-        }
-
-        // Soul Rend - warn when charging
-        if (in_array('soul_rend', $combatant->abilities ?? []) && $combatant->current_health > 0) {
-            $actionDef = $this->heroHelper->getCombatActions()->get('soul_rend');
-            $threshold = $actionDef['attributes']['threshold'] ?? 40;
-            $status = $combatant->status ?? [];
-            if ($combatant->current_health <= $threshold && empty($status['soul_rend_charging']) && empty($status['soul_rend_last_hp'])) {
-                $status['soul_rend_charging'] = true;
-                $status['soul_rend_last_hp'] = $combatant->current_health;
-                $combatant->update(['status' => $status]);
-                $description .= "{$combatant->name}'s form beings to glow with gathering ethereal energy... defend yourself!";
-            } elseif ($combatant->current_health <= $threshold && empty($status['soul_rend_charging']) && $combatant->current_health < ($status['soul_rend_last_hp'] ?? 0)) {
-                $status['soul_rend_charging'] = true;
-                $status['soul_rend_last_hp'] = $combatant->current_health;
-                $combatant->update(['status' => $status]);
-                $description .= "{$combatant->name}'s form begins to glow with gathering ethereal energy... defend yourself!";
-            }
-        }
-
-        // Generic phase-cycling ability processing
-        foreach ($combatant->abilities ?? [] as $abilityKey) {
-            $actionDef = $this->heroHelper->getCombatActions()->get($abilityKey);
-
-            if (!$actionDef || !isset($actionDef['attributes']['phases'])) {
-                continue;
-            }
-
-            $turnsPerPhase = $actionDef['attributes']['turns_per_phase'] ?? 4;
-            $maxPhase = $actionDef['attributes']['max_phase'] ?? 5;
-            $cyclePhases = $actionDef['attributes']['cycle_phases'] ?? false;
-            $currentTurn = $combatant->battle->current_turn;
-
-            if ($cyclePhases) {
-                // Cycle back to phase 1 after reaching max phase
-                $currentPhase = (int) ((floor(($currentTurn - 1) / $turnsPerPhase) % $maxPhase) + 1);
-            } else {
-                // Stay at max phase after reaching it
-                $currentPhase = (int) min($maxPhase, floor(($currentTurn - 1) / $turnsPerPhase) + 1);
-            }
-
-            $status = $combatant->status ?? [];
-            $lastPhase = $status["{$abilityKey}_phase"] ?? null;
-
-            // Only apply phase changes if the combatant is still alive
-            if ($currentPhase !== $lastPhase && $combatant->current_health > 0) {
-                $status["{$abilityKey}_phase"] = $currentPhase;
-                $combatant->update(['status' => $status]);
-
-                $phaseDef = $actionDef['attributes']['phases'][$currentPhase] ?? null;
-                if ($phaseDef) {
-                    $phaseDescription = $this->applyPhaseAbilities($combatant, $abilityKey, $phaseDef);
-                    if ($phaseDescription !== '') {
-                        $description .= $phaseDescription;
-                    }
-                }
-            }
-        }
-
-        // Snow Witch's Curse: on odd turns, roll the next telegraphed move for the following (even) turn
-        if (in_array('snow_witch_curse', $combatant->abilities ?? []) && $combatant->current_health > 0) {
-            $currentTurn = $combatant->battle->current_turn;
-            if (($currentTurn % 2) === 1) {
-                $curseDef = $this->heroHelper->getCombatActions()->get('snow_witch_curse');
-                $moves = $curseDef['attributes']['moves'] ?? [];
-                if (!empty($moves)) {
-                    $nextMove = $moves[array_rand($moves)];
-                    $status = $combatant->status ?? [];
-                    $status['telegraphed_move'] = $nextMove;
-                    $combatant->update(['status' => $status]);
-
-                    $telegraphMessages = [
-                        'bloodrend' => "{$combatant->name} raises her hands slowly, blue veins pulsing beneath frost-white skin.",
-                        'frost_grip' => 'The temperature plummets. Frost begins to creep up around your feet.',
-                        'winters_breath' => "{$combatant->name} inhales deeply, drawing the mountain's frigid air into her lungs.",
-                    ];
-                    $description .= ' ' . ($telegraphMessages[$nextMove] ?? '');
-                }
-            }
-        }
-
-        // The Hungry Moon reaches for the hero a turn before it takes hold. The tell is
-        // free -- it never costs a turn of pressure -- and above the frenzy threshold it
-        // leaves a gap after each curse so the player's limited Cleanse is always ready.
-        if (in_array('hungering_moon', $combatant->abilities ?? []) && $combatant->current_health > 0) {
-            $moonDef = $this->heroHelper->getCombatActions()->get('hungering_moon');
-            $attributes = $moonDef['attributes'];
-            $status = $combatant->status ?? [];
-
-            $frenzied = $combatant->current_health < ($attributes['frenzy_threshold'] ?? 0);
-            $justTook = $combatant->last_action === 'hungering_moon';
-
-            if (empty($status['curse_pending']) && ($frenzied || !$justTook)) {
-                if (random_chance($attributes['telegraph_chance'] ?? 0.5)) {
-                    $status['curse_pending'] = true;
-                    $combatant->update(['status' => $status]);
-                    $description .= ' ' . sprintf($moonDef['messages']['telegraph'], $combatant->name);
-                }
-            }
-        }
-
-        // Admiral's Orders: on odd turns, roll the next order for the following (even) turn
-        if (in_array('admirals_orders', $combatant->abilities ?? []) && $combatant->current_health > 0) {
-            if (($combatant->battle->current_turn % 2) === 1) {
-                $ordersDef = $this->heroHelper->getCombatActions()->get('admirals_orders');
-                $orders = $ordersDef['attributes']['moves'] ?? [];
-                if (!empty($orders)) {
-                    $nextOrder = $orders[array_rand($orders)];
-                    $status = $combatant->status ?? [];
-                    $status['telegraphed_order'] = $nextOrder;
-                    $combatant->update(['status' => $status]);
-
-                    $telegraphMessages = [
-                        'broadside' => "{$combatant->name} raises his hand. Gunports slide open along the side of his ship.",
-                        'rally_the_defenders' => "{$combatant->name} fills his lungs and turns toward his ship.",
-                        'admirals_challenge' => "{$combatant->name} levels his cutlass at you, and the crew begins to jeer.",
-                    ];
-                    $description .= ' ' . ($telegraphMessages[$nextOrder] ?? '');
-                }
-            }
-        }
-
-        if ($description !== '') {
-            HeroBattleAction::create([
-                'hero_battle_id' => $combatant->battle->id,
-                'combatant_id' => $combatant->id,
-                'target_combatant_id' => null,
-                'turn' => $combatant->battle->current_turn,
-                'action' => 'status',
-                'damage' => $damage,
-                'health' => $health,
-                'description' => $description
-            ]);
-        }
-    }
-
-    protected function setWinner(HeroBattle $heroBattle, HeroCombatant|null $winner): void
-    {
-        $heroBattle->winner_combatant_id = $winner ? $winner->id : null;
-        $heroBattle->finished = true;
-        $heroBattle->save();
-
-        $tournament = $heroBattle->tournaments->first();
-        foreach ($heroBattle->combatants as $combatant) {
-            $participant = null;
-            if ($tournament !== null) {
-                $participant = $tournament->participants->where('hero_id', $combatant->hero_id)->first();
-            }
-
-            if ($winner == null) {
-                if ($combatant->hero !== null && $heroBattle->pvp) {
-                    $combatant->hero->increment('stat_combat_draws');
-                }
-                if ($participant !== null) {
-                    $participant->increment('draws');
-                }
-            } elseif ($combatant->id == $winner->id) {
-                if ($combatant->hero !== null && $heroBattle->pvp) {
-                    $combatant->hero->increment('stat_combat_wins');
-                }
-                if ($participant !== null) {
-                    $participant->increment('wins');
-                }
-            } else {
-                if ($combatant->hero !== null && $heroBattle->pvp) {
-                    $combatant->hero->increment('stat_combat_losses');
-                }
-                if ($participant !== null) {
-                    $participant->increment('losses');
-                }
-            }
-        }
-
-        if ($heroBattle->pvp) {
-            $this->updateRatings($heroBattle);
-            // Send Notifications
-            $notificationService = app(NotificationService::class);
-            foreach ($heroBattle->combatants as $combatant) {
-                $notificationService->queueNotification('hero_battle', ['status' => 'ended']);
-                $notificationService->sendNotifications($combatant->hero->dominion, 'irregular_dominion');
-            }
-        }
-
-        if ($heroBattle->raid_tactic_id !== null && $winner !== null && $winner->hero !== null) {
-            $dominion = $winner->hero->dominion;
-            $tactic = $heroBattle->tactic;
-
-            // Modify score by realm activity
-            $raidCalculator = app(RaidCalculator::class);
-            $pointsEarned = $raidCalculator->getTacticPointsEarned($dominion, $tactic);
-            $score = $raidCalculator->getTacticScore($dominion, $tactic);
-
-            // Save dominion changes
-            $dominion->stat_raid_score += $pointsEarned;
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_RAID_ACTION]);
-
-            // Create contribution record
-            RaidContribution::create([
-                'realm_id' => $dominion->realm_id,
-                'dominion_id' => $dominion->id,
-                'raid_objective_id' => $tactic->raid_objective_id,
-                'raid_tactic_id' => $tactic->id,
-                'type' => $tactic->type,
-                'score' => $score,
-            ]);
-
-            // Wounded retreat narrative
-            $retreated = $heroBattle->combatants
-                ->where('hero_id', null)
-                ->first(function ($c) { return in_array('wounded_retreat', $c->abilities ?? []); });
-
-            if ($retreated) {
-                HeroBattleAction::create([
-                    'hero_battle_id' => $heroBattle->id,
-                    'combatant_id' => $winner->id,
-                    'target_combatant_id' => null,
-                    'turn' => $heroBattle->current_turn,
-                    'action' => 'status',
-                    'damage' => 0,
-                    'health' => 0,
-                    'description' => 'The Planewalker howls in agony as its form becomes unstable. It tears a rift in the fabric of reality and retreats across the planes — grievously wounded, but not destroyed...',
-                ]);
-            }
-        }
-    }
-
-    protected function updateRatings(HeroBattle $heroBattle): void
-    {
-        $playerCount = $heroBattle->combatants->count();
-        $playerRatings = $heroBattle->combatants->map(function ($combatant) {
-            return [
-                'id' => $combatant->id,
-                'rating' => $combatant->hero->combat_rating
-            ];
-        })->keyBy('id');
-
-        foreach ($heroBattle->combatants as $combatant) {
-            $averageRating = $playerRatings->where('id', '!=', $combatant->id)->average('rating');
-            if ($heroBattle->winner_combatant_id == null) {
-                $result = 1 / $playerCount;
-            } elseif ($combatant->id == $heroBattle->winner_combatant_id) {
-                $result = 1;
-            } else {
-                $result = 0;
-            }
-            $currentRating = $playerRatings[$combatant->id]['rating'];
-            $newRating = $this->heroCalculator->calculateRatingChange($currentRating, $averageRating, $result);
-            $combatant->hero->combat_rating = $newRating;
-            $combatant->hero->save();
-        }
+        return HeroBattle::create([
+            'round_id' => $roundId,
+            'current_turn' => 1,
+            'finished' => false,
+            'pvp' => $mode === BattleState::MODE_PVP,
+            'mode' => $mode,
+            'encounter_key' => $encounterKey,
+            'raid_tactic_id' => $tactic?->id,
+            'seed' => random_int(1, 2_147_483_647),
+        ]);
     }
 }

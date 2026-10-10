@@ -32,11 +32,11 @@
                                     <td><label for="encounter-default" style="font-weight: normal;">Evil Twin</label></td>
                                     <td>Clone with your current stats</td>
                                 </tr>
-                                @foreach ($heroEncounterHelper->getEncounters() as $key => $practiceBattle)
+                                @foreach ($encounters as $key => $encounter)
                                     <tr>
                                         <td><input type="radio" id="encounter-{{ $key }}" name="encounter" value="{{ $key }}" /></td>
-                                        <td><label for="encounter-{{ $key }}" style="font-weight: normal;">{{ $practiceBattle['name'] }}</label></td>
-                                        <td>{{ $practiceBattle['source'] }}</td>
+                                        <td><label for="encounter-{{ $key }}" style="font-weight: normal;">{{ $encounter->name() }}</label></td>
+                                        <td>{{ $encounter->source() }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
