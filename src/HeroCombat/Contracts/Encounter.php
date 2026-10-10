@@ -4,8 +4,8 @@ namespace OpenDominion\HeroCombat\Contracts;
 
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
-use OpenDominion\HeroCombat\Engine\Victory\VictoryCondition;
 use OpenDominion\HeroCombat\Engine\EncounterContext;
+use OpenDominion\HeroCombat\Engine\Victory\VictoryCondition;
 
 interface Encounter
 {
