@@ -10,9 +10,15 @@ use \Illuminate\Database\Eloquent\Builder;
  * @property int $id
  * @property int $round_id
  * @property int $current_turn
- * @property int $pvp
+ * @property bool $pvp
+ * @property string $mode
+ * @property string|null $encounter_key
+ * @property int $seed
  * @property int|null $raid_tactic_id
- * @property int|null $winner_combatant_id
+ * @property int|null $winner_combatant_id representative of the winning team (first human, else first combatant)
+ * @property int|null $winning_team
+ * @property array|null $effects team and field effect instances: {team: {n: [...]}, field: [...]}
+ * @property string|null $initial_state JSON snapshot of the battle as created (see StateSnapshot), for replays
  * @property bool $finished
  * @property \Illuminate\Support\Carbon|null $last_processed_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -30,6 +36,9 @@ use \Illuminate\Database\Eloquent\Builder;
 class HeroBattle extends AbstractModel
 {
     protected $casts = [
+        'pvp' => 'boolean',
+        'finished' => 'boolean',
+        'effects' => 'array',
         'last_processed_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -73,6 +82,60 @@ class HeroBattle extends AbstractModel
     public function scopeInactive(Builder $query): Builder
     {
         return $query->where('finished', true);
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, HeroCombatant>
+     */
+    public function winningCombatants(): \Illuminate\Support\Collection
+    {
+        if (!$this->finished || $this->winning_team === null) {
+            return collect();
+        }
+
+        return $this->combatants->where('team', $this->winning_team)->values();
+    }
+
+    public function isDraw(): bool
+    {
+        return $this->finished && $this->winning_team === null;
+    }
+
+    public function isWinner(?HeroCombatant $combatant): bool
+    {
+        return $combatant !== null && $this->finished && $this->winning_team !== null && $combatant->team === $this->winning_team;
+    }
+
+    public function hasWinningDominion(int $dominionId): bool
+    {
+        return $this->winningCombatants()->contains('dominion_id', $dominionId);
+    }
+
+    /**
+     * Display name for the winning side, e.g. "Alice & Bob".
+     */
+    public function winnerLabel(): ?string
+    {
+        $winners = $this->winningCombatants();
+        if ($winners->isEmpty()) {
+            return null;
+        }
+
+        $humans = $winners->whereNotNull('hero_id');
+
+        return ($humans->isNotEmpty() ? $humans : $winners->take(1))->pluck('name')->implode(' & ');
+    }
+
+    /**
+     * e.g. "Alice & Bob vs Admiral Varos"
+     */
+    public function matchupLabel(): string
+    {
+        return $this->combatants
+            ->groupBy('team')
+            ->sortKeys()
+            ->map(fn ($members) => $members->pluck('name')->implode(' & '))
+            ->implode(' vs ');
     }
 
     public function allReady(): bool

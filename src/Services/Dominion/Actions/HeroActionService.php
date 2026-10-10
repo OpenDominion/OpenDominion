@@ -8,6 +8,8 @@ use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
+use OpenDominion\HeroCombat\Engine\ActionValidator;
+use OpenDominion\HeroCombat\Registry\CombatRegistry;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
 use OpenDominion\Models\DominionTech;
@@ -16,6 +18,7 @@ use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\HeroHeroUpgrade;
 use OpenDominion\Models\HeroUpgrade;
 use OpenDominion\Models\Spell;
+use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -289,8 +292,8 @@ class HeroActionService
             throw new GameException('You ran out of time and can no longer set manual actions.');
         }
 
-        $validStrategies = $this->heroHelper->getCombatStrategies()->where('type', 'basic')->keys();
-        if (!$validStrategies->contains($strategy)) {
+        $registry = app(CombatRegistry::class);
+        if (!$registry->hasStrategy($strategy) || !$registry->strategy($strategy)->playerSelectable()) {
             throw new GameException('Invalid strategy.');
         }
 
@@ -299,7 +302,7 @@ class HeroActionService
         $combatant->save();
     }
 
-    public function queueAction(Dominion $dominion, HeroCombatant $combatant, HeroCombatant $target, string $action)
+    public function queueAction(Dominion $dominion, HeroCombatant $combatant, ?HeroCombatant $target, string $action)
     {
         $this->guardLockedDominion($dominion);
 
@@ -311,7 +314,7 @@ class HeroActionService
             throw new GameException('You cannot queue actions for a battle that has ended.');
         }
 
-        if ($combatant->hero_battle_id !== $target->hero_battle_id || $target->current_health <= 0) {
+        if ($target !== null && $combatant->hero_battle_id !== $target->hero_battle_id) {
             throw new GameException('Invalid target.');
         }
 
@@ -319,9 +322,22 @@ class HeroActionService
             throw new GameException('You ran out of time and can no longer set manual actions.');
         }
 
-        $validActions = $this->heroHelper->getAvailableCombatActions($combatant)->keys();
-        if (!$validActions->contains($action)) {
+        $registry = app(CombatRegistry::class);
+        if (!$registry->hasAbility($action) || !$registry->ability($action)->selectable()) {
             throw new GameException('Invalid action.');
+        }
+
+        $battle = app(HeroBattleService::class)->loadBattle($combatant->battle);
+        $actor = $battle->combatant($combatant->id);
+        $ability = $registry->ability($action);
+
+        if (!(new ActionValidator($battle))->canQueue($actor, $action)) {
+            throw new GameException('You cannot use that action right now.');
+        }
+
+        $targetState = $battle->combatant($target?->id);
+        if (!$battle->targets->isValidChoice($actor, $ability, $targetState)) {
+            throw new GameException('Invalid target.');
         }
 
         $actions = $combatant->actions ?? [];
@@ -329,7 +345,10 @@ class HeroActionService
             throw new GameException('You cannot queue more than 6 actions.');
         }
 
-        array_push($actions, ['action' => $action, 'target' => $target->id]);
+        $actions[] = [
+            'ability' => $action,
+            'target' => $ability->targetRule()->needsChosenTarget() ? $targetState->id : null,
+        ];
         $combatant->actions = $actions;
         $combatant->automated = false;
         $combatant->save();

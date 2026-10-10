@@ -115,8 +115,18 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 - **Key methods**: `combatActionRequired()`, `getPerkValue()`, `getPerkMultiplier()`
 
 ### HeroBattle (`hero_battles`)
-- **Relations**: round, combatants, actions, winner (HeroCombatant), tournaments (btm), tactic
+- **Relations**: round, combatants, actions, winner (representative HeroCombatant), tournaments (btm), tactic
 - **Scopes**: `active()` (finished = false)
+- **Key fields**: `mode` (pvp/practice/raid), `encounter_key`, `seed`, `winning_team`, `effects` (team/field), `initial_state` (replay snapshot)
+- **Key methods**: `winningCombatants()`, `isWinner()`, `isDraw()`, `hasWinningDominion()`, `winnerLabel()`, `matchupLabel()`
+
+### HeroCombatant (`hero_combatants`)
+- **Relations**: battle, hero, dominion
+- **Key fields**: `team`, `template_key`, base stats, `current_health`, `abilities`, `effects`, `cooldowns`, `charges`, `actions` (queue), `strategy`, `time_bank`, `automated`
+- Mapped to `CombatantState` by `BattleRepository`; see [HERO_COMBAT.md](HERO_COMBAT.md)
+
+### HeroBattleAction (`hero_battle_actions`)
+- One row per resolved action or status line: `description` (text) and `events` (structured, first event records the intent source)
 
 ### HeroTournament (`hero_tournaments`)
 - **Relations**: round, winner (Dominion), battles (btm with round_number), participants

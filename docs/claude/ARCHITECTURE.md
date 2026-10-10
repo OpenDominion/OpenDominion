@@ -30,7 +30,8 @@ src/                          # Main application code (namespace: OpenDominion\)
   Console/Commands/           # Artisan commands (game:tick, game:ai, game:data:sync, etc.)
   Events/                     # Laravel events (DominionSaved, InfoOpCreating, User*)
   Listeners/                  # Event listeners
-  Providers/                  # Service providers (AppServiceProvider, EventServiceProvider, ComposerServiceProvider)
+  Providers/                  # Service providers (AppServiceProvider, EventServiceProvider, ComposerServiceProvider, HeroCombatServiceProvider)
+  HeroCombat/                 # Hero battle engine + content (see HERO_COMBAT.md)
 
 app/                          # Laravel resources
   config/                     # Configuration files

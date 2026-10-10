@@ -13,46 +13,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="row">
-                                @foreach ($battle->combatants as $combatant)
-                                    <div class="col-sm-6">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th colspan=2 class="text-center">
-                                                        {{ $combatant->name }}
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            @foreach ($heroCalculator->getBaseCombatStats() as $stat => $value)
-                                                <tr>
-                                                    <td>
-                                                        {{ ucwords($stat) }}
-                                                    </td>
-                                                    <td>
-                                                        @if ($stat == 'health')
-                                                            {{ $combatant->current_health }} /
-                                                        @endif
-                                                        {{ $combatant->{$stat} }}
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                            <tr>
-                                                <td><span data-bs-toggle="tooltip" title="Time remaining to set manual actions">Time</span></td>
-                                                <td>{{ rfloor($combatant->timeLeft() / 3600) }}h, {{ rfloor($combatant->timeLeft() % 3600 / 60) }}m</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                @endforeach
-                            </div>
+                            @foreach ($view->sides() as $side)
+                                <h5 class="mb-2">{{ $side['label'] }}</h5>
+                                <div class="row">
+                                    @foreach ($side['combatants'] as $combatant)
+                                        @include('partials.dominion.hero-combatant', ['view' => $view, 'combatant' => $combatant])
+                                    @endforeach
+                                </div>
+                            @endforeach
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="text-center">
                                         @if ($battle->finished)
-                                            @if ($battle->winner == null)
+                                            @if ($battle->isDraw())
                                                 <h4>Draw!</h4>
                                             @else
-                                                <h4>{{ $battle->winner->name }} wins!</h4>
+                                                <h4>{{ $battle->winnerLabel() }} {{ $battle->winningCombatants()->whereNotNull('hero_id')->count() > 1 ? 'win' : 'wins' }}!</h4>
                                             @endif
                                         @else
                                             <h4>Combat in progress...</h4>
@@ -62,25 +38,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Combat Log</th>
-                                    </tr>
-                                </thead>
-                                @foreach ($battle->actions->sortByDesc('turn')->groupBy('turn') as $turn => $actions)
-                                    <tr><td>Turn {{ $turn }}</td></tr>
-                                    <tr><td>
-                                        @foreach ($actions->where('action', '!=', 'status') as $action)
-                                            @php $actionDef = $heroHelper->getCombatActions()->get($action->action); @endphp
-                                            {{ $action->combatant->name }} selected {{ $actionDef['name'] ?? ucwords($action->action) }}.<br/>
-                                        @endforeach
-                                        @foreach ($actions->where('description', '!=', '') as $action)
-                                            {{ $action->description }}<br/>
-                                        @endforeach
-                                    </td></tr>
-                                @endforeach
-                            </table>
+                            @include('partials.dominion.hero-combat-log', ['view' => $view, 'battle' => $battle])
                         </div>
                     </div>
                 </div>
