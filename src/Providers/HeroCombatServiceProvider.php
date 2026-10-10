@@ -45,6 +45,10 @@ class HeroCombatServiceProvider extends ServiceProvider
         Abilities\Boss\SummonGolem::class,
         Abilities\Boss\SoulRend::class,
         Abilities\Boss\HungeringMoon::class,
+        Abilities\Boss\MagicWard::class,
+        Abilities\Boss\Backlash::class,
+        Abilities\Boss\Silence::class,
+        Abilities\Boss\ArcaneConduit::class,
     ];
 
     /** @var array<int, class-string> */
@@ -96,6 +100,10 @@ class HeroCombatServiceProvider extends ServiceProvider
         Effects\Boss\WoundedRetreat::class,
         Effects\Boss\SoulRendCharge::class,
         Effects\Boss\HungeringMoonCurse::class,
+        Effects\MagicWard::class,
+        Effects\Backlash::class,
+        Effects\Silenced::class,
+        Effects\ArcaneConduit::class,
     ];
 
     /** @var array<int, class-string> */
@@ -128,6 +136,7 @@ class HeroCombatServiceProvider extends ServiceProvider
         Enemies\ThessadrashShadow::class,
         Enemies\ThessadrashMaw::class,
         Enemies\RexLunae::class,
+        Enemies\GrandMagister::class,
     ];
 
     /** @var array<int, class-string> */
@@ -150,6 +159,7 @@ class HeroCombatServiceProvider extends ServiceProvider
         Encounters\HeartOfIceEncounter::class,
         Encounters\AdmiralVarosEncounter::class,
         Encounters\RexLunaeEncounter::class,
+        Encounters\GrandMagisterEncounter::class,
     ];
 
     public function register(): void

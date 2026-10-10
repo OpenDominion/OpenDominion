@@ -20,52 +20,25 @@
                             @endif
                             <div class="row">
                                 <div class="col-md-6">
-                                    @foreach ($view->sides() as $side)
-                                        <h5 class="mb-2">{{ $side['label'] }}</h5>
-                                        <div class="row">
-                                            @foreach ($side['combatants'] as $combatant)
-                                                @include('partials.dominion.hero-combatant', ['view' => $view, 'combatant' => $combatant])
-                                            @endforeach
-                                        </div>
-                                    @endforeach
+                                    @php
+                                        $sides = $view->sides();
+                                        $active = !$battle->finished && $view->viewer;
+                                        $showQueue = $active && $view->canQueueAhead();
+                                        $queueBesideOpponent = $showQueue && count($sides) === 2 && count($sides[1]['combatants']) === 1;
+                                    @endphp
                                     <div class="row">
-                                        <div class="col-sm-12">
-                                            @if ($battle->finished)
-                                                <div class="text-center">
-                                                    @if ($battle->isDraw())
-                                                        <h4>Draw!</h4>
-                                                    @else
-                                                        <h4>{{ $battle->winnerLabel() }} {{ $battle->winningCombatants()->whereNotNull('hero_id')->count() > 1 ? 'win' : 'wins' }}!</h4>
-                                                    @endif
+                                        @foreach ($sides as $side)
+                                            <div class="col-sm">
+                                                <h5 class="mb-2 text-center">{{ $side['label'] }}</h5>
+                                                <div class="row">
+                                                    @foreach ($side['combatants'] as $combatant)
+                                                        @include('partials.dominion.hero-combatant', ['view' => $view, 'combatant' => $combatant])
+                                                    @endforeach
                                                 </div>
-                                            @elseif ($view->viewer)
-                                                <div class="row mb-3">
-                                                    <div class="col-sm-6">
+                                                @if ($active && $side['team'] === $view->viewer->team)
+                                                    <div class="mb-3">
                                                         <label class="form-label">
-                                                            Actions in queue
-                                                        </label>
-                                                        <table class="table-sm">
-                                                            @foreach ($view->queue() as $idx => $queued)
-                                                                <tr>
-                                                                    <td>{{ $queued['turn'] }}</td>
-                                                                    <td>
-                                                                        {{ $queued['ability'] }}
-                                                                        @if ($queued['target'])
-                                                                            <small class="text-muted">&rarr; {{ $queued['target'] }}</small>
-                                                                        @endif
-                                                                    </td>
-                                                                    <td>
-                                                                        <a href="{{ route('dominion.heroes.battles.action.delete', ['combatant'=>$view->viewer->id, 'action'=>$idx]) }}">
-                                                                            <i class="fa fa-trash text-danger"></i>
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </table>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <label class="form-label">
-                                                            Perform/Queue an action
+                                                            {{ $showQueue ? 'Perform/Queue an action' : 'Perform an action' }}
                                                         </label>
                                                         <div>
                                                             @foreach ($view->abilities() as $ability)
@@ -107,7 +80,26 @@
                                                             @endforeach
                                                         </div>
                                                     </div>
+                                                    @if ($showQueue && !$queueBesideOpponent)
+                                                        @include('partials.dominion.hero-battle-queue', ['view' => $view])
+                                                    @endif
+                                                @elseif ($queueBesideOpponent)
+                                                    @include('partials.dominion.hero-battle-queue', ['view' => $view])
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            @if ($battle->finished)
+                                                <div class="text-center">
+                                                    @if ($battle->isDraw())
+                                                        <h4>Draw!</h4>
+                                                    @else
+                                                        <h4>{{ $battle->winnerLabel() }} {{ $battle->winningCombatants()->whereNotNull('hero_id')->count() > 1 ? 'win' : 'wins' }}!</h4>
+                                                    @endif
                                                 </div>
+                                            @elseif ($view->viewer)
                                                 <div class="row mb-3">
                                                     <div class="col-sm-12">
                                                         <label class="form-label">

@@ -56,7 +56,28 @@ class HeroBattlePagesTest extends AbstractTestCase
             ->assertSee('Enrage')
             ->assertSee('Power Source')
             ->assertSee('Attack')
-            ->assertSee('Recover');
+            ->assertSee('Recover')
+            ->assertSeeInOrder(['Your side', 'Perform an action', 'Opponents'])
+            ->assertDontSee('Actions in queue');
+    }
+
+    public function testCoopQueueIsShownBesideASingleOpponent(): void
+    {
+        $dominion = $this->heroDominion();
+        $ally = $this->createDominionWithLegacyStats($this->createUser(), $dominion->round, Race::where('name', 'Human')->firstOrFail());
+        Hero::create([
+            'dominion_id' => $ally->id,
+            'name' => 'Ally Hero',
+            'class' => 'blacksmith',
+            'experience' => 2000,
+            'class_data' => [],
+        ]);
+        $battle = app(HeroBattleService::class)->createEncounterBattle('grand_magister', [$dominion, $ally->refresh()], 'practice');
+        $battle->combatants()->whereNotNull('hero_id')->update(['automated' => false]);
+
+        $this->get(route('dominion.heroes.battles'))
+            ->assertOk()
+            ->assertSeeInOrder(['Your side', 'Perform/Queue an action', 'Opponents', 'Grand Magister', 'Actions in queue']);
     }
 
     public function testQueueingAnActionThroughTheRouteResolvesTheTurn(): void

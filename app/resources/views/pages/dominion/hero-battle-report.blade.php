@@ -13,14 +13,18 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            @foreach ($view->sides() as $side)
-                                <h5 class="mb-2">{{ $side['label'] }}</h5>
-                                <div class="row">
-                                    @foreach ($side['combatants'] as $combatant)
-                                        @include('partials.dominion.hero-combatant', ['view' => $view, 'combatant' => $combatant])
-                                    @endforeach
-                                </div>
-                            @endforeach
+                            <div class="row">
+                                @foreach ($view->sides() as $side)
+                                    <div class="col-sm">
+                                        <h5 class="mb-2 text-center">{{ $side['label'] }}</h5>
+                                        <div class="row">
+                                            @foreach ($side['combatants'] as $combatant)
+                                                @include('partials.dominion.hero-combatant', ['view' => $view, 'combatant' => $combatant])
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="text-center">

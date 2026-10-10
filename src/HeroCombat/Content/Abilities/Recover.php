@@ -42,6 +42,11 @@ class Recover extends AbstractAbility
         return [CombatTag::Heal];
     }
 
+    public function blockedByTags(): array
+    {
+        return [CombatTag::Stunned, CombatTag::Silenced];
+    }
+
     public function onDeclare(ActionContext $context): void
     {
         $context->applyEffect($context->actor, 'recovering', 1);

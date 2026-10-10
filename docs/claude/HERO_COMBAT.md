@@ -101,7 +101,7 @@ state lives on the `EffectInstance` (stacks, remaining turns, `data`).
 - **Scopes.** An effect lives on a combatant (`EffectManager::apply`), a team (`applyToTeam`) or the battlefield (`applyToField`). Team and field instances apply to whoever `Effect::appliesTo()` accepts. The default excludes ids listed in `data.exclude`.
 - **Stacking.** `Refresh` resets the duration and merges data. `Stack` adds stacks up to `maxStacks()`, which may depend on the owner (Focused stacks without limit under Channeling). `Replace` swaps in a new instance. `Independent` keeps every application.
 - **Expiry timing.** `TurnEnd` (default), `OwnerActionEnd`, `OnDamageTaken`, or `OnConsume` (removed only explicitly). An effect applied *during* end-of-turn ticking is not ticked in that same pass, which is how Freezing hands over to Frozen for exactly the next turn.
-- **Tags** (`CombatTag`). Effects grant tags. Abilities declare `blockedByTags()` (default: Stunned) and `requiredTags()`. Effects can declare `immuneToTags()`. Cleanse removes `Curse`-tagged effects. Stances are queried by tag (`Defending`, `Countering`).
+- **Tags** (`CombatTag`). Effects grant tags. Abilities declare `blockedByTags()` (default: Stunned) and `requiredTags()`. Focus and Recover are also blocked by `Silenced`. Effects can declare `immuneToTags()`. Cleanse removes `Curse`-tagged effects. Stances are queried by tag (`Defending`, `Countering`).
 - **Modifiers.** `effective = round((base + Σflat) × (1 + Σpercent))`, then overrides (e.g. Frozen → 0), clamped at 0. A modifier must not compute other *effective* stats inside `modifiers()`, because that recurses. Use `baseStat()` (see Mending).
 
 ### Hook reference (all no-op in `AbstractEffect`)
@@ -156,7 +156,7 @@ optional `playerGrants()` (class-conditional abilities), a `VictoryCondition`, a
 script hook, and an optional victory line. Keys must match the `encounter` attribute raids use on
 their `RaidObjectiveTactic` rows.
 
-All 18 original encounters are ported:
+All 18 original encounters are ported, plus `grand_magister`:
 
 | Key | Mechanics |
 |---|---|
@@ -173,6 +173,7 @@ All 18 original encounters are ported:
 | `heart_of_ice` | `snow_witch_curse` telegraph, `frostbite`, Freezing → Frozen |
 | `admiral_varos` | `admirals_orders` telegraph, capped summons |
 | `rex_lunae` | `hungering_moon_curse` telegraph → `hungering_moon` (`moonstruck` max-health loss, turns then converts); Cleanse granted |
+| `grand_magister` | `grand_magister` AI weights short spells (cooldown 3, 2-turn effects unless noted): `magic_ward` (halves damage taken, 4 turns), `backlash` (attackers take 50% back, 3 turns), `silence` → `silenced` (blocks Focus/Recover, 3 turns), `arcane_conduit` (forced ×2 attack next turn). No telegraph, no grants |
 
 The old unused "story" encounters (wolf, bandit, imp, cultist) were never reachable and were
 not ported.

@@ -1,29 +1,28 @@
 <?php
 
-namespace OpenDominion\HeroCombat\Content\Abilities;
+namespace OpenDominion\HeroCombat\Content\Abilities\Boss;
 
 use OpenDominion\HeroCombat\Content\AbstractAbility;
 use OpenDominion\HeroCombat\Engine\ActionContext;
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
-use OpenDominion\HeroCombat\Engine\CombatTag;
 use OpenDominion\HeroCombat\Engine\Targeting\TargetRule;
 
-class Focus extends AbstractAbility
+class ArcaneConduit extends AbstractAbility
 {
     public function key(): string
     {
-        return 'focus';
+        return 'arcane_conduit';
     }
 
     public function name(): string
     {
-        return 'Focus';
+        return 'Arcane Conduit';
     }
 
     public function description(): string
     {
-        return 'Your next attack adds your focus value to its damage.';
+        return 'Attacks next turn for double damage.';
     }
 
     public function targetRule(): TargetRule
@@ -33,27 +32,22 @@ class Focus extends AbstractAbility
 
     public function cooldown(CombatantState $actor, Battle $battle): int
     {
-        return 1;
-    }
-
-    public function blockedByTags(): array
-    {
-        return [CombatTag::Stunned, CombatTag::Silenced];
+        return 3;
     }
 
     public function canUse(CombatantState $actor, Battle $battle): bool
     {
-        return !$battle->hasTag($actor, CombatTag::Focused) || $battle->effects->has($actor, 'channeling');
+        return !$battle->effects->has($actor, 'arcane_conduit');
     }
 
     public function resolve(ActionContext $context): void
     {
-        $context->applyEffect($context->actor, 'focused');
-        $context->say('focus');
+        $context->applyEffect($context->actor, 'arcane_conduit');
+        $context->say('conduit');
     }
 
     public function messages(): array
     {
-        return ['focus' => '{actor} focuses their energy for the next attack.'];
+        return ['conduit' => 'Power floods into {actor}\'s staff, which burns brighter with every breath.'];
     }
 }

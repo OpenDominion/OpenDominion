@@ -4,7 +4,7 @@
     $combatantModel = $view->model($combatant);
     $shield = $view->shield($combatant);
 @endphp
-<div class="col-sm-6">
+<div class="col-12">
     <table class="table table-sm {{ $combatant->isAlive() ? null : 'text-muted' }}">
         <thead>
             <tr>
