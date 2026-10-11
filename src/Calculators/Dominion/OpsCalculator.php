@@ -21,8 +21,8 @@ class OpsCalculator
      * @var float Base amount of resilience lost each hour
      */
     protected const RESILIENCE_DECAY = -20;
-    protected const RESOLVE_DECAY = -20;
-    protected const RESOLVE_DECAY_PEACETIME = -40;
+    protected const RESOLVE_DECAY = -10;
+    protected const RESOLVE_DECAY_PEACETIME = -30;
     protected const FIREBALL_METER_DECAY = -4;
     protected const LIGHTNING_BOLT_METER_DECAY = -4;
 
@@ -384,8 +384,8 @@ class OpsCalculator
     }
 
     /**
-     * Returns the wizard ratio a dominion needs for Resurrection to hold it at
-     * the spell's full share of maximum population.
+     * Returns the wizard ratio a dominion needs for Resurrection to restore the
+     * spell's full share of its fallen peasants each hour.
      *
      * The requirement climbs as the round goes on, so a wizard force that was
      * enough to hold a dominion together in the first week no longer is by the
@@ -404,9 +404,9 @@ class OpsCalculator
     }
 
     /**
-     * Returns the share of maximum population that Resurrection holds a
-     * dominion at, scaling from a floor up to the spell's ceiling by how far
-     * its wizard ratio has come towards the day's requirement.
+     * Returns the share of a dominion's fallen peasants that Resurrection
+     * restores each hour, scaling from a floor up to the spell's ceiling by how
+     * far its wizard ratio has come towards the day's requirement.
      *
      * The floor means the spell is worth casting from the first wizard, while
      * the ceiling still asks a dominion to keep pace with the round.
@@ -425,7 +425,7 @@ class OpsCalculator
         }
 
         // Values
-        $minimumPercentage = 10;
+        $minimumPercentage = 5;
 
         $wizardRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
         $requiredRatio = $this->getResurrectionRequiredRatio($dominion);
@@ -437,42 +437,38 @@ class OpsCalculator
     }
 
     /**
-     * Returns the number of peasants Resurrection holds a dominion at.
+     * Returns the number of peasants Resurrection brings back this tick.
      *
-     * A dominion whose military has outgrown its housing has a negative maximum
-     * peasant population, which would otherwise give a negative floor.
+     * The hour's natural growth pays down the Fireball record first, and the
+     * spell restores its share of whatever is still owed. Capped by the room
+     * left under maximum population after that growth, so it can never push a
+     * dominion past its ceiling, and never negative.
+     *
+     * Takes the ceiling as an argument so a dominion can be shown what the
+     * spell would do for them before they have cast it. The tick passes the
+     * growth it has already worked out; otherwise it is calculated here.
      *
      * @param Dominion $dominion
      * @param float $maximumPercentage
+     * @param int|null $peasantGrowth
      * @return int
      */
-    public function getResurrectionFloor(Dominion $dominion, float $maximumPercentage): int
+    public function getPeasantsResurrected(Dominion $dominion, float $maximumPercentage, ?int $peasantGrowth = null): int
     {
         $percentage = $this->getResurrectionPercentage($dominion, $maximumPercentage);
 
-        if ($percentage <= 0) {
+        if ($percentage <= 0 || $dominion->peasants_killed <= 0) {
             return 0;
         }
 
-        $maxPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion));
+        if ($peasantGrowth === null) {
+            $peasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
+        }
 
-        return max(0, (int)rfloor($maxPeasants * $percentage));
-    }
+        $remaining = max(0, $dominion->peasants_killed - max(0, $peasantGrowth));
+        $roomForPeasants = max(0, $this->populationCalculator->getMaxPeasantPopulation($dominion) - ($dominion->peasants + $peasantGrowth));
 
-    /**
-     * Returns the number of peasants Resurrection brings back this tick.
-     *
-     * Never negative: the spell holds a floor and can only ever add. A dominion
-     * already above the floor gains nothing rather than losing the difference.
-     *
-     * @param Dominion $dominion
-     * @return int
-     */
-    public function getPeasantsResurrected(Dominion $dominion): int
-    {
-        $floor = $this->getResurrectionFloor($dominion, $dominion->getSpellPerkValue('resurrect_peasants'));
-
-        return max(0, $floor - $dominion->peasants);
+        return max(0, min($remaining, (int)rceil($remaining * $percentage), $roomForPeasants));
     }
 
     /**

@@ -253,11 +253,12 @@
                                                             @php
                                                                 $resurrectCeiling = $spell->getPerkValue('resurrect_peasants');
                                                                 $resurrectShare = $opsCalculator->getResurrectionPercentage($selectedDominion, $resurrectCeiling);
-                                                                $resurrectFloor = $opsCalculator->getResurrectionFloor($selectedDominion, $resurrectCeiling);
+                                                                $resurrectNextHour = $opsCalculator->getPeasantsResurrected($selectedDominion, $resurrectCeiling);
                                                             @endphp
                                                             Currently
                                                             <span class="text-{{ $resurrectShare >= ($resurrectCeiling / 100) ? 'success' : 'warning' }}">{{ number_format($resurrectShare * 100, 1) }}%</span>
-                                                            ({{ number_format($resurrectFloor) }} peasants)<br/>
+                                                            of fallen peasants per hour<br/>
+                                                            (~{{ number_format($resurrectNextHour) }} peasants next hour)<br/>
                                                             Caps at {{ number_format($opsCalculator->getResurrectionRequiredRatio($selectedDominion), 3) }} wizard ratio today<br/>
                                                         @endif
                                                         @if ($canCast)

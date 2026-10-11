@@ -790,11 +790,11 @@ resurrection:
   name: Resurrection
   category: self
   school: necromancy
-  cost_mana: 5
+  cost_mana: 4
   cost_strength: 5
   duration: 12
   perks:
-    resurrect_peasants: 60
+    resurrect_peasants: 30
 revive_peasants:
   name: Revive Peasants
   category: friendly
@@ -808,7 +808,7 @@ backlash:
   name: Backlash
   category: self
   school: abjuration
-  cost_mana: 5
+  cost_mana: 2.5
   cost_strength: 5
   duration: 12
   perks:

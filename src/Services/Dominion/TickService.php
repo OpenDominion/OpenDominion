@@ -1022,17 +1022,18 @@ class TickService
         // Population
         $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
 
-        // Resurrection refills peasants up to a share of maximum population
-        // before the hour's own growth is worked out
-        $peasantsResurrected = $this->opsCalculator->getPeasantsResurrected($dominion);
-        $dominion->peasants += $peasantsResurrected;
-
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
 
-        $tick->peasants = $peasantsResurrected + $populationPeasantGrowth;
-        $tick->military_draftees = $drafteesGrowthRate;
+        // Resurrection restores a share of the Fireball dead still on record
+        // after the hour's growth has paid it down
+        $peasantsResurrected = $this->opsCalculator->getPeasantsResurrected(
+            $dominion,
+            $dominion->getSpellPerkValue('resurrect_peasants'),
+            $populationPeasantGrowth
+        );
 
-        $dominion->peasants -= $peasantsResurrected;
+        $tick->peasants = $populationPeasantGrowth + $peasantsResurrected;
+        $tick->military_draftees = $drafteesGrowthRate;
 
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);

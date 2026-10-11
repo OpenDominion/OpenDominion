@@ -196,7 +196,7 @@ class BacklashTest extends AbstractBrowserKitTestCase
 
         $this->seeInDatabase('dominions', [
             'id' => $this->target->id,
-            'resolve' => 230,
+            'resolve' => 240,
         ]);
     }
 
@@ -213,7 +213,7 @@ class BacklashTest extends AbstractBrowserKitTestCase
 
         $this->seeInDatabase('dominions', [
             'id' => $this->target->id,
-            'resolve' => 210,
+            'resolve' => 220,
         ]);
     }
 
