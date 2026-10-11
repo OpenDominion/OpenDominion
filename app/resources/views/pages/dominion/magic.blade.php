@@ -257,8 +257,7 @@
                                                             @endphp
                                                             Currently
                                                             <span class="text-{{ $resurrectShare >= ($resurrectCeiling / 100) ? 'success' : 'warning' }}">{{ number_format($resurrectShare * 100, 1) }}%</span>
-                                                            of fallen peasants per hour<br/>
-                                                            (~{{ number_format($resurrectNextHour) }} peasants next hour)<br/>
+                                                            ({{ number_format($resurrectNextHour) }} peasants)<br/>
                                                             Caps at {{ number_format($opsCalculator->getResurrectionRequiredRatio($selectedDominion), 3) }} wizard ratio today<br/>
                                                         @endif
                                                         @if ($canCast)

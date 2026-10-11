@@ -159,7 +159,7 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
         $this->target->protection_ticks_remaining = 0;
         $this->target->peasants = 20000;
         $this->target->peasants_killed = 50000;
-        // Meeting the day's requirement restores the spell's full 30%
+        // Meeting the day's requirement restores the spell's full 25%
         $this->setWizardRatio($opsCalculator->getResurrectionRequiredRatio($this->target));
         $this->activateSpell($this->target, 'resurrection');
         $this->target->save();
@@ -168,7 +168,7 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
         $resurrected = $opsCalculator->getPeasantsResurrected($this->target, $this->getResurrectionCeiling());
 
         $this->assertGreaterThan(0, $growth, 'The target should grow peasants this tick');
-        $this->assertEquals((int)ceil((50000 - $growth) * 0.3), $resurrected);
+        $this->assertEquals((int)ceil((50000 - $growth) * 0.25), $resurrected);
 
         $this->app->make(TickService::class)->performTick($this->round);
         $this->target->refresh();
@@ -191,9 +191,9 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $growth = $this->populationCalculator->getPopulationPeasantGrowth($this->target);
 
-        $this->assertEqualsWithDelta(0.3, $opsCalculator->getResurrectionPercentage($this->target, $this->getResurrectionCeiling()), 0.001);
+        $this->assertEqualsWithDelta(0.25, $opsCalculator->getResurrectionPercentage($this->target, $this->getResurrectionCeiling()), 0.001);
         $this->assertEquals(
-            (int)ceil((10000 - $growth) * 0.3),
+            (int)ceil((10000 - $growth) * 0.25),
             $opsCalculator->getPeasantsResurrected($this->target, $this->getResurrectionCeiling())
         );
     }
@@ -204,12 +204,12 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $this->target->military_wizards = 20000;
 
-        $this->assertEqualsWithDelta(0.3, $opsCalculator->getResurrectionPercentage($this->target, $this->getResurrectionCeiling()), 0.001);
+        $this->assertEqualsWithDelta(0.25, $opsCalculator->getResurrectionPercentage($this->target, $this->getResurrectionCeiling()), 0.001);
     }
 
     /**
      * Falling short of the day's requirement scales between the floor and the
-     * ceiling: halfway there is halfway between 5% and 30%.
+     * ceiling: halfway there is halfway between 5% and 25%.
      */
     public function testResurrectionShareScalesWithTheDaysRequirement(): void
     {
@@ -217,7 +217,7 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $this->setWizardRatio($opsCalculator->getResurrectionRequiredRatio($this->target) / 2);
 
-        $this->assertEqualsWithDelta(0.175, $opsCalculator->getResurrectionPercentage($this->target, $this->getResurrectionCeiling()), 0.005);
+        $this->assertEqualsWithDelta(0.15, $opsCalculator->getResurrectionPercentage($this->target, $this->getResurrectionCeiling()), 0.005);
     }
 
     /**
@@ -351,6 +351,46 @@ class PeasantRecoveryTest extends AbstractBrowserKitTestCase
 
         $this->assertGreaterThan(0, $grown, 'The target should have grown peasants this tick');
         $this->assertEquals(5000 - $grown, $this->target->peasants_killed);
+    }
+
+    /**
+     * A dominion that grows back to maximum population has nothing left to
+     * revive, however much growth alone would have paid down.
+     */
+    public function testReachingMaximumPopulationClearsTheRecord(): void
+    {
+        $this->target->protection_ticks_remaining = 0;
+        $this->target->draft_rate = 0;
+        $maxPeasants = $this->populationCalculator->getMaxPeasantPopulation($this->target);
+        $this->target->peasants = $maxPeasants - 100;
+        $this->target->peasants_killed = 50000;
+        $this->target->save();
+
+        $this->app->make(TickService::class)->performTick($this->round);
+        $this->target->refresh();
+
+        $this->assertEquals($maxPeasants, $this->target->peasants);
+        $this->assertEquals(0, $this->target->peasants_killed);
+    }
+
+    /**
+     * The record clears as soon as the dominion is recalculated at maximum,
+     * not only on the hour.
+     */
+    public function testRecordIsClearedWhenRecalculatedAtMaximumPopulation(): void
+    {
+        $maxPeasants = $this->populationCalculator->getMaxPeasantPopulation($this->target);
+        $this->target->peasants = $maxPeasants;
+        $this->target->peasants_killed = 4000;
+        $this->target->save();
+
+        $this->app->make(TickService::class)->precalculateTick($this->target);
+
+        $this->assertEquals(0, $this->target->peasants_killed);
+        $this->seeInDatabase('dominions', [
+            'id' => $this->target->id,
+            'peasants_killed' => 0,
+        ]);
     }
 
     public function testRevivePeasantsBringsBackAShareOfTheRecord(): void

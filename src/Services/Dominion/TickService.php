@@ -999,6 +999,14 @@ class TickService
         // Active spells
         $this->spellCalculator->getActiveSpells($dominion);
 
+        // Fireball deaths are only owed while there is room to regrow them, so
+        // a dominion back at maximum population has nothing left to revive
+        if ($dominion->peasants_killed > 0 && $dominion->peasants >= $this->populationCalculator->getMaxPeasantPopulation($dominion)) {
+            $dominion->newQueryWithoutScopes()->whereKey($dominion->id)->update(['peasants_killed' => 0]);
+            $dominion->peasants_killed = 0;
+            $dominion->syncOriginalAttribute('peasants_killed');
+        }
+
         // Queues
         $incomingQueue = DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)

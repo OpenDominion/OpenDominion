@@ -794,7 +794,7 @@ resurrection:
   cost_strength: 5
   duration: 12
   perks:
-    resurrect_peasants: 30
+    resurrect_peasants: 25
 revive_peasants:
   name: Revive Peasants
   category: friendly
