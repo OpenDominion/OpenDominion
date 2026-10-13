@@ -66,6 +66,8 @@ class EspionageHelper
 
     public function getValuablesOperations(): Collection
     {
+        return collect();
+        /*
         return collect([
             [
                 'name' => 'Locate Valuables',
@@ -73,6 +75,7 @@ class EspionageHelper
                 'key' => 'locate_valuables',
             ],
         ]);
+        */
     }
 
     public function getInfoGatheringOperations(): Collection

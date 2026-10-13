@@ -31,7 +31,7 @@ units:
       casualties_defense: -50
   - name: FrostMage # Leave the space out, for nostalgic reasons
     cost:
-      platinum: 965
+      platinum: 995
       ore: 100
     power:
       offense: 3

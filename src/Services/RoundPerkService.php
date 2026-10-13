@@ -68,6 +68,10 @@ class RoundPerkService
             return static::STATUS_NOT_APPLICABLE;
         }
 
+        if (!$dominion->round->hasStarted()) {
+            return static::STATUS_UPCOMING;
+        }
+
         if ($perk->from_day !== null && $day < $perk->from_day) {
             return static::STATUS_UPCOMING;
         }

@@ -77,7 +77,7 @@ Hero upgrades use embedded `HeroUpgradePerk` (key/value) instead of the btm patt
 ### RoundPerk (`round_perks`)
 Round-wide perks configured by admins (no perk-type table; `key` is a plain string whitelisted by `RoundPerkHelper::getPerkTypes()`).
 - **Fields**: round_id, key, value (string; numeric or comma-delimited compound), alignment (nullable = everyone), from_day/until_day (nullable, inclusive), name (groups perks into a storyline event), description
-- **Key methods**: `isActiveOnDay()`, `matchesAlignment()`, `appliesTo(Dominion)`, `getValueParts()`
+- **Key methods**: `isActiveOnDay()`, `matchesAlignment()`, `appliesTo(Dominion)` (false before the round starts), `getValueParts()`
 
 ## Game State Models
 
