@@ -4,6 +4,7 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use LogicException;
 use Notification;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
@@ -511,6 +512,8 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
     public function testLocateValuables_Repelled_NoProgressAndSpiesLost()
     {
+        $this->markTestSkipped('Locate Valuables is disabled');
+
         // mockRandomChance defaults to false in setUp -> the new ratio check fails.
         $this->dominion->military_spies = 5000;
         $this->target->military_spies = 50000; // huge SPA disadvantage forces failure
@@ -530,6 +533,8 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
     public function testLocateValuables_Repelled_StillCostsSpyStrength()
     {
+        $this->markTestSkipped('Locate Valuables is disabled');
+
         $this->dominion->military_spies = 5000;
         $this->target->military_spies = 50000;
         $strengthBefore = $this->dominion->spy_strength;
@@ -544,6 +549,8 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
     public function testLocateValuables_Repelled_NotifiesTarget()
     {
+        $this->markTestSkipped('Locate Valuables is disabled');
+
         $this->dominion->military_spies = 5000;
         $this->target->military_spies = 50000;
 
@@ -572,6 +579,8 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
     public function testLocateValuables_Successful_CreatesValuable()
     {
+        $this->markTestSkipped('Locate Valuables is disabled');
+
         global $mockRandomChance;
         $mockRandomChance = true;
 
@@ -592,6 +601,8 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
     public function testLocateValuables_ZeroSpyRatio_ThrowsAndCostsNothing()
     {
+        $this->markTestSkipped('Locate Valuables is disabled');
+
         $this->dominion->military_spies = 0;
         $this->dominion->military_assassins = 0;
         $this->dominion->save();
@@ -607,17 +618,13 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals($strengthBefore, $this->dominion->fresh()->spy_strength);
     }
 
-    public function testLocateValuables_OffensiveActionsDisabled_Throws()
+    public function testLocateValuables_Disabled_Throws()
     {
-        $this->round->offensive_actions_prohibited_at = now()->subHour();
-        $this->round->save();
-        $this->dominion->setRelation('round', $this->round->fresh());
-
         $this->dominion->military_spies = 5000;
         $this->target->military_spies = 5000;
 
-        $this->expectException(GameException::class);
-        $this->expectExceptionMessage('Black ops have been disabled');
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Cannot perform unknown operation 'locate_valuables'");
 
         $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
     }
