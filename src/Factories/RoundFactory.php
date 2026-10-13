@@ -30,19 +30,7 @@ class RoundFactory
         $number = ($this->getLastRoundNumber($league) + 1);
         $endDate = (clone $startDate)->addDays($durationInDays);
 
-        /**
-         * Random Disable - Skewed Distribution
-         * Hour 10 - 30.6%
-         * Hour 11 - 25%
-         * Hour 12 - 19.4%
-         * Hour 13 - 13.9%
-         * Hour 14 - 8.3%
-         * Hour 15 - 2.8%
-        */
-        $hoursBeforeRoundEnd = 14 - skewed_distribution(0, 6);
-        $secondsBeforeRoundEnd = rand(1, 3599);
-        $offensiveActionsEndDate =
-            (clone $endDate)->subHours($hoursBeforeRoundEnd)->subSeconds($secondsBeforeRoundEnd);
+        $offensiveActionsEndDate = $this->getOffensiveActionsEndDate($endDate);
 
         $round = Round::create([
             'round_league_id' => $league->id,
@@ -75,6 +63,25 @@ class RoundFactory
         }
 
         return $round;
+    }
+
+    /**
+     * Returns a random time on the final day when offensive actions become prohibited.
+     *
+     * Random Disable - Skewed Distribution
+     * Hour 10 - 2.8%
+     * Hour 11 - 8.3%
+     * Hour 12 - 13.9%
+     * Hour 13 - 19.4%
+     * Hour 14 - 25%
+     * Hour 15 - 30.6%
+     */
+    public function getOffensiveActionsEndDate(Carbon $endDate): Carbon
+    {
+        $hoursBeforeRoundEnd = 9 + skewed_distribution(0, 6);
+        $secondsBeforeRoundEnd = rand(1, 3599);
+
+        return (clone $endDate)->subHours($hoursBeforeRoundEnd)->subSeconds($secondsBeforeRoundEnd);
     }
 
     /**
