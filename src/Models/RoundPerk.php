@@ -65,14 +65,16 @@ class RoundPerk extends AbstractModel
     }
 
     /**
-     * Whether the perk currently applies to the dominion.
+     * Whether the perk currently applies to the dominion. Perks never apply before the round starts.
      *
      * @param Dominion $dominion
      * @return bool
      */
     public function appliesTo(Dominion $dominion): bool
     {
-        return $this->matchesAlignment($dominion) && $this->isActiveOnDay($dominion->round->daysInRound());
+        return $dominion->round->hasStarted()
+            && $this->matchesAlignment($dominion)
+            && $this->isActiveOnDay($dominion->round->daysInRound());
     }
 
     /**

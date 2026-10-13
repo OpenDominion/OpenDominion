@@ -167,7 +167,7 @@ Wonder lifecycle management.
 - Sentient wonders attack top 3 damage-dealing realms
 
 ### RoundPerkService
-Admin CRUD for round perks (`create()`, `update()`, `delete()`) and `getPerksForDominion()`, which returns every round perk with a status (active / upcoming / expired / not_applicable) for the Status page.
+Admin CRUD for round perks (`create()`, `update()`, `delete()`) and `getPerksForDominion()`, which returns every round perk with a status (active / upcoming / expired / not_applicable) for the Status page; every applicable perk is upcoming before the round starts.
 
 ### RaidService
 Raid completion and reward distribution.
