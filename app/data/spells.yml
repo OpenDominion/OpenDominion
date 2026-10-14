@@ -733,3 +733,12 @@ satiated_thirst:
     - vampire
   perks:
     offense: -10
+emperors_ire:
+  name: The Emperor's Ire
+  category: effect
+  school: evocation
+  cost_mana: 0
+  cost_strength: 0
+  duration: 20
+  perks:
+    platinum_production: -25
