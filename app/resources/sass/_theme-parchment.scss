@@ -1,4 +1,4 @@
-// Parchment Ledger theme – warm paper, brown-gold accent, serif typography
+// Parchment Ledger theme – warm paper, forest-green accent, serif typography
 // Self-contained: defines custom properties, overrides, and component styles.
 
 [data-color-scheme="parchment"] {
@@ -17,10 +17,11 @@
   --od-text-emphasis:    #1a1207;
   --od-text-subtle:      #8a7649;
 
-  // Brand / accent  (brown-gold from mockup)
-  --od-primary:          #8a6010;
-  --od-primary-dark:     #6a4a0c;
-  --od-accent-soft:      #c4902a;
+  // Brand / accent
+  --od-primary:          #2d5944;
+  --od-primary-dark:     #1f3f31;
+  --od-primary-bg-soft:  #dfe8d9;
+  --od-accent-soft:      #8eac98;
   --od-info:             #3a5680;
   --od-info-dark:        #2a3e5c;
   --od-info-bg:          rgba(58, 86, 128, .08);
@@ -30,14 +31,15 @@
   --od-danger:           #8b2a1e;
   --od-danger-dark:      #6a2016;
   --od-danger-bg:        rgba(139, 42, 30, .08);
-  --od-warning:          #8a5520;
-  --od-warning-dark:     #6a4018;
-  --od-warning-bg:       rgba(138, 85, 32, .1);
+  --od-warning:          #6b513b;
+  --od-warning-dark:     #4b3829;
+  --od-warning-bg:       rgba(107, 81, 59, .1);
 
   // Tooltip-tuned text colors (tooltip bg is dark brown in this light theme — use lighter variants)
+  --od-warning-on-dark:    #d2bfa2;
   --od-success-on-tooltip: #7fc66e;
   --od-danger-on-tooltip:  #e07c70;
-  --od-warning-on-tooltip: #d4a060;
+  --od-warning-on-tooltip: var(--od-warning-on-dark);
   --od-info-on-tooltip:    #7a96c0;
   --od-muted-on-tooltip:   #c4b08a;
 
@@ -45,12 +47,12 @@
   --od-header-bg:        #f0e8d8;
   --od-sidebar-bg:       #382a1e;
   --od-sidebar-text:     #b09878;
-  --od-sidebar-active-border: #d4a030;
+  --od-sidebar-active-border: var(--od-accent-soft);
   --od-content-bg:       #f2ebd9;
 
   // Links
-  --od-link-color:       #8a6010;
-  --od-link-hover-color: #a07018;
+  --od-link-color:       var(--od-primary);
+  --od-link-hover-color: var(--od-primary-dark);
 
   // Borders
   --od-rule:             #b8a478;
@@ -76,12 +78,20 @@
   --bs-border-color:              var(--od-rule);
   --bs-border-color-translucent:  rgba(26, 18, 7, 0.12);
   --bs-primary:                    var(--od-primary);
+  --bs-primary-rgb:                45, 89, 68;
   --bs-success:                    var(--od-success);
+  --bs-success-rgb:                74, 122, 58;
   --bs-info:                       var(--od-info);
+  --bs-info-rgb:                   58, 86, 128;
   --bs-warning:                    var(--od-warning);
+  --bs-warning-rgb:                107, 81, 59;
   --bs-danger:                     var(--od-danger);
+  --bs-danger-rgb:                 139, 42, 30;
   --bs-link-color:                var(--od-link-color);
+  --bs-link-color-rgb:            45, 89, 68;
   --bs-link-hover-color:          var(--od-link-hover-color);
+  --bs-link-hover-color-rgb:      31, 63, 49;
+  --bs-focus-ring-color:          rgba(45, 89, 68, .25);
 
   // ── Cards ─────────────────────────────────────────────────────────────────
   .card {
@@ -203,7 +213,7 @@
   .nav-tabs .nav-link         { color: var(--od-text-body); }
   .nav-tabs .nav-link.active  { background-color: var(--od-surface); border-color: var(--od-rule); }
   .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:hover,
-  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:focus { background-color: var(--od-surface-alt) !important; color: #a07018 !important; }
+  .nav:not(.sidebar-menu):not(.nav-treeview) > li > a:focus { background-color: var(--od-surface-alt) !important; color: var(--od-link-hover-color) !important; }
 
   // ── Badges & alerts ───────────────────────────────────────────────────────
   .badge.text-bg-secondary    { background-color: var(--od-text-subtle) !important; color: #fff !important; }
@@ -254,7 +264,7 @@
   .text-success               { color: var(--od-success) !important; }
   .text-danger                { color: var(--od-danger) !important; }
   .text-green                 { color: var(--od-success) !important; }
-  .text-orange                { color: #b8541a !important; }
+  .text-orange                { color: var(--od-warning) !important; }
   .text-red                   { color: var(--od-danger) !important; }
   .text-aqua,
   .text-light-blue            { color: #3a7a9e !important; }
@@ -271,7 +281,7 @@
   .app-header .navbar-brand:hover   { color: #000; }
   .app-header .navbar-brand:hover b { color: var(--od-primary-dark); }
   .sidebar-brand                { color: #f0e8d8; font-family: var(--od-font-display); font-weight: 700; letter-spacing: 0.03em; }
-  .sidebar-brand b              { color: #d4a030; font-weight: 700; transition: color 0.2s; }
+  .sidebar-brand b              { color: var(--od-accent-soft); font-weight: 700; transition: color 0.2s; }
   .sidebar-brand:hover          { color: #fff; }
   .sidebar-brand:hover b        { color: var(--od-accent-soft); }
   .app-header a,
@@ -279,7 +289,7 @@
   .app-header .nav-link:hover,
   .app-header .nav-link:focus,
   .app-header .dropdown.show .nav-link,
-  .app-header [data-lte-toggle="sidebar"]:hover { background: rgba(138, 96, 16, 0.08); color: var(--od-primary); }
+  .app-header [data-lte-toggle="sidebar"]:hover { background: rgba(45, 89, 68, 0.08); color: var(--od-primary); }
   .app-header .ticker {
     background: var(--od-surface-alt);
     border-color: var(--od-rule-soft);
@@ -289,6 +299,7 @@
   .app-header .ticker-dot { color: var(--od-primary); }
   .app-sidebar                { background-color: var(--od-sidebar-bg) !important; border-right: 1px solid #3a2e1c; }
   .app-sidebar a              { color: var(--od-sidebar-text); }
+  .app-sidebar .text-orange   { color: var(--od-warning-on-dark) !important; }
   .app-sidebar a:hover        { text-decoration: none; color: #f0e8d8; }
   .sidebar-user                { color: #f0e8d8; }
   .nav-header                 { background: #241b0e; color: #a08860; font-family: var(--od-font-display); letter-spacing: .08em; }
@@ -297,11 +308,11 @@
   .sidebar-user .info > a     { color: #f0e8d8; }
   .sidebar-menu .nav-link     { border-left: 3px solid transparent; }
   .sidebar-menu .nav-item:hover > .nav-link,
-  .sidebar-menu .nav-item.active > .nav-link { color: #f0d890; background: #4a3828; border-left-color: #d4a030; }
+  .sidebar-menu .nav-item.active > .nav-link { color: #f0e8d8; background: #4a3828; border-left-color: var(--od-sidebar-active-border); }
   .sidebar-menu .nav-treeview { background: #1a1510; }
   .nav-treeview .nav-link     { color: #7a6448; }
   .nav-treeview .nav-link.active,
-  .nav-treeview .nav-link:hover { color: #d4a030; }
+  .nav-treeview .nav-link:hover { color: var(--od-accent-soft); }
   .navbar-nav                 { color: var(--od-text-body) !important; }
   .navbar-toggler             { background: var(--od-rule); }
   .navbar-toggler:focus       { box-shadow: none; }
