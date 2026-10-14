@@ -74,6 +74,8 @@ Key classes:
 - `.app-main > .app-content > .container-fluid` — page content
 - `.app-footer` — bottom bar
 
+Content width: `.app-content > .container-fluid` (and the footer's `.app-footer-inner`) are capped at `--od-content-max-width` (1600px, set on `.app-wrapper`) and centred, so pages don't stretch across an ultrawide monitor. A page that needs the full width can opt out with `@section('body-class', 'layout-content-fluid')`, which the `master` and `staff` layouts render onto `<body>`.
+
 Responsive: below 992px the sidebar becomes a fixed overlay toggled by a hamburger button. State is persisted in `localStorage` (`sidebar-collapsed`).
 
 ### Fonts
