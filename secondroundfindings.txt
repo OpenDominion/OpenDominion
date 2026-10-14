@@ -1,0 +1,285 @@
+================================================================================
+OpenDominion Hourly Tick - Performance Review (Second Round)
+================================================================================
+
+Scope:  game:tick -> TickService::tickHourly() and everything it reaches.
+Method: Static analysis - no .env is present in this checkout, so no live
+        profiling was possible. Unlike the first-round (codex) report, this
+        review also verified its claims against git history and checked the
+        tick-adjacent services it skipped (hero battles, raids, valuables,
+        notifications).
+
+HEADLINE
+    The codex report is accurate and well-targeted. All 19 of its findings
+    were re-traced against the current source and ALL of them hold up - the
+    line numbers, query counts, and call-graph arithmetic are correct. This
+    review found ONE factual error in a mechanism (which doesn't change the
+    conclusion), RESOLVED one of its open caveats with git evidence, and
+    identified FOUR meaningful findings it missed, one of which is arguably
+    a top-tier item.
+
+
+================================================================================
+PART 1 - VERIFICATION OF THE CODEX FINDINGS
+================================================================================
+
+Each claim was re-traced in the source:
+
+ Codex finding                                     Verdict
+ ------------------------------------------------- ----------------------------
+ 2.1 precalculateTick() ~20 queries/dominion,      CONFIRMED. The load() at
+     discards the eager-load                       TickService.php:1022
+                                                   re-queries 10 relations per
+                                                   dominion; realm wonders
+                                                   re-fetched per dominion, not
+                                                   per realm. Query tally of
+                                                   ~19-20 is right.
+ 2.2 Per-dominion cleanup + nested spell N+1       CONFIRMED
+                                                   (TickService.php:899-959;
+                                                   lazy $dominionSpell->spell
+                                                   at line 906).
+ 2.3 Unmemoized perk rebuilds on Dominion          CONFIRMED
+                                                   (Dominion.php:731-833).
+                                                   resolveSpellPerk()
+                                                   (SpellCalculator.php:254)
+                                                   does 5-6 full rebuilds per
+                                                   lookup; ProductionCalculator
+                                                   alone has 10 resolveSpellPerk
+                                                   call sites. All calculators
+                                                   are container singletons
+                                                   (AppServiceProvider.php:
+                                                   129-154), so the proposed
+                                                   memoization has well-defined
+                                                   invalidation points.
+ 2.4 Population calculator fan-out                 CONFIRMED
+     (~10x getPopulationMilitary, ~4 collection    (PopulationCalculator.php:
+     allocations per queue scan)                   350-360,
+                                                   QueueService.php:47-57).
+ 3.1 Discarded getActiveSpells() call              CONFIRMED, and its caveat is
+                                                   now resolved - see below.
+ 3.2 Valuable count per dominion                   CONFIRMED
+                                                   (MilitaryCalculator.php:
+                                                   1016-1019).
+ 3.3 User-agent parsing per dominion               CONCLUSION CONFIRMED,
+                                                   MECHANISM WRONG - see below.
+ 3.4 DominionSaved double-precalculation           CONFIRMED
+                                                   (Listeners/DominionSaved.php
+                                                   :52 runs a full networth
+                                                   calc + precalculateTick on
+                                                   every update() inside
+                                                   performSpellEffects, then
+                                                   the main loop precalculates
+                                                   again).
+ 3.5 N+1s in performSpellEffects                   CONFIRMED (lazy ->dominion,
+                                                   ->spell->perks() at lines
+                                                   789, 815, 832; plus the
+                                                   guard SELECT in
+                                                   Dominion::save() at
+                                                   Dominion.php:454-459).
+ 3.6-3.9 (log hydration, dead eager loads,         ALL CONFIRMED. One nuance:
+     N transactions)                               the second
+                                                   $round->activeDominions
+                                                   ->count() (line 438) reuses
+                                                   the cached relation, so the
+                                                   hydration cost is paid once,
+                                                   not twice - still a
+                                                   full-round hydration purely
+                                                   to log a number.
+ 4.1-4.3 (quadratic rankings self-join,            ALL CONFIRMED. daily_rankings
+     unbounded upsert, missing unique on           carries only
+     dominion_tick.dominion_id)                    unique(dominion_id, key);
+                                                   dominion_tick has only an FK
+                                                   on dominion_id, no unique
+                                                   index.
+ 5.1-5.3 (no withoutOverlapping, long              ALL CONFIRMED
+     transactions, two-datapoint                   (Console/Kernel.php:18).
+     instrumentation)
+
+--------------------------------------------------------------------------------
+Correction to codex 3.3 (user-agent parsing)
+--------------------------------------------------------------------------------
+
+Codex claims that in console request()->userAgent() is NULL and that's why the
+'Symfony/3.X' early-out doesn't fire. That's wrong: Laravel's
+SetRequestForConsole bootstrapper builds the console request via
+Request::create(), which injects Symfony's default HTTP_USER_AGENT - which has
+been 'Symfony' (no version suffix) since Symfony 4. So the UA is the string
+'Symfony', not null. The guard at ActivityService.php:44 compares against the
+Symfony 3-era default and silently broke when the framework was upgraded.
+
+The conclusion is identical - jenssegers/agent runs its full Mobile_Detect
+regex battery once per dominion per tick for nothing - but the correct fix is
+app()->runningInConsole() (or matching the current default), and it's worth
+knowing the guard is bit-rotted rather than merely too narrow.
+
+--------------------------------------------------------------------------------
+Codex 3.1's open caveat, resolved
+--------------------------------------------------------------------------------
+
+Codex recommended deleting the discarded
+$this->spellCalculator->getActiveSpells($dominion); at line 1040 but hedged:
+"worth confirming against git log that it wasn't a deliberate cache-warm."
+
+That check was done. Commit 78339a87c ("remove spell caching", April 2021)
+changed the call from getActiveSpells($dominion, true) - where true was a
+cache-refresh flag - to the current form when the caching layer was deleted
+from SpellCalculator. It WAS a cache-warm, and it has been a pure no-op
+(~3 wasted queries x N) for four years. Safe to delete.
+
+
+================================================================================
+PART 2 - FINDINGS THE CODEX REPORT MISSED
+================================================================================
+
+--------------------------------------------------------------------------------
+M1. Phase B runs the full per-dominion pass on dominions still in protection
+    (the biggest miss)
+--------------------------------------------------------------------------------
+
+Phase A ticks only dominions matching protection_finished = true
+(TickService.php:275). But Phase B iterates $round->activeDominions()
+(line 395), which is defined as dominions()->where('locked_at', null)
+(Round.php:80-83) - it includes EVERY dominion still in protection. Each of
+those pays the entire per-dominion cost every hour - transaction, spell/queue
+cleanup, and the ~20-query precalculateTick - even though Phase A changed
+nothing about them.
+
+Protection dominions already maintain their own tick state: the manual
+advance-tick path (MiscController.php:404, AutomationService.php:174) calls
+performTick($round, $dominion) directly, and every action they take fires the
+DominionSaved listener which re-precalculates. In the opening days of a round,
+dominions in protection are a large fraction of N, so filtering Phase B to
+protection_finished = true removes a large slice of the loop precisely when
+the game is busiest.
+
+One caveat to verify before doing it: the hourly re-precalc is currently what
+refreshes a protection dominion's predicted tick after EXTERNAL realm-wide
+changes (a wonder being built or destroyed mid-protection). That's a narrow
+edge case - the stale prediction would self-correct on their next action -
+but it's a game-rules call, not a pure refactor.
+
+--------------------------------------------------------------------------------
+M2. precalculateTick computes every production value twice
+--------------------------------------------------------------------------------
+
+Lines 1070-1087 call getLumberProduction() and getLumberDecay(), then
+getLumberNetChange() - which recomputes both (ProductionCalculator.php:
+464-467). The same pattern repeats for mana (line 595) and food
+(getFoodNetChange at line 339 recomputes production AND consumption AND
+decay). And getBoatProduction($dominion) is simply called twice verbatim on
+consecutive lines 1080-1081.
+
+This matters because each of these walks the full raw x multiplier chain -
+race perks, tech perks, wonder perks, and resolveSpellPerk (5-6 unmemoized
+perk-collection rebuilds each). The production portion of pre-calculation
+costs roughly 2x what it should, per dominion, per tick. Hoisting each value
+into a local is a ~15-line, zero-risk change that is independent of (and
+multiplicative with) codex's memoization item 2.3. Note the food consumption
+path also re-enters the population calculator, so this compounds codex's 2.4
+as well.
+
+--------------------------------------------------------------------------------
+M3. performRaceUnitProduction pays the expensive check first, for every
+    dominion
+--------------------------------------------------------------------------------
+
+At TickService.php:855, the loop calls
+resolveSpellPerk($dominion, 'disable_unit_summoning') - 5-6 full spell-perk
+rebuilds - BEFORE checking whether the dominion's race has any summons_unit
+unit. Exactly one race in the game data has that perk
+(app/data/races/planewalker.yml). Reordering the guard (check the race's
+units first - cheap, since races are cached via
+Race::findWithRelationsCached) makes this near-free for ~everyone, and the
+surrounding round-wide transaction (codex 5.2) then holds locks for almost no
+time.
+
+--------------------------------------------------------------------------------
+M4. Two more per-dominion queries are derivable from already-loaded data
+--------------------------------------------------------------------------------
+
+Codex counted the incoming-queue SELECT (line 1043, hours = 1) and the
+expiring-spells SELECT (line 1147, duration <= 1) in its ~20-query tally but
+treated them as inherent. They aren't: twenty lines earlier, precalculateTick
+loads $dominion->queues and $dominion->spells (with pivot durations) - both
+result sets are already in memory and just need a collection filter. That's
+-2N queries with no schema work, on top of codex 2.1's chunked re-hydration.
+
+--------------------------------------------------------------------------------
+Smaller observations codex didn't cover
+--------------------------------------------------------------------------------
+
+- Notification inserts are row-at-a-time. sendNotifications
+  (NotificationService.php:51) writes one synchronous notifications INSERT per
+  notification type per player dominion via the database channel, plus
+  per-type settings lookups. It correctly early-outs for NPDs (~80% of
+  dominions), which caps the damage; batching the web-notification inserts is
+  possible but low-yield. The hourly email digest is properly queued
+  (ShouldQueue), so that's fine.
+
+- ValuablesService::processValuables (line 155) updates rows one save() at a
+  time inside ->each(); both passes apply uniform transitions and could be
+  two bulk UPDATEs. Small volumes, small win.
+
+- NPD-generation hour: each spawned NPD gets an individual performTick()
+  (line 242), which re-runs performSpellEffects' three SpellPerkType/Spell
+  lookups and the full single-dominion flow per NPD. It's a once-per-round
+  event, but the hour it fires is already the round's heaviest.
+
+- Phase-A consistency note (not perf): the spell and queue decrement UPDATEs
+  (lines 365-380) don't carry the abandoned_at exclusion that the dominions
+  UPDATE has - abandoned dominions' queues and spells keep ticking down while
+  their resources don't. It looks intended (they still get Phase-B cleanup),
+  but it's the kind of asymmetry worth a deliberate comment.
+
+- Hero battles / raids / tournaments (HeroBattleService::processBattles,
+  RaidService::processCompletedRaids) are per-row but low-volume and
+  event-driven; nothing worth changing there now.
+
+
+================================================================================
+PART 3 - MERGED PRIORITY ORDER
+================================================================================
+
+Codex's sequencing is sound; the new additions slot in as follows (its
+numbering kept, new items prefixed M):
+
+  1. withoutOverlapping() on game:tick (5.1) - correctness insurance, zero
+     risk.
+  2. Per-phase timing + query counts (5.3) - converts every estimate below
+     into a measurement.
+  3. Zero-risk deletions: dead getActiveSpells() (3.1, now git-verified),
+     dead eager loads (3.7/3.8), console guard fix (3.3, corrected
+     mechanism), log-count hydration (3.6).
+  4. M2 - hoist double production computation - ~15 lines, zero risk, halves
+     production CPU.
+  5. M3 - reorder the summons_unit guard - a few lines, zero risk.
+  6. Hoist repeats in getPopulationPeasantGrowth (2.4) + M4 in-memory
+     queue/spell filters.
+  7. Batch cleanup (2.2), with() + withoutEvents in performSpellEffects
+     (3.4/3.5).
+  8. M1 - exclude protection dominions from Phase B - big win early-round,
+     needs the wonder-staleness game-rules check first.
+  9. Window-function rankings + index (4.1), chunked upserts (4.2).
+ 10. Perk memoization (2.3) and chunked pre-calculation (2.1) - the
+     structural items; do these with item 2's measurements in hand.
+ 11. unique('dominion_id') on dominion_tick (4.3) after verifying production
+     has no duplicates.
+
+
+================================================================================
+COMPARATIVE ASSESSMENT
+================================================================================
+
+The codex report is genuinely good: its two structural diagnoses
+(per-dominion query storm in precalculateTick, unmemoized perk rebuilds) are
+the correct center of gravity, and no false positives were found in it. Its
+weaknesses were at the edges: it treated the Phase-B POPULATION as a given
+and never questioned who is in the loop (M1), stopped at the query layer
+inside precalculateTick without noticing the duplicated compute between
+adjacent lines (M2, M3), one bit-rotted mechanism it explained incorrectly
+(3.3), and one caveat it left open that ten seconds of `git log -S` closes
+(3.1). Both reports share the same honest limitation: every number is
+call-graph arithmetic, not a profile - its own item 5.3 (instrumentation
+first) remains the right first move.
+
+No changes were made to the repository as part of this review.
