@@ -39,34 +39,44 @@
             <li>Your realm is your team.</li>
             <li>You must always act in the best interest of your realm, except where such action violates any of the other rules.</li>
             <li>
-                You must not in any way cooperate with another realm or dominions in other realms, such as Non-Aggression Pacts ("NAP") or alliances.
+                You must not in any way cooperate with another realm or dominions in other realms, such as Non-Aggression Pacts ("NAP") or alliances, or attempt to directly influence another realm for the benefit of your own dominion or realm.
                 <ol style="list-style: lower-roman;">
                     <li>An "alliance" is defined as intentionally cooperating and/or planning actions with a player or players from another realm in any way, including if it benefits both realms.</li>
+                    <li>"Influence" is defined as attempting to manipulate the behavior of another player from outside the game, and is a violation of this rule whether or not they act on it.</li>
                 </ol>
             </li>
             <li>
-                You must not in any way intentionally take any action which solely benefits another realm or a dominion in another realm, whether directly or indirectly.
+                You must not take any action, directly or indirectly, with the intent of benefiting another realm or a dominion in another realm.
                 <ol style="list-style: lower-roman;">
-                    <li>"Intentionally" means that the primary purpose of the action taken is a violation of the rules.</li>
-                    <li>"Solely" means that there is no material benefit to your own dominion or the dominions in your realm.</li>
-                    <li>"Benefit" means some material and/or statistical measure of gain within the game itself (land, military, etc.), and cannot solely consist of qualitative values (feelings, opinions, etc.).</li>
+                    <li>"Intent" means that the primary purpose of the action is to benefit the other realm(s), as opposed to benefiting your own realm or harming an opponent.</li>
+                    <li>An action that incidentally benefits another realm or dominion, such as weakening a dominion that is also a threat to other realms, is not a violation of this rule.</li>
                 </ol>
             </li>
             <li>
                 You must make a reasonable effort to defend your dominion from invasion.
                 <ol style="list-style: lower-roman;">
-                    <li>"Reasonable" means that, governed by a player’s skillset, he/she will train defensive troops, leave troops at home, and/or forgo growth when deemed necessary to protect their dominion’s land.</li>
-                    <li>Being invaded, razing, and suiciding alone are not against the rules, but could be if the context or course of those actions is a violation of the rules.</li>
+                    <li>"Reasonable" means that, governed by a player's skillset, they will train defensive troops, leave troops at home, and/or forgo growth when deemed necessary to protect their dominion's land.</li>
+                    <li>Being invaded, razing, and suiciding alone are not a violation of the rules, but could be if the context or course of those actions is a violation of the rules.</li>
+                    <li>The intent of this rule is to punish players who allow themselves to be invaded repeatedly over the course of a round or many rounds in a way that disrupts game balance.</li>
                 </ol>
             </li>
             <li>
                 You must not share non-public information about any dominion with anyone except with players in your own realm.
                 <ol style="list-style: lower-roman;">
-                    <li>"Non-public" means any information that is not publicly available through the game itself, or information that is not clearly implied by publicly available information. The current military training of a dominion in another realm is not public information. The timing of invasions on the Town Crier is public information.</li>
+                    <li>"Non-public" means any information that is not publicly available through the game itself, or information that is not clearly implied by publicly available information. The current military training of a dominion in another realm is not public information. The timing of invasions on the Town Crier is public information. During the round, the identity of the player controlling a dominion, including your own, is not public information.</li>
+                    <li>Sharing includes implying, hinting at, or drawing attention to non-public information or to a means of obtaining it, through any medium (in-game communication, Discord, direct messages, or otherwise).</li>
+                    <li>You must not ask or encourage anyone outside your realm to share non-public information, including the identity of any player or their own.</li>
                 </ol>
             </li>
             <li>You must at all times refrain from using excessive profanity or abusive, offensive language. Banter and smack talk are allowed; just keep it mostly civil.</li>
-            <li>You must not use any scripts, bots, automation software, hacks or other means to perform in-game actions with your dominion at any time. You must not use any IP obfuscating tools or software for the purposes of evading detection while violating any other rule.</li>
+            <li>
+                You must not use any scripts, bots, automation software, hacks or other means to perform in-game actions with your dominion at any time.
+                <ol style="list-style: lower-roman;">
+                    <li>You must not use any IP obfuscating tools or software for the purposes of evading detection while violating any other rule.</li>
+                    <li>Automation is allowed through the read-only API built into the game.</li>
+                    <li>Logging in and making GET requests to the website is not currently a violation of the rules, but may be outlawed in the future.</li>
+                </ol>
+            </li>
             <li>
                 You must not exploit any bugs in the game.
                 <ol style="list-style: lower-roman;">
@@ -92,21 +102,29 @@
             <li>
                 The following penalties may be used:
                 <ol style="list-style: lower-roman;">
+                    <li>Warning: a formal notice that you have violated the rules. Any warning may be accompanied by a production penalty.</li>
                     <li>Suspension (temporary): your dominion is suspended and cannot be used for a period of time. You may resume playing once the suspension is lifted.</li>
                     <li>Suspension (permanent): your dominion is suspended for the remainder of the round.</li>
                     <li>Adjustment: you may have resources, military units, land, prestige, spells, and other parts of your dominion adjusted in your dominion if they are found to be obtained through actions which violate the rules.</li>
                     <li>Name change: if your ruler name or dominion name is found to breach the rules, it may be changed.</li>
+                    <li>Production penalty: a temporary reduction to your dominion's platinum production, for a duration proportionate to the severity of the infraction.</li>
                 </ol>
             </li>
             <li>If you have been negatively impacted by other players breaching the rules and this can be substantiated during the investigation, you may receive an adequate and proportionate compensation, at our sole discretion.</li>
-            <li>Purposefully breaking the rules in order to have your account locked will incur penalties in future rounds.</li>
+            <li>
+                You must not break the rules, or take any other action, with the intent of having your dominion locked.
+                <ol style="list-style: lower-roman;">
+                    <li>Getting locked to avoid an invasion or any other in-game consequence of regular play is a violation of this rule.</li>
+                    <li>Violations may result in your dominion being rolled back to its state before the action, losing access to your account for the remainder of the round, and/or penalties in future rounds.</li>
+                </ol>
+            </li>
         </ol>
     </li>
 </ol>
 
 <h4 class="text-center">FAQ</h4>
 <div class="row">
-    <div class="col-sm-6 offset-sm-3">
+    <div class="col-sm-8 offset-sm-2">
         <p>
             <div class="fw-bold">Q. Can I create multiple accounts?</div>
             <div>A. No. Creating multiple accounts is a violation of rule 2, which will result in your account being suspended.</div>
@@ -124,18 +142,115 @@
             <div>A. You can post a message to the #bug-reports channel on Discord. If it involves sensitive information about a specific dominion, contact an administrator*</div>
             <div class="fw-bold">Q. Can I help out a friend in another realm?</div>
             <div>A. Giving general advice is encouraged, but sharing ops or giving any form of in-game assistance is strictly prohibited.</div>
+            <div class="fw-bold">Q. Can I tell people which dominion I'm playing?</div>
+            <div>A. During the round, only players in your own realm. Revealing or asking about the identity of any player to or from someone outside your realm is a violation of rule 3f. Once the round has ended, identities may be discussed freely.</div>
             <div class="fw-bold">Q. Can I "raze" a dominion for a player in a realm that isn't my own??</div>
-            <div>A. If there is no clear material, in-game benefit to your dominion or your realm, then the answer is no. This is a violation of rule 3d.</div>
+            <div>A. No. Taking an action with the primary purpose of benefiting a player in another realm is a violation of rule 3d.</div>
             <div class="fw-bold">Q. What if I don't want to keep playing during the round?</div>
             <div>A. Please use the "abandon dominion" feature which can be found under "Information" on the Government page.</div>
         </p>
-        <p class="small">* You can contact an administrator for assistance by: sending a direct message on Discord, using the Report a Problem link in the bottom right corner of the page, or sending an email to info@opendominion.net.</p>
+        <p class="small">* You can contact an administrator or a member of the Rules Committee for assistance by: sending a direct message on Discord, using the Report a Problem link in the bottom right corner of the page, or sending an email to info@opendominion.net.</p>
     </div>
 </div>
 
-<h4 class="text-center">Enforcement</h4>
-<div class="table-responsive">
-    <table class="table">
+<h4 class="text-center" id="communication">Communication With Other Realms</h4>
+<p>
+    The following guidelines clarify how rules 3c and 3f apply to communication with players outside your realm, whether in-game, on Discord, in direct messages, or elsewhere. If you are unsure whether a message is permitted, contact a member of the Rules Committee before sending it.
+</p>
+<div class="table-responsive-lg">
+    <table class="table" style="min-width: 720px;">
+        <thead>
+            <tr>
+                <th>Conduct</th>
+                <th>Definition</th>
+                <th>Permitted</th>
+                <th>Not Permitted</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="direct-information-sharing">
+                <td>
+                    Direct Information Sharing: violation of 3f
+                </td>
+                <td>
+                    Explicitly communicating any non-public information about a dominion to a player outside your realm, including statistics, derived values, calculations, or the results of info operations.
+                </td>
+                <td>
+                    No form of direct information sharing is permitted.
+                </td>
+                <td>
+                    <ul class="mb-0">
+                        <li>Sharing a screenshot of info operations with a player in another realm.</li>
+                        <li><em>"The Halfling just built the maximum number of temples."</em></li>
+                        <li><em>"The Dark Elf could invade you once their incoming offensive units arrive."</em></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr id="indirect-information-sharing">
+                <td>
+                    Indirect Information Sharing: violation of 3f
+                </td>
+                <td>
+                    Implying, hinting at, or drawing attention to non-public information, or to a means of obtaining it, that a player outside your realm would not otherwise be aware of.
+                </td>
+                <td>
+                    Observations based solely on publicly available information, such as <em>"Only one Orc is playing this round."</em>
+                </td>
+                <td>
+                    <ul class="mb-0">
+                        <li><em>"Have you seen that Orc's build?"</em></li>
+                        <li><em>"The Halfling just built something very interesting."</em></li>
+                        <li><em>"It looks like someone might be going to war soon."</em></li>
+                        <li><em>"You might want to take a Barracks Spy of that Dark Elf."</em></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr id="identity-sharing">
+                <td>
+                    Identity Sharing: violation of 3f
+                </td>
+                <td>
+                    Revealing, confirming, hinting at, or asking about which player controls a dominion, including your own, to or from a player outside your realm during the round.
+                </td>
+                <td>
+                    Discussing the identities of players after the round has ended or revealing your own location in the context of an objective discussion about gameplay mechanics or long-past events (such as podcast analysis).
+                </td>
+                <td>
+                    <ul class="mb-0">
+                        <li><em>"I'm the Dark Elf in realm 6."</em></li>
+                        <li><em>"The Halfling in realm 3 is [a specific player]."</em></li>
+                        <li><em>"Which dominion are you this round?"</em></li>
+                        <li><em>"Do you know which dominion a certain player is running this round? I would like to invade them."</em></li>
+                        <li><em>"That Nox plays exactly like a certain player from last round."</em></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr id="influence-peddling">
+                <td>
+                    Influence Peddling: violation of 3c and 3f
+                </td>
+                <td>
+                    Attempting to influence players in other realms to take actions that benefit you or your realm.
+                </td>
+                <td>
+                    Discussing strategy or past rounds in general terms.
+                </td>
+                <td>
+                    <ul class="mb-0">
+                        <li>Creating or sharing content, including memes or jokes, that encourages others to target a specific realm or dominion.</li>
+                        <li><em>"Have you considered casting Fireball on the Halfling? Their wizard ratio looks quite low."</em></li>
+                        <li><em>"Realm 8 has several strong threats. They will likely win if nobody stops them."</em></li>
+                        <li><em>"Your realm is targeting me, but the real threat is a Halfling elsewhere."</em></li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h4 class="text-center">Enforcement and Penalties</h4>
+<div class="table-responsive-lg">
+    <table class="table" style="min-width: 720px;">
         <thead>
             <tr>
                 <th>Rule</th>
@@ -144,38 +259,38 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="table-active">
+            <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Farming: possible violations of 2a, 3b, 3c, 3d, and 3e
+                    Farming<br>Rules 3d, 3e
                 </td>
                 <td>
                     Unintentional (ex: lost power and couldn't log in)
                 </td>
                 <td>
-                    Account(s) locked. Land gains will be reduced by at least 25% unless the RC decides otherwise. Following an investigation, the player will be interviewed and allowed to regain access to the account after a commitment to train some DP.
+                    In extreme circumstances (if the player does not return), the dominion may be be locked or an abandonment timer may be activated.
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <!-- <td></td> -->
                 <td>
-                    Intentional (ex: released DP after bouncing)
+                    Intentional (ex: released defense after bouncing)
                 </td>
                 <td>
-                    Account(s) locked. Land gains will be reduced by at least 50% unless the Rules Committee decides otherwise. Player is suspended for at least the duration of the current round.
+                    Dominion will be locked. Invasions may be rolled back if possible or land gains reduced by 50% based on decision of the Rules Committee.
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <!-- <td></td> -->
                 <td>
                     Malicious (ex: created additional accounts to invade)
                 </td>
                 <td>
-                    Account(s) locked. Land gains will be reduced 100% or the game may be rolled back if possible at the administrator's discretion. Guilty players will be suspended for at least the duration of the currentround and may face suspension in following rounds.
+                    Dominions will be locked. Invasions may be rolled back if possible or land gains reduced by 50% based on decision of the Rules Committee. Player may face suspension in following rounds.
                 </td>
             </tr>
             <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Account Sharing: violations of 2a and 2d
+                    Account Sharing<br>Rule 2a
                 </td>
                 <td>
                     Unintentional
@@ -190,7 +305,7 @@
                     Intentional (ex: two separate people occassionally log in for each other but don't try to benefit)
                 </td>
                 <td>
-                    Account(s) locked. Players will be suspended for no less than two weeks unless the RC decides otherwise. Players will be able to regain access to their account after a commitment to using only their own account.
+                    Dominions locked. Players may be able to regain access after a commitment to using only their own account.
                 </td>
             </tr>
             <tr>
@@ -199,12 +314,12 @@
                     Malicious (ex: two people consistently share accounts and attempt to benefit from doing so)
                 </td>
                 <td>
-                    Account(s) locked. Players will be suspended for at least the duration of the round.
+                    Dominions locked.
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Creating Multiple Same-Round Accounts: violations of 2a, 2d, possibly 3c and 3e
+                    Multiple Dominions (Same-Round)<br>Rule 2a
                 </td>
                 <td>
                     Unintentional
@@ -213,33 +328,33 @@
                     N/A
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <!-- <td></td> -->
                 <td>
                     Intentional (ex: for fun; playing two at once without record of abuse)
                 </td>
                 <td>
-                    Accounts locked. Players will be suspended for no less than one week unless the RC decides otherwise. The player will be able to regain access to one account after a commitment to using only one dominion.
+                    Dominions locked. Player may be able to regain access after a commitment to using only one account.
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <!-- <td></td> -->
                 <td>
                     Malicious (ex: for gain such as realm hopping or farming)
                 </td>
                 <td>
-                    Accounts locked. Players will be suspended for at least the duration of the current round.
+                    Dominions locked. Player may face suspension or penalties in future rounds.
                 </td>
             </tr>
             <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Information Sharing: possible violations of 3b, 3c, and 3f
+                    Information Sharing<br>Rule 3f
                 </td>
                 <td>
-                    Unintentional (ex: accidentally posting a CS in Discord)
+                    Unintentional (ex: accidentally posting a calculation in Discord)
                 </td>
                 <td>
-                    Player will be asked to delete the sensitive information or refrain from spreading it again/more. Player may be warned against future violations of this rule depending on the severity.
+                    Occasionally, this happens by mistake. If it does, the player (or a moderator) should immediately delete it. Player will be warned, but face penalties if it happens again or if it is determined to have been done "accidentally" on purpose.
                 </td>
             </tr>
             <tr>
@@ -248,7 +363,7 @@
                     Intentional (ex: discussing sensitive information outside the realm)
                 </td>
                 <td>
-                    Player(s) will be warned and asked to cease violating the rules. Future violations of this rule will result in a suspension of no less than one week unless the RC decides otherwise.
+                    Player(s) will be warned and asked to cease violating the rules, and may receive a production penalty. Further violation of this rule will result in the dominion(s) being locked.
                 </td>
             </tr>
             <tr>
@@ -257,44 +372,102 @@
                     Malicious (ex: sharing sensitive information with intent to gain/harm)
                 </td>
                 <td>
-                    Account locked. Player will be suspended for no less than two weeks unless the RC decides otherwise. Player will be able to regain access to their account after a commitment to abiding by the information sharing rules.
+                    Dominion locked. Player may face suspension or penalties in future rounds.
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Multiple Dominions Playing from Same IP: possible violations of 2a, 2d, and 2f
+                    Shared IP<br>Rule 2f
                 </td>
                 <td>
-                    Unintentional (ex: two brothers play from the same house and different devices without disclosing to RC)
+                    Unintentional (ex: two friends occasionally play from the same networth without disclosing to RC)
                 </td>
                 <td>
                     Based on evidence of zero malicious behavior, the players will be instructed to disclose their relationship to the RC in the future.
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <!-- <td></td> -->
                 <td>
-                    Intentional (ex: a husband and wife play from the same house on the same device in different realms without disclosing to RC)
+                    Intentional (ex: a husband and wife play from the same house in different realms without disclosing to RC)
                 </td>
                 <td>
-                    Following an investigation, the players will receive punishment appropriate to the violation. This may include merging two randoms together on a first-time offense without evidence of malicious behavior, up to a round-long suspension of at least one dominion.
+                    Following an investigation, the players will receive punishment appropriate to the violation. This may include merging two randoms together on a first-time offense without evidence of malicious behavior, up to a the suspension of at least one of the dominions.
                 </td>
             </tr>
-            <tr class="table-active">
+            <tr>
                 <!-- <td></td> -->
                 <td>
                     Malicious (ex: a player tries to pass a multi off for a family member)
                 </td>
                 <td>
-                    Accounts locked. Player will be suspended for at least the duration of the current round.
+                    Dominions locked. Player may face suspension or penalties in future rounds.
                 </td>
             </tr>
             <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Alliances, NAPs, and Inter-Realm Teamwork: possible violations of 3a, 3b, 3c, 3d, 3e, and 3f
+                    Alliances and NAPs<br>Rule 3c
                 </td>
                 <td>
-                    Unintentional (ex: 2 different realms decide to fireball a potential runaway)
+                    Unintentional (ex: two realms independently decide to Fireball a potential runaway)
+                </td>
+                <td>
+                    No penalty unless there is evidence that the realms coordinated outside of the game.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: two friends in different realms choose to avoid invading each another despite it clear being in their best interest)
+                </td>
+                <td>
+                    Following an investigation, the players will receive punishment appropriate to the violation. This may include a production penalty or having their dominions locked.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: players in different realms coordinate to target player with black ops or invasions)
+                </td>
+                <td>
+                    Dominions locked. Players may face suspension or penalties in future rounds.
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="vertical-align: middle;">
+                    Influence Peddling<br>Rule 3f
+                </td>
+                <td>
+                    Unintentional (ex: an offhand remark about another realm not meant to draw attention to anything specific)
+                </td>
+                <td>
+                    Player will be warned.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: encouraging other players to target a specific realm or dominion)
+                </td>
+                <td>
+                    Player will be warned and may receive a production penalty.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: a repeated or organized effort to direct other players against a specific realm or dominion)
+                </td>
+                <td>
+                    Player will receive a production penalty and dominion may be locked.
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="vertical-align: middle;">
+                    Intentionally Seeking a Lock<br>Rule 4d
+                </td>
+                <td>
+                    Unintentional
                 </td>
                 <td>
                     N/A
@@ -303,48 +476,19 @@
             <tr>
                 <!-- <td></td> -->
                 <td>
-                    Intentional (ex: two friends in different realms choose to avoid confrontation with one another despite it undisputably being in their best interest for one to invade the other)
+                    Intentional (ex: breaking a rule in order to be locked prior to an unavoidable invasion)
                 </td>
                 <td>
-                    Players suspected will be investigated. Those found guilty will be suspended for no less than one week unless the RC decides otherwise. Players may be prohibited from joining any pack in following rounds.
+                    Dominion may be rolled back to its state before the action. Player may lose access to the dominion. Dominion may later be locked or forced to abandon.
                 </td>
             </tr>
             <tr>
                 <!-- <td></td> -->
                 <td>
-                    Malicious (ex: players in different realms intentionally coordinate to target another player/realm with black ops/invasions)
+                    Malicious (ex: repeatedly seeking locks or coordinating to shield dominions from in-game consequences)
                 </td>
                 <td>
-                    All associated accounts locked. Players will be suspended for at least the duration of the current round. Players may be prohibited from joining any pack in following rounds.
-                </td>
-            </tr>
-            <tr class="table-active">
-                <td rowspan="3" style="vertical-align: middle;">
-                    Avoiding Matchmaking System with Multiple Lifetime Accounts: violation of 2a
-                </td>
-                <td>
-                    Unintentional (ex: already had a second lifetime and used it accidentally, or forgot password)
-                </td>
-                <td>
-                    Player will be asked to notify the development team as soon as possible and the situation will be resolved by them.
-                </td>
-            </tr>
-            <tr class="table-active">
-                <!-- <td></td> -->
-                <td>
-                    Intentional (ex: attempting to favorably game the matchmaking and realm placement system)
-                </td>
-                <td>
-                    Account locked. Player will be suspended for at least the duration of the current round.
-                </td>
-            </tr>
-            <tr class="table-active">
-                <!-- <td></td> -->
-                <td>
-                    Malicious (ex: conspiring with other players to favorably game the matchmaking and realm placement system as a group)
-                </td>
-                <td>
-                    All associated accounts locked. Players will be suspended for at least the duration of the current round. Players may be prohibited from joining any pack in following rounds.
+                    Dominion may be rolled back to its state before the action. Player may face suspension or penalties in future rounds. Dominion may later be locked or forced to abandon.
                 </td>
             </tr>
         </tbody>
