@@ -154,8 +154,8 @@ class DominionFactory
      * Splits a non-player dominion's incoming defense into hourly training batches.
      *
      * One to three batches arrive between hours 5 and 10 and one or two arrive between hours 11 and 13.
-     * Each late batch carries a quarter to a sixth of one unit type's total, and the latest early batch
-     * carries whatever is left, so at least half of each unit type is always home by hour 10.
+     * The same 40-60% share of each unit type is held back for the late batches, so the late share of
+     * total defense stays within that range regardless of the spec/elite mix.
      *
      * @return array<int, array<string, int>> Training queue resources keyed by hour
      */
@@ -163,27 +163,45 @@ class DominionFactory
     {
         $earlyHours = collect(range(5, 10))->random(mt_rand(1, 3));
         $lateHours = collect(range(11, 13))->random(mt_rand(1, 2));
-        $bulkHour = $earlyHours->last();
-        $remaining = ['military_unit2' => $incSpecs, 'military_unit3' => $incElites];
+        $lateFraction = mt_rand(40, 60) / 100;
+
+        $late = [
+            'military_unit2' => (int) round($incSpecs * $lateFraction),
+            'military_unit3' => (int) round($incElites * $lateFraction),
+        ];
+        $early = [
+            'military_unit2' => $incSpecs - $late['military_unit2'],
+            'military_unit3' => $incElites - $late['military_unit3'],
+        ];
+
+        $schedule = $this->splitIncomingUnitsAcrossHours($early, $earlyHours->all())
+            + $this->splitIncomingUnitsAcrossHours($late, $lateHours->all());
+        ksort($schedule);
+
+        return $schedule;
+    }
+
+    /**
+     * Spreads incoming units across the given hours. Each hour but the last takes a fifth to a third of
+     * the remaining amount of one unit type, and the last hour takes whatever is left.
+     *
+     * @param array<string, int> $units
+     * @param array<int, int> $hours
+     * @return array<int, array<string, int>>
+     */
+    protected function splitIncomingUnitsAcrossHours(array $units, array $hours): array
+    {
+        $bulkHour = array_pop($hours);
 
         $schedule = [];
-        foreach ($lateHours as $hour) {
-            $unitType = ($incElites > 0 && random_chance(0.5)) ? 'military_unit3' : 'military_unit2';
-            $total = $unitType === 'military_unit3' ? $incElites : $incSpecs;
-            $amount = mt_rand(intdiv($total, 6), intdiv($total, 4));
-            $remaining[$unitType] -= $amount;
+        foreach ($hours as $hour) {
+            $unitType = ($units['military_unit3'] > 0 && random_chance(0.5)) ? 'military_unit3' : 'military_unit2';
+            $amount = mt_rand(intdiv($units[$unitType], 5), intdiv($units[$unitType], 3));
+            $units[$unitType] -= $amount;
             $schedule[$hour] = [$unitType => $amount];
         }
 
-        foreach ($earlyHours->slice(0, -1) as $hour) {
-            $unitType = ($remaining['military_unit3'] > 0 && random_chance(0.5)) ? 'military_unit3' : 'military_unit2';
-            $amount = mt_rand(intdiv($remaining[$unitType], 5), intdiv($remaining[$unitType], 3));
-            $remaining[$unitType] -= $amount;
-            $schedule[$hour] = [$unitType => $amount];
-        }
-
-        $schedule[$bulkHour] = $remaining;
-        ksort($schedule);
+        $schedule[$bulkHour] = $units;
 
         return $schedule;
     }
