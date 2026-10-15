@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use Artisan;
+use DB;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
@@ -414,5 +415,31 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $this->seeInDatabase('dominions', ['id' => $abandonedDominion->id, 'api_key' => null]);
         $this->seeInDatabase('dominions', ['id' => $pendingDominion->id, 'api_key' => 'pending-key']);
+    }
+
+    public function testDailyRankingsExcludeBots()
+    {
+        $round = $this->createRound('-7 days');
+        $humanDominion = $this->createDominionWithLegacyStats($this->createUser(), $round);
+        $botDominion = $this->createDominionWithLegacyStats($this->createUser(), $round);
+        $botDominion->user_id = null;
+        $botDominion->save();
+
+        DB::table('daily_rankings')->insert([
+            'round_id' => $round->id,
+            'dominion_id' => $botDominion->id,
+            'dominion_name' => $botDominion->name,
+            'race_name' => $botDominion->race->name,
+            'realm_number' => $botDominion->realm->number,
+            'realm_name' => $botDominion->realm->name,
+            'key' => 'largest-dominions',
+            'value' => 999999,
+            'rank' => 1,
+        ]);
+
+        app(TickService::class)->updateDailyRankings();
+
+        $this->seeInDatabase('daily_rankings', ['dominion_id' => $humanDominion->id, 'key' => 'largest-dominions', 'rank' => 1]);
+        $this->notSeeInDatabase('daily_rankings', ['dominion_id' => $botDominion->id]);
     }
 }

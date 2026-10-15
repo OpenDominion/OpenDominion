@@ -38,7 +38,7 @@ The game tick (`php artisan game:tick`) runs every hour and is the core game eng
 - Move inactive dominions to graveyard (3+ days old, 3+ days offline)
 - Spawn wonders every 3 days
 - Update active player counts for realms/raids
-- Update daily rankings
+- Update daily rankings (human dominions only; bots — `user_id` null — are excluded and any existing bot rows are purged)
 - Update Valor rankings
 
 ### Pre-calculation System

@@ -1118,7 +1118,13 @@ class TickService
 
             Log::debug('Daily rankings started');
 
-            $activeDominions = $round->dominions()->with([
+            // Remove any bot entries left over from before bots were excluded
+            DB::table('daily_rankings')
+                ->where('round_id', $round->id)
+                ->whereIn('dominion_id', Dominion::bot()->where('round_id', $round->id)->select('id'))
+                ->delete();
+
+            $activeDominions = $round->dominions()->human()->with([
                 'race',
                 'realm',
             ])->get();
