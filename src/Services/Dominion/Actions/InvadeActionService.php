@@ -1071,6 +1071,9 @@ class InvadeActionService
             // Wonders
             $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
 
+            // Round Perks
+            $multiplier += $dominion->getRoundPerkMultiplier('tech_production');
+
             // Heroes
             if ($dominion->hero !== null) {
                 $multiplier += $dominion->hero->getPerkMultiplier('tech_production_invasion');

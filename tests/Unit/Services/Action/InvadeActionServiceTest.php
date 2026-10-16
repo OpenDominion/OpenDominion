@@ -10,6 +10,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\Actions\InvadeActionService;
+use OpenDominion\Services\RoundPerkService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class InvadeActionServiceTest extends AbstractBrowserKitTestCase
@@ -77,6 +78,32 @@ class InvadeActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(347, $this->dominion->military_unit4);
         $this->assertEquals(14460, $this->target->military_unit2);
         $this->assertEquals(2677, $this->target->land_plain);
+    }
+
+    public function testResearchPointGainsIncludeTechProductionRoundPerk()
+    {
+        // Arrange
+        app(RoundPerkService::class)->create($this->round, ['key' => 'tech_production', 'value' => '50']);
+        $this->dominion->round->load('perks');
+
+        $this->dominion->military_unit3 = 7500;
+        $this->dominion->military_unit4 = 11250;
+        $this->target->military_draftees = 0;
+        $this->target->military_unit2 = 15000;
+        $this->target->building_guard_tower = 30;
+
+        // Act
+        $this->invadeActionService->invade($this->dominion, $this->target, [4 => 10903], false);
+
+        // Get results
+        $resultProperty = new \ReflectionProperty($this->invadeActionService, 'invasionResult');
+        $resultProperty->setAccessible(true);
+        $invasionResult = $resultProperty->getValue($this->invadeActionService);
+
+        // Assert
+        $this->assertEquals(true, $invasionResult['result']['success']);
+        $this->assertEquals(182, $invasionResult['defender']['landLost']);
+        $this->assertEquals(round(5 * 182 * 1.5), $invasionResult['attacker']['researchPoints']);
     }
 
     public function testInvadeFails()

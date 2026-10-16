@@ -229,6 +229,8 @@ class MessageBoardAnnouncementsTest extends AbstractTestCase
 
     public function testHomepageHidesChronicleWhenNoAnnouncementsQualify()
     {
+        MessageBoard\Thread::query()->forHomepage()->update(['homepage_display' => false]);
+
         $response = $this->get('/', ['HTTP_REFERER' => 'foo']);
         $response->assertStatus(200);
         $response->assertDontSee('From the Herald');
