@@ -44,6 +44,7 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
         $router->get('me/op-center')->uses('Api\V1\OpCenterController@ops')->name('op-center')->middleware('roundstarted');
         $router->get('me/op-center/{target}')->uses('Api\V1\OpCenterController@opsForTarget')->name('op-center.target')->middleware('roundstarted');
         $router->get('me/op-center/{target}/{type}')->uses('Api\V1\OpCenterController@opsForTargetByType')->name('op-center.target.type')->middleware('roundstarted');
+        $router->get('me/op-history')->uses('Api\V1\OpCenterController@history')->name('op-history')->middleware('roundstarted');
     });
 
 });
