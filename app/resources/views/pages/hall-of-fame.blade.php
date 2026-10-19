@@ -18,7 +18,7 @@
             'name' => 'Rio',
             'initial' => 'R',
             'title' => 'The Tactician',
-            'bio' => 'Rio has long been a staple of the OpenDominion community. Throughout his illustrious career he has been instrumental in numerous realm-wins, pack-wins, and has accumulated multiple round wins for himself as well. Additionally, Rio holds the record for the largest finish ever, is in the top 10 in career acres, top 5 in career networth, is the creator and manager of the "Dom Ranks" (also called the Rio Ranks — the universally used system for quantifying and ranking multi-round success), and is a founder and frequent contributor of the "most niche podcast on the Internet", Riol Talk.',
+            'bio' => 'Rio has long been a staple of the OpenDominion community. Throughout his illustrious career he has been instrumental in numerous realm-wins, pack-wins, and has accumulated multiple round wins for himself as well. Additionally, Rio holds the record for the largest finish ever, is in the top 10 in career acres, top 5 in career networth, is the creator and manager of the "Dom Ranks" (also called the Rio Ranks - the universally used system for quantifying and ranking multi-round success), and is a founder and frequent contributor of the "most niche podcast on the Internet", Riol Talk.',
             'achievements' => ['Round win: Round 26', 'Round win: Round 33', 'Round win: Round 34', 'Pack win: Round 22', 'Pack win: Round 24', '8th All-time Acres', '4th All-time Networth'],
             'roles' => ['Content Creator'],
             'testimonials' => [
@@ -70,7 +70,7 @@
             'name' => 'Blackreign',
             'initial' => 'B',
             'title' => 'The Artificer',
-            'bio' => "Blackreign was a major contributor in the origin and early years of OpenDominion. He functioned as a source for considerable data in the development stage, reverse engineered numbers to get formulas for how the game functioned, and was an original member of the Gameplay Committee. Blackreign's playing career was largely nonexistent, having only played a few rounds, and being content with sitting on the sidelines and helping develop the game. The impact he made on the community, however, is still felt by every single player. This is due to one tool in particular that he created and maintained until his departure from the community in 2020 — the Excel Simulator.",
+            'bio' => "Blackreign was a major contributor in the origin and early years of OpenDominion. He functioned as a source for considerable data in the development stage, reverse engineered numbers to get formulas for how the game functioned, and was an original member of the Gameplay Committee. Blackreign's playing career was largely nonexistent, having only played a few rounds, and being content with sitting on the sidelines and helping develop the game. The impact he made on the community, however, is still felt by every single player. This is due to one tool in particular that he created and maintained until his departure from the community in 2020 - the Excel Simulator.",
             'achievements' => [],
             'roles' => ['Developer', 'Gameplay Committee'],
             'testimonials' => [
@@ -82,7 +82,7 @@
             'name' => 'Rush',
             'initial' => 'R',
             'title' => 'The Storyteller',
-            'bio' => 'Rush is a mainstay of the OpenDominion community who has carved a legacy uniquely his own. As a regular correspondent on the podcast "Riol Talk", co-host of the blops-focused spinoff podcast "Rush Hour", namesake of the blops ranking system "Rush Ranks", author of a series of "Round Fails" which provide a chronology of his realm\'s experience every round told in comedic fashion, and more recently one of the head writers for storylines that take place within in-game Raids — to say Rush has left an enormous impact on OpenDominion would be an understatement. A mentor for many, and a massive presence within OD, Rush holds a special place as one of the most prominent community-forward players in the game.',
+            'bio' => 'Rush is a mainstay of the OpenDominion community who has carved a legacy uniquely his own. As a regular correspondent on the podcast "Riol Talk", co-host of the blops-focused spinoff podcast "Rush Hour", namesake of the blops ranking system "Rush Ranks", author of a series of "Round Fails" which provide a chronology of his realm\'s experience every round told in comedic fashion, and more recently one of the head writers for storylines that take place within in-game Raids - to say Rush has left an enormous impact on OpenDominion would be an understatement. A mentor for many, and a massive presence within OD, Rush holds a special place as one of the most prominent community-forward players in the game.',
             'achievements' => ['Pack win: Round 31', '20th All-time Acres'],
             'roles' => ['Content Creator'],
             'testimonials' => [
@@ -109,7 +109,7 @@
             'name' => 'Dreki',
             'initial' => 'D',
             'title' => 'The Pioneer',
-            'bio' => 'Dreki was a pioneer in the development and beta stage of OpenDominion. Much of the original scribes data that was used as reference when creating OpenDominion was pulled from old files from Dreki. He is also the sole source of the classic lifetime ranking pages that are still available on the OpenDominion site. Dreki played 10 beta rounds of OpenDominion before fully distancing himself from the project and developing his own offshoot game — the now-defunct "ODA".',
+            'bio' => 'Dreki was a pioneer in the development and beta stage of OpenDominion. Much of the original scribes data that was used as reference when creating OpenDominion was pulled from old files from Dreki. He is also the sole source of the classic lifetime ranking pages that are still available on the OpenDominion site. Dreki played 10 beta rounds of OpenDominion before fully distancing himself from the project and developing his own offshoot game - the now-defunct "ODA".',
             'achievements' => [],
             'roles' => ['Developer'],
             'testimonials' => [
@@ -130,24 +130,85 @@
                 ['quote' => "Rury is one of the best slow-attackers in the game, he is also one of the best fast attackers in the game. It's amazing that he doesn't already have 10+ round wins.", 'author' => 'Erix'],
             ],
         ],
+        [
+            'key' => 'erix',
+            'name' => 'Erix',
+            'initial' => 'E',
+            'title' => 'The Catalyst',
+            'is_new' => true,
+            'bio' => "Erix is the organiser behind several community-oriented projects including the OD fantasy draft, OD's diplomacy team and this very Hall of Fame project you're looking at right now. He is respected for his cool-headed charisma and has even achieved mythological status in the community, being referenced in every Rush Hour podcast episode - even though he usually can't make it. Birthday parties, you see.",
+            'achievements' => ['Pack win: Round 32', 'Pack win: Round 40', 'Pack win: Round 46', 'Pack win: Round 48'],
+            'roles' => ['Gameplay Committee', 'Rules Committee', 'Community Groups'],
+            'testimonials' => [
+                ['quote' => "Erix has become famous for stopping opposing runaways and helping his own realmmates claim the crown without ever taking it for himself. He is the ultimate realmmate and one of OpenDominion's most involved community organizers.", 'author' => 'Volv'],
+                ['quote' => "A true force of nature, Erix has a habit of diving headfirst into the ideas that make OpenDominion more than just a game. From spearheading the Hall of Fame and the Fantasy League to championing the Dominion OSRS group, he is the quiet catalyst behind so many of the community's greatest adjacent adventures. Wherever the community thrives, you will inevitably find Erix at the heart of it.", 'author' => 'MannoWrath'],
+            ],
+        ],
+        [
+            'key' => 'merf',
+            'name' => 'Merf',
+            'initial' => 'M',
+            'title' => 'The Provocateur',
+            'is_new' => true,
+            'bio' => 'The moustache-twirling cartoon villain of OD, Merf brings a tremendous force of personality, wit and humour to the game. Co-creator of the OG OD podcast, Riol Talk, where his 110%-confidence predictions, mischievous commentaries and combative chemistry with his co-host Rio translated into endlessly quotable memes for the community, Merf always has a way of making his words resonate. Merf often likes to make big plays that make waves in the game, usually adopting a high-risk, live-by-the-sword playstyle. He embraces chaos, and is often the cause of it in a round. His approach also makes him a significant threat in the shorter test rounds where some of his more creative builds shine.',
+            'achievements' => ['Pack win: Round 20', 'Pack win: Round 28'],
+            'roles' => ['Content Creator', 'Gameplay Committee'],
+            'testimonials' => [
+                ['quote' => "Merf always has time to help new or less experienced players learn the ins and outs of the game (myself included, back in Classic). He's always supportive of whatever role or strategy you want to play. He plays aggressively and takes a lot of flak for it, but it's all about having fun. This is a game after all.", 'author' => 'InternetFett'],
+                ['quote' => 'To the seat belt, the watchful eye, and the overconfident. Let’s keep moving those 16 tons. Merf is the villain the community loves to hate.', 'author' => 'Bobbo'],
+                ['quote' => 'Merf is one of the most polarizing figures in the public sphere of OD. However, when my pack was brand new, he supported us in going crazy high ratios to do some blops. He pointed us in the right direction, and spread the "Hydra" nickname coined by Rush, and we even came out with a round win. He is supportive, and a great tactician. We just need to work on his choice of women and what he calls a "date".', 'author' => 'GrapesofMath'],
+            ],
+        ],
+        [
+            'key' => 'mris',
+            'name' => 'Mris',
+            'initial' => 'M',
+            'title' => 'The Architect',
+            'is_new' => true,
+            'bio' => 'Mris brings a sharp analytical mind to the OD landscape and is the architect behind the original "Chunk\'s sheet", an invaluable tool that helps players plan out their defence and track top ops. Mris has also contributed his time and experience to various committees, including the Gameplay Committee, where his diligent number-crunching has helped deliver a solid foundation for many of OD\'s mechanics. Mris and his packmates, at the height of their performance, were an ever-present threat in the game and always serious contenders for the win. If any race ever had overlooked potential, Mris and company were sure to find it and run with it.',
+            'achievements' => ['Pack win: Round 29', 'Pack win: Round 31', 'Pack win: Round 51'],
+            'roles' => ['Gameplay Committee', 'Developer'],
+            'testimonials' => [
+                ['quote' => 'Mris has one of the best math minds in OpenDominion, and always takes a mathematical approach to his strategies - and it usually pays off. He has always been willing to help anyone in the realm, going out of his way to make them feel like part of the team. He even designed a bot to show def and attacks when I was struggling to use Google Sheets from a phone. A great player and a great teammate.', 'author' => 'MDK'],
+                ['quote' => "I have packed with Mris on several occasions and would not hesitate to do so again. He has an excellent comprehension of the game and is a generous player who always plays for the pack. He's very good with numbers, shares his sims and has even designed various tools to help the pack - and many of his tools have ultimately facilitated the game for the entire playerbase.", 'author' => 'King Jota'],
+            ],
+        ],
+        [
+            'key' => 'robert',
+            'name' => 'Robert',
+            'initial' => 'R',
+            'title' => 'The Stalwart',
+            'is_new' => true,
+            'bio' => 'The king of consistency, Robert has been a fixture at or near the top of the lifetime ranks for pretty much as long as the game has existed in its current form. A round-winning attacker and perpetual contender, Robert is best known in the community as a master of slow attacking and converting strategies. However, his skills within the game extend much further than one niche. He has also taken the hat as the largest explorer, and is a top-tier ops player who ranks in the top 10 in lifetime successes for both spy and wizard ops (8th and 5th respectively). Further demonstrating his versatility as a player, he also sits 9th in the lifetime fireball ranks, and at the time of writing he is the only OpenDominion winner to also have a round with 200k fireball kills. Round after round, Robert has proven he can deliver in whatever role his realm requires.',
+            'achievements' => ['Round win: Round 21', 'Pack win: Round 34', '1st All-time Acres', '2nd All-time Networth'],
+            'roles' => ['Gameplay Committee'],
+            'testimonials' => [
+                ['quote' => "Most rounds you won’t even notice Robert until it’s far too late. While everyone else races out front, he quietly stacks techs, castle improvements, and prestige, then shows up at the top like he was there all along. Others win from the front; Robert wins from nowhere, and nobody has ever played the long game better. I’ve packed with him since 2019, and he’s been our top performer nearly every round. He rarely makes a mistake, and when he does, he still finds a way to finish strong. He’s never missed a round. Why he keeps carrying the rest of us instead of packing with the other legends, I’ll never understand, but I’m grateful every round that he does. He’s the steadiest player I’ve ever played alongside, and an even better friend.", 'author' => 'Virchue'],
+                ['quote' => "RVV’s track record speaks for itself. He crushed it during the teching era, he has a massive list of top-five finishes under his belt, and he’s currently sitting on the highest land total in the entire game. His level of consistency across Dominion's history is just unmatched.", 'author' => 'MannoWrath'],
+            ],
+        ],
     ];
 
     usort($inductees, fn($a, $b) => strcmp($a['key'], $b['key']));
 
-    // 3-2-3-2 layout
-    $rows = [
-        array_slice($inductees, 0, 3),
-        array_slice($inductees, 3, 2),
-        array_slice($inductees, 5, 3),
-        array_slice($inductees, 8, 2),
-    ];
+    // Alternating 3-2 layout, adjusted so no row is left with a single card
+    $rows = [];
+    $remaining = $inductees;
+    $rowSize = 3;
+    while (count($remaining)) {
+        if (count($remaining) - $rowSize === 1) {
+            $rowSize = $rowSize === 3 ? 2 : 3;
+        }
+        $rows[] = array_splice($remaining, 0, $rowSize);
+        $rowSize = $rowSize === 3 ? 2 : 3;
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenDominion Hall of Fame &mdash; Inaugural Class &mdash; Round 50</title>
+<title>OpenDominion Hall of Fame</title>
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -519,6 +580,24 @@
     width: 42px;
     height: 42px;
     border-color: var(--gold-400);
+  }
+
+  .inductee-new-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0.3rem 0.85rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--cream);
+    background: linear-gradient(135deg, var(--gold-600), var(--gold-500), var(--gold-600));
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(139,105,20,0.25);
   }
 
   .inductee-medallion {
@@ -1032,7 +1111,7 @@
   </p>
   <div class="hero-year">
     <span class="line"></span>
-    Inaugural Class &middot; Round 50
+    Legends of Dominion
     <span class="line"></span>
   </div>
 
@@ -1065,8 +1144,8 @@
 {{-- ════════════════════ INDUCTEES ════════════════════ --}}
 <section class="inductees-section">
   <div class="inductees-header">
-    <p class="eyebrow">The Inaugural Class</p>
-    <h2>Round 50 Inductees</h2>
+    <p class="eyebrow">Members of the Hall</p>
+    <h2>The Inductees</h2>
   </div>
 
   <div class="inductees-list">
@@ -1082,6 +1161,9 @@
               aria-expanded="false"
               aria-controls="panel-{{ $inductee['key'] }}"
             >
+              @if (!empty($inductee['is_new']))
+                <span class="inductee-new-badge">New Inductee</span>
+              @endif
               <div class="inductee-medallion">
                 <div class="medallion-ring"></div>
                 <div class="medallion-inner">
@@ -1183,7 +1265,7 @@
 <footer class="site-footer">
   <p class="footer-logo">OpenDominion Hall of Fame</p>
   <p class="footer-text">
-    Inaugural Class &middot; Round 50 &middot; <a href="{{ route('home') }}">opendominion.net</a>
+    <a href="{{ route('home') }}">opendominion.net</a>
   </p>
 </footer>
 
