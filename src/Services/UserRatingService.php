@@ -348,7 +348,7 @@ class UserRatingService
             'espionage_ops' => $dominion->stat_espionage_success + $dominion->stat_espionage_failure,
             'magic_ops' => $dominion->stat_spell_success + $dominion->stat_spell_failure,
             'bounties_collected' => $dominion->stat_bounties_collected,
-            'hourly_activity' => substr_count($dominion->hourly_activity, '1'),
+            'hourly_activity' => substr_count($dominion->hourly_activity ?? '', '1'),
         ];
     }
 }
