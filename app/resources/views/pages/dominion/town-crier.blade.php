@@ -19,6 +19,21 @@
                     </span>
                 </div>
 
+                @if (!$fromOpCenter && $hiddenBotAttackCount > 0)
+                    <div class="card-body border-bottom">
+                        {{ number_format($hiddenBotAttackCount) }} {{ Str::plural('bot attack', $hiddenBotAttackCount) }} hidden by your filter.
+                        <form class="d-inline" action="{{ route('dominion.town-crier.preferences', $realm->number ?? null) }}" method="post">
+                            @csrf
+                            <input type="hidden" name="type" value="{{ $type }}" />
+                            @if ($singleDominion !== null)
+                                <input type="hidden" name="dominion" value="{{ $singleDominion->id }}" />
+                            @endif
+                            <input type="hidden" name="show_bot_attacks" value="1" />
+                            <button type="submit" class="btn btn-link p-0">Show bot attacks</button>
+                        </form>
+                    </div>
+                @endif
+
                 @if ($gameEvents->isEmpty())
                     <div class="card-body">
                         <p>No recent events.</p>
@@ -94,7 +109,7 @@
                             </p>
                         @endif
                     <p>
-                        <label for="realm-select">Event Types:</label>
+                        <label for="event-select">Event Types:</label>
                         <select id="event-select" class="form-select">
                             @foreach ($typeChoices as $typeChoice)
                                 <option value="{{ $typeChoice }}" {{ $type == $typeChoice ? 'selected' : null }}>
@@ -103,6 +118,22 @@
                             @endforeach
                         </select>
                     </p>
+                    @if (!$fromOpCenter)
+                        <form id="bot-filter-form" action="{{ route('dominion.town-crier.preferences', $realm->number ?? null) }}" method="post">
+                            @csrf
+                            <input type="hidden" name="type" value="{{ $type }}" />
+                            @if ($singleDominion !== null)
+                                <input type="hidden" name="dominion" value="{{ $singleDominion->id }}" />
+                            @endif
+                            <input type="hidden" name="show_bot_attacks" value="0" />
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" name="show_bot_attacks" id="show-bot-attacks" value="1" aria-describedby="bot-attacks-help" {{ $showBotAttacks ? 'checked' : null }} />
+                                <label class="form-check-label" for="show-bot-attacks">Show bot attacks</label>
+                            </div>
+                            <p class="small mt-1" id="bot-attacks-help">Include attacks initiated by bots. Player attacks on bots are always included. Your choice is remembered for this dominion.</p>
+                            <noscript><button type="submit" class="btn btn-primary">Update Filter</button></noscript>
+                        </form>
+                    @endif
                     @endif
                 </div>
             </div>
@@ -114,6 +145,10 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
+            $('#show-bot-attacks').change(function() {
+                this.form.requestSubmit();
+            });
+
             $('#realm-select').change(function() {
                 url = "";
 
@@ -125,6 +160,9 @@
                 if (selectedType) {
                     url += "?type=" + selectedType;
                 }
+                @if (!$fromOpCenter && $singleDominion !== null)
+                    url += (url.includes('?') ? '&' : '?') + 'dominion={{ $singleDominion->id }}';
+                @endif
                 window.location.href = "{!! route('dominion.town-crier') !!}/" + url;
             });
             $('#event-select').change(function() {

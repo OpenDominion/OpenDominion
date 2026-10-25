@@ -2,16 +2,18 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use DB;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Http\Requests\Dominion\TownCrierPreferencesRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\GameEventService;
 
 class TownCrierController extends AbstractDominionController
 {
-    public function getIndex(Request $request, int $realmNumber = null)
+    public function getIndex(Request $request, ?int $realmNumber = null): View
     {
         $gameEventService = app(GameEventService::class);
         $rangeCalculator = app(RangeCalculator::class);
@@ -42,13 +44,18 @@ class TownCrierController extends AbstractDominionController
             $dominion = null;
         }
 
-        $townCrierData = $gameEventService->getTownCrier($selectedDominion, $realm, $dominion, $type);
+        $showBotAttacks = $gameEventService->shouldShowBotAttacks($selectedDominion);
+        $townCrierData = $gameEventService->getTownCrier($selectedDominion, $realm, $dominion, $type, $showBotAttacks);
+        $hiddenBotAttackCount = $townCrierData['hiddenBotAttackCount'];
         $gameEvents = $townCrierData['gameEvents'];
         $dominionIds = $townCrierData['dominionIds'];
 
         if ($dominion === null) {
             $latestEventTime = $townCrierData['gameEvents']->max('created_at');
-            if ($latestEventTime !== null && $latestEventTime > $selectedDominion->town_crier_last_seen) {
+            $botAttacksLastSeen = $selectedDominion->settings['town_crier_bot_attacks_last_seen']
+                ?? $selectedDominion->town_crier_last_seen;
+            if ($latestEventTime !== null && ($latestEventTime > $selectedDominion->town_crier_last_seen
+                || ($showBotAttacks && $latestEventTime > $botAttacksLastSeen))) {
                 $this->updateDominionTownCrierLastSeen($selectedDominion);
             }
         }
@@ -60,20 +67,32 @@ class TownCrierController extends AbstractDominionController
             'realmCount',
             'rangeCalculator',
             'type',
-            'typeChoices'
+            'typeChoices',
+            'showBotAttacks',
+            'hiddenBotAttackCount'
         ))->with([
             'fromOpCenter' => false,
             'singleDominion' => $dominion
         ]);
     }
 
+    public function postPreferences(TownCrierPreferencesRequest $request, ?int $realmNumber = null): RedirectResponse
+    {
+        app(GameEventService::class)->setShowBotAttacks(
+            $this->getSelectedDominion(),
+            $request->boolean('show_bot_attacks')
+        );
+
+        return redirect()->route('dominion.town-crier', [
+            'realmNumber' => $realmNumber,
+            'type' => $request->validated('type'),
+            'dominion' => $request->validated('dominion'),
+        ]);
+    }
+
     protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
     {
-        // Avoid using save method, which recalculates tick
-        DB::table('dominions')
-            ->where('id', $dominion->id)
-            ->update([
-                'town_crier_last_seen' => now()
-            ]);
+        $gameEventService = app(GameEventService::class);
+        $gameEventService->markTownCrierRead($dominion, $gameEventService->shouldShowBotAttacks($dominion));
     }
 }

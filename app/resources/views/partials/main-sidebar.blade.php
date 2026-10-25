@@ -333,7 +333,10 @@
                             <i class="nav-icon fa fa-newspaper-o fa-fw"></i>
                             <p>Town Crier
                                 @if ($unseenGameEvents > 0 && !Route::is('dominion.town-crier'))
-                                    <span class="badge text-bg-info">{{ $unseenGameEvents }}</span>
+                                    <span class="badge text-bg-info" title="Unread events (excluding bot attacks)" aria-label="{{ $unseenGameEvents }} unread events, excluding bot attacks">{{ $unseenGameEvents }}</span>
+                                @endif
+                                @if ($unseenBotAttacks > 0 && !Route::is('dominion.town-crier') && ($selectedDominion->settings['hide_bot_attack_badge'] ?? null) != 'on')
+                                    <span class="badge text-bg-bot" title="Unread bot attacks" aria-label="{{ $unseenBotAttacks }} unread bot attacks">{{ $unseenBotAttacks }}</span>
                                 @endif
                             </p>
                         </a>

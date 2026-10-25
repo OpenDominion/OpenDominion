@@ -9,6 +9,9 @@
         @endif
     </td>
     <td>
+        @if (!empty($showBotAttacks) && $gameEvent->isBotAttack())
+            <span class="badge text-bg-bot">Bot attack</span>
+        @endif
         @if ($gameEvent->type === 'invasion')
             @if ($gameEvent->source_type === \OpenDominion\Models\Dominion::class)
                 @php

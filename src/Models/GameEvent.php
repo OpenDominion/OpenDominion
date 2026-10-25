@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Webpatser\Uuid\Uuid;
 
 /**
@@ -46,6 +47,31 @@ class GameEvent extends AbstractModel
     public function target()
     {
         return $this->morphTo();
+    }
+
+    public function isBotAttack(): bool
+    {
+        return $this->type === 'invasion'
+            && $this->source instanceof Dominion
+            && $this->source->user_id === null;
+    }
+
+    public function scopeBotAttacks(Builder $query): Builder
+    {
+        return $query->where('type', 'invasion')
+            ->whereHasMorph('source', [Dominion::class], function (Builder $query): void {
+                $query->bot();
+            });
+    }
+
+    public function scopeWithoutBotAttacks(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query): void {
+            $query->where('type', '!=', 'invasion')
+                ->orWhereDoesntHaveMorph('source', [Dominion::class], function (Builder $query): void {
+                    $query->bot();
+                });
+        });
     }
 
     public static function boot()

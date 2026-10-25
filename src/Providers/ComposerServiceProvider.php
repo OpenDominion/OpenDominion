@@ -18,6 +18,7 @@ use OpenDominion\Models\MessageBoard;
 use OpenDominion\Models\Valuable;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\GameEventService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
 {
@@ -132,11 +133,9 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->count();
             $view->with('unseenWonders', $unseenWonders);
 
-            $unseenGameEvents = DB::table('game_events')
-                ->where('round_id', $selectedDominion->round_id)
-                ->where('created_at', '>', $selectedDominion->town_crier_last_seen ?? $selectedDominion->round->created_at)
-                ->count();
-            $view->with('unseenGameEvents', $unseenGameEvents);
+            $unreadGameEvents = app(GameEventService::class)->getUnreadCounts($selectedDominion);
+            $view->with('unseenGameEvents', $unreadGameEvents['events']);
+            $view->with('unseenBotAttacks', $unreadGameEvents['botAttacks']);
 
             // Valuables badges: discovered/transferred (actionable) + stolen (sellable).
             // Excludes valuables the player has already listed for transfer themselves —

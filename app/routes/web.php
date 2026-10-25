@@ -299,6 +299,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Town Crier
             $router->get('town-crier/{realmNumber?}')->uses('Dominion\TownCrierController@getIndex')->where('realmNumber', '[0-9]+')->name('town-crier');
+            $router->post('town-crier/{realmNumber?}')->uses('Dominion\TownCrierController@postPreferences')->where('realmNumber', '[0-9]+')->name('town-crier.preferences');
 
             // World
             $router->get('world')->uses('Dominion\WorldController@getIndex')->name('world');
