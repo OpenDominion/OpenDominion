@@ -51,12 +51,13 @@ class TownCrierController extends AbstractDominionController
         $dominionIds = $townCrierData['dominionIds'];
 
         if ($dominion === null) {
+            $includesBotAttacks = $showBotAttacks && in_array($type, ['all', 'invasions'], true);
             $latestEventTime = $townCrierData['gameEvents']->max('created_at');
             $botAttacksLastSeen = $selectedDominion->settings['town_crier_bot_attacks_last_seen']
                 ?? $selectedDominion->town_crier_last_seen;
             if ($latestEventTime !== null && ($latestEventTime > $selectedDominion->town_crier_last_seen
-                || ($showBotAttacks && $latestEventTime > $botAttacksLastSeen))) {
-                $this->updateDominionTownCrierLastSeen($selectedDominion);
+                || ($includesBotAttacks && $latestEventTime > $botAttacksLastSeen))) {
+                $this->updateDominionTownCrierLastSeen($selectedDominion, $includesBotAttacks);
             }
         }
 
@@ -90,9 +91,8 @@ class TownCrierController extends AbstractDominionController
         ]);
     }
 
-    protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
+    protected function updateDominionTownCrierLastSeen(Dominion $dominion, bool $includesBotAttacks = false): void
     {
-        $gameEventService = app(GameEventService::class);
-        $gameEventService->markTownCrierRead($dominion, $gameEventService->shouldShowBotAttacks($dominion));
+        app(GameEventService::class)->markTownCrierRead($dominion, $includesBotAttacks);
     }
 }

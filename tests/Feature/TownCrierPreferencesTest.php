@@ -2,9 +2,12 @@
 
 namespace OpenDominion\Tests\Feature;
 
+use Illuminate\Http\Request;
+use OpenDominion\Http\Controllers\Dominion\TownCrierController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\RoundLeague;
+use OpenDominion\Services\GameEventService;
 use OpenDominion\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -111,6 +114,55 @@ class TownCrierPreferencesTest extends AbstractTestCase
             ->assertSee('<span class="badge text-bg-bot">Bot attack</span>', false);
 
         $this->assertSame(now()->toDateTimeString(), $dominion->fresh()->settings['town_crier_bot_attacks_last_seen']);
+    }
+
+    #[DataProvider('nonInvasionFilters')]
+    public function testFilteredNewsPreservesUnreadBotAttacks(string $type, string $eventType, int $newsAgeInMinutes): void
+    {
+        $dominion = $this->createViewer([
+            'show_bot_attacks' => true,
+            'town_crier_bot_attacks_last_seen' => now()->subHours(3)->toDateTimeString(),
+        ]);
+        $dominion->update(['town_crier_last_seen' => now()->subHour()]);
+        $lastSeen = $dominion->town_crier_last_seen->toDateTimeString();
+        $botLastSeen = $dominion->settings['town_crier_bot_attacks_last_seen'];
+        $bot = $this->createBot($dominion);
+        $attack = $this->createInvasion($bot, $dominion);
+        $attack->created_at = now()->subMinutes(90);
+        $attack->save();
+
+        $news = $this->createInvasion($dominion, $bot);
+        $news->type = $eventType;
+        $news->created_at = now()->subMinutes($newsAgeInMinutes);
+        if ($type === 'wars') {
+            $news->source()->associate($dominion->realm);
+            $news->target()->associate($dominion->realm);
+        }
+        $news->save();
+        $service = app(GameEventService::class);
+        $this->assertSame(['events' => $newsAgeInMinutes < 60 ? 1 : 0, 'botAttacks' => 1], $service->getUnreadCounts($dominion));
+
+        $view = app(TownCrierController::class)->getIndex(
+            Request::create('/dominion/town-crier', 'GET', ['type' => $type])
+        );
+
+        $this->assertSame([(string) $news->id], $view->getData()['gameEvents']->pluck('id')->all());
+        $dominion->refresh();
+        $this->assertSame($newsAgeInMinutes < 60 ? now()->toDateTimeString() : $lastSeen, $dominion->town_crier_last_seen->toDateTimeString());
+        $this->assertSame($botLastSeen, $dominion->settings['town_crier_bot_attacks_last_seen']);
+        $this->assertSame(['events' => 0, 'botAttacks' => 1], $service->getUnreadCounts($dominion));
+    }
+
+    public static function nonInvasionFilters(): array
+    {
+        return [
+            'old wars' => ['wars', 'war_canceled', 120],
+            'old wonders' => ['wonders', 'wonder_attacked', 120],
+            'old raids' => ['raids', 'raid_attacked', 120],
+            'unread wars' => ['wars', 'war_canceled', 30],
+            'unread wonders' => ['wonders', 'wonder_attacked', 30],
+            'unread raids' => ['raids', 'raid_attacked', 30],
+        ];
     }
 
     public function testQuickRevealFormAlwaysEnablesBotAttacksAndPreservesFilters(): void
