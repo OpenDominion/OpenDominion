@@ -119,7 +119,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $dominion->realm->update(['number' => 0]);
         $this->createInvasion($this->createBot($dominion), $dominion);
 
-        $response = $this->get('/dominion/town-crier/0?type=invasions&dominion='.$dominion->id)
+        $response = $this->get('/dominion/town-crier/0?type=invasions&dominion=' . $dominion->id)
             ->assertOk();
         $document = \Dom\HTMLDocument::createFromString($response->getContent(), LIBXML_NOERROR);
         $form = $document->querySelector('form.d-inline');
@@ -139,7 +139,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $lastSeen = $dominion->town_crier_last_seen->toDateTimeString();
         $this->createInvasion($this->createBot($dominion), $dominion);
 
-        $this->get('/dominion/town-crier?dominion='.$dominion->id)
+        $this->get('/dominion/town-crier?dominion=' . $dominion->id)
             ->assertOk()
             ->assertSee('<span class="badge text-bg-bot">Bot attack</span>', false);
 
