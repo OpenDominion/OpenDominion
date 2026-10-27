@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,7 @@ use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
+use OpenDominion\Http\Requests\Dominion\TownCrierPreferencesRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -496,6 +498,31 @@ class MiscController extends AbstractDominionController
 
         $request->session()->flash('alert-success', 'Your settings have been updated!');
         return redirect()->route('dominion.misc.settings');
+    }
+
+    public function postTownCrierDefault(TownCrierPreferencesRequest $request, ?int $realmNumber = null): RedirectResponse
+    {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+        } catch (GameException $e) {
+            return redirect()->back()->withErrors([$e->getMessage()]);
+        }
+
+        $dominion->getConnection()->transaction(function () use ($dominion, $request): void {
+            $lockedDominion = Dominion::query()->lockForUpdate()->findOrFail($dominion->id);
+            $settings = $lockedDominion->settings ?? [];
+            $settings['town_crier_default_type'] = $request->validated('type');
+
+            Dominion::query()->whereKey($dominion->id)->update(['settings' => json_encode($settings)]);
+        });
+
+        return redirect()->route('dominion.town-crier', [
+            'realmNumber' => $realmNumber,
+            'type' => $request->validated('type'),
+            'dominion' => $request->validated('dominion'),
+        ])->with('alert-success', 'Your default Town Crier filter has been updated!');
     }
 
     public function postGenerateApiKey(Request $request)

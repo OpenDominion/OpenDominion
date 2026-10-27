@@ -150,9 +150,9 @@ Two-phase: queue then send.
 
 ### GameEventService
 Town Crier event retrieval.
-- `getTownCrier()` - paginated events filtered by realm/type; excludes bot-initiated invasions by default before pagination and returns the matching hidden count
-- `shouldShowBotAttacks()` / `setShowBotAttacks()` - persist the per-dominion `settings.show_bot_attacks` preference; direct history and Clairvoyance retrieval continue to include bots
-- `getUnreadCounts()` / `markTownCrierRead()` - split ordinary events from bot invasions, preserving hidden bot unread state in `settings.town_crier_bot_attacks_last_seen`; initial bot cursor falls back to the existing Town Crier timestamp and advances only when the selected filter includes bot invasions
+- `getTownCrier()` - paginated events filtered by realm/type; `all_without_bots` (the initial default) and `invasions_without_bots` exclude bot-initiated invasions before pagination. Direct history and Clairvoyance retrieval continue to include bots.
+- `TOWN_CRIER_TYPES` defines the available filters. `MiscController::postTownCrierDefault()` saves `settings.town_crier_default_type`; changing the current filter does not change this default.
+- `getUnreadCounts()` splits ordinary events from bot invasions using the same `town_crier_last_seen` timestamp, falling back to round creation. The existing Town Crier read update clears both categories together.
 - Dominion Settings can hide the bot badge independently with `hide_bot_attack_badge`
 - Event types: invasion, war_declared/canceled, wonder_spawned/attacked/destroyed, raid_attacked, abandoned
 

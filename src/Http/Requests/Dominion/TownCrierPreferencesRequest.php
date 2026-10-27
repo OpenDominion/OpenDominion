@@ -3,14 +3,14 @@
 namespace OpenDominion\Http\Requests\Dominion;
 
 use Illuminate\Validation\Rule;
+use OpenDominion\Services\GameEventService;
 
 class TownCrierPreferencesRequest extends AbstractDominionRequest
 {
     public function rules(): array
     {
         return [
-            'show_bot_attacks' => ['required', 'boolean'],
-            'type' => ['nullable', Rule::in(['all', 'invasions', 'wars', 'wonders', 'raids'])],
+            'type' => ['required', 'string', Rule::in(array_keys(GameEventService::TOWN_CRIER_TYPES))],
             'dominion' => ['nullable', 'integer', 'min:1'],
         ];
     }
@@ -18,8 +18,8 @@ class TownCrierPreferencesRequest extends AbstractDominionRequest
     public function messages(): array
     {
         return [
-            'show_bot_attacks.required' => 'Choose whether to show bot attacks.',
-            'show_bot_attacks.boolean' => 'Choose whether to show bot attacks.',
+            'type.required' => 'Select a default Town Crier event type.',
+            'type.string' => 'Select a valid Town Crier event type.',
             'type.in' => 'Select a valid Town Crier event type.',
             'dominion.integer' => 'Select a valid dominion.',
             'dominion.min' => 'Select a valid dominion.',

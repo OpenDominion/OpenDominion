@@ -3,10 +3,8 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
-use OpenDominion\Http\Requests\Dominion\TownCrierPreferencesRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\GameEventService;
@@ -22,10 +20,14 @@ class TownCrierController extends AbstractDominionController
         $realmCount = Realm::where('round_id', $selectedDominion->round_id)->count();
 
         $dominionId = $request->input('dominion');
-        $type = $request->input('type');
-        $typeChoices = ['all', 'invasions', 'wars', 'wonders', 'raids'];
-        if (!in_array($type, $typeChoices)) {
-            $type = 'all';
+        $typeChoices = array_keys(GameEventService::TOWN_CRIER_TYPES);
+        $defaultType = $selectedDominion->settings['town_crier_default_type'] ?? GameEventService::DEFAULT_TOWN_CRIER_TYPE;
+        if (!in_array($defaultType, $typeChoices, true)) {
+            $defaultType = GameEventService::DEFAULT_TOWN_CRIER_TYPE;
+        }
+        $type = $request->input('type', $defaultType);
+        if (!in_array($type, $typeChoices, true)) {
+            $type = $defaultType;
         }
 
         if ($realmNumber !== null) {
@@ -44,20 +46,15 @@ class TownCrierController extends AbstractDominionController
             $dominion = null;
         }
 
-        $showBotAttacks = $gameEventService->shouldShowBotAttacks($selectedDominion);
-        $townCrierData = $gameEventService->getTownCrier($selectedDominion, $realm, $dominion, $type, $showBotAttacks);
-        $hiddenBotAttackCount = $townCrierData['hiddenBotAttackCount'];
+        $showBotAttacks = in_array($type, ['all', 'invasions'], true);
+        $townCrierData = $gameEventService->getTownCrier($selectedDominion, $realm, $dominion, $type);
         $gameEvents = $townCrierData['gameEvents'];
         $dominionIds = $townCrierData['dominionIds'];
 
         if ($dominion === null) {
-            $includesBotAttacks = $showBotAttacks && in_array($type, ['all', 'invasions'], true);
             $latestEventTime = $townCrierData['gameEvents']->max('created_at');
-            $botAttacksLastSeen = $selectedDominion->settings['town_crier_bot_attacks_last_seen']
-                ?? $selectedDominion->town_crier_last_seen;
-            if ($latestEventTime !== null && ($latestEventTime > $selectedDominion->town_crier_last_seen
-                || ($includesBotAttacks && $latestEventTime > $botAttacksLastSeen))) {
-                $this->updateDominionTownCrierLastSeen($selectedDominion, $includesBotAttacks);
+            if ($latestEventTime !== null && $latestEventTime > $selectedDominion->town_crier_last_seen) {
+                $this->updateDominionTownCrierLastSeen($selectedDominion);
             }
         }
 
@@ -70,29 +67,15 @@ class TownCrierController extends AbstractDominionController
             'type',
             'typeChoices',
             'showBotAttacks',
-            'hiddenBotAttackCount'
+            'defaultType'
         ))->with([
             'fromOpCenter' => false,
             'singleDominion' => $dominion
         ]);
     }
 
-    public function postPreferences(TownCrierPreferencesRequest $request, ?int $realmNumber = null): RedirectResponse
+    protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
     {
-        app(GameEventService::class)->setShowBotAttacks(
-            $this->getSelectedDominion(),
-            $request->boolean('show_bot_attacks')
-        );
-
-        return redirect()->route('dominion.town-crier', [
-            'realmNumber' => $realmNumber,
-            'type' => $request->validated('type'),
-            'dominion' => $request->validated('dominion'),
-        ]);
-    }
-
-    protected function updateDominionTownCrierLastSeen(Dominion $dominion, bool $includesBotAttacks = false): void
-    {
-        app(GameEventService::class)->markTownCrierRead($dominion, $includesBotAttacks);
+        Dominion::query()->whereKey($dominion->id)->update(['town_crier_last_seen' => now()]);
     }
 }

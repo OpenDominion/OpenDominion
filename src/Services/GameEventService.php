@@ -16,8 +16,23 @@ use OpenDominion\Models\Wonder;
 
 class GameEventService
 {
-    public function getTownCrier(Dominion $dominion, ?Realm $realm = null, ?Dominion $target = null, string $type = 'all', bool $showBotAttacks = false): array
+    public const TOWN_CRIER_TYPES = [
+        'all' => 'All',
+        'all_without_bots' => 'All (Excluding Bots)',
+        'invasions' => 'Invasions',
+        'invasions_without_bots' => 'Invasions (Excluding Bots)',
+        'wars' => 'Wars',
+        'wonders' => 'Wonders',
+        'raids' => 'Raids',
+    ];
+
+    public const DEFAULT_TOWN_CRIER_TYPE = 'all_without_bots';
+
+    public function getTownCrier(Dominion $dominion, ?Realm $realm = null, ?Dominion $target = null, string $type = self::DEFAULT_TOWN_CRIER_TYPE): array
     {
+        $showBotAttacks = !in_array($type, ['all_without_bots', 'invasions_without_bots'], true);
+        $type = str_replace('_without_bots', '', $type);
+
         if ($target !== null) {
             return $this->getGameEventsForDominion($target, now(), $type, $showBotAttacks);
         }
@@ -29,56 +44,20 @@ class GameEventService
         return $this->getGameEventsForRound($dominion, now(), $type, $showBotAttacks);
     }
 
-    public function shouldShowBotAttacks(Dominion $dominion): bool
-    {
-        return (bool) ($dominion->settings['show_bot_attacks'] ?? false);
-    }
-
-    public function setShowBotAttacks(Dominion $dominion, bool $showBotAttacks): void
-    {
-        $dominion->getConnection()->transaction(function () use ($dominion, $showBotAttacks): void {
-            $lockedDominion = Dominion::query()->lockForUpdate()->findOrFail($dominion->id);
-            $settings = $lockedDominion->settings ?? [];
-            $settings['show_bot_attacks'] = $showBotAttacks;
-
-            Dominion::query()->whereKey($dominion->id)->update(['settings' => json_encode($settings)]);
-            $dominion->settings = $settings;
-        });
-    }
-
     /**
      * @return array{events: int, botAttacks: int}
      */
     public function getUnreadCounts(Dominion $dominion): array
     {
         $lastSeen = $dominion->town_crier_last_seen ?? $dominion->round->created_at;
-        $botAttacksLastSeen = $dominion->settings['town_crier_bot_attacks_last_seen'] ?? $lastSeen;
-        $events = GameEvent::query()->where('round_id', $dominion->round_id);
+        $events = GameEvent::query()
+            ->where('round_id', $dominion->round_id)
+            ->where('created_at', '>', $lastSeen);
 
         return [
-            'events' => (clone $events)->withoutBotAttacks()->where('created_at', '>', $lastSeen)->count(),
-            'botAttacks' => (clone $events)->botAttacks()->where('created_at', '>', $botAttacksLastSeen)->count(),
+            'events' => (clone $events)->withoutBotAttacks()->count(),
+            'botAttacks' => (clone $events)->botAttacks()->count(),
         ];
-    }
-
-    public function markTownCrierRead(Dominion $dominion, bool $showBotAttacks): void
-    {
-        $dominion->getConnection()->transaction(function () use ($dominion, $showBotAttacks): void {
-            $lockedDominion = Dominion::query()->lockForUpdate()->findOrFail($dominion->id);
-            $settings = $lockedDominion->settings ?? [];
-            $lastSeen = $lockedDominion->town_crier_last_seen ?? $dominion->round->created_at;
-            $readAt = now();
-            $settings['town_crier_bot_attacks_last_seen'] = $showBotAttacks
-                ? $readAt->toDateTimeString()
-                : ($settings['town_crier_bot_attacks_last_seen'] ?? $lastSeen->toDateTimeString());
-
-            Dominion::query()->whereKey($dominion->id)->update([
-                'town_crier_last_seen' => $readAt,
-                'settings' => json_encode($settings),
-            ]);
-            $dominion->town_crier_last_seen = $readAt;
-            $dominion->settings = $settings;
-        });
     }
 
     public function getClairvoyance(Realm $realm, Carbon $clairvoyanceCreatedAt): array
@@ -151,7 +130,6 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc');
 
-        $hiddenBotAttackCount = $showBotAttacks ? 0 : (clone $gameEvents)->botAttacks()->count();
         if (!$showBotAttacks) {
             $gameEvents->withoutBotAttacks();
         }
@@ -163,8 +141,7 @@ class GameEventService
 
         return [
             'dominionIds' => $dominionIds,
-            'gameEvents' => $gameEvents,
-            'hiddenBotAttackCount' => $hiddenBotAttackCount
+            'gameEvents' => $gameEvents
         ];
     }
 
@@ -206,7 +183,6 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc');
 
-        $hiddenBotAttackCount = $showBotAttacks ? 0 : (clone $gameEvents)->botAttacks()->count();
         if (!$showBotAttacks) {
             $gameEvents->withoutBotAttacks();
         }
@@ -218,8 +194,7 @@ class GameEventService
 
         return [
             'dominionIds' => $dominionIds,
-            'gameEvents' => $gameEvents,
-            'hiddenBotAttackCount' => $hiddenBotAttackCount
+            'gameEvents' => $gameEvents
         ];
     }
 
@@ -266,7 +241,6 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc');
 
-        $hiddenBotAttackCount = $showBotAttacks ? 0 : (clone $gameEvents)->botAttacks()->count();
         if (!$showBotAttacks) {
             $gameEvents->withoutBotAttacks();
         }
@@ -278,8 +252,7 @@ class GameEventService
 
         return [
             'dominionIds' => [(int) $dominion->id],
-            'gameEvents' => $gameEvents,
-            'hiddenBotAttackCount' => $hiddenBotAttackCount
+            'gameEvents' => $gameEvents
         ];
     }
 

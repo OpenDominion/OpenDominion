@@ -87,21 +87,19 @@ class TownCrierTest extends AbstractTestCase
         $this->assertSame(3, $result['gameEvents']->total());
         $this->assertCount(3, $result['gameEvents']);
         $this->assertSame(1, $result['gameEvents']->lastPage());
-        $this->assertSame(105, $result['hiddenBotAttackCount']);
         $this->assertEqualsCanonicalizing(
             [$humanAttack->id, $raid->id, $war->id],
             $result['gameEvents']->pluck('id')->all()
         );
 
-        $expanded = $this->service->getTownCrier($this->viewer, null, null, 'all', true);
+        $expanded = $this->service->getTownCrier($this->viewer, null, null, 'all');
 
         $this->assertSame(108, $expanded['gameEvents']->total());
         $this->assertCount(100, $expanded['gameEvents']);
         $this->assertSame(2, $expanded['gameEvents']->lastPage());
-        $this->assertSame(0, $expanded['hiddenBotAttackCount']);
     }
 
-    public function testRealmAndTypeFiltersAlsoRestrictHiddenAttackCount(): void
+    public function testRealmAndTypeFiltersExcludeFutureAndOtherRoundEvents(): void
     {
         $humanAttack = $this->createEvent($this->human, $this->viewer);
         $this->createEvent($this->bot, $this->viewer);
@@ -110,10 +108,9 @@ class TownCrierTest extends AbstractTestCase
         $this->createEvent($this->bot, $this->viewer, 'invasion', now()->addHour());
         $this->createEvent($this->bot, $this->viewer, 'invasion', null, $this->createTownCrierRound());
 
-        $result = $this->service->getTownCrier($this->viewer, $this->realm, null, 'invasions');
+        $result = $this->service->getTownCrier($this->viewer, $this->realm, null, 'invasions_without_bots');
 
         $this->assertSame([$humanAttack->id], $result['gameEvents']->pluck('id')->all());
-        $this->assertSame(1, $result['hiddenBotAttackCount']);
         $this->assertSame([$this->viewer->id], $result['dominionIds']);
     }
 
@@ -125,19 +122,17 @@ class TownCrierTest extends AbstractTestCase
         $this->createEvent($this->human, $this->bot);
         $this->createEvent($this->bot, $this->viewer, 'raid_attacked');
 
-        $result = $this->service->getTownCrier($this->viewer, $this->realm, $this->viewer, 'invasions');
+        $result = $this->service->getTownCrier($this->viewer, $this->realm, $this->viewer, 'invasions_without_bots');
 
         $this->assertSame([$humanAttack->id], $result['gameEvents']->pluck('id')->all());
-        $this->assertSame(1, $result['hiddenBotAttackCount']);
         $this->assertSame([$this->viewer->id], $result['dominionIds']);
 
-        $expanded = $this->service->getTownCrier($this->viewer, $this->realm, $this->viewer, 'invasions', true);
+        $expanded = $this->service->getTownCrier($this->viewer, $this->realm, $this->viewer, 'invasions');
 
         $this->assertEqualsCanonicalizing([$humanAttack->id, $botAttack->id], $expanded['gameEvents']->pluck('id')->all());
-        $this->assertSame(0, $expanded['hiddenBotAttackCount']);
     }
 
-    public function testNonInvasionFiltersDoNotReportHiddenBotAttacks(): void
+    public function testNonInvasionFiltersReturnOnlyMatchingEvents(): void
     {
         $this->createEvent($this->bot, $this->viewer);
         $wonder = $this->createEvent($this->bot, $this->viewer, 'wonder_attacked');
@@ -148,7 +143,6 @@ class TownCrierTest extends AbstractTestCase
             $result = $this->service->getTownCrier($this->viewer, $this->realm, null, $type);
 
             $this->assertSame([$event->id], $result['gameEvents']->pluck('id')->all());
-            $this->assertSame(0, $result['hiddenBotAttackCount']);
         }
     }
 
@@ -166,16 +160,13 @@ class TownCrierTest extends AbstractTestCase
         }
     }
 
-    public function testUnreadCountsUseSeparateCursorsAndCurrentRound(): void
+    public function testUnreadCountsUseSharedCursorAndCurrentRound(): void
     {
-        $this->viewer->update([
-            'town_crier_last_seen' => now()->subHour(),
-            'settings' => ['town_crier_bot_attacks_last_seen' => now()->subHours(2)->toDateTimeString()],
-        ]);
+        $this->viewer->update(['town_crier_last_seen' => now()->subHour()]);
         $this->createEvent($this->human, $this->viewer, 'invasion', now()->subMinutes(30));
         $this->createEvent($this->human, $this->viewer, 'invasion', now()->subMinutes(90));
+        $this->createEvent($this->bot, $this->viewer, 'invasion', now()->subMinutes(30));
         $this->createEvent($this->bot, $this->viewer, 'invasion', now()->subMinutes(90));
-        $this->createEvent($this->bot, $this->viewer, 'invasion', now()->subHours(3));
         $this->createEvent($this->bot, $this->viewer, 'raid_attacked', now()->subMinutes(20));
         $otherRound = $this->createTownCrierRound();
         $this->createEvent($this->human, $this->viewer, 'invasion', null, $otherRound);
@@ -184,77 +175,15 @@ class TownCrierTest extends AbstractTestCase
         $this->assertSame(['events' => 2, 'botAttacks' => 1], $this->service->getUnreadCounts($this->viewer));
     }
 
-    public function testReadingOrdinaryNewsPreservesUnreadBotAttacksUntilExpanded(): void
-    {
-        $previousSeen = now()->subHour();
-        $this->viewer->update(['town_crier_last_seen' => $previousSeen, 'settings' => ['other_preference' => 'retained']]);
-        $this->createEvent($this->human, $this->viewer);
-        $this->createEvent($this->bot, $this->viewer);
-
-        $this->service->markTownCrierRead($this->viewer, false);
-        $this->viewer->refresh();
-
-        $this->assertTrue($this->viewer->town_crier_last_seen->equalTo(now()));
-        $this->assertTrue(Carbon::parse($this->viewer->settings['town_crier_bot_attacks_last_seen'])->equalTo($previousSeen));
-        $this->assertSame('retained', $this->viewer->settings['other_preference']);
-        $this->assertSame(['events' => 0, 'botAttacks' => 1], $this->service->getUnreadCounts($this->viewer));
-
-        Carbon::setTestNow(now()->addMinutes(10));
-        $this->createEvent($this->human, $this->viewer);
-        $this->createEvent($this->bot, $this->viewer);
-        $this->service->markTownCrierRead($this->viewer, false);
-        $this->viewer->refresh();
-
-        $this->assertSame(['events' => 0, 'botAttacks' => 2], $this->service->getUnreadCounts($this->viewer));
-        $this->assertTrue(Carbon::parse($this->viewer->settings['town_crier_bot_attacks_last_seen'])->equalTo($previousSeen));
-
-        $this->service->markTownCrierRead($this->viewer, true);
-        $this->viewer->refresh();
-
-        $this->assertTrue(Carbon::parse($this->viewer->settings['town_crier_bot_attacks_last_seen'])->equalTo(now()));
-        $this->assertSame(['events' => 0, 'botAttacks' => 0], $this->service->getUnreadCounts($this->viewer));
-    }
-
-    public function testFirstVisitFallsBackToRoundCreationForBothUnreadCursors(): void
+    public function testFirstVisitFallsBackToRoundCreationForBothUnreadCategories(): void
     {
         $this->viewer->update(['town_crier_last_seen' => null, 'settings' => null]);
         $this->createEvent($this->human, $this->viewer);
         $this->createEvent($this->bot, $this->viewer);
+        $this->createEvent($this->human, $this->viewer, 'invasion', $this->round->created_at->copy()->subMinute());
         $this->createEvent($this->bot, $this->viewer, 'invasion', $this->round->created_at->copy()->subMinute());
 
         $this->assertSame(['events' => 1, 'botAttacks' => 1], $this->service->getUnreadCounts($this->viewer));
-
-        $this->service->markTownCrierRead($this->viewer, false);
-        $this->viewer->refresh();
-
-        $this->assertTrue(Carbon::parse($this->viewer->settings['town_crier_bot_attacks_last_seen'])->equalTo($this->round->created_at));
-        $this->assertSame(['events' => 0, 'botAttacks' => 1], $this->service->getUnreadCounts($this->viewer));
-    }
-
-    public function testBotAttackPreferencePersistsWithoutChangingResourcesOrOtherSettings(): void
-    {
-        $this->viewer->update(['settings' => ['other_preference' => ['enabled' => true]]]);
-        $lastTick = $this->viewer->getRawOriginal('last_tick_at');
-        $platinum = $this->viewer->resource_platinum;
-        $lastSeen = $this->viewer->town_crier_last_seen;
-
-        $this->assertFalse($this->service->shouldShowBotAttacks($this->viewer));
-        $this->service->setShowBotAttacks($this->viewer, true);
-        $this->viewer->refresh();
-
-        $this->assertTrue($this->viewer->settings['show_bot_attacks']);
-        $this->assertTrue($this->service->shouldShowBotAttacks($this->viewer));
-        $this->assertSame(['enabled' => true], $this->viewer->settings['other_preference']);
-        $this->assertSame($lastTick, $this->viewer->getRawOriginal('last_tick_at'));
-        $this->assertSame($platinum, $this->viewer->resource_platinum);
-        $this->assertEquals($lastSeen, $this->viewer->town_crier_last_seen);
-
-        $this->service->setShowBotAttacks($this->viewer, false);
-        $this->viewer->refresh();
-
-        $this->assertFalse($this->viewer->settings['show_bot_attacks']);
-        $this->assertFalse($this->service->shouldShowBotAttacks($this->viewer));
-        $this->assertSame(['enabled' => true], $this->viewer->settings['other_preference']);
     }
 
     protected function createTownCrierRound(): Round
