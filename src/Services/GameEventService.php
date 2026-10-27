@@ -5,6 +5,7 @@ namespace OpenDominion\Services;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Carbon;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
@@ -26,7 +27,7 @@ class GameEventService
         'raids' => 'Raids',
     ];
 
-    public const DEFAULT_TOWN_CRIER_TYPE = 'all_without_bots';
+    public const DEFAULT_TOWN_CRIER_TYPE = 'all';
 
     public function getTownCrier(Dominion $dominion, ?Realm $realm = null, ?Dominion $target = null, string $type = self::DEFAULT_TOWN_CRIER_TYPE): array
     {
@@ -50,13 +51,22 @@ class GameEventService
     public function getUnreadCounts(Dominion $dominion): array
     {
         $lastSeen = $dominion->town_crier_last_seen ?? $dominion->round->created_at;
-        $events = GameEvent::query()
-            ->where('round_id', $dominion->round_id)
-            ->where('created_at', '>', $lastSeen);
+        $counts = GameEvent::query()
+            ->leftJoin('dominions as source_dominions', function (JoinClause $join): void {
+                $join->on('source_dominions.id', '=', 'game_events.source_id')
+                    ->where('game_events.source_type', Dominion::class)
+                    ->where('game_events.type', 'invasion');
+            })
+            ->where('game_events.round_id', $dominion->round_id)
+            ->where('game_events.created_at', '>', $lastSeen)
+            ->selectRaw('COUNT(*) AS total')
+            ->selectRaw('COUNT(CASE WHEN source_dominions.user_id IS NULL THEN source_dominions.id END) AS bot_attacks')
+            ->toBase()
+            ->first();
 
         return [
-            'events' => (clone $events)->withoutBotAttacks()->count(),
-            'botAttacks' => (clone $events)->botAttacks()->count(),
+            'events' => (int) $counts->total - (int) $counts->bot_attacks,
+            'botAttacks' => (int) $counts->bot_attacks,
         ];
     }
 

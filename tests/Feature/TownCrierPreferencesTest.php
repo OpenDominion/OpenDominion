@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use Illuminate\Http\Request;
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Http\Controllers\Dominion\TownCrierController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
@@ -36,7 +37,9 @@ class TownCrierPreferencesTest extends AbstractTestCase
         ]);
         $otherDominion = $this->createDominion($this->createUser(), $dominion->round, null, $dominion->realm);
         $otherSettings = $otherDominion->settings;
+        app(SelectorService::class)->getUserSelectedDominion();
         $originalAttributes = $dominion->fresh()->getRawOriginal();
+        $this->travel(1)->seconds();
 
         $this->post('/dominion/misc/town-crier-default/0', [
             'type' => 'invasions',
@@ -53,7 +56,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $this->assertSame(['enabled' => true], $dominion->settings['other_preference']);
         $this->assertSame($otherSettings, $otherDominion->fresh()->settings);
         foreach ($originalAttributes as $attribute => $value) {
-            if (str_starts_with($attribute, 'resource_') || in_array($attribute, ['last_tick_at', 'town_crier_last_seen'], true)) {
+            if (str_starts_with($attribute, 'resource_') || in_array($attribute, ['updated_at', 'last_tick_at', 'town_crier_last_seen'], true)) {
                 $this->assertSame($value, $dominion->getRawOriginal($attribute), $attribute);
             }
         }
@@ -84,6 +87,19 @@ class TownCrierPreferencesTest extends AbstractTestCase
         }
     }
 
+    public function testDefaultCanBeSavedWithNullSettings(): void
+    {
+        $dominion = $this->createViewer();
+        $dominion->update(['settings' => null]);
+        app(SelectorService::class)->getUserSelectedDominion()->refresh();
+
+        $this->post('/dominion/misc/town-crier-default', ['type' => 'all_without_bots'])
+            ->assertRedirect(route('dominion.town-crier', ['type' => 'all_without_bots']))
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(['town_crier_default_type' => 'all_without_bots'], $dominion->fresh()->settings);
+    }
+
     #[DataProvider('invalidDefaults')]
     public function testInvalidDefaultsDoNotChangeSettings(array $input, string $field): void
     {
@@ -110,26 +126,41 @@ class TownCrierPreferencesTest extends AbstractTestCase
         ];
     }
 
-    public function testTownCrierHidesBotAttacksByDefaultAndReadingVisibleNewsClearsBothCounts(): void
+    #[DataProvider('townCrierVisibilityChoices')]
+    public function testReadingVisibleNewsClearsBothCountsWithoutChangingSettingsOrTimestamp(string $query, string $type): void
     {
         $dominion = $this->createViewer();
         $bot = $this->createBot($dominion);
-        $this->createInvasion($bot, $dominion);
+        $botAttack = $this->createInvasion($bot, $dominion);
         $playerAttack = $this->createInvasion($dominion, $bot);
         $service = app(GameEventService::class);
         $this->assertSame(['events' => 1, 'botAttacks' => 1], $service->getUnreadCounts($dominion));
+        app(SelectorService::class)->getUserSelectedDominion();
+        $updatedAt = $dominion->fresh()->getRawOriginal('updated_at');
+        $this->travel(1)->seconds();
 
-        $this->get('/dominion/town-crier')
+        $response = $this->get('/dominion/town-crier' . $query)
             ->assertOk()
-            ->assertViewHas('type', 'all_without_bots')
-            ->assertViewHas('showBotAttacks', false)
-            ->assertViewHas('gameEvents', fn ($events) => $events->pluck('id')->all() === [(string) $playerAttack->id])
-            ->assertDontSee('<span class="badge text-bg-bot">Bot</span>', false);
+            ->assertViewHas('type', $type);
+        $this->assertSame($type === 'all', str_contains($response->getContent(), '<span class="badge text-bg-info">Bot</span>'));
+        $this->assertEqualsCanonicalizing(
+            $type === 'all' ? [$botAttack->id, $playerAttack->id] : [$playerAttack->id],
+            $response->viewData('gameEvents')->pluck('id')->all()
+        );
 
         $dominion->refresh();
         $this->assertTrue($dominion->town_crier_last_seen->equalTo(now()));
+        $this->assertSame($updatedAt, $dominion->getRawOriginal('updated_at'));
         $this->assertSame(['events' => 0, 'botAttacks' => 0], $service->getUnreadCounts($dominion));
         $this->assertSame([], $dominion->settings);
+    }
+
+    public static function townCrierVisibilityChoices(): array
+    {
+        return [
+            'default includes bot attacks' => ['', 'all'],
+            'explicitly exclude bot attacks' => ['?type=all_without_bots', 'all_without_bots'],
+        ];
     }
 
     public function testOnlyHiddenNewsDoesNotAdvanceSharedCursor(): void
@@ -138,7 +169,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $lastSeen = $dominion->town_crier_last_seen->toDateTimeString();
         $this->createInvasion($this->createBot($dominion), $dominion);
 
-        $this->get('/dominion/town-crier')->assertOk()
+        $this->get('/dominion/town-crier?type=all_without_bots')->assertOk()
             ->assertViewHas('gameEvents', fn ($events) => $events->isEmpty());
 
         $dominion->refresh();
@@ -146,24 +177,22 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $this->assertSame(['events' => 0, 'botAttacks' => 1], app(GameEventService::class)->getUnreadCounts($dominion));
     }
 
-    public function testSavedDefaultIncludesBotAttacksAndTemporaryOverrideDoesNotPersist(): void
+    public function testSavedDefaultExcludesBotAttacksAndTemporaryOverrideDoesNotPersist(): void
     {
-        $dominion = $this->createViewer(['town_crier_default_type' => 'all']);
+        $dominion = $this->createViewer(['town_crier_default_type' => 'all_without_bots']);
         $attack = $this->createInvasion($this->createBot($dominion), $dominion);
 
         $this->get('/dominion/town-crier')->assertOk()
-            ->assertViewHas('type', 'all')
-            ->assertViewHas('showBotAttacks', true)
-            ->assertViewHas('gameEvents', fn ($events) => $events->pluck('id')->all() === [(string) $attack->id])
-            ->assertSee('<span class="badge text-bg-bot">Bot</span>', false);
-
-        $this->get('/dominion/town-crier?type=all_without_bots')->assertOk()
             ->assertViewHas('type', 'all_without_bots')
-            ->assertViewHas('showBotAttacks', false)
             ->assertViewHas('gameEvents', fn ($events) => $events->isEmpty());
 
-        $this->assertSame('all', $dominion->fresh()->settings['town_crier_default_type']);
-        $this->get('/dominion/town-crier')->assertOk()->assertViewHas('type', 'all');
+        $this->get('/dominion/town-crier?type=all')->assertOk()
+            ->assertViewHas('type', 'all')
+            ->assertViewHas('gameEvents', fn ($events) => $events->pluck('id')->all() === [(string) $attack->id])
+            ->assertSee('<span class="badge text-bg-info">Bot</span>', false);
+
+        $this->assertSame('all_without_bots', $dominion->fresh()->settings['town_crier_default_type']);
+        $this->get('/dominion/town-crier')->assertOk()->assertViewHas('type', 'all_without_bots');
     }
 
     public function testInvalidQueryTypeUsesSavedDefaultAndInvalidSavedDefaultUsesFallback(): void
@@ -176,7 +205,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $this->assertSame('invasions', $dominion->fresh()->settings['town_crier_default_type']);
 
         app(SelectorService::class)->getUserSelectedDominion()->update(['settings' => ['town_crier_default_type' => 'invalid']]);
-        $this->get('/dominion/town-crier')->assertOk()->assertViewHas('type', 'all_without_bots');
+        $this->get('/dominion/town-crier')->assertOk()->assertViewHas('type', 'all');
     }
 
     #[DataProvider('nonInvasionFilters')]
@@ -258,7 +287,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
 
         $this->get('/dominion/town-crier?dominion=' . $dominion->id)
             ->assertOk()
-            ->assertSee('<span class="badge text-bg-bot">Bot</span>', false);
+            ->assertSee('<span class="badge text-bg-info">Bot</span>', false);
 
         $this->assertSame($lastSeen, $dominion->fresh()->town_crier_last_seen->toDateTimeString());
     }
@@ -288,6 +317,25 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $this->post('/dominion/misc/settings')->assertSessionHasNoErrors();
         $this->assertNull($dominion->fresh()->settings['hide_bot_attack_badge']);
         $this->assertSame('all_without_bots', $dominion->fresh()->settings['town_crier_default_type']);
+    }
+
+    public function testOpCenterEventRowsDoNotShowBotBadgesWithOrWithoutContextFlag(): void
+    {
+        $dominion = $this->createViewer();
+        $attack = $this->createInvasion($this->createBot($dominion), $dominion);
+        $viewData = [
+            'selectedDominion' => $dominion,
+            'gameEvent' => $attack,
+            'dominionIds' => [$dominion->id],
+            'rangeCalculator' => app(RangeCalculator::class),
+        ];
+
+        foreach ([[], ['fromOpCenter' => true]] as $context) {
+            $html = view('partials.dominion.game-event', array_merge($viewData, $context))->render();
+
+            $this->assertStringContainsString('fended off an attack', $html);
+            $this->assertStringNotContainsString('<span class="badge text-bg-info">Bot</span>', $html);
+        }
     }
 
     protected function createViewer(array $settings = []): Dominion

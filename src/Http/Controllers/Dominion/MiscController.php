@@ -510,13 +510,12 @@ class MiscController extends AbstractDominionController
             return redirect()->back()->withErrors([$e->getMessage()]);
         }
 
-        $dominion->getConnection()->transaction(function () use ($dominion, $request): void {
-            $lockedDominion = Dominion::query()->lockForUpdate()->findOrFail($dominion->id);
-            $settings = $lockedDominion->settings ?? [];
-            $settings['town_crier_default_type'] = $request->validated('type');
+        $settings = $dominion->settings ?? [];
+        $settings['town_crier_default_type'] = $request->validated('type');
 
-            Dominion::query()->whereKey($dominion->id)->update(['settings' => json_encode($settings)]);
-        });
+        // Avoid save(), which recalculates networth and next-tick projections.
+        Dominion::query()->whereKey($dominion->id)->toBase()->update(['settings' => json_encode($settings)]);
+        $dominion->settings = $settings;
 
         return redirect()->route('dominion.town-crier', [
             'realmNumber' => $realmNumber,

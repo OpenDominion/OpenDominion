@@ -148,8 +148,6 @@ Each theme SCSS file is a self-contained `[data-color-scheme="<name>"]` selector
 2. **Bootstrap overrides** (`--bs-*`) mapping palette to Bootstrap's variable system
 3. **Component overrides** for cards, tables, forms, buttons, etc.
 
-Town Crier bot counts and event labels use `.badge.text-bg-bot` in `app.scss`, with purple light/dark palettes and Classic/Parchment overrides. It inherits existing badge sizing and does not change table spacing.
-
 ### Custom Properties Convention
 
 Themes define `--od-*` properties for their palette, then map them to `--bs-*` for Bootstrap integration:

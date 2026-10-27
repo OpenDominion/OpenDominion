@@ -20,7 +20,8 @@ class TownCrierController extends AbstractDominionController
         $realmCount = Realm::where('round_id', $selectedDominion->round_id)->count();
 
         $dominionId = $request->input('dominion');
-        $typeChoices = array_keys(GameEventService::TOWN_CRIER_TYPES);
+        $typeLabels = GameEventService::TOWN_CRIER_TYPES;
+        $typeChoices = array_keys($typeLabels);
         $defaultType = $selectedDominion->settings['town_crier_default_type'] ?? GameEventService::DEFAULT_TOWN_CRIER_TYPE;
         if (!in_array($defaultType, $typeChoices, true)) {
             $defaultType = GameEventService::DEFAULT_TOWN_CRIER_TYPE;
@@ -46,7 +47,6 @@ class TownCrierController extends AbstractDominionController
             $dominion = null;
         }
 
-        $showBotAttacks = in_array($type, ['all', 'invasions'], true);
         $townCrierData = $gameEventService->getTownCrier($selectedDominion, $realm, $dominion, $type);
         $gameEvents = $townCrierData['gameEvents'];
         $dominionIds = $townCrierData['dominionIds'];
@@ -66,7 +66,7 @@ class TownCrierController extends AbstractDominionController
             'rangeCalculator',
             'type',
             'typeChoices',
-            'showBotAttacks',
+            'typeLabels',
             'defaultType'
         ))->with([
             'fromOpCenter' => false,
@@ -76,6 +76,7 @@ class TownCrierController extends AbstractDominionController
 
     protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
     {
-        Dominion::query()->whereKey($dominion->id)->update(['town_crier_last_seen' => now()]);
+        // Avoid save(), which recalculates networth and next-tick projections.
+        Dominion::query()->whereKey($dominion->id)->toBase()->update(['town_crier_last_seen' => now()]);
     }
 }

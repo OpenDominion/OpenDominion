@@ -98,7 +98,7 @@
                         <select id="event-select" class="form-select">
                             @foreach ($typeChoices as $typeChoice)
                                 <option value="{{ $typeChoice }}" {{ $type == $typeChoice ? 'selected' : null }}>
-                                    {{ \OpenDominion\Services\GameEventService::TOWN_CRIER_TYPES[$typeChoice] ?? ucwords($typeChoice) }}
+                                    {{ $typeLabels[$typeChoice] ?? ucwords($typeChoice) }}
                                 </option>
                             @endforeach
                         </select>
@@ -137,9 +137,6 @@
                 if (selectedType) {
                     url += "?type=" + selectedType;
                 }
-                @if (!$fromOpCenter && $singleDominion !== null)
-                    url += (url.includes('?') ? '&' : '?') + 'dominion={{ $singleDominion->id }}';
-                @endif
                 window.location.href = "{!! route('dominion.town-crier') !!}/" + url;
             });
             $('#event-select').change(function() {

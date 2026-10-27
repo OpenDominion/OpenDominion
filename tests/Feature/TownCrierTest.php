@@ -82,7 +82,7 @@ class TownCrierTest extends AbstractTestCase
             $this->createEvent($this->bot, $this->viewer);
         }
 
-        $result = $this->service->getTownCrier($this->viewer);
+        $result = $this->service->getTownCrier($this->viewer, null, null, 'all_without_bots');
 
         $this->assertSame(3, $result['gameEvents']->total());
         $this->assertCount(3, $result['gameEvents']);
@@ -92,7 +92,7 @@ class TownCrierTest extends AbstractTestCase
             $result['gameEvents']->pluck('id')->all()
         );
 
-        $expanded = $this->service->getTownCrier($this->viewer, null, null, 'all');
+        $expanded = $this->service->getTownCrier($this->viewer);
 
         $this->assertSame(108, $expanded['gameEvents']->total());
         $this->assertCount(100, $expanded['gameEvents']);
@@ -168,16 +168,35 @@ class TownCrierTest extends AbstractTestCase
         $this->createEvent($this->bot, $this->viewer, 'invasion', now()->subMinutes(30));
         $this->createEvent($this->bot, $this->viewer, 'invasion', now()->subMinutes(90));
         $this->createEvent($this->bot, $this->viewer, 'raid_attacked', now()->subMinutes(20));
+        $missingSource = $this->createEvent($this->human, $this->viewer);
+        $missingSource->source_id = 2147483647;
+        $missingSource->save();
+        $wrongSourceType = $this->createEvent($this->bot, $this->viewer);
+        $wrongSourceType->source_type = Realm::class;
+        $wrongSourceType->save();
         $otherRound = $this->createTownCrierRound();
         $this->createEvent($this->human, $this->viewer, 'invasion', null, $otherRound);
         $this->createEvent($this->bot, $this->viewer, 'invasion', null, $otherRound);
 
-        $this->assertSame(['events' => 2, 'botAttacks' => 1], $this->service->getUnreadCounts($this->viewer));
+        $this->viewer->load('round');
+        $connection = $this->viewer->getConnection();
+        $connection->flushQueryLog();
+        $connection->enableQueryLog();
+        try {
+            $counts = $this->service->getUnreadCounts($this->viewer);
+            $queries = $connection->getQueryLog();
+        } finally {
+            $connection->disableQueryLog();
+        }
+
+        $this->assertSame(['events' => 4, 'botAttacks' => 1], $counts);
+        $this->assertCount(1, $queries);
     }
 
     public function testFirstVisitFallsBackToRoundCreationForBothUnreadCategories(): void
     {
         $this->viewer->update(['town_crier_last_seen' => null, 'settings' => null]);
+        $this->assertSame(['events' => 0, 'botAttacks' => 0], $this->service->getUnreadCounts($this->viewer));
         $this->createEvent($this->human, $this->viewer);
         $this->createEvent($this->bot, $this->viewer);
         $this->createEvent($this->human, $this->viewer, 'invasion', $this->round->created_at->copy()->subMinute());
