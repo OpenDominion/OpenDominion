@@ -110,7 +110,7 @@
                             @if ($singleDominion !== null)
                                 <input type="hidden" name="dominion" value="{{ $singleDominion->id }}" />
                             @endif
-                            <button type="submit" class="btn btn-sm btn-outline-secondary" {{ $type === $defaultType ? 'disabled' : null }}>
+                            <button type="submit" class="btn btn-sm btn-secondary" {{ $type === $defaultType ? 'disabled' : null }}>
                                 {{ $type === $defaultType ? 'Default' : 'Make default' }}
                             </button>
                         </form>
