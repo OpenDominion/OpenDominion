@@ -163,18 +163,40 @@ class TownCrierPreferencesTest extends AbstractTestCase
         ];
     }
 
-    public function testOnlyHiddenNewsDoesNotAdvanceSharedCursor(): void
+    #[DataProvider('botExcludingFilters')]
+    public function testHiddenBotAttacksStillAdvanceSharedCursor(string $type): void
     {
         $dominion = $this->createViewer();
-        $lastSeen = $dominion->town_crier_last_seen->toDateTimeString();
         $this->createInvasion($this->createBot($dominion), $dominion);
+        $this->travel(1)->seconds();
 
-        $this->get('/dominion/town-crier?type=all_without_bots')->assertOk()
+        $this->get('/dominion/town-crier?type=' . $type)->assertOk()
             ->assertViewHas('gameEvents', fn ($events) => $events->isEmpty());
 
         $dominion->refresh();
-        $this->assertSame($lastSeen, $dominion->town_crier_last_seen->toDateTimeString());
-        $this->assertSame(['events' => 0, 'botAttacks' => 1], app(GameEventService::class)->getUnreadCounts($dominion));
+        $this->assertSame(now()->toDateTimeString(), $dominion->town_crier_last_seen->toDateTimeString());
+        $this->assertSame(['events' => 0, 'botAttacks' => 0], app(GameEventService::class)->getUnreadCounts($dominion));
+    }
+
+    public static function botExcludingFilters(): array
+    {
+        return [
+            'all excluding bot attacks' => ['all_without_bots'],
+            'invasions excluding bot attacks' => ['invasions_without_bots'],
+        ];
+    }
+
+    public function testAlreadySeenHiddenBotAttacksDoNotAdvanceSharedCursor(): void
+    {
+        $dominion = $this->createViewer();
+        $this->createInvasion($this->createBot($dominion), $dominion)->update(['created_at' => now()->subHours(2)]);
+        $dominion->update(['town_crier_last_seen' => now()->subHour()]);
+        $lastSeen = $dominion->town_crier_last_seen->toDateTimeString();
+        $this->travel(1)->seconds();
+
+        $this->get('/dominion/town-crier?type=all_without_bots')->assertOk();
+
+        $this->assertSame($lastSeen, $dominion->fresh()->town_crier_last_seen->toDateTimeString());
     }
 
     public function testSavedDefaultExcludesBotAttacksAndTemporaryOverrideDoesNotPersist(): void

@@ -140,18 +140,22 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc');
 
+        $latestEventTime = null;
         if (!$showBotAttacks) {
+            $latestEventTime = $this->getLatestEventTime($gameEvents);
             $gameEvents->withoutBotAttacks();
         }
 
         $gameEvents = $gameEvents->paginate(100)
             ->withQueryString();
+        $latestEventTime ??= $gameEvents->max('created_at');
 
         $this->attachRealmsToGameEvents($gameEvents, $realm->round_id);
 
         return [
             'dominionIds' => $dominionIds,
-            'gameEvents' => $gameEvents
+            'gameEvents' => $gameEvents,
+            'latestEventTime' => $latestEventTime,
         ];
     }
 
@@ -193,18 +197,22 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc');
 
+        $latestEventTime = null;
         if (!$showBotAttacks) {
+            $latestEventTime = $this->getLatestEventTime($gameEvents);
             $gameEvents->withoutBotAttacks();
         }
 
         $gameEvents = $gameEvents->paginate(100)
             ->withQueryString();
+        $latestEventTime ??= $gameEvents->max('created_at');
 
         $this->attachRealmsToGameEvents($gameEvents, $dominion->round_id);
 
         return [
             'dominionIds' => $dominionIds,
-            'gameEvents' => $gameEvents
+            'gameEvents' => $gameEvents,
+            'latestEventTime' => $latestEventTime,
         ];
     }
 
@@ -251,19 +259,33 @@ class GameEventService
             })
             ->orderBy('created_at', 'desc');
 
+        $latestEventTime = null;
         if (!$showBotAttacks) {
+            $latestEventTime = $this->getLatestEventTime($gameEvents);
             $gameEvents->withoutBotAttacks();
         }
 
         $gameEvents = $gameEvents->paginate(100)
             ->withQueryString();
+        $latestEventTime ??= $gameEvents->max('created_at');
 
         $this->attachRealmsToGameEvents($gameEvents, $dominion->round_id);
 
         return [
             'dominionIds' => [(int) $dominion->id],
-            'gameEvents' => $gameEvents
+            'gameEvents' => $gameEvents,
+            'latestEventTime' => $latestEventTime,
         ];
+    }
+
+    /**
+     * Latest event time before bot attacks are filtered out, so hidden bot attacks still count as unread news.
+     */
+    private function getLatestEventTime(Builder $gameEvents): ?Carbon
+    {
+        $latestEventTime = (clone $gameEvents)->reorder()->toBase()->max('created_at');
+
+        return $latestEventTime === null ? null : Carbon::parse($latestEventTime);
     }
 
     private function attachRealmsToGameEvents($gameEvents, int $roundId): void

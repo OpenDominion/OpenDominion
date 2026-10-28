@@ -52,7 +52,7 @@ class TownCrierController extends AbstractDominionController
         $dominionIds = $townCrierData['dominionIds'];
 
         if ($dominion === null) {
-            $latestEventTime = $townCrierData['gameEvents']->max('created_at');
+            $latestEventTime = $townCrierData['latestEventTime'];
             if ($latestEventTime !== null && $latestEventTime > $selectedDominion->town_crier_last_seen) {
                 $this->updateDominionTownCrierLastSeen($selectedDominion);
             }
