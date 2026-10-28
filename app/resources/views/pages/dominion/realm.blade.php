@@ -93,7 +93,7 @@
                                             @endif
 
                                             @if ($dominion->user == null)
-                                                <span class="badge text-bg-info">Bot</span>
+                                                <span class="badge text-bg-bot">Bot</span>
                                             @else
                                                 @if ($isOwnRealm && $round->hasAssignedRealms() && !$round->hasEnded() && $dominion->user->isOnline())
                                                     <span class="badge text-bg-success">Online</span>

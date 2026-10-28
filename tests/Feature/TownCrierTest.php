@@ -4,6 +4,7 @@ namespace OpenDominion\Tests\Feature;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
@@ -205,6 +206,44 @@ class TownCrierTest extends AbstractTestCase
         $this->assertSame(['events' => 1, 'botAttacks' => 1], $this->service->getUnreadCounts($this->viewer));
     }
 
+    public function testInvasionEventsHighlightBotDominionNamesInMagenta(): void
+    {
+        $invasionData = ['result' => ['success' => true], 'attacker' => ['landConquered' => ['plain' => 10]]];
+        $botAttack = $this->createEvent($this->bot, $this->human, 'invasion', null, null, $invasionData);
+        $humanAttackOnBot = $this->createEvent($this->human, $this->bot, 'invasion', null, null, ['result' => ['success' => false]]);
+        $viewerAttackOnBot = $this->createEvent($this->viewer, $this->bot, 'invasion', null, null, $invasionData);
+
+        $botAttackHtml = $this->renderGameEvent($botAttack);
+        $this->assertNameHasClass($botAttackHtml, $this->bot, 'text-magenta');
+        $this->assertNameHasClass($botAttackHtml, $this->human, 'text-light-blue');
+
+        $humanAttackOnBotHtml = $this->renderGameEvent($humanAttackOnBot);
+        $this->assertNameHasClass($humanAttackOnBotHtml, $this->bot, 'text-magenta');
+        $this->assertNameHasClass($humanAttackOnBotHtml, $this->human, 'text-light-blue');
+
+        $viewerAttackOnBotHtml = $this->renderGameEvent($viewerAttackOnBot);
+        $this->assertNameHasClass($viewerAttackOnBotHtml, $this->bot, 'text-magenta');
+        $this->assertNameHasClass($viewerAttackOnBotHtml, $this->viewer, 'text-green');
+    }
+
+    protected function renderGameEvent(GameEvent $gameEvent): string
+    {
+        return view('partials.dominion.game-event', [
+            'gameEvent' => $gameEvent,
+            'selectedDominion' => $this->viewer,
+            'dominionIds' => [$this->viewer->id],
+            'rangeCalculator' => $this->app->make(RangeCalculator::class),
+        ])->render();
+    }
+
+    protected function assertNameHasClass(string $html, Dominion $dominion, string $class): void
+    {
+        $this->assertMatchesRegularExpression(
+            '/<span class="' . preg_quote($class, '/') . '"[^>]*>' . preg_quote(e($dominion->name), '/') . '<\/span>/',
+            $html
+        );
+    }
+
     protected function createTownCrierRound(): Round
     {
         $league = RoundLeague::firstOrCreate(['key' => 'standard'], ['description' => 'Standard']);
@@ -219,12 +258,12 @@ class TownCrierTest extends AbstractTestCase
         ]);
     }
 
-    protected function createEvent(Model $source, ?Model $target, string $type = 'invasion', ?Carbon $createdAt = null, ?Round $round = null): GameEvent
+    protected function createEvent(Model $source, ?Model $target, string $type = 'invasion', ?Carbon $createdAt = null, ?Round $round = null, array $data = []): GameEvent
     {
         $event = new GameEvent([
             'round_id' => ($round ?? $this->round)->id,
             'type' => $type,
-            'data' => [],
+            'data' => $data,
         ]);
         $event->source()->associate($source);
         $event->target()->associate($target);

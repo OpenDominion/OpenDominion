@@ -50,6 +50,7 @@ Mana:       12,440 (+284/hr)</pre>
                     <p class="text-red"><i class="fa fa-arrow-down"></i> text-red: -1,200 casualties</p>
                     <p class="text-aqua"><i class="ra ra-shield"></i> text-aqua: Under protection (48 hours remaining)</p>
                     <p class="text-purple"><i class="fa fa-hat-wizard"></i> text-purple: Arcane energy detected</p>
+                    <p class="text-magenta"><i class="fa fa-gem"></i> text-magenta: Visions shimmer in the scrying pool</p>
                 </div>
             </div>
         </div>

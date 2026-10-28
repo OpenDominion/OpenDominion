@@ -9,9 +9,6 @@
         @endif
     </td>
     <td>
-        @if (isset($fromOpCenter) && !$fromOpCenter && $gameEvent->isBotAttack())
-            <span class="badge text-bg-info">Bot</span>
-        @endif
         @if ($gameEvent->type === 'invasion')
             @if ($gameEvent->source_type === \OpenDominion\Models\Dominion::class)
                 @php
@@ -24,6 +21,9 @@
                     $targetRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $gameEvent->target);
                     $targetRaceName = $gameEvent->target->race->name;
                     $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
+
+                    $sourceNameClass = $gameEvent->source->user_id === null ? 'text-magenta' : 'text-light-blue';
+                    $targetNameClass = $gameEvent->target->user_id === null ? 'text-magenta' : 'text-light-blue';
                 @endphp
                 @if (in_array($gameEvent->source_id, $dominionIds, true))
                     @if ($gameEvent->data['result']['success'])
@@ -33,14 +33,14 @@
                         conquered
                         <span class="text-green fw-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                         land from
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ $targetNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                     @else
                         Sadly, the forces of
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                         were beaten back by
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ $targetNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                     @endif
                 @elseif (in_array($gameEvent->target_id, $dominionIds, true))
@@ -48,14 +48,14 @@
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-red" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                         invaded fellow dominion
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}<span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ $targetNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                         and captured
                         <span class="text-red fw-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                         land.
                     @else
                         Fellow dominion
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ $targetNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                         fended off an attack from
                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-red" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
@@ -63,19 +63,19 @@
                     @endif
                 @else
                     @if ($gameEvent->data['result']['success'])
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="{{ $sourceNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                         invaded
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}<span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ $targetNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                         and captured
                         <span class="text-orange fw-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                         land.
                     @else
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="{{ $targetNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $targetToolTipHtml }}">{{ $gameEvent->target->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                         fended off an attack from
-                        <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
+                        <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="{{ $sourceNameClass }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
                         <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>.
                     @endif
                 @endif

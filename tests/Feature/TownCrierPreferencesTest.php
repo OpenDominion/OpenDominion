@@ -142,7 +142,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $response = $this->get('/dominion/town-crier' . $query)
             ->assertOk()
             ->assertViewHas('type', $type);
-        $this->assertSame($type === 'all', str_contains($response->getContent(), '<span class="badge text-bg-info">Bot</span>'));
+        $this->assertSame($type === 'all', str_contains($response->getContent(), route('dominion.event', [$botAttack->id])));
         $this->assertEqualsCanonicalizing(
             $type === 'all' ? [$botAttack->id, $playerAttack->id] : [$playerAttack->id],
             $response->viewData('gameEvents')->pluck('id')->all()
@@ -189,7 +189,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $this->get('/dominion/town-crier?type=all')->assertOk()
             ->assertViewHas('type', 'all')
             ->assertViewHas('gameEvents', fn ($events) => $events->pluck('id')->all() === [(string) $attack->id])
-            ->assertSee('<span class="badge text-bg-info">Bot</span>', false);
+            ->assertSee(route('dominion.event', [$attack->id]), false);
 
         $this->assertSame('all_without_bots', $dominion->fresh()->settings['town_crier_default_type']);
         $this->get('/dominion/town-crier')->assertOk()->assertViewHas('type', 'all_without_bots');
@@ -266,7 +266,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
         $this->assertSame('post', strtolower($form->getAttribute('method')));
         $this->assertSame('invasions', $form->querySelector('[name="type"]')->getAttribute('value'));
         $this->assertSame((string) $dominion->id, $form->querySelector('[name="dominion"]')->getAttribute('value'));
-        $this->assertSame('Make default', trim($form->querySelector('button')->textContent));
+        $this->assertSame('Set as default', trim($form->querySelector('button')->textContent));
         $this->assertFalse($form->querySelector('button')->hasAttribute('disabled'));
 
         $this->post('/dominion/misc/town-crier-default/0', ['type' => 'invasions', 'dominion' => $dominion->id])
@@ -283,11 +283,11 @@ class TownCrierPreferencesTest extends AbstractTestCase
     {
         $dominion = $this->createViewer(['town_crier_default_type' => 'all']);
         $lastSeen = $dominion->town_crier_last_seen->toDateTimeString();
-        $this->createInvasion($this->createBot($dominion), $dominion);
+        $attack = $this->createInvasion($this->createBot($dominion), $dominion);
 
         $this->get('/dominion/town-crier?dominion=' . $dominion->id)
             ->assertOk()
-            ->assertSee('<span class="badge text-bg-info">Bot</span>', false);
+            ->assertSee(route('dominion.event', [$attack->id]), false);
 
         $this->assertSame($lastSeen, $dominion->fresh()->town_crier_last_seen->toDateTimeString());
     }
@@ -334,7 +334,7 @@ class TownCrierPreferencesTest extends AbstractTestCase
             $html = view('partials.dominion.game-event', array_merge($viewData, $context))->render();
 
             $this->assertStringContainsString('fended off an attack', $html);
-            $this->assertStringNotContainsString('<span class="badge text-bg-info">Bot</span>', $html);
+            $this->assertStringNotContainsString('>Bot</span>', $html);
         }
     }
 

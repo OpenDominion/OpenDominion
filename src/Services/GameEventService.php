@@ -19,9 +19,9 @@ class GameEventService
 {
     public const TOWN_CRIER_TYPES = [
         'all' => 'All',
-        'all_without_bots' => 'All (Excluding Bots)',
+        'all_without_bots' => 'All (Excluding Bot Attacks)',
         'invasions' => 'Invasions',
-        'invasions_without_bots' => 'Invasions (Excluding Bots)',
+        'invasions_without_bots' => 'Invasions (Excluding Bot Attacks)',
         'wars' => 'Wars',
         'wonders' => 'Wonders',
         'raids' => 'Raids',
