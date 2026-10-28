@@ -16,6 +16,9 @@
   "overrides": {
     "node-sass": "npm:sass@^1.70.0"
   },
+  "resolutions": {
+    "node-sass": "npm:sass@^1.70.0"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.0",
     "@opendominion/rpg-awesome": "^0.0.21",

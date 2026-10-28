@@ -4,6 +4,7 @@
     <div class="card">
         <div class="card-body">
             <p>It is in Valhalla that you will be able to see the brave warriors of the past that have become revered by warriors of the present. These souls battled long and hard, and were the best of their generations.</p>
+            <p class="mb-0">Those whose contributions shaped the game and its community are honored in the <a href="{{ route('hall-of-fame') }}"><i class="fa fa-trophy"></i> Hall of Fame</a>.</p>
         </div>
     </div>
 

@@ -12,6 +12,14 @@ class ValhallaTest extends AbstractTestCase
 {
     use DatabaseTransactions;
 
+    public function testIndexPageLinksToTheHallOfFame(): void
+    {
+        $response = $this->get(route('valhalla.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee(route('hall-of-fame'));
+    }
+
     public function testUserPageRendersForUserWithNoDominions(): void
     {
         $user = $this->createUser();

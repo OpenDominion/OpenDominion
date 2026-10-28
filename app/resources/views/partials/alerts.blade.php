@@ -26,7 +26,11 @@
 
     @if (!$selectedDominion->round->hasAssignedRealms() && !$selectedDominion->round->hasStarted())
         <div class="alert alert-warning">
-            <p><i class="fa fa-warning me-1"></i> The round has not yet started, but you can simulate your protection in advance. Realms will be assigned in {{ $selectedDominion->round->timeUntilRealmAssignment() }}, after which you will have 4 days to coordinate with your realm before the round starts.</p>
+            @if ($selectedDominion->round->realmAssignmentDate() > now())
+                <p><i class="fa fa-warning me-1"></i> The round has not yet started, but you can simulate your protection in advance. Realms will be assigned in {{ $selectedDominion->round->timeUntilRealmAssignment() }}, after which you will have 4 days to coordinate with your realm before the round starts.</p>
+            @else
+                <p><i class="fa fa-warning me-1"></i> The round has not yet started, but you can simulate your protection in advance. Realms are currently being assigned, after which you will have until the round starts to coordinate with your realm.</p>
+            @endif
         </div>
     @endif
 
