@@ -127,6 +127,11 @@
                                 <input class="form-check-input" type="checkbox" name="hide_forum_badge" id="hide_forum_badge" {{ isset($selectedDominion->settings['hide_forum_badge']) && $selectedDominion->settings['hide_forum_badge'] == 'on' ? 'checked' : null }} />
                                 <label class="form-check-label" for="hide_forum_badge">Unread forum posts</label>
                             </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="hide_bot_attack_badge" id="hide_bot_attack_badge" {{ ($selectedDominion->settings['hide_bot_attack_badge'] ?? null) == 'on' ? 'checked' : null }} />
+                                <label class="form-check-label" for="hide_bot_attack_badge">Bot attacks on Town Crier <span class="badge text-bg-bot">Bot</span></label>
+                            </div>
+                            <span class="small">Hiding the bot badge does not change your Town Crier filters.</span>
                         </div>
                     </div>
                 </div>

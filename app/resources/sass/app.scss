@@ -617,6 +617,26 @@ html.hourchange:after {
 // ─── Theme System ─────────────────────────────────────────────────────────────
 @import 'themes';
 
+.badge.text-bg-bot {
+  background-color: #ede7f3 !important;
+  color: #614279 !important;
+}
+
+[data-bs-theme="dark"] .badge.text-bg-bot {
+  background-color: #3c2f4a !important;
+  color: #dac9ec !important;
+}
+
+[data-color-scheme="classic"] .badge.text-bg-bot {
+  background-color: #705789 !important;
+  color: #fff !important;
+}
+
+[data-color-scheme="parchment"] .badge.text-bg-bot {
+  background-color: #e8dde5 !important;
+  color: #67456c !important;
+}
+
 // Tooltip background contrasts the body (light in dark themes, dark in parchment),
 // so the regular themed text-* colors wash out inside tooltips. Each theme provides
 // --od-*-on-tooltip variants tuned for the tooltip surface.

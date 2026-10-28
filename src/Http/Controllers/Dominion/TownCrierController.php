@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use DB;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
@@ -11,7 +11,7 @@ use OpenDominion\Services\GameEventService;
 
 class TownCrierController extends AbstractDominionController
 {
-    public function getIndex(Request $request, int $realmNumber = null)
+    public function getIndex(Request $request, ?int $realmNumber = null): View
     {
         $gameEventService = app(GameEventService::class);
         $rangeCalculator = app(RangeCalculator::class);
@@ -20,10 +20,15 @@ class TownCrierController extends AbstractDominionController
         $realmCount = Realm::where('round_id', $selectedDominion->round_id)->count();
 
         $dominionId = $request->input('dominion');
-        $type = $request->input('type');
-        $typeChoices = ['all', 'invasions', 'wars', 'wonders', 'raids'];
-        if (!in_array($type, $typeChoices)) {
-            $type = 'all';
+        $typeLabels = GameEventService::TOWN_CRIER_TYPES;
+        $typeChoices = array_keys($typeLabels);
+        $defaultType = $selectedDominion->settings['town_crier_default_type'] ?? GameEventService::DEFAULT_TOWN_CRIER_TYPE;
+        if (!in_array($defaultType, $typeChoices, true)) {
+            $defaultType = GameEventService::DEFAULT_TOWN_CRIER_TYPE;
+        }
+        $type = $request->input('type', $defaultType);
+        if (!in_array($type, $typeChoices, true)) {
+            $type = $defaultType;
         }
 
         if ($realmNumber !== null) {
@@ -60,7 +65,9 @@ class TownCrierController extends AbstractDominionController
             'realmCount',
             'rangeCalculator',
             'type',
-            'typeChoices'
+            'typeChoices',
+            'typeLabels',
+            'defaultType'
         ))->with([
             'fromOpCenter' => false,
             'singleDominion' => $dominion
@@ -69,11 +76,7 @@ class TownCrierController extends AbstractDominionController
 
     protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
     {
-        // Avoid using save method, which recalculates tick
-        DB::table('dominions')
-            ->where('id', $dominion->id)
-            ->update([
-                'town_crier_last_seen' => now()
-            ]);
+        // Avoid save(), which recalculates networth and next-tick projections.
+        Dominion::query()->whereKey($dominion->id)->toBase()->update(['town_crier_last_seen' => now()]);
     }
 }

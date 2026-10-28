@@ -5,6 +5,7 @@ namespace OpenDominion\Services;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Carbon;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
@@ -16,17 +17,57 @@ use OpenDominion\Models\Wonder;
 
 class GameEventService
 {
-    public function getTownCrier(Dominion $dominion, Realm $realm = null, Dominion $target = null, string $type = 'all'): array
+    public const TOWN_CRIER_TYPES = [
+        'all' => 'All',
+        'all_without_bots' => 'All (Excluding Bots)',
+        'invasions' => 'Invasions',
+        'invasions_without_bots' => 'Invasions (Excluding Bots)',
+        'wars' => 'Wars',
+        'wonders' => 'Wonders',
+        'raids' => 'Raids',
+    ];
+
+    public const DEFAULT_TOWN_CRIER_TYPE = 'all';
+
+    public function getTownCrier(Dominion $dominion, ?Realm $realm = null, ?Dominion $target = null, string $type = self::DEFAULT_TOWN_CRIER_TYPE): array
     {
+        $showBotAttacks = !in_array($type, ['all_without_bots', 'invasions_without_bots'], true);
+        $type = str_replace('_without_bots', '', $type);
+
         if ($target !== null) {
-            return $this->getGameEventsForDominion($target, now(), $type);
+            return $this->getGameEventsForDominion($target, now(), $type, $showBotAttacks);
         }
 
         if ($realm !== null) {
-            return $this->getGameEventsForRealm($realm, now(), $type);
+            return $this->getGameEventsForRealm($realm, now(), $type, $showBotAttacks);
         }
 
-        return $this->getGameEventsforRound($dominion, now(), $type);
+        return $this->getGameEventsForRound($dominion, now(), $type, $showBotAttacks);
+    }
+
+    /**
+     * @return array{events: int, botAttacks: int}
+     */
+    public function getUnreadCounts(Dominion $dominion): array
+    {
+        $lastSeen = $dominion->town_crier_last_seen ?? $dominion->round->created_at;
+        $counts = GameEvent::query()
+            ->leftJoin('dominions as source_dominions', function (JoinClause $join): void {
+                $join->on('source_dominions.id', '=', 'game_events.source_id')
+                    ->where('game_events.source_type', Dominion::class)
+                    ->where('game_events.type', 'invasion');
+            })
+            ->where('game_events.round_id', $dominion->round_id)
+            ->where('game_events.created_at', '>', $lastSeen)
+            ->selectRaw('COUNT(*) AS total')
+            ->selectRaw('COUNT(CASE WHEN source_dominions.user_id IS NULL THEN source_dominions.id END) AS bot_attacks')
+            ->toBase()
+            ->first();
+
+        return [
+            'events' => (int) $counts->total - (int) $counts->bot_attacks,
+            'botAttacks' => (int) $counts->bot_attacks,
+        ];
     }
 
     public function getClairvoyance(Realm $realm, Carbon $clairvoyanceCreatedAt): array
@@ -34,7 +75,7 @@ class GameEventService
         return $this->getGameEventsForRealm($realm, $clairvoyanceCreatedAt);
     }
 
-    private function getGameEventsForRealm(Realm $realm, Carbon $createdBefore, string $type = 'all'): array
+    private function getGameEventsForRealm(Realm $realm, Carbon $createdBefore, string $type = 'all', bool $showBotAttacks = true): array
     {
         $dominionIds = Dominion::where('realm_id', $realm->id)
             ->pluck('id')
@@ -97,19 +138,24 @@ class GameEventService
                     $query->whereIn('type', ['raid_attacked']);
                 }
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(100)
+            ->orderBy('created_at', 'desc');
+
+        if (!$showBotAttacks) {
+            $gameEvents->withoutBotAttacks();
+        }
+
+        $gameEvents = $gameEvents->paginate(100)
             ->withQueryString();
 
         $this->attachRealmsToGameEvents($gameEvents, $realm->round_id);
 
         return [
             'dominionIds' => $dominionIds,
-            'gameEvents' =>  $gameEvents
+            'gameEvents' => $gameEvents
         ];
     }
 
-    private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore, string $type = 'all'): array
+    private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore, string $type = 'all', bool $showBotAttacks = true): array
     {
         $dominionIds = Dominion::where('realm_id', $dominion->realm_id)
             ->pluck('id')
@@ -145,19 +191,24 @@ class GameEventService
                     $query->whereIn('type', ['raid_attacked']);
                 }
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(100)
+            ->orderBy('created_at', 'desc');
+
+        if (!$showBotAttacks) {
+            $gameEvents->withoutBotAttacks();
+        }
+
+        $gameEvents = $gameEvents->paginate(100)
             ->withQueryString();
 
         $this->attachRealmsToGameEvents($gameEvents, $dominion->round_id);
 
         return [
             'dominionIds' => $dominionIds,
-            'gameEvents' =>  $gameEvents
+            'gameEvents' => $gameEvents
         ];
     }
 
-    public function getGameEventsForDominion(Dominion $dominion, Carbon $createdBefore, string $type = 'all'): array
+    public function getGameEventsForDominion(Dominion $dominion, Carbon $createdBefore, string $type = 'all', bool $showBotAttacks = true): array
     {
         $gameEvents = GameEvent::query()
             ->with(['source' => function (MorphTo $morphTo) {
@@ -198,15 +249,20 @@ class GameEventService
                     $query->where('type', 'raid_attacked');
                 }
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(100)
+            ->orderBy('created_at', 'desc');
+
+        if (!$showBotAttacks) {
+            $gameEvents->withoutBotAttacks();
+        }
+
+        $gameEvents = $gameEvents->paginate(100)
             ->withQueryString();
 
         $this->attachRealmsToGameEvents($gameEvents, $dominion->round_id);
 
         return [
             'dominionIds' => [(int) $dominion->id],
-            'gameEvents' =>  $gameEvents
+            'gameEvents' => $gameEvents
         ];
     }
 

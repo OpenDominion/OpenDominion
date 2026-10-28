@@ -98,6 +98,7 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 - Tracks IP and device for security audit
 
 ### GameEvent (`game_events`)
+- `isBotAttack()`, `botAttacks()` and `withoutBotAttacks()` classify invasions whose source dominion has no user; player attacks on bots remain ordinary events
 - **UUID primary key** (auto-generated)
 - **Polymorphic**: source/target via morphTo() (Dominion, RoundWonder, Realm, RealmWar)
 - **Types**: invasion, war_declared, war_canceled, wonder_spawned, wonder_attacked, wonder_destroyed, raid_attacked, abandoned

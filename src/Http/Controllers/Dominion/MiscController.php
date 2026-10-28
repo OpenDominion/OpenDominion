@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,7 @@ use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
+use OpenDominion\Http\Requests\Dominion\TownCrierPreferencesRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -483,6 +485,7 @@ class MiscController extends AbstractDominionController
             $settings['hide_intel_for_sale_badge'] = $request->get('hide_intel_for_sale_badge');
             $settings['hide_council_badge'] = $request->get('hide_council_badge');
             $settings['hide_forum_badge'] = $request->get('hide_forum_badge');
+            $settings['hide_bot_attack_badge'] = $request->get('hide_bot_attack_badge');
             $settings['bottom_nav'] = $request->get('bottom_nav');
 
             $dominion->settings = $settings;
@@ -495,6 +498,30 @@ class MiscController extends AbstractDominionController
 
         $request->session()->flash('alert-success', 'Your settings have been updated!');
         return redirect()->route('dominion.misc.settings');
+    }
+
+    public function postTownCrierDefault(TownCrierPreferencesRequest $request, ?int $realmNumber = null): RedirectResponse
+    {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+        } catch (GameException $e) {
+            return redirect()->back()->withErrors([$e->getMessage()]);
+        }
+
+        $settings = $dominion->settings ?? [];
+        $settings['town_crier_default_type'] = $request->validated('type');
+
+        // Avoid save(), which recalculates networth and next-tick projections.
+        Dominion::query()->whereKey($dominion->id)->toBase()->update(['settings' => json_encode($settings)]);
+        $dominion->settings = $settings;
+
+        return redirect()->route('dominion.town-crier', [
+            'realmNumber' => $realmNumber,
+            'type' => $request->validated('type'),
+            'dominion' => $request->validated('dominion'),
+        ])->with('alert-success', 'Your default Town Crier filter has been updated!');
     }
 
     public function postGenerateApiKey(Request $request)
