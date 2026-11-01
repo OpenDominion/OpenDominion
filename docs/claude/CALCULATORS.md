@@ -49,7 +49,7 @@ Wonder combat mechanics.
 - `PRESTIGE_BASE_GAIN` = 25, `PRESTIGE_CONTRIBUTION_MULTIPLIER` = 50
 - `MIN_SPAWN_POWER` = 150000, `MAX_SPAWN_POWER` = 500000
 - Methods: `getCurrentPower()`, `getDamageDealt()`, `getCycloneDamage()`, `getPrestigeGainForDominion()`
-- Cyclone damage includes wonder-damage tech, Cyclone hero perks, neutral-wonder doubling, and the per-wonder power cap.
+- Cyclone damage includes wonder-damage tech, Cyclone hero perks, neutral-wonder doubling, and the per-wonder power cap. The tech/hero multiplier raises the cap as well as the damage; neutral-wonder doubling does not raise the cap.
 
 ### RaidCalculator
 Raid scoring, objectives, rewards, leaderboards.
