@@ -127,6 +127,10 @@ abstract class AbstractEffect implements Effect
     {
     }
 
+    public function beforeDamageCalculated(EffectInstance $instance, DamageContext $damage, Battle $battle): void
+    {
+    }
+
     public function onEvaded(EffectInstance $instance, DamageContext $damage, Battle $battle): void
     {
     }

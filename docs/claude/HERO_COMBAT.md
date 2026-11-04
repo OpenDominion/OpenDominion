@@ -126,6 +126,7 @@ state lives on the `EffectInstance` (stacks, remaining turns, `data`).
 | `forcedIntent` | the acting combatant's effects | telegraphed moves, charged attacks |
 | `beforeDamageDealt` | attacker's effects | add bonus damage / defend modifier (Crushing Blow, Backstab) |
 | `redirectDamage` | target's effects | Cover |
+| `beforeDamageCalculated` | target's effects, after any redirect | bonus damage against the holder (Marked) |
 | `onEvaded` | target's effects | Elusive sets `evadeMultiplier = 0`; Shadow Dance grants Focus |
 | `beforeDamageTaken` | target's effects | Shield absorbs (priority 10) |
 | `onLethalDamage` → bool | target's effects | Cling to Life (priority -10, after shields) |
@@ -141,7 +142,7 @@ by apply sequence. "Runs for X's effects" includes the team and field instances 
 
 ## Damage pipeline (`DamageResolver::resolve`)
 
-1. `beforeDamageDealt` (attacker), then `redirectDamage` (target)
+1. `beforeDamageDealt` (attacker), then `redirectDamage` (target), then `beforeDamageCalculated` (whoever is now the target)
 2. Raw damage: `flatDamage × multiplier × hits` if flat, else `max(0, power − defense) × multiplier × hits`, where
    - power = round((Attack (+ Counter if this is a counter-attack, otherwise + Focus × stacks if Focused) + bonusDamage) × powerMultiplier). `powerMultiplier` scales the whole attack value, Rally (a `bonusDamage`) included, before defense (Blade Flurry); `multiplier` scales what's left after defense (Whirlwind, Volatile Mixture)
    - defense = effective Defense (Defending doubles it via a +100% modifier) + `defendModifier` if Defending, or 0 with `ignoreDefense`
@@ -216,7 +217,7 @@ Focus never stacks for heroes (`Focused::maxStacks()` is 1). Channeling, the Sor
 | `spellbrand` | your Focused attack hits without being evaded → `marked` on the target |
 | `second_wind` | Recover → `invigorated` (+5 attack) on you, and on the ally you healed |
 
-`marked`: attacks (not counters) that get through deal +10 damage for 2 turns; runs before shields (`handlerPriority` 20) and does nothing to a fully blocked hit.
+`marked`: attacks (not counters) on the holder deal +10 damage for 2 turns. Like Backstab and Battle Fury it is bonus damage before defense (`DamageRequest::addBonus()` in `beforeDamageCalculated`), so Defend and evasion reduce it too. Bonuses added through `addBonus()` are named in the turn summary's breakdown, e.g. "(40 +10 Marked)".
 
 **Class Abilities**: `HeroClassLoadouts::SIGNATURES` maps each class to its signature, which is an ability or a technique (Healer's Mending, Sorcerer's Channeling and Farmer's Hardiness are techniques; a hero who equips one gives up a general technique). A hero can equip a signature once `getClassLevel()` reaches `HeroClassLoadouts::UNLOCK_CLASS_LEVEL` (5) in that class, active or not (inactive levels come from `class_data` experience). Each signature uses its class's icon; the loadout form shows the requirement (`HeroHelper::getLoadoutOptionRequirement()`). Abilities that aren't in `SIGNATURES` are open to every class at combat level `HeroLoadoutOptions::UNIVERSAL_ABILITY_LEVEL` (5): Blade Flurry (2 hits, each at 85% of the attack value before defense; one evasion roll; a Counter answers both hits) and Whirlwind (every enemy, 70% of normal damage after defense; each hit rolls evasion, can be Guarded and can be Countered). Both are not twice in a row. Blade Flurry is also used by the pirate enemies.
 
@@ -351,7 +352,7 @@ Everything that happens is a `BattleEvent`: `selected`, `damage`, `heal`, `effec
   Each visible debuff that lands (from `effect_applied` events: Exposed, Marked, Staggered, boss
   curses and the like) adds one Status line per combatant, naming its source when someone else
   applied it.
-  Within a phase the order is the resolution order.
+  Empty phases are left out, Defeats included. Within a phase the order is the resolution order.
 - `BattleView::turns()` builds the summaries from the viewer's side (allies blue, opponents red),
   rendered by `partials/dominion/hero-turn-summary` on the battle and report pages.
 

@@ -8,11 +8,10 @@ use OpenDominion\HeroCombat\Engine\CombatTag;
 use OpenDominion\HeroCombat\Engine\Damage\DamageContext;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
 use OpenDominion\HeroCombat\Engine\Effects\EffectKind;
-use OpenDominion\HeroCombat\Engine\Effects\Hook;
 
 /**
- * Attacks that get through deal extra damage to the holder, whoever makes them. Applied
- * after the turn's actions, so it lasts for the next TURNS turns.
+ * Attacks on the holder deal bonus damage, whoever makes them, added before defense like
+ * Backstab's. Applied after the turn's actions, so it lasts for the next TURNS turns.
  */
 class Marked extends AbstractEffect
 {
@@ -31,7 +30,7 @@ class Marked extends AbstractEffect
 
     public function description(EffectInstance $instance): string
     {
-        return 'Attacks that hit deal +' . self::BONUS_DAMAGE . ' damage.';
+        return 'Attacks deal +' . self::BONUS_DAMAGE . ' damage.';
     }
 
     public function kind(): EffectKind
@@ -44,21 +43,13 @@ class Marked extends AbstractEffect
         return self::TURNS + 1;
     }
 
-    /**
-     * Runs before shields so they absorb the bonus too.
-     */
-    public function handlerPriority(Hook $hook): int
-    {
-        return 20;
-    }
-
-    public function beforeDamageTaken(EffectInstance $instance, DamageContext $damage, Battle $battle): void
+    public function beforeDamageCalculated(EffectInstance $instance, DamageContext $damage, Battle $battle): void
     {
         $request = $damage->request;
-        if ($request->attacker === null || $request->isCounter || !$request->hasTag(CombatTag::Attack) || $damage->amount <= 0) {
+        if ($request->attacker === null || $request->isCounter || !$request->hasTag(CombatTag::Attack)) {
             return;
         }
 
-        $damage->amount += self::BONUS_DAMAGE;
+        $request->addBonus($this->name(), self::BONUS_DAMAGE);
     }
 }

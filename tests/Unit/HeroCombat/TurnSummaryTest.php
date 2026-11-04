@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\HeroCombat;
 
+use OpenDominion\HeroCombat\Content\Effects\Marked;
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\Events\BattleEvent;
 use OpenDominion\HeroCombat\Engine\Events\LogEntry;
@@ -84,6 +85,20 @@ class TurnSummaryTest extends TestCase
         $this->assertStringStartsWith('Foe', $lines[0]);
     }
 
+    public function testDamageLinesShowWhatMarkedAdded(): void
+    {
+        $battle = $this->duel();
+        $battle->effects->apply($this->named($battle, 'Foe'), 'marked');
+        $battle->evasionRoll = fn () => true;
+        $this->queue($battle, 'Hero', 'attack', 'Foe');
+        $this->queue($battle, 'Foe', 'focus');
+
+        $line = $this->phase($this->summarise($battle), 'damage')[0];
+
+        $this->assertStringContainsString('+' . Marked::BONUS_DAMAGE . ' ' . $battle->registry->effect('marked')->name(), $line);
+        $this->assertStringEndsWith((string) (int) round((20 + Marked::BONUS_DAMAGE) / 2), $line, 'The Mark is added before defense and halved with the rest');
+    }
+
     public function testPhasesFollowTheReadingOrder(): void
     {
         $battle = $this->duel();
@@ -93,9 +108,9 @@ class TurnSummaryTest extends TestCase
         $summary = $this->summarise($battle);
 
         $this->assertEquals(1, $summary['turn']);
-        $this->assertEquals(['actions', 'status', 'damage', 'healing', 'defeats'], array_column($summary['phases'], 'key'), 'Recovering leaves Foe Exposed');
+        $this->assertEquals(['actions', 'status', 'damage', 'healing'], array_column($summary['phases'], 'key'), 'Recovering leaves Foe Exposed; nobody is defeated');
         $this->assertEquals(['Hero: Attack → Foe', 'Foe: Recover'], $this->phase($summary, 'actions'));
-        $this->assertEquals(['Nobody is defeated'], $this->phase($summary, 'defeats'));
+        $this->assertSame([], $this->phase($summary, 'defeats'), 'No Defeats section when nobody falls');
     }
 
     public function testFocusedAttackOnADefenderShowsItsMaths(): void
@@ -243,7 +258,7 @@ class TurnSummaryTest extends TestCase
         $this->assertEquals(['Mira recovers +9 (Restoring)'], $this->phase($summary, 'healing'));
         $this->assertEquals(['Admiral Varos summons Deckhand'], $this->phase($summary, 'status'));
         $this->assertEquals(['Mira stands victorious.', 'Mira earns 25 experience'], $this->phase($summary, 'outcome'));
-        $this->assertEquals(['Nobody is defeated'], $this->phase($summary, 'defeats'));
+        $this->assertSame([], $this->phase($summary, 'defeats'), 'No Defeats section when nobody falls');
     }
 
     public function testScaledHitsBracketTheSubtraction(): void

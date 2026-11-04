@@ -29,9 +29,17 @@ final class DamageContext
     public bool $savedFromLethal = false;
 
     /**
+     * Changes effects made to the amount after evasion and before shields, in order, for the
+     * turn summary.
+     *
+     * @var array<int, array{label: string, amount: int}>
+     */
+    public array $adjustments = [];
+
+    /**
      * How the raw damage was reached, for the turn summary.
      *
-     * @var array{flat: int|null, attack: int, focus: int, counter_bonus: int, bonus: int, defense: int, defending: bool, multiplier: float, power_multiplier: float, hits: int}|array{}
+     * @var array{flat: int|null, attack: int, focus: int, counter_bonus: int, bonus: int, bonuses: array<string, int>, defense: int, defending: bool, multiplier: float, power_multiplier: float, hits: int}|array{}
      */
     public array $breakdown = [];
 
@@ -43,5 +51,16 @@ final class DamageContext
     public function attacker(): ?CombatantState
     {
         return $this->request->attacker;
+    }
+
+    /**
+     * Changes the amount and records why, so the turn summary can show the step.
+     */
+    public function adjust(string $label, int $amount): void
+    {
+        $this->amount += $amount;
+        if ($amount !== 0) {
+            $this->adjustments[] = ['label' => $label, 'amount' => $amount];
+        }
     }
 }

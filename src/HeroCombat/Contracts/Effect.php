@@ -89,6 +89,9 @@ interface Effect
 
     public function redirectDamage(EffectInstance $instance, DamageContext $damage, Battle $battle): void;
 
+    /** On the target's effects, once any redirect is settled and before defense is applied. */
+    public function beforeDamageCalculated(EffectInstance $instance, DamageContext $damage, Battle $battle): void;
+
     public function onEvaded(EffectInstance $instance, DamageContext $damage, Battle $battle): void;
 
     public function beforeDamageTaken(EffectInstance $instance, DamageContext $damage, Battle $battle): void;

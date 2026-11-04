@@ -83,10 +83,6 @@ class TurnSummary
             $lines['damage'][] = $line;
         }
 
-        if ($selected !== [] && $lines['defeats'] === []) {
-            $lines['defeats'][] = $this->line([$this->text('Nobody is defeated')], true);
-        }
-
         $phases = [];
         foreach (self::PHASES as $key => $label) {
             if ($lines[$key] !== []) {
@@ -168,10 +164,12 @@ class TurnSummary
         } elseif ($event['flat'] !== null) {
             $segments = [$this->text((string) $event['flat']), $this->math(' (ignores defense)' . $scaling)];
         } else {
+            $named = $event['bonuses'] ?? [];
             $parts = array_filter([
                 'focus' => $event['focus'],
                 'counter' => $event['counter_bonus'],
-                'bonus' => $event['bonus'],
+                ...$named,
+                'bonus' => $event['bonus'] - array_sum($named),
             ]);
             $powerMultiplier = (float) ($event['power_multiplier'] ?? 1);
             $power = (int) round(($event['attack'] + array_sum($parts)) * $powerMultiplier);
@@ -199,6 +197,9 @@ class TurnSummary
         $steps = [];
         if ($event['evaded']) {
             $steps[] = 'evaded, halved';
+        }
+        foreach ($event['adjustments'] ?? [] as $adjustment) {
+            $steps[] = ($adjustment['amount'] >= 0 ? '+' : '−') . abs($adjustment['amount']) . ' ' . $adjustment['label'];
         }
         if ($event['absorbed'] > 0) {
             $steps[] = "−{$event['absorbed']} shield";

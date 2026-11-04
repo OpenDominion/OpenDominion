@@ -231,7 +231,7 @@ class HeroBattlePagesTest extends AbstractTestCase
         $this->assertStringContainsString('<span class="turn-name-ally">Page Hero</span>: Defend', $content);
         $this->assertMatchesRegularExpression('/<span class="turn-name-enemy">[^<]+<\/span>: /', $content);
         $this->assertStringContainsString('<span class="turn-name-ally">Page Hero</span> takes a defensive stance.', $content);
-        $this->assertStringContainsString('<div class="turn-phase-name">Defeats</div>', $content);
+        $this->assertStringNotContainsString('<div class="turn-phase-name">Defeats</div>', $content, 'Nobody fell on turn 1');
     }
 
     /**

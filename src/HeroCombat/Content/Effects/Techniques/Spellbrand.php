@@ -26,14 +26,14 @@ class Spellbrand extends AbstractMarkingPassive
 
     public function description(EffectInstance $instance): string
     {
-        return 'A Focused attack that hits Marks the target: attacks that hit them deal +' . Marked::BONUS_DAMAGE . ' damage for ' . Marked::TURNS . ' turns.';
+        return 'A Focused attack that hits Marks the target: attacks on them deal +' . Marked::BONUS_DAMAGE . ' damage for ' . Marked::TURNS . ' turns.';
     }
 
     public function rulesNotes(): array
     {
         return [
             'Marked starts the turn after and lasts ' . Marked::TURNS . ' turns. Being Marked again starts the turns over; it doesn\'t stack.',
-            'The bonus is added to attacks that do damage after defense, from you or your ally.',
+            'The bonus is added before defense, like Backstab, to attacks from you or your ally.',
             'Counters don\'t get the bonus.',
             'An evaded attack doesn\'t Mark.',
         ];

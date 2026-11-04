@@ -13,6 +13,7 @@ enum Hook: string
     case ForcedIntent = 'forcedIntent';
     case BeforeDamageDealt = 'beforeDamageDealt';
     case RedirectDamage = 'redirectDamage';
+    case BeforeDamageCalculated = 'beforeDamageCalculated';
     case Evaded = 'onEvaded';
     case BeforeDamageTaken = 'beforeDamageTaken';
     case LethalDamage = 'onLethalDamage';

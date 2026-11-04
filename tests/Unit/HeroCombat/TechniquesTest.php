@@ -371,7 +371,7 @@ class TechniquesTest extends TestCase
         $this->assertEquals(20 + Marked::BONUS_DAMAGE, $this->damageTo($battle, 'Foe', fn () => $this->perform($battle, 'Ally', 'attack', 'Foe')));
 
         $this->declare($battle, 'Foe', 'defend');
-        $this->assertEquals(0, $this->damageTo($battle, 'Foe', fn () => $this->perform($battle, 'Hero', 'attack', 'Foe')), 'A fully blocked hit stays blocked');
+        $this->assertEquals(40 + Marked::BONUS_DAMAGE - 40, $this->damageTo($battle, 'Foe', fn () => $this->perform($battle, 'Hero', 'attack', 'Foe')), 'Added before defense, so Defend takes its share');
 
         $battle->effects->removeByKey($foe, 'defending');
         $counter = $battle->damage->counterAttack($this->named($battle, 'Hero'), $foe);

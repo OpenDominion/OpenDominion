@@ -67,7 +67,7 @@ class Backstab extends AbstractPassive
         }
 
         if (in_array($damage->target->id, $instance->data['focused'] ?? [], true)) {
-            $request->bonusDamage += self::BONUS_DAMAGE;
+            $request->addBonus($this->name(), self::BONUS_DAMAGE);
         }
     }
 }

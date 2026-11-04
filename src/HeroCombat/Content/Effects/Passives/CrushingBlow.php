@@ -32,7 +32,7 @@ class CrushingBlow extends AbstractPassive
             return;
         }
 
-        $damage->request->bonusDamage += self::BONUS_DAMAGE;
+        $damage->request->addBonus($this->name(), self::BONUS_DAMAGE);
         $damage->request->defendModifier += self::BONUS_DAMAGE;
     }
 }

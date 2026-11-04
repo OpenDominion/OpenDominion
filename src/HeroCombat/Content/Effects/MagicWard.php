@@ -52,6 +52,6 @@ class MagicWard extends AbstractEffect
             return;
         }
 
-        $damage->amount = (int) round($damage->amount * self::DAMAGE_TAKEN_MULTIPLIER);
+        $damage->adjust($this->name(), (int) round($damage->amount * self::DAMAGE_TAKEN_MULTIPLIER) - $damage->amount);
     }
 }

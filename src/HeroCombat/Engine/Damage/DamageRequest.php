@@ -38,6 +38,22 @@ final class DamageRequest
     ) {
     }
 
+    /**
+     * Named parts of bonusDamage added by effects, for the turn summary.
+     *
+     * @var array<string, int>
+     */
+    public array $bonusParts = [];
+
+    /**
+     * Adds bonus damage before defense, recording where it came from.
+     */
+    public function addBonus(string $label, int $amount): void
+    {
+        $this->bonusDamage += $amount;
+        $this->bonusParts[$label] = ($this->bonusParts[$label] ?? 0) + $amount;
+    }
+
     public function hasTag(CombatTag $tag): bool
     {
         return in_array($tag, $this->tags, true);

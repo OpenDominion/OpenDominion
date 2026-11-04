@@ -36,6 +36,7 @@ final class DamageResolver
 
         $this->battle->dispatcher->run(Hook::RedirectDamage, [$context->target], $context, $this->battle);
         $target = $context->target;
+        $this->battle->dispatcher->run(Hook::BeforeDamageCalculated, [$target], $context, $this->battle);
 
         $context->raw = $this->rawDamage($context);
         $context->amount = $context->raw;
@@ -150,6 +151,7 @@ final class DamageResolver
             'focus' => 0,
             'counter_bonus' => 0,
             'bonus' => $request->bonusDamage,
+            'bonuses' => $request->bonusParts,
             'defense' => 0,
             'defending' => false,
             'multiplier' => $request->multiplier,
@@ -223,6 +225,7 @@ final class DamageResolver
             'absorbed' => $context->absorbed,
             'counter' => $request->isCounter,
             'redirected_from' => $context->target !== $request->target ? $request->target->id : null,
+            'adjustments' => $context->adjustments,
         ] + $context->breakdown));
     }
 }

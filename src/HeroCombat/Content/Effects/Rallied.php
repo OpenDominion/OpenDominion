@@ -47,6 +47,6 @@ class Rallied extends AbstractEffect
             return;
         }
 
-        $request->bonusDamage += (int) ($instance->data['bonus'] ?? 0);
+        $request->addBonus('rally', (int) ($instance->data['bonus'] ?? 0));
     }
 }

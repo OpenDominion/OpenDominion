@@ -72,7 +72,7 @@ class BattleFury extends AbstractPassive
         }
 
         if ($this->furious($instance)) {
-            $request->bonusDamage += self::BONUS_DAMAGE;
+            $request->addBonus($this->name(), self::BONUS_DAMAGE);
         }
     }
 
