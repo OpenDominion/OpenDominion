@@ -345,33 +345,42 @@ body:not(.layout-top-nav) .app-header {
 }
 
 // Heroes
-// The primary button's hover background fading into the page's tertiary background.
-.hero-banner,
-.battle-bar {
+// The hero's identity card: white text on a primary gradient. Dark themes fade into the
+// page's tertiary background; light themes stay dark end to end so the text stays readable.
+// Themes tune it through the --hero-banner-* variables.
+.hero-banner {
   --hero-banner-from: var(--od-primary-dark, color-mix(in srgb, var(--bs-primary) 60%, black));
   --hero-banner-to: var(--bs-tertiary-bg);
+  --hero-banner-muted: rgba(255, 255, 255, .85);
+  --hero-banner-xp: rgba(255, 255, 255, .9);
 
-  border-radius: 6px;
-  color: #fff;
-  background: linear-gradient(100deg, var(--hero-banner-from) 0%, var(--hero-banner-to) 112.5%);
-}
-
-.hero-banner {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 14px 16px;
+  border-radius: 6px;
+  color: #fff;
+  background: linear-gradient(100deg, var(--hero-banner-from) 0%, var(--hero-banner-to) 112.5%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
 }
 
-[data-color-scheme="dusk"] :is(.hero-banner, .battle-bar) {
+[data-color-scheme="light"] .hero-banner {
+  --hero-banner-from: color-mix(in srgb, var(--bs-primary) 60%, black);
+  --hero-banner-to: color-mix(in srgb, var(--bs-primary) 85%, black);
+}
+
+[data-color-scheme="dusk"] .hero-banner {
   --hero-banner-from: var(--od-primary-bg);
 }
 
-// Light themes keep the banner dark enough for its white text.
-[data-color-scheme="frost"] :is(.hero-banner, .battle-bar),
-[data-color-scheme="parchment"] :is(.hero-banner, .battle-bar) {
+[data-color-scheme="frost"] .hero-banner,
+[data-color-scheme="parchment"] .hero-banner {
   --hero-banner-from: var(--od-primary);
   --hero-banner-to: var(--od-primary-dark);
+}
+
+[data-color-scheme="frost"] .hero-banner {
+  --hero-banner-muted: rgba(255, 255, 255, .9);
 }
 
 .hero-medallion {
@@ -405,7 +414,7 @@ body:not(.layout-top-nav) .app-header {
 
 .hero-subtitle {
   font-size: 17px;
-  color: rgba(255, 255, 255, .8);
+  color: rgba(255, 255, 255, .9);
 }
 
 .hero-xp-bar {
@@ -418,14 +427,14 @@ body:not(.layout-top-nav) .app-header {
 
   > div {
     height: 100%;
-    background: var(--bs-info);
+    background: var(--hero-banner-xp);
   }
 }
 
 .hero-xp-text {
   margin-top: 2px;
   font-size: 14px;
-  color: rgba(255, 255, 255, .7);
+  color: var(--hero-banner-muted);
 }
 
 .hero-section-head {
@@ -735,13 +744,26 @@ body:not(.layout-top-nav) .app-header {
   margin-bottom: 1rem;
 }
 
+// A primary-tinted status strip with a defined edge, using theme text colors.
+// Themes tune it through the --battle-bar-* variables below.
 .battle-bar {
+  --battle-bar-bg: color-mix(in srgb, var(--bs-primary) 12%, var(--bs-card-bg));
+  --battle-bar-border: color-mix(in srgb, var(--bs-primary) 35%, var(--bs-card-bg));
+  --battle-bar-accent: var(--bs-primary);
+  --battle-bar-muted: var(--bs-secondary-color);
+  --battle-bar-dot: var(--bs-warning-text-emphasis);
+
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 14px;
   margin-bottom: 14px;
   padding: 10px 14px;
+  border: 1px solid var(--battle-bar-border);
+  border-left: 4px solid var(--battle-bar-accent);
+  border-radius: 6px;
+  color: var(--bs-emphasis-color);
+  background: var(--battle-bar-bg);
 }
 
 .battle-bar-mode {
@@ -749,7 +771,7 @@ body:not(.layout-top-nav) .app-header {
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, .7);
+  color: var(--battle-bar-muted);
 }
 
 .battle-bar-title {
@@ -767,7 +789,7 @@ body:not(.layout-top-nav) .app-header {
 
   div {
     font-size: 13px;
-    color: rgba(255, 255, 255, .75);
+    color: var(--battle-bar-muted);
   }
 }
 
@@ -780,7 +802,7 @@ body:not(.layout-top-nav) .app-header {
 
 .battle-bar-status {
   font-size: 13px;
-  color: rgba(255, 255, 255, .8);
+  color: var(--battle-bar-muted);
 }
 
 .battle-bar-dot {
@@ -789,7 +811,38 @@ body:not(.layout-top-nav) .app-header {
   height: 8px;
   margin-right: 5px;
   border-radius: 50%;
-  background: var(--bs-warning);
+  background: var(--battle-bar-dot);
+}
+
+// Dark themes mix their primary into the deep background rather than the card,
+// so the fill stays saturated, with a single-color edge and tinted muted text.
+[data-color-scheme="classic"] .battle-bar {
+  --battle-bar-bg: color-mix(in srgb, var(--od-primary) 60%, var(--od-deep));
+  --battle-bar-border: color-mix(in srgb, #2a9d8f 45%, var(--bs-card-bg));
+  --battle-bar-accent: var(--battle-bar-border);
+  --battle-bar-muted: #8fc7d1;
+}
+
+[data-color-scheme="dusk"] .battle-bar {
+  --battle-bar-bg: color-mix(in srgb, var(--od-primary-bg) 60%, var(--od-deep));
+  --battle-bar-border: color-mix(in srgb, var(--od-primary) 45%, var(--bs-card-bg));
+  --battle-bar-accent: var(--battle-bar-border);
+  --battle-bar-muted: var(--od-primary-light);
+  --battle-bar-dot: var(--od-warning);
+}
+
+[data-color-scheme="grimoire"] .battle-bar {
+  --battle-bar-bg: color-mix(in srgb, var(--od-primary-dark) 60%, var(--od-deep));
+  --battle-bar-border: color-mix(in srgb, var(--od-primary) 45%, var(--bs-card-bg));
+  --battle-bar-accent: var(--battle-bar-border);
+  --battle-bar-muted: #d8c89a;
+  --battle-bar-dot: var(--od-warning);
+}
+
+// Light themes keep the default light tint and primary strip, with their own warning color.
+[data-color-scheme="frost"] .battle-bar,
+[data-color-scheme="parchment"] .battle-bar {
+  --battle-bar-dot: var(--od-warning);
 }
 
 .battle-layout {
