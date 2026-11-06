@@ -25,11 +25,6 @@ class GrandMagisterEncounter extends AbstractEncounter
         return 'Raid (The Reckoning)';
     }
 
-    public function maxPartySize(): int
-    {
-        return 2;
-    }
-
     public function roster(EncounterContext $context): array
     {
         return [

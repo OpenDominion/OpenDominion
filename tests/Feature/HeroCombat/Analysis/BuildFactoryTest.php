@@ -65,10 +65,10 @@ class BuildFactoryTest extends AbstractTestCase
         $this->assertEquals($basic['evasion'], $geared['evasion'], '-10 and +10');
     }
 
-    public function testRejectsASecondPieceOfGearBeforeLevelTwelve(): void
+    public function testRejectsASecondPieceOfGearBeforeLevelSeven(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->factory()->parse('level=11;gear=greatsword,hooded_cloak');
+        $this->factory()->parse('level=6;gear=greatsword,hooded_cloak');
     }
 
     public function testRejectsGearThatTakesEvasionBelowZero(): void
@@ -143,8 +143,8 @@ class BuildFactoryTest extends AbstractTestCase
         $this->assertCount(5, $this->factory()->optionsOfType('technique', level: 3));
         $this->assertCount(4, $this->factory()->optionsOfType('technique', level: 7));
         $this->assertCount(8, $this->factory()->optionsOfType('ability'));
-        $this->assertCount(0, $this->factory()->optionsOfType('gear', 7));
-        $this->assertCount(6, $this->factory()->optionsOfType('gear', 9));
+        $this->assertCount(0, $this->factory()->optionsOfType('gear', 2));
+        $this->assertCount(6, $this->factory()->optionsOfType('gear', 3));
     }
 
     public function testSimulateCommandReportsAMatchup(): void

@@ -20,7 +20,7 @@ final class IntentDecider
             return $forced->withActor($combatant->id);
         }
 
-        if ($combatant->isHuman() && count($combatant->queue) > 0) {
+        if ($combatant->isPiloted() && count($combatant->queue) > 0) {
             $queued = array_shift($combatant->queue);
             if ($this->validator->canPerform($combatant, $queued['ability'])) {
                 return new Intent($combatant->id, $queued['ability'], $queued['target'] ?? null, Intent::SOURCE_QUEUE);

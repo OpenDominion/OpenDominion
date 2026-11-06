@@ -11,6 +11,7 @@ use OpenDominion\Models\UserFeedback;
 use OpenDominion\Services\Dominion\API\DefenseCalculationService;
 use OpenDominion\Services\Dominion\API\InvadeCalculationService;
 use OpenDominion\Services\Dominion\API\OffenseCalculationService;
+use OpenDominion\Services\Dominion\HeroBattleService;
 
 class APIController extends AbstractDominionController
 {
@@ -34,6 +35,14 @@ class APIController extends AbstractDominionController
         }
 
         return $result;
+    }
+
+    /**
+     * What the hero battles page polls to know when to reload.
+     */
+    public function heroBattleStatus(): array
+    {
+        return app(HeroBattleService::class)->battleStatus($this->getSelectedDominion());
     }
 
     public function calculateDefense(InvadeCalculationRequest $request): array

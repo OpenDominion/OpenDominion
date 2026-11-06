@@ -17,10 +17,12 @@ use OpenDominion\Models\Round;
 use OpenDominion\Notifications\WebNotification;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\Traits\EnablesFullHeroProgression;
 
 class HeroLoadoutTest extends AbstractBrowserKitTestCase
 {
     use DatabaseTransactions;
+    use EnablesFullHeroProgression;
 
     protected Round $round;
 
@@ -31,6 +33,7 @@ class HeroLoadoutTest extends AbstractBrowserKitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->enableFullHeroProgression();
 
         $this->round = $this->createRound('-3 days midnight');
         $this->heroActionService = $this->app->make(HeroActionService::class);
@@ -87,10 +90,10 @@ class HeroLoadoutTest extends AbstractBrowserKitTestCase
         $this->assertContains('riposte', $levelSeven);
     }
 
-    public function testGearOpensAtLevelNine(): void
+    public function testGearOpensAtLevelThree(): void
     {
-        $this->assertSame([], $this->availableKeys($this->dominionWithHero(4250)->hero, LoadoutSlot::Gear), 'Level 8');
-        $this->assertCount(6, $this->availableKeys($this->dominionWithHero(5000)->hero, LoadoutSlot::Gear));
+        $this->assertSame([], $this->availableKeys($this->dominionWithHero(700)->hero, LoadoutSlot::Gear), 'Level 2');
+        $this->assertCount(6, $this->availableKeys($this->dominionWithHero(1200)->hero, LoadoutSlot::Gear));
     }
 
     public function testClassAbilitiesOpenAtClassLevelFiveWithoutAHeroLevelRequirement(): void
@@ -224,18 +227,18 @@ class HeroLoadoutTest extends AbstractBrowserKitTestCase
         $this->heroActionService->updateLoadout($dominion, null, null, ['greatsword', 'swordbreaker', 'hooded_cloak']);
     }
 
-    public function testTheSecondPieceOfGearOpensAtLevelTwelve(): void
+    public function testTheSecondPieceOfGearOpensAtLevelSeven(): void
     {
-        $dominion = $this->dominionWithHero(7500); // Level 11
+        $dominion = $this->dominionWithHero(2900); // Level 6
 
         try {
             $this->heroActionService->updateLoadout($dominion, null, null, ['greatsword', 'hooded_cloak']);
-            $this->fail('A level 11 hero brings one piece of gear');
+            $this->fail('A level 6 hero brings one piece of gear');
         } catch (GameException) {
             $this->assertNull($dominion->hero->fresh()->loadout);
         }
 
-        $dominion->hero->update(['experience' => 10000]);
+        $dominion->hero->update(['experience' => 3500]);
         $this->heroActionService->updateLoadout($dominion->refresh(), null, null, ['greatsword', 'hooded_cloak']);
         $this->assertEquals(['greatsword', 'hooded_cloak'], $this->equippedKeys($dominion->hero->fresh(), LoadoutSlot::Gear));
     }
@@ -289,13 +292,13 @@ class HeroLoadoutTest extends AbstractBrowserKitTestCase
 
     public function testStoredOptionsTheHeroCannotUseAreIgnored(): void
     {
-        $hero = $this->dominionWithHero(1200)->hero;
+        $hero = $this->dominionWithHero(700)->hero;
         $hero->loadout = ['technique' => 'overpower', 'ability' => 'hardiness', 'gear' => ['greatsword']];
 
         $this->assertSame([], $this->equippedKeys($hero, LoadoutSlot::Technique));
         $this->assertSame([], $this->equippedKeys($hero, LoadoutSlot::Ability));
         $this->assertSame([], $this->equippedKeys($hero, LoadoutSlot::Gear));
-        $this->assertEquals($this->heroCalculator->getBaseCombatStats(3), $this->heroCalculator->getHeroCombatStats($hero));
+        $this->assertEquals($this->heroCalculator->getBaseCombatStats(2), $this->heroCalculator->getHeroCombatStats($hero));
     }
 
     public function testBothPiecesOfGearChangeCombatStats(): void
@@ -316,21 +319,20 @@ class HeroLoadoutTest extends AbstractBrowserKitTestCase
     {
         $this->assertEquals(0, $this->heroCalculator->getEmptyLoadoutSlotCount(null));
         $this->assertEquals(0, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(700)->hero), 'Level 2');
-        $this->assertEquals(1, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(1200)->hero), 'Level 3: technique');
-        $this->assertEquals(2, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(2300)->hero), 'Level 5: technique, ability');
-        $this->assertEquals(3, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(5000)->hero), 'Level 9: technique, ability, one gear');
-        $this->assertEquals(4, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(10000)->hero), 'Level 12: everything');
+        $this->assertEquals(2, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(1200)->hero), 'Level 3: technique, one gear');
+        $this->assertEquals(3, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(2300)->hero), 'Level 5: technique, ability, one gear');
+        $this->assertEquals(4, $this->heroCalculator->getEmptyLoadoutSlotCount($this->dominionWithHero(3500)->hero), 'Level 7: everything');
     }
 
     public function testFillingSlotsReducesTheEmptySlotCount(): void
     {
-        $hero = $this->dominionWithHero(5000)->hero;
+        $hero = $this->dominionWithHero(2300)->hero;
 
         $hero->loadout = ['technique' => 'backstab', 'gear' => ['greatsword']];
         $this->assertEquals(1, $this->heroCalculator->getEmptyLoadoutSlotCount($hero));
 
         $hero->loadout = ['technique' => 'backstab', 'ability' => 'forge', 'gear' => ['greatsword']];
-        $this->assertEquals(0, $this->heroCalculator->getEmptyLoadoutSlotCount($hero), 'One gear slot at level 9');
+        $this->assertEquals(0, $this->heroCalculator->getEmptyLoadoutSlotCount($hero), 'One gear slot at level 5');
     }
 
     public function testNewLoadoutSlotsFollowEachRequirement(): void
@@ -338,16 +340,16 @@ class HeroLoadoutTest extends AbstractBrowserKitTestCase
         $hero = $this->dominionWithHero(5000)->hero;
 
         $hero->experience = 1200;
-        $this->assertEquals(['technique'], $this->heroCalculator->getNewLoadoutSlots($hero, 700));
+        $this->assertEquals(['technique', 'gear'], $this->heroCalculator->getNewLoadoutSlots($hero, 700));
 
         $hero->experience = 2300;
         $this->assertEquals(['ability'], $this->heroCalculator->getNewLoadoutSlots($hero, 1750));
 
         $hero->experience = 3500;
-        $this->assertEquals(['technique'], $this->heroCalculator->getNewLoadoutSlots($hero, 2900));
+        $this->assertEquals(['technique', 'gear'], $this->heroCalculator->getNewLoadoutSlots($hero, 2900), 'Technique II and the second gear slot');
 
         $hero->experience = 5000;
-        $this->assertEquals(['gear'], $this->heroCalculator->getNewLoadoutSlots($hero, 4250));
+        $this->assertSame([], $this->heroCalculator->getNewLoadoutSlots($hero, 4250));
 
         $hero->experience = 1750;
         $this->assertSame([], $this->heroCalculator->getNewLoadoutSlots($hero, 1200));
@@ -373,8 +375,8 @@ class HeroLoadoutTest extends AbstractBrowserKitTestCase
         Notification::assertSentTo($dominion, WebNotification::class, function (WebNotification $notification) use ($dominion) {
             $data = $notification->toArray($dominion);
 
-            return $data['data']['unlocks'] === ['technique']
-                && $data['message'] === 'Your hero reached level 3. New techniques available for your combat loadout.';
+            return $data['data']['unlocks'] === ['technique', 'gear']
+                && $data['message'] === 'Your hero reached level 3. New techniques and gear available for your combat loadout.';
         });
     }
 

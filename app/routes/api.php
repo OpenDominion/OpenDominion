@@ -17,6 +17,7 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
 
     $router->group(['prefix' => 'dominion', 'middleware' => ['api', 'auth', 'dominionselected'], 'as' => 'dominion.'], static function (Router $router) {
         $router->get('invasion')->uses('Dominion\APIController@calculateInvasion')->name('invasion');
+        $router->get('hero-battles/status')->uses('Dominion\APIController@heroBattleStatus')->name('hero-battles.status')->middleware('throttle:30,1');
     });
 
     $router->group(['prefix' => 'calculator', 'middleware' => ['api', 'auth'], 'as' => 'calculator.'], static function (Router $router) {

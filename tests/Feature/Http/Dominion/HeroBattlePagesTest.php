@@ -11,10 +11,18 @@ use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Tests\AbstractTestCase;
+use OpenDominion\Tests\Traits\EnablesFullHeroProgression;
 
 class HeroBattlePagesTest extends AbstractTestCase
 {
     use DatabaseTransactions;
+    use EnablesFullHeroProgression;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->enableFullHeroProgression();
+    }
 
     protected function heroDominion(): Dominion
     {
@@ -161,7 +169,7 @@ class HeroBattlePagesTest extends AbstractTestCase
         $this->get(route('dominion.heroes.battles'))
             ->assertOk()
             ->assertSee('Queue turn 1')
-            ->assertSee('Waiting for Ally Hero')
+            ->assertSee('data-waiting-on-you', false)
             ->assertSee('Guard Ally Hero')
             ->assertSee('Heal Ally Hero');
 
@@ -172,6 +180,8 @@ class HeroBattlePagesTest extends AbstractTestCase
             ->assertOk()
             ->assertSee('Queue turn 2')
             ->assertSee('Queued:')
+            ->assertSee('Waiting for Ally Hero')
+            ->assertDontSee('data-waiting-on-you', false)
             ->assertSeeInOrder(['Plan', 'T1', 'Defend']);
     }
 
@@ -293,8 +303,8 @@ class HeroBattlePagesTest extends AbstractTestCase
         $this->assertStringContainsString('Backstab', $sections['heroBattle']);
         $this->assertStringContainsString('against a target that was Focused at the start of the turn', $sections['heroBattle']);
         $this->assertStringContainsString('<a href="#hero-loadout" class="hero-tile hero-tile-open" data-loadout-slot="ability">', $sections['heroBattle']);
-        $this->assertSame(1, substr_count($sections['heroBattle'], 'Reach level 9'), 'The first gear slot is locked');
-        $this->assertSame(1, substr_count($sections['heroBattle'], 'Reach level 12'), 'The second gear slot opens later');
+        $this->assertStringContainsString('<a href="#hero-loadout" class="hero-tile hero-tile-open" data-loadout-slot="gear">', $sections['heroBattle'], 'The first gear slot is open');
+        $this->assertSame(1, substr_count($sections['heroBattle'], 'Reach level 7'), 'The second gear slot opens later');
         $this->assertStringNotContainsString('Choose upgrade', $sections['heroBattle']);
     }
 
@@ -423,9 +433,8 @@ class HeroBattlePagesTest extends AbstractTestCase
 
         $this->assertMatchesRegularExpression('/id="loadout_backstab"\s+value="backstab"\s+checked/', $content);
         $this->assertMatchesRegularExpression('/id="loadout_riposte"\s+value="riposte"\s+disabled data-locked/', $content);
-        $this->assertMatchesRegularExpression('/name="gear\[\]"\s+id="loadout_greatsword"\s+value="greatsword"\s+disabled data-locked/', $content);
+        $this->assertMatchesRegularExpression('/name="gear\[\]"\s+id="loadout_greatsword"\s+value="greatsword"\s*>/', $content);
         $this->assertStringContainsString('<small class="text-muted">Requires level 7</small>', $content);
-        $this->assertStringContainsString('<small class="text-muted">Requires level 9</small>', $content);
     }
 
     public function testClassOptionsKeepTheirRequirementOnceMet(): void
@@ -451,7 +460,7 @@ class HeroBattlePagesTest extends AbstractTestCase
 
         $this->assertSame(3, preg_match_all('/<tr class="hero-loadout-option[^"]*" data-slot="ability" data-available>/', $content), 'The Blacksmith signature, Blade Flurry and Whirlwind');
         $this->assertSame(5, preg_match_all('/<tr class="hero-loadout-option[^"]*" data-slot="technique" data-available>/', $content), 'Technique I only');
-        $this->assertSame(0, preg_match_all('/<tr class="hero-loadout-option[^"]*" data-slot="gear" data-available>/', $content));
+        $this->assertSame(6, preg_match_all('/<tr class="hero-loadout-option[^"]*" data-slot="gear" data-available>/', $content));
         $this->assertStringContainsString(".hero-loadout-option[data-available][data-slot=", $content);
     }
 
@@ -490,9 +499,9 @@ class HeroBattlePagesTest extends AbstractTestCase
         $dominion->hero->update(['experience' => 1200]);
 
         $this->assertMatchesRegularExpression(
-            '/Heroes\s*<span class="badge text-bg-primary">3<\/span>/',
+            '/Heroes\s*<span class="badge text-bg-primary">4<\/span>/',
             $this->get(route('dominion.heroes'))->assertOk()->getContent(),
-            'Doctrine, level 2 upgrade and the technique slot'
+            'Doctrine, level 2 upgrade, the technique slot and the first gear slot'
         );
     }
 
@@ -502,7 +511,7 @@ class HeroBattlePagesTest extends AbstractTestCase
         $dominion->hero->update(['experience' => 1200, 'loadout' => ['technique' => 'backstab']]);
 
         $this->assertMatchesRegularExpression(
-            '/Heroes\s*<span class="badge text-bg-primary">2<\/span>/',
+            '/Heroes\s*<span class="badge text-bg-primary">3<\/span>/',
             $this->get(route('dominion.heroes'))->assertOk()->getContent()
         );
     }

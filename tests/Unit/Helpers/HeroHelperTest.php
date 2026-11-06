@@ -7,15 +7,19 @@ use OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot;
 use OpenDominion\HeroCombat\Registry\CombatRegistry;
 use OpenDominion\Models\Hero;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\Traits\EnablesFullHeroProgression;
 
 class HeroHelperTest extends AbstractBrowserKitTestCase
 {
+    use EnablesFullHeroProgression;
+
     /** @var HeroHelper */
     protected $heroHelper;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->enableFullHeroProgression();
 
         $this->heroHelper = $this->app->make(HeroHelper::class);
     }
@@ -100,6 +104,6 @@ class HeroHelperTest extends AbstractBrowserKitTestCase
     {
         $this->assertEquals('Reach level 3', $this->heroHelper->getLoadoutSlotRequirement(LoadoutSlot::Technique));
         $this->assertEquals('Reach level 5', $this->heroHelper->getLoadoutSlotRequirement(LoadoutSlot::Ability));
-        $this->assertEquals('Reach level 9', $this->heroHelper->getLoadoutSlotRequirement(LoadoutSlot::Gear));
+        $this->assertEquals('Reach level 3', $this->heroHelper->getLoadoutSlotRequirement(LoadoutSlot::Gear));
     }
 }

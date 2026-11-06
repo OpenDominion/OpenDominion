@@ -16,6 +16,9 @@ class CombatantFactory
     public const DEFAULT_TIME_BANK = 2 * 60 * 60;
     public const DEFAULT_STRATEGY = 'balanced';
 
+    /** Template key of the ally each side gets in a 2v2 PvP battle. */
+    public const ALLY_TEMPLATE = 'sellsword';
+
     public function __construct(
         protected HeroCalculator $heroCalculator,
         protected HeroClassLoadouts $loadouts,
@@ -54,6 +57,34 @@ class CombatantFactory
                 $battle->effects->apply($combatant, $key);
             }
         }
+
+        return $combatant;
+    }
+
+    /**
+     * A templated ally for a 2v2 PvP battle: base stats at the given level, basic abilities
+     * only and no loadout, piloted by the dominion alongside its own hero. Both sides get an
+     * identical one, and it earns nothing: it has no hero.
+     */
+    public function addAlly(Battle $battle, int $team, int $level, int $controllerDominionId, string $name): CombatantState
+    {
+        $stats = $this->heroCalculator->getBaseCombatStats($level);
+
+        $combatant = new CombatantState(
+            id: 0,
+            name: $name,
+            team: $team,
+            baseStats: $stats,
+            currentHealth: $stats['health'],
+            abilities: HeroClassLoadouts::BASIC_ABILITIES,
+            ai: self::DEFAULT_STRATEGY,
+            templateKey: self::ALLY_TEMPLATE,
+        );
+        $combatant->timeBank = self::DEFAULT_TIME_BANK;
+        $combatant->controllerDominionId = $controllerDominionId;
+
+        $combatant->id = $battle->spawner->spawn($battle->state, $combatant);
+        $battle->state->addCombatant($combatant);
 
         return $combatant;
     }

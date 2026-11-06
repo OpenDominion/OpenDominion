@@ -81,9 +81,12 @@ class HeroCombatant extends AbstractModel
         return $this->controller_dominion_id === $dominion->id;
     }
 
-    public function isHuman(): bool
+    /**
+     * Whether a player chooses this combatant's actions (see CombatantState::isPiloted()).
+     */
+    public function isPiloted(): bool
     {
-        return $this->hero_id !== null;
+        return $this->hero_id !== null || $this->controller_dominion_id !== null;
     }
 
     public function isReady()

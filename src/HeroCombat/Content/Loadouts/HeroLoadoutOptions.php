@@ -13,8 +13,8 @@ class HeroLoadoutOptions
     public const TECHNIQUE_I_LEVEL = 3;
     public const UNIVERSAL_ABILITY_LEVEL = 5;
     public const TECHNIQUE_II_LEVEL = 7;
-    public const GEAR_LEVEL = 9;
-    public const SECOND_GEAR_LEVEL = 12;
+    public const GEAR_LEVEL = 3;
+    public const SECOND_GEAR_LEVEL = 7;
 
     /**
      * @return LoadoutOption[]

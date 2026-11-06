@@ -538,6 +538,10 @@ class HeroCalculator
         return array_filter(
             app(CombatRegistry::class)->loadoutOptions($slot),
             function (LoadoutOption $option) use ($hero, $combatLevel, $loadouts) {
+                if (!$this->isLoadoutSlotEnabled($option->slot)) {
+                    return false;
+                }
+
                 $requiredClass = $loadouts->classFor($option->key);
                 $level = $requiredClass === null ? $combatLevel : $this->getClassLevel($hero, $requiredClass);
 
@@ -551,7 +555,20 @@ class HeroCalculator
      */
     public function getLoadoutSlotCapacity(Hero $hero, LoadoutSlot $slot): int
     {
+        if (!$this->isLoadoutSlotEnabled($slot)) {
+            return 0;
+        }
+
         return $slot->capacityAt($this->getCombatLevel($hero));
+    }
+
+    /**
+     * Whether heroes can equip this kind of option yet (config `heroes.loadout_slots`).
+     * Disabled slots are shown as coming soon and nothing in them reaches a battle.
+     */
+    public function isLoadoutSlotEnabled(LoadoutSlot $slot): bool
+    {
+        return in_array($slot->value, config('heroes.loadout_slots', []), true);
     }
 
     /**
@@ -642,8 +659,9 @@ class HeroCalculator
     }
 
     /**
-     * Slot values with options the hero can equip now but couldn't at the given experience.
-     * Compares options rather than levels because class abilities depend on class level.
+     * Slot values with options the hero can equip now but couldn't at the given experience,
+     * or with room for more of them (the second gear slot). Compares options rather than
+     * levels because class abilities depend on class level.
      *
      * @return string[]
      */
@@ -656,8 +674,18 @@ class HeroCalculator
             $this->getAvailableLoadoutOptions($hero),
             $this->getAvailableLoadoutOptions($previousHero)
         );
+        $newSlots = array_map(fn (LoadoutOption $option) => $option->slot, $newOptions);
 
-        return array_values(array_unique(array_map(fn (LoadoutOption $option) => $option->slot->value, $newOptions)));
+        foreach (LoadoutSlot::cases() as $slot) {
+            if ($this->getLoadoutSlotCapacity($hero, $slot) > $this->getLoadoutSlotCapacity($previousHero, $slot)) {
+                $newSlots[] = $slot;
+            }
+        }
+
+        return array_values(array_map(
+            fn (LoadoutSlot $slot) => $slot->value,
+            array_filter(LoadoutSlot::cases(), fn (LoadoutSlot $slot) => in_array($slot, $newSlots, true))
+        ));
     }
 
     public function calculateRatingChange(float $currentRating, float $opponentRating, float $result): int

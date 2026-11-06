@@ -78,7 +78,7 @@ class BattleView
         }
 
         foreach ($this->battle->living() as $combatant) {
-            if ($combatant->isHuman() && !$this->isControlled($combatant)) {
+            if ($combatant->isPiloted() && !$this->isControlled($combatant)) {
                 return true;
             }
         }
@@ -98,11 +98,27 @@ class BattleView
     }
 
     /**
-     * A combatant the viewer pilots but does not own.
+     * A realmmate's hero the viewer pilots.
      */
     public function isBorrowed(CombatantState $combatant): bool
     {
-        return $this->isControlled($combatant) && $this->viewer !== null && $combatant->dominionId !== $this->viewer->dominionId;
+        return $this->isControlled($combatant) && $combatant->isHero() && $this->viewer !== null && $combatant->dominionId !== $this->viewer->dominionId;
+    }
+
+    /**
+     * A templated ally piloted alongside a hero (2v2 PvP), whoever pilots it.
+     */
+    public function isAlly(CombatantState $combatant): bool
+    {
+        return $combatant->isPiloted() && !$combatant->isHero();
+    }
+
+    /**
+     * Whether the combatant is the viewer's own hero.
+     */
+    protected function isOwnHero(CombatantState $combatant): bool
+    {
+        return $this->isControlled($combatant) && !$this->isBorrowed($combatant) && !$this->isAlly($combatant);
     }
 
     /**
@@ -117,7 +133,7 @@ class BattleView
         }
 
         $living = array_values(array_filter($this->controlled, fn (CombatantState $c) => $c->isAlive()));
-        usort($living, fn (CombatantState $a, CombatantState $b) => [$this->isBorrowed($a), $a->id] <=> [$this->isBorrowed($b), $b->id]);
+        usort($living, fn (CombatantState $a, CombatantState $b) => [!$this->isOwnHero($a), $a->id] <=> [!$this->isOwnHero($b), $b->id]);
 
         return $living;
     }
@@ -350,6 +366,25 @@ class BattleView
     }
 
     /**
+     * Whether the turn is waiting on the viewer: a living combatant they pilot has no order
+     * and isn't automated. The page doesn't poll in this state, so it says so.
+     */
+    public function isWaitingOnYou(): bool
+    {
+        if ($this->model->finished) {
+            return false;
+        }
+
+        foreach ($this->controlled as $combatant) {
+            if ($combatant->isAlive() && !$combatant->isReady()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Living humans the viewer does not pilot who have yet to choose this turn.
      *
      * @return string[]
@@ -358,7 +393,7 @@ class BattleView
     {
         return array_values(array_map(
             fn (CombatantState $c) => $c->name,
-            array_filter($this->battle->living(), fn (CombatantState $c) => $c->isHuman() && !$this->isControlled($c) && !$c->isReady()),
+            array_filter($this->battle->living(), fn (CombatantState $c) => $c->isPiloted() && !$this->isControlled($c) && !$c->isReady()),
         ));
     }
 
@@ -436,13 +471,17 @@ class BattleView
     }
 
     /**
-     * A hero's class icon, else a generic one for enemies.
+     * A hero's class icon, a helmet for templated allies, else a generic one for enemies.
      */
     public function icon(CombatantState $combatant): string
     {
         $class = $this->model($combatant)?->hero?->class;
 
-        return $class !== null ? app(HeroHelper::class)->getClassIcon($class) : 'ra-monster-skull';
+        if ($class !== null) {
+            return app(HeroHelper::class)->getClassIcon($class);
+        }
+
+        return $this->isAlly($combatant) ? 'ra-helmet' : 'ra-monster-skull';
     }
 
     public function abilityIcon(string $key): string
@@ -464,7 +503,7 @@ class BattleView
             $combatants[$combatant->id] = [
                 'name' => $combatant->name,
                 'side' => $combatant->team === $allyTeam ? 'ally' : 'enemy',
-                'human' => $combatant->isHuman(),
+                'human' => $combatant->isPiloted(),
             ];
         }
 

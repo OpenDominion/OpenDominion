@@ -2,10 +2,13 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use OpenDominion\Calculators\Dominion\HeroCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\HeroCombat\Content\Loadouts\HeroClassLoadouts;
+use OpenDominion\HeroCombat\Contracts\Encounter;
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\BattleEngine;
 use OpenDominion\HeroCombat\Engine\BattleState;
@@ -14,12 +17,11 @@ use OpenDominion\HeroCombat\Engine\Random\SeededRandomSource;
 use OpenDominion\HeroCombat\Persistence\BattleRepository;
 use OpenDominion\HeroCombat\Persistence\CombatantFactory;
 use OpenDominion\HeroCombat\Registry\CombatRegistry;
-use Illuminate\Support\Collection;
-use OpenDominion\HeroCombat\Contracts\Encounter;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
 use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroBattleQueue;
+use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\NotificationService;
@@ -45,10 +47,16 @@ class HeroBattleService
     ) {
     }
 
+    public const QUEUE_SIZES = [1, 2];
+
+    /** Queue entries older than this are dropped. */
+    public const QUEUE_EXPIRY_HOURS = 1;
+
     /**
-     * A 1v1 PvP battle.
+     * A PvP battle between two dominions: 1v1, or 2v2 where each hero brings an identical
+     * templated ally its dominion pilots.
      */
-    public function createBattle(Dominion $challenger, Dominion $opponent): HeroBattle
+    public function createBattle(Dominion $challenger, Dominion $opponent, int $teamSize = 1): HeroBattle
     {
         if ($challenger->round_id !== $opponent->round_id) {
             throw new GameException('You cannot challenge a dominion in a different round');
@@ -66,25 +74,40 @@ class HeroBattleService
             throw new GameException('Opponent must have a hero to battle');
         }
 
-        return $this->createTeamBattle([[$challenger], [$opponent]]);
+        if (!in_array($teamSize, self::QUEUE_SIZES, true)) {
+            throw new GameException('Invalid battle size');
+        }
+
+        return $this->createTeamBattle([[$challenger], [$opponent]], withAllies: $teamSize === 2);
     }
 
     /**
-     * A PvP battle between teams of dominions; team numbers follow array order.
+     * A PvP battle between teams of dominions; team numbers follow array order. With allies,
+     * each dominion also pilots a templated ally at the lowest combat level among the heroes,
+     * so every ally in the battle is identical.
      *
      * @param array<int, Dominion[]> $teams
      */
-    public function createTeamBattle(array $teams): HeroBattle
+    public function createTeamBattle(array $teams, bool $withAllies = false): HeroBattle
     {
         $dominions = array_merge(...$teams);
 
-        $heroBattle = DB::transaction(function () use ($teams, $dominions) {
+        $heroBattle = DB::transaction(function () use ($teams, $dominions, $withAllies) {
             $heroBattle = $this->newBattle($dominions[0]->round_id, BattleState::MODE_PVP);
             $battle = $this->repository->load($heroBattle);
 
             foreach (array_values($teams) as $index => $members) {
                 foreach ($members as $dominion) {
                     $this->combatantFactory->addHero($battle, $dominion->hero, $index + 1);
+                }
+            }
+
+            if ($withAllies) {
+                $allyLevel = min(array_map(fn (Dominion $dominion) => $this->heroCalculator->getCombatLevel($dominion->hero), $dominions));
+                foreach (array_values($teams) as $index => $members) {
+                    foreach ($members as $dominion) {
+                        $this->combatantFactory->addAlly($battle, $index + 1, $allyLevel, $dominion->id, "{$dominion->hero->name}'s Sellsword");
+                    }
                 }
             }
 
@@ -184,9 +207,17 @@ class HeroBattleService
         });
     }
 
-    public function joinQueue(Dominion $dominion): ?HeroBattle
+    /**
+     * Joins the 1v1 or 2v2 queue, or starts a battle against a hero already waiting in it.
+     * A hero can wait in only one queue at a time.
+     */
+    public function joinQueue(Dominion $dominion, int $size = 1): ?HeroBattle
     {
         $this->clearQueue();
+
+        if (!in_array($size, self::QUEUE_SIZES, true)) {
+            throw new GameException('Invalid battle size');
+        }
 
         if ($this->protectionService->isUnderProtection($dominion)) {
             throw new GameException('You cannot battle while under protection');
@@ -204,10 +235,11 @@ class HeroBattleService
             throw new GameException('You already have a battle in progress');
         }
 
-        $opponent = HeroBattleQueue::query()->first();
+        $opponent = $this->waitingQueue($dominion, $size)->with('hero.dominion')->first();
         if ($opponent === null) {
             HeroBattleQueue::create([
                 'hero_id' => $dominion->hero->id,
+                'size' => $size,
                 'level' => $this->heroCalculator->getHeroLevel($dominion->hero),
                 'rating' => $dominion->hero->combat_rating,
             ]);
@@ -216,7 +248,100 @@ class HeroBattleService
 
         HeroBattleQueue::where('hero_id', $opponent->hero->id)->delete();
 
-        return $this->createBattle($dominion, $opponent->hero->dominion);
+        return $this->createBattle($dominion, $opponent->hero->dominion, $size);
+    }
+
+    /**
+     * Whether another hero in the dominion's round is waiting in each queue, keyed by size.
+     * Says nothing about who is waiting.
+     *
+     * @return array<int, bool>
+     */
+    public function queueWaiting(Dominion $dominion): array
+    {
+        $waiting = [];
+        foreach (self::QUEUE_SIZES as $size) {
+            $waiting[$size] = $this->waitingQueue($dominion, $size)->exists();
+        }
+
+        return $waiting;
+    }
+
+    /**
+     * What the battles page polls for: anything that would change it. The page reloads when
+     * this changes.
+     *
+     * @return array{queued: int|null, waiting: array<int, bool>, battles: array<int, array{turn: int, finished: bool}>}
+     */
+    public function battleStatus(Dominion $dominion): array
+    {
+        $battles = HeroBattle::query()
+            ->controlledBy($dominion)
+            ->active()
+            ->orderBy('id')
+            ->get(['id', 'current_turn', 'finished'])
+            ->mapWithKeys(fn (HeroBattle $battle) => [$battle->id => ['turn' => $battle->current_turn, 'finished' => (bool) $battle->finished]])
+            ->all();
+
+        $queued = $dominion->hero !== null
+            ? HeroBattleQueue::where('hero_id', $dominion->hero->id)->where('created_at', '>=', now()->subHours(self::QUEUE_EXPIRY_HOURS))->value('size')
+            : null;
+
+        return [
+            'queued' => $queued,
+            'waiting' => $this->queueWaiting($dominion),
+            'battles' => $battles,
+        ];
+    }
+
+    /**
+     * Whether the battles page should poll for changes: only while it waits on someone else,
+     * either for a match in the queue or for an opponent's orders. Idle, finished or waiting on
+     * your own orders, nothing would change it.
+     *
+     * @param array{queued: int|null, battles: array} $status from battleStatus()
+     */
+    public function shouldPoll(Dominion $dominion, array $status): bool
+    {
+        if ($status['queued'] !== null) {
+            return true;
+        }
+
+        return $status['battles'] !== [] && !$this->isAwaitingOrders($dominion);
+    }
+
+    /**
+     * Whether an active battle is waiting on the dominion's own orders: a living combatant it
+     * pilots has time left, isn't automated and has nothing queued. Nothing can change in
+     * that battle until the dominion acts, so the battles page doesn't poll.
+     */
+    public function isAwaitingOrders(Dominion $dominion): bool
+    {
+        return HeroBattle::query()
+            ->controlledBy($dominion)
+            ->active()
+            ->with(['combatants' => fn ($query) => $query->where('controller_dominion_id', $dominion->id)])
+            ->get()
+            ->flatMap(fn (HeroBattle $battle) => $battle->combatants)
+            ->contains(fn (HeroCombatant $combatant) => $combatant->current_health > 0
+                && !$combatant->automated
+                && $combatant->time_bank > 0
+                && empty($combatant->actions));
+    }
+
+    /**
+     * Unexpired entries in a queue from other heroes in the dominion's round, oldest first.
+     */
+    protected function waitingQueue(Dominion $dominion, int $size): Builder
+    {
+        return HeroBattleQueue::query()
+            ->where('size', $size)
+            ->where('created_at', '>=', now()->subHours(self::QUEUE_EXPIRY_HOURS))
+            ->whereHas('hero.dominion', fn ($query) => $query
+                ->where('round_id', $dominion->round_id)
+                ->where('id', '!=', $dominion->id))
+            ->orderBy('created_at')
+            ->orderBy('id');
     }
 
     public function leaveQueue(Dominion $dominion): void
@@ -230,7 +355,7 @@ class HeroBattleService
 
     public function clearQueue(): void
     {
-        HeroBattleQueue::where('created_at', '<', now()->subHours(1))->delete();
+        HeroBattleQueue::where('created_at', '<', now()->subHours(self::QUEUE_EXPIRY_HOURS))->delete();
     }
 
     public function processBattles(Round $round): void

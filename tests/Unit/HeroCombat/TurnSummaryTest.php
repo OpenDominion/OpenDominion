@@ -40,7 +40,7 @@ class TurnSummaryTest extends TestCase
     {
         $combatants = [];
         foreach ($battle->combatants() as $combatant) {
-            $combatants[$combatant->id] = ['name' => $combatant->name, 'side' => $combatant->team === 1 ? 'ally' : 'enemy', 'human' => $combatant->isHuman()];
+            $combatants[$combatant->id] = ['name' => $combatant->name, 'side' => $combatant->team === 1 ? 'ally' : 'enemy', 'human' => $combatant->isPiloted()];
         }
 
         return new TurnSummary($battle->registry, $combatants);
@@ -206,17 +206,17 @@ class TurnSummaryTest extends TestCase
         )));
     }
 
-    public function testAutomatedHumanChoicesAreTagged(): void
+    public function testAutomatedChoicesAreNotTagged(): void
     {
         $battle = $this->duel();
         $this->named($battle, 'Hero')->automated = true;
         $this->queue($battle, 'Foe', 'defend');
 
         $summary = $this->summarise($battle);
-        $actions = $summary['phases'][0]['lines'];
 
-        $this->assertEquals(['type' => 'tag', 'text' => 'auto'], end($actions[0]['segments']));
-        $this->assertNotContains(['type' => 'tag', 'text' => 'auto'], $actions[1]['segments']);
+        foreach ($summary['phases'][0]['lines'] as $line) {
+            $this->assertNotContains('tag', array_column($line['segments'], 'type'));
+        }
     }
 
     public function testDefeatsAndTheGist(): void

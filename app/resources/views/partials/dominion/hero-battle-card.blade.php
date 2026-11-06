@@ -18,6 +18,8 @@
                 {{ $combatant->name }}
                 @if ($view->isBorrowed($combatant))
                     <span class="battle-card-tag">Borrowed</span>
+                @elseif ($view->isAlly($combatant))
+                    <span class="battle-card-tag">Ally</span>
                 @elseif ($controlled)
                     <span class="battle-card-tag battle-card-tag-you">You</span>
                 @endif
@@ -32,7 +34,7 @@
         @if ($change !== 0)
             <span @class(['battle-card-delta', 'text-green' => $change > 0, 'battle-card-delta-loss' => $change < 0])>{{ $change > 0 ? '+' : '−' }}{{ abs($change) }}</span>
         @endif
-        @if ($combatant->isHuman() && !$controlled && $model && !$view->model->finished)
+        @if ($combatant->isPiloted() && !$controlled && $model && !$view->model->finished)
             <span class="battle-card-clock" title="Time remaining to act" data-bs-toggle="tooltip"><i class="ra ra-hourglass"></i> {{ rfloor($model->timeLeft() / 3600) }}h {{ rfloor($model->timeLeft() % 3600 / 60) }}m</span>
         @endif
     </div>

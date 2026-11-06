@@ -17,10 +17,12 @@ use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\Actions\HeroActionService;
 use OpenDominion\Services\Dominion\HeroBattleService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\Traits\EnablesFullHeroProgression;
 
 class BorrowedHeroTest extends AbstractBrowserKitTestCase
 {
     use DatabaseTransactions;
+    use EnablesFullHeroProgression;
 
     protected Round $round;
 
@@ -33,6 +35,7 @@ class BorrowedHeroTest extends AbstractBrowserKitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->enableFullHeroProgression();
 
         $this->round = $this->createRound('-3 days midnight');
         $this->realm = $this->createRealm($this->round);

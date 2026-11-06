@@ -11,8 +11,15 @@
 <div class="hero-battle">
     <div class="battle-bar">
         <div>
-            <div class="battle-bar-mode">{{ $headline['mode'] }}</div>
             <div class="battle-bar-title">{{ $headline['title'] }}</div>
+            <div class="battle-bar-meta">
+                <span class="battle-bar-mode">{{ $headline['mode'] }}</span>
+                @if ($showOrders && $view->isWaitingOnYou())
+                    <span class="battle-bar-status fw-bold" data-waiting-on-you><span class="battle-bar-dot"></span>Waiting for you to lock in</span>
+                @elseif ($waitingOn)
+                    <span class="battle-bar-status"><span class="battle-bar-dot"></span>Waiting for {{ implode(' and ', $waitingOn) }}</span>
+                @endif
+            </div>
         </div>
         <div class="battle-bar-turn">
             @if ($battle->finished)
@@ -25,9 +32,6 @@
                 @endif
             @endif
         </div>
-        @if ($waitingOn)
-            <div class="battle-bar-status"><span class="battle-bar-dot"></span>Waiting for {{ implode(' and ', $waitingOn) }}</div>
-        @endif
     </div>
 
     <div class="battle-layout">

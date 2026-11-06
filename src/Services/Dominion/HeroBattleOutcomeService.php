@@ -110,10 +110,14 @@ class HeroBattleOutcomeService
     /**
      * Once per round day, a hero that finishes a PvP battle without running out of time bank
      * earns a flat amount of experience, win or lose. Round days roll over at the round's
-     * start time, not at midnight.
+     * start time, not at midnight. Off unless `heroes.daily_pvp_experience` is set.
      */
     protected function grantDailyExperience(HeroBattle $heroBattle): void
     {
+        if (!config('heroes.daily_pvp_experience')) {
+            return;
+        }
+
         $round = $heroBattle->round;
         $today = $round->daysInRound();
 

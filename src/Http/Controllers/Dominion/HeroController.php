@@ -188,11 +188,16 @@ class HeroController extends AbstractDominionController
         }
 
         $battlePresenter = app(BattlePresenter::class);
+        $heroBattleService = app(HeroBattleService::class);
+        $battleStatus = $heroBattleService->battleStatus($dominion);
+        $pollForChanges = $heroBattleService->shouldPoll($dominion, $battleStatus);
 
         return view('pages.dominion.hero-battles', compact(
             'activeBattles',
             'inactiveBattles',
             'battlePresenter',
+            'battleStatus',
+            'pollForChanges',
             'heroCalculator',
             'heroHelper',
             'hero',
@@ -361,7 +366,7 @@ class HeroController extends AbstractDominionController
 
         try {
             $this->guardLockedDominion($dominion);
-            $result = $heroBattleService->joinQueue($dominion);
+            $result = $heroBattleService->joinQueue($dominion, $request->integer('size', 1));
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

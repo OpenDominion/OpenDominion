@@ -40,6 +40,7 @@ class StateSnapshot
                 'ai' => $c->ai,
                 'hero' => $c->heroId,
                 'dominion' => $c->dominionId,
+                'controller' => $c->controllerDominionId,
                 'template' => $c->templateKey,
                 'effects' => array_map(fn (EffectInstance $i) => $i->toArray(), $c->effects),
                 'cooldowns' => $c->cooldowns,
@@ -93,7 +94,8 @@ class StateSnapshot
             $combatant->cooldowns = $row['cooldowns'];
             $combatant->charges = $row['charges'];
             $combatant->lastAction = $row['last_action'];
-            $combatant->automated = !$combatant->isHuman();
+            $combatant->controllerDominionId = $row['controller'] ?? null;
+            $combatant->automated = !$combatant->isPiloted();
             $combatant->deathProcessed = !$combatant->isAlive();
             $state->addCombatant($combatant);
         }

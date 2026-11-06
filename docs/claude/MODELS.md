@@ -125,7 +125,7 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 ### HeroCombatant (`hero_combatants`)
 - **Relations**: battle, hero, dominion
 - **Key fields**: `team`, `template_key`, `controller_dominion_id` (pilot; `dominion_id` is the owner), base stats, `current_health`, `abilities`, `effects`, `cooldowns`, `charges`, `actions` (queue), `strategy`, `time_bank`, `automated`
-- **Key methods**: `isControlledBy(Dominion)`, `isHuman()`
+- **Key methods**: `isControlledBy(Dominion)`, `isPiloted()` (a hero, or any combatant with a controller such as a 2v2 ally)
 - Mapped to `CombatantState` by `BattleRepository`; see [HERO_COMBAT.md](HERO_COMBAT.md)
 
 ### HeroBattleTurn (`hero_battle_turns`)

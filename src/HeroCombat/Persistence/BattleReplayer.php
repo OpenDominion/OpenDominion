@@ -78,7 +78,7 @@ class BattleReplayer
      */
     protected function prime(CombatantState $combatant, ?Intent $intent): void
     {
-        if (!$combatant->isHuman()) {
+        if (!$combatant->isPiloted()) {
             return;
         }
 

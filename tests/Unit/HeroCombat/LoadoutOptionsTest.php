@@ -70,7 +70,7 @@ class LoadoutOptionsTest extends AbstractTestCase
         $expected = [
             LoadoutSlot::Technique->value => [3, 7, HeroClassLoadouts::UNLOCK_CLASS_LEVEL],
             LoadoutSlot::Ability->value => [HeroClassLoadouts::UNLOCK_CLASS_LEVEL, HeroLoadoutOptions::UNIVERSAL_ABILITY_LEVEL],
-            LoadoutSlot::Gear->value => [9],
+            LoadoutSlot::Gear->value => [3],
         ];
 
         foreach ($this->registry()->loadoutOptions() as $key => $option) {

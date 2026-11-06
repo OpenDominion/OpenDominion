@@ -109,10 +109,11 @@ Realm bounty board system.
 
 ### HeroBattleService / HeroBattleOutcomeService / HeroTournamentService
 Entry points for hero combat; the rules live in `src/HeroCombat` (see [HERO_COMBAT.md](HERO_COMBAT.md)).
-- `createBattle()` (1v1 PvP), `createTeamBattle()`, `createPracticeBattle()`, `createEncounterBattle()` (PvE, used by raids)
+- `createBattle()` (1v1 or 2v2 PvP; a 2v2 adds a templated ally per dominion), `createTeamBattle()`, `createPracticeBattle()`, `createEncounterBattle()` (PvE, used by raids)
 - `processTurn()` locks the battle row, advances the engine while everyone is ready, persists, and finalizes outcomes
+- `joinQueue($dominion, $size)` matches the same size within the round (1-hour expiry); `queueWaiting()` and `battleStatus()` feed the battles page and its polling endpoint
 - `availableCompanions()` / `$companions` on encounter battles - borrow realmmates' heroes for party-enabled encounters; `hasBattleInProgress()` checks battles the dominion pilots
-- `HeroBattleOutcomeService::finalize()` - per-team W/L/D, Elo vs opposing team average, tournament standings, daily flat PvP experience, raid contributions (one per controlling dominion)
+- `HeroBattleOutcomeService::finalize()` - per-team W/L/D, Elo vs opposing team average, tournament standings, daily flat PvP experience (off by config), raid contributions (one per controlling dominion)
 - Time bank 2h (`CombatantFactory::DEFAULT_TIME_BANK`), default strategy 'balanced'
 - Processed during hourly tick
 

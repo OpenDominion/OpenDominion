@@ -210,7 +210,7 @@ class BattleRepository
         }
 
         $winners = array_filter($battle->combatants(), fn ($c) => $c->team === $battle->state->winningTeam);
-        $humans = array_filter($winners, fn ($c) => $c->isHuman());
+        $humans = array_filter($winners, fn ($c) => $c->isHero());
 
         $representative = reset($humans) ?: reset($winners);
 

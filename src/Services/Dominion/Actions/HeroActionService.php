@@ -159,7 +159,12 @@ class HeroActionService
         ];
 
         foreach ($loadout as $slotValue => $keys) {
-            $available = $this->heroCalculator->getAvailableLoadoutOptions($dominion->hero, LoadoutSlot::from($slotValue));
+            $slot = LoadoutSlot::from($slotValue);
+            if (array_filter((array) $keys) !== [] && !$this->heroCalculator->isLoadoutSlotEnabled($slot)) {
+                throw new GameException(ucfirst($this->heroHelper->getLoadoutSlotPhrase([$slotValue])) . ' are coming soon.');
+            }
+
+            $available = $this->heroCalculator->getAvailableLoadoutOptions($dominion->hero, $slot);
 
             foreach (array_filter((array) $keys) as $key) {
                 if (!isset($available[$key])) {

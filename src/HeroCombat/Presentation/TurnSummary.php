@@ -105,12 +105,8 @@ class TurnSummary
             $segments[] = $this->name($event['target']);
         }
 
-        if ($this->combatants[$event['actor']]['human'] ?? false) {
-            match ($event['source']) {
-                Intent::SOURCE_AI => $segments[] = $this->tag('auto'),
-                Intent::SOURCE_FORCED => $segments[] = $this->tag('forced'),
-                default => null,
-            };
+        if (($this->combatants[$event['actor']]['human'] ?? false) && $event['source'] === Intent::SOURCE_FORCED) {
+            $segments[] = $this->tag('forced');
         }
 
         return $this->line($segments);

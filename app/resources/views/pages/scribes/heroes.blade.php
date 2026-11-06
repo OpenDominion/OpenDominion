@@ -112,7 +112,22 @@
                     </div>
 
                     <h4>Combat Loadout</h4>
-                    <p>Heroes bring 1 technique, 1 ability and 2 different pieces of gear into battle.</p>
+                    @php
+                        $heroCalculator = app(\OpenDominion\Calculators\Dominion\HeroCalculator::class);
+                        $enabledLoadoutSlots = array_values(array_filter(\OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot::cases(), fn ($slot) => $heroCalculator->isLoadoutSlotEnabled($slot)));
+                        $comingSoonLoadoutSlots = array_values(array_filter(\OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot::cases(), fn ($slot) => !$heroCalculator->isLoadoutSlotEnabled($slot)));
+                        $loadoutSlotAmounts = collect($enabledLoadoutSlots)->map(fn ($slot) => match ($slot) {
+                            \OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot::Technique => '1 technique',
+                            \OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot::Ability => '1 ability',
+                            \OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot::Gear => $slot->capacity() . ' different pieces of gear',
+                        });
+                    @endphp
+                    <p>
+                        Heroes bring {{ $loadoutSlotAmounts->join(', ', ' and ') }} into battle.
+                        @if ($comingSoonLoadoutSlots !== [])
+                            {{ ucfirst($heroHelper->getLoadoutSlotPhrase(array_map(fn ($slot) => $slot->value, $comingSoonLoadoutSlots))) }} are coming soon.
+                        @endif
+                    </p>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <colgroup>
@@ -131,7 +146,7 @@
                                     <th>Description</th>
                                 </tr>
                             </thead>
-                            @foreach (\OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot::cases() as $loadoutSlot)
+                            @foreach ($enabledLoadoutSlots as $loadoutSlot)
                                 @foreach ($heroHelper->getLoadoutOptions($loadoutSlot) as $option)
                                     <tr>
                                         <td style="font-size: 24px;">

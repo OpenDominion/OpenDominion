@@ -31,7 +31,7 @@ class Frostbite extends AbstractPassive
     public function afterDamageDealt(EffectInstance $instance, DamageContext $damage, Battle $battle): void
     {
         $target = $damage->target;
-        if ($damage->request->isCounter || !$damage->request->hasTag(CombatTag::Attack) || !$target->isHuman()) {
+        if ($damage->request->isCounter || !$damage->request->hasTag(CombatTag::Attack) || !$target->isPiloted()) {
             return;
         }
 

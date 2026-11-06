@@ -208,7 +208,7 @@ final class TurnResolver
         }
 
         foreach ($battle->living() as $combatant) {
-            if ($combatant->team === $battle->state->winningTeam && $combatant->isHuman()) {
+            if ($combatant->team === $battle->state->winningTeam && $combatant->isHero()) {
                 $battle->say($combatant, $message, MessageKind::Outcome);
                 return;
             }

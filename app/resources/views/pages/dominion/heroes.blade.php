@@ -108,6 +108,7 @@
                                         'slot' => $loadoutSlot,
                                         'option' => $loadout[$loadoutSlot->value][$index] ?? null,
                                         'available' => $index < $heroCalculator->getLoadoutSlotCapacity($hero, $loadoutSlot) && $heroCalculator->getAvailableLoadoutOptions($hero, $loadoutSlot) !== [],
+                                        'enabled' => $heroCalculator->isLoadoutSlotEnabled($loadoutSlot),
                                         'index' => $index,
                                     ];
                                 }
@@ -284,6 +285,10 @@
                         <div class="card-body table-responsive">
                             <p>Your hero brings this loadout into every battle, including when a realmmate borrows your hero. You can change it at any time; battles already underway are not affected.</p>
                             @foreach ($loadoutSlotTypes as $loadoutSlot)
+                                @if (!$heroCalculator->isLoadoutSlotEnabled($loadoutSlot))
+                                    <div class="hero-sub-label">{{ $loadoutSlot->label() }} (coming soon)</div>
+                                    @continue
+                                @endif
                                 @php($isMultiple = $loadoutSlot->capacity() > 1)
                                 @php($slotCapacity = $heroCalculator->getLoadoutSlotCapacity($hero, $loadoutSlot))
                                 <div class="hero-sub-label">{{ $loadoutSlot->label() }} ({{ $slotCapacity > 1 ? 'choose up to ' . $slotCapacity : 'choose 1' }}{{ $slotCapacity < $loadoutSlot->capacity() ? '; ' . strtolower($heroHelper->getLoadoutSlotRequirement($loadoutSlot, $slotCapacity)) . ' for another' : '' }})</div>

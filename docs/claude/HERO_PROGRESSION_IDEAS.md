@@ -16,13 +16,15 @@ Balance numbers come from `php artisan hero-combat:simulate`: Tactician vs Tacti
 | Techniques | Passive rules: Technique I (level 3) and Technique II (level 7), replacing Disciplines and Combos | `feature/hero-progression` |
 | Shared statuses | Exposed, Marked, Staggered (plus Invigorated from Second Wind), cashed in by any attacker | `feature/hero-progression` |
 | Class Abilities | Any class signature, available at class level 5 (active or not); uses the class icon | `feature/hero-progression` |
-| Gear | The only source of combat stats: one piece at level 9, a second at level 12; gear can't take evasion below 0 | `feature/hero-progression` |
+| Gear | The only source of combat stats: one piece at level 3, a second at level 7 (moved down from 9 and 12 for release 1); gear can't take evasion below 0 | `feature/hero-progression` |
 | Combat loadout | Techniques, abilities and gear left the upgrade system. Access is automatic; the hero brings 1 technique, 1 ability and 2 different pieces of gear, changeable at any time | `feature/hero-progression` |
 | Upgrade schedule | Dominion upgrades only: level 1 doctrine, then levels 2, 4 and 6. Data-driven slots. | `feature/hero-progression` |
 | Ally actions | Guard (Defend on an ally), Rally (Focus on an ally), healing an ally | `feature/hero-progression` |
 | Simultaneous resolution | Damage and healing land together before anyone is defeated; the order of combatant ids decides nothing | `feature/hero-progression` |
 | Borrowed heroes | Pilot a realmmate's hero in party-enabled encounters, live or practice; no owner reward | `feature/hero-progression` |
 | Tactician + simulator | Game-theory AI and `hero-combat:simulate` for PvP balance. Analysis only, not in the game. | `feature/hero-progression` |
+| Release gating | `app/config/heroes.php`: `loadout_slots` (gear only for release 1; techniques and abilities show as coming soon) and `daily_pvp_experience` (off) | `feature/hero-progression` |
+| 2v2 PvP queue | Queue for 1v1 or 2v2. A 2v2 is two players, each piloting their hero plus an identical templated Sellsword (base stats at the lower hero's level, no credit). The battles page shows whether someone is waiting and polls for changes for 2 minutes | `feature/hero-progression` |
 
 Class abilities and passives reach heroes only through the loadout; `HeroClassLoadouts` no longer grants them by active class. Some are also used by PvE enemies (Shadow Strike; the old Hardiness lives on for enemies as Cling to Life).
 
@@ -190,7 +192,7 @@ Techniques, class abilities and gear were permanent one-time picks taking up the
 |---|---|---|
 | Technique | 1 | Level 3 (Technique I), level 7 (Technique II); Mending (Healer) and Channeling (Sorcerer) at class level 5 in that class |
 | Ability | 1 | Class signature: class level 5 in that class, active or not, no hero level requirement. Blade Flurry and Whirlwind: level 5, any class |
-| Gear | 2 different pieces | Level 9 |
+| Gear | 2 different pieces | Level 3, the second piece at level 7 |
 
 Definitions moved from `heroes.yml` to the combat registry (`HeroLoadoutOptions`): the behavior, names and descriptions were already there, the simulator needs the data without a database, and gear from other sources can join through `HeroCalculator::getAvailableLoadoutOptions()`.
 
@@ -461,7 +463,7 @@ Cut from the old two-tier list: Executioner's Axe, Tower Shield, Dueling Blade, 
 | Idea | Summary | Status |
 |---|---|---|
 | Tactician as the in-game player AI | One strategy with balanced/aggressive/defensive as weight profiles, plus a temperature setting to make it beatable | **Parked.** Concern: it could play better than real players, making manual play pointless. Fix the information leak first (strategies can see the full `Battle`). |
-| Team (2v2) PvP | Rules are built and measured (see Redesign: 2v2 Rules); partner visibility, pace with four players, matchmaking and ratings remain | Discussion only |
+| Team (2v2) PvP | Rules are built and measured (see Redesign: 2v2 Rules). Built as two players with templated allies (see Built); four-player 2v2 (partner visibility, pace, team matchmaking) remains | Two-player version built |
 | Stances | Switchable modes, e.g. Bodyguard (always guard an ally, −attack, a turn to switch) | Rejected; only worth it if mechanically interesting |
 | Insight meter | Fills on correct reads (Counter landing, Defend absorbing) and unlocks a signature move | Not chosen |
 | Earned traits | The hero develops traits from how it fights over the round | Not chosen |
@@ -507,7 +509,7 @@ Cut from the old two-tier list: Executioner's Axe, Tower Shield, Dueling Blade, 
 | Techniques | Bend a rule without removing a basic action's cooldown; useful in 1v1, better in 2v2 |
 | Synergy | Shared one-turn statuses (Exposed, Marked, Staggered) that any attacker can cash in |
 | Class Abilities | Available at class level 5 in any class played this round, not only the active one; no hero level requirement |
-| Gear | Level 9, two different pieces; separate from upgrades so other sources can add more later |
+| Gear | Level 3 (second piece at 7), two different pieces; separate from upgrades so other sources can add more later. Balance numbers were measured at level 9 |
 | Combat loadout | Definitions live in the combat registry, not `HeroHelper` or `heroes.yml`. Access uses the highest level in any class, so changing class never removes it. The loadout stays hidden from info ops. Changes apply to the next battle |
 | Upgrade kinds in UI | Tooltips only |
 | Party encounters | Only new encounters designed for two; no automatic scaling |
@@ -532,5 +534,6 @@ Cut from the old two-tier list: Executioner's Axe, Tower Shield, Dueling Blade, 
 | Battle log wording | Turn summaries still say "Defend → Mage" and "Focus → Mage"; "(defending)" also covers Guard |
 | Old replays | `hero-combat:replay` can't reproduce battles fought before simultaneous resolution, and battles in progress switched rules mid-fight |
 | Loadouts in the simulator | Techniques, abilities and gear aren't modeled, so team value and the 2v2 rules with loadouts are unmeasured |
-| First co-op encounter | Needed before borrowing is usable in game |
+| First co-op encounter | Needed before borrowing is usable in game (Grand Magister's party size was a test setting and has been removed) |
+| Release 2 | Turn on techniques and abilities (`heroes.loadout_slots`) after combination testing; decide when daily PvP experience returns |
 | magic-system merge | Take this branch's slot UI and loadout; update their level-8 tests |

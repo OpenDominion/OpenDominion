@@ -9,7 +9,8 @@ use \Illuminate\Database\Eloquent\Builder;
  *
  * @property int $id
  * @property int $hero_id
- * @property int $experience
+ * @property int $size 1 for a 1v1, 2 for a 2v2
+ * @property int $level
  * @property int $rating
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

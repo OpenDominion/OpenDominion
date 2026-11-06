@@ -27,6 +27,7 @@
             @php
                 $model = $view->model($combatant);
                 $borrowed = $view->isBorrowed($combatant);
+                $ally = $view->isAlly($combatant);
                 $canAct = $view->canAct($combatant);
                 $onAutopilot = $combatant->automated || !$canAct;
             @endphp
@@ -34,7 +35,7 @@
                 <div class="battle-hero-orders-head">
                     <span class="battle-card-medal"><i class="ra {{ $view->icon($combatant) }}"></i></span>
                     <span class="battle-card-id">
-                        <span class="battle-card-name">{{ $combatant->name }} @if ($borrowed)<span class="battle-card-tag">Borrowed</span>@endif</span>
+                        <span class="battle-card-name">{{ $combatant->name }} @if ($borrowed)<span class="battle-card-tag">Borrowed</span>@elseif ($ally)<span class="battle-card-tag">Ally</span>@endif</span>
                         @if ($queueAhead && $combatant->queue)
                             <span class="battle-hero-queued">
                                 Queued:
@@ -54,14 +55,14 @@
 
                 <div class="battle-hero-orders-body">
                     @if (!$canAct)
-                        <div class="battle-autopilot-notice">{{ $combatant->name }} is out of time, so autopilot plays {{ $borrowed ? 'their' : 'your' }} turns.</div>
+                        <div class="battle-autopilot-notice">{{ $combatant->name }} is out of time, so autopilot plays {{ $borrowed || $ally ? 'their' : 'your' }} turns.</div>
                     @elseif ($combatant->automated)
                         <form action="{{ route('dominion.heroes.battles') }}" method="post" class="battle-autopilot-notice">
                             @csrf
                             <input type="hidden" name="combatant" value="{{ $combatant->id }}">
                             <input type="hidden" name="strategy" value="{{ $combatant->ai }}">
                             <b>{{ $combatant->name }} is on autopilot ({{ $view->strategies()[$combatant->ai] ?? $combatant->ai }}).</b>
-                            The AI picks {{ $borrowed ? 'their' : 'your' }} action when the turn resolves.
+                            The AI picks {{ $borrowed || $ally ? 'their' : 'your' }} action when the turn resolves.
                             <div><button type="submit" class="btn btn-secondary btn-sm mt-2">Cancel autopilot</button></div>
                         </form>
                     @else
@@ -123,7 +124,7 @@
                             <div class="form-check mt-2">
                                 <input type="checkbox" id="automated-{{ $combatant->id }}" name="automated" class="form-check-input" @checked($combatant->automated)>
                                 <label for="automated-{{ $combatant->id }}" class="form-check-label">
-                                    Automate all of {{ $borrowed ? $combatant->name . "'s" : 'my' }} turns
+                                    Automate all of {{ $borrowed || $ally ? $combatant->name . "'s" : 'my' }} turns
                                 </label>
                             </div>
                             <button class="btn btn-secondary btn-sm mt-2">Update</button>

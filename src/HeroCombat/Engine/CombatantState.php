@@ -53,7 +53,19 @@ final class CombatantState
     ) {
     }
 
-    public function isHuman(): bool
+    /**
+     * Whether a player chooses this combatant's actions: every hero, plus any other combatant
+     * a dominion pilots (a templated ally). Everyone else is played by its AI.
+     */
+    public function isPiloted(): bool
+    {
+        return $this->heroId !== null || $this->controllerDominionId !== null;
+    }
+
+    /**
+     * Whether this combatant is a player's hero, the only kind that earns credit.
+     */
+    public function isHero(): bool
     {
         return $this->heroId !== null;
     }
@@ -87,6 +99,6 @@ final class CombatantState
 
     public function isReady(): bool
     {
-        return !$this->isHuman() || $this->automated || count($this->queue) > 0;
+        return !$this->isPiloted() || $this->automated || count($this->queue) > 0;
     }
 }

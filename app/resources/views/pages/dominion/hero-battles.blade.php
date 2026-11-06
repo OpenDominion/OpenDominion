@@ -14,14 +14,19 @@
                             <a class="btn btn-primary btn-sm" href="{{ route('dominion.heroes.battles.practice') }}">
                                 Practice Battles
                             </a>
-                            @if ($hero->isInQueue())
-                                <a class="btn btn-danger btn-sm" href="{{ route('dominion.heroes.battles.dequeue') }}">
-                                    Leave Queue
+                            @if ($battleStatus['queued'] !== null)
+                                <a class="btn btn-danger btn-sm" href="{{ route('dominion.heroes.battles.dequeue') }}" data-queued="{{ $battleStatus['queued'] }}">
+                                    Leave {{ $battleStatus['queued'] }}v{{ $battleStatus['queued'] }} Queue
                                 </a>
                             @else
-                                <a class="btn btn-primary btn-sm" href="{{ route('dominion.heroes.battles.queue') }}">
-                                    Queue for Battle
-                                </a>
+                                @foreach ($battleStatus['waiting'] as $size => $isWaiting)
+                                    <a class="btn btn-primary btn-sm" href="{{ route('dominion.heroes.battles.queue', ['size' => $size]) }}" data-queue-size="{{ $size }}">
+                                        Queue {{ $size }}v{{ $size }}
+                                        @if ($isWaiting)
+                                            <span class="badge text-bg-success ms-1" title="A player is waiting in this queue" data-bs-toggle="tooltip" data-queue-waiting>1 waiting</span>
+                                        @endif
+                                    </a>
+                                @endforeach
                             @endif
                         </div>
                     @endif
@@ -97,6 +102,45 @@
 
 @push('inline-scripts')
     <script type="text/javascript">
+        @if ($pollForChanges)
+        // Polls only while the page waits on someone else: a match from the queue, or an
+        // opponent's orders.
+        (function () {
+            var url = @json(route('api.dominion.hero-battles.status'));
+            var pollEvery = 5000;
+            var pollFor = 2 * 60 * 1000;
+            var started = Date.now();
+
+            // While a battle is underway only its turns matter, so queue changes never reload
+            // the page in the middle of choosing orders.
+            function signature(status) {
+                return JSON.stringify(Object.keys(status.battles).length > 0 ? status.battles : status);
+            }
+
+            var initial = signature(@json($battleStatus));
+            var timer = setInterval(function () {
+                if (Date.now() - started > pollFor) {
+                    clearInterval(timer);
+                    return;
+                }
+                if (document.hidden) {
+                    return;
+                }
+                fetch(url, { credentials: 'same-origin', cache: 'no-store', headers: { 'Accept': 'application/json' } })
+                    .then(function (response) {
+                        return response.ok ? response.json() : null;
+                    })
+                    .then(function (status) {
+                        if (status !== null && signature(status) !== initial) {
+                            clearInterval(timer);
+                            window.location.reload();
+                        }
+                    })
+                    .catch(function () {});
+            }, pollEvery);
+        })();
+        @endif
+
         document.querySelectorAll('[data-battle-orders]').forEach(function (box) {
             var form = box.querySelector('form');
             var lock = box.querySelector('[data-orders-lock]');

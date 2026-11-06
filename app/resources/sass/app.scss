@@ -771,8 +771,14 @@ body:not(.layout-top-nav) .app-header {
   }
 }
 
+.battle-bar-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+
 .battle-bar-status {
-  flex-basis: 100%;
   font-size: 13px;
   color: rgba(255, 255, 255, .8);
 }

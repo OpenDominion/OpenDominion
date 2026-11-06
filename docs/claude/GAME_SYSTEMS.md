@@ -184,7 +184,8 @@ hero, investment, exploration, espionage, magic, invasion
 
 ### Combat
 - Simultaneous-turn battles between teams (1v1 PvP, team PvP, co-op PvE vs encounters) with per-player time banks (2h default)
-- Party-enabled encounters let a player bring a realmmate's hero and pilot both
+- Party-enabled encounters let a player bring a realmmate's hero and pilot both (no encounter is party-enabled right now)
+- PvP queue for 1v1 or 2v2 (one at a time, same round only); in a 2v2 each player pilots their hero plus an identical templated Sellsword that earns nothing. The battles page shows whether someone is waiting, and polls for changes for up to 2 minutes while you're queued or waiting on your opponent's orders
 - Tournaments with bracket elimination
 - Processed during hourly tick and whenever a player queues an action
 - Engine details: see [HERO_COMBAT.md](HERO_COMBAT.md)
@@ -193,10 +194,10 @@ hero, investment, exploration, espionage, magic, invasion
 Hero upgrades are permanent dominion bonuses: level 1 doctrine and dominion upgrades on levels 2, 4 and 6, none of which grant combat stats.
 
 ### Combat Loadout
-Techniques, abilities and gear are separate from upgrades. Access is automatic: Technique I at level 3, Technique II at level 7, a class's signature at level 5 in that class (active or not; an ability, or a technique for Healer, Sorcerer and Farmer), Blade Flurry and Whirlwind for every class at level 5, and Gear at level 9. A hero brings 1 technique, 1 ability and 2 different pieces of gear, chosen on the heroes page and changeable at any time. The loadout applies to the next battle, including when a realmmate borrows the hero. See [HERO_COMBAT.md](HERO_COMBAT.md).
+Techniques, abilities and gear are separate from upgrades. Access is automatic: Technique I at level 3, Technique II at level 7, a class's signature at level 5 in that class (active or not; an ability, or a technique for Healer, Sorcerer and Farmer), Blade Flurry and Whirlwind for every class at level 5, and Gear at level 3 (a second piece at level 7). A hero brings 1 technique, 1 ability and 2 different pieces of gear, chosen on the heroes page and changeable at any time. Only the slots in `heroes.loadout_slots` (`app/config/heroes.php`) can be equipped; for now that's gear, and techniques and abilities show as coming soon. The loadout applies to the next battle, including when a realmmate borrows the hero. See [HERO_COMBAT.md](HERO_COMBAT.md).
 
 ### Daily PvP Experience
-Once per round day, finishing a PvP hero battle with time bank remaining grants a flat 25 experience (no multipliers), win or lose.
+Off for now (`heroes.daily_pvp_experience`). When on: once per round day, finishing a PvP hero battle with time bank remaining grants a flat 25 experience (no multipliers), win or lose.
 
 ## Realm Assignment Algorithm
 
