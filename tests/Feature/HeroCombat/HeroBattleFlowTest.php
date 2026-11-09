@@ -235,6 +235,51 @@ class HeroBattleFlowTest extends AbstractBrowserKitTestCase
         $this->assertStringContainsString('matches the stored combat log', \Illuminate\Support\Facades\Artisan::output());
     }
 
+    public function testBattleWithConfusedActionsReplaysIdentically(): void
+    {
+        $dominion = $this->dominionWithHero('Solo');
+
+        foreach (range(1, 20) as $seed) {
+            $battle = $this->heroBattleService->createPracticeBattle($dominion, 'voodoo_mage_waaugh');
+            $battle->update(['seed' => $seed, 'initial_state' => json_encode(['seed' => $seed] + json_decode($battle->initial_state, true))]);
+            $player = $this->combatantFor($battle, $dominion);
+            $waaugh = $battle->combatants()->where('template_key', 'voodoo_mage_waaugh')->firstOrFail();
+
+            foreach (array_fill(0, 6, 'attack') as $ability) {
+                $player->refresh();
+                $this->heroActionService->queueAction($dominion, $player, $waaugh, $ability);
+            }
+            $this->heroBattleService->processTurn($battle->fresh());
+
+            $altered = HeroBattleAction::query()
+                ->where('hero_battle_id', $battle->id)
+                ->get()
+                ->contains(fn (HeroBattleAction $row) => collect($row->events)->contains(fn ($event) => ($event['source'] ?? null) === 'altered'));
+
+            if ($altered) {
+                break;
+            }
+        }
+
+        $this->assertTrue($altered, 'A queued action was replaced by confusion');
+
+        $result = app(\OpenDominion\HeroCombat\Persistence\BattleReplayer::class)->replay($battle->fresh());
+
+        $this->assertSame([], $result['mismatches']);
+    }
+
+    public function testScholarHeroIsClearMindedAgainstWaaugh(): void
+    {
+        $scholar = $this->dominionWithHero('Sage', 'scholar');
+        $blacksmith = $this->dominionWithHero('Smith');
+
+        $scholarBattle = $this->heroBattleService->createPracticeBattle($scholar, 'voodoo_mage_waaugh');
+        $blacksmithBattle = $this->heroBattleService->createPracticeBattle($blacksmith, 'voodoo_mage_waaugh');
+
+        $this->assertContains('clear_minded', array_column($this->combatantFor($scholarBattle, $scholar)->effects, 'key'));
+        $this->assertNotContains('clear_minded', array_column($this->combatantFor($blacksmithBattle, $blacksmith)->effects ?? [], 'key'));
+    }
+
     public function testUnknownEncounterIsRejected(): void
     {
         $dominion = $this->dominionWithHero('Solo');

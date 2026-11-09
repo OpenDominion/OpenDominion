@@ -11,6 +11,7 @@ enum Hook: string
     case TurnStart = 'onTurnStart';
     case TurnEnd = 'onTurnEnd';
     case ForcedIntent = 'forcedIntent';
+    case AlterIntent = 'alterIntent';
     case BeforeDamageDealt = 'beforeDamageDealt';
     case RedirectDamage = 'redirectDamage';
     case Evaded = 'onEvaded';

@@ -19,7 +19,7 @@ src/HeroCombat/
     CombatantState.php  one combatant: base stats, health, abilities, effects, cooldowns, charges, queue
     TurnResolver.php    resolves one turn (see pipeline)
     BattleEngine.php    advance() loops turns while everyone is ready
-    IntentDecider.php   forced → queued → AI
+    IntentDecider.php   forced → queued → AI, then AlterIntent may replace a queued/AI choice
     ActionValidator.php cooldowns, charges, tag gating, canUse; queue projection
     ActionContext.php   what abilities receive: actor, targets, helpers
     Damage/             DamageRequest → DamageResolver → DamageResult (one pipeline for every hit)
@@ -60,6 +60,7 @@ processTurn(HeroBattle)
          TurnResolver::resolve
            1. TurnStart hooks (every effect instance)
            2. Intents     each living combatant: forcedIntent hook → queued action → AI strategy
+                          → alterIntent hook (not for forced intents; the replacement keeps `replaces`)
            3. Declare     Ability::onDeclare for every intent (stances are applied here)
            4. Order       priority desc, then combatant id
            5. Resolve     per intent: resolve targets → Ability::resolve → start cooldown, spend charge
@@ -111,6 +112,7 @@ state lives on the `EffectInstance` (stacks, remaining turns, `data`).
 | `onApply` / `onExpire` / `onRemove` | the instance | setup; hand-offs (Freezing→Frozen); `onRemove` covers dispels too |
 | `onTurnStart` / `onTurnEnd` | every instance in the battle | telegraph rolls, phase changes, regen/DoT |
 | `forcedIntent` | the acting combatant's effects | telegraphed moves, charged attacks |
+| `alterIntent` | the acting combatant's effects | replace a queued or AI choice (Confused). The queued order is still used up; the intent gets source `altered` and `replaces` = the original |
 | `beforeDamageDealt` | attacker's effects | add bonus damage / defend modifier (Crushing Blow) |
 | `redirectDamage` | target's effects | Cover |
 | `onEvaded` | target's effects | Elusive sets `evadeMultiplier = 0` |
@@ -152,11 +154,11 @@ damage that ignores defense, evasion and counters (boss moves).
 An `EnemyTemplate` gives stats, active abilities (`AbstractEnemy` adds the five basics), innate
 effects with data, and an AI key. An `Encounter` gives a roster (template, display name, stat and
 effect overrides) built from an `EncounterContext` (raid `priorWins`, the leader's stats),
-optional `playerGrants()` (class-conditional abilities), a `VictoryCondition`, an `onTurnEnd`
+optional `playerGrants()` (class-conditional abilities), optional `playerEffects()` (class-conditional effects such as `clear_minded`, applied by `HeroBattleService` when the battle is created), a `VictoryCondition`, an `onTurnEnd`
 script hook, and an optional victory line. Keys must match the `encounter` attribute raids use on
 their `RaidObjectiveTactic` rows.
 
-All 18 original encounters are ported, plus `grand_magister`:
+All 18 original encounters are ported, plus `grand_magister` and `voodoo_mage_waaugh`:
 
 | Key | Mechanics |
 |---|---|
@@ -173,6 +175,7 @@ All 18 original encounters are ported, plus `grand_magister`:
 | `heart_of_ice` | `snow_witch_curse` telegraph, `frostbite`, Freezing → Frozen |
 | `admiral_varos` | `admirals_orders` telegraph, capped summons |
 | `rex_lunae` | `hungering_moon_curse` telegraph → `hungering_moon` (`moonstruck` max-health loss, turns then converts); Cleanse granted |
+| `voodoo_mage_waaugh` | `dragons_miasma` (3-turn cycle): gathers at end of turn 1, exhales at end of turn 2 as a free action. Heroes holding `focused` resist; others get `confused` (2 turns, 50% per action to be replaced, weighted toward Defend, never the chosen ability or Focus). If nobody is confused Waaugh gets `choking` (stunned, −10 defense, 1 turn). While anyone is confused he is forced to cast `bone_splinter` (20 flat + 5 per `absorbed_souls` stack, each hit adds a stack) at them; otherwise `waaugh` AI (Hexfire 10 flat + souls, Attack). Scholars/sorcerers get `clear_minded` (25% instead). Effects applied in a TurnEnd hook are ticked in the same pass, so durations there are +1 |
 | `grand_magister` | `grand_magister` AI weights short spells (cooldown 3, 2-turn effects unless noted): `magic_ward` (halves damage taken, 4 turns), `backlash` (attackers take 50% back, 3 turns), `silence` → `silenced` (blocks Focus/Recover, 3 turns), `arcane_conduit` (forced ×2 attack next turn). No telegraph, no grants |
 
 The old unused "story" encounters (wolf, bandit, imp, cultist) were never reachable and were
@@ -210,8 +213,10 @@ not ported.
 ## Replays
 
 Every battle stores a seed and an initial snapshot, and each action row records its intent's
-source (`events[0]`: `selected`, with `source` = queue|ai|forced). `BattleReplayer` restores the
-snapshot, replays queued intents (AI and forced intents are deterministic per seed and turn),
+source (`events[0]`: `selected`, with `source` = queue|ai|forced|altered; `altered` rows also carry
+`replaces` = the original ability, target and source). `BattleReplayer` restores the snapshot,
+replays queued intents, including the original order behind an `altered` one (AI, forced and
+altered intents are deterministic per seed and turn),
 gives summons their original ids, and diffs the log turn by turn:
 
 ```

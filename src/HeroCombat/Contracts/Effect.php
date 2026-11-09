@@ -71,6 +71,9 @@ interface Effect
 
     public function forcedIntent(EffectInstance $instance, CombatantState $subject, Battle $battle): ?Intent;
 
+    /** Return an intent to replace the subject's queued or AI choice (never a forced one). */
+    public function alterIntent(EffectInstance $instance, Intent $intent, CombatantState $subject, Battle $battle): ?Intent;
+
     public function beforeDamageDealt(EffectInstance $instance, DamageContext $damage, Battle $battle): void;
 
     public function redirectDamage(EffectInstance $instance, DamageContext $damage, Battle $battle): void;

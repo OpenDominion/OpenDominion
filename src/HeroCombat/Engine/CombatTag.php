@@ -24,6 +24,7 @@ enum CombatTag: string
     case Frozen = 'frozen';
     case Stunned = 'stunned';
     case Silenced = 'silenced';
+    case Confused = 'confused';
     case Provoked = 'provoked';
     case Telegraph = 'telegraph';
     case Aura = 'aura';

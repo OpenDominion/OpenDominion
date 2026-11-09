@@ -69,12 +69,21 @@ final class TurnResolver
 
         $context->targets = $battle->targets->resolve($actor, $ability, $context->intent->targetId);
         $battle->log->begin($battle->turn(), $actor->id, $ability->key(), $context->target()?->id);
-        $battle->event(new BattleEvent(EventType::Selected, [
+        $selected = [
             'actor' => $actor->id,
             'ability' => $ability->key(),
             'target' => $context->intent->targetId,
             'source' => $context->intent->source,
-        ]));
+        ];
+        $replaced = $context->intent->replaces;
+        if ($replaced !== null) {
+            $selected['replaces'] = [
+                'ability' => $replaced->abilityKey,
+                'target' => $replaced->targetId,
+                'source' => $replaced->source,
+            ];
+        }
+        $battle->event(new BattleEvent(EventType::Selected, $selected));
 
         if ($context->targets === [] && $ability->targetRule() !== TargetRule::Self && $ability->targetRule()->needsChosenTarget()) {
             $battle->say($actor, "{$actor->name}'s {$ability->name()} finds no target.");
