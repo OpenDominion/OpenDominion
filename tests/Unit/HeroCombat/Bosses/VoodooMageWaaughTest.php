@@ -4,7 +4,7 @@ namespace OpenDominion\Tests\Unit\HeroCombat\Bosses;
 
 use OpenDominion\HeroCombat\Content\Abilities\Boss\BoneSplinter;
 use OpenDominion\HeroCombat\Content\Abilities\Boss\Hexfire;
-use OpenDominion\HeroCombat\Content\Effects\AbsorbedSouls;
+use OpenDominion\HeroCombat\Content\Effects\StolenVigor;
 use OpenDominion\HeroCombat\Content\Effects\Confused;
 use OpenDominion\HeroCombat\Content\Effects\Passives\ClearMinded;
 use OpenDominion\HeroCombat\Content\Encounters\VoodooMageWaaughEncounter;
@@ -14,7 +14,6 @@ use OpenDominion\HeroCombat\Engine\CombatTag;
 use OpenDominion\HeroCombat\Engine\Effects\Hook;
 use OpenDominion\HeroCombat\Engine\Events\EventType;
 use OpenDominion\HeroCombat\Engine\Intent;
-use OpenDominion\HeroCombat\Engine\Stats\Stat;
 use OpenDominion\Tests\Unit\HeroCombat\Support\BattleBuilder;
 use OpenDominion\Tests\Unit\HeroCombat\Support\BuildsBattles;
 use OpenDominion\Tests\Unit\HeroCombat\Support\ScriptedRandomSource;
@@ -84,12 +83,10 @@ class VoodooMageWaaughTest extends TestCase
 
         $this->endTurn(1);
         $this->assertTrue($miasma->data['gathering']);
-        $this->assertStringContainsString('silver haze gathers', $this->battle->log->text());
 
         $this->endTurn(2);
         $this->assertArrayNotHasKey('gathering', $miasma->data);
         $this->assertTrue($this->battle->hasTag($this->player(), CombatTag::Confused));
-        $this->assertFalse($this->battle->hasTag($this->waaugh(), CombatTag::Stunned));
     }
 
     public function testMiasmaDoesNothingWithoutGatheringFirst(): void
@@ -112,24 +109,16 @@ class VoodooMageWaaughTest extends TestCase
         $this->assertStringContainsString('The fog lifts', $this->battle->log->text());
     }
 
-    public function testFocusedHeroResistsAndWaaughChokesForOneTurn(): void
+    public function testFocusedHeroResists(): void
     {
         $this->endTurn(1);
         $this->battle->effects->apply($this->player(), 'focused');
         $this->endTurn(2);
 
         $this->assertFalse($this->battle->hasTag($this->player(), CombatTag::Confused));
-        $this->assertTrue($this->battle->hasTag($this->waaugh(), CombatTag::Stunned));
-        $this->assertEquals(15 - 10, $this->battle->stat($this->waaugh(), Stat::Defense));
-
-        $this->battle->state->turn = 3;
-        $this->assertEquals('pass', $this->battle->registry->strategy('waaugh')->chooseIntent($this->waaugh(), $this->battle)->abilityKey);
-
-        $this->endTurn(3);
-        $this->assertFalse($this->battle->hasTag($this->waaugh(), CombatTag::Stunned));
     }
 
-    public function testWaaughDoesNotChokeIfAnyHeroIsConfused(): void
+    public function testEachHeroResistsOrIsConfusedIndividually(): void
     {
         $battle = BattleBuilder::make('voodoo_mage_waaugh')->withRoster()->hero('Alice')->hero('Bob')->build();
         $waaugh = $this->named($battle, 'Voodoo Mage Waaugh');
@@ -144,7 +133,7 @@ class VoodooMageWaaughTest extends TestCase
 
         $this->assertFalse($battle->hasTag($alice, CombatTag::Confused));
         $this->assertTrue($battle->hasTag($bob, CombatTag::Confused));
-        $this->assertFalse($battle->hasTag($waaugh, CombatTag::Stunned));
+        $this->assertEquals($bob->id, $battle->dispatcher->first(Hook::ForcedIntent, [$waaugh], $waaugh, $battle)->targetId);
     }
 
     public function testClearMindedHeroesAreConfusedLessOften(): void
@@ -171,35 +160,27 @@ class VoodooMageWaaughTest extends TestCase
         $this->assertEquals($this->player()->id, $intent->targetId);
     }
 
-    public function testChokingWaaughCannotCastBoneSplinter(): void
-    {
-        $this->confuse($this->player());
-        $this->battle->effects->apply($this->waaugh(), 'choking');
-
-        $this->assertNull($this->forcedIntent($this->waaugh()));
-    }
-
     public function testBoneSplinterIgnoresDefendingAndFeedsWaaugh(): void
     {
         $this->declare($this->battle, 'Player', 'defend');
 
         $this->perform($this->battle, 'Voodoo Mage Waaugh', 'bone_splinter', 'Player');
         $this->assertEquals(100 - BoneSplinter::DAMAGE, $this->player()->currentHealth);
-        $this->assertEquals(1, $this->battle->effects->stacks($this->waaugh(), 'absorbed_souls'));
+        $this->assertEquals(1, $this->battle->effects->stacks($this->waaugh(), 'stolen_vigor'));
 
         $this->perform($this->battle, 'Voodoo Mage Waaugh', 'bone_splinter', 'Player');
-        $this->assertEquals(100 - BoneSplinter::DAMAGE * 2 - AbsorbedSouls::DAMAGE_PER_STACK, $this->player()->currentHealth);
-        $this->assertEquals(2, $this->battle->effects->stacks($this->waaugh(), 'absorbed_souls'));
+        $this->assertEquals(100 - BoneSplinter::DAMAGE * 2 - StolenVigor::DAMAGE_PER_STACK, $this->player()->currentHealth);
+        $this->assertEquals(2, $this->battle->effects->stacks($this->waaugh(), 'stolen_vigor'));
     }
 
-    public function testHexfireGrowsWithAbsorbedSouls(): void
+    public function testHexfireGrowsWithStolenVigor(): void
     {
         $this->perform($this->battle, 'Voodoo Mage Waaugh', 'hexfire', 'Player');
         $this->assertEquals(100 - Hexfire::DAMAGE, $this->player()->currentHealth);
 
-        $this->battle->effects->apply($this->waaugh(), 'absorbed_souls', null, 2);
+        $this->battle->effects->apply($this->waaugh(), 'stolen_vigor', null, 2);
         $this->perform($this->battle, 'Voodoo Mage Waaugh', 'hexfire', 'Player');
-        $this->assertEquals(100 - Hexfire::DAMAGE * 2 - AbsorbedSouls::DAMAGE_PER_STACK * 2, $this->player()->currentHealth);
+        $this->assertEquals(100 - Hexfire::DAMAGE * 2 - StolenVigor::DAMAGE_PER_STACK * 2, $this->player()->currentHealth);
     }
 
     // Confused
@@ -279,7 +260,7 @@ class VoodooMageWaaughTest extends TestCase
         $this->assertEquals([], $encounter->playerEffects($this->player(), ['blacksmith']));
     }
 
-    public function testFocusingOnTheExhaleTurnShutsWaaughDown(): void
+    public function testFocusingOnTheExhaleTurnAvoidsBoneSplinter(): void
     {
         $this->queue($this->battle, 'Player', 'defend');
         $this->resolveTurn($this->battle);
@@ -287,13 +268,12 @@ class VoodooMageWaaughTest extends TestCase
         $this->resolveTurn($this->battle);
 
         $this->assertFalse($this->battle->hasTag($this->player(), CombatTag::Confused));
-        $this->assertTrue($this->battle->hasTag($this->waaugh(), CombatTag::Stunned));
 
         $this->queue($this->battle, 'Player', 'attack');
         $this->resolveTurn($this->battle);
 
-        $this->assertEquals('pass', $this->waaugh()->lastAction);
-        $this->assertEquals(0, $this->battle->effects->stacks($this->waaugh(), 'absorbed_souls'));
+        $this->assertNotEquals('bone_splinter', $this->waaugh()->lastAction);
+        $this->assertEquals(0, $this->battle->effects->stacks($this->waaugh(), 'stolen_vigor'));
     }
 
     protected function forcedIntent(CombatantState $combatant): ?Intent

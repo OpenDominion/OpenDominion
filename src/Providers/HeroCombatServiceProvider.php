@@ -108,8 +108,7 @@ class HeroCombatServiceProvider extends ServiceProvider
         Effects\ArcaneConduit::class,
         Effects\Boss\DragonsMiasma::class,
         Effects\Confused::class,
-        Effects\Choking::class,
-        Effects\AbsorbedSouls::class,
+        Effects\StolenVigor::class,
         Effects\Passives\ClearMinded::class,
     ];
 

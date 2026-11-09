@@ -10,20 +10,20 @@ use OpenDominion\HeroCombat\Engine\Effects\EffectKind;
 use OpenDominion\HeroCombat\Engine\Effects\StackingRule;
 
 /**
- * Battle-long stacks gained from Bone Splinter. Each adds damage to the owner's spells.
+ * Battle-long stacks of life torn out by Bone Splinter. Each adds damage to the owner's spells.
  */
-class AbsorbedSouls extends AbstractEffect
+class StolenVigor extends AbstractEffect
 {
     public const DAMAGE_PER_STACK = 5;
 
     public function key(): string
     {
-        return 'absorbed_souls';
+        return 'stolen_vigor';
     }
 
     public function name(): string
     {
-        return 'Absorbed Souls';
+        return 'Stolen Vigor';
     }
 
     public function description(EffectInstance $instance): string
@@ -51,6 +51,6 @@ class AbsorbedSouls extends AbstractEffect
      */
     public static function bonusDamage(CombatantState $combatant, Battle $battle): int
     {
-        return $battle->effects->stacks($combatant, 'absorbed_souls') * self::DAMAGE_PER_STACK;
+        return $battle->effects->stacks($combatant, 'stolen_vigor') * self::DAMAGE_PER_STACK;
     }
 }

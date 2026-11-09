@@ -3,15 +3,15 @@
 namespace OpenDominion\HeroCombat\Content\Abilities\Boss;
 
 use OpenDominion\HeroCombat\Content\AbstractAbility;
-use OpenDominion\HeroCombat\Content\Effects\AbsorbedSouls;
+use OpenDominion\HeroCombat\Content\Effects\StolenVigor;
 use OpenDominion\HeroCombat\Engine\ActionContext;
 
 /**
- * Waaugh's everyday spell: light flat damage that grows with his absorbed souls.
+ * Waaugh's everyday spell: light flat damage that grows with his Stolen Vigor.
  */
 class Hexfire extends AbstractAbility
 {
-    public const DAMAGE = 10;
+    public const DAMAGE = 5;
 
     public function key(): string
     {
@@ -40,7 +40,7 @@ class Hexfire extends AbstractAbility
             return;
         }
 
-        $result = $context->flatDamage($target, self::DAMAGE + AbsorbedSouls::bonusDamage($context->actor, $context->battle));
+        $result = $context->flatDamage($target, self::DAMAGE + StolenVigor::bonusDamage($context->actor, $context->battle));
         $context->say('hit', ['damage' => $result->amount + $result->absorbed]);
     }
 

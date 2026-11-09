@@ -2,12 +2,12 @@
 
 namespace OpenDominion\HeroCombat\Content\Abilities\Boss;
 
-use OpenDominion\HeroCombat\Content\Effects\AbsorbedSouls;
+use OpenDominion\HeroCombat\Content\Effects\StolenVigor;
 use OpenDominion\HeroCombat\Engine\ActionContext;
 
 /**
  * Cast at Confused heroes only (see DragonsMiasma). Flat damage that defending does not
- * reduce; each hit that lands feeds Waaugh another soul.
+ * reduce; each hit that lands adds a stack of Stolen Vigor.
  */
 class BoneSplinter extends AbstractBossMove
 {
@@ -30,12 +30,12 @@ class BoneSplinter extends AbstractBossMove
             return;
         }
 
-        $result = $context->flatDamage($target, self::DAMAGE + AbsorbedSouls::bonusDamage($context->actor, $context->battle));
+        $result = $context->flatDamage($target, self::DAMAGE + StolenVigor::bonusDamage($context->actor, $context->battle));
         $dealt = $result->amount + $result->absorbed;
         $context->say('hit', ['damage' => $dealt]);
 
         if ($result->amount > 0) {
-            $context->applyEffect($context->actor, 'absorbed_souls');
+            $context->applyEffect($context->actor, 'stolen_vigor');
             $context->say('absorb');
         }
     }
@@ -44,7 +44,7 @@ class BoneSplinter extends AbstractBossMove
     {
         return [
             'hit' => '{actor} casts Bone Splinter. No armour turns aside what erupts from within, and {target} takes {damage} damage.',
-            'absorb' => '{actor} draws in a sliver of {target}\'s soul and grows stronger.',
+            'absorb' => '{actor} drinks in the life torn from {target} and grows stronger.',
         ];
     }
 }
