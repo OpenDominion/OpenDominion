@@ -4,9 +4,9 @@ namespace OpenDominion\Tests\Unit\HeroCombat\Bosses;
 
 use OpenDominion\HeroCombat\Content\Abilities\Boss\BoneSplinter;
 use OpenDominion\HeroCombat\Content\Abilities\Boss\Hexfire;
-use OpenDominion\HeroCombat\Content\Effects\StolenVigor;
 use OpenDominion\HeroCombat\Content\Effects\Confused;
 use OpenDominion\HeroCombat\Content\Effects\Passives\ClearMinded;
+use OpenDominion\HeroCombat\Content\Effects\StolenVigor;
 use OpenDominion\HeroCombat\Content\Encounters\VoodooMageWaaughEncounter;
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
