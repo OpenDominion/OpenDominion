@@ -16,6 +16,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\Actions\InvadeActionService;
 use OpenDominion\Services\Dominion\AIService;
+use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -179,17 +180,17 @@ class AttackerAITest extends AbstractBrowserKitTestCase
 
     public function testSurplusDrafteesAreReleasedDownToReserve(): void
     {
-        $this->attacker->update(['military_draftees' => 2000]);
-        $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
-        $this->assertEquals(2000, $this->attacker->refresh()->military_draftees);
-
-        $this->attacker->update(['military_draftees' => 2001]);
+        $this->attacker->update(['military_draftees' => 1500]);
         $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
         $this->assertEquals(1500, $this->attacker->refresh()->military_draftees);
+
+        $this->attacker->update(['military_draftees' => 1501]);
+        $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
+        $this->assertEquals(1000, $this->attacker->refresh()->military_draftees);
 
         $this->attacker->update(['military_draftees' => 9000]);
         $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
-        $this->assertEquals(1500, $this->attacker->refresh()->military_draftees);
+        $this->assertEquals(1000, $this->attacker->refresh()->military_draftees);
     }
 
     public function testAttackerActionsReleaseSurplusDraftees(): void
@@ -203,7 +204,7 @@ class AttackerAITest extends AbstractBrowserKitTestCase
 
         $this->aiService->performAttackerActions($this->attacker->refresh(), $this->attacker->ai_config);
 
-        $this->assertEquals(1500, $this->attacker->refresh()->military_draftees);
+        $this->assertEquals(1000, $this->attacker->refresh()->military_draftees);
     }
 
     public function testRezonesBarrenLandTheBuildPlanDoesNotUse(): void
@@ -224,7 +225,7 @@ class AttackerAITest extends AbstractBrowserKitTestCase
         $this->assertEquals($totalLand, $landCalculator->getTotalLandIncoming($this->attacker));
     }
 
-    public function testUnitsToSendIsSmallestForceThatBreaksTarget(): void
+    public function testUnitsToSendIsEntireAvailableOffense(): void
     {
         $rangeCalculator = $this->app->make(RangeCalculator::class);
         $landRatio = $rangeCalculator->getDominionRange($this->attacker, $this->target) / 100;
@@ -233,11 +234,29 @@ class AttackerAITest extends AbstractBrowserKitTestCase
 
         $units = $this->aiService->getUnitsToSend($this->attacker, $this->target, $landRatio, $availableUnits, $targetDefense);
 
-        $this->assertEquals([1], array_keys($units));
-        $this->assertGreaterThan($targetDefense, $this->militaryCalculator->getOffensivePower($this->attacker, $this->target, $landRatio, $units));
-        $this->assertLessThanOrEqual($targetDefense, $this->militaryCalculator->getOffensivePower($this->attacker, $this->target, $landRatio, [1 => $units[1] - 1]));
+        $this->assertEquals(array_filter($availableUnits), $units);
 
         $this->assertNull($this->aiService->getUnitsToSend($this->attacker, $this->target, $landRatio, [1 => 10], $targetDefense));
+    }
+
+    public function testUnitsToSendHoldsBackOnlyWhatTheFiveFourRuleRequires(): void
+    {
+        $this->attacker->update(['military_unit1' => 40000]);
+        $this->attacker->refresh();
+
+        $invasionService = $this->app->make(InvasionService::class);
+        $rangeCalculator = $this->app->make(RangeCalculator::class);
+        $landRatio = $rangeCalculator->getDominionRange($this->attacker, $this->target) / 100;
+        $targetDefense = $this->militaryCalculator->getDefensivePowerWithTemples($this->attacker, $this->target);
+        $availableUnits = $this->aiService->getAvailableOffensiveUnits($this->attacker);
+        $this->assertFalse($invasionService->passes54RatioRule($this->attacker, $this->target, $landRatio, array_filter($availableUnits)));
+
+        $units = $this->aiService->getUnitsToSend($this->attacker, $this->target, $landRatio, $availableUnits, $targetDefense);
+
+        $this->assertEquals([1], array_keys($units));
+        $this->assertLessThan(40000, $units[1]);
+        $this->assertTrue($invasionService->passes54RatioRule($this->attacker, $this->target, $landRatio, $units));
+        $this->assertFalse($invasionService->passes54RatioRule($this->attacker, $this->target, $landRatio, [1 => $units[1] + 1]));
     }
 
     public function testAvailableOffensiveUnitsAreLimitedByBoats(): void
@@ -258,7 +277,34 @@ class AttackerAITest extends AbstractBrowserKitTestCase
             ->first();
         $this->assertNotNull($invasion);
         $this->assertTrue($invasion->data['result']['success']);
-        $this->assertLessThan(10000, $this->attacker->refresh()->military_unit1);
+        $this->assertEquals(0, $this->attacker->refresh()->military_unit1);
+    }
+
+    public function testAttackerSkipsBotsThatRecentlyInvaded(): void
+    {
+        $invadeActionService = $this->app->make(InvadeActionService::class);
+        $recentAttacker = $this->createBot($this->attacker->race, 1000, [
+            'military_unit1' => 10000,
+            'military_unit3' => 8000,
+            'resource_boats' => 1000,
+        ]);
+        $victim = $this->createBot($this->target->race, 900, ['military_unit2' => 2000]);
+        $invadeActionService->invade($recentAttacker, $victim, [1 => 5000], false);
+        $recentAttacker->update(['military_unit3' => 500]);
+        $this->target->update(['military_unit2' => 50000]);
+        $victim->update(['military_unit2' => 50000]);
+
+        $this->assertEquals([$recentAttacker->id], $this->aiService->getRecentAttackerIds([$recentAttacker->id, $this->target->id]));
+        $this->assertFalse($this->aiService->attemptInvasion($this->attacker->refresh(), $this->attacker->ai_config));
+        $this->assertEquals(0, GameEvent::where('type', 'invasion')->where('target_id', $recentAttacker->id)->count());
+
+        GameEvent::where('type', 'invasion')
+            ->where('source_id', $recentAttacker->id)
+            ->update(['created_at' => now()->subHours(3)->subMinute()]);
+
+        $this->assertEquals([], $this->aiService->getRecentAttackerIds([$recentAttacker->id]));
+        $this->assertTrue($this->aiService->attemptInvasion($this->attacker->refresh(), $this->attacker->ai_config));
+        $this->assertEquals(1, GameEvent::where('type', 'invasion')->where('target_id', $recentAttacker->id)->count());
     }
 
     public function testAttackSpellsAreCastOnlyWhenLookingForTargets(): void

@@ -23,6 +23,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
@@ -56,12 +57,17 @@ class AIService
     /**
      * Draftees an attacker may hold before releasing down to ATTACKER_DRAFTEES_TARGET.
      */
-    protected const ATTACKER_DRAFTEES_MAX = 2000;
+    protected const ATTACKER_DRAFTEES_MAX = 1500;
 
     /**
      * Draftees an attacker keeps in reserve after releasing the surplus.
      */
-    protected const ATTACKER_DRAFTEES_TARGET = 1500;
+    protected const ATTACKER_DRAFTEES_TARGET = 1000;
+
+    /**
+     * Hours after a bot invades during which attackers leave it alone, giving players a window to hit it.
+     */
+    protected const RECENT_ATTACKER_GRACE_HOURS = 3;
 
     /** @var Carbon */
     protected $now;
@@ -757,7 +763,8 @@ class AIService
     }
 
     /**
-     * Invades the largest bot in range that can be broken, sending the smallest force that succeeds.
+     * Invades the largest bot in range that can be broken, sending the entire available offense.
+     * Bots that invaded within the grace period are skipped, leaving them open to players.
      *
      * @return bool Whether an invasion was made
      */
@@ -808,6 +815,11 @@ class AIService
                     && $this->rangeCalculator->getDominionRange($dominion, $target) >= $minRange;
             });
 
+        $recentAttackerIds = $this->getRecentAttackerIds($targets->pluck('id')->all());
+        $targets = $targets->reject(function (Dominion $target) use ($recentAttackerIds) {
+            return in_array($target->id, $recentAttackerIds);
+        });
+
         if ($targets->isEmpty()) {
             return false;
         }
@@ -844,6 +856,28 @@ class AIService
     }
 
     /**
+     * Returns the ids of the given dominions that have invaded within the attacker grace period.
+     *
+     * @param array<int, int> $dominionIds
+     * @return array<int, int>
+     */
+    public function getRecentAttackerIds(array $dominionIds): array
+    {
+        if (empty($dominionIds)) {
+            return [];
+        }
+
+        return GameEvent::query()
+            ->where('type', 'invasion')
+            ->where('source_type', Dominion::class)
+            ->whereIn('source_id', $dominionIds)
+            ->where('created_at', '>', now()->subHours(static::RECENT_ATTACKER_GRACE_HOURS))
+            ->distinct()
+            ->pluck('source_id')
+            ->all();
+    }
+
+    /**
      * Casts racial attack spells that aren't already active, right before looking for an invasion target.
      */
     public function castAttackSpells(Dominion $dominion, array $config): void
@@ -868,19 +902,25 @@ class AIService
     }
 
     /**
-     * Returns the smallest force whose offense exceeds the target's defense, or null if none can.
+     * Returns the entire available offense, or null if it can't break the target.
      *
-     * Units that contribute the least defense per point of offense are sent first.
+     * Sending everything keeps only the home guard at home, so defense matches the bot defense formula.
+     * When the full force would break the 5:4 rule, units that contribute the most defense per point
+     * of offense are held back first, only as many as needed.
      *
      * @param array<int, int> $availableUnits
      * @return array<int, int>|null
      */
     public function getUnitsToSend(Dominion $dominion, Dominion $target, float $landRatio, array $availableUnits, float $targetDefense): ?array
     {
-        $slots = collect($availableUnits)
-            ->filter()
+        $units = array_filter($availableUnits);
+        if (empty($units)) {
+            return null;
+        }
+
+        $slots = collect($units)
             ->keys()
-            ->sortBy(function (int $slot) use ($dominion, $target, $landRatio) {
+            ->sortByDesc(function (int $slot) use ($dominion, $target, $landRatio) {
                 $unit = $dominion->race->units->firstWhere('slot', $slot);
                 $offense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'offense');
                 $defense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $unit, 'defense');
@@ -888,30 +928,31 @@ class AIService
                 return $offense > 0 ? ($defense / $offense) : PHP_INT_MAX;
             });
 
-        $units = [];
         foreach ($slots as $slot) {
-            $units[$slot] = $availableUnits[$slot];
-            if ($this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units) <= $targetDefense) {
-                continue;
+            if ($this->invasionService->passes54RatioRule($dominion, $target, $landRatio, $units)) {
+                break;
             }
 
-            // Binary search for the fewest units of this slot that still breaks the target
-            $failing = 0;
-            $passing = $availableUnits[$slot];
-            while ($passing - $failing > 1) {
+            // Binary search for the most units of this slot that still pass the 5:4 rule
+            $passing = 0;
+            $failing = $units[$slot];
+            while ($failing - $passing > 1) {
                 $units[$slot] = intdiv($failing + $passing, 2);
-                if ($this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units) > $targetDefense) {
+                if ($this->invasionService->passes54RatioRule($dominion, $target, $landRatio, $units)) {
                     $passing = $units[$slot];
                 } else {
                     $failing = $units[$slot];
                 }
             }
             $units[$slot] = $passing;
-
-            return array_filter($units);
         }
 
-        return null;
+        $units = array_filter($units);
+        if (empty($units) || $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units) <= $targetDefense) {
+            return null;
+        }
+
+        return $units;
     }
 
     /**

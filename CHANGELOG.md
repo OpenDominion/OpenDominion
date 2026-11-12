@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.52.2] - 2026-11-11
+### Changed
+- Attacking bots will now full send their offense to better match their expected defense
+- Attacking bots will no longer attack each other in the first 3 hours after sending
+
 ## [1.52.1] - 2026-11-01
 ### Added
 - New filtering options in the Town Crier to exclude bot attacks
@@ -2719,7 +2724,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.52.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.52.2...HEAD
+[1.52.2]: https://github.com/OpenDominion/OpenDominion/compare/1.52.1...1.52.2
 [1.52.1]: https://github.com/OpenDominion/OpenDominion/compare/1.52.0...1.52.1
 [1.52.0]: https://github.com/OpenDominion/OpenDominion/compare/1.51.0...1.52.0
 [1.51.0]: https://github.com/OpenDominion/OpenDominion/compare/1.50.2...1.51.0
