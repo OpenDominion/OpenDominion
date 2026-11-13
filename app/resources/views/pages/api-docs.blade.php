@@ -621,6 +621,54 @@
         {"created_at": "2026-09-29T22:40:00Z"}
     ]
 }</code></pre>
+                    <h5 class="fw-bold mb-1 mt-3" id="dominions-me-op-history">Op History</h5>
+                    <p class="mb-2"><span class="badge text-bg-success">GET</span> <code>/dominions/me/op-history</code></p>
+                    <p class="mb-1">
+                        Every info op you can see, of any type and on any dominion, newest first: the ops your realm
+                        has gathered and, once the round has ended, every op taken <em>on</em> your own dominion and
+                        realmies by any realm, as the in-game op center archive shows after the round. Each op has
+                        its <code>type</code>, its <code>target</code>, its <code>source</code> (who took it), and
+                        the same fields as in the <a href="#dominions-me-op-center-target-type">Op Archive</a>.
+                    </p>
+                    <ul>
+                        <li><code>dominion</code> (optional): only ops on this dominion ID.</li>
+                        <li>
+                            <code>realm</code> (optional): only ops on dominions in this realm number. Not together
+                            with <code>dominion</code>.
+                        </li>
+                        <li><code>type</code> (optional): only this op type.</li>
+                        <li>
+                            <code>since</code> / <code>until</code> (optional): ISO 8601 timestamps; only include ops
+                            gathered at or after <code>since</code> and at or before <code>until</code>.
+                        </li>
+                        <li>
+                            <code>limit</code> (optional, default 100, maximum 500): number of ops to return. For more,
+                            send the oldest <code>created_at</code> you received as the next <code>until</code>.
+                        </li>
+                        <li>
+                            Your own dominion or realm as <code>dominion</code> or <code>realm</code> returns
+                            <code>422</code> <code>same_realm</code> until the round has ended. An unknown
+                            <code>dominion</code>, <code>realm</code> or <code>type</code>, both <code>dominion</code>
+                            and <code>realm</code>, or an unreadable <code>since</code> / <code>until</code> returns
+                            <code>422</code> <code>invalid_parameter</code>.
+                        </li>
+                    </ul>
+<pre class="bg-body-tertiary border rounded p-2 mb-0"><code>{
+    "generated_at": "2026-10-20T12:00:00Z",
+    "dominion": 1234,
+    "realm": null,
+    "type": null,
+    "since": "2026-10-12T00:00:00Z",
+    "until": null,
+    "ops": [
+        {
+            "type": "barracks_spy",
+            "target": {"id": 1234, "name": "Your Realmie", "realm": 3, "race": "Human"},
+            "source": {"id": 5678, "name": "Their Dominion", "realm": 12},
+            "created_at": "2026-10-13T08:15:00Z"
+        }
+    ]
+}</code></pre>
                 </div>
             </div>
 
