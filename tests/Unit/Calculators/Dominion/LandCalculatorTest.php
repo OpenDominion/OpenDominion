@@ -144,6 +144,97 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
     }
 
     /**
+     * The Town Crier reports the sum of the per-land-type losses while the
+     * "your dominion was invaded" notification reports the requested acres,
+     * so the two disagree unless the per-type losses add up exactly.
+     */
+    public function testGetLandLostByLandTypeLosesExactlyTheRequestedAcres(): void
+    {
+        $scenarios = [
+            // Distributions that lost one acre too few while the total was floored
+            ['land' => ['plain' => 481, 'mountain' => 38, 'swamp' => 70, 'cavern' => 153, 'forest' => 982, 'hill' => 4, 'water' => 0], 'acresLost' => 222],
+            ['land' => ['plain' => 219, 'mountain' => 40, 'swamp' => 14, 'cavern' => 686, 'forest' => 178, 'hill' => 84, 'water' => 0], 'acresLost' => 244],
+            ['land' => ['plain' => 379, 'mountain' => 1229, 'swamp' => 573, 'cavern' => 451, 'forest' => 191, 'hill' => 44, 'water' => 0], 'acresLost' => 457],
+            // Distributions that divide evenly
+            ['land' => ['plain' => 300, 'mountain' => 200, 'swamp' => 0, 'cavern' => 0, 'forest' => 0, 'hill' => 0, 'water' => 0], 'acresLost' => 100],
+            ['land' => ['plain' => 250, 'mountain' => 0, 'swamp' => 0, 'cavern' => 0, 'forest' => 0, 'hill' => 0, 'water' => 0], 'acresLost' => 10],
+        ];
+
+        foreach ($scenarios as $scenario) {
+            $totalLand = array_sum($scenario['land']);
+            $landLostByLandType = $this->getLandLostByLandType($scenario['land'], $scenario['acresLost']);
+
+            $this->assertEquals(
+                $scenario['acresLost'],
+                array_sum(array_column($landLostByLandType, 'landLost')),
+                sprintf('Expected %s of %s acres to be lost', $scenario['acresLost'], $totalLand)
+            );
+        }
+    }
+
+    public function testGetLandLostByLandTypeDistributesLossProportionally(): void
+    {
+        $land = ['plain' => 481, 'mountain' => 38, 'swamp' => 70, 'cavern' => 153, 'forest' => 982, 'hill' => 4, 'water' => 0];
+
+        $landLostByLandType = $this->getLandLostByLandType($land, 222);
+
+        $expected = [
+            'forest' => 127,
+            'plain' => 62,
+            'cavern' => 20,
+            'swamp' => 9,
+            // Truncated to the acres left to lose, which is why hill is untouched
+            'mountain' => 4,
+        ];
+
+        $this->assertEquals($expected, array_map(function ($landLost) {
+            return $landLost['landLost'];
+        }, $landLostByLandType));
+    }
+
+    public function testGetLandLostByLandTypeNeverLosesMoreLandThanALandTypeHas(): void
+    {
+        $land = ['plain' => 1, 'mountain' => 1, 'swamp' => 1, 'cavern' => 1, 'forest' => 1244, 'hill' => 1, 'water' => 1];
+
+        $landLostByLandType = $this->getLandLostByLandType($land, 623);
+
+        $this->assertEquals(623, array_sum(array_column($landLostByLandType, 'landLost')));
+
+        foreach ($landLostByLandType as $landType => $landLost) {
+            $this->assertLessThanOrEqual($land[$landType], $landLost['landLost'], "Lost more {$landType} than available");
+        }
+    }
+
+    /**
+     * Runs getLandLostByLandType against a fully barren Dominion, using the
+     * same ratio the invasion and wonder services pass in.
+     *
+     * @param array<string, int> $landByLandType
+     * @return array<string, array{landLost: int, barrenLandLost: int, buildingsToDestroy: int}>
+     */
+    private function getLandLostByLandType(array $landByLandType, int $acresLost): array
+    {
+        /** @var Mock|LandCalculator $sut */
+        $sut = m::mock(LandCalculator::class, [
+            m::mock(BuildingCalculator::class),
+            $this->app->make(BuildingHelper::class),
+            $this->app->make(LandHelper::class),
+            m::mock(QueueService::class),
+        ])->makePartial();
+
+        /** @var Mock|Dominion $dominion */
+        $dominion = m::mock(Dominion::class);
+
+        foreach ($landByLandType as $landType => $acres) {
+            $dominion->shouldReceive('getAttribute')->with('land_' . $landType)->andReturn($acres);
+        }
+
+        $sut->shouldReceive('getBarrenLandByLandType')->with($dominion)->andReturn($landByLandType);
+
+        return $sut->getLandLostByLandType($dominion, $acresLost / array_sum($landByLandType));
+    }
+
+    /**
      * Returns all the land types.
      *
      * todo: Maybe refactor to $this->landHelper->getLandTypes()?

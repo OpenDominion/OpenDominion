@@ -144,12 +144,38 @@
   padding: 0.75rem 0.5rem 0 0.5rem;
 }
 
+// Cap the width of the main pane and centre it, so pages don't stretch across
+// an ultrawide monitor and leave huge gaps between labels and their values.
+// A page that genuinely needs the full width can opt out by adding
+// `layout-content-fluid` to <body> via the `body-class` section.
+.app-wrapper {
+  --od-content-max-width: 1600px;
+}
+
+.app-content-header,
+.app-content {
+  > .container-fluid {
+    max-width: var(--od-content-max-width);
+    margin-inline: auto;
+  }
+}
+
+.layout-content-fluid .app-wrapper {
+  --od-content-max-width: none;
+}
+
 // ── Footer ──────────────────────────────────────────────────────────────────
 .app-footer {
   grid-area: app-footer;
   min-height: 3rem;
   padding: 0.75rem 1rem;
   border-top: 1px solid var(--bs-border-color);
+}
+
+// Keep the footer's contents aligned with the capped main pane above it.
+.app-footer-inner {
+  max-width: var(--od-content-max-width);
+  margin-inline: auto;
 }
 
 // ── Sidebar collapse (desktop) ──────────────────────────────────────────────
