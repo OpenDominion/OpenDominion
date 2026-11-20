@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.52.3] - 2026-11-19
+### Changed
+- Attacking bots will now switch to full elite training late in the round or if their military percentage is high
+- Attacking bots will now invade targets below 75% range (but above 60%) if they haven't attacked in 2 days
+
 ## [1.52.2] - 2026-11-11
 ### Changed
 - Attacking bots will now full send their offense to better match their expected defense
@@ -2724,7 +2729,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.52.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.52.3...HEAD
+[1.52.3]: https://github.com/OpenDominion/OpenDominion/compare/1.52.2...1.52.3
 [1.52.2]: https://github.com/OpenDominion/OpenDominion/compare/1.52.1...1.52.2
 [1.52.1]: https://github.com/OpenDominion/OpenDominion/compare/1.52.0...1.52.1
 [1.52.0]: https://github.com/OpenDominion/OpenDominion/compare/1.51.0...1.52.0
