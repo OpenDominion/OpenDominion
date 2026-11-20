@@ -3,8 +3,10 @@
 namespace OpenDominion\Tests\Feature\Dominion;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Factories\DominionFactory;
@@ -137,8 +139,8 @@ class AttackerAITest extends AbstractBrowserKitTestCase
 
         $this->attacker->prestige = 600;
         $swapped = $this->aiService->applyUnitSwap($this->attacker, $config);
-        $this->assertEquals('unit2', $swapped['military'][0]['unit']);
-        $this->assertEquals('unit4', $swapped['offense']);
+        $this->assertEquals('unit3', $swapped['military'][0]['unit']);
+        $this->assertEquals(['unit4' => 0.5, 'unit1' => 0.5], $swapped['offense']);
         $this->assertArrayNotHasKey('unit_swap', $swapped);
         $this->assertEquals($swapped, $this->attacker->refresh()->ai_config);
     }
@@ -178,19 +180,245 @@ class AttackerAITest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3'));
     }
 
+    public function testLateRoundOverridesUnitsFromItsDayWithoutSaving(): void
+    {
+        $config = $this->attacker->ai_config;
+        $config['military'][0]['unit'] = 'unit2';
+        $config['offense'] = 'unit4';
+        $this->attacker->update(['ai_config' => $config, 'military_unit1' => 0, 'military_unit3' => 0]);
+
+        $this->round->update(['start_date' => now()->subDays(23)]);
+        $this->assertEquals($config, $this->aiService->applyLateRound($this->attacker->refresh()->load('round'), $config));
+
+        $this->round->update(['start_date' => now()->subDays(24)]);
+        $lateRound = $this->aiService->applyLateRound($this->attacker->refresh()->load('round'), $config);
+        $this->assertEquals('unit3', $lateRound['military'][0]['unit']);
+        $this->assertEquals('unit4', $lateRound['offense']);
+        $this->assertEquals(['unit2' => 'unit3'], $lateRound['retrain']);
+        $this->assertEquals(array_merge($config, ['late_round' => true]), $this->attacker->refresh()->ai_config);
+    }
+
+    public function testLateRoundIsCheckedOnceAndNeverReverts(): void
+    {
+        $config = $this->attacker->ai_config;
+        $this->attacker->update(['military_unit1' => 0, 'military_unit3' => 30000, 'peasants' => 10000]);
+
+        $this->aiService->applyLateRound($this->attacker->refresh(), $config);
+        $savedConfig = $this->attacker->refresh()->ai_config;
+        $this->assertTrue($savedConfig['late_round']);
+        $this->assertEquals($config['offense'], $savedConfig['offense']);
+
+        $this->attacker->update(['military_unit3' => 0]);
+        $this->assertEquals('unit4', $this->aiService->applyLateRound($this->attacker->refresh(), $savedConfig)['offense']);
+    }
+
+    public function testLateRoundAppliesEarlyOnceMilitaryIsHeavy(): void
+    {
+        $populationCalculator = $this->app->make(PopulationCalculator::class);
+        $config = $this->attacker->ai_config;
+        $config['offense'] = ['unit4' => 0.5, 'unit1' => 0.5];
+
+        $this->attacker->update(['military_unit1' => 0, 'military_unit3' => 0, 'peasants' => 10000]);
+        $this->assertLessThan(75, $populationCalculator->getPopulationMilitaryPercentage($this->attacker->refresh()));
+        $this->assertEquals($config, $this->aiService->applyLateRound($this->attacker, $config));
+
+        $this->attacker->update(['military_unit3' => 30000]);
+        $this->assertGreaterThanOrEqual(75, $populationCalculator->getPopulationMilitaryPercentage($this->attacker->refresh()));
+        $this->assertEquals('unit4', $this->aiService->applyLateRound($this->attacker, $config)['offense']);
+    }
+
+    public function testOffenseIsSplitByPlatinumShares(): void
+    {
+        $this->attacker->update([
+            'military_draftees' => 100000,
+            'resource_platinum' => 1000000,
+            'resource_lumber' => 1000000,
+        ]);
+        $costs = $this->app->make(TrainingCalculator::class)
+            ->getTrainingCostsPerUnit($this->attacker->refresh());
+
+        $this->aiService->trainOffense($this->attacker, ['unit4' => 0.5, 'unit1' => 0.5]);
+        $this->attacker->refresh();
+
+        $bonebreakers = $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit4');
+        $savages = $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit1');
+        $this->assertEquals((int) floor(500000 / $costs['unit4']['platinum']), $bonebreakers);
+        $this->assertEquals((int) floor((1000000 - $bonebreakers * $costs['unit4']['platinum']) / $costs['unit1']['platinum']), $savages);
+    }
+
+    public function testOffenseMixTrainsEarlierUnitsFirstWhenDrafteesRunShort(): void
+    {
+        $this->attacker->update([
+            'military_draftees' => 300,
+            'resource_platinum' => 1000000,
+            'resource_lumber' => 1000000,
+        ]);
+
+        $this->aiService->trainOffense($this->attacker->refresh(), ['unit4' => 0.5, 'unit1' => 0.5]);
+        $this->attacker->refresh();
+
+        $this->assertEquals(300, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit4'));
+        $this->assertEquals(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit1'));
+    }
+
+    public function testRetrainReplacesGuardsWithVoodooMagiAndRefundsGuards(): void
+    {
+        $trainingCalculator = $this->app->make(TrainingCalculator::class);
+        $this->attacker->update([
+            'military_unit1' => 0,
+            'military_unit2' => 20000,
+            'military_unit3' => 0,
+            'military_draftees' => 0,
+            'resource_platinum' => 10000000,
+        ]);
+        $this->attacker->refresh();
+        $costs = $trainingCalculator->getTrainingCostsPerUnit($this->attacker);
+        $defenseMultiplier = $this->militaryCalculator->getDefensivePowerMultiplier($this->attacker);
+        $defenseBefore = $this->militaryCalculator->getDefensivePower($this->attacker);
+        $homeGuardBefore = $this->aiService->getHomeGuardDefense($this->attacker);
+
+        $this->aiService->retrainUnits($this->attacker, ['retrain' => ['unit2' => 'unit3']]);
+        $this->attacker->refresh();
+
+        $released = 20000 - $this->attacker->military_unit2;
+        $voodooMagi = $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3');
+        $this->assertGreaterThan(0, $released);
+        $this->assertEquals((int) ceil($released / 2), $voodooMagi);
+        $this->assertEquals($released - $voodooMagi, $this->attacker->military_draftees);
+        $this->assertGreaterThanOrEqual($homeGuardBefore, $this->aiService->getHomeGuardDefense($this->attacker));
+        $this->assertLessThanOrEqual(0.02, ($released * 3 * $defenseMultiplier) / $defenseBefore);
+        $this->assertEquals(
+            10000000 - ($voodooMagi * $costs['unit3']['platinum']) + ($released * $costs['unit2']['platinum']),
+            $this->attacker->resource_platinum
+        );
+
+        for ($run = 0; $run < 10; $run++) {
+            $this->aiService->retrainUnits($this->attacker->refresh(), ['retrain' => ['unit2' => 'unit3']]);
+        }
+        $totalReleased = 20000 - $this->attacker->refresh()->military_unit2;
+        $this->assertGreaterThan($released, $totalReleased);
+        $this->assertLessThan(0.15, ($totalReleased * 3 * $defenseMultiplier) / $defenseBefore);
+    }
+
+    public function testRetrainRunsBeforeTrainingSoItIsNotStarvedOfPlatinum(): void
+    {
+        $this->round->update(['start_date' => now()->subDays(30)]);
+        $this->attacker->update([
+            'military_unit2' => 20000,
+            'military_draftees' => 1000,
+            'resource_platinum' => 500000,
+            'resource_lumber' => 1000000,
+        ]);
+
+        $this->aiService->performAttackerActions($this->attacker->refresh()->load('round'), $this->attacker->ai_config);
+
+        $this->assertLessThan(20000, $this->attacker->refresh()->military_unit2);
+        $this->assertGreaterThan(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3'));
+    }
+
+    public function testRetrainIsLimitedByPlatinum(): void
+    {
+        $this->attacker->update([
+            'military_unit2' => 20000,
+            'resource_platinum' => 0,
+        ]);
+
+        $this->aiService->retrainUnits($this->attacker->refresh(), ['retrain' => ['unit2' => 'unit3']]);
+
+        $this->assertEquals(20000, $this->attacker->refresh()->military_unit2);
+        $this->assertEquals(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3'));
+    }
+
+    public function testAttackersWithLittleDefensiveOffenseCastAresCallHourly(): void
+    {
+        $this->attacker->spells()->detach();
+        $this->attacker->update(['military_unit4' => 999, 'resource_platinum' => 0, 'resource_lumber' => 0]);
+        $this->assertEquals(999, $this->aiService->getDefensiveOffense($this->attacker->refresh()));
+
+        $this->aiService->performAttackerActions($this->attacker, $this->attacker->ai_config);
+
+        $this->assertTrue($this->app->make(SpellCalculator::class)->isSpellActive($this->attacker->refresh(), 'ares_call'));
+    }
+
+    public function testDefensiveOffenseCountsReturningUnitsButNotTraining(): void
+    {
+        $this->attacker->update(['military_unit4' => 400]);
+        $this->queueService->queueResources('invasion', $this->attacker, ['military_unit4' => 500], 6);
+        $this->queueService->queueResources('training', $this->attacker, ['military_unit4' => 700], 6);
+
+        $this->assertEquals(900, $this->aiService->getDefensiveOffense($this->attacker->refresh()));
+    }
+
+    public function testAttackersWithDefensiveOffenseOnlyCastAresCallAfterInvading(): void
+    {
+        $spellCalculator = $this->app->make(SpellCalculator::class);
+        $this->assertContains('ares_call', $this->attacker->ai_config['spells']);
+        $this->attacker->spells()->detach();
+        $this->attacker->update(['military_unit1' => 0, 'military_unit4' => 5000, 'resource_platinum' => 0, 'resource_lumber' => 0]);
+
+        $this->aiService->performAttackerActions($this->attacker->refresh(), $this->attacker->ai_config);
+        $this->assertFalse($spellCalculator->isSpellActive($this->attacker->refresh(), 'ares_call'));
+        $this->assertTrue($spellCalculator->isSpellActive($this->attacker, 'midas_touch'));
+
+        $this->assertTrue($this->aiService->attemptInvasion($this->attacker, $this->attacker->ai_config));
+        $this->assertTrue($spellCalculator->isSpellActive($this->attacker->refresh(), 'ares_call'));
+        $this->assertGreaterThanOrEqual(AIService::ARMY_OUT_SPELLS_DEFENSIVE_OFFENSE_LIMIT, $this->aiService->getDefensiveOffense($this->attacker));
+    }
+
+    public function testAresCallIsNotCastWhenNoInvasionIsMade(): void
+    {
+        $this->attacker->spells()->detach();
+        $this->target->update(['military_unit2' => 50000]);
+
+        $this->assertFalse($this->aiService->attemptInvasion($this->attacker->refresh(), $this->attacker->ai_config));
+        $this->assertFalse($this->app->make(SpellCalculator::class)->isSpellActive($this->attacker->refresh(), 'ares_call'));
+    }
+
+    public function testStalledAttackersLowerTheirMinimumRange(): void
+    {
+        $config = $this->attacker->ai_config;
+
+        $this->assertEquals(75, $this->aiService->getMinRange($this->attacker, $config), 'Recently spawned');
+
+        $this->attacker->created_at = now()->subHours(49);
+        $this->assertEquals(AIService::STALLED_MIN_RANGE, $this->aiService->getMinRange($this->attacker, $config));
+
+        GameEvent::create([
+            'round_id' => $this->round->id,
+            'source_type' => Dominion::class,
+            'source_id' => $this->attacker->id,
+            'target_type' => Dominion::class,
+            'target_id' => $this->target->id,
+            'type' => 'invasion',
+            'data' => [],
+            'created_at' => now()->subHours(47),
+        ]);
+        $this->assertEquals(75, $this->aiService->getMinRange($this->attacker, $config));
+    }
+
+    public function testStalledAttackerInvadesBelowSeventyFivePercentRange(): void
+    {
+        $this->target->update(['land_plain' => $this->target->land_plain - 220]);
+        $this->assertFalse($this->aiService->attemptInvasion($this->attacker, $this->attacker->ai_config));
+
+        Dominion::where('id', $this->attacker->id)->update(['created_at' => now()->subHours(49)]);
+        $this->assertTrue($this->aiService->attemptInvasion($this->attacker->refresh(), $this->attacker->ai_config));
+        $this->assertEquals(1, GameEvent::where('type', 'invasion')->where('source_id', $this->attacker->id)->where('target_id', $this->target->id)->count());
+    }
+
     public function testSurplusDrafteesAreReleasedDownToReserve(): void
     {
-        $this->attacker->update(['military_draftees' => 1500]);
-        $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
-        $this->assertEquals(1500, $this->attacker->refresh()->military_draftees);
-
-        $this->attacker->update(['military_draftees' => 1501]);
+        $this->attacker->update(['military_draftees' => 1000]);
         $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
         $this->assertEquals(1000, $this->attacker->refresh()->military_draftees);
+
+        $this->attacker->update(['military_draftees' => 1001]);
+        $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
+        $this->assertEquals(500, $this->attacker->refresh()->military_draftees);
 
         $this->attacker->update(['military_draftees' => 9000]);
         $this->aiService->releaseSurplusDraftees($this->attacker->refresh());
-        $this->assertEquals(1000, $this->attacker->refresh()->military_draftees);
+        $this->assertEquals(500, $this->attacker->refresh()->military_draftees);
     }
 
     public function testAttackerActionsReleaseSurplusDraftees(): void
@@ -204,7 +432,7 @@ class AttackerAITest extends AbstractBrowserKitTestCase
 
         $this->aiService->performAttackerActions($this->attacker->refresh(), $this->attacker->ai_config);
 
-        $this->assertEquals(1000, $this->attacker->refresh()->military_draftees);
+        $this->assertEquals(500, $this->attacker->refresh()->military_draftees);
     }
 
     public function testRezonesBarrenLandTheBuildPlanDoesNotUse(): void
