@@ -19,7 +19,6 @@ class TownCrierController extends AbstractDominionController
         $selectedDominion = $this->getSelectedDominion();
         $realmCount = Realm::where('round_id', $selectedDominion->round_id)->count();
 
-        $dominionId = $request->input('dominion');
         $typeLabels = GameEventService::TOWN_CRIER_TYPES;
         $typeChoices = array_keys($typeLabels);
         $defaultType = $selectedDominion->settings['town_crier_default_type'] ?? GameEventService::DEFAULT_TOWN_CRIER_TYPE;
@@ -41,8 +40,19 @@ class TownCrierController extends AbstractDominionController
             $realm = null;
         }
 
-        if ($dominionId !== null) {
-            $dominion = Dominion::find($dominionId);
+        if ($request->has('dominion')) {
+            $round = $selectedDominion->round;
+            $targets = Dominion::where('round_id', $round->id);
+            if (!$round->hasStarted()) {
+                if ($round->hasAssignedRealms() && $selectedDominion->realm->number > 0) {
+                    $targets->where('realm_id', $selectedDominion->realm_id);
+                } else {
+                    $targets->whereKey($selectedDominion->id);
+                }
+            }
+
+            $dominionId = filter_var($request->input('dominion'), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+            $dominion = $targets->whereKey($dominionId)->firstOrFail();
         } else {
             $dominion = null;
         }

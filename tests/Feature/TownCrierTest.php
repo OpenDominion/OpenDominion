@@ -12,6 +12,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundLeague;
 use OpenDominion\Services\GameEventService;
 use OpenDominion\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class TownCrierTest extends AbstractTestCase
 {
@@ -44,6 +45,66 @@ class TownCrierTest extends AbstractTestCase
         Carbon::setTestNow();
 
         parent::tearDown();
+    }
+
+    #[DataProvider('unassignedRealmCases')]
+    public function testOnlySelfIsVisibleWithoutAnAssignedNumberedRealm(bool $assignmentComplete, int $realmNumber): void
+    {
+        $this->round->update(['start_date' => now()->addDay(), 'assignment_complete' => $assignmentComplete]);
+        $this->realm->update(['number' => $realmNumber]);
+        $this->human->update(['realm_id' => $this->realm->id]);
+        $this->selectTownCrierViewer();
+
+        $this->get(route('dominion.town-crier', ['dominion' => $this->viewer->id]))
+            ->assertOk()->assertSeeText("{$this->viewer->name} (#{$realmNumber})")->assertSeeText('No recent events.');
+        $this->get(route('dominion.town-crier', ['dominion' => $this->human->id]))
+            ->assertNotFound()->assertDontSeeText($this->human->name);
+    }
+
+    public static function unassignedRealmCases(): array
+    {
+        return [
+            'assignment pending' => [false, 1],
+            'shared realm zero after assignment' => [true, 0],
+        ];
+    }
+
+    public function testOnlyMembersOfTheSameRealmAreVisibleBetweenAssignmentAndRoundStart(): void
+    {
+        $this->round->update(['start_date' => now()->addDay(), 'assignment_complete' => true]);
+        $this->otherRealm->update(['number' => 2]);
+        $this->human->update(['realm_id' => $this->realm->id]);
+        $this->selectTownCrierViewer();
+
+        $this->get(route('dominion.town-crier', ['dominion' => $this->human->id]))
+            ->assertOk()->assertSeeText("{$this->human->name} (#1)")->assertSeeText('No recent events.');
+        $this->get(route('dominion.town-crier', ['realmNumber' => 1, 'dominion' => $this->bot->id]))
+            ->assertNotFound()->assertDontSeeText($this->bot->name);
+        $this->get(route('dominion.town-crier', ['realmNumber' => 2]))
+            ->assertOk()->assertSeeText("{$this->otherRealm->name} (#2)");
+    }
+
+    public function testRoundStartAllowsOtherRealmsAndKeepsDominionFiltersWithinTheRound(): void
+    {
+        $this->round->update(['start_date' => now()]);
+        $this->otherRealm->update(['number' => 2]);
+        $otherRound = $this->createTownCrierRound();
+        $outsider = $this->createDominion($this->createUser(), $otherRound, null, $this->createRealm($otherRound));
+        $this->selectTownCrierViewer();
+
+        $this->get(route('dominion.town-crier', ['dominion' => $this->human->id]))
+            ->assertOk()->assertSeeText("{$this->human->name} (#2)")->assertSeeText('No recent events.');
+        $this->get(route('dominion.town-crier', ['dominion' => $outsider->id]))
+            ->assertNotFound()->assertDontSeeText($outsider->name);
+        $this->get(route('dominion.town-crier', ['dominion' => 2147483647]))
+            ->assertNotFound();
+    }
+
+    protected function selectTownCrierViewer(): void
+    {
+        $this->withoutVite();
+        $this->actingAs($this->viewer->user);
+        $this->selectDominion($this->viewer);
     }
 
     public function testBotAttackScopesAndClassificationOnlyMatchInvasionsFromBots(): void
