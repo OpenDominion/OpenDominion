@@ -40,6 +40,9 @@ User ──has many──→ Dominion ──belongs to──→ Round
 - **History**: Custom `save()` records deltas via RealmHistoryService
 
 ### Dominion (`dominions`) - Main game entity
+
+Realm advisor defaults apply after assignment in numbered realms for viewers who registered by the assignment deadline. A per-player choice overrides pack and realm settings. Locked viewers can only see their own advisors.
+
 - **Relations**: realm, round, race, user, pack, hero, heroes, spells (btm), techs (btm), queues, tick, history, journals, rankings, raidContributions, councilThreads/Posts, sourceEvents/targetEvents, infoOps
 - **Scopes**: `active()`, `bot()` (user_id null), `human()`
 - **Casts**: settings (array), ai_config (array)

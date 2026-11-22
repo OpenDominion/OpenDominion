@@ -30,6 +30,7 @@ class AdvisorsApiTest extends AbstractTestCase
         $this->withoutMiddleware(ThrottleRequests::class);
 
         $this->round = $this->createRound();
+        $this->round->update(['assignment_complete' => true]);
         $this->dominion = $this->createDominion($this->createUser(), $this->round);
         $this->dominion->update(['api_key' => 'advisors-key', 'protection_finished' => true]);
     }
