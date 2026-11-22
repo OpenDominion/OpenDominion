@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Tests\Feature\Http\Dominion;
 
+use OpenDominion\Http\Controllers\Dominion\GovernmentController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
@@ -82,5 +83,21 @@ class RealmAdvisorsTest extends AbstractTestCase
 
         $this->round->update(['assignment_complete' => true]);
         $this->assertTrue($this->viewer->inRealmAndSharesAdvisors($target->fresh()));
+    }
+
+    public function testGovernmentRosterCanCheckAdvisorSharingWithoutAdditionalQueries(): void
+    {
+        $realm = $this->createRealm($this->round);
+        $this->viewer->update(['realm_id' => $realm->id]);
+        $teammate = $this->createDominion($this->createUser(), $this->round, realm: $realm);
+        $this->travelTo($this->round->realmAssignmentDate()->addHour());
+        $this->round->update(['assignment_complete' => true]);
+
+        $view = app(GovernmentController::class)->getIndex(request());
+        $roster = $view->getData()['dominions']->keyBy('id');
+
+        $this->expectsDatabaseQueryCount(0);
+        $this->assertTrue($roster[$this->viewer->id]->inRealmAndSharesAdvisors($roster[$teammate->id]));
+        $this->assertTrue($roster[$teammate->id]->inRealmAndSharesAdvisors($roster[$this->viewer->id]));
     }
 }

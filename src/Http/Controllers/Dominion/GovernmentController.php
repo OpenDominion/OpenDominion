@@ -33,6 +33,8 @@ class GovernmentController extends AbstractDominionController
             ->with([
                 'race',
                 'realm',
+                'round',
+                'user',
                 'monarchVote',
             ])
             ->get()
