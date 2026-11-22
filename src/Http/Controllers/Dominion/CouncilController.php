@@ -20,16 +20,17 @@ class CouncilController extends AbstractDominionController
     public function getIndex(Request $request)
     {
         $dominion = $this->getSelectedDominion();
+
+        if ($dominion->locked_at !== null) {
+            return redirect()->route('dominion.status')->withErrors(['Locked dominions are not allowed access to the council.']);
+        }
+
         $lastRead = $dominion->council_last_read;
         $hasUnread = $dominion->realm->councilThreads()
             ->where('last_activity', '>', $lastRead ?? $dominion->round->created_at)
             ->exists();
         if ($hasUnread) {
             $this->updateDominionCouncilLastRead($dominion);
-        }
-
-        if ($dominion->locked_at !== null) {
-            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
         }
 
         if (!$dominion->round->hasAssignedRealms()) {
@@ -84,7 +85,7 @@ class CouncilController extends AbstractDominionController
     public function getThread(Council\Thread $thread)
     {
         try {
-            $this->guardAgainstCrossRealm($thread);
+            $this->guardCanReadThread($thread);
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.council')
@@ -93,10 +94,6 @@ class CouncilController extends AbstractDominionController
 
         $dominion = $this->getSelectedDominion();
         $this->updateDominionCouncilLastRead($dominion);
-
-        if ($dominion->locked_at !== null) {
-            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
-        }
 
         $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
 
@@ -112,7 +109,7 @@ class CouncilController extends AbstractDominionController
     public function postReply(CreatePostRequest $request, Council\Thread $thread)
     {
         try {
-            $this->guardAgainstCrossRealm($thread);
+            $this->guardCanReadThread($thread);
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.council')
@@ -211,26 +208,30 @@ class CouncilController extends AbstractDominionController
     }
 
     /**
-     * Throws exception if trying to view a thread outside of your realm.
-     *
-     * @param Council\Thread $thread
      * @throws GameException
      */
-    protected function guardAgainstCrossRealm(Council\Thread $thread): void
+    protected function guardCanReadThread(?Council\Thread $thread): void
     {
-        if ($this->getSelectedDominion()->realm->id !== (int)$thread->realm_id) {
+        $dominion = $this->getSelectedDominion();
+
+        if ($thread === null || (int)$dominion->realm_id !== (int)$thread->realm_id) {
             throw new GameException('No permission to view thread.');
+        }
+
+        if ($dominion->locked_at !== null) {
+            throw new GameException('Locked dominions are not allowed access to the council.');
         }
     }
 
     /**
      * Throws exception if the selected dominion is not the thread's creator or realm monarch.
      *
-     * @param Thread $thread
      * @throws GameException
      */
     protected function guardForThread(Council\Thread $thread): void
     {
+        $this->guardCanReadThread($thread);
+
         if ($this->getSelectedDominion()->id !== (int)$thread->dominion_id && $this->getSelectedDominion()->id !== (int)$thread->realm->monarch_dominion_id) {
             throw new GameException('No permission to moderate thread.');
         }
@@ -239,11 +240,12 @@ class CouncilController extends AbstractDominionController
     /**
      * Throws exception if the selected dominion is not the post's creator or realm monarch.
      *
-     * @param Post $post
      * @throws GameException
      */
     protected function guardForPost(Council\Post $post): void
     {
+        $this->guardCanReadThread($post->thread);
+
         if ($this->getSelectedDominion()->id !== (int)$post->dominion_id && $this->getSelectedDominion()->id !== (int)$post->thread->realm->monarch_dominion_id) {
             throw new GameException('No permission to moderate post.');
         }
