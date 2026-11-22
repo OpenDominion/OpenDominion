@@ -3,7 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
@@ -180,7 +180,7 @@ class CalculationsController extends AbstractDominionController
                     ]
                 ],
             ])->keyBy('type');
-        } else {
+        } elseif (Gate::allows('viewOpCenter', $dominion)) {
             $targetInfoOps = InfoOp::query()
                 ->where('target_dominion_id', $targetDominionId)
                 ->where('source_realm_id', $dominion->realm->id)
@@ -193,6 +193,8 @@ class CalculationsController extends AbstractDominionController
                     return true;
                 })
                 ->keyBy('type');
+        } else {
+            $targetInfoOps = collect();
         }
 
         return view('pages.dominion.calculations.military', [

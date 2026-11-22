@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Support\Facades\Gate;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
@@ -20,7 +21,6 @@ use OpenDominion\Models\Bounty;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\InfoOpService;
-use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\GameEventService;
 
 class OpCenterController extends AbstractDominionController
@@ -30,22 +30,18 @@ class OpCenterController extends AbstractDominionController
      */
     private $gameEventService;
 
-    public function __construct(GameEventService $gameEventService, ProtectionService $protectionService)
+    public function __construct(GameEventService $gameEventService)
     {
         $this->gameEventService = $gameEventService;
-        $this->protectionService = $protectionService;
     }
 
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
 
-        if ($dominion->locked_at !== null) {
-            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
-        }
-
-        if ($this->protectionService->isUnderProtection($dominion) && $dominion->round->hasStarted()) {
-            return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
+        $access = Gate::inspect('viewOpCenter', $dominion);
+        if ($access->denied()) {
+            return redirect()->back()->withErrors([$access->message()]);
         }
 
         $latestInfoOps = $dominion->realm->infoOps()
@@ -83,12 +79,9 @@ class OpCenterController extends AbstractDominionController
     {
         $selectedDominion = $this->getSelectedDominion();
 
-        if ($selectedDominion->locked_at !== null) {
-            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
-        }
-
-        if ($this->protectionService->isUnderProtection($selectedDominion) && $selectedDominion->round->hasStarted()) {
-            return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
+        $access = Gate::inspect('viewOpCenter', $selectedDominion);
+        if ($access->denied()) {
+            return redirect()->back()->withErrors([$access->message()]);
         }
 
         if ($selectedDominion->id == $dominion->id) {
@@ -144,12 +137,9 @@ class OpCenterController extends AbstractDominionController
         $selectedDominion = $this->getSelectedDominion();
         $roundEnded = $selectedDominion->round->hasEnded();
 
-        if ($selectedDominion->locked_at !== null) {
-            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
-        }
-
-        if ($this->protectionService->isUnderProtection($selectedDominion) && $selectedDominion->round->hasStarted()) {
-            return redirect()->back()->withErrors(['Dominions in protection are not allowed access to the op center.']);
+        $access = Gate::inspect('viewOpCenter', $selectedDominion);
+        if ($access->denied()) {
+            return redirect()->back()->withErrors([$access->message()]);
         }
 
         if ($selectedDominion->id == $dominion->id && !$roundEnded) {
