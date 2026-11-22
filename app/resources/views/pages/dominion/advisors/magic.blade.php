@@ -44,7 +44,7 @@
                                     <td>{{ $spellHelper->getSpellDescription($activeSpell->spell) }}</td>
                                     <td class="text-center">{{ $activeSpell->duration }}</td>
                                     <td class="text-center">
-                                        @if ($activeSpell->cast_by_dominion_id == $target->id || $selectedDominion->realm->dominions->pluck('id')->contains($activeSpell->cast_by_dominion_id) || $target->getSpellPerkValue('surreal_perception'))
+                                        @if ($spellHelper->canIdentifySpellCaster($selectedDominion, $target, $activeSpell->castByDominion?->id, $activeSpell->castByDominion?->realm?->number, true))
                                             <a href="{{ route('dominion.realm', $activeSpell->castByDominion->realm->number) }}">{{ $activeSpell->castByDominion->name }} (#{{ $activeSpell->castByDominion->realm->number }})</a>
                                         @else
                                             <em>Unknown</em>

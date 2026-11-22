@@ -130,6 +130,7 @@ class OpCenterApiTest extends AbstractTestCase
                 'cast_by_dominion_id' => 999,
                 'cast_by_dominion_name' => 'Evil Sorcerer',
                 'cast_by_dominion_realm_number' => 4,
+                'cast_by_dominion' => ['name' => 'Legacy caster name'],
             ],
         ]);
 
@@ -139,6 +140,10 @@ class OpCenterApiTest extends AbstractTestCase
 
         $spells = $response->json('dominions.' . $this->target->id . '.ops.revelation.spells');
         $this->assertNotEmpty($spells);
+        $this->assertSame('harmony', $spells[0]['spell']);
+        $this->assertSame(12, $spells[0]['duration']);
+        $this->assertArrayNotHasKey('cast_by_dominion', $spells[0]);
+        $this->assertStringNotContainsString('Legacy caster name', $response->getContent());
         $this->assertNull($spells[0]['cast_by_dominion_id']);
         $this->assertNull($spells[0]['cast_by_dominion_name']);
         $this->assertNull($spells[0]['cast_by_dominion_realm_number']);
@@ -276,6 +281,7 @@ class OpCenterApiTest extends AbstractTestCase
                 'cast_by_dominion_id' => 999,
                 'cast_by_dominion_name' => 'Evil Sorcerer',
                 'cast_by_dominion_realm_number' => 4,
+                'cast_by_dominion' => ['name' => 'Legacy caster name'],
             ],
         ]);
 
@@ -293,6 +299,8 @@ class OpCenterApiTest extends AbstractTestCase
         $this->assertSame('harmony', $response->json('ops.0.spells.0.spell'));
         $this->assertNull($response->json('ops.0.spells.0.cast_by_dominion_id'));
         $this->assertStringNotContainsString('Evil Sorcerer', $response->getContent());
+        $this->assertArrayNotHasKey('cast_by_dominion', $response->json('ops.0.spells.0'));
+        $this->assertStringNotContainsString('Legacy caster name', $response->getContent());
     }
 
     public function testHistoryEndpointReturnsEmptyListWhenRealmHasNoOpsOfType(): void

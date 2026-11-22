@@ -47,6 +47,7 @@ User ──has many──→ Dominion ──belongs to──→ Round
   - State: `isLocked()`, `isAbandoned()`, `isActive()`, `isBuildingPhase()`
   - Court: `isMonarch()`, `isGeneral()`, `isSpymaster()`, `isMagister()`, `isMage()`, `isJester()`, `isCourtMember()`
   - Perks: `getSpellPerkValue()`, `getTechPerkValue()`, `getWonderPerkValue()`, `getRoundPerkValue()`/`getRoundPerkMultiplier()`/`getRoundPerkValueParts()` (aggregate active perks)
+  - `hasSurrealPerception()` checks the active spell and realm wonder for the same detection perk.
   - Abandonment: `requestAbandonment()`, `resetAbandonment()`, `cancelAbandonment()`
 - **History**: Custom `save()` records deltas via HistoryService
 

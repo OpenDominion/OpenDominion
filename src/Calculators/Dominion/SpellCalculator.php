@@ -171,7 +171,7 @@ class SpellCalculator
      */
     public function getActiveSpells(Dominion $dominion): Collection
     {
-        return DominionSpell::with(['castByDominion', 'spell'])
+        return DominionSpell::with(['castByDominion.realm', 'spell'])
             ->where('dominion_id', $dominion->id)
             ->where('duration', '>', 0)
             ->orderByDesc('duration')

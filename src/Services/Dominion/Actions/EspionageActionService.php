@@ -354,7 +354,7 @@ class EspionageActionService
             // Inform target that they repelled a info spy operation
             $sourceDominionId = $dominion->id;
             if ($dominion->hero !== null && $dominion->hero->getPerkValue('espionage_fails_hide_identity')) {
-                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                if (!$target->hasSurrealPerception()) {
                     $sourceDominionId = null;
                 }
             }
@@ -417,7 +417,7 @@ class EspionageActionService
         }
 
         // Surreal Perception
-        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->hasSurrealPerception()) {
             $this->notificationService
                 ->queueNotification('received_spy_op', [
                     'sourceDominionId' => $dominion->id,
@@ -481,7 +481,7 @@ class EspionageActionService
             // Inform target that they repelled a theft spy operation
             $sourceDominionId = $dominion->id;
             if ($dominion->hero !== null && $dominion->hero->getPerkValue('espionage_fails_hide_identity')) {
-                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                if (!$target->hasSurrealPerception()) {
                     $sourceDominionId = null;
                 }
             }
@@ -575,7 +575,7 @@ class EspionageActionService
 
         // Surreal Perception
         $sourceDominionId = null;
-        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->hasSurrealPerception()) {
             $sourceDominionId = $dominion->id;
         }
 
@@ -749,7 +749,7 @@ class EspionageActionService
             // Inform target that they repelled a hostile spy operation
             $sourceDominionId = $dominion->id;
             if ($dominion->hero !== null && $dominion->hero->getPerkValue('espionage_fails_hide_identity')) {
-                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                if (!$target->hasSurrealPerception()) {
                     $sourceDominionId = null;
                 }
             }
@@ -880,7 +880,7 @@ class EspionageActionService
 
         // Surreal Perception
         $sourceDominionId = null;
-        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->hasSurrealPerception()) {
             $sourceDominionId = $dominion->id;
         }
 
