@@ -983,9 +983,6 @@ class TickService
             'race.units.perks',
         ]);
 
-        // Active spells
-        $this->spellCalculator->getActiveSpells($dominion);
-
         // Queues
         $incomingQueue = DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)

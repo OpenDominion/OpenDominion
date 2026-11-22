@@ -338,7 +338,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($spellCalculator->getActiveSpells($selectedDominion) as $activeSpell)
+                        @foreach ($spellCalculator->getActiveSpells($selectedDominion, withCasterRealm: true) as $activeSpell)
                             <tr>
                                 <td>{{ $activeSpell->spell->name }}</td>
                                 <td>{{ $spellHelper->getSpellDescription($activeSpell->spell) }}</td>

@@ -176,7 +176,7 @@ class InfoMapper
     {
         $data = [];
 
-        foreach ($this->spellCalculator->getActiveSpells($dominion) as $activeSpell) {
+        foreach ($this->spellCalculator->getActiveSpells($dominion, withCasterRealm: true) as $activeSpell) {
             $spellData = $activeSpell->attributesToArray();
             $spellData['spell'] = $activeSpell->spell->key;
             $spellData['cast_by_dominion_name'] = $activeSpell->castByDominion?->name;

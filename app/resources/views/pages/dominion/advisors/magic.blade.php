@@ -38,7 +38,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($spellCalculator->getActiveSpells($target) as $activeSpell)
+                            @foreach ($spellCalculator->getActiveSpells($target, withCasterRealm: true) as $activeSpell)
                                 <tr>
                                     <td>{{ $activeSpell->spell->name }}</td>
                                     <td>{{ $spellHelper->getSpellDescription($activeSpell->spell) }}</td>
