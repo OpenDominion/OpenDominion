@@ -890,12 +890,12 @@ class AIService
                 $refund = $resource === 'platinum' ? $refundPerRelease : 0;
                 $netCostPerRelease = ($replacementsPerRelease * $cost) - $refund;
                 if ($netCostPerRelease > 0) {
-                    $release = min($release, (int) floor($dominion->{"resource_{$resource}"} / $netCostPerRelease));
+                    $release = min($release, rfloor($dominion->{"resource_{$resource}"} / $netCostPerRelease));
                 }
             }
 
             // Rounding replacements up can cost slightly more than the refund covers
-            while ($release > 0 && !$this->canAffordRetrain($dominion, $replacementCosts->all(), $release, (int) ceil($release * $replacementsPerRelease), $refundPerRelease)) {
+            while ($release > 0 && !$this->canAffordRetrain($dominion, $replacementCosts->all(), $release, rceil($release * $replacementsPerRelease), $refundPerRelease)) {
                 $release--;
             }
             if ($release <= 0) {
@@ -904,7 +904,7 @@ class AIService
 
             $dominion->resource_platinum += $release * $refundPerRelease;
             $this->releaseActionService->release($dominion, [$fromUnit => $release]);
-            $this->trainActionService->train($dominion, ["military_{$toUnit}" => (int) ceil($release * $replacementsPerRelease)]);
+            $this->trainActionService->train($dominion, ["military_{$toUnit}" => rceil($release * $replacementsPerRelease)]);
         }
     }
 
@@ -936,7 +936,7 @@ class AIService
             static::RETRAIN_DEFENSE_REDUCTION_PER_RUN * $defense
         );
 
-        return max(0, (int) floor($limit / ($unitDefense * $multiplier)));
+        return max(0, rfloor($limit / ($unitDefense * $multiplier)));
     }
 
     /**

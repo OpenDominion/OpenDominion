@@ -286,7 +286,7 @@ class AttackerAITest extends AbstractBrowserKitTestCase
         $this->assertEquals((int) ceil($released / 2), $voodooMagi);
         $this->assertEquals($released - $voodooMagi, $this->attacker->military_draftees);
         $this->assertGreaterThanOrEqual($homeGuardBefore, $this->aiService->getHomeGuardDefense($this->attacker));
-        $this->assertLessThanOrEqual(0.02, ($released * 3 * $defenseMultiplier) / $defenseBefore);
+        $this->assertLessThanOrEqual(0.02, round(($released * 3 * $defenseMultiplier) / $defenseBefore, 9));
         $this->assertEquals(
             10000000 - ($voodooMagi * $costs['unit3']['platinum']) + ($released * $costs['unit2']['platinum']),
             $this->attacker->resource_platinum
