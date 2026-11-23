@@ -6,6 +6,7 @@ use OpenDominion\HeroCombat\Content\AbstractPassive;
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\Intent;
 
 /**
@@ -47,7 +48,7 @@ class SoulRendCharge extends AbstractPassive
 
         $instance->data['charging'] = true;
         $instance->data['last_health'] = $owner->currentHealth;
-        $battle->say($owner, "{$owner->name}'s form begins to glow with gathering ethereal energy... defend yourself!");
+        $battle->say($owner, "{$owner->name}'s form begins to glow with gathering ethereal energy... defend yourself!", MessageKind::Telegraph);
     }
 
     public function forcedIntent(EffectInstance $instance, CombatantState $subject, Battle $battle): ?Intent

@@ -8,16 +8,16 @@ use OpenDominion\HeroCombat\Content\AbstractEnemy;
  * Ullyaoth's revived champion. Undying brings it back whether heroes defeat it or Ullyaoth
  * devours it.
  */
-class RedEyedOrcChampion extends AbstractEnemy
+class BloodboundOrc extends AbstractEnemy
 {
     public function key(): string
     {
-        return 'red_eyed_orc_champion';
+        return 'bloodbound_orc';
     }
 
     public function name(): string
     {
-        return 'Red-Eyed Orc Champion';
+        return 'Bloodbound Orc';
     }
 
     public function stats(): array
@@ -40,6 +40,6 @@ class RedEyedOrcChampion extends AbstractEnemy
 
     public function ai(): string
     {
-        return 'orc_champion';
+        return 'bloodbound_orc';
     }
 }

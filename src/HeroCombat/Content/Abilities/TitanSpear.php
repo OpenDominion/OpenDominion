@@ -14,7 +14,7 @@ use OpenDominion\HeroCombat\Engine\CombatantState;
  */
 class TitanSpear extends AbstractAttack
 {
-    public const BONUS_DAMAGE = 30;
+    public const BONUS_DAMAGE = 60;
 
     public function key(): string
     {

@@ -246,7 +246,7 @@ The heroes page header has a Dominion Bonuses column (upgrade tiles, `partials/d
 
 ## Parties and borrowed heroes
 
-- `Encounter::maxPartySize()` (default 1). Above 1, a pilot may bring realmmates' heroes. `Encounter::minPartySize()` (default 1) is how many heroes the fight needs: above 1, the pilot must bring companions (`validateCompanions()` throws otherwise). Party-enabled encounters are designed for the party size: there's no automatic scaling. `ullyaoth` is the only party encounter (exactly 2).
+- `Encounter::maxPartySize()` (default 1). Above 1, a pilot may bring realmmates' heroes. `Encounter::minPartySize()` (default 1) is how many heroes the fight needs: above 1, the pilot must bring companions (`validateCompanions()` throws otherwise). Party-enabled encounters are designed for the party size: there's no automatic scaling. `ullyaoth` and `evil_twin_2v2` are the only party encounters (exactly 2 each).
 - `hero_combatants.controller_dominion_id` is who pilots a combatant; `dominion_id` stays the owner. `CombatantState::$controllerDominionId` carries it through the engine.
 - `HeroBattleService::createEncounterBattle(..., $companions)` / `createPracticeBattle(..., $companions)` validate party size, same realm and round, and no duplicates. `availableCompanions()` lists every other hero in the realm. Any number of realmmates can borrow the same hero at once (each battle has its own combatant row).
 - Everything player-facing goes through the controller: queueing and strategy changes (`HeroCombatant::isControlledBy()`), "battle in progress" checks (`hasBattleInProgress()`), the battle list (`HeroBattle::scopeControlledBy()`), raid objective completion (`HeroBattle::hasWinningController()`). Battles where your hero was borrowed don't block you or appear as yours.
@@ -286,7 +286,7 @@ A standalone Rust crate with no dependencies, for rule questions the PHP Tactici
 
 An `EnemyTemplate` gives stats, active abilities (`AbstractEnemy` adds the five basics), innate
 effects with data, and an AI key. An `Encounter` gives a roster (template, display name, stat and
-effect overrides) built from an `EncounterContext` (raid `priorWins`, the leader's stats),
+effect overrides) built from an `EncounterContext` (raid `priorWins`, the leader's stats, and `party`: every player hero's name and combat stats, leader first),
 optional `playerGrants()` (class-conditional abilities), optional `playerEffects()` (class-conditional effects such as `clear_minded`, applied by `HeroBattleService` when the battle is created), a `VictoryCondition`, an `onTurnEnd`
 script hook, and an optional victory line. Keys must match the `encounter` attribute raids use on
 their `RaidObjectiveTactic` rows.
@@ -296,6 +296,7 @@ All 18 original encounters are ported, plus `grand_magister`, `voodoo_mage_waaug
 | Key | Mechanics |
 |---|---|
 | `default` (Evil Twin) | copies the leader's stats |
+| `evil_twin_2v2` (Evil Twin (2v2)) | practice for 2v2: a required party of 2 (the pilot's hero and a realmmate's), against an Evil Twin of each that copies its combat stats (`EncounterContext::$party`) |
 | `rabid_bunny`, `dragonkin`, `gate_warden`, `rebel_corsair`, `rebel_admiral` | stat blocks; Blade Flurry, Enrage |
 | `fallen_kings` | `undying`: revive at half health 5 turns after being defeated |
 | `eternal_guardian` | `undying_legion` (999 defense while minions live), `necromancy` cadence → `summon_skeleton` |
@@ -310,7 +311,7 @@ All 18 original encounters are ported, plus `grand_magister`, `voodoo_mage_waaug
 | `rex_lunae` | `hungering_moon_curse` telegraph → `hungering_moon` (`moonstruck` max-health loss, turns then converts); Cleanse granted |
 | `voodoo_mage_waaugh` | `dragons_miasma` (3-turn cycle): gathers at end of turn 1, exhales at end of turn 2 as a free action. Heroes holding `focused` resist; others get `confused` (2 turns, 50% per action to be replaced, weighted toward Defend, never the chosen ability or Focus). While anyone is confused he is forced to cast `bone_splinter` (20 flat + 5 per `stolen_vigor` stack, each hit adds a stack) at them; otherwise `waaugh` AI (Hexfire 5 flat + 5 per stack, Attack). Scholars/sorcerers get `clear_minded` (25% instead). Effects applied in a TurnEnd hook are ticked in the same pass, so durations there are +1 |
 | `grand_magister` | `grand_magister` AI weights short spells (cooldown 3, 2-turn effects unless noted): `magic_ward` (halves damage taken, 4 turns), `backlash` (attackers take 50% back, 3 turns), `silence` → `silenced` (blocks Focus/Recover, 3 turns), `arcane_conduit` (forced ×2 attack next turn). No telegraph, no grants. Solo |
-| `ullyaoth` | Party of exactly 2 (`minPartySize()` = `maxPartySize()` = 2), roster Ullyaoth + `red_eyed_orc_champion` (80 HP, `undying`, `orc_champion` AI). `blood_rain` holds both telegraphs: at a turn's end it may tell a Devour (70%, devours ≥ 3 turns apart, target alternates heroes) for the next turn; while the champion stands it may tell Corpseblood Feast (35%) for the next turn, never a Devour turn. `devour` (forced): 60 flat to the marked hero, 30 to a hero Guarding them (via `covered`), and `heart_exposed` at declare. `titan_spear` (granted to every hero, `onePerTeam`): `canUse` only on a Devour turn, targets only the `blood_rain` holder, and against an exposed heart ignores defense, can't be Countered, +30. `corpseblood_feast` (forced) applies `feasting`, which at turn end (after that turn's defeats) eats a still-standing champion: heals 30, `empowered` attack +8, champion to 0 (Undying brings it back). Otherwise the `ullyaoth` AI: `hemorrhage` (attack + a `bleeding` stack: 5 per stack at every turn end, 3 turns, max 3, can't be redirected; not twice in a row), attack, focus |
+| `ullyaoth` | Party of exactly 2 (`minPartySize()` = `maxPartySize()` = 2), roster Ullyaoth (300 HP) + `bloodbound_orc` (80 HP, `undying`, `bloodbound_orc` AI). `blood_rain` holds both telegraphs: at a turn's end it may tell a Devour (70%, devours ≥ 3 turns apart, target alternates heroes) for the next turn; while the champion stands it may tell Corpseblood Feast (35%) for the next turn, never a Devour turn. `devour` (forced): 80 flat to the marked hero, 40 to a hero Guarding them (via `covered`), and `heart_exposed` at declare. `titan_spear` (granted to every hero, `onePerTeam`): `canUse` only on a Devour turn, targets only the `blood_rain` holder, and against an exposed heart ignores defense, can't be Countered, +60 (100 at base attack, so three Spears kill). `corpseblood_feast` (forced) applies `feasting`, which at turn end (after that turn's defeats) eats a still-standing champion: heals 30, `empowered` attack +8, champion to 0 (Undying brings it back). When Ullyaoth falls, Blood Rain's `onDeath` collapses the orc for good, so the fight ends with it (a draw if the last hero fell the same turn). Otherwise the `ullyaoth` AI: `hemorrhage` (attack + a `bleeding` stack: 5 per stack at every turn end, 3 turns, max 3, can't be redirected; not twice in a row), attack, focus |
 
 The old unused "story" encounters (wolf, bandit, imp, cultist) were never reachable and were
 not ported.
@@ -355,9 +356,15 @@ Everything that happens is a `BattleEvent`: `selected`, `damage`, `heal`, `effec
   `counter` and `redirected_from` (a guard took the hit). `heal` carries `via`, the ability or
   effect key that healed.
 - `Battle::say()` records a `message` event alongside the text line. Its `MessageKind` is
-  `narration` (stances, telegraphs, flavour), `detail` (only restates a damage or heal event:
-  `ActionContext::DETAIL_MESSAGES` templates and a few effect lines) or `outcome` (victory text).
-  Pass `MessageKind::Detail` for any new line that only repeats a number already in an event.
+  `narration` (stances, flavour), `telegraph` (a tell: what an enemy will do on a coming turn),
+  `detail` (only restates a damage or heal event: `ActionContext::DETAIL_MESSAGES` templates and
+  a few effect lines) or `outcome` (victory text). Pass `MessageKind::Detail` for any new line
+  that only repeats a number already in an event, and `MessageKind::Telegraph` for every tell
+  (`AbstractTelegraph`, `AbstractCadence`, Soul Rend's charge, Waaugh's Miasma gathering, Blood
+  Rain's Devour and Feast).
+- Tells read as ordinary Status lines in the summary. `BattleView::tells()` also returns the last
+  resolved turn's tells (nothing once the battle is over), and the orders panel shows them,
+  word for word, in a small warning strip above the heroes (`data-battle-tells`).
 - `TurnSummary` groups a turn into Actions, Status, Damage, Healing, Defeats and Result. Lines are
   segment lists (name with side, damage, heal, math, effect, tag, text); `TurnSummary::html()`
   escapes and renders them. It adds greyed lines for a Defend nobody tested and a Counter never

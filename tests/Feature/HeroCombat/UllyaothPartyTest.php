@@ -4,10 +4,13 @@ namespace OpenDominion\Tests\Feature\HeroCombat;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\HeroCombat\Engine\Events\EventType;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Persistence\BattleRepository;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Hero;
 use OpenDominion\Models\HeroBattle;
+use OpenDominion\Models\HeroBattleTurn;
 use OpenDominion\Models\HeroCombatant;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -101,7 +104,7 @@ class UllyaothPartyTest extends AbstractBrowserKitTestCase
         $this->assertContains('titan_spear', $hero->abilities);
         $this->assertContains('titan_spear', $borrowed->abilities);
         $this->assertEqualsCanonicalizing(
-            ['ullyaoth', 'red_eyed_orc_champion'],
+            ['ullyaoth', 'bloodbound_orc'],
             $battle->combatants()->where('team', 2)->pluck('template_key')->all(),
         );
     }
@@ -156,5 +159,39 @@ class UllyaothPartyTest extends AbstractBrowserKitTestCase
 
         $this->assertStringContainsString('data-action="titan_spear"', $this->response->getContent());
         $this->assertStringContainsString('data-one-per-team', $this->response->getContent());
+    }
+
+    public function testTheLastTurnsTellsShowAboveTheOrders(): void
+    {
+        [$pilot, $battle] = $this->party();
+        $battle->update(['current_turn' => 2]);
+        HeroBattleTurn::record($battle, 1, [
+            ['type' => EventType::Message->value, 'actor' => null, 'text' => 'Tell for next turn', 'kind' => MessageKind::Telegraph->value],
+            ['type' => EventType::Message->value, 'actor' => null, 'text' => 'Ordinary narration', 'kind' => MessageKind::Narration->value],
+        ]);
+        HeroBattleTurn::record($battle, 0, [
+            ['type' => EventType::Message->value, 'actor' => null, 'text' => 'Stale tell', 'kind' => MessageKind::Telegraph->value],
+        ]);
+        $this->actingAs($pilot->user);
+        $this->selectDominion($pilot);
+
+        $this->visitRoute('dominion.heroes.battles');
+
+        $this->assertMatchesRegularExpression('/data-battle-tells>(.*?)<\/div>\s*<\/div>/s', $this->response->getContent());
+        preg_match('/data-battle-tells>(.*?)<\/div>\s*<\/div>/s', $this->response->getContent(), $tells);
+        $this->assertStringContainsString('Tell for next turn', $tells[1]);
+        $this->assertStringNotContainsString('Ordinary narration', $tells[1]);
+        $this->assertStringNotContainsString('Stale tell', $tells[1]);
+    }
+
+    public function testNoTellsMeansNoBanner(): void
+    {
+        [$pilot] = $this->party();
+        $this->actingAs($pilot->user);
+        $this->selectDominion($pilot);
+
+        $this->visitRoute('dominion.heroes.battles');
+
+        $this->assertStringNotContainsString('data-battle-tells', $this->response->getContent());
     }
 }

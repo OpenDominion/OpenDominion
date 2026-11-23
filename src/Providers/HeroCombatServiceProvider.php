@@ -172,12 +172,13 @@ class HeroCombatServiceProvider extends ServiceProvider
         Enemies\GrandMagister::class,
         Enemies\VoodooMageWaaugh::class,
         Enemies\Ullyaoth::class,
-        Enemies\RedEyedOrcChampion::class,
+        Enemies\BloodboundOrc::class,
     ];
 
     /** @var array<int, class-string> */
     public const ENCOUNTERS = [
         Encounters\EvilTwinEncounter::class,
+        Encounters\EvilTwinPairEncounter::class,
         Encounters\RabidBunnyEncounter::class,
         Encounters\DragonkinEncounter::class,
         Encounters\GateWardenEncounter::class,

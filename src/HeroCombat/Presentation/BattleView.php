@@ -8,6 +8,7 @@ use OpenDominion\HeroCombat\Engine\BattleState;
 use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\Effects\EffectKind;
 use OpenDominion\HeroCombat\Engine\Events\EventType;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\Stats\Stat;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\HeroBattle;
@@ -488,6 +489,27 @@ class BattleView
     public function abilityIcon(string $key): string
     {
         return self::ABILITY_ICONS[$key] ?? 'ra-burst-blob';
+    }
+
+    /**
+     * The tells logged at the end of the last resolved turn: what the enemy will do next, in
+     * the log's own words, for the orders panel.
+     *
+     * @return string[]
+     */
+    public function tells(): array
+    {
+        if ($this->model->finished) {
+            return [];
+        }
+
+        $lastTurn = $this->model->turns->firstWhere('turn', $this->model->current_turn - 1);
+
+        return collect($lastTurn?->events ?? [])
+            ->filter(fn (array $event) => $event['type'] === EventType::Message->value && ($event['kind'] ?? null) === MessageKind::Telegraph->value)
+            ->pluck('text')
+            ->values()
+            ->all();
     }
 
     /**

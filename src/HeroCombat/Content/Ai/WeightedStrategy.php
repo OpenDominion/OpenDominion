@@ -145,7 +145,7 @@ class WeightedStrategy implements AiStrategy
             new static('grand_magister', 'Grand Magister', ['attack' => 4, 'magic_ward' => 2, 'backlash' => 2, 'silence' => 2, 'arcane_conduit' => 2, 'focus' => 1, 'recover' => 1]),
             new static('waaugh', 'Waaugh', ['hexfire' => 3, 'attack' => 2]),
             new static('ullyaoth', 'Ullyaoth', ['hemorrhage' => 3, 'attack' => 2, 'focus' => 1]),
-            new static('orc_champion', 'Orc Champion', ['attack' => 4, 'focus' => 1, 'counter' => 1]),
+            new static('bloodbound_orc', 'Bloodbound Orc', ['attack' => 4, 'focus' => 1, 'counter' => 1]),
         ];
     }
 }

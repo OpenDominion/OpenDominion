@@ -15,4 +15,7 @@ enum MessageKind: string
 
     /** How the battle ended. */
     case Outcome = 'outcome';
+
+    /** A tell: what an enemy will do on a coming turn. Shown like narration, and again above the orders. */
+    case Telegraph = 'telegraph';
 }

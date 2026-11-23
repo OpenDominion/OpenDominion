@@ -33,7 +33,7 @@ class UllyaothEncounter extends AbstractEncounter
     {
         return [
             ['template' => 'ullyaoth', 'name' => 'World-Eater Ullyaoth'],
-            ['template' => 'red_eyed_orc_champion', 'name' => 'Red-Eyed Orc Champion'],
+            ['template' => 'bloodbound_orc', 'name' => 'Bloodbound Orc'],
         ];
     }
 

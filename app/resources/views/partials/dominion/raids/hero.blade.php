@@ -40,19 +40,31 @@
                                         $companions = app(\OpenDominion\Services\Dominion\HeroBattleService::class)->availableCompanions($selectedDominion);
                                     }
                                     $needsCompanion = $minPartySize > 1 && $companions->isEmpty();
+                                    $showPartyRow = $partySize > 1 && ($companions->isNotEmpty() || $needsCompanion);
+                                    $formId = "raid-tactic-{$tactic->id}";
                                 @endphp
                                 <tr>
-                                    <td>{{ $tactic->name }}</td>
-                                    <td>{{ $tactic->attributes['name'] }}</td>
-                                    <td>
+                                    <td @class(['border-bottom-0' => $showPartyRow])>{{ $tactic->name }}</td>
+                                    <td @class(['border-bottom-0' => $showPartyRow])>{{ $tactic->attributes['name'] }}</td>
+                                    <td @class(['border-bottom-0' => $showPartyRow])>
                                         {{ number_format($raidCalculator->getTacticScore($selectedDominion, $tactic)) }}
                                         <small class="text-muted">(limit: 1)</small>
                                     </td>
-                                    <td>
-                                        <form action="{{ route('dominion.raids.tactic', $tactic) }}" method="post" class="disable-after-click">
+                                    <td @class(['border-bottom-0' => $showPartyRow])>
+                                        <form id="{{ $formId }}" action="{{ route('dominion.raids.tactic', $tactic) }}" method="post" class="disable-after-click">
                                             @csrf
-                                            @if ($partySize > 1 && $companions->isNotEmpty())
-                                                <select name="companion_hero_id" class="form-select form-select-sm mb-1" title="Bring a realmmate's hero">
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary" {{ $selectedDominion->isLocked() || !$objective->isActive() || $needsCompanion ? 'disabled' : null }}>
+                                                Start Battle
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @if ($showPartyRow)
+                                    <tr>
+                                        <td colspan="2" class="pt-0"></td>
+                                        <td colspan="2" class="pt-0">
+                                            @if ($companions->isNotEmpty())
+                                                <select name="companion_hero_id" form="{{ $formId }}" class="form-select form-select-sm" title="Bring a realmmate's hero">
                                                     @if ($minPartySize <= 1)
                                                         <option value="">Go alone</option>
                                                     @endif
@@ -60,16 +72,12 @@
                                                         <option value="{{ $companion->id }}">{{ $companion->name }} ({{ $heroHelper->getClassDisplayName($companion->class) }}, {{ $companion->dominion->name }})</option>
                                                     @endforeach
                                                 </select>
+                                            @elseif ($needsCompanion)
+                                                <small class="text-muted">Needs a realmmate's hero</small>
                                             @endif
-                                            @if ($needsCompanion)
-                                                <small class="text-muted d-block mb-1">Needs a realmmate's hero</small>
-                                            @endif
-                                            <button type="submit" class="btn btn-block btn-sm btn-primary" {{ $selectedDominion->isLocked() || !$objective->isActive() || $needsCompanion ? 'disabled' : null }}>
-                                                Start Battle
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                @endif
                                 @if (($tactic->attributes['encounter'] ?? null) === 'planewalker')
                                     @php
                                         $priorWins = \OpenDominion\Models\RaidContribution::where('raid_tactic_id', $tactic->id)

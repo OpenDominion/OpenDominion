@@ -30,7 +30,7 @@
                                 <tr>
                                     <td><input type="radio" id="encounter-default" name="encounter" value="default" checked /></td>
                                     <td><label for="encounter-default" style="font-weight: normal;">Evil Twin</label></td>
-                                    <td>Clone with your current stats</td>
+                                    <td>Practice</td>
                                 </tr>
                                 @foreach ($encounters as $key => $encounter)
                                     @php($needsCompanion = $encounter->minPartySize() > 1 && $companions->isEmpty())

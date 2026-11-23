@@ -19,7 +19,7 @@ class Ullyaoth extends AbstractEnemy
     public function stats(): array
     {
         return [
-            'health' => 320,
+            'health' => 300,
             'attack' => 25,
             'defense' => 30,
             'evasion' => 0,
@@ -36,7 +36,7 @@ class Ullyaoth extends AbstractEnemy
 
     public function effects(): array
     {
-        return ['blood_rain' => ['champion' => 'red_eyed_orc_champion']];
+        return ['blood_rain' => ['champion' => 'bloodbound_orc']];
     }
 
     public function ai(): string

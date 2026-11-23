@@ -1248,6 +1248,20 @@ body:not(.layout-top-nav) .app-header {
   font-weight: 600;
 }
 
+.battle-orders-tells {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--bs-border-color-translucent);
+  border-left: 3px solid var(--bs-warning);
+  background: color-mix(in srgb, var(--bs-warning) 8%, transparent);
+  font-size: 13px;
+  color: var(--bs-emphasis-color);
+
+  .fa {
+    margin-right: 4px;
+    color: var(--bs-warning);
+  }
+}
+
 .battle-orders-heroes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 504px), 1fr));

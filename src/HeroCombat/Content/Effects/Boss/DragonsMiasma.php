@@ -9,6 +9,7 @@ use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\CombatTag;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\Intent;
 
 /**
@@ -61,7 +62,7 @@ class DragonsMiasma extends AbstractPassive
 
         if ($phase === self::GATHER_ON) {
             $instance->data['gathering'] = true;
-            $battle->say($owner, "{$owner->name} lifts a pipe of carved dragon bone to his lips and draws on it slowly.");
+            $battle->say($owner, "{$owner->name} lifts a pipe of carved dragon bone to his lips and draws on it slowly.", MessageKind::Telegraph);
             return;
         }
 

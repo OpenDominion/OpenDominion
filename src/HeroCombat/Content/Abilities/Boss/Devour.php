@@ -12,7 +12,7 @@ use OpenDominion\HeroCombat\Engine\CombatantState;
  */
 class Devour extends AbstractBossMove
 {
-    public const DAMAGE = 60;
+    public const DAMAGE = 80;
     public const GUARDED_SHARE = 0.5;
 
     public function key(): string

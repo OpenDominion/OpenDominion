@@ -7,6 +7,7 @@ use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\CombatTag;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\Intent;
 
 /**
@@ -81,7 +82,7 @@ abstract class AbstractTelegraph extends AbstractPassive
         }
 
         $instance->data['pending'] = $move;
-        $battle->say($owner, str_replace('{actor}', $owner->name, $this->tells()[$move] ?? ''));
+        $battle->say($owner, str_replace('{actor}', $owner->name, $this->tells()[$move] ?? ''), MessageKind::Telegraph);
     }
 
     public function forcedIntent(EffectInstance $instance, CombatantState $subject, Battle $battle): ?Intent

@@ -9,7 +9,7 @@
         <p class="mb-1">Turns play out in the same order as the battle log:</p>
         <ol class="mb-2 ps-3">
             <li><b>Actions</b>: every hero chooses an action in secret, and they're revealed once everyone has locked in.</li>
-            <li><b>Status</b>: Defend, Guard, Counter, Rally, Exposed, Fortify and Caltrops take effect first, so they apply to every attack that turn.</li>
+            <li><b>Status</b>: Defend, Guard, Counter, Rally, Exposed<!--, Fortify and Caltrops--> take effect first, so they apply to every attack that turn.</li>
             <li><b>Damage</b>: attacks and counters deal their damage.</li>
             <li><b>Healing</b>: Recover and Heal restore health.</li>
             <li><b>Defeats</b>: anyone at 0 health is defeated. Healing comes first, so it can save an ally from that turn's damage.</li>
@@ -27,8 +27,8 @@
     <div class="col-lg-4">
         <h5 class="h6 fw-bold">Limits</h5>
         <ul class="mb-0 ps-3">
-            <li>Attack, Defend and Guard can be used every turn.</li>
-            <li>Counter, Focus and Recover can't be used two turns in a row. Rally shares Focus's cooldown, and Heal shares Recover's.</li>
+            <li>Attack, Defend, and Guard can be used every turn.</li>
+            <li>Counter, Focus, and Recover cannot be used two turns in a row. Rally shares Focus's cooldown, and Heal shares Recover's.</li>
             <li>Each hero can use Recover or Heal {{ $recoverCharges }} times per battle.</li>
             <li>Exposed means {{ $exposedPercent }}% less defense that turn. Defending two turns in a row leaves you Exposed, and so does using Recover or Heal.</li>
         </ul>

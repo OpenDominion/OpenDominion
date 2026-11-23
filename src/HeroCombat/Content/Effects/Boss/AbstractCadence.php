@@ -6,6 +6,7 @@ use OpenDominion\HeroCombat\Content\AbstractPassive;
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\Intent;
 
 /**
@@ -55,7 +56,7 @@ abstract class AbstractCadence extends AbstractPassive
         }
 
         if ($this->shouldFire($owner, $battle)) {
-            $battle->say($owner, str_replace('{actor}', $owner->name, $this->warning()));
+            $battle->say($owner, str_replace('{actor}', $owner->name, $this->warning()), MessageKind::Telegraph);
         }
     }
 }

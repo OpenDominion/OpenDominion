@@ -22,6 +22,14 @@
         </button>
     </div>
 
+    @if ($tells = $view->tells())
+        <div class="battle-orders-tells" data-battle-tells>
+            @foreach ($tells as $tell)
+                <div><i class="fa fa-exclamation-triangle"></i> {{ $tell }}</div>
+            @endforeach
+        </div>
+    @endif
+
     <div class="battle-orders-heroes">
         @foreach ($commandable as $combatant)
             @php

@@ -301,7 +301,7 @@ class TurnSummary
         match ($kind) {
             MessageKind::Detail => null,
             MessageKind::Outcome => $lines['outcome'][] = $this->line($this->tokenize($event['text'])),
-            MessageKind::Narration => $lines['status'][] = $this->line($this->tokenize($event['text'])),
+            MessageKind::Narration, MessageKind::Telegraph => $lines['status'][] = $this->line($this->tokenize($event['text'])),
         };
     }
 

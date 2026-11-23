@@ -194,6 +194,10 @@ class HeroBattleService
             $context = new EncounterContext(
                 priorWins: $priorWins,
                 leaderStats: $this->heroCalculator->getHeroCombatStats($dominions[0]->hero),
+                party: array_map(fn (array $member) => [
+                    'name' => $member[0]->name,
+                    'stats' => $this->heroCalculator->getHeroCombatStats($member[0]),
+                ], $party),
             );
 
             foreach ($encounter->roster($context) as $entry) {

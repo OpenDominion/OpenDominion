@@ -14,6 +14,7 @@ use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
 use OpenDominion\HeroCombat\Engine\Effects\Hook;
 use OpenDominion\HeroCombat\Engine\Events\EventType;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\IntentDecider;
 use OpenDominion\HeroCombat\Engine\Stats\Stat;
 use OpenDominion\HeroCombat\Engine\TurnResolver;
@@ -54,7 +55,7 @@ class UllyaothTest extends TestCase
 
     protected function champion(): CombatantState
     {
-        return $this->named($this->battle, 'Red-Eyed Orc Champion');
+        return $this->named($this->battle, 'Bloodbound Orc');
     }
 
     protected function rain(): EffectInstance
@@ -123,6 +124,27 @@ class UllyaothTest extends TestCase
         $this->assertEquals($this->rain()->data['target'], $intent->targetId);
     }
 
+    public function testBothTellsAreLoggedAsTelegraphs(): void
+    {
+        $this->random->chances = [true];
+        $this->endTurn(1);
+        $this->random->chances = [true];
+        $this->endTurn(2);
+
+        $kinds = [];
+        foreach ($this->battle->log->entries() as $entry) {
+            foreach ($entry->events as $event) {
+                if ($event->type === EventType::Message) {
+                    $kinds[] = $event->payload['kind'];
+                }
+            }
+        }
+
+        $this->assertEquals([MessageKind::Telegraph->value, MessageKind::Telegraph->value], $kinds);
+        $this->assertArrayHasKey('devour_turn', $this->rain()->data);
+        $this->assertArrayHasKey('feast_turn', $this->rain()->data);
+    }
+
     public function testNoDevourIsToldWhenTheRollFails(): void
     {
         $this->random->chances = [false, false];
@@ -175,6 +197,25 @@ class UllyaothTest extends TestCase
         [$spear] = $this->damageEvents('titan_spear');
         $this->assertEquals(40 + TitanSpear::BONUS_DAMAGE, $spear['amount'], 'Ignores Ullyaoth\'s defense');
         $this->assertFalse($spear['counter']);
+    }
+
+    public function testSpearingUllyaothAsTheLastHeroFallsIsADraw(): void
+    {
+        $this->automateEnemies();
+        $this->random->defaultChance = false;
+        $this->battle->setHealth($this->named($this->battle, 'Alice'), 0);
+        (new TurnResolver())->processDeaths($this->battle);
+        $this->named($this->battle, 'Bob')->currentHealth = 10;
+        $this->ullyaoth()->currentHealth = 50;
+        $this->devourThisTurn('Bob');
+        $this->queue($this->battle, 'Bob', 'titan_spear', 'World-Eater Ullyaoth');
+
+        $this->resolveTurn($this->battle);
+
+        $this->assertFalse($this->ullyaoth()->isAlive());
+        $this->assertFalse($this->champion()->isAlive(), 'The orc collapses with Ullyaoth');
+        $this->assertTrue($this->battle->state->finished);
+        $this->assertNull($this->battle->state->winningTeam);
     }
 
     // Titan Spear
@@ -247,7 +288,7 @@ class UllyaothTest extends TestCase
         $this->ullyaoth()->currentHealth = 200;
         $this->champion()->currentHealth = 20;
         $this->rain()->data['feast_turn'] = 1;
-        $this->queue($this->battle, 'Alice', 'attack', 'Red-Eyed Orc Champion');
+        $this->queue($this->battle, 'Alice', 'attack', 'Bloodbound Orc');
         $this->queue($this->battle, 'Bob', 'defend');
 
         $this->resolveTurn($this->battle);

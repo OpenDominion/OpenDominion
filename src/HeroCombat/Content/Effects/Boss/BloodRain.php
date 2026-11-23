@@ -7,6 +7,7 @@ use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Engine\CombatTag;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
+use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\Intent;
 
 /**
@@ -52,6 +53,26 @@ class BloodRain extends AbstractPassive
 
         $this->maybeTellDevour($instance, $owner, $battle);
         $this->maybeTellFeast($instance, $owner, $battle);
+    }
+
+    /**
+     * The champion is held together by Ullyaoth's blood: it collapses for good when its master
+     * falls.
+     */
+    public function onDeath(EffectInstance $instance, CombatantState $dead, Battle $battle): void
+    {
+        $template = $instance->data['champion'] ?? null;
+        if ($template === null) {
+            return;
+        }
+
+        foreach ($battle->withTemplate($template, livingOnly: false) as $champion) {
+            $battle->effects->removeByKey($champion, 'undying');
+            if ($champion->isAlive()) {
+                $battle->setHealth($champion, 0);
+                $battle->say($champion, "{$champion->name} collapses as the blood holding it together drains away.");
+            }
+        }
     }
 
     public function forcedIntent(EffectInstance $instance, CombatantState $subject, Battle $battle): ?Intent
@@ -131,7 +152,7 @@ class BloodRain extends AbstractPassive
         $instance->data['devour_turn'] = $devourTurn;
         $instance->data['target'] = $target->id;
         $instance->data['last_target'] = $target->id;
-        $battle->say($owner, "Blood begins to rain on {$target->name}.");
+        $battle->say($owner, "Blood begins to rain on {$target->name}.", MessageKind::Telegraph);
     }
 
     protected function maybeTellFeast(EffectInstance $instance, CombatantState $owner, Battle $battle): void
@@ -150,6 +171,6 @@ class BloodRain extends AbstractPassive
         }
 
         $instance->data['feast_turn'] = $turn + 1;
-        $battle->say($owner, "{$owner->name}'s hungry gaze falls on {$champion->name}.");
+        $battle->say($owner, "{$owner->name}'s hungry gaze falls on {$champion->name}.", MessageKind::Telegraph);
     }
 }
