@@ -110,14 +110,14 @@ class UllyaothTest extends TestCase
 
     // Blood Rain and Devour
 
-    public function testBloodRainMarksAHeroForADevourTwoTurnsLater(): void
+    public function testBloodRainMarksAHeroForADevourOnTheNextTurn(): void
     {
         $this->random->chances = [true, false];
         $this->endTurn(1);
 
-        $this->assertEquals(3, $this->rain()->data['devour_turn']);
+        $this->assertEquals(2, $this->rain()->data['devour_turn']);
 
-        $this->battle->state->turn = 3;
+        $this->battle->state->turn = 2;
         $intent = (new IntentDecider($this->battle, new ActionValidator($this->battle)))->decide($this->ullyaoth());
         $this->assertEquals('devour', $intent->abilityKey);
         $this->assertEquals($this->rain()->data['target'], $intent->targetId);
@@ -139,12 +139,12 @@ class UllyaothTest extends TestCase
 
         $this->endTurn(2);
         $this->endTurn(3);
-        $this->assertEquals(3, $this->rain()->data['devour_turn'], 'A Devour on turn 5 would come too soon after turn 3');
+        $this->assertEquals(2, $this->rain()->data['devour_turn'], 'A Devour on turn 4 would come too soon after turn 2');
 
         $this->endTurn(4);
-        $this->assertEquals(6, $this->rain()->data['devour_turn']);
+        $this->assertEquals(5, $this->rain()->data['devour_turn']);
         $this->assertNotEquals($first, $this->rain()->data['target']);
-        $this->assertGreaterThanOrEqual(BloodRain::DEVOUR_MIN_GAP, 6 - 3);
+        $this->assertGreaterThanOrEqual(BloodRain::DEVOUR_MIN_GAP, 5 - 2);
     }
 
     public function testDevourIgnoresDefenseAndExposesTheHeart(): void
@@ -215,11 +215,10 @@ class UllyaothTest extends TestCase
 
     public function testAFeastIsNeverToldForADevourTurn(): void
     {
-        $this->random->chances = [true, false];
+        $this->random->chances = [true, true];
         $this->endTurn(1);
 
-        $this->random->chances = [true];
-        $this->endTurn(2);
+        $this->assertEquals(2, $this->rain()->data['devour_turn']);
 
         $this->assertArrayNotHasKey('feast_turn', $this->rain()->data);
     }

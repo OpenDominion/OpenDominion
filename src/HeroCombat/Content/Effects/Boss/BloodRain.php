@@ -11,8 +11,8 @@ use OpenDominion\HeroCombat\Engine\Intent;
 
 /**
  * Ullyaoth's two telegraphs. At the end of a turn it may rain blood on a hero (alternating
- * between heroes) and Devour them two turns later, leaving a full turn to prepare; Devours are
- * at least DEVOUR_MIN_GAP turns apart. While its champion stands it may also eye it hungrily,
+ * between heroes) and Devour them on the next turn; Devours are at least DEVOUR_MIN_GAP turns
+ * apart. While its champion stands it may also eye it hungrily,
  * then spend the next turn on Corpseblood Feast. A Feast is never told for a Devour turn.
  *
  * Instance data: champion (enemy template key), devour_turn, target, last_target, feast_turn.
@@ -107,7 +107,7 @@ class BloodRain extends AbstractPassive
     protected function maybeTellDevour(EffectInstance $instance, CombatantState $owner, Battle $battle): void
     {
         $turn = $battle->turn();
-        $devourTurn = $turn + 2;
+        $devourTurn = $turn + 1;
 
         if (($instance->data['devour_turn'] ?? 0) > $turn) {
             return;
