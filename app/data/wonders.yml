@@ -189,3 +189,10 @@ planar_gates:
     temporary_tech: 1
   power: 150000
   active: false
+factory_of_war:
+  name: Factory of War
+  perks:
+    construction_cost: -30
+    barracks_housing: 6
+  power: 150000
+  active: false
