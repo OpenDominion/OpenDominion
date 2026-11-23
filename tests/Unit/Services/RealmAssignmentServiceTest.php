@@ -1278,10 +1278,10 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             $this->createDominion($this->createUser(), $round, $race, $smallRealm, ['protection_finished' => true]);
         }
 
-        // Large realm: 10 dominions, all still in protection (e.g. just joined as late registrants)
+        // Larger realm: 4 dominions, all still in protection (e.g. just joined as late registrants)
         $largeRealm = $this->createRealm($round, 'good');
         $largeRealm->update(['number' => 2]);
-        foreach (range(1, 10) as $i) {
+        foreach (range(1, 4) as $i) {
             $this->createDominion($this->createUser(), $round, $race, $largeRealm, ['protection_finished' => false]);
         }
 
@@ -1298,10 +1298,43 @@ class RealmAssignmentServiceTest extends AbstractTestCase
             'active_dominions_count should reflect all dominions in the small realm'
         );
         $this->assertEquals(
-            10,
+            4,
             $candidates->firstWhere('id', $largeRealm->id)->active_dominions_count,
             'active_dominions_count should include in-protection dominions in the large realm'
         );
+    }
+
+    /**
+     * Test that getCandidateRealms only offers realms within 1 player of the smallest.
+     *
+     * Realm scoring ignores size, so a larger realm that is a better rating fit could
+     * otherwise keep winning placements while the smallest realm stays short of players.
+     */
+    public function testGetCandidateRealmsOnlyIncludesRealmsWithinOneOfTheSmallest(): void
+    {
+        $round = $this->createRound('-5 days', '+42 days');
+        $race = Race::where('name', 'Human')->firstOrFail();
+
+        $realmsBySize = [];
+        foreach ([6, 3, 4] as $number => $size) {
+            $realm = $this->createRealm($round, 'good');
+            $realm->update(['number' => $number + 1]);
+            foreach (range(1, $size) as $i) {
+                $this->createDominion($this->createUser(), $round, $race, $realm, ['protection_finished' => true]);
+            }
+            $realmsBySize[] = ['realm' => $realm, 'size' => $size];
+        }
+
+        $candidates = $this->service->getCandidateRealms($round, $race);
+
+        $this->assertCount(2, $candidates);
+        foreach ($realmsBySize as $entry) {
+            if ($entry['size'] <= 4) {
+                $this->assertContains($entry['realm']->id, $candidates->pluck('id'));
+            } else {
+                $this->assertNotContains($entry['realm']->id, $candidates->pluck('id'));
+            }
+        }
     }
 
     /**

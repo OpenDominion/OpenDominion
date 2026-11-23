@@ -1964,6 +1964,13 @@ class RealmAssignmentService
             }
         }
 
+        // Scoring ignores size, so only realms within 1 of the smallest may compete;
+        // otherwise rating balance can keep steering players away from the smallest realms
+        $smallestCount = $discordRealms->min('active_dominions_count');
+        $discordRealms = $discordRealms->filter(function ($realm) use ($smallestCount) {
+            return $realm->active_dominions_count <= $smallestCount + 1;
+        });
+
         // Return top 3 smallest Discord-enabled candidates
         return $discordRealms->take(3);
     }
