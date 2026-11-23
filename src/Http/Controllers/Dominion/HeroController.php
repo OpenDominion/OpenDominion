@@ -282,7 +282,7 @@ class HeroController extends AbstractDominionController
         if ($turnProcessed) {
             $request->session()->flash('alert-success', "Turn {$turn} resolved.");
         } else {
-            $request->session()->flash('alert-success', "Orders locked in. The turn resolves once every hero has acted.");
+            $request->session()->flash('alert-success', 'Orders locked in. The turn resolves once every hero has acted.');
         }
 
         return redirect()->route('dominion.heroes.battles');

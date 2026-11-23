@@ -4,8 +4,8 @@ namespace OpenDominion\HeroCombat\Content\Effects;
 
 use OpenDominion\HeroCombat\Content\AbstractEffect;
 use OpenDominion\HeroCombat\Engine\Battle;
-use OpenDominion\HeroCombat\Engine\Damage\DamageContext;
 use OpenDominion\HeroCombat\Engine\CombatTag;
+use OpenDominion\HeroCombat\Engine\Damage\DamageContext;
 use OpenDominion\HeroCombat\Engine\Effects\EffectInstance;
 use OpenDominion\HeroCombat\Engine\Effects\EffectKind;
 

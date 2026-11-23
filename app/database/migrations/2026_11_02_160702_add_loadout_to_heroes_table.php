@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\Schema;
  * Techniques, class abilities and gear move out of hero upgrades into a combat loadout chosen
  * on the hero. Their upgrade rows are removed because data sync never deletes rows.
  */
-return new class extends Migration
-{
+return new class extends Migration {
     private const COMBAT_UPGRADE_TYPES = ['technique', 'ability', 'gear'];
 
     public function up(): void
