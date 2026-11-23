@@ -57,7 +57,8 @@ class AIHelperTest extends AbstractBrowserKitTestCase
         $this->assertEquals(AIHelper::STRATEGY_ATTACKER, $config['strategy']);
         $this->assertEquals('unit3', $config['military'][0]['unit']);
         $this->assertEquals('unit1', $config['offense']);
-        $this->assertEquals(['prestige' => 600, 'military' => 'unit2', 'offense' => 'unit4'], $config['unit_swap']);
+        $this->assertEquals(['prestige' => 600, 'military' => 'unit3', 'offense' => ['unit4' => 0.5, 'unit1' => 0.5]], $config['unit_swap']);
+        $this->assertArrayNotHasKey('late_round', $config);
         $this->assertEquals(75, $config['min_range']);
         $this->assertEquals(['bloodrage'], $config['attack_spells']);
         $this->assertNotContains('bloodrage', $config['spells']);
@@ -73,6 +74,27 @@ class AIHelperTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0.12, $build['lumberyard']['amount']);
         $this->assertEquals(0.05, $build['tower']['amount']);
         $this->assertFalse($build->has('ore_mine'));
+    }
+
+    public function testOrcLateRoundTrainsOnlyElitesAndRetrainsGuards(): void
+    {
+        $orc = Race::where('name', 'Orc')->firstOrFail();
+        $vampire = Race::where('name', 'Vampire')->firstOrFail();
+
+        $lateRound = $this->aiHelper->getAttackerLateRound($orc);
+
+        $this->assertEquals(25, $lateRound['day']);
+        $this->assertEquals(75, $lateRound['military_percentage']);
+        $this->assertEquals('unit3', $lateRound['military']);
+        $this->assertEquals(['unit4' => 1.0], $this->aiHelper->getOffenseMix($lateRound['offense']));
+        $this->assertEquals(['unit2' => 'unit3'], $lateRound['retrain']);
+        $this->assertNull($this->aiHelper->getAttackerLateRound($vampire));
+    }
+
+    public function testOffenseMixIsNormalizedAndKeepsOrder(): void
+    {
+        $this->assertEquals(['unit1' => 1.0], $this->aiHelper->getOffenseMix('unit1'));
+        $this->assertSame(['unit4' => 0.75, 'unit1' => 0.25], $this->aiHelper->getOffenseMix(['unit4' => 3, 'unit1' => 1]));
     }
 
     public function testVampireAttackerConfig(): void

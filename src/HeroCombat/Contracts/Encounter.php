@@ -32,6 +32,14 @@ interface Encounter
     /** Heroes allowed on the players' side. Above 1, a pilot may bring realmmates' heroes. */
     public function maxPartySize(): int;
 
+    /**
+     * Effects applied to a player combatant for this encounter (e.g. a class-based resistance).
+     *
+     * @param string[] $heroClasses
+     * @return array<string, array<string, mixed>> effect key => instance data
+     */
+    public function playerEffects(CombatantState $player, array $heroClasses): array;
+
     public function victoryCondition(): VictoryCondition;
 
     public function onTurnEnd(Battle $battle): void;

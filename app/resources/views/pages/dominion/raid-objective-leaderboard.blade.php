@@ -34,22 +34,26 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <div class="info-box">
-                                        <span class="info-box-icon bg-blue"><i class="fa fa-trophy"></i></span>
-                                        <div class="info-box-content">
-                                            <span class="info-box-text">Score Required</span>
-                                            <span class="info-box-number">{{ number_format($objective->score_required) }}</span>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="card h-100 mb-0 border-primary">
+                                        <div class="card-body d-flex align-items-center gap-3 p-2 p-md-3">
+                                            <i class="fa fa-trophy fa-2x text-primary d-none d-sm-inline"></i>
+                                            <div>
+                                                <div class="small text-muted text-uppercase">Score Required</div>
+                                                <div class="fs-4 fw-bold">{{ number_format($objective->score_required) }}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-box">
-                                        <span class="info-box-icon bg-green"><i class="fa fa-globe"></i></span>
-                                        <div class="info-box-content">
-                                            <span class="info-box-text">Total Global Score</span>
-                                            <span class="info-box-number">{{ number_format($totalScore) }}</span>
+                                <div class="col-6">
+                                    <div class="card h-100 mb-0 border-success">
+                                        <div class="card-body d-flex align-items-center gap-3 p-2 p-md-3">
+                                            <i class="fa fa-globe fa-2x text-success d-none d-sm-inline"></i>
+                                            <div>
+                                                <div class="small text-muted text-uppercase">Total Global Score</div>
+                                                <div class="fs-4 fw-bold">{{ number_format($totalScore) }}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -93,7 +97,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="progress progress-sm">
+                                                    <div class="progress progress-sm position-relative mb-1">
                                                         <div class="progress-bar progress-bar-{{ $entry['completed'] ? 'success' : 'primary' }}"
                                                              role="progressbar"
                                                              style="width: {{ $entry['progress'] }}%">
@@ -163,7 +167,7 @@
                             @foreach ($topContributors as $contributor)
                                 <li>
                                     {{ $contributor['dominion_name'] }} - {{ number_format($contributor['total_score']) }}
-                                    ({{ number_format($contributor['total_score'] / $yourRealmData['total_score'] * 100) }}%}
+                                    ({{ number_format($contributor['total_score'] / $yourRealmData['total_score'] * 100) }}%)
                                 </li>
                             @endforeach
                         </ol>

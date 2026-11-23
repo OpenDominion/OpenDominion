@@ -65,6 +65,53 @@ class WonderCalculatorTest extends TestCase
         $this->assertSame(750, $calculator->getCycloneDamage($dominion, $wonder));
     }
 
+    public function testGetCycloneDamagePerkMultiplierIncreasesWonderPowerCap(): void
+    {
+        $dominion = m::mock(Dominion::class);
+        $hero = m::mock(Hero::class);
+        $wonder = m::mock(RoundWonder::class);
+
+        $dominion->shouldReceive('getTechPerkMultiplier')->with('wonder_damage')->andReturn(0.2);
+        $dominion->shouldReceive('getAttribute')->with('hero')->andReturn($hero);
+        $hero->shouldReceive('getPerkMultiplier')->with('cyclone_damage')->andReturn(0.2);
+        $wonder->shouldReceive('getAttribute')->with('realm_id')->andReturn(123);
+        $wonder->shouldReceive('getAttribute')->with('power')->andReturn(100000);
+
+        $calculator = $this->makeCalculator($dominion, 1.0, 1000);
+
+        $this->assertSame(1050, $calculator->getCycloneDamage($dominion, $wonder));
+    }
+
+    public function testGetCycloneDamageNeutralWonderDoublingDoesNotIncreaseWonderPowerCap(): void
+    {
+        $dominion = m::mock(Dominion::class);
+        $wonder = m::mock(RoundWonder::class);
+
+        $dominion->shouldReceive('getTechPerkMultiplier')->with('wonder_damage')->andReturn(0.2);
+        $dominion->shouldReceive('getAttribute')->with('hero')->andReturn(null);
+        $wonder->shouldReceive('getAttribute')->with('realm_id')->andReturn(null);
+        $wonder->shouldReceive('getAttribute')->with('power')->andReturn(100000);
+
+        $calculator = $this->makeCalculator($dominion, 1.0, 1000);
+
+        $this->assertSame(900, $calculator->getCycloneDamage($dominion, $wonder));
+    }
+
+    public function testGetCycloneDamagePerkMultiplierDoesNotAffectDamageBelowCap(): void
+    {
+        $dominion = m::mock(Dominion::class);
+        $wonder = m::mock(RoundWonder::class);
+
+        $dominion->shouldReceive('getTechPerkMultiplier')->with('wonder_damage')->andReturn(0.2);
+        $dominion->shouldReceive('getAttribute')->with('hero')->andReturn(null);
+        $wonder->shouldReceive('getAttribute')->with('realm_id')->andReturn(123);
+        $wonder->shouldReceive('getAttribute')->with('power')->andReturn(1000000);
+
+        $calculator = $this->makeCalculator($dominion, 1.0, 1000);
+
+        $this->assertSame(1800, $calculator->getCycloneDamage($dominion, $wonder));
+    }
+
     private function makeCalculator(Dominion $dominion, float $wizardRatio, int $land): WonderCalculator
     {
         $landCalculator = m::mock(LandCalculator::class);

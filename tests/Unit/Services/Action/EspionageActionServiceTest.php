@@ -117,7 +117,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         global $mockRandomChance;
         $mockRandomChance = true;
 
-        // Arrange: target's raw platinum production exceeds its stockpile, so the
+        // Arrange: target's platinum production exceeds its stockpile, so the
         // protected floor covers the whole stockpile and nothing can be taken.
         $this->dominion->military_spies = 100000;
         $this->target->military_spies = 0;
@@ -347,12 +347,12 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals($unprotectedStolen, $protectedStolen);
     }
 
-    public function testStealLumber_PartialProtection_LeavesRawProductionAsFloor()
+    public function testStealLumber_PartialProtection_LeavesProductionAsFloor()
     {
         global $mockRandomChance;
         $mockRandomChance = true;
 
-        // Target has 100,000 lumber and 1,950 lumberyards -> 97,500 raw
+        // Target has 100,000 lumber and 1,950 lumberyards -> 97,500 hourly
         // production. 5% of the full stockpile is 5,000, but the target must
         // keep at least 97,500, so only 2,500 can be taken.
         $this->dominion->military_spies = 100000;
@@ -368,6 +368,92 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
         $this->assertEquals(2500, $stolen);
         $this->assertEquals(97500, $this->target->resource_lumber);
+    }
+
+    public function testStealOre_OneHourOfModifiedProduction_StealsZero()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        // 1,000 ore mines -> 60,000 raw, 66,000 with Mining Strength. The whole
+        // stockpile is exactly one hour of modified production.
+        $this->dominion->military_spies = 100000;
+        $this->target->military_spies = 0;
+        $this->target->building_ore_mine = 1000;
+        $this->target->resource_ore = 66000;
+        $this->castSpell($this->target, 'mining_strength');
+
+        $oreBefore = $this->dominion->resource_ore;
+
+        $result = $this->espionageActionService->performOperation($this->dominion, 'steal_ore', $this->target);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals($oreBefore, $this->dominion->resource_ore);
+        $this->assertEquals(66000, $this->target->resource_ore);
+    }
+
+    public function testStealOre_JustOverOneHourOfModifiedProduction_LeavesModifiedProductionAsFloor()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        // 5% of 68,000 is 3,400, but only 2,000 sits above the 66,000 floor.
+        $this->dominion->military_spies = 100000;
+        $this->target->military_spies = 0;
+        $this->target->building_ore_mine = 1000;
+        $this->target->resource_ore = 68000;
+        $this->castSpell($this->target, 'mining_strength');
+
+        $oreBefore = $this->dominion->resource_ore;
+
+        $this->espionageActionService->performOperation($this->dominion, 'steal_ore', $this->target);
+
+        $this->assertEquals(2000, $this->dominion->resource_ore - $oreBefore);
+        $this->assertEquals(66000, $this->target->resource_ore);
+    }
+
+    public function testStealOre_TwoHoursOfModifiedProduction_StealsFullAmount()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        // 132,000 is two hours of modified production, so the floor doesn't
+        // bind and the full 5% of the stockpile is taken.
+        $this->dominion->military_spies = 100000;
+        $this->target->military_spies = 0;
+        $this->target->building_ore_mine = 1000;
+        $this->target->resource_ore = 132000;
+        $this->target->land_plain += $this->totalLand($this->dominion) - $this->totalLand($this->target);
+        $this->castSpell($this->target, 'mining_strength');
+
+        $oreBefore = $this->dominion->resource_ore;
+
+        $this->espionageActionService->performOperation($this->dominion, 'steal_ore', $this->target);
+
+        $this->assertEquals(6600, $this->dominion->resource_ore - $oreBefore);
+        $this->assertEquals(125400, $this->target->resource_ore);
+    }
+
+    public function testStealOre_AttackerProductionModifiers_DoNotRaiseProductionCap()
+    {
+        global $mockRandomChance;
+        $mockRandomChance = true;
+
+        // 2,000 ore mines -> 120,000 raw, 50% of which is the binding cap. The
+        // attacker's Mining Strength must not raise it.
+        $this->dominion->military_spies = 100000;
+        $this->dominion->building_ore_mine = 2000;
+        $this->target->military_spies = 0;
+        $this->target->building_ore_mine = 0;
+        $this->target->resource_ore = 100000000;
+        $this->target->land_plain += $this->totalLand($this->dominion) - $this->totalLand($this->target);
+        $this->castSpell($this->dominion, 'mining_strength');
+
+        $oreBefore = $this->dominion->resource_ore;
+
+        $this->espionageActionService->performOperation($this->dominion, 'steal_ore', $this->target);
+
+        $this->assertEquals(60000, $this->dominion->resource_ore - $oreBefore);
     }
 
     public function testStealOre_AttackerProductionExceedsFloor_UsesProductionCap()
@@ -627,6 +713,18 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->expectExceptionMessage("Cannot perform unknown operation 'locate_valuables'");
 
         $this->espionageActionService->performOperation($this->dominion, 'locate_valuables', $this->target);
+    }
+
+    /**
+     * Helper: activates a spell on a dominion.
+     */
+    protected function castSpell(Dominion $dominion, string $spellKey): void
+    {
+        DominionSpell::create([
+            'dominion_id' => $dominion->id,
+            'spell_id'    => Spell::where('key', $spellKey)->firstOrFail()->id,
+            'duration'    => 12,
+        ]);
     }
 
     /**

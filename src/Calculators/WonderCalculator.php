@@ -81,7 +81,7 @@ class WonderCalculator
             $damage *= 2;
         }
 
-        $damageCap = $wonder->power * (static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100);
+        $damageCap = $wonder->power * (static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100) * $multiplier;
 
         return (int) round(min($damage, $damageCap));
     }

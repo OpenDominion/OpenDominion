@@ -52,6 +52,8 @@ class HeroCombatServiceProvider extends ServiceProvider
         Abilities\Boss\Backlash::class,
         Abilities\Boss\Silence::class,
         Abilities\Boss\ArcaneConduit::class,
+        Abilities\Boss\Hexfire::class,
+        Abilities\Boss\BoneSplinter::class,
     ];
 
     /** @var array<int, class-string> */
@@ -123,6 +125,10 @@ class HeroCombatServiceProvider extends ServiceProvider
         Effects\Backlash::class,
         Effects\Silenced::class,
         Effects\ArcaneConduit::class,
+        Effects\Boss\DragonsMiasma::class,
+        Effects\Confused::class,
+        Effects\StolenVigor::class,
+        Effects\Passives\ClearMinded::class,
     ];
 
     /** @var array<int, class-string> */
@@ -156,6 +162,7 @@ class HeroCombatServiceProvider extends ServiceProvider
         Enemies\ThessadrashMaw::class,
         Enemies\RexLunae::class,
         Enemies\GrandMagister::class,
+        Enemies\VoodooMageWaaugh::class,
     ];
 
     /** @var array<int, class-string> */
@@ -179,6 +186,7 @@ class HeroCombatServiceProvider extends ServiceProvider
         Encounters\AdmiralVarosEncounter::class,
         Encounters\RexLunaeEncounter::class,
         Encounters\GrandMagisterEncounter::class,
+        Encounters\VoodooMageWaaughEncounter::class,
     ];
 
     public function register(): void

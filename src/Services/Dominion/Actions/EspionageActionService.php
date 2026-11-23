@@ -627,14 +627,14 @@ class EspionageActionService
         }
 
         // Limit to percentage of target's full stockpile, but never take the
-        // target below its protected floor. Protection equals the target's raw
-        // production for the resource — every building / unit / peasant that
-        // produces the resource guarantees an equal amount of it is left behind.
+        // target below its protected floor. Protection equals one hour of the
+        // target's production for the resource, including modifiers and before
+        // decay, so a stockpile of a single hour's production can't be stolen.
         $maxTarget = true;
         $maxUnprotected = PHP_INT_MAX;
         if ($constraints['target_amount'] > 0) {
             $stockpile       = $target->{'resource_' . $resource};
-            $protectedAmount = $this->getRawProductionForResource($target, $resource);
+            $protectedAmount = $this->getProductionForResource($target, $resource);
             $maxTarget       = $stockpile * $constraints['target_amount'] / 100;
             $maxUnprotected  = max(0, rfloor($stockpile - $protectedAmount));
         }
@@ -676,6 +676,26 @@ class EspionageActionService
         $amountStolen = round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier * $sizePenalty);
 
         return min($amountStolen, $maxUnprotected);
+    }
+
+    protected function getProductionForResource(Dominion $dominion, string $resource): int
+    {
+        switch ($resource) {
+            case 'platinum':
+                return $this->productionCalculator->getPlatinumProduction($dominion);
+            case 'food':
+                return $this->productionCalculator->getFoodProduction($dominion);
+            case 'lumber':
+                return $this->productionCalculator->getLumberProduction($dominion);
+            case 'mana':
+                return $this->productionCalculator->getManaProduction($dominion);
+            case 'ore':
+                return $this->productionCalculator->getOreProduction($dominion);
+            case 'gems':
+                return $this->productionCalculator->getGemProduction($dominion);
+        }
+
+        throw new LogicException("Unknown theft resource '{$resource}'");
     }
 
     protected function getRawProductionForResource(Dominion $dominion, string $resource): float

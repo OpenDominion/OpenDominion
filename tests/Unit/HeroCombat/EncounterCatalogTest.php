@@ -24,7 +24,7 @@ class EncounterCatalogTest extends TestCase
         'default', 'rabid_bunny', 'dragonkin', 'gate_warden', 'rebel_corsair', 'rebel_admiral',
         'fallen_kings', 'eternal_guardian', 'nightbringer', 'lich_king', 'planewalker_golems',
         'planewalker', 'wraith', 'dreadsoul_skullkeeper', 'dream_of_thessadrash', 'heart_of_ice',
-        'admiral_varos', 'rex_lunae', 'grand_magister',
+        'admiral_varos', 'rex_lunae', 'grand_magister', 'voodoo_mage_waaugh',
     ];
 
     private static function registry(): CombatRegistry

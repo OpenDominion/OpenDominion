@@ -39,6 +39,10 @@ class AIHelper
      * military: fixed starting defensive unit (randomized when omitted)
      * unit_pairs: race-specific overrides for ATTACKER_UNIT_PAIRS
      * unit_swap: switches the unit composition once prestige reaches a threshold
+     * late_round: unit composition from a round day onward, or earlier once military reaches military_percentage of
+     *   population; read live from these settings (never saved to ai_config) so it also applies to bots already in a round;
+     *   retrain gradually replaces owned units with a better defensive unit, refunding the released units' platinum
+     * offense values: a unit, or platinum shares per unit (e.g. ['unit1' => 0.5, 'unit4' => 0.5])
      * starting_offense: offensive unit given at spawn (defaults to unit1)
      * starting_spec_ratio: share of starting defense in spec units, 0 for elites only (randomized when omitted)
      * housing: unlimited building that absorbs leftover land, home or barracks (defaults to barracks)
@@ -52,8 +56,15 @@ class AIHelper
             'lumberyard_percentage' => 0.12,
             'unit_swap' => [
                 'prestige' => 600,
-                'military' => 'unit2',
+                'military' => 'unit3',
+                'offense' => ['unit4' => 0.5, 'unit1' => 0.5],
+            ],
+            'late_round' => [
+                'day' => 25,
+                'military_percentage' => 75,
+                'military' => 'unit3',
                 'offense' => 'unit4',
+                'retrain' => ['unit2' => 'unit3'],
             ],
         ],
         'Spirit' => [
@@ -372,6 +383,33 @@ class AIHelper
         return self::ATTACKER_RACE_SETTINGS[$race->name]['lumberyard_percentage'] ?? null;
     }
 
+    /**
+     * Returns the late round unit composition for an attacker race, or null when the race has none.
+     *
+     * @return array{day: int, military_percentage?: float, military: string, offense: string|array<string, float>, retrain?: array<string, string>}|null
+     */
+    public function getAttackerLateRound(Race $race): ?array
+    {
+        return self::ATTACKER_RACE_SETTINGS[$race->name]['late_round'] ?? null;
+    }
+
+    /**
+     * Returns the platinum share spent on each offensive unit, normalized to sum to 1.
+     *
+     * @param string|array<string, float> $offense
+     * @return array<string, float>
+     */
+    public function getOffenseMix(string|array $offense): array
+    {
+        if (is_string($offense)) {
+            return [$offense => 1.0];
+        }
+
+        $total = array_sum($offense);
+
+        return array_map(fn (float|int $share) => $share / $total, $offense);
+    }
+
     public function attackerNeedsBoats(Race $race): bool
     {
         $offensiveSlots = $this->getAttackerOffensiveSlots($race);
@@ -461,12 +499,17 @@ class AIHelper
             }
         }
 
-        $trainedSlots = collect([
-            $config['military'][0]['unit'],
-            $config['offense'],
-            $config['unit_swap']['military'] ?? null,
-            $config['unit_swap']['offense'] ?? null,
-        ])->filter()->map(fn (string $unit) => (int) str_replace('unit', '', $unit))->unique()->all();
+        $trainedUnits = [$config['military'][0]['unit'], ...array_keys($this->getOffenseMix($config['offense']))];
+        foreach (['unit_swap', 'late_round'] as $phase) {
+            if (isset($settings[$phase])) {
+                $trainedUnits[] = $settings[$phase]['military'];
+                array_push($trainedUnits, ...array_keys($this->getOffenseMix($settings[$phase]['offense'])));
+            }
+        }
+        $trainedSlots = collect($trainedUnits)
+            ->map(fn (string $unit) => (int) str_replace('unit', '', $unit))
+            ->unique()
+            ->all();
         $units = $race->units->filter(fn (Unit $unit) => in_array($unit->slot, $trainedSlots));
 
         $config['build'][] = [

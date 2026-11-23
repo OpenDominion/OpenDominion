@@ -23,6 +23,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
@@ -56,12 +57,48 @@ class AIService
     /**
      * Draftees an attacker may hold before releasing down to ATTACKER_DRAFTEES_TARGET.
      */
-    protected const ATTACKER_DRAFTEES_MAX = 2000;
+    protected const ATTACKER_DRAFTEES_MAX = 1000;
 
     /**
      * Draftees an attacker keeps in reserve after releasing the surplus.
      */
-    protected const ATTACKER_DRAFTEES_TARGET = 1500;
+    protected const ATTACKER_DRAFTEES_TARGET = 500;
+
+    /**
+     * Hours after a bot invades during which attackers leave it alone, giving players a window to hit it.
+     */
+    protected const RECENT_ATTACKER_GRACE_HOURS = 3;
+
+    /**
+     * Self spells attackers cast right after every invasion, and hourly only while they own fewer than
+     * ARMY_OUT_SPELLS_DEFENSIVE_OFFENSE_LIMIT defensive offensive units, so the spell doesn't stack on top of offense.
+     */
+    public const ARMY_OUT_SPELLS = ['ares_call'];
+
+    /**
+     * Defensive offensive units (at home or returning) from which attackers stop casting ARMY_OUT_SPELLS hourly.
+     */
+    public const ARMY_OUT_SPELLS_DEFENSIVE_OFFENSE_LIMIT = 1000;
+
+    /**
+     * Share of defense an attacker may release per 24 hours while retraining units, kept below the 15% release rule.
+     */
+    protected const RETRAIN_DEFENSE_REDUCTION_LIMIT = 0.14;
+
+    /**
+     * Share of defense an attacker may release in a single hourly run while retraining units.
+     */
+    protected const RETRAIN_DEFENSE_REDUCTION_PER_RUN = 0.02;
+
+    /**
+     * Hours without invading after which an attacker also looks for targets down to STALLED_MIN_RANGE.
+     */
+    public const STALLED_INVASION_HOURS = 48;
+
+    /**
+     * Minimum range for attackers that haven't invaded within STALLED_INVASION_HOURS.
+     */
+    public const STALLED_MIN_RANGE = 60;
 
     /** @var Carbon */
     protected $now;
@@ -460,10 +497,15 @@ class AIService
     public function performAttackerActions(Dominion $dominion, array $config): void
     {
         $config = $this->applyUnitSwap($dominion, $config);
+        $config = $this->applyLateRound($dominion, $config);
 
-        // Spells
+        // Spells (with enough defensive offense, army out spells wait until the next invasion)
         try {
-            $this->castSpells($dominion, $config);
+            $hourlySpells = $config;
+            if ($this->getDefensiveOffense($dominion) >= static::ARMY_OUT_SPELLS_DEFENSIVE_OFFENSE_LIMIT) {
+                $hourlySpells['spells'] = array_values(array_diff($config['spells'] ?? [], static::ARMY_OUT_SPELLS));
+            }
+            $this->castSpells($dominion, $hourlySpells);
         } catch (GameException $e) {
             // Blood and thunder, steel and fire,
         }
@@ -482,6 +524,13 @@ class AIService
             $this->constructBuildings($dominion->refresh(), $config, $totalLand);
         } catch (GameException $e) {
             // Raise the halls upon their bones,
+        }
+
+        // Retrain
+        try {
+            $this->retrainUnits($dominion->refresh(), $config);
+        } catch (GameException $e) {
+            // Melt the old blades for the new,
         }
 
         // Military
@@ -683,6 +732,59 @@ class AIService
     }
 
     /**
+     * Overrides an attacker's unit composition with its race's late round settings once the round reaches that day,
+     * or earlier once military makes up at least the late round's share of population.
+     *
+     * The first time either condition is met, a late_round flag is saved so later runs skip the checks and the
+     * switch never reverts. The unit composition itself is read from the race settings on every run and never saved,
+     * so changes to those settings reach bots already in a round.
+     */
+    public function applyLateRound(Dominion $dominion, array $config): array
+    {
+        $lateRound = $this->aiHelper->getAttackerLateRound($dominion->race);
+        if ($lateRound === null) {
+            return $config;
+        }
+
+        if (empty($config['late_round'])) {
+            $isLateRound = $dominion->round->daysInRound() >= $lateRound['day']
+                || (isset($lateRound['military_percentage'])
+                    && $this->populationCalculator->getPopulationMilitaryPercentage($dominion) >= $lateRound['military_percentage']);
+            if (!$isLateRound) {
+                return $config;
+            }
+
+            $config['late_round'] = true;
+            $dominion->ai_config = $config;
+            $dominion->save();
+        }
+
+        $config['military'][0]['unit'] = $lateRound['military'];
+        $config['offense'] = $lateRound['offense'];
+        $config['retrain'] = $lateRound['retrain'] ?? [];
+
+        return $config;
+    }
+
+    /**
+     * Returns the number of the attacker's offensive units that add defense, at home or returning (not in training).
+     */
+    public function getDefensiveOffense(Dominion $dominion): int
+    {
+        $total = 0;
+        foreach ($this->aiHelper->getAttackerOffensiveSlots($dominion->race) as $slot) {
+            $unit = $dominion->race->units->firstWhere('slot', $slot);
+            if ($unit === null || $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $unit, 'defense') <= 0) {
+                continue;
+            }
+
+            $total += $this->militaryCalculator->getTotalUnitsForSlot($dominion, $slot);
+        }
+
+        return $total;
+    }
+
+    /**
      * Returns defensive power from units that never leave on invasions, including those in training.
      */
     public function getHomeGuardDefense(Dominion $dominion): float
@@ -713,19 +815,128 @@ class AIService
         foreach ($config['military'] as $index => $command) {
             if (in_array($command['unit'], ['spies', 'wizards'])) {
                 $amount = $this->getOperativesToTrain($dominion, $command);
+            } elseif ($index === 0 && $this->getHomeGuardDefense($dominion) >= $defenseRequired) {
+                $this->trainOffense($dominion, $config['offense']);
+                continue;
             } else {
-                $unit = $command['unit'];
-                if ($index === 0 && $this->getHomeGuardDefense($dominion) >= $defenseRequired) {
-                    $unit = $config['offense'];
-                }
-                $amount = $this->trainingCalculator->getMaxTrainable($dominion)[$unit];
-                $command['unit'] = $unit;
+                $amount = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
             }
 
             if ($amount > 0) {
                 $this->trainActionService->train($dominion, ['military_' . $command['unit'] => $amount]);
             }
         }
+    }
+
+    /**
+     * Spends platinum on offensive units by their mix shares, training them in mix order.
+     *
+     * Earlier units train first, so draftee shortages fall on later units; the last unit takes whatever is left.
+     *
+     * @param string|array<string, float> $offense
+     */
+    public function trainOffense(Dominion $dominion, string|array $offense): void
+    {
+        $mix = $this->aiHelper->getOffenseMix($offense);
+        $platinum = $dominion->resource_platinum;
+        $lastUnit = array_key_last($mix);
+
+        foreach ($mix as $unit => $share) {
+            $amount = $this->trainingCalculator->getMaxTrainable($dominion)[$unit];
+            if ($unit !== $lastUnit) {
+                $platinumCost = $this->trainingCalculator->getTrainingCostsPerUnit($dominion)[$unit]['platinum'] ?? 0;
+                if ($platinumCost > 0) {
+                    $amount = min($amount, (int) floor($platinum * $share / $platinumCost));
+                }
+            }
+
+            if ($amount > 0) {
+                $this->trainActionService->train($dominion, ['military_' . $unit => $amount]);
+            }
+        }
+    }
+
+    /**
+     * Gradually replaces owned units with a stronger defensive unit, refunding the platinum cost of each released unit.
+     *
+     * Released units become draftees, so only enough replacements are trained to restore the defense released;
+     * the remaining draftees free up population for offense. Runs before regular training so it isn't starved of
+     * platinum, and releases a little each run, staying under the 24 hour release defense limit.
+     */
+    public function retrainUnits(Dominion $dominion, array $config): void
+    {
+        foreach ($config['retrain'] ?? [] as $fromUnit => $toUnit) {
+            $owned = (int) $dominion->{"military_{$fromUnit}"};
+            if ($owned <= 0) {
+                continue;
+            }
+
+            $fromSlot = (int) str_replace('unit', '', $fromUnit);
+            $toSlot = (int) str_replace('unit', '', $toUnit);
+            $fromDefense = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, [$fromSlot => 1], true);
+            $toDefense = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, [$toSlot => 1], true);
+            $drafteeDefense = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, [0 => 1]);
+            if ($toDefense <= $fromDefense) {
+                continue;
+            }
+
+            $replacementsPerRelease = ($fromDefense - $drafteeDefense) / ($toDefense - $drafteeDefense);
+            $costsPerUnit = $this->trainingCalculator->getTrainingCostsPerUnit($dominion);
+            $refundPerRelease = $costsPerUnit[$fromUnit]['platinum'] ?? 0;
+            $replacementCosts = collect($costsPerUnit[$toUnit])->except(['draftees', 'spies', 'wizards']);
+
+            $release = min($owned, $this->getRetrainableUnits($dominion, $fromDefense));
+            foreach ($replacementCosts as $resource => $cost) {
+                $refund = $resource === 'platinum' ? $refundPerRelease : 0;
+                $netCostPerRelease = ($replacementsPerRelease * $cost) - $refund;
+                if ($netCostPerRelease > 0) {
+                    $release = min($release, (int) floor($dominion->{"resource_{$resource}"} / $netCostPerRelease));
+                }
+            }
+
+            // Rounding replacements up can cost slightly more than the refund covers
+            while ($release > 0 && !$this->canAffordRetrain($dominion, $replacementCosts->all(), $release, (int) ceil($release * $replacementsPerRelease), $refundPerRelease)) {
+                $release--;
+            }
+            if ($release <= 0) {
+                continue;
+            }
+
+            $dominion->resource_platinum += $release * $refundPerRelease;
+            $this->releaseActionService->release($dominion, [$fromUnit => $release]);
+            $this->trainActionService->train($dominion, ["military_{$toUnit}" => (int) ceil($release * $replacementsPerRelease)]);
+        }
+    }
+
+    /**
+     * @param array<string, float> $replacementCosts
+     */
+    protected function canAffordRetrain(Dominion $dominion, array $replacementCosts, int $release, int $replacements, float $refundPerRelease): bool
+    {
+        foreach ($replacementCosts as $resource => $cost) {
+            $available = $dominion->{"resource_{$resource}"} + ($resource === 'platinum' ? $release * $refundPerRelease : 0);
+            if ($replacements * $cost > $available) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns how many units of the given raw defense can be released this run without passing the retrain limits.
+     */
+    protected function getRetrainableUnits(Dominion $dominion, float $unitDefense): int
+    {
+        $multiplier = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $defense = $this->militaryCalculator->getDefensivePowerRaw($dominion) * $multiplier;
+        $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
+        $limit = min(
+            static::RETRAIN_DEFENSE_REDUCTION_LIMIT * ($defense + $defenseReducedRecently) - $defenseReducedRecently,
+            static::RETRAIN_DEFENSE_REDUCTION_PER_RUN * $defense
+        );
+
+        return max(0, (int) floor($limit / ($unitDefense * $multiplier)));
     }
 
     /**
@@ -757,7 +968,8 @@ class AIService
     }
 
     /**
-     * Invades the largest bot in range that can be broken, sending the smallest force that succeeds.
+     * Invades the largest bot in range that can be broken, sending the entire available offense.
+     * Bots that invaded within the grace period are skipped, leaving them open to players.
      *
      * @return bool Whether an invasion was made
      */
@@ -788,7 +1000,7 @@ class AIService
 
         // Don't look at real targets until we could break a typical bot at minimum range
         // Skipped on day 1, when freshly spawned bots are far below the defense formula
-        $minRange = $config['min_range'] ?? 75;
+        $minRange = $this->getMinRange($dominion, $config);
         if ($dominion->round->daysInRound() > 1) {
             $expectedDefense = $this->aiHelper->getDefenseForNonPlayer(
                 $dominion->round,
@@ -807,6 +1019,11 @@ class AIService
                     && $target->realm_id === $dominion->realm_id
                     && $this->rangeCalculator->getDominionRange($dominion, $target) >= $minRange;
             });
+
+        $recentAttackerIds = $this->getRecentAttackerIds($targets->pluck('id')->all());
+        $targets = $targets->reject(function (Dominion $target) use ($recentAttackerIds) {
+            return in_array($target->id, $recentAttackerIds);
+        });
 
         if ($targets->isEmpty()) {
             return false;
@@ -832,7 +1049,9 @@ class AIService
             }
 
             try {
-                app(InvadeActionService::class)->invade($dominion, $target, $units, true);
+                // Only cancel on leaving 75% range when aiming for a 75%+ target; stalled attackers go lower on purpose
+                app(InvadeActionService::class)->invade($dominion, $target, $units, $landRatio >= 0.75);
+                $this->castArmyOutSpells($dominion, $config);
                 return true;
             } catch (GameException $e) {
                 $dominion->refresh();
@@ -841,6 +1060,54 @@ class AIService
         }
 
         return false;
+    }
+
+    /**
+     * Returns the minimum target range, lowered to STALLED_MIN_RANGE once an attacker hasn't invaded
+     * (or spawned) within STALLED_INVASION_HOURS.
+     */
+    public function getMinRange(Dominion $dominion, array $config): int
+    {
+        $minRange = $config['min_range'] ?? 75;
+        if ($minRange <= static::STALLED_MIN_RANGE) {
+            return $minRange;
+        }
+
+        $stalledSince = now()->subHours(static::STALLED_INVASION_HOURS);
+        if ($dominion->created_at > $stalledSince) {
+            return $minRange;
+        }
+
+        $hasInvadedRecently = GameEvent::query()
+            ->where('type', 'invasion')
+            ->where('source_type', Dominion::class)
+            ->where('source_id', $dominion->id)
+            ->where('created_at', '>', $stalledSince)
+            ->exists();
+
+        return $hasInvadedRecently ? $minRange : static::STALLED_MIN_RANGE;
+    }
+
+    /**
+     * Returns the ids of the given dominions that have invaded within the attacker grace period.
+     *
+     * @param array<int, int> $dominionIds
+     * @return array<int, int>
+     */
+    public function getRecentAttackerIds(array $dominionIds): array
+    {
+        if (empty($dominionIds)) {
+            return [];
+        }
+
+        return GameEvent::query()
+            ->where('type', 'invasion')
+            ->where('source_type', Dominion::class)
+            ->whereIn('source_id', $dominionIds)
+            ->where('created_at', '>', now()->subHours(static::RECENT_ATTACKER_GRACE_HOURS))
+            ->distinct()
+            ->pluck('source_id')
+            ->all();
     }
 
     /**
@@ -868,19 +1135,39 @@ class AIService
     }
 
     /**
-     * Returns the smallest force whose offense exceeds the target's defense, or null if none can.
+     * Casts the configured army out spells (Ares' Call) right after every invasion, while the army is away.
+     */
+    public function castArmyOutSpells(Dominion $dominion, array $config): void
+    {
+        foreach (array_intersect($config['spells'] ?? [], static::ARMY_OUT_SPELLS) as $spellKey) {
+            try {
+                $this->spellActionService->castSpell($dominion, $spellKey);
+            } catch (GameException $e) {
+                // Defend without it
+            }
+        }
+    }
+
+    /**
+     * Returns the entire available offense, or null if it can't break the target.
      *
-     * Units that contribute the least defense per point of offense are sent first.
+     * Sending everything keeps only the home guard at home, so defense matches the bot defense formula.
+     * When the full force would break the 5:4 rule, units that contribute the most defense per point
+     * of offense are held back first, only as many as needed.
      *
      * @param array<int, int> $availableUnits
      * @return array<int, int>|null
      */
     public function getUnitsToSend(Dominion $dominion, Dominion $target, float $landRatio, array $availableUnits, float $targetDefense): ?array
     {
-        $slots = collect($availableUnits)
-            ->filter()
+        $units = array_filter($availableUnits);
+        if (empty($units)) {
+            return null;
+        }
+
+        $slots = collect($units)
             ->keys()
-            ->sortBy(function (int $slot) use ($dominion, $target, $landRatio) {
+            ->sortByDesc(function (int $slot) use ($dominion, $target, $landRatio) {
                 $unit = $dominion->race->units->firstWhere('slot', $slot);
                 $offense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'offense');
                 $defense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $unit, 'defense');
@@ -888,30 +1175,31 @@ class AIService
                 return $offense > 0 ? ($defense / $offense) : PHP_INT_MAX;
             });
 
-        $units = [];
         foreach ($slots as $slot) {
-            $units[$slot] = $availableUnits[$slot];
-            if ($this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units) <= $targetDefense) {
-                continue;
+            if ($this->invasionService->passes54RatioRule($dominion, $target, $landRatio, $units)) {
+                break;
             }
 
-            // Binary search for the fewest units of this slot that still breaks the target
-            $failing = 0;
-            $passing = $availableUnits[$slot];
-            while ($passing - $failing > 1) {
+            // Binary search for the most units of this slot that still pass the 5:4 rule
+            $passing = 0;
+            $failing = $units[$slot];
+            while ($failing - $passing > 1) {
                 $units[$slot] = intdiv($failing + $passing, 2);
-                if ($this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units) > $targetDefense) {
+                if ($this->invasionService->passes54RatioRule($dominion, $target, $landRatio, $units)) {
                     $passing = $units[$slot];
                 } else {
                     $failing = $units[$slot];
                 }
             }
             $units[$slot] = $passing;
-
-            return array_filter($units);
         }
 
-        return null;
+        $units = array_filter($units);
+        if (empty($units) || $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units) <= $targetDefense) {
+            return null;
+        }
+
+        return $units;
     }
 
     /**

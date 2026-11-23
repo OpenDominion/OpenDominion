@@ -73,8 +73,8 @@ class BattleReplayer
     }
 
     /**
-     * Humans who queued an action get exactly that action; everyone else uses AI or
-     * forced intents, which are deterministic for the seed.
+     * Humans who queued an action get exactly that action (even if an effect then replaced
+     * it); everyone else uses AI or forced intents, which are deterministic for the seed.
      */
     protected function prime(CombatantState $combatant, ?Intent $intent): void
     {
@@ -93,11 +93,16 @@ class BattleReplayer
     {
         $intents = [];
         foreach ($rows as $row) {
-            foreach ($row->events as $event) {
-                if ($event['type'] !== EventType::Selected->value || ($event['source'] ?? null) !== Intent::SOURCE_QUEUE) {
+            foreach ($row->events ?? [] as $event) {
+                if ($event['type'] !== EventType::Selected->value) {
                     continue;
                 }
-                $intents[$row->turn][$event['actor']] = new Intent($event['actor'], $event['ability'], $event['target'], Intent::SOURCE_QUEUE);
+
+                $chosen = ($event['source'] ?? null) === Intent::SOURCE_ALTERED ? ($event['replaces'] ?? []) : $event;
+                if (($chosen['source'] ?? null) !== Intent::SOURCE_QUEUE) {
+                    continue;
+                }
+                $intents[$row->turn][$event['actor']] = new Intent($event['actor'], $chosen['ability'], $chosen['target'] ?? null, Intent::SOURCE_QUEUE);
             }
         }
 

@@ -20,7 +20,7 @@ src/HeroCombat/
     TurnResolver.php    resolves one turn (see pipeline)
     TurnLedger.php      a turn's pending damage and healing, settled together
     BattleEngine.php    advance() loops turns while everyone is ready
-    IntentDecider.php   forced → queued → AI
+    IntentDecider.php   forced → queued → AI, then AlterIntent may replace a queued/AI choice
     ActionValidator.php cooldowns, charges, tag gating, canUse; queue projection
     ActionContext.php   what abilities receive: actor, targets, helpers
     Damage/             DamageRequest → DamageResolver → DamageResult (one pipeline for every hit)
@@ -61,6 +61,7 @@ processTurn(HeroBattle)
          TurnResolver::resolve
            1. TurnStart hooks (every effect instance)
            2. Intents     each living combatant: forcedIntent hook → queued action → AI strategy
+                          → alterIntent hook (not for forced intents; the replacement keeps `replaces`)
            3. Declare     Ability::onDeclare for every intent (stances, Fortify, Caltrops and Stone Shield go up here)
            4. Damage      every action not tagged Heal, by combatant id: resolve targets
                           → Ability::resolve → start cooldown, spend charge → AbilityUsed hooks
@@ -124,6 +125,7 @@ state lives on the `EffectInstance` (stacks, remaining turns, `data`).
 | `onApply` / `onExpire` / `onRemove` | the instance | setup; hand-offs (Freezing→Frozen); `onRemove` covers dispels too |
 | `onTurnStart` / `onTurnEnd` | every instance in the battle | telegraph rolls, phase changes, regen/DoT, start-of-turn snapshots (Backstab) |
 | `forcedIntent` | the acting combatant's effects | telegraphed moves, charged attacks |
+| `alterIntent` | the acting combatant's effects | replace a queued or AI choice (Confused). The queued order is still used up; the intent gets source `altered` and `replaces` = the original |
 | `beforeDamageDealt` | attacker's effects | add bonus damage / defend modifier (Crushing Blow, Backstab) |
 | `redirectDamage` | target's effects | Cover |
 | `beforeDamageCalculated` | target's effects, after any redirect | bonus damage against the holder (Marked) |
@@ -284,11 +286,11 @@ A standalone Rust crate with no dependencies, for rule questions the PHP Tactici
 An `EnemyTemplate` gives stats, active abilities (`AbstractEnemy` adds the five basics), innate
 effects with data, and an AI key. An `Encounter` gives a roster (template, display name, stat and
 effect overrides) built from an `EncounterContext` (raid `priorWins`, the leader's stats),
-optional `playerGrants()` (class-conditional abilities), a `VictoryCondition`, an `onTurnEnd`
+optional `playerGrants()` (class-conditional abilities), optional `playerEffects()` (class-conditional effects such as `clear_minded`, applied by `HeroBattleService` when the battle is created), a `VictoryCondition`, an `onTurnEnd`
 script hook, and an optional victory line. Keys must match the `encounter` attribute raids use on
 their `RaidObjectiveTactic` rows.
 
-All 18 original encounters are ported, plus `grand_magister`:
+All 18 original encounters are ported, plus `grand_magister` and `voodoo_mage_waaugh`:
 
 | Key | Mechanics |
 |---|---|
@@ -305,6 +307,7 @@ All 18 original encounters are ported, plus `grand_magister`:
 | `heart_of_ice` | `snow_witch_curse` telegraph, `frostbite`, Freezing → Frozen |
 | `admiral_varos` | `admirals_orders` telegraph, capped summons |
 | `rex_lunae` | `hungering_moon_curse` telegraph → `hungering_moon` (`moonstruck` max-health loss, turns then converts); Cleanse granted |
+| `voodoo_mage_waaugh` | `dragons_miasma` (3-turn cycle): gathers at end of turn 1, exhales at end of turn 2 as a free action. Heroes holding `focused` resist; others get `confused` (2 turns, 50% per action to be replaced, weighted toward Defend, never the chosen ability or Focus). While anyone is confused he is forced to cast `bone_splinter` (20 flat + 5 per `stolen_vigor` stack, each hit adds a stack) at them; otherwise `waaugh` AI (Hexfire 5 flat + 5 per stack, Attack). Scholars/sorcerers get `clear_minded` (25% instead). Effects applied in a TurnEnd hook are ticked in the same pass, so durations there are +1 |
 | `grand_magister` | `grand_magister` AI weights short spells (cooldown 3, 2-turn effects unless noted): `magic_ward` (halves damage taken, 4 turns), `backlash` (attackers take 50% back, 3 turns), `silence` → `silenced` (blocks Focus/Recover, 3 turns), `arcane_conduit` (forced ×2 attack next turn). No telegraph, no grants. Party of 2 (`maxPartySize()`) |
 
 The old unused "story" encounters (wolf, bandit, imp, cultist) were never reachable and were
@@ -367,10 +370,11 @@ Everything that happens is a `BattleEvent`: `selected`, `damage`, `heal`, `effec
 ## Replays
 
 Every battle stores a seed and an initial snapshot, and each `selected` event records its intent's
-source (queue|ai|forced). `BattleReplayer` restores the snapshot, replays queued intents (AI and
-forced intents are deterministic per seed and turn), gives summons their original ids, and
-compares each turn's events with the stored ones (`reward` events are added after the battle and
-are skipped):
+source (queue|ai|forced|altered; `altered` events also carry `replaces` = the original ability,
+target and source). `BattleReplayer` restores the snapshot, replays queued intents, including the
+original order behind an `altered` one (AI, forced and altered intents are deterministic per seed
+and turn), gives summons their original ids, and compares each turn's events with the stored ones
+(`reward` events are added after the battle and are skipped):
 
 ```
 php artisan hero-combat:replay {battle}

@@ -27,13 +27,7 @@
                     <span class="card-title">Dominion</span>
                 </div>
                 <div class="card-body">
-                    @php
-                        $dominion = clone $selectedDominion;
-                        unset($dominion->race);
-                        unset($dominion->realm);
-                        unset($dominion->round);
-                    @endphp
-                    <pre>{{ print_r(json_decode($dominion), true) }}</pre>
+                    <pre>{{ print_r(Arr::except($selectedDominion->attributesToArray(), ['api_key']), true) }}</pre>
                 </div>
             </div>
 

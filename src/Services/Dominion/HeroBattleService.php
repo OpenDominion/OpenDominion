@@ -182,8 +182,13 @@ class HeroBattleService
 
             foreach ($party as [$hero, $controllerId]) {
                 $combatant = $this->combatantFactory->addHero($battle, $hero, self::PLAYER_TEAM, [], $controllerId);
-                $grants = $encounter->playerGrants($combatant, $this->combatantFactory->heroClasses($hero));
+                $heroClasses = $this->combatantFactory->heroClasses($hero);
+                $grants = $encounter->playerGrants($combatant, $heroClasses);
                 $combatant->abilities = $this->loadouts->withGrants($combatant->abilities, $grants);
+
+                foreach ($encounter->playerEffects($combatant, $heroClasses) as $effectKey => $data) {
+                    $battle->effects->apply($combatant, $effectKey, null, 1, $data);
+                }
             }
 
             $context = new EncounterContext(
