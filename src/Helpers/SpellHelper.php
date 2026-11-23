@@ -3,14 +3,18 @@
 namespace OpenDominion\Helpers;
 
 use Cache;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Spell;
 use OpenDominion\Models\SpellPerkType;
 
 class SpellHelper
 {
+    private const REVELATION_SPELL_ATTRIBUTES = ['dominion_id', 'spell_id', 'spell', 'duration', 'created_at', 'updated_at'];
+
     /**
      * Perk types that contribute to the offense section of the military calculator.
      *
@@ -365,14 +369,73 @@ class SpellHelper
         return $this->getCategoryString($spell->category);
     }
 
-    public function obfuscateInfoOps(array $infoOps) {
+    public function obfuscateInfoOps(array $infoOps): array
+    {
         if (isset($infoOps['revelation'])) {
             foreach ($infoOps['revelation']['spells'] as $key => $spell) {
-                $infoOps['revelation']['spells'][$key]['cast_by_dominion_id'] = null;
-                $infoOps['revelation']['spells'][$key]['cast_by_dominion_name'] = null;
-                $infoOps['revelation']['spells'][$key]['cast_by_dominion_realm_number'] = null;
+                $infoOps['revelation']['spells'][$key] = Arr::only($spell, self::REVELATION_SPELL_ATTRIBUTES) + [
+                    'cast_by_dominion_id' => null,
+                    'cast_by_dominion_name' => null,
+                    'cast_by_dominion_realm_number' => null,
+                ];
             }
         }
         return $infoOps;
+    }
+
+    public function canIdentifySpellCaster(
+        Dominion $viewer,
+        Dominion $target,
+        ?int $casterId,
+        ?int $casterRealmNumber,
+        bool $liveAdvisors
+    ): bool {
+        if ($casterId === null || $viewer->round_id !== $target->round_id) {
+            return false;
+        }
+
+        if (!$liveAdvisors && $viewer->realm_id !== $target->realm_id) {
+            return true;
+        }
+
+        return $casterId === $target->id
+            || $casterRealmNumber === $viewer->realm->number
+            || ($liveAdvisors && $viewer->realm_id === $target->realm_id && $target->hasSurrealPerception());
+    }
+
+    public function visibleRevelationSpells(array $spells, Dominion $viewer, Dominion $target, bool $liveAdvisors = false): array
+    {
+        $missingDetails = collect($spells)
+            ->filter(static fn (array $spell): bool => !isset($spell['cast_by_dominion_name'], $spell['cast_by_dominion_realm_number']))
+            ->pluck('cast_by_dominion_id')->filter()->unique();
+        $legacyCasters = $missingDetails->isEmpty() ? collect() : Dominion::query()
+            ->where('round_id', $target->round_id)
+            ->whereKey($missingDetails->all())
+            ->with('realm:id,number')
+            ->get(['id', 'name', 'realm_id'])->keyBy('id');
+
+        $visible = [];
+        foreach ($spells as $spell) {
+            $casterId = $spell['cast_by_dominion_id'] ?? null;
+            $name = $spell['cast_by_dominion_name'] ?? null;
+            $realmNumber = $spell['cast_by_dominion_realm_number'] ?? null;
+
+            if ($name === null || $realmNumber === null) {
+                $caster = $legacyCasters->get($casterId);
+                $name ??= $caster?->name;
+                $realmNumber ??= $caster?->realm?->number;
+            }
+
+            $identified = $name !== null && $realmNumber !== null
+                && $this->canIdentifySpellCaster($viewer, $target, $casterId, $realmNumber, $liveAdvisors);
+
+            $visible[] = Arr::only($spell, self::REVELATION_SPELL_ATTRIBUTES) + [
+                'cast_by_dominion_id' => $identified ? $casterId : null,
+                'cast_by_dominion_name' => $identified ? $name : null,
+                'cast_by_dominion_realm_number' => $identified ? $realmNumber : null,
+            ];
+        }
+
+        return $visible;
     }
 }

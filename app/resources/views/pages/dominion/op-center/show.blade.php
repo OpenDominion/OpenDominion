@@ -46,7 +46,7 @@
 
     if ($latestRevelation != null) {
         $infoOps['revelation'] = [];
-        $infoOps['revelation']['spells'] = $latestRevelation->data;
+        $infoOps['revelation']['spells'] = $spellHelper->visibleRevelationSpells($latestRevelation->data, $selectedDominion, $dominion, $inRealm);
         $infoOps['revelation']['created_at'] = isset($latestRevelation->created_at) ? $latestRevelation->created_at : $now;
     }
 
@@ -208,7 +208,7 @@
                                     <a class="btn btn-primary" onclick="copyJson('ops_json')">
                                         <i class="fa fa-copy"></i> Copy ops
                                     </a>
-                                    <textarea class="d-none" name="ops_json" id="ops_json">{{ json_encode($spellHelper->obfuscateInfoOps($infoOps), JSON_PRETTY_PRINT) }}</textarea>
+                                    <textarea class="d-none" name="ops_json" id="ops_json">{{ json_encode($infoOps, JSON_PRETTY_PRINT) }}</textarea>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -319,7 +319,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($latestRevelation->data as $activeSpell)
+                            @foreach ($infoOps['revelation']['spells'] as $activeSpell)
                                 @php
                                     $spell = $spellHelper->getSpellByKey($activeSpell['spell']);
                                 @endphp
@@ -334,19 +334,7 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        @php
-                                            if (!isset($activeSpell['cast_by_dominion_name'])) {
-                                                if ($activeSpell['cast_by_dominion_id'] == $dominion->id) {
-                                                    $activeSpell['cast_by_dominion_name'] = $dominion->name;
-                                                    $activeSpell['cast_by_dominion_realm_number'] = $dominion->realm->number;
-                                                } else {
-                                                    $castByDominion = OpenDominion\Models\Dominion::with('realm')->findOrFail($activeSpell['cast_by_dominion_id']);
-                                                    $activeSpell['cast_by_dominion_name'] = $castByDominion->name;
-                                                    $activeSpell['cast_by_dominion_realm_number'] = $castByDominion->realm->number;
-                                                }
-                                            }
-                                        @endphp
-                                        @if ($activeSpell['cast_by_dominion_id'] == $dominion->id || $activeSpell['cast_by_dominion_realm_number'] == $selectedDominion->realm->number || ($dominion->realm_id == $selectedDominion->realm_id && $dominion->getSpellPerkValue('surreal_perception')))
+                                        @if ($activeSpell['cast_by_dominion_id'] !== null)
                                             <a href="{{ route('dominion.realm', $activeSpell['cast_by_dominion_realm_number']) }}">{{ $activeSpell['cast_by_dominion_name'] }} (#{{ $activeSpell['cast_by_dominion_realm_number'] }})</a>
                                         @else
                                             <em>Unknown</em>

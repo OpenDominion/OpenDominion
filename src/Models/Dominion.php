@@ -773,6 +773,11 @@ class Dominion extends AbstractModel
         return ($this->getSpellPerkValue($key) / 100);
     }
 
+    public function hasSurrealPerception(): bool
+    {
+        return $this->getSpellPerkValue('surreal_perception') || $this->getWonderPerkValue('surreal_perception');
+    }
+
     protected function getTechPerks() {
         return $this->techs->flatMap(
             function ($tech) {

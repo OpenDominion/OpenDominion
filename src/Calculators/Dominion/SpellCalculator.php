@@ -167,11 +167,12 @@ class SpellCalculator
      * Returns all active spells for a dominion.
      *
      * @param Dominion $dominion
+     * @param bool $withCasterRealm
      * @return Collection
      */
-    public function getActiveSpells(Dominion $dominion): Collection
+    public function getActiveSpells(Dominion $dominion, bool $withCasterRealm = false): Collection
     {
-        return DominionSpell::with(['castByDominion', 'spell'])
+        return DominionSpell::with([$withCasterRealm ? 'castByDominion.realm' : 'castByDominion', 'spell'])
             ->where('dominion_id', $dominion->id)
             ->where('duration', '>', 0)
             ->orderByDesc('duration')

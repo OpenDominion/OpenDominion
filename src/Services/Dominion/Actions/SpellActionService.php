@@ -438,7 +438,7 @@ class SpellActionService
             // Inform target that they repelled a info spell
             $sourceDominionId = $dominion->id;
             if ($dominion->hero !== null && $dominion->hero->getPerkValue('spell_fails_hide_identity')) {
-                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                if (!$target->hasSurrealPerception()) {
                     $sourceDominionId = null;
                 }
             }
@@ -502,7 +502,7 @@ class SpellActionService
         }
 
         // Surreal Perception
-        if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+        if ($target->hasSurrealPerception()) {
             $this->notificationService
                 ->queueNotification('received_hostile_spell', [
                     'sourceDominionId' => $dominion->id,
@@ -663,7 +663,7 @@ class SpellActionService
             // Inform target that they repelled a hostile spell
             $sourceDominionId = $dominion->id;
             if ($dominion->hero !== null && $dominion->hero->getPerkValue('spell_fails_hide_identity')) {
-                if (!$target->getSpellPerkValue('surreal_perception') && !$target->getWonderPerkValue('surreal_perception')) {
+                if (!$target->hasSurrealPerception()) {
                     $sourceDominionId = null;
                 }
             }
@@ -782,7 +782,7 @@ class SpellActionService
 
             // Surreal Perception
             $sourceDominionId = null;
-            if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+            if ($target->hasSurrealPerception()) {
                 $sourceDominionId = $dominion->id;
             }
 
@@ -1006,7 +1006,7 @@ class SpellActionService
 
             // Surreal Perception
             $sourceDominionId = null;
-            if ($target->getSpellPerkValue('surreal_perception') || $target->getWonderPerkValue('surreal_perception')) {
+            if ($target->hasSurrealPerception()) {
                 $sourceDominionId = $dominion->id;
             }
 
