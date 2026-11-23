@@ -5,6 +5,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [1.52.4] - 2026-11-23
+### Added
+- New Hero Battle mode:
+  - Party battles allow you to control two heroes at once
+  - Bring both your hero and one of your realmie's
+  - 2v2 Hero Battle PvP queue
+  - New team abilities: Guard, Rally, Heal
+
+### Changed
+- Revamped Hero and Battle UI
+- Hero combat bonuses removed from upgrades and unlocked separately
+- Hero combat loadouts (change your equipment on the fly)
+- Recover now limited to three charges per Hero
+- Recover and using Defend twice in a row now leave you Exposed, reducing defense by 25% (replaces the flat -5 Recover had previously)
+
+### Fixed
+- Copy Ops and API endpoints no longer leak the caster of duration spells if the target player doesn't have Surreal Perception
+
 ## [1.52.3] - 2026-11-19
 ### Changed
 - Attacking bots will now switch to full elite training late in the round or if their military percentage is high
@@ -2729,7 +2747,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.52.3...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.52.4...HEAD
+[1.52.4]: https://github.com/OpenDominion/OpenDominion/compare/1.52.3...1.52.4
 [1.52.3]: https://github.com/OpenDominion/OpenDominion/compare/1.52.2...1.52.3
 [1.52.2]: https://github.com/OpenDominion/OpenDominion/compare/1.52.1...1.52.2
 [1.52.1]: https://github.com/OpenDominion/OpenDominion/compare/1.52.0...1.52.1
