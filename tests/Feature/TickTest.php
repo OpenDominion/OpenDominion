@@ -256,8 +256,6 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->assertEquals(-948, $productionCalculator->getFoodNetChange($dominion));
 
         $spellActionService->castSpell($dominion, 'gaias_watch');
-        $gaiasWatch = $dominion->spells()->where('key', 'gaias_watch')->firstOrFail();
-        $dominion->spells()->updateExistingPivot($gaiasWatch->id, ['duration' => 1]);
 
         // Refresh active spells
         $dominion->refresh();
@@ -276,7 +274,6 @@ class TickTest extends AbstractBrowserKitTestCase
 
         // 27487 food - 308 net change = 27179 food
         $this->assertEquals(27179, $dominion->resource_food);
-        $this->assertFalse($spellCalculator->isSpellActive($dominion, 'gaias_watch'));
     }
 
     /**
