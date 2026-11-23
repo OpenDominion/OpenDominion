@@ -6,6 +6,7 @@ use OpenDominion\HeroCombat\Engine\Effects\Hook;
 
 /**
  * Chooses each combatant's intent: forced by an effect, then the player's queue, then AI.
+ * A queued or AI choice may then be replaced by an effect (e.g. Confused).
  */
 final class IntentDecider
 {
@@ -20,6 +21,18 @@ final class IntentDecider
             return $forced->withActor($combatant->id);
         }
 
+        $intent = $this->choose($combatant);
+
+        $altered = $this->battle->dispatcher->first(Hook::AlterIntent, [$combatant], $intent, $combatant, $this->battle);
+        if ($altered instanceof Intent) {
+            return $altered->replacing($intent);
+        }
+
+        return $intent;
+    }
+
+    private function choose(CombatantState $combatant): Intent
+    {
         if ($combatant->isHuman() && count($combatant->queue) > 0) {
             $queued = array_shift($combatant->queue);
             if ($this->validator->canPerform($combatant, $queued['ability'])) {

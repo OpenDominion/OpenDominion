@@ -124,6 +124,7 @@ class WeightedStrategy implements AiStrategy
             new static('warchief', 'Warchief', ['attack' => 3, 'counter' => 4, 'focus' => 2, 'recover' => 1]),
             new static('noctis', 'Noctis', ['attack' => 3, 'counter' => 2, 'focus' => 1]),
             new static('grand_magister', 'Grand Magister', ['attack' => 4, 'magic_ward' => 2, 'backlash' => 2, 'silence' => 2, 'arcane_conduit' => 2, 'focus' => 1, 'recover' => 1]),
+            new static('waaugh', 'Waaugh', ['hexfire' => 3, 'attack' => 2]),
         ];
     }
 }

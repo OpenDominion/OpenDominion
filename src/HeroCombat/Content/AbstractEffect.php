@@ -109,6 +109,11 @@ abstract class AbstractEffect implements Effect
         return null;
     }
 
+    public function alterIntent(EffectInstance $instance, Intent $intent, CombatantState $subject, Battle $battle): ?Intent
+    {
+        return null;
+    }
+
     public function beforeDamageDealt(EffectInstance $instance, DamageContext $damage, Battle $battle): void
     {
     }

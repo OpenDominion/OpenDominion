@@ -20,6 +20,11 @@ abstract class AbstractEncounter implements Encounter
         return [];
     }
 
+    public function playerEffects(CombatantState $player, array $heroClasses): array
+    {
+        return [];
+    }
+
     public function victoryCondition(): VictoryCondition
     {
         return new LastTeamStanding();
