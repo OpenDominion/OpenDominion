@@ -270,7 +270,7 @@ class CombatRulesTest extends TestCase
     {
         $battle = BattleBuilder::make()->npc('Foe', ai: 'aggressive')->npc('Other', ai: 'aggressive')->hero('Hero', team: 1)->build();
         $foe = $this->named($battle, 'Foe');
-        $strategy = new class ('test', 'Test', ['focus' => 1]) extends \OpenDominion\HeroCombat\Content\Ai\WeightedStrategy {
+        $strategy = new class('test', 'Test', ['focus' => 1]) extends \OpenDominion\HeroCombat\Content\Ai\WeightedStrategy {
         };
 
         $this->assertEquals($foe->id, $strategy->chooseIntent($foe, $battle)->targetId);
@@ -302,8 +302,6 @@ class CombatRulesTest extends TestCase
         $this->assertEquals(100, $this->health($battle, 'Ally'));
     }
 
-
-
     #[DataProvider('teamOrders')]
     public function testBattleFuryDefenseOnlyDropsAfterTheTurn(bool $firstTeamFirst): void
     {
@@ -316,7 +314,6 @@ class CombatRulesTest extends TestCase
         $this->assertEquals(80, $hero->currentHealth);
         $this->assertEquals(20 - BattleFury::DEFENSE_PENALTY, $battle->stat($hero, Stat::Defense));
     }
-
 
     #[DataProvider('teamOrders')]
     public function testSpellbrandMarksFromTheNextTurn(bool $firstTeamFirst): void

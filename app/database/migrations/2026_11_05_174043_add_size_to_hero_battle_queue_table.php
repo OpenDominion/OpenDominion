@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Heroes queue for a 1v1 or a 2v2 PvP battle; entries already waiting are 1v1.
  */
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::table('hero_battle_queue', function (Blueprint $table) {

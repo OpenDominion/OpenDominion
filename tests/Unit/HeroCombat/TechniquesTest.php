@@ -142,7 +142,6 @@ class TechniquesTest extends TestCase
         $this->assertEquals(Restoration::TICKS, $battle->effects->find($hero, 'restoring')->remainingTurns, 'The recast starts a fresh set of ticks');
     }
 
-
     public function testShadowDanceGrantsFocusOnEvade(): void
     {
         $battle = $this->duel('shadow_dance', foeStats: ['attack' => 60]);
@@ -252,8 +251,6 @@ class TechniquesTest extends TestCase
         $this->queue($battle, 'Foe', ...$foe);
         $this->resolveTurn($battle);
     }
-
-
 
     public function testShieldBashStaggersAnAttackerForTwoTurnsEvenWhenTheHitIsBlocked(): void
     {

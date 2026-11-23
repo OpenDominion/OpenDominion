@@ -461,7 +461,7 @@ class HeroBattlePagesTest extends AbstractTestCase
         $this->assertSame(3, preg_match_all('/<tr class="hero-loadout-option[^"]*" data-slot="ability" data-available>/', $content), 'The Blacksmith signature, Blade Flurry and Whirlwind');
         $this->assertSame(5, preg_match_all('/<tr class="hero-loadout-option[^"]*" data-slot="technique" data-available>/', $content), 'Technique I only');
         $this->assertSame(6, preg_match_all('/<tr class="hero-loadout-option[^"]*" data-slot="gear" data-available>/', $content));
-        $this->assertStringContainsString(".hero-loadout-option[data-available][data-slot=", $content);
+        $this->assertStringContainsString('.hero-loadout-option[data-available][data-slot=', $content);
     }
 
     public function testSavingTheLoadoutThroughTheRoute(): void

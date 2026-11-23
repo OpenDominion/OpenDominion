@@ -2,6 +2,7 @@
 
 namespace OpenDominion\HeroCombat\Presentation;
 
+use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\HeroCombat\Engine\ActionValidator;
 use OpenDominion\HeroCombat\Engine\Battle;
 use OpenDominion\HeroCombat\Engine\BattleState;
@@ -10,7 +11,6 @@ use OpenDominion\HeroCombat\Engine\Effects\EffectKind;
 use OpenDominion\HeroCombat\Engine\Events\EventType;
 use OpenDominion\HeroCombat\Engine\Events\MessageKind;
 use OpenDominion\HeroCombat\Engine\Stats\Stat;
-use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\Models\HeroBattle;
 use OpenDominion\Models\HeroCombatant;
 
