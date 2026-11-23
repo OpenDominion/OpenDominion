@@ -178,14 +178,19 @@ class HeroProgressionFlagsTest extends AbstractTestCase
         $this->assertCount(0, $battle->turns->flatMap(fn ($turn) => $turn->events)->where('type', 'reward'));
     }
 
-    public function testNoPracticeEncounterTakesAParty(): void
+    public function testUllyaothIsTheOnlyPartyEncounterAndRequiresACompanion(): void
     {
+        $encounters = collect(app(CombatRegistry::class)->encounters());
+
+        $this->assertEquals(['ullyaoth'], $encounters->filter(fn ($encounter) => $encounter->maxPartySize() > 1)->keys()->all());
+        $this->assertEquals(['ullyaoth'], $encounters->filter(fn ($encounter) => $encounter->minPartySize() > 1)->keys()->all());
+
         $dominion = $this->dominionWithHero(2000, [], impersonate: true);
         $this->dominionWithHero(2000);
         $this->selectDominion($dominion);
 
         $content = $this->get(route('dominion.heroes.battles.practice'))->assertOk()->getContent();
 
-        $this->assertStringNotContainsString('id="practice-companion"', $content);
+        $this->assertStringContainsString('id="practice-companion"', $content);
     }
 }

@@ -59,6 +59,9 @@ interface Ability
     /** Whether players can pick this ability from their action menu. */
     public function selectable(): bool;
 
+    /** Whether only one combatant per team may choose this ability for the same turn. */
+    public function onePerTeam(): bool;
+
     /** Runs for every intent before any intent resolves; stances are applied here. */
     public function onDeclare(ActionContext $context): void;
 

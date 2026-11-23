@@ -460,11 +460,17 @@ class HeroBattleService
      */
     protected function validateCompanions(Encounter $encounter, array $dominions, array $companions): void
     {
+        $partySize = count($dominions) + count($companions);
+
+        if ($partySize < $encounter->minPartySize()) {
+            throw new GameException("This encounter needs {$encounter->minPartySize()} heroes. Bring a realmmate's hero.");
+        }
+
         if ($companions === []) {
             return;
         }
 
-        if (count($dominions) + count($companions) > $encounter->maxPartySize()) {
+        if ($partySize > $encounter->maxPartySize()) {
             throw new GameException('This encounter does not allow that many heroes.');
         }
 

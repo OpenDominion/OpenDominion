@@ -147,6 +147,19 @@
             var count = box.querySelector('[data-orders-count]');
             var heroes = Array.from(box.querySelectorAll('[data-hero-orders][data-manual]'));
 
+            // An action only one hero per side may take (the Titan Spear) is disabled for the
+            // other heroes once someone has chosen it.
+            function syncOnePerTeam() {
+                heroes.forEach(function (hero) {
+                    hero.querySelectorAll('.battle-action[data-one-per-team]').forEach(function (button) {
+                        var takenElsewhere = heroes.some(function (other) {
+                            return other !== hero && other.querySelector('[data-order-action]').value === button.dataset.action;
+                        });
+                        button.disabled = button.hasAttribute('data-unusable') || takenElsewhere;
+                    });
+                });
+            }
+
             function refresh() {
                 var chosen = heroes.filter(function (hero) {
                     return hero.querySelector('[data-order-action]').value !== '';
@@ -155,6 +168,7 @@
                     count.textContent = chosen + ' of ' + heroes.length + ' chosen';
                 }
                 lock.disabled = heroes.length === 0 || chosen < heroes.length;
+                syncOnePerTeam();
             }
 
             heroes.forEach(function (hero) {

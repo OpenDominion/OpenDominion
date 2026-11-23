@@ -184,7 +184,7 @@ hero, investment, exploration, espionage, magic, invasion
 
 ### Combat
 - Simultaneous-turn battles between teams (1v1 PvP, team PvP, co-op PvE vs encounters) with per-player time banks (2h default)
-- Party-enabled encounters let a player bring a realmmate's hero and pilot both (no encounter is party-enabled right now)
+- Party-enabled encounters let a player bring a realmmate's hero and pilot both. Only `ullyaoth` (World-Eater raid) is one, and it requires the companion (`minPartySize()` = 2)
 - PvP queue for 1v1 or 2v2 (one at a time, same round only); in a 2v2 each player pilots their hero plus an identical templated Sellsword that earns nothing. The battles page shows whether someone is waiting, and polls for changes for up to 2 minutes while you're queued or waiting on your opponent's orders
 - Tournaments with bracket elimination
 - Processed during hourly tick and whenever a player queues an action

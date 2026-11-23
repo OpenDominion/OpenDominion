@@ -218,7 +218,7 @@ class BattleView
     /**
      * A piloted combatant's action menu.
      *
-     * @return array<int, array{key: string, name: string, description: string, usable: bool, needsTarget: bool, hostile: bool, cooldown: int, charges: int|null, warning: string|null}>
+     * @return array<int, array{key: string, name: string, description: string, usable: bool, needsTarget: bool, hostile: bool, cooldown: int, charges: int|null, warning: string|null, onePerTeam: bool}>
      */
     public function abilities(CombatantState $combatant): array
     {
@@ -243,6 +243,7 @@ class BattleView
                 'cooldown' => $this->validator->turnsUntilReady($combatant, $key),
                 'charges' => $this->validator->chargesRemaining($combatant, $key),
                 'warning' => $ability->warning($combatant),
+                'onePerTeam' => $ability->onePerTeam(),
             ];
         }
 

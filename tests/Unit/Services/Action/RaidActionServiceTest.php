@@ -582,6 +582,62 @@ class RaidActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, RaidContribution::where('dominion_id', $owner->id)->count());
     }
 
+    public function testHeroTactic_UllyaothNeedsACompanion()
+    {
+        Hero::create(['dominion_id' => $this->dominion->id, 'name' => 'Pilot', 'experience' => 1000, 'class' => 'alchemist']);
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'hero',
+            'name' => 'Pierce the Heart of Ullyaoth',
+            'attributes' => ['name' => 'World-Eater Ullyaoth', 'encounter' => 'ullyaoth', 'points_awarded' => 25000],
+        ]);
+
+        $this->expectException(GameException::class);
+        $this->raidActionService->performAction($this->dominion->fresh(), $tactic, []);
+    }
+
+    public function testHeroTactic_UllyaothWithACompanionStartsAPartyBattle()
+    {
+        Hero::create(['dominion_id' => $this->dominion->id, 'name' => 'Pilot', 'experience' => 1000, 'class' => 'alchemist']);
+        $owner = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
+        $lent = Hero::create(['dominion_id' => $owner->id, 'name' => 'Lender', 'experience' => 1000, 'class' => 'farmer']);
+        $tactic = RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'hero',
+            'name' => 'Pierce the Heart of Ullyaoth',
+            'attributes' => ['name' => 'World-Eater Ullyaoth', 'encounter' => 'ullyaoth', 'points_awarded' => 25000],
+        ]);
+
+        $this->raidActionService->performAction($this->dominion->fresh(), $tactic, ['companion_hero_id' => $lent->id]);
+
+        $battle = \OpenDominion\Models\HeroBattle::query()->controlledBy($this->dominion)->firstOrFail();
+        $this->assertEquals(2, $battle->combatants->where('team', 1)->count());
+        $this->assertEquals('ullyaoth', $battle->encounter_key);
+    }
+
+    public function testObjectivePageRequiresACompanionForUllyaoth()
+    {
+        Hero::create(['dominion_id' => $this->dominion->id, 'name' => 'Pilot', 'experience' => 1000, 'class' => 'alchemist']);
+        RaidObjectiveTactic::create([
+            'raid_objective_id' => $this->objective->id,
+            'type' => 'hero',
+            'name' => 'Pierce the Heart of Ullyaoth',
+            'attributes' => ['name' => 'World-Eater Ullyaoth', 'encounter' => 'ullyaoth', 'points_awarded' => 25000],
+        ]);
+        $this->selectDominion($this->dominion);
+
+        $this->visitRoute('dominion.raids.objective', $this->objective)->assertResponseOk();
+        $this->assertStringNotContainsString('name="companion_hero_id"', $this->response->getContent(), 'No realmmate hero to bring yet');
+
+        $owner = $this->createDominionWithLegacyStats($this->createUser(), $this->round, Race::first(), $this->dominion->realm);
+        Hero::create(['dominion_id' => $owner->id, 'name' => 'Lender', 'experience' => 1000, 'class' => 'farmer']);
+
+        $this->visitRoute('dominion.raids.objective', $this->objective)->assertResponseOk();
+        $content = $this->response->getContent();
+        $this->assertStringContainsString('name="companion_hero_id"', $content);
+        $this->assertStringNotContainsString('<option value="">', $content, 'Going alone is not offered');
+    }
+
     public function testHeroTactic_CannotBorrowFromAnotherRealm()
     {
         Hero::create(['dominion_id' => $this->dominion->id, 'name' => 'Pilot', 'experience' => 1000, 'class' => 'alchemist']);

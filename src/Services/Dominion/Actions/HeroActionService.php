@@ -10,6 +10,8 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\HeroHelper;
 use OpenDominion\HeroCombat\Content\Loadouts\LoadoutSlot;
 use OpenDominion\HeroCombat\Engine\ActionValidator;
+use OpenDominion\HeroCombat\Engine\Battle;
+use OpenDominion\HeroCombat\Engine\CombatantState;
 use OpenDominion\HeroCombat\Registry\CombatRegistry;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\DominionSpell;
@@ -416,6 +418,10 @@ class HeroActionService
             throw new GameException('You cannot queue more than 6 actions.');
         }
 
+        if ($ability->onePerTeam() && $this->allyHasQueued($battle, $actor, $action, count($actions))) {
+            throw new GameException("Only one hero can use {$ability->name()} each turn.");
+        }
+
         $actions[] = [
             'ability' => $action,
             'target' => $ability->targetRule()->needsChosenTarget() ? $targetState?->id : null,
@@ -469,6 +475,21 @@ class HeroActionService
                 $this->queueAction($dominion, $controlled->get($combatantId), $target, $order['action']);
             }
         });
+    }
+
+    /**
+     * Whether a teammate already has the ability queued for the same turn: the queue slot at
+     * `$slot`, as the actor's next action would occupy it.
+     */
+    protected function allyHasQueued(Battle $battle, CombatantState $actor, string $action, int $slot): bool
+    {
+        foreach ($battle->alliesOf($actor, includeSelf: false) as $ally) {
+            if (($ally->queue[$slot]['ability'] ?? null) === $action) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function dequeueAction(Dominion $dominion, HeroCombatant $combatant, int $index)

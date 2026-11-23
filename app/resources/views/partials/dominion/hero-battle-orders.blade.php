@@ -83,6 +83,8 @@
                                     data-action="{{ $ability['key'] }}" data-target="{{ $defaultTarget }}"
                                     data-label="{{ $ability['name'] }}{{ $defaultTarget !== null ? ' → ' . $view->battle->combatant($defaultTarget)->name : '' }}"
                                     @if ($options) data-picks @endif
+                                    @if ($ability['onePerTeam']) data-one-per-team @endif
+                                    @if (!$ability['usable']) data-unusable @endif
                                     @disabled(!$ability['usable'])>
                                     <i class="ra {{ $view->abilityIcon($ability['key']) }}"></i>
                                     <span>{{ $ability['name'] }}</span>

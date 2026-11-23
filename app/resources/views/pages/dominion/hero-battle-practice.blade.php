@@ -33,12 +33,16 @@
                                     <td>Clone with your current stats</td>
                                 </tr>
                                 @foreach ($encounters as $key => $encounter)
+                                    @php($needsCompanion = $encounter->minPartySize() > 1 && $companions->isEmpty())
                                     <tr>
-                                        <td><input type="radio" id="encounter-{{ $key }}" name="encounter" value="{{ $key }}" data-party-size="{{ $encounter->maxPartySize() }}" /></td>
+                                        <td><input type="radio" id="encounter-{{ $key }}" name="encounter" value="{{ $key }}" data-party-size="{{ $encounter->maxPartySize() }}" data-min-party-size="{{ $encounter->minPartySize() }}" @disabled($needsCompanion) /></td>
                                         <td>
                                             <label for="encounter-{{ $key }}" style="font-weight: normal;">{{ $encounter->name() }}</label>
                                             @if ($encounter->maxPartySize() > 1)
                                                 <span class="badge text-bg-info">Party of {{ $encounter->maxPartySize() }}</span>
+                                            @endif
+                                            @if ($needsCompanion)
+                                                <small class="text-muted">Needs a realmmate's hero</small>
                                             @endif
                                         </td>
                                         <td>{{ $encounter->source() }}</td>
@@ -50,7 +54,7 @@
                             <div id="practice-companion" class="d-none">
                                 <label for="companion_hero_id" class="form-label">Bring a realmmate's hero</label>
                                 <select name="companion_hero_id" id="companion_hero_id" class="form-select">
-                                    <option value="">Go alone</option>
+                                    <option value="" data-go-alone>Go alone</option>
                                     @foreach ($companions as $companion)
                                         @php($loadoutSummary = $heroHelper->getLoadoutSummary($companion))
                                         <option value="{{ $companion->id }}">{{ $companion->name }} ({{ $companion->dominion->name }}){{ $loadoutSummary !== '' ? " - {$loadoutSummary}" : null }}</option>
@@ -89,10 +93,15 @@
             var companionSelect = $('#companion_hero_id');
 
             function toggleCompanion() {
-                var isParty = encounters.filter(':checked').data('party-size') > 1;
+                var checked = encounters.filter(':checked');
+                var isParty = checked.data('party-size') > 1;
+                var companionRequired = checked.data('min-party-size') > 1;
                 companionSection.toggleClass('d-none', !isParty);
+                companionSelect.find('[data-go-alone]').prop('disabled', companionRequired);
                 if (!isParty) {
                     companionSelect.val('');
+                } else if (companionRequired && !companionSelect.val()) {
+                    companionSelect.val(companionSelect.find('option:not([data-go-alone])').first().val());
                 }
             }
 

@@ -54,6 +54,10 @@ class HeroCombatServiceProvider extends ServiceProvider
         Abilities\Boss\ArcaneConduit::class,
         Abilities\Boss\Hexfire::class,
         Abilities\Boss\BoneSplinter::class,
+        Abilities\Boss\Devour::class,
+        Abilities\Boss\CorpsebloodFeast::class,
+        Abilities\Boss\Hemorrhage::class,
+        Abilities\TitanSpear::class,
     ];
 
     /** @var array<int, class-string> */
@@ -129,6 +133,10 @@ class HeroCombatServiceProvider extends ServiceProvider
         Effects\Confused::class,
         Effects\StolenVigor::class,
         Effects\Passives\ClearMinded::class,
+        Effects\Boss\BloodRain::class,
+        Effects\Boss\Feasting::class,
+        Effects\HeartExposed::class,
+        Effects\Bleeding::class,
     ];
 
     /** @var array<int, class-string> */
@@ -163,6 +171,8 @@ class HeroCombatServiceProvider extends ServiceProvider
         Enemies\RexLunae::class,
         Enemies\GrandMagister::class,
         Enemies\VoodooMageWaaugh::class,
+        Enemies\Ullyaoth::class,
+        Enemies\RedEyedOrcChampion::class,
     ];
 
     /** @var array<int, class-string> */
@@ -187,6 +197,7 @@ class HeroCombatServiceProvider extends ServiceProvider
         Encounters\RexLunaeEncounter::class,
         Encounters\GrandMagisterEncounter::class,
         Encounters\VoodooMageWaaughEncounter::class,
+        Encounters\UllyaothEncounter::class,
     ];
 
     public function register(): void

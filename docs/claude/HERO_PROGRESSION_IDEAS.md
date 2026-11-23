@@ -534,6 +534,6 @@ Cut from the old two-tier list: Executioner's Axe, Tower Shield, Dueling Blade, 
 | Battle log wording | Turn summaries still say "Defend → Mage" and "Focus → Mage"; "(defending)" also covers Guard |
 | Old replays | `hero-combat:replay` can't reproduce battles fought before simultaneous resolution, and battles in progress switched rules mid-fight |
 | Loadouts in the simulator | Techniques, abilities and gear aren't modeled, so team value and the 2v2 rules with loadouts are unmeasured |
-| First co-op encounter | Needed before borrowing is usable in game (Grand Magister's party size was a test setting and has been removed) |
+| First co-op encounter | Built: `ullyaoth` (World-Eater raid, Round 52), a required party of 2. See HERO_COMBAT.md |
 | Release 2 | Turn on techniques and abilities (`heroes.loadout_slots`) after combination testing; decide when daily PvP experience returns |
 | magic-system merge | Take this branch's slot UI and loadout; update their level-8 tests |

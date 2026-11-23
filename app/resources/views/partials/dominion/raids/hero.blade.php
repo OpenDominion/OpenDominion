@@ -33,10 +33,13 @@
                             @foreach($tactics as $tactic)
                                 @php
                                     $encounterKey = $tactic->attributes['encounter'] ?? null;
-                                    $partySize = $encounterKey && $combatRegistry->hasEncounter($encounterKey) ? $combatRegistry->encounter($encounterKey)->maxPartySize() : 1;
+                                    $encounter = $encounterKey && $combatRegistry->hasEncounter($encounterKey) ? $combatRegistry->encounter($encounterKey) : null;
+                                    $partySize = $encounter?->maxPartySize() ?? 1;
+                                    $minPartySize = $encounter?->minPartySize() ?? 1;
                                     if ($partySize > 1 && $companions === null) {
                                         $companions = app(\OpenDominion\Services\Dominion\HeroBattleService::class)->availableCompanions($selectedDominion);
                                     }
+                                    $needsCompanion = $minPartySize > 1 && $companions->isEmpty();
                                 @endphp
                                 <tr>
                                     <td>{{ $tactic->name }}</td>
@@ -50,13 +53,18 @@
                                             @csrf
                                             @if ($partySize > 1 && $companions->isNotEmpty())
                                                 <select name="companion_hero_id" class="form-select form-select-sm mb-1" title="Bring a realmmate's hero">
-                                                    <option value="">Go alone</option>
+                                                    @if ($minPartySize <= 1)
+                                                        <option value="">Go alone</option>
+                                                    @endif
                                                     @foreach ($companions as $companion)
                                                         <option value="{{ $companion->id }}">{{ $companion->name }} ({{ $heroHelper->getClassDisplayName($companion->class) }}, {{ $companion->dominion->name }})</option>
                                                     @endforeach
                                                 </select>
                                             @endif
-                                            <button type="submit" class="btn btn-block btn-sm btn-primary" {{ $selectedDominion->isLocked() || !$objective->isActive() ? 'disabled' : null }}>
+                                            @if ($needsCompanion)
+                                                <small class="text-muted d-block mb-1">Needs a realmmate's hero</small>
+                                            @endif
+                                            <button type="submit" class="btn btn-block btn-sm btn-primary" {{ $selectedDominion->isLocked() || !$objective->isActive() || $needsCompanion ? 'disabled' : null }}>
                                                 Start Battle
                                             </button>
                                         </form>

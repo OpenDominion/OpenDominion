@@ -20,6 +20,11 @@ abstract class AbstractEncounter implements Encounter
         return [];
     }
 
+    public function minPartySize(): int
+    {
+        return 1;
+    }
+
     public function maxPartySize(): int
     {
         return 1;

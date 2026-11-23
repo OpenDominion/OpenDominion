@@ -29,6 +29,9 @@ interface Encounter
      */
     public function playerGrants(CombatantState $player, array $heroClasses): array;
 
+    /** Heroes required on the players' side. Above 1, a pilot must bring realmmates' heroes. */
+    public function minPartySize(): int;
+
     /** Heroes allowed on the players' side. Above 1, a pilot may bring realmmates' heroes. */
     public function maxPartySize(): int;
 

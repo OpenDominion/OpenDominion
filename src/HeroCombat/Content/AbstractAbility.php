@@ -88,6 +88,11 @@ abstract class AbstractAbility implements Ability
         return true;
     }
 
+    public function onePerTeam(): bool
+    {
+        return false;
+    }
+
     public function onDeclare(ActionContext $context): void
     {
     }
