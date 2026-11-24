@@ -13,6 +13,7 @@ use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
+use OpenDominion\Services\GameEventService;
 use OpenDominion\Tests\AbstractTestCase;
 use RuntimeException;
 
@@ -514,6 +515,27 @@ class RoundApiTest extends AbstractTestCase
         $this->assertSame(['abandoned'], $events->pluck('type')->all());
         $this->assertNotContains((string) $sentient->id, $events->pluck('id')->all());
         $this->assertNotContains((string) $unknown->id, $events->pluck('id')->all());
+    }
+
+    public function testStorylineEventsExposeTheirTextOnceTheirTimeArrives(): void
+    {
+        $round = $this->createRound();
+        $gameEventService = app(GameEventService::class);
+        $posted = $gameEventService->createStoryline($round, "The blood rain falls.\nThe dead rise.", now()->subMinute());
+        $scheduled = $gameEventService->createStoryline($round, 'Ullyaoth stirs.', now()->addHour());
+
+        $events = collect($this->getJson('/api/v1/rounds/' . $round->id . '/events')->assertOk()->json());
+
+        $this->assertNotContains($scheduled->id, $events->pluck('id')->all());
+        $entry = $events->firstWhere('id', $posted->id);
+        $this->assertSame('storyline', $entry['type']);
+        $this->assertSame('round', $entry['source_type']);
+        $this->assertSame($round->id, $entry['source_id']);
+        $this->assertNull($entry['target_type']);
+        $this->assertSame(['text' => 'The blood rain falls.<br />The dead rise.'], $entry['data']);
+
+        $filtered = collect($this->getJson('/api/v1/rounds/' . $round->id . '/events?type=storyline')->assertOk()->json());
+        $this->assertSame([$posted->id], $filtered->pluck('id')->all());
     }
 
     public function testEventsCanBeFilteredByType(): void

@@ -151,6 +151,7 @@ class RoundController extends AbstractController
             ->with($this->gameEventMapper->getEagerLoads())
             ->where('round_id', $round->id)
             ->whereIn('type', $types)
+            ->where('created_at', '<=', now())
             ->orderByDesc('created_at');
 
         if ($since !== null) {

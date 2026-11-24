@@ -255,6 +255,10 @@
                             carries what the in-game Town Crier shows for that event; battle reports and other
                             details are private and are not returned.
                         </li>
+                        <li>
+                            Events dated in the future, such as storylines scheduled by staff, are not returned until
+                            their time.
+                        </li>
                     </ul>
 <pre class="bg-body-tertiary border rounded p-2"><code>[
     {
@@ -340,6 +344,16 @@
                                     <td>Abandoned dominion</td>
                                     <td><code>null</code></td>
                                     <td><code>{}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>storyline</code></td>
+                                    <td>Round</td>
+                                    <td><code>null</code></td>
+                                    <td>
+                                        <code>{"text": "The blood rain falls.&lt;br /&gt;The dead rise."}</code><br>
+                                        Story text posted by staff. <code>text</code> is HTML, exactly as the Town
+                                        Crier shows it.
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

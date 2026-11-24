@@ -34,6 +34,7 @@ class GameEventMapper
         'wonder_destroyed',
         'raid_attacked',
         'abandoned',
+        'storyline',
     ];
 
     /**
@@ -125,6 +126,7 @@ class GameEventMapper
             'wonder_attacked' => $this->mapWonderAttacked($event),
             'wonder_destroyed' => $this->mapWonderDestroyed($event),
             'raid_attacked' => $this->mapRaidAttacked($event),
+            'storyline' => $this->mapStoryline($event),
             default => [],
         };
     }
@@ -220,6 +222,18 @@ class GameEventMapper
     {
         return [
             'tactic' => $event->target instanceof RaidObjectiveTactic ? $event->target->name : null,
+        ];
+    }
+
+    /**
+     * Staff-written story text, as HTML exactly as the Town Crier shows it.
+     *
+     * @return array{text: string}
+     */
+    protected function mapStoryline(GameEvent $event): array
+    {
+        return [
+            'text' => (string) Arr::get($event->data, 'text', ''),
         ];
     }
 

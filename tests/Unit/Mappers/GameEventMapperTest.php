@@ -9,6 +9,7 @@ use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Tests\AbstractTestCase;
@@ -269,6 +270,16 @@ class GameEventMapperTest extends AbstractTestCase
 
         $this->assertInstanceOf(stdClass::class, $mapped['data']);
         $this->assertSame('{}', json_encode($mapped['data']));
+    }
+
+    public function testStorylineExposesOnlyItsText(): void
+    {
+        $event = $this->makeEvent('storyline', ['text' => 'The blood rain falls.<br />The dead rise.', 'author' => 'staff'], new Round());
+        $mapped = $this->mapper->mapPublic($event);
+
+        $this->assertSame(['text' => 'The blood rain falls.<br />The dead rise.'], $mapped['data']);
+        $this->assertSame('round', $mapped['source_type']);
+        $this->assertNull($mapped['source_name']);
     }
 
     public function testUnknownEventTypesExposeNoData(): void
