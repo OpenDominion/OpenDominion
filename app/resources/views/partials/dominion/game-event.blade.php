@@ -162,6 +162,8 @@
                 <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
             @endif
             has attacked <a href="{{ route('dominion.raids.objective', [$gameEvent->target->raid_objective_id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>.
+        @elseif ($gameEvent->type === \OpenDominion\Models\GameEvent::TYPE_STORYLINE)
+            {!! $gameEvent->data['text'] ?? '' !!}
         @elseif ($gameEvent->type == 'abandoned')
             <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
             <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>

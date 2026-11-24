@@ -29,7 +29,7 @@ User ──has many──→ Dominion ──belongs to──→ Round
 - **Key methods**: `isStaff()`, `isOnline()` (5min), `isInactive()` (72h), `getSetting()`, `getAffinity()`, `hasKnownAffinities()` (complete, non-zero profile), `getEffectiveRating()` (uses 1000 for unrated users)
 
 ### Round (`rounds`)
-- **Relations**: dominions (through Realm), realms, packs, perks (RoundPerk), raids, tournaments, wonders, gameEvents, wars (through Realm), league
+- **Relations**: dominions (through Realm), realms, packs, perks (RoundPerk), raids, tournaments, wonders, gameEvents, storylineEvents (GameEvent type `storyline`), wars (through Realm), league
 - **Scopes**: `active()`, `activeSoon()`, `readyForAssignment()`
 - **Key methods**: `graveyard()` (realm #0), `hasStarted()`, `hasEnded()`, `getTick()`, `daysInRound()`, `hasOffensiveActionsDisabled()`
 
@@ -101,8 +101,8 @@ Round-wide perks configured by admins (no perk-type table; `key` is a plain stri
 ### GameEvent (`game_events`)
 - `isBotAttack()`, `botAttacks()` and `withoutBotAttacks()` classify invasions whose source dominion has no user; player attacks on bots remain ordinary events
 - **UUID primary key** (auto-generated)
-- **Polymorphic**: source/target via morphTo() (Dominion, RoundWonder, Realm, RealmWar)
-- **Types**: invasion, war_declared, war_canceled, wonder_spawned, wonder_attacked, wonder_destroyed, raid_attacked, abandoned
+- **Polymorphic**: source/target via morphTo() (Dominion, RoundWonder, Realm, RealmWar, Round)
+- **Types**: invasion, war_declared, war_canceled, wonder_spawned, wonder_attacked, wonder_destroyed, raid_attacked, abandoned, storyline (`TYPE_STORYLINE`; source is the Round, text in `data.text`; `Round::storylineEvents()`)
 
 ### InfoOp (`info_ops`)
 - Espionage/magic intel results cached per source realm + target dominion

@@ -154,9 +154,10 @@ Two-phase: queue then send.
 Town Crier event retrieval.
 - `getTownCrier()` - paginated events filtered by realm/type; `all` remains the initial default; `all_without_bots` and `invasions_without_bots` exclude bot-initiated invasions before pagination. Direct history and Clairvoyance retrieval continue to include bots.
 - `TOWN_CRIER_TYPES` defines the available filters. `MiscController::postTownCrierDefault()` saves `settings.town_crier_default_type`; changing the current filter does not change this default.
-- `getUnreadCounts()` splits ordinary events from bot invasions in one aggregate query using the same `town_crier_last_seen` timestamp, falling back to round creation. The existing Town Crier read update clears both categories together.
+- `getUnreadCounts()` splits ordinary events from bot invasions in one aggregate query using the same `town_crier_last_seen` timestamp, falling back to round creation, and ignores events dated in the future. The existing Town Crier read update clears both categories together.
+- `createStoryline(Round, text, ?postAt)` posts staff-written story text (`storyline` type, sourced from the Round, no target). Line breaks become `<br />` and HTML is allowed. A future `postAt` schedules it: every Town Crier query only lists events created before now. `created_at` is guarded on all models, so it is set on the model before saving rather than passed to `create()`. Managed on the staff round page (`RoundStorylineController`).
 - Dominion Settings can hide the bot badge independently with `hide_bot_attack_badge`
-- Event types: invasion, war_declared/canceled, wonder_spawned/attacked/destroyed, raid_attacked, abandoned
+- Event types: invasion, war_declared/canceled, wonder_spawned/attacked/destroyed, raid_attacked, abandoned, storyline
 
 ### UserRatingService
 Player skill ratings from round performance.

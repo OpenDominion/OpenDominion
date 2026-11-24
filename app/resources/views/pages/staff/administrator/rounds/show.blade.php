@@ -104,4 +104,77 @@
             @endif
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card" id="storylines">
+                <div class="card-header">
+                    <span class="card-title">Town Crier Storylines</span>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('staff.administrator.rounds.storylines.create', $round) }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="storyline-text">Text *</label>
+                            <textarea name="text" id="storyline-text" class="form-control" rows="4" required>{{ old('text') }}</textarea>
+                            <small class="text-muted">Shown in the round-wide Town Crier. Line breaks are kept; HTML is allowed.</small>
+                            @if ($errors->has('text'))
+                                <span class="form-text text-red">{{ $errors->first('text') }}</span>
+                            @endif
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="storyline-post-at">Post at (UTC)</label>
+                                    <input type="datetime-local" name="post_at" id="storyline-post-at" class="form-control" value="{{ old('post_at', now()->format('Y-m-d\TH:i')) }}">
+                                    @if ($errors->has('post_at'))
+                                        <span class="form-text text-red">{{ $errors->first('post_at') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted small">
+                            Server time is now <strong>{{ now()->format('M d, Y H:i') }} UTC</strong>.
+                            Keep the current time to post now; a later UTC time keeps it hidden until then.
+                        </p>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Post Storyline</button>
+                        </div>
+                    </form>
+
+                    @if ($round->storylineEvents->isNotEmpty())
+                        <table class="table table-sm table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th width="180">Posted</th>
+                                    <th>Text</th>
+                                    <th width="80" class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($round->storylineEvents->sortByDesc('created_at') as $storyline)
+                                    <tr>
+                                        <td class="text-nowrap">
+                                            Day {{ $round->daysInRound($storyline->created_at) }}
+                                            <small class="text-muted">({{ $storyline->created_at->format('M d, Y H:i') }})</small>
+                                            @if ($storyline->created_at->isFuture())
+                                                <br><span class="badge text-bg-warning">Scheduled</span>
+                                            @endif
+                                        </td>
+                                        <td>{!! $storyline->data['text'] ?? '' !!}</td>
+                                        <td class="text-end text-nowrap">
+                                            <form action="{{ route('staff.administrator.rounds.storylines.delete', [$round, $storyline]) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this storyline?');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

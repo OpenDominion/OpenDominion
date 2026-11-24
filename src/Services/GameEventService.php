@@ -12,6 +12,7 @@ use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\RaidObjectiveTactic;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 
@@ -59,6 +60,7 @@ class GameEventService
             })
             ->where('game_events.round_id', $dominion->round_id)
             ->where('game_events.created_at', '>', $lastSeen)
+            ->where('game_events.created_at', '<', now())
             ->selectRaw('COUNT(*) AS total')
             ->selectRaw('COUNT(CASE WHEN source_dominions.user_id IS NULL THEN source_dominions.id END) AS bot_attacks')
             ->toBase()
@@ -68,6 +70,26 @@ class GameEventService
             'events' => (int) $counts->total - (int) $counts->bot_attacks,
             'botAttacks' => (int) $counts->bot_attacks,
         ];
+    }
+
+    /**
+     * Posts storyline text to the round's Town Crier, now or at a scheduled time.
+     *
+     * Line breaks become <br/> tags, matching raid descriptions.
+     */
+    public function createStoryline(Round $round, string $text, ?Carbon $postAt = null): GameEvent
+    {
+        $storyline = new GameEvent([
+            'round_id' => $round->id,
+            'source_type' => Round::class,
+            'source_id' => $round->id,
+            'type' => GameEvent::TYPE_STORYLINE,
+            'data' => ['text' => str_replace(["\r\n", "\r", "\n"], '', nl2br(trim($text)))],
+        ]);
+        $storyline->created_at = $postAt ?? now();
+        $storyline->save();
+
+        return $storyline->fresh();
     }
 
     public function getClairvoyance(Realm $realm, Carbon $clairvoyanceCreatedAt): array

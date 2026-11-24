@@ -226,6 +226,54 @@ class TownCrierTest extends AbstractTestCase
         $this->assertNameHasClass($viewerAttackOnBotHtml, $this->viewer, 'text-green');
     }
 
+    public function testStorylinesAppearRoundWideOnly(): void
+    {
+        $storyline = $this->service->createStoryline($this->round, 'The blood rain falls.', now()->subMinute());
+
+        foreach (['all', 'all_without_bots'] as $type) {
+            $result = $this->service->getTownCrier($this->viewer, null, null, $type);
+            $this->assertContains($storyline->id, $result['gameEvents']->pluck('id')->all());
+        }
+
+        foreach (['invasions', 'wars', 'wonders', 'raids'] as $type) {
+            $result = $this->service->getTownCrier($this->viewer, null, null, $type);
+            $this->assertNotContains($storyline->id, $result['gameEvents']->pluck('id')->all());
+        }
+
+        $realmResult = $this->service->getTownCrier($this->viewer, $this->realm);
+        $this->assertNotContains($storyline->id, $realmResult['gameEvents']->pluck('id')->all());
+
+        $dominionResult = $this->service->getTownCrier($this->viewer, null, $this->viewer);
+        $this->assertNotContains($storyline->id, $dominionResult['gameEvents']->pluck('id')->all());
+    }
+
+    public function testScheduledStorylinesStayHiddenAndUnreadFreeUntilTheirTime(): void
+    {
+        $this->viewer->update(['town_crier_last_seen' => now()->subHour()]);
+        $storyline = $this->service->createStoryline($this->round, 'Ullyaoth stirs.', now()->addHours(2));
+        $this->viewer->load('round');
+
+        $result = $this->service->getTownCrier($this->viewer);
+        $this->assertNotContains($storyline->id, $result['gameEvents']->pluck('id')->all());
+        $this->assertSame(['events' => 0, 'botAttacks' => 0], $this->service->getUnreadCounts($this->viewer));
+
+        Carbon::setTestNow(now()->addHours(3));
+
+        $result = $this->service->getTownCrier($this->viewer);
+        $this->assertContains($storyline->id, $result['gameEvents']->pluck('id')->all());
+        $this->assertSame(['events' => 1, 'botAttacks' => 0], $this->service->getUnreadCounts($this->viewer));
+    }
+
+    public function testStorylinesRenderTheirTextAsHtml(): void
+    {
+        $storyline = $this->service->createStoryline($this->round, "The blood rain falls.\nThe <b>dead</b> rise.", now()->subMinute());
+
+        $html = $this->renderGameEvent($storyline->fresh());
+
+        $this->assertStringContainsString('The blood rain falls.<br />The <b>dead</b> rise.', $html);
+        $this->assertStringNotContainsString('<em>', $html);
+    }
+
     protected function renderGameEvent(GameEvent $gameEvent): string
     {
         return view('partials.dominion.game-event', [

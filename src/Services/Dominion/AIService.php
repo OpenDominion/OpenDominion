@@ -81,16 +81,6 @@ class AIService
     public const ARMY_OUT_SPELLS_DEFENSIVE_OFFENSE_LIMIT = 1000;
 
     /**
-     * Share of defense an attacker may release per 24 hours while retraining units, kept below the 15% release rule.
-     */
-    protected const RETRAIN_DEFENSE_REDUCTION_LIMIT = 0.14;
-
-    /**
-     * Share of defense an attacker may release in a single hourly run while retraining units.
-     */
-    protected const RETRAIN_DEFENSE_REDUCTION_PER_RUN = 0.02;
-
-    /**
      * Hours without invading after which an attacker also looks for targets down to STALLED_MIN_RANGE.
      */
     public const STALLED_INVASION_HOURS = 48;
@@ -526,13 +516,6 @@ class AIService
             // Raise the halls upon their bones,
         }
 
-        // Retrain
-        try {
-            $this->retrainUnits($dominion->refresh(), $config);
-        } catch (GameException $e) {
-            // Melt the old blades for the new,
-        }
-
         // Military
         try {
             $this->trainAttackerMilitary($dominion->refresh(), $config, $totalLand);
@@ -761,7 +744,6 @@ class AIService
 
         $config['military'][0]['unit'] = $lateRound['military'];
         $config['offense'] = $lateRound['offense'];
-        $config['retrain'] = $lateRound['retrain'] ?? [];
 
         return $config;
     }
@@ -854,89 +836,6 @@ class AIService
                 $this->trainActionService->train($dominion, ['military_' . $unit => $amount]);
             }
         }
-    }
-
-    /**
-     * Gradually replaces owned units with a stronger defensive unit, refunding the platinum cost of each released unit.
-     *
-     * Released units become draftees, so only enough replacements are trained to restore the defense released;
-     * the remaining draftees free up population for offense. Runs before regular training so it isn't starved of
-     * platinum, and releases a little each run, staying under the 24 hour release defense limit.
-     */
-    public function retrainUnits(Dominion $dominion, array $config): void
-    {
-        foreach ($config['retrain'] ?? [] as $fromUnit => $toUnit) {
-            $owned = (int) $dominion->{"military_{$fromUnit}"};
-            if ($owned <= 0) {
-                continue;
-            }
-
-            $fromSlot = (int) str_replace('unit', '', $fromUnit);
-            $toSlot = (int) str_replace('unit', '', $toUnit);
-            $fromDefense = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, [$fromSlot => 1], true);
-            $toDefense = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, [$toSlot => 1], true);
-            $drafteeDefense = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, [0 => 1]);
-            if ($toDefense <= $fromDefense) {
-                continue;
-            }
-
-            $replacementsPerRelease = ($fromDefense - $drafteeDefense) / ($toDefense - $drafteeDefense);
-            $costsPerUnit = $this->trainingCalculator->getTrainingCostsPerUnit($dominion);
-            $refundPerRelease = $costsPerUnit[$fromUnit]['platinum'] ?? 0;
-            $replacementCosts = collect($costsPerUnit[$toUnit])->except(['draftees', 'spies', 'wizards']);
-
-            $release = min($owned, $this->getRetrainableUnits($dominion, $fromDefense));
-            foreach ($replacementCosts as $resource => $cost) {
-                $refund = $resource === 'platinum' ? $refundPerRelease : 0;
-                $netCostPerRelease = ($replacementsPerRelease * $cost) - $refund;
-                if ($netCostPerRelease > 0) {
-                    $release = min($release, rfloor($dominion->{"resource_{$resource}"} / $netCostPerRelease));
-                }
-            }
-
-            // Rounding replacements up can cost slightly more than the refund covers
-            while ($release > 0 && !$this->canAffordRetrain($dominion, $replacementCosts->all(), $release, rceil($release * $replacementsPerRelease), $refundPerRelease)) {
-                $release--;
-            }
-            if ($release <= 0) {
-                continue;
-            }
-
-            $dominion->resource_platinum += $release * $refundPerRelease;
-            $this->releaseActionService->release($dominion, [$fromUnit => $release]);
-            $this->trainActionService->train($dominion, ["military_{$toUnit}" => rceil($release * $replacementsPerRelease)]);
-        }
-    }
-
-    /**
-     * @param array<string, float> $replacementCosts
-     */
-    protected function canAffordRetrain(Dominion $dominion, array $replacementCosts, int $release, int $replacements, float $refundPerRelease): bool
-    {
-        foreach ($replacementCosts as $resource => $cost) {
-            $available = $dominion->{"resource_{$resource}"} + ($resource === 'platinum' ? $release * $refundPerRelease : 0);
-            if ($replacements * $cost > $available) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns how many units of the given raw defense can be released this run without passing the retrain limits.
-     */
-    protected function getRetrainableUnits(Dominion $dominion, float $unitDefense): int
-    {
-        $multiplier = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
-        $defense = $this->militaryCalculator->getDefensivePowerRaw($dominion) * $multiplier;
-        $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
-        $limit = min(
-            static::RETRAIN_DEFENSE_REDUCTION_LIMIT * ($defense + $defenseReducedRecently) - $defenseReducedRecently,
-            static::RETRAIN_DEFENSE_REDUCTION_PER_RUN * $defense
-        );
-
-        return max(0, rfloor($limit / ($unitDefense * $multiplier)));
     }
 
     /**

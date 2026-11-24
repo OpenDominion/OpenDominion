@@ -194,7 +194,6 @@ class AttackerAITest extends AbstractBrowserKitTestCase
         $lateRound = $this->aiService->applyLateRound($this->attacker->refresh()->load('round'), $config);
         $this->assertEquals('unit3', $lateRound['military'][0]['unit']);
         $this->assertEquals('unit4', $lateRound['offense']);
-        $this->assertEquals(['unit2' => 'unit3'], $lateRound['retrain']);
         $this->assertEquals(array_merge($config, ['late_round' => true]), $this->attacker->refresh()->ai_config);
     }
 
@@ -259,74 +258,6 @@ class AttackerAITest extends AbstractBrowserKitTestCase
 
         $this->assertEquals(300, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit4'));
         $this->assertEquals(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit1'));
-    }
-
-    public function testRetrainReplacesGuardsWithVoodooMagiAndRefundsGuards(): void
-    {
-        $trainingCalculator = $this->app->make(TrainingCalculator::class);
-        $this->attacker->update([
-            'military_unit1' => 0,
-            'military_unit2' => 20000,
-            'military_unit3' => 0,
-            'military_draftees' => 0,
-            'resource_platinum' => 10000000,
-        ]);
-        $this->attacker->refresh();
-        $costs = $trainingCalculator->getTrainingCostsPerUnit($this->attacker);
-        $defenseMultiplier = $this->militaryCalculator->getDefensivePowerMultiplier($this->attacker);
-        $defenseBefore = $this->militaryCalculator->getDefensivePower($this->attacker);
-        $homeGuardBefore = $this->aiService->getHomeGuardDefense($this->attacker);
-
-        $this->aiService->retrainUnits($this->attacker, ['retrain' => ['unit2' => 'unit3']]);
-        $this->attacker->refresh();
-
-        $released = 20000 - $this->attacker->military_unit2;
-        $voodooMagi = $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3');
-        $this->assertGreaterThan(0, $released);
-        $this->assertEquals((int) ceil($released / 2), $voodooMagi);
-        $this->assertEquals($released - $voodooMagi, $this->attacker->military_draftees);
-        $this->assertGreaterThanOrEqual($homeGuardBefore, $this->aiService->getHomeGuardDefense($this->attacker));
-        $this->assertLessThanOrEqual(0.02, round(($released * 3 * $defenseMultiplier) / $defenseBefore, 9));
-        $this->assertEquals(
-            10000000 - ($voodooMagi * $costs['unit3']['platinum']) + ($released * $costs['unit2']['platinum']),
-            $this->attacker->resource_platinum
-        );
-
-        for ($run = 0; $run < 10; $run++) {
-            $this->aiService->retrainUnits($this->attacker->refresh(), ['retrain' => ['unit2' => 'unit3']]);
-        }
-        $totalReleased = 20000 - $this->attacker->refresh()->military_unit2;
-        $this->assertGreaterThan($released, $totalReleased);
-        $this->assertLessThan(0.15, ($totalReleased * 3 * $defenseMultiplier) / $defenseBefore);
-    }
-
-    public function testRetrainRunsBeforeTrainingSoItIsNotStarvedOfPlatinum(): void
-    {
-        $this->round->update(['start_date' => now()->subDays(30)]);
-        $this->attacker->update([
-            'military_unit2' => 20000,
-            'military_draftees' => 1000,
-            'resource_platinum' => 500000,
-            'resource_lumber' => 1000000,
-        ]);
-
-        $this->aiService->performAttackerActions($this->attacker->refresh()->load('round'), $this->attacker->ai_config);
-
-        $this->assertLessThan(20000, $this->attacker->refresh()->military_unit2);
-        $this->assertGreaterThan(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3'));
-    }
-
-    public function testRetrainIsLimitedByPlatinum(): void
-    {
-        $this->attacker->update([
-            'military_unit2' => 20000,
-            'resource_platinum' => 0,
-        ]);
-
-        $this->aiService->retrainUnits($this->attacker->refresh(), ['retrain' => ['unit2' => 'unit3']]);
-
-        $this->assertEquals(20000, $this->attacker->refresh()->military_unit2);
-        $this->assertEquals(0, $this->queueService->getTrainingQueueTotalByResource($this->attacker, 'military_unit3'));
     }
 
     public function testAttackersWithLittleDefensiveOffenseCastAresCallHourly(): void

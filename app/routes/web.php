@@ -442,6 +442,8 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('rounds/{round}/perks/{perk}/edit', 'Staff\Administrator\RoundPerkController@getEdit')->name('rounds.perks.edit');
         $router->post('rounds/{round}/perks/{perk}/edit', 'Staff\Administrator\RoundPerkController@postEdit');
         $router->post('rounds/{round}/perks/{perk}/delete', 'Staff\Administrator\RoundPerkController@postDelete')->name('rounds.perks.delete');
+        $router->post('rounds/{round}/storylines', 'Staff\Administrator\RoundStorylineController@postCreate')->name('rounds.storylines.create');
+        $router->post('rounds/{round}/storylines/{event}/delete', 'Staff\Administrator\RoundStorylineController@postDelete')->name('rounds.storylines.delete');
 
         // Hero Tournaments
         $router->get('hero-tournaments', 'Staff\Administrator\HeroTournamentController@getIndex')->name('hero-tournaments.index');

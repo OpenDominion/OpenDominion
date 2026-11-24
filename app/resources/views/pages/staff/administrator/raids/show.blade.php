@@ -15,6 +15,9 @@
                         <a href="{{ route('staff.administrator.raids.delete', $raid) }}" class="btn btn-danger btn-sm">
                             <i class="fa fa-trash"></i> Delete
                         </a>
+                        <a href="{{ route('staff.administrator.rounds.show', $raid->round_id) }}#storylines" class="btn btn-secondary btn-sm">
+                            <i class="fa fa-newspaper-o"></i> Storylines
+                        </a>
                         <a href="{{ route('staff.administrator.raids.index', ['round' => $raid->round_id]) }}" class="btn btn-secondary btn-sm">
                             <i class="fa fa-arrow-left"></i> Back to List
                         </a>

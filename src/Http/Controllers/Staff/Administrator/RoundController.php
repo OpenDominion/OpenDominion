@@ -64,7 +64,7 @@ class RoundController extends AbstractController
 
     public function getShow(Round $round)
     {
-        $round->load(['league', 'perks']);
+        $round->load(['league', 'perks', 'storylineEvents']);
 
         return view('pages.staff.administrator.rounds.show', [
             'round' => $round,

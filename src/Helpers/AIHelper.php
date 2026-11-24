@@ -40,8 +40,7 @@ class AIHelper
      * unit_pairs: race-specific overrides for ATTACKER_UNIT_PAIRS
      * unit_swap: switches the unit composition once prestige reaches a threshold
      * late_round: unit composition from a round day onward, or earlier once military reaches military_percentage of
-     *   population; read live from these settings (never saved to ai_config) so it also applies to bots already in a round;
-     *   retrain gradually replaces owned units with a better defensive unit, refunding the released units' platinum
+     *   population; read live from these settings (never saved to ai_config) so it also applies to bots already in a round
      * offense values: a unit, or platinum shares per unit (e.g. ['unit1' => 0.5, 'unit4' => 0.5])
      * starting_offense: offensive unit given at spawn (defaults to unit1)
      * starting_spec_ratio: share of starting defense in spec units, 0 for elites only (randomized when omitted)
@@ -64,7 +63,6 @@ class AIHelper
                 'military_percentage' => 75,
                 'military' => 'unit3',
                 'offense' => 'unit4',
-                'retrain' => ['unit2' => 'unit3'],
             ],
         ],
         'Spirit' => [
@@ -386,7 +384,7 @@ class AIHelper
     /**
      * Returns the late round unit composition for an attacker race, or null when the race has none.
      *
-     * @return array{day: int, military_percentage?: float, military: string, offense: string|array<string, float>, retrain?: array<string, string>}|null
+     * @return array{day: int, military_percentage?: float, military: string, offense: string|array<string, float>}|null
      */
     public function getAttackerLateRound(Race $race): ?array
     {

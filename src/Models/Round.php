@@ -6,6 +6,7 @@ use Cache;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 /**
@@ -101,6 +102,14 @@ class Round extends AbstractModel
     public function perks()
     {
         return $this->hasMany(RoundPerk::class);
+    }
+
+    /**
+     * Storyline entries posted to the Town Crier for this round, including scheduled ones.
+     */
+    public function storylineEvents(): MorphMany
+    {
+        return $this->morphMany(GameEvent::class, 'source')->where('type', GameEvent::TYPE_STORYLINE);
     }
 
     public function raids()

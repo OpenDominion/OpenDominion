@@ -87,7 +87,6 @@ class AIHelperTest extends AbstractBrowserKitTestCase
         $this->assertEquals(75, $lateRound['military_percentage']);
         $this->assertEquals('unit3', $lateRound['military']);
         $this->assertEquals(['unit4' => 1.0], $this->aiHelper->getOffenseMix($lateRound['offense']));
-        $this->assertEquals(['unit2' => 'unit3'], $lateRound['retrain']);
         $this->assertNull($this->aiHelper->getAttackerLateRound($vampire));
     }
 

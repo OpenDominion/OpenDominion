@@ -28,6 +28,11 @@ use Webpatser\Uuid\Uuid;
  */
 class GameEvent extends AbstractModel
 {
+    /**
+     * Story text posted to the Town Crier by staff, sourced from the round.
+     */
+    public const TYPE_STORYLINE = 'storyline';
+
     public $incrementing = false;
 
     protected $casts = [
