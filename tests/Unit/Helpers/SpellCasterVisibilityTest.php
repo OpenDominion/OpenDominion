@@ -44,7 +44,7 @@ class SpellCasterVisibilityTest extends AbstractTestCase
         $this->assertNull($helper->visibleRevelationSpells($spells, $viewer, $target, true)[0]['cast_by_dominion_id']);
     }
 
-    public function testRevelationIsLimitedToItsRoundAndNeverExportsNestedDominions(): void
+    public function testRevelationOnlyShowsCastersFromTheViewersRealmAndNeverExportsNestedDominions(): void
     {
         $realm = (new Realm())->forceFill(['number' => 3]);
         $viewer = (new Dominion())->forceFill(['id' => 20, 'name' => 'Viewer', 'realm_id' => 13, 'round_id' => 2]);
@@ -62,9 +62,9 @@ class SpellCasterVisibilityTest extends AbstractTestCase
         }
 
         $visible = (new SpellHelper())->visibleRevelationSpells($spells, $viewer, $target);
-        $this->assertSame([10, 20, 30, null], array_column($visible, 'cast_by_dominion_id'));
-        $this->assertSame(['Target', 'Viewer', 'Third party', null], array_column($visible, 'cast_by_dominion_name'));
-        $this->assertSame([4, 3, 9, null], array_column($visible, 'cast_by_dominion_realm_number'));
+        $this->assertSame([10, 20, null, null], array_column($visible, 'cast_by_dominion_id'));
+        $this->assertSame(['Target', 'Viewer', null, null], array_column($visible, 'cast_by_dominion_name'));
+        $this->assertSame([4, 3, null, null], array_column($visible, 'cast_by_dominion_realm_number'));
         $viewer->round_id = 3;
         $foreign = (new SpellHelper())->visibleRevelationSpells($spells, $viewer, $target);
         $this->assertSame([null, null, null, null], array_column($foreign, 'cast_by_dominion_id'));

@@ -124,11 +124,11 @@ Manages espionage/magic intelligence results.
 
 ### InfoOpAssemblerService
 Builds the public API's op-center payloads from stored info ops (`/api/v1/dominions/me/op-center*`).
-- `assembleForTarget(Dominion, Collection)` - latest op per type, keyed by stored type (`clear_sight`, `barracks_spy`, ...), `null` for missing types
-- `assembleHistory(Dominion, type, Collection)` - every op of one type, same per-op format
-- `assembleFromAdvisors(Dominion)` - same payload built from live `InfoMapper` data (own dominion / realmies sharing advisors); callers must check `inRealmAndSharesAdvisors()` first
+- `assembleForTarget(Dominion $viewer, Dominion $target, Collection, bool $liveAdvisors = false)` - latest op per type, keyed by stored type (`clear_sight`, `barracks_spy`, ...), `null` for missing types
+- `assembleHistory(Dominion $viewer, Dominion $target, type, Collection)` - every op of one type, same per-op format
+- `assembleFromAdvisors(Dominion $viewer, Dominion $target)` - same payload built from live `InfoMapper` data (own dominion / realmies sharing advisors); callers must check `inRealmAndSharesAdvisors()` first
 - `getTypes()` / `isValidType()` - the eight exposed types (clairvoyance excluded)
-- Per-op format mirrors Copy Ops in `op-center/show.blade.php`; revelation casters obfuscated via `SpellHelper::obfuscateInfoOps()`
+- Per-op format mirrors Copy Ops in `op-center/show.blade.php`; revelation casters filtered for the viewer via `SpellHelper::visibleRevelationSpells()` (a hostile caster is shown only if in the viewer's realm, or on live advisors when the target is in the viewer's realm and has Surreal Perception)
 
 ### RankingsService
 Daily ranking snapshots by category (land, networth, conquered, explored, etc.).

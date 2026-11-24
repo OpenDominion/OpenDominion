@@ -13,6 +13,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\Spell;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractTestCase;
 
@@ -312,6 +313,53 @@ class AdvisorsApiTest extends AbstractTestCase
         );
     }
 
+    public function testRevelationHidesEnemyCasterOnRealmieWithoutSurrealPerception(): void
+    {
+        $enemy = $this->createEnemyCaster();
+        $realmie = $this->createRealmie();
+        $realmie->settings = ['realmadvisors' => [$this->dominion->id => true]];
+        $realmie->save();
+        $this->attachSpell($realmie, 'plague', $enemy);
+
+        $response = $this->getAdvisors();
+
+        $plague = collect($response->json('dominions.' . $realmie->id . '.ops.revelation.spells'))->firstWhere('spell', 'plague');
+        $this->assertNull($plague['cast_by_dominion_id']);
+        $this->assertNull($plague['cast_by_dominion_name']);
+        $this->assertNull($plague['cast_by_dominion_realm_number']);
+        $this->assertStringNotContainsString($enemy->name, $response->getContent());
+    }
+
+    public function testRevelationShowsEnemyCasterOnRealmieWithSurrealPerception(): void
+    {
+        $enemy = $this->createEnemyCaster();
+        $realmie = $this->createRealmie();
+        $realmie->settings = ['realmadvisors' => [$this->dominion->id => true]];
+        $realmie->save();
+        $this->attachSpell($realmie, 'plague', $enemy);
+        $this->attachSpell($realmie, 'surreal_perception', $realmie);
+
+        $plague = collect($this->getAdvisors()->json('dominions.' . $realmie->id . '.ops.revelation.spells'))->firstWhere('spell', 'plague');
+
+        $this->assertSame($enemy->id, $plague['cast_by_dominion_id']);
+        $this->assertSame($enemy->name, $plague['cast_by_dominion_name']);
+        $this->assertSame(99, $plague['cast_by_dominion_realm_number']);
+    }
+
+    public function testRevelationShowsCasterFromOwnRealm(): void
+    {
+        $enemy = $this->createEnemyCaster();
+        $realmie = $this->createRealmie();
+        $this->attachSpell($this->dominion, 'plague', $enemy);
+        $this->attachSpell($this->dominion, 'arcane_ward', $realmie);
+
+        $spells = collect($this->getAdvisors()->json('dominions.' . $this->dominion->id . '.ops.revelation.spells'))->keyBy('spell');
+
+        $this->assertNull($spells['plague']['cast_by_dominion_id']);
+        $this->assertSame($realmie->id, $spells['arcane_ward']['cast_by_dominion_id']);
+        $this->assertSame($realmie->name, $spells['arcane_ward']['cast_by_dominion_name']);
+    }
+
     public function testLateStarterCannotSeeRealmieAdvisorsByDefault(): void
     {
         $realmie = $this->createRealmie();
@@ -349,6 +397,26 @@ class AdvisorsApiTest extends AbstractTestCase
     private function createRealmie(): Dominion
     {
         return $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $this->dominion->realm);
+    }
+
+    private function createEnemyCaster(): Dominion
+    {
+        $enemyRealm = Realm::create([
+            'round_id' => $this->round->id,
+            'alignment' => $this->dominion->race->alignment,
+            'number' => 99,
+            'name' => 'Enemy Realm',
+        ]);
+
+        return $this->createDominion($this->createUser(), $this->round, $this->dominion->race, $enemyRealm);
+    }
+
+    private function attachSpell(Dominion $target, string $key, Dominion $caster): void
+    {
+        $target->spells()->attach(Spell::where('key', $key)->firstOrFail()->id, [
+            'duration' => 8,
+            'cast_by_dominion_id' => $caster->id,
+        ]);
     }
 
     private function getAdvisors(): TestResponse

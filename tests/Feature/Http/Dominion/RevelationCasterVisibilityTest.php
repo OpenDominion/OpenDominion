@@ -47,9 +47,11 @@ class RevelationCasterVisibilityTest extends AbstractTestCase
             $target = $this->createDominion($this->createUser(), $round, realm: app(RealmFactory::class)->create($round, 'good'));
         }
         $friendlyCaster = $this->createDominion($this->createUser(), $round, realm: $target->realm);
+        $realmCaster = $this->createDominion($this->createUser(), $round, realm: $viewer->realm);
 
         $this->attachSpell($target, 'plague', $enemyCaster);
         $this->attachSpell($target, 'arcane_ward', $friendlyCaster);
+        $this->attachSpell($target, 'insect_swarm', $realmCaster);
 
         if ($perceptionSource === 'surreal_perception') {
             $this->attachSpell($target, 'surreal_perception', $target);
@@ -92,12 +94,12 @@ class RevelationCasterVisibilityTest extends AbstractTestCase
 
         $response = $this->get($url)->assertOk();
         $page = new Crawler($response->getContent());
-        $plagueCasterCell = '//tr[td[1][normalize-space()="Plague"]]/td[last()]';
-        $expectedCaster = $report === 'revelation' || in_array($perceptionSource, ['surreal_perception', 'astral_panopticon'], true) ? $enemyCaster : null;
-        $casterLabel = $expectedCaster === null ? 'Unknown' : "{$expectedCaster->name} (#{$otherRealm->number})";
-        $wardCaster = $page->filterXPath('//tr[td[1][normalize-space()="Arcane Ward"]]/td[last()]');
-        $this->assertSame($casterLabel, $page->filterXPath($plagueCasterCell)->text());
-        $this->assertSame("{$friendlyCaster->name} (#{$friendlyCaster->realm->number})", $wardCaster->text());
+        $expectedCasters = [
+            'Plague' => in_array($perceptionSource, ['surreal_perception', 'astral_panopticon'], true) ? $enemyCaster : null,
+            'Arcane Ward' => $report === 'revelation' ? null : $friendlyCaster,
+            'Insect Swarm' => $realmCaster,
+        ];
+        $this->assertCasterCells($page, $expectedCasters);
 
         $individual = json_decode($page->filter('#revelation')->text(), true, flags: JSON_THROW_ON_ERROR);
         $combined = json_decode($page->filter('#ops_json')->text(), true, flags: JSON_THROW_ON_ERROR);
@@ -106,21 +108,30 @@ class RevelationCasterVisibilityTest extends AbstractTestCase
         $spells = array_column($individual['spells'], null, 'spell');
         $this->assertArrayNotHasKey('cast_by_dominion', $spells['plague']);
         $this->assertSame(8, $spells['plague']['duration']);
-        $this->assertSame($expectedCaster?->id, $spells['plague']['cast_by_dominion_id']);
-        $this->assertSame($expectedCaster?->name, $spells['plague']['cast_by_dominion_name']);
-        $this->assertSame($expectedCaster?->realm->number, $spells['plague']['cast_by_dominion_realm_number']);
-        $this->assertSame($friendlyCaster->id, $spells['arcane_ward']['cast_by_dominion_id']);
-        $this->assertSame($friendlyCaster->name, $spells['arcane_ward']['cast_by_dominion_name']);
-        $this->assertSame($friendlyCaster->realm->number, $spells['arcane_ward']['cast_by_dominion_realm_number']);
+        foreach (['plague' => 'Plague', 'arcane_ward' => 'Arcane Ward', 'insect_swarm' => 'Insect Swarm'] as $key => $name) {
+            $expectedCaster = $expectedCasters[$name];
+            $this->assertSame($expectedCaster?->id, $spells[$key]['cast_by_dominion_id'], $key);
+            $this->assertSame($expectedCaster?->name, $spells[$key]['cast_by_dominion_name'], $key);
+            $this->assertSame($expectedCaster?->realm->number, $spells[$key]['cast_by_dominion_realm_number'], $key);
+        }
 
         if ($report !== 'revelation') {
             $magicUrl = $report === 'own' ? route('dominion.magic') : route('dominion.realm.advisors.magic', $target);
-            $magic = $this->get($magicUrl)->assertOk();
-            $magicPage = new Crawler($magic->getContent());
-            $this->assertSame($casterLabel, $magicPage->filterXPath($plagueCasterCell)->text());
+            $this->assertCasterCells(new Crawler($this->get($magicUrl)->assertOk()->getContent()), $expectedCasters);
         } else {
             $archive = $this->get(route('dominion.op-center.archive', [$target, 'revelation']))->assertOk();
-            $this->assertSame($casterLabel, (new Crawler($archive->getContent()))->filterXPath($plagueCasterCell)->text());
+            $this->assertCasterCells(new Crawler($archive->getContent()), $expectedCasters);
+        }
+    }
+
+    /**
+     * @param array<string, Dominion|null> $expectedCasters  Caster expected in each spell's row, keyed by spell name.
+     */
+    private function assertCasterCells(Crawler $page, array $expectedCasters): void
+    {
+        foreach ($expectedCasters as $spellName => $caster) {
+            $label = $caster === null ? 'Unknown' : "{$caster->name} (#{$caster->realm->number})";
+            $this->assertSame($label, $page->filterXPath("//tr[td[1][normalize-space()=\"{$spellName}\"]]/td[last()]")->text(), $spellName);
         }
     }
 

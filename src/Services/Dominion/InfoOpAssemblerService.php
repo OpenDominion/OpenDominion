@@ -38,10 +38,12 @@ class InfoOpAssemblerService
     /**
      * Every op type is present in the result; types with no info op are null.
      *
+     * @param Dominion $viewer  Dominion the payload is for; decides which spell casters are shown.
      * @param Collection $latestInfoOps  Collection of InfoOp records for a single target.
+     * @param bool $liveAdvisors  Whether the ops come from the target's current advisors.
      * @return array<string, array<string, mixed>|null>
      */
-    public function assembleForTarget(Dominion $target, Collection $latestInfoOps): array
+    public function assembleForTarget(Dominion $viewer, Dominion $target, Collection $latestInfoOps, bool $liveAdvisors = false): array
     {
         $ops = array_fill_keys(self::TYPES, null);
 
@@ -55,8 +57,7 @@ class InfoOpAssemblerService
         }
 
         if (isset($ops['revelation'])) {
-            $obfuscated = $this->spellHelper->obfuscateInfoOps(['revelation' => $ops['revelation']]);
-            $ops['revelation'] = $obfuscated['revelation'];
+            $ops['revelation']['spells'] = $this->spellHelper->visibleRevelationSpells($ops['revelation']['spells'], $viewer, $target, $liveAdvisors);
         }
 
         return $ops;
@@ -70,7 +71,7 @@ class InfoOpAssemblerService
      *
      * @return array<string, array<string, mixed>|null>
      */
-    public function assembleFromAdvisors(Dominion $dominion): array
+    public function assembleFromAdvisors(Dominion $viewer, Dominion $dominion): array
     {
         $infoMapper = app(InfoMapper::class);
         $now = now();
@@ -90,7 +91,7 @@ class InfoOpAssemblerService
             'created_at' => $now,
         ])->values();
 
-        return $this->assembleForTarget($dominion, $advisorOps);
+        return $this->assembleForTarget($viewer, $dominion, $advisorOps, true);
     }
 
     /**
@@ -101,18 +102,18 @@ class InfoOpAssemblerService
      * @param Collection $infoOps  InfoOp records of that type for a single target.
      * @return array<int, array<string, mixed>>
      */
-    public function assembleHistory(Dominion $target, string $type, Collection $infoOps): array
+    public function assembleHistory(Dominion $viewer, Dominion $target, string $type, Collection $infoOps): array
     {
         if (!$this->isValidType($type)) {
             return [];
         }
 
         return $infoOps
-            ->map(function ($infoOp) use ($type, $target) {
+            ->map(function ($infoOp) use ($type, $target, $viewer) {
                 $entry = $this->buildEntry($type, $infoOp, $target);
 
                 if ($type === 'revelation') {
-                    $entry = $this->spellHelper->obfuscateInfoOps(['revelation' => $entry])['revelation'];
+                    $entry['spells'] = $this->spellHelper->visibleRevelationSpells($entry['spells'], $viewer, $target);
                 }
 
                 return $entry;

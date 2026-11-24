@@ -369,20 +369,10 @@ class SpellHelper
         return $this->getCategoryString($spell->category);
     }
 
-    public function obfuscateInfoOps(array $infoOps): array
-    {
-        if (isset($infoOps['revelation'])) {
-            foreach ($infoOps['revelation']['spells'] as $key => $spell) {
-                $infoOps['revelation']['spells'][$key] = Arr::only($spell, self::REVELATION_SPELL_ATTRIBUTES) + [
-                    'cast_by_dominion_id' => null,
-                    'cast_by_dominion_name' => null,
-                    'cast_by_dominion_realm_number' => null,
-                ];
-            }
-        }
-        return $infoOps;
-    }
-
+    /**
+     * A hostile caster is shown only when they are in the viewer's realm, or when the
+     * target is in the viewer's realm and has Surreal Perception on live advisors.
+     */
     public function canIdentifySpellCaster(
         Dominion $viewer,
         Dominion $target,
@@ -392,10 +382,6 @@ class SpellHelper
     ): bool {
         if ($casterId === null || $viewer->round_id !== $target->round_id) {
             return false;
-        }
-
-        if (!$liveAdvisors && $viewer->realm_id !== $target->realm_id) {
-            return true;
         }
 
         return $casterId === $target->id

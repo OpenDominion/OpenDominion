@@ -58,7 +58,7 @@ class AdvisorsController extends AbstractController
 
         $dominions = [];
         foreach ($visible as $realmie) {
-            $dominions[(string) $realmie->id] = $this->dominionPayload($realmie);
+            $dominions[(string) $realmie->id] = $this->dominionPayload($dominion, $realmie);
         }
 
         return response()->json([
@@ -75,13 +75,13 @@ class AdvisorsController extends AbstractController
     /**
      * @return array<string, mixed>
      */
-    private function dominionPayload(Dominion $dominion): array
+    private function dominionPayload(Dominion $viewer, Dominion $dominion): array
     {
         return [
             'id' => $dominion->id,
             'name' => $dominion->name,
             'race' => $dominion->race?->name,
-            'ops' => $this->assembler->assembleFromAdvisors($dominion),
+            'ops' => $this->assembler->assembleFromAdvisors($viewer, $dominion),
             'resources' => $this->resourcesPayload($dominion),
             'returning' => $this->returningPayload($dominion),
             'military' => $this->militaryPayload($dominion),

@@ -102,7 +102,7 @@ class OpCenterController extends AbstractController
                 continue;
             }
 
-            $ops = $this->assembler->assembleForTarget($target, $infoOps);
+            $ops = $this->assembler->assembleForTarget($dominion, $target, $infoOps);
             if (array_filter($ops) === []) {
                 continue;
             }
@@ -151,7 +151,7 @@ class OpCenterController extends AbstractController
         }
 
         $target->loadMissing(['race', 'realm']);
-        $ops = $this->assembler->assembleForTarget($target, $infoOps);
+        $ops = $this->assembler->assembleForTarget($dominion, $target, $infoOps);
 
         return response()->json([
             'generated_at' => now()->toIso8601ZuluString(),
@@ -209,7 +209,7 @@ class OpCenterController extends AbstractController
                 'race' => $target->race?->name,
             ],
             'type' => $type,
-            'ops' => $this->assembler->assembleHistory($target, $type, $query->limit($limit)->get()),
+            'ops' => $this->assembler->assembleHistory($dominion, $target, $type, $query->limit($limit)->get()),
         ]);
     }
 

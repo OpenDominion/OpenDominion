@@ -149,6 +149,48 @@ class OpCenterApiTest extends AbstractTestCase
         $this->assertNull($spells[0]['cast_by_dominion_realm_number']);
     }
 
+    public function testRevelationShowsOnlyCastersFromTheViewersRealm(): void
+    {
+        $realmie = $this->createDominion($this->createUser(), $this->round, $this->scout->race, $this->scout->realm);
+        $this->seedInfoOp('revelation', [
+            [
+                'spell' => 'plague',
+                'duration' => 8,
+                'cast_by_dominion_id' => $realmie->id,
+                'cast_by_dominion_name' => $realmie->name,
+                'cast_by_dominion_realm_number' => $this->scout->realm->number,
+            ],
+            [
+                'spell' => 'harmony',
+                'duration' => 12,
+                'cast_by_dominion_id' => 999,
+                'cast_by_dominion_name' => 'Evil Sorcerer',
+                'cast_by_dominion_realm_number' => $this->target->realm->number,
+            ],
+        ]);
+
+        $latest = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center')
+            ->assertOk();
+        $history = $this->withHeader('X-API-Key', 'scout-key')
+            ->getJson('/api/v1/dominions/me/op-center/' . $this->target->id . '/revelation')
+            ->assertOk();
+
+        foreach ([
+            $latest->json('dominions.' . $this->target->id . '.ops.revelation.spells'),
+            $history->json('ops.0.spells'),
+        ] as $spells) {
+            $spells = collect($spells)->keyBy('spell');
+            $this->assertSame($realmie->id, $spells['plague']['cast_by_dominion_id']);
+            $this->assertSame($realmie->name, $spells['plague']['cast_by_dominion_name']);
+            $this->assertSame($this->scout->realm->number, $spells['plague']['cast_by_dominion_realm_number']);
+            $this->assertNull($spells['harmony']['cast_by_dominion_id']);
+            $this->assertNull($spells['harmony']['cast_by_dominion_name']);
+            $this->assertNull($spells['harmony']['cast_by_dominion_realm_number']);
+        }
+        $this->assertStringNotContainsString('Evil Sorcerer', $latest->getContent() . $history->getContent());
+    }
+
     public function testSingleTargetEndpointReturnsThatTarget(): void
     {
         $this->seedInfoOp('clear_sight', ['land' => 300]);
