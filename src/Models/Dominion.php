@@ -3,6 +3,7 @@
 namespace OpenDominion\Models;
 
 use Cache;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
@@ -913,50 +914,50 @@ class Dominion extends AbstractModel
 
     public function inRealmAndSharesAdvisors(Dominion $target): bool
     {
-        if ($target == null) {
-            return false;
-        }
+        return $this->advisorAccessTo($target)->allowed();
+    }
 
+    public function advisorAccessTo(Dominion $target): Response
+    {
         if ($this->id == $target->id) {
-            return true;
+            return Response::allow();
         }
 
         if ($this->realm_id !== $target->realm_id) {
-            return false;
+            return Response::deny('You are only allowed to look at dominions in your realm.');
         }
 
         if ($this->locked_at !== null) {
+            return Response::deny('Locked dominions are not allowed to look at realm advisors.');
+        }
+
+        return $target->hasAdvisorSharingEnabledFor($this)
+            ? Response::allow()
+            : Response::deny('This user has opted not to share their advisors.');
+    }
+
+    /**
+     * Resolve the owner's sharing preference for the government form and the access check.
+     */
+    public function hasAdvisorSharingEnabledFor(Dominion $viewer): bool
+    {
+        $override = $this->getSetting('realmadvisors.' . $viewer->id);
+        if (is_bool($override)) {
+            return $override;
+        }
+
+        if ($this->user === null) {
             return false;
         }
 
-        $dominionAdvisors = $target->getSetting('realmadvisors');
-
-        // Realm Advisor is explicitly enabled
-        if ($dominionAdvisors && array_key_exists($this->id, $dominionAdvisors) && $dominionAdvisors[$this->id] === true) {
+        if ($viewer->pack_id !== null && $viewer->pack_id == $this->pack_id && $this->user->getSetting('packadvisors') !== false) {
             return true;
         }
 
-        // Realm Advisor is explicity disabled
-        if ($dominionAdvisors && array_key_exists($this->id, $dominionAdvisors) && $dominionAdvisors[$this->id] === false) {
-            return false;
-        }
-
-        // Pack Advisor is enabled
-        if ($target->user != null && $target->user->getSetting('packadvisors') !== false && ($this->pack_id != null && $this->pack_id == $target->pack_id)) {
-            return true;
-        }
-
-        // Late starters disabled by default
-        if ($this->created_at > $this->round->realmAssignmentDate()) {
-            return false;
-        }
-
-        // Realm Advisor is enabled
-        if ($target->user !== null && $target->user->getSetting('realmadvisors') !== false) {
-            return true;
-        }
-
-        return false;
+        return $this->realm->number > 0
+            && $this->round->hasAssignedRealms()
+            && $viewer->created_at <= $this->round->realmAssignmentDate()
+            && $this->user->getSetting('realmadvisors') !== false;
     }
 
     public function sharesUsername(Dominion $target): bool

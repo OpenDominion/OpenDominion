@@ -91,11 +91,6 @@
                                                 <th>Advisors</th>
                                             </tr>
                                         </thead>
-                                        @php
-                                            $dominionAdvisors = $selectedDominion->getSetting("realmadvisors");
-                                            $realmAdvisors = $selectedDominion->user->getSetting("realmadvisors");
-                                            $packAdvisors = $selectedDominion->user->getSetting("packadvisors");
-                                        @endphp
                                         @foreach ($dominions as $dominion)
                                             <tr>
                                                 <td>
@@ -115,19 +110,7 @@
                                                 </td>
                                                 <td>
                                                     @if ($dominion->user_id !== null && $dominion->id !== $selectedDominion->id)
-                                                        @if ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === true)
-                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
-                                                        @elseif ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === false)
-                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
-                                                        @elseif ($packAdvisors !== false && $selectedDominion->pack_id !== null && $selectedDominion->pack_id == $dominion->pack_id)
-                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
-                                                        @elseif ($dominion->created_at > $dominion->round->realmAssignmentDate())
-                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
-                                                        @elseif ($realmAdvisors === false)
-                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
-                                                        @else
-                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
-                                                        @endif
+                                                        <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" @checked($selectedDominion->hasAdvisorSharingEnabledFor($dominion))>
                                                     @endif
                                                 </td>
                                             </tr>

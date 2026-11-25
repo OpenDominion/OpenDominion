@@ -244,53 +244,15 @@ class AdvisorsController extends AbstractDominionController
         ]);
     }
 
-    private function guardPackRealm(Dominion|null $target)
+    private function guardPackRealm(?Dominion $target): void
     {
-        if($target == null) {
+        if ($target === null) {
             return;
         }
 
-        $dominion = $this->getSelectedDominion();
-
-        if ($dominion->id == $target->id) {
-            return;
+        $access = $this->getSelectedDominion()->advisorAccessTo($target);
+        if ($access->denied()) {
+            throw new GameException($access->message());
         }
-
-        if ($dominion->realm_id !== $target->realm_id) {
-            throw new GameException('You are only allowed to look at dominions in your realm.');
-        }
-
-        if ($dominion->locked_at !== null) {
-            throw new GameException('Locked dominions are not allowed to look at realm advisors.');
-        }
-
-        $dominionAdvisors = $target->getSetting('realmadvisors');
-
-        // Realm Advisor is explicitly enabled
-        if ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === true) {
-            return;
-        }
-
-        // Realm Advisor is explicity disabled
-        if ($dominionAdvisors && array_key_exists($dominion->id, $dominionAdvisors) && $dominionAdvisors[$dominion->id] === false) {
-            throw new GameException('This user has opted not to share their advisors.');
-        }
-
-        // Pack Advisor is enabled
-        if ($target->user != null && $target->user->getSetting('packadvisors') !== false && ($dominion->pack_id != null && $dominion->pack_id == $target->pack_id)) {
-            return;
-        }
-
-        // Late starters disabled by default
-        if ($dominion->created_at > $dominion->round->realmAssignmentDate()) {
-            throw new GameException('This user has opted not to share their advisors.');
-        }
-
-        // Realm Advisor is enabled
-        if ($target->user !== null && $target->user->getSetting('realmadvisors') !== false) {
-            return;
-        }
-
-        throw new GameException('This user has opted not to share their advisors.');
     }
 }
