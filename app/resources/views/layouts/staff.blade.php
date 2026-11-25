@@ -25,7 +25,7 @@
 
     @include('partials.analytics')
 </head>
-<body class="sidebar-expand-lg bg-body-tertiary">
+<body class="sidebar-expand-lg bg-body-tertiary @yield('body-class')">
 
 <div class="app-wrapper">
 
